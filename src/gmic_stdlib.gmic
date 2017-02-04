@@ -4256,8 +4256,7 @@ update_server :
 
     # Upload filter files on G'MIC server.
     -o raw:${_path_rc}update$_version.gmic,uchar
-    -if {d=date(4);d>=8&&d<=20} url=https://tschumperle.users.greyc.fr
-    -else url=https://goo.gl/PTcydp
+    -if {d=date(4);d>=8&&d<=20} url=https://goo.gl/Ryf7Cv -else url=https://goo.gl/PTcydp
     -endif
     -replace_str "<i>David Tschumperl&#233;</i>","<i><a href=\""$url"\">David Tschumperl&#233;</a></i>"
     -o cimgz:/tmp/update$_version.gmic,uchar
