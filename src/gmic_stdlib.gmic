@@ -5738,24 +5738,25 @@ oneminus :
 otsu : -check "isint(${1=256}) && $1>0"
   -e[^-1] "Hard-threshold image$? using Otsu\47s method, with $1 histogram levels."
   -v - -repeat $! -l[$>]
-    im={im} iM={iM} -n 0,{$1-1}
-    --histogram $1 total={is}
-    --*. 'x' sum={is} -rm.
-    sumB=0 wB=0 wF=0 varMax=0 threshold=0
-    -repeat $1
-      wB+={@$>}
-      -if {$wB==0} -continue -endif
-      wF={$total-$wB}
-      -if {$wF==0} -break -endif
-      sumB+={$>*{@$>}}
-      mB={$sumB/$wB}
-      mF={($sum-$sumB)/$wF}
-      varBetween={$wB*$wF*($mB-$mF)^2}
-      -if {$varBetween>$varMax} varMax=$varBetween threshold=$> -endif
-    -done
-    -rm. ->=. $threshold
-    threshold={$im+$threshold*($iM-$im)/($1-1)}
-    -if $> -u ${},$threshold -else -u $threshold -endif
+    imM={[im,iM]} --histogram $1,$imM
+    otsu={"
+      sum = sumB = wB = best_variance = best_t = 0;
+      for (t = 0, t<w, ++t, sum+=t*i[t]);
+      for (t = 0, t<w, ++t,
+        wB+=i[t];
+        if (!wB, continue());
+        wF = whds#-2 - wB;
+        if (!wF, break());
+        sumB+=t*i[t];
+        mB = sumB/wB;
+        mF = (sum - sumB)/wF;
+        variance = wB*wF*(mB - mF)^2;
+        if (variance>best_variance, best_variance = variance; best_t = t);
+      );
+      imM = ["$imM"];
+      imM[0] + best_t*(imM[1] - imM[0])/(w - 1)"}
+    -rm. ->=. $otsu
+    -if $> -u ${},$otsu -else -u $otsu -endif
   -endl -done -v +
 
 #@cli polar2complex
