@@ -302,7 +302,7 @@ if(BUILD_PLUGIN)
       add_executable(gmic_gimp ${CLI_Includes} ${CLI_Sources} ./src/gmic_gimp.cpp)
       add_dependencies(gmic_gimp gmic_extra_headers)
 
-      set_target_properties(gmic_gimp PROPERTIES COMPILE_FLAGS " -Dgmic_gimp")
+      set_target_properties(gmic_gimp PROPERTIES COMPILE_FLAGS " -Dgmic_gui")
 
       target_link_libraries(gmic_gimp
 	${X11_LIBRARIES}
