@@ -33504,12 +33504,34 @@ gmicol_rgb_distribution_preview :
 #@web clone("Upscale [scale2x]")
 
 #@web _<b>Spectral filters</b>
-#--------------------------------
+#------------------------------
 
 #@web clone("Bandpass")
 #@web clone("Fourier analysis")
 #@web clone("Fourier transform")
 #@web clone("Fourier watermark")
+
+#@web _<b>Others</b>
+#--------------------
+#@web Toy filter : fx_toy, fx_toy_preview(0)
+#@web : Smoothness = float(2,0,10)
+#@web : Mirroring = choice("None","X-axis","Y-axis","XY-axes","C-axis")
+#@web : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
+#@web : sep = separator()
+#@web : note = note{"<small><b>Note:</b>
+#@web : This entry has been made to illustrate the call of external filters through the G'MIC online service.
+#@web : </small>"}
+#@web : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>02/06/2017</i>.</small>")
+fx_toy :
+  filename=$_path_rc${-file_rand}.cimg
+  -o $filename -rm
+  -x "../bin/toy_filter -i "$filename" -o "$filename" -s $1 -a $2"
+  -i $filename
+  -x "rm -f "$filename
+
+fx_toy_preview :
+  -gui_split_preview "-fx_toy $*",$-1
+
 
 # Local Variables:
 # mode: sh
