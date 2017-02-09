@@ -11715,6 +11715,15 @@ apply_camera3d : -skip ${4=0},${5=0},${6=0},${7=0},${8=-1},${9=0}
 _cross3d :
   ({$2*$6-$3*$5}^{$3*$4-$1*$6}^{$1*$5-$2*$4}) -orientation. -y.
 
+#@cli apply_matrix3d : a11,a12,a13,...,a31,a32,a33
+#@cli : Apply specified 3d rotation matrix to selected 3d objects.
+#@cli : $ -torus3d 10,1 --apply_matrix3d {mul(rot(1,0,1,-15),[1,0,0,0,2,0,0,0,8],3)} -double3d 0
+apply_matrix3d :
+  -e[^-1] "Apply 3x3 matrix (${1-3};${4-6};${7-9}) to 3d object$?."
+  -v - -repeat $! -l[$>]
+    nbp={i[6]} -sh 8,{8+3*$nbp-1},0,0 -r. 3,$nbp,1,1,-1 3,3,1,1,$* -transpose. -m*[-2,-1] -rm.
+  -endl -done -v +
+
 #@cli array3d : size_x>=1,_size_y>=1,_size_z>=1,_offset_x[%],_offset_y[%],_offset_y[%]
 #@cli : Duplicate a 3d object along the X,Y and Z axes.
 #@cli : Default values: 'size_y=1', 'size_z=1' and 'offset_x=offset_y=offset_z=100%'.
