@@ -12454,11 +12454,12 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
           const char
 	    *const com = is_continue?"continue":"break",
 	    *const Com = is_continue?"Continue":"Break";
-          unsigned int callstack_repeat = 0, callstack_do = 0, callstack_local = 0;
+          unsigned int callstack_repeat = 0, callstack_do = 0, callstack_for = 0, callstack_local = 0;
           for (unsigned int l = callstack.size() - 1; l; --l) {
             const char *const s = callstack[l].data();
             if (s[0]=='*' && s[1]=='r') { callstack_repeat = l; break; }
             else if (s[0]=='*' && s[1]=='d') { callstack_do = l; break; }
+            else if (s[0]=='*' && s[1]=='f') { callstack_for = l; break; }
             else if (s[0]=='*' && s[1]=='l') { callstack_local = l; break; }
             else if (s[0]!='*' || s[1]!='i') break;
           }
@@ -12485,6 +12486,16 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             }
             callstack_ind = callstack_do;
             stb = "do"; ste = "while";
+          } else if (callstack_for) {
+            print(images,0,"%s %scurrent 'for...done' block.",
+                  Com,is_continue?"to next iteration of ":"");
+            for (level = 1; level && position<commands_line.size(); ++position) {
+              const char *it = commands_line[position].data();
+              if (!std::strcmp("-repeat",it) || !std::strcmp("-for",it)) ++level;
+              else if (!std::strcmp("-done",it)) --level;
+            }
+            callstack_ind = callstack_for;
+            stb = "for"; ste = "done";
           } else if (callstack_local) {
             print(images,0,"%s %scurrent local environment.",
                   Com,is_continue?"to end of ":"");
@@ -12512,7 +12523,9 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
 	    --position;
 	  } else {
             callstack.remove(callstack_ind,callstack.size() - 1);
-            if (callstack_do) { dowhiles.remove(); ++position; } else repeatdones.remove();
+            if (callstack_do) { dowhiles.remove(); ++position; }
+            else if (callstack_repeat) repeatdones.remove();
+            else fordones.remove();
           }
           continue;
         }
