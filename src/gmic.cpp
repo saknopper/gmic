@@ -5991,6 +5991,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             CImg<unsigned int> &wd = fordones.back();
             wd[1] = 1; // Mark '-for' as already visited
             position = wd[0] - 1;
+            next_debug_line = debug_line; next_debug_filename = debug_filename;
           }
           continue;
         }
