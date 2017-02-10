@@ -4337,8 +4337,7 @@ gmic& gmic::_run(const gmic_list<char>& commands_line,
   callstack._data[0]._data[1] = 0;
   dowhiles.assign(0U);
   repeatdones.assign(0U);
-  fordones.assign(0U);
-  nb_fordones = 0;
+  fordones.assign(nb_fordones = 0U);
   status.assign(0U);
   nb_carriages = 0;
   debug_filename = ~0U;
@@ -4622,8 +4621,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
         if (is_very_verbose) print(images,0,"Abort G'MIC interpreter.\n");
         dowhiles.assign();
         repeatdones.assign();
-        fordones.assign();
-        nb_fordones = 0;
+        fordones.assign(nb_fordones = 0);
         position = commands_line.size();
         is_released = is_quit = true;
         break;
@@ -9828,8 +9826,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
           print(images,0,"Quit G'MIC interpreter.");
           dowhiles.assign();
           repeatdones.assign();
-          fordones.assign();
-          nb_fordones = 0;
+          fordones.assign(nb_fordones = 0);
           position = commands_line.size();
           is_released = is_quit = true;
           *is_abort = true;
@@ -14036,8 +14033,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
     if (is_very_verbose) print(images,0,"Abort G'MIC interpreter.");
     dowhiles.assign();
     repeatdones.assign();
-    fordones.assign();
-    nb_fordones = 0;
+    fordones.assign(nb_fordones = 0);
     position = commands_line.size();
     is_released = is_quit = true;
   } catch (CImgException &e) {
