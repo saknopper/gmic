@@ -13379,7 +13379,7 @@ apply_timeout :
 #@cli : $ image.jpg -luminance i={ia+2} -do -set 255,{u(100)}%,{u(100)}% -while {ia<$i}
 
 #@cli done : (+)
-#@cli : End a 'repeat...done' block, and go to associated '-repeat' position, if iterations remain.
+#@cli : End a 'repeat/for...done' block, and go to associated '-repeat/for' position, if iterations remain.
 
 #@cli elif : boolean : filename : (+)
 #@cli : Start a 'elif...[else]...endif' block if previous '-if' was not verified
@@ -13409,6 +13409,9 @@ apply_timeout :
 #@cli : Execute external command using a system call.
 #@cli : The status value is then set to the error code returned by the system call.
 #@cli : (eq. to '-x').
+
+#@cli for : condition : (+)
+#@cli : Start a 'for...done' block.
 
 #@cli if : boolean : filename : (+)
 #@cli : Start a 'if...[elif]...[else]...endif' block and test if specified boolean is true,
