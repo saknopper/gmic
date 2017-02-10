@@ -4335,7 +4335,7 @@ gmic& gmic::_run(const gmic_list<char>& commands_line,
   callstack._data[0].assign(2,1,1,1);
   callstack._data[0]._data[0] = '.';
   callstack._data[0]._data[1] = 0;
-  dowhiles.assign(0U);
+  dowhiles.assign(nb_dowhiles = 0U);
   repeatdones.assign(0U);
   fordones.assign(nb_fordones = 0U);
   status.assign(0U);
@@ -4619,7 +4619,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
       // Cancellation point.
       if (*is_abort || is_abort_thread) {
         if (is_very_verbose) print(images,0,"Abort G'MIC interpreter.\n");
-        dowhiles.assign();
+        dowhiles.assign(nb_dowhiles = 0);
         repeatdones.assign();
         fordones.assign(nb_fordones = 0);
         position = commands_line.size();
@@ -6002,7 +6002,8 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             CImg<char>::string(argx).move_to(callstack);
           } else CImg<char>::string("*do").move_to(callstack);
           if (is_very_verbose) print(images,0,"Start 'do...while' block.");
-          CImg<unsigned int>::vector(position).move_to(dowhiles);
+          if (nb_dowhiles>=dowhiles._height) dowhiles.resize(1,std::max(2*dowhiles._height,8U),1,1,0);
+          dowhiles[nb_dowhiles++] = position;
           continue;
         }
 
@@ -9824,7 +9825,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
         // Quit.
         if (!std::strcmp("-quit",item)) {
           print(images,0,"Quit G'MIC interpreter.");
-          dowhiles.assign();
+          dowhiles.assign(nb_dowhiles = 0);
           repeatdones.assign();
           fordones.assign(nb_fordones = 0);
           position = commands_line.size();
@@ -10111,7 +10112,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
           position = commands_line.size();
           while (callstack && callstack.back()[0]=='*') {
             const char c = callstack.back()[1];
-            if (c=='d') dowhiles.remove();
+            if (c=='d') --nb_dowhiles;
             else if (c=='r') repeatdones.remove();
             else if (c=='f') --nb_fordones;
             else if (c=='l' || c=='>' || c=='s') break;
@@ -12023,12 +12024,12 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                                "does not exist"):
                   (is_cond?"holds":"does not hold"));
           if (is_cond) {
-            position = dowhiles.back()(0);
+            position = dowhiles[nb_dowhiles - 1];
             next_debug_line = debug_line; next_debug_filename = debug_filename;
             continue;
           } else {
             if (is_very_verbose) print(images,0,"End 'do...while' block.");
-            dowhiles.remove();
+            --nb_dowhiles;
             callstack.remove();
           }
           ++position; continue;
@@ -12521,7 +12522,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
 	    --position;
 	  } else {
             callstack.remove(callstack_ind,callstack.size() - 1);
-            if (callstack_do) { dowhiles.remove(); ++position; }
+            if (callstack_do) { --nb_dowhiles; ++position; }
             else if (callstack_repeat) repeatdones.remove();
             else --nb_fordones;
           }
@@ -14031,7 +14032,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
     // Do the same as for a cancellation point.
     const bool is_very_verbose = verbosity>0 || is_debug;
     if (is_very_verbose) print(images,0,"Abort G'MIC interpreter.");
-    dowhiles.assign();
+    dowhiles.assign(nb_dowhiles = 0);
     repeatdones.assign();
     fordones.assign(nb_fordones = 0);
     position = commands_line.size();
