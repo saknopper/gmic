@@ -4338,6 +4338,7 @@ gmic& gmic::_run(const gmic_list<char>& commands_line,
   dowhiles.assign(0U);
   repeatdones.assign(0U);
   fordones.assign(0U);
+  nb_fordones = 0;
   status.assign(0U);
   nb_carriages = 0;
   debug_filename = ~0U;
@@ -4622,6 +4623,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
         dowhiles.assign();
         repeatdones.assign();
         fordones.assign();
+        nb_fordones = 0;
         position = commands_line.size();
         is_released = is_quit = true;
         break;
@@ -5988,9 +5990,8 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
               callstack.remove();
             }
           } else { // End a 'for...done' block
-            CImg<unsigned int> &wd = fordones.back();
-            wd[1] = 1; // Mark '-for' as already visited
-            position = wd[0] - 1;
+            fordones(1,nb_fordones - 1) = 1; // Mark '-for' as already visited
+            position = fordones(0,nb_fordones - 1) - 1;
             next_debug_line = debug_line; next_debug_filename = debug_filename;
           }
           continue;
@@ -6834,7 +6835,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
           }
           const bool
             is_cond = (bool)_is_cond,
-            is_first = !fordones || *fordones.back()!=position;
+            is_first = !nb_fordones || fordones(0,nb_fordones - 1)!=position;
           if (is_very_verbose)
             print(images,0,"%s %s -> %s '%s' %s.",
                   !is_first?"Reach":is_cond?"Start":"Skip",
@@ -6850,7 +6851,9 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                 cimg_snprintf(argx,_argx.width(),"*for#%u",debug_line);
                 CImg<char>::string(argx).move_to(callstack);
               } else CImg<char>::string("*for").move_to(callstack);
-              CImg<unsigned int>::vector(position,0).move_to(fordones);
+              if (nb_fordones>=fordones._height) fordones.resize(2,std::max(2*fordones._height,8U),1,1,0);
+              fordones(0,nb_fordones) = position;
+              fordones(1,nb_fordones++) = 0;
             }
             ++position;
           } else {
@@ -6863,10 +6866,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             if (nb_repeat_fors && position>=commands_line.size())
               error(images,0,0,
                     "Command '-for': Missing associated '-done' command.");
-            if (!is_first) {
-              fordones.remove();
-              callstack.remove();
-            }
+            if (!is_first) { --nb_fordones; callstack.remove(); }
           }
           continue;
         }
@@ -9829,6 +9829,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
           dowhiles.assign();
           repeatdones.assign();
           fordones.assign();
+          nb_fordones = 0;
           position = commands_line.size();
           is_released = is_quit = true;
           *is_abort = true;
@@ -10115,7 +10116,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             const char c = callstack.back()[1];
             if (c=='d') dowhiles.remove();
             else if (c=='r') repeatdones.remove();
-            else if (c=='f') fordones.remove();
+            else if (c=='f') --nb_fordones;
             else if (c=='l' || c=='>' || c=='s') break;
             callstack.remove();
           }
@@ -12525,7 +12526,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             callstack.remove(callstack_ind,callstack.size() - 1);
             if (callstack_do) { dowhiles.remove(); ++position; }
             else if (callstack_repeat) repeatdones.remove();
-            else fordones.remove();
+            else --nb_fordones;
           }
           continue;
         }
@@ -14036,6 +14037,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
     dowhiles.assign();
     repeatdones.assign();
     fordones.assign();
+    nb_fordones = 0;
     position = commands_line.size();
     is_released = is_quit = true;
   } catch (CImgException &e) {
