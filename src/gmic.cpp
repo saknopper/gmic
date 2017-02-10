@@ -6835,19 +6835,25 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
           const bool
             is_cond = (bool)_is_cond,
             is_first = !fordones || *fordones.back()!=position;
+          if (is_very_verbose)
+            print(images,0,"%s %s -> %s '%s' %s.",
+                  !is_first?"Reach":is_cond?"Start":"Skip",
+                  is_first?"'for...done' block":"'-for' command",
+                  is_filename?"file":"condition",
+                  gmic_argument_text_printed(),
+                  is_filename?(is_cond?"exists":
+                               "does not exist"):
+                  (is_cond?"holds":"does not hold"));
           if (is_cond) {
             if (is_first) {
               if (is_debug_info && debug_line!=~0U) {
                 cimg_snprintf(argx,_argx.width(),"*for#%u",debug_line);
                 CImg<char>::string(argx).move_to(callstack);
               } else CImg<char>::string("*for").move_to(callstack);
-              if (is_very_verbose) print(images,0,"Start 'for...done' block.");
               CImg<unsigned int>::vector(position,0).move_to(fordones);
             }
             ++position;
           } else {
-            if (is_very_verbose && is_first)
-              print(images,0,"Skip 'for...done' block (false condition).");
             int nb_repeat_fors = 0;
             for (nb_repeat_fors = 1; nb_repeat_fors && position<commands_line.size(); ++position) {
               const char *it = commands_line[position].data();
@@ -12011,12 +12017,13 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             _is_cond = (float)check_filename(name);
           }
           const bool is_cond = (bool)_is_cond;
-          if (is_very_verbose) print(images,0,"Reach '-while' command -> %s '%s' %s.",
-                                     is_filename?"file":"boolean",
-                                     gmic_argument_text_printed(),
-                                     is_filename?(is_cond?"exists":
-                                                  "does not exist"):
-                                     (is_cond?"is true":"is false"));
+          if (is_very_verbose)
+            print(images,0,"Reach '-while' command -> %s '%s' %s.",
+                  is_filename?"file":"condition",
+                  gmic_argument_text_printed(),
+                  is_filename?(is_cond?"exists":
+                               "does not exist"):
+                  (is_cond?"holds":"does not hold"));
           if (is_cond) {
             position = dowhiles.back()(0);
             next_debug_line = debug_line; next_debug_filename = debug_filename;
@@ -12412,16 +12419,16 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
               CImg<char>::string(argx).move_to(callstack);
             } else CImg<char>::string("*if").move_to(callstack);
             if (is_very_verbose) print(images,0,"Start 'if...endif' block -> %s '%s' %s.",
-                                       is_filename?"file":"boolean",
+                                       is_filename?"file":"condition",
                                        gmic_argument_text_printed(),
                                        is_filename?(is_cond?"exists":"does not exist"):
-                                       (is_cond?"is true":"is false"));
+                                       (is_cond?"holds":"does not hold"));
           } else if (is_very_verbose) print(images,0,"Reach '-elif' block -> %s '%s' %s.",
-                                            is_filename?"file":"boolean",
+                                            is_filename?"file":"condition",
                                             gmic_argument_text_printed(),
                                             is_filename?(is_cond?"exists":
                                                          "does not exist"):
-                                            (is_cond?"is true":"is false"));
+                                            (is_cond?"holds":"does not hold"));
           if (!is_cond) {
             for (int nb_ifs = 1; nb_ifs && position<commands_line.size(); ++position) {
               const char *const it = commands_line[position].data();
