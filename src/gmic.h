@@ -349,15 +349,14 @@ struct gmic {
   gmic_list<char> *const commands, *const commands_names, *const commands_has_arguments,
     *const _variables, *const _variables_names, **const variables, **const variables_names,
     commands_files, callstack;
-  gmic_list<unsigned int> repeatdones;
-  gmic_image<unsigned int> dowhiles, fordones;
+  gmic_image<unsigned int> dowhiles, fordones, repeatdones;
   gmic_image<unsigned char> light3d;
   gmic_image<char> status;
   void *display_window;
 
   float focale3d, light3d_x, light3d_y, light3d_z, specular_lightness3d, specular_shininess3d, _progress, *progress;
   unsigned long reference_time;
-  unsigned int nb_dowhiles, nb_fordones, nb_carriages, debug_filename, debug_line, cimg_exception_mode;
+  unsigned int nb_dowhiles, nb_fordones, nb_repeatdones, nb_carriages, debug_filename, debug_line, cimg_exception_mode;
   int verbosity, render3d, renderd3d;
   bool is_released, is_debug, is_running, is_start, is_return, is_quit, is_double3d, is_debug_info, check_elif;
   const char *starting_commands_line;

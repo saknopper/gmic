@@ -4214,7 +4214,7 @@ CImg<char> gmic::substitute_item(const char *const source,
           error(images,0,0,
                 "Item substitution '$%c': There is no loop currently running.",
                 nsource[1]);
-        const CImg<unsigned int> &rd = repeatdones.back();
+        const unsigned int *const rd = repeatdones.data(0,nb_repeatdones - 1);
         cimg_snprintf(substr,substr.width(),"%u",nsource[1]=='>'?rd[2]:rd[1] - 1);
         CImg<char>(substr.data(),(unsigned int)std::strlen(substr),1,1,1,true).
           append_string_to(substituted_items,ptr_sub);
@@ -4336,8 +4336,8 @@ gmic& gmic::_run(const gmic_list<char>& commands_line,
   callstack._data[0]._data[0] = '.';
   callstack._data[0]._data[1] = 0;
   dowhiles.assign(nb_dowhiles = 0U);
-  repeatdones.assign(0U);
   fordones.assign(nb_fordones = 0U);
+  repeatdones.assign(nb_repeatdones = 0U);
   status.assign(0U);
   nb_carriages = 0;
   debug_filename = ~0U;
@@ -4620,8 +4620,8 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
       if (*is_abort || is_abort_thread) {
         if (is_very_verbose) print(images,0,"Abort G'MIC interpreter.\n");
         dowhiles.assign(nb_dowhiles = 0);
-        repeatdones.assign();
         fordones.assign(nb_fordones = 0);
+        repeatdones.assign(nb_repeatdones = 0);
         position = commands_line.size();
         is_released = is_quit = true;
         break;
@@ -5967,14 +5967,13 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                   "within the same scope.");
           if (s[1]=='r') { // End a 'repeat...done' block
             *title = 0;
-            CImg<unsigned int> &rd = repeatdones.back();
-            const unsigned int counter = ++rd[2];
-            unsigned int hashcode = ~0U, pos = ~0U;
-            if (rd.height()>3) { hashcode = (unsigned int)rd[3]; pos = (unsigned int)rd[4]; }
-            if ((rd[2]==~0U && --rd[2]) || --rd[1]) {
+            unsigned int *const rd = repeatdones.data(0,nb_repeatdones - 1);
+            const unsigned int hashcode = rd[3], pos = rd[4];
+            ++rd[2];
+            if (--rd[1]) {
               position = rd[0] + 1;
               if (hashcode!=~0U) {
-                cimg_snprintf(argx,_argx.width(),"%u",counter);
+                cimg_snprintf(argx,_argx.width(),"%u",rd[2]);
                 CImg<char>::string(argx).move_to((*variables[hashcode])[pos]);
               }
               next_debug_line = debug_line; next_debug_filename = debug_filename;
@@ -5984,7 +5983,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                 variables[hashcode]->remove(pos);
                 variables_names[hashcode]->remove(pos);
               }
-              repeatdones.remove();
+              --nb_repeatdones;
               callstack.remove();
             }
           } else { // End a 'for...done' block
@@ -9826,8 +9825,8 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
         if (!std::strcmp("-quit",item)) {
           print(images,0,"Quit G'MIC interpreter.");
           dowhiles.assign(nb_dowhiles = 0);
-          repeatdones.assign();
           fordones.assign(nb_fordones = 0);
+          repeatdones.assign(nb_repeatdones = 0);
           position = commands_line.size();
           is_released = is_quit = true;
           *is_abort = true;
@@ -9884,7 +9883,8 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                            nb,nb>1?"s":"");
               }
               const unsigned int l = (unsigned int)std::strlen(title);
-              CImg<unsigned int> rd(1,3 + (l?2:0));
+              if (nb_repeatdones>=repeatdones._height) repeatdones.resize(5,std::max(2*repeatdones._height,8U),1,1,0);
+              unsigned int *const rd = repeatdones.data(0,nb_repeatdones++);
               rd[0] = position; rd[1] = nb; rd[2] = 0;
               if (l) {
                 const unsigned int hashcode = gmic::hashcode(title,true);
@@ -9892,8 +9892,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                 rd[4] = variables[hashcode]->_width;
                 CImg<char>::string(title).move_to(*variables_names[hashcode]);
                 CImg<char>::string("0").move_to(*variables[hashcode]);
-              }
-              rd.move_to(repeatdones);
+              } else rd[3] = rd[4] = ~0U;
             } else {
               if (is_very_verbose) {
                 if (*title) print(images,0,"Skip 'repeat...done' block with variable '%s' (0 iteration).",
@@ -10113,8 +10112,8 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
           while (callstack && callstack.back()[0]=='*') {
             const char c = callstack.back()[1];
             if (c=='d') --nb_dowhiles;
-            else if (c=='r') repeatdones.remove();
             else if (c=='f') --nb_fordones;
+            else if (c=='r') --nb_repeatdones;
             else if (c=='l' || c=='>' || c=='s') break;
             callstack.remove();
           }
@@ -12523,7 +12522,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
 	  } else {
             callstack.remove(callstack_ind,callstack.size() - 1);
             if (callstack_do) { --nb_dowhiles; ++position; }
-            else if (callstack_repeat) repeatdones.remove();
+            else if (callstack_repeat) --nb_repeatdones;
             else --nb_fordones;
           }
           continue;
@@ -14033,8 +14032,8 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
     const bool is_very_verbose = verbosity>0 || is_debug;
     if (is_very_verbose) print(images,0,"Abort G'MIC interpreter.");
     dowhiles.assign(nb_dowhiles = 0);
-    repeatdones.assign();
     fordones.assign(nb_fordones = 0);
+    repeatdones.assign(nb_repeatdones = 0);
     position = commands_line.size();
     is_released = is_quit = true;
   } catch (CImgException &e) {
