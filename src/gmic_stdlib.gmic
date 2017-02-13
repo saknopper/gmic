@@ -3971,7 +3971,7 @@ update_server :
   -_update_server_move[] "/Testing/Samj/Artistic/Chalk~it~up","/Artistic"
   -_update_server_move[] "/Testing/Samj/Artistic/Paint~daub","/Artistic"
   -_update_server_move[] "/Testing/Samj/Artistic/Skeletik","/Artistic"
-  -_update_server_move[] "/Testing/Samj/Patterns/Denim~texture","/Patterns"
+  -_update_server_move[] "/Testing/Samj/Patterns/Denim","/Patterns"
   -_update_server_move[] "/Testing/Samj/Patterns/Soft~random~shades","/Patterns"
   -_update_server_move[] "/Testing/Samj/Rendering/Fractal~tree","/Rendering"
   -_update_server_move[] "/Testing/Samj/Rendering/Pythagoras~tree","/Rendering"
@@ -33528,6 +33528,30 @@ gmicol_rgb_distribution_preview :
 
 #@web _<b>Others</b>
 #--------------------
+
+#@web Homotopic skeletonization : fx_skeletonization, fx_skeletonization_preview(0)
+#@web : Threshold (%) = float(50,0,100)
+#@web : Smoothness = float(0,0,10)
+#@web : Connectivity = choice("4-connected","8-connected")
+#@web : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
+#@web : sep = separator(), note = note("<small>Authors: <i>David Tschumperl&#233;</i>, <i>S&#233;bastien Fourey</i> and <i>Laurette Chardon</i>.      Latest update: <i>02/13/2017</i>.</small>")
+fx_skeletonization :
+  -norm -b $2 ->= {$1*255%}
+  filename_in=${-file_rand}.pan
+  filename_out=${-file_rand}.pan
+  -o $filename_in,uchar -rm
+
+  -e "DEBUG : LD_LIBRARY_PATH=../bin ../bin/pskeletonization "{4*(1+$3)}" "$filename_in" "$filename_out
+
+  -x "LD_LIBRARY_PATH=../bin ../bin/pskeletonization "{4*(1+$3)}" "$filename_in" "$filename_out
+  -i $filename_out
+  -x "rm -f "$filename_in
+  -x "rm -f "$filename_out
+  -n 0,255
+
+fx_skeletonization_preview :
+  -gui_split_preview "-fx_skeletonization $*",$-1
+
 #@web Toy filter : fx_toy, fx_toy_preview(0)
 #@web : Smoothness = float(2,0,10)
 #@web : Mirroring = choice("None","X-axis","Y-axis","XY-axes","C-axis")
@@ -33538,7 +33562,7 @@ gmicol_rgb_distribution_preview :
 #@web : </small>"}
 #@web : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>02/06/2017</i>.</small>")
 fx_toy :
-  filename=$_path_rc${-file_rand}.cimg
+  filename=${-file_rand}.cimg
   -o $filename -rm
   -x "../bin/toy_filter -i "$filename" -o "$filename" -s $1 -a $2"
   -i $filename
