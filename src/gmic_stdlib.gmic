@@ -26702,12 +26702,13 @@ fx_circle_transform_preview :
 #@gui : Exponent (imaginary) = float(0,-16,16)
 #@gui : Custom formula = text{1,"((1.1 + i*z/6)/(1.04 - i*z/6))^6.2"}
 #@gui : sep = separator()
-#@gui : Zoom = float(0,-1,1)
+#@gui : Zoom = float(0,-4,4)
 #@gui : Angle = float(0,-180,180)
 #@gui : Aspect ratio = float(0,-1,1)
 #@gui : X-shift = float(0,-5,5)
 #@gui : Y-shift = float(0,-5,5)
 #@gui : Boundary = choice(2,"Transparent","Nearest","Repeat")
+#@gui : Anti-aliasing = int(1,0,3)
 #@gui : sep = separator()
 #@gui : Specify different output size = _bool(0)
 #@gui : Output width = _text("1024")
@@ -26736,7 +26737,8 @@ fx_conformal_maps :
   expr6="cexp(z)"
   expr7="clog(z)"
   -repeat $! -l[$>]
-    -if $11 $12,$13,1,100% -else . -endif
+    wh={$12?[$13,$14]:[w,h]}
+    {(1+$11)*[$wh]},1,100%
     -f. "init(
            ccos(z) = (iz=[0,1]**z; (cexp(iz) + cexp(-iz)/2));
            csin(z) = (iz=[0,1]**z; (cexp(iz) - cexp(-iz)/2));
@@ -26756,11 +26758,12 @@ fx_conformal_maps :
          z = rot($6)*z;
          z = 0.5*(f0*z + [w#0,h#0]);
          I(#0,z)"
+      -r. $wh,1,100%,2
     -rm..
   -endl -done
 
 fx_conformal_maps_preview :
-  -fx_conformal_maps ${1-3},"$4",${5-10},0,0,0
+  -fx_conformal_maps ${1-3},"$4",${5-11},0,0,0
 
 #@gui Drop water : fx_drop_water, fx_drop_water_preview(1)
 #@gui : note = note("<small><b>Shape geometry:</b></small>")
