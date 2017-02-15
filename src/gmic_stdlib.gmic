@@ -26712,7 +26712,7 @@ fx_circle_transform_preview :
 #@gui : Y-shift = float(0,-1.5,1.5)
 #@gui : Boundary = choice(2,"Transparent","Nearest","Repeat")
 #@gui : sep = separator()
-#@gui : Specify output size = _bool(0)
+#@gui : Specify different output size = _bool(0)
 #@gui : Output width = _text("1024")
 #@gui : Output height = _text("1024")
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>02/15/2017</i>.</small>")
@@ -26728,19 +26728,22 @@ fx_conformal_maps :
   -repeat $! -l[$>]
     -if $10 $11,$12,1,100% -else . -endif
     -f. "init(
+           ccos(z) = (iz=[0,1]**z; (cexp(iz) + cexp(-iz)/2));
+           csin(z) = (iz=[0,1]**z; (cexp(iz) - cexp(-iz)/2));
+           ctan(z) = csin(z)//ccos(z);
            boundary=$9;
            interpolation=1;
+           const f = max(w,h);
+           const f0 = max(w#0,h#0);
          );
-         ccos(z) = (iz=[0,1]**z; cexp(iz) + cexp(-iz)/2);
-         csin(z) = (iz=[0,1]**z; cexp(iz) - cexp(-iz)/2);
-         ctan(z) = csin(z)//ccos(z);
-         z = 2*[ x/w, y/h ] - 1;
+         z = (2*[ x,y ] - [ w,h ])/f;
          z = rot(-$5)*z;
          z -= [ $7, $8 ];
          z/=[ 10^($4 + $6), 10^$4 ];
          z = ("${expr$1}");
          z = z^^[$2,$3];
-         z = 0.5*(z + 1)*[ w#0, h#0 ];
+         z = rot($5)*z;
+         z = 0.5*(f0*z + [w#0,h#0]);
          I(#0,z)"
     -rm..
   -endl -done
