@@ -26700,6 +26700,54 @@ fx_circle_transform_preview :
     -endif
   -endl -done
 
+#@gui Conformal maps : fx_conformal_maps, fx_conformal_maps_preview(1)
+#@gui : Mapping = choice{"z","(z-1)/(z+1)","cos(z)","sin(z)","tan(z)","exp(z)","log(z)"}
+#@gui : Exponent (real) = float(1,-16,16)
+#@gui : Exponent (imaginary) = float(0,-16,16)
+#@gui : sep = separator()
+#@gui : Zoom = float(0,-1,1)
+#@gui : Angle = float(0,-180,180)
+#@gui : Aspect ratio = float(0,-1,1)
+#@gui : X-shift = float(0,-1.5,1.5)
+#@gui : Y-shift = float(0,-1.5,1.5)
+#@gui : Boundary = choice(2,"Transparent","Nearest","Repeat")
+#@gui : sep = separator()
+#@gui : Specify output size = _bool(0)
+#@gui : Output width = _text("1024")
+#@gui : Output height = _text("1024")
+#@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>02/15/2017</i>.</small>")
+fx_conformal_maps :
+  -to_a
+  expr0="z"
+  expr1="(z+1)//(z-1)"
+  expr2="ccos(z)"
+  expr3="csin(z)"
+  expr4="ctan(z)"
+  expr5="cexp(z)"
+  expr6="clog(z)"
+  -repeat $! -l[$>]
+    -if $10 $11,$12,1,100% -else . -endif
+    -f. "init(
+           boundary=$9;
+           interpolation=1;
+         );
+         ccos(z) = (iz=[0,1]**z; cexp(iz) + cexp(-iz)/2);
+         csin(z) = (iz=[0,1]**z; cexp(iz) - cexp(-iz)/2);
+         ctan(z) = csin(z)//ccos(z);
+         z = 2*[ x/w, y/h ] - 1;
+         z = rot(-$5)*z;
+         z -= [ $7, $8 ];
+         z/=[ 10^($4 + $6), 10^$4 ];
+         z = ("${expr$1}");
+         z = z^^[$2,$3];
+         z = 0.5*(z + 1)*[ w#0, h#0 ];
+         I(#0,z)"
+    -rm..
+  -endl -done
+
+fx_conformal_maps_preview :
+  -fx_conformal_maps ${1-9},0,0,0
+
 #@gui Drop water : fx_drop_water, fx_drop_water_preview(1)
 #@gui : note = note("<small><b>Shape geometry:</b></small>")
 #@gui : Shapes = choice("Procedural","Opaque regions on top layer")
