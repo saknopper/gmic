@@ -33257,6 +33257,7 @@ gmicol_rotate :
 #@web clone("Cartesian transform")
 #@web clone("Circle transform")
 #@web clone("Continuous droste")
+#@web clone("Conformal maps")
 
 #@web Drop water : fx_drop_water_preview, fx_drop_water_preview(1)
 #@web : note = note("<small><b>Shape geometry:</b></small>")
