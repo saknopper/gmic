@@ -26708,7 +26708,7 @@ fx_circle_transform_preview :
 #@gui : X-shift = float(0,-5,5)
 #@gui : Y-shift = float(0,-5,5)
 #@gui : Boundary = choice(2,"Transparent","Nearest","Repeat")
-#@gui : Anti-aliasing = int(1,0,3)
+#@gui : Anti-aliasing = int(0,0,3)
 #@gui : sep = separator()
 #@gui : Specify different output size = _bool(0)
 #@gui : Output width = _text("1024")
