@@ -26740,8 +26740,8 @@ fx_conformal_maps :
     wh={$12?[$13,$14]:[w,h]}
     {(1+$11)*[$wh]},1,100%
     -f. "init(
-           ccos(z) = (iz=[0,1]**z; (cexp(iz) + cexp(-iz)/2));
-           csin(z) = (iz=[0,1]**z; (cexp(iz) - cexp(-iz)/2));
+           ccos(z) = (iz = [ -z[1],z[0] ]; (cexp(iz) + cexp(-iz)/2));
+           csin(z) = (iz = [ -z[1],z[0] ]; (cexp(iz) - cexp(-iz)/2));
            ctan(z) = csin(z)//ccos(z);
            boundary = $10;
            interpolation=1;
