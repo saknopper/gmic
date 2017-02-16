@@ -26697,7 +26697,7 @@ fx_circle_transform_preview :
   -endl -done
 
 #@gui Conformal maps : fx_conformal_maps, fx_conformal_maps_preview(1)
-#@gui : Mapping = choice{1,"Custom formula","z","(z-1)/(z+1)","cos(z)","sin(z)","tan(z)","exp(z)","log(z)"}
+#@gui : Mapping = choice{1,"Custom formula","z","(z-1)/(z+1)","cos(z)","sin(z)","tan(z)","exp(z)","log(z)","Dipole: 1/(4*z^2-1)","Star: -5*(z^3/3-z/4)/2"}
 #@gui : Exponent (real) = float(1,-16,16)
 #@gui : Exponent (imaginary) = float(0,-16,16)
 #@gui : Custom formula = text{1,"((1.1 + i*z/6)/(1.04 - i*z/6))^6.2"}
@@ -26716,26 +26716,24 @@ fx_circle_transform_preview :
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>02/15/2017</i>.</small>")
 fx_conformal_maps :
   -to_a
-  -if {!$1}
-    ({'"$4"'})
-    -replace_str. "*","**"
-    -replace_str. "/","//"
-    -replace_str. "^","^^"
-    -replace_str. "exp(","cexp("
-    -replace_str. "log(","clog("
-    -replace_str. "cos(","ccos("
-    -replace_str. "sin(","csin("
-    -replace_str. "tan(","ctan("
-    expr0={t}
-    -rm.
-  -endif
+  expr0="$4"
   expr1="z"
-  expr2="(z+1)//(z-1)"
-  expr3="ccos(z)"
-  expr4="csin(z)"
-  expr5="ctan(z)"
-  expr6="cexp(z)"
-  expr7="clog(z)"
+  expr2="(z+1)/(z-1)"
+  expr3="cos(z)"
+  expr4="sin(z)"
+  expr5="tan(z)"
+  expr6="exp(z)"
+  expr7="log(z)"
+  expr8="1/(4*z^2-1)"
+  expr9="-5*(z^3/3-z/4)/2"
+
+  ({'${expr$1}'})
+  -replace_str. "*","**" -replace_str. "/","//" -replace_str. "^","^^"
+  -replace_str. "exp(","cexp(" -replace_str. "log(","clog(" -replace_str. "cos(","ccos("
+  -replace_str. "sin(","csin(" -replace_str. "tan(","ctan("
+  expr={t}
+  -rm.
+
   -repeat $! -l[$>]
     wh={$12?[$13,$14]:[w,h]}
     {(1+$11)*[$wh]},1,100%
@@ -26753,7 +26751,7 @@ fx_conformal_maps :
          z = rot(-$6)*z;
          z -= [ $8, $9 ];
          z/=[ 10^($5 + $7), 10^$5 ];
-         z = ("${expr$1}");
+         z = ("$expr");
          if ($1, z = z^^[$2,$3]);
          z = rot($6)*z;
          z = 0.5*(f0*z + [w#0,h#0]);
