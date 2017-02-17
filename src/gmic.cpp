@@ -8268,11 +8268,11 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
           if (((cimg_sscanf(argument,"[%255[a-zA-Z0-9_.%+-]%c%c",indices,&sep,&end)==2 && sep==']') ||
                cimg_sscanf(argument,"[%255[a-zA-Z0-9_.%+-]],%u%c",indices,&boundary,&end)==2) &&
               (ind=selection2cimg(indices,images.size(),images_names,"-map")).height()==1 &&
-              boundary<=2) {
+              boundary<=3) {
             print(images,0,"Map LUT [%u] on image%s, with %s boundary conditions.",
                   *ind,
                   gmic_selection.data(),
-                  boundary==0?"dirichlet":boundary==1?"neumann":"periodic");
+                  boundary==0?"dirichlet":boundary==1?"neumann":boundary==2?"periodic":"mirror");
             const CImg<T> palette = gmic_image_arg(*ind);
             cimg_forY(selection,l) gmic_apply(map(palette,boundary));
           } else if ((cimg_sscanf(argument,"%u%c",&lut_type,&end)==1 ||
@@ -8282,7 +8282,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                   lut_type==0?"default":lut_type==1?"HSV":lut_type==2?"lines":lut_type==3?"hot":
                   lut_type==4?"cool":lut_type==5?"jet":lut_type==6?"flag":"cube",
                   gmic_selection.data(),
-                  boundary==0?"dirichlet":boundary==1?"neumann":"periodic");
+                  boundary==0?"dirichlet":boundary==1?"neumann":boundary==2?"periodic":"mirror");
             const CImg<T>
               palette = lut_type==0?CImg<T>::default_LUT256():lut_type==1?CImg<T>::HSV_LUT256():
               lut_type==2?CImg<T>::lines_LUT256():lut_type==3?CImg<T>::hot_LUT256():

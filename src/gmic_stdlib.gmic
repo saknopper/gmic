@@ -831,15 +831,15 @@ _help_usage :
 \n          '"${g}"offset"$n"' in the associated image buffer (or "${g}"0"$n" if offset is out-of-bounds).
 \n       . '"${c}"j[offset,_boundary_conditions]"$n"' does the same for an offset relative to the current pixel
 \n          coordinates "$g"(x,y,z,c)"$n".
-\n       . '"${c}"i(#ind,_x,_y,_z,_c,_interpolation,_boundary)"$n"',
-\n          '"${c}"j(#ind,_dx,_dy,_dz,_dc,_interpolation,_boundary)"$n"',
-\n          '"${c}"i[#ind,offset,_boundary]"$n"' and '"${c}"i[offset,_boundary]"$n"' are similar expressions used to
+\n       . '"${c}"i(#ind,_x,_y,_z,_c,_interpolation,_boundary_conditions)"$n"',
+\n          '"${c}"j(#ind,_dx,_dy,_dz,_dc,_interpolation,_boundary_conditions)"$n"',
+\n          '"${c}"i[#ind,offset,_boundary_conditions]"$n"' and '"${c}"i[offset,_boundary_conditions]"$n"' are similar expressions used to
 \n          access pixel values for any numbered image "${g}"[ind]"$n" of the list.
-\n       . '"${c}"I/J[offset,_boundary_conditions]"$n"' and '"${c}"I/J(#ind,_x,_y,_z,_interpolation,_boundary)"$n"' do
+\n       . '"${c}"I/J[offset,_boundary_conditions]"$n"' and '"${c}"I/J(#ind,_x,_y,_z,_interpolation,_boundary_conditions)"$n"' do
 \n          the same as '"${c}"i/j[offset,_boundary_conditions]"$n"' and
-\n          '"${c}"i/j(#ind,_x,_y,_z,_c,_interpolation,_boundary)"$n"' but return a vector instead of a scalar
+\n          '"${c}"i/j(#ind,_x,_y,_z,_c,_interpolation,_boundary_conditions)"$n"' but return a vector instead of a scalar
 \n          (e.g. a vector "${g}"[ R,G,B ]"$n" for a pixel at "${g}"(a,b,c)"$n" in a color image).
-\n       . '"${c}"crop(_#ind,_x,_y,_z,_c,_dx,_dy,_dz,_dc,_boundary)"$n"' returns a vector whose values come
+\n       . '"${c}"crop(_#ind,_x,_y,_z,_c,_dx,_dy,_dz,_dc,_boundary_conditions)"$n"' returns a vector whose values come
 \n          from the cropped region of image "${g}"[ind]"$n" (or from default image selected if '"${c}"ind"$n"' is not
 \n          specified). Cropped region starts from point "${g}"(x,y,z,c)"$n" and has a size of
 \n          "${g}"dx x dy x dz x dc"$n". Arguments for coordinates and sizes can be omitted if they are not
@@ -848,7 +848,7 @@ _help_usage :
 \n          (or in default image selected if '"${c}"ind"$n"' is not specified) at coordinates "${g}"(x,y,z,c)"$n".
 \n          The size of the sprite "${g}"dx x dy x dz x dc"$n" must be specified. You can also specify a
 \n          corresponding opacity mask "${g}"M"$n" if its size matches "${g}"S"$n".
-\n       . '"${c}"resize(#ind,w,_h,_d,_s,_interp,_boundary,cx,_cy,_cz,_cc)"$n"' resizes an image of the
+\n       . '"${c}"resize(#ind,w,_h,_d,_s,_interp,_boundary_conditions,cx,_cy,_cz,_cc)"$n"' resizes an image of the
 \n          associated list with specified dimension and interpolation method. When using this,
 \n          function, you should consider retrieving the (non-constant) image dimensions using the
 \n          dynamic functions '"${c}"w(_#ind)"$n"', '"${c}"h(_#ind)"$n"', '"${c}"d(_#ind)"$n"', '"${c}"s(_#ind)"$n"', '"${c}"wh(_#ind)"$n"',
@@ -5609,11 +5609,11 @@ _inrange :
     -- {0.5*($m+$M)} -abs -<= {0.5*abs($M-$m)}
   -endl -done -v +
 
-#@cli map : [palette],_boundary : predefined_palette,_boundary : (+)
+#@cli map : [palette],_boundary_conditions : predefined_palette,_boundary_conditions : (+)
 #@cli : Map specified vector-valued palette to selected indexed scalar images.
 #@cli : 'predefined_palette' can be { 0=default | 1=HSV | 2=lines | 3=hot | 4=cool | 5=jet | 6=flag | 7=cube }.
-#@cli : 'boundary' can be { 0=dirichlet | 1=neumann | 2=periodic }.
-#@cli : Default value: 'boundary=0'.
+#@cli : 'boundary_conditions' can be { 0=dirichlet | 1=neumann | 2=periodic | 3=mirror }.
+#@cli : Default value: 'boundary_conditions=0'.
 #@cli : $ image.jpg --luminance -map[-1] 3
 #@cli : $ image.jpg --rgb2ycbcr -split[-1] c (0,255,0) -resize[-1] 256,1,1,1,3 -map[-4] [-1] -remove[-1] -append[-3--1] c -ycbcr2rgb[-1]
 #@cli : $$
@@ -7259,12 +7259,12 @@ autocrop_seq : -skip ${1=auto}
 
 #@cli z : eq. to '-crop'. : (+)
 
-#@cli crop : x0[%],x1[%],_boundary : x0[%],y0[%],x1[%],y1[%],_boundary : x0[%],y0[%],z0[%],x1[%],y1[%],z1[%],_boundary : x0[%],y0[%],z0[%],c0[%],x1[%],y1[%],z1[%],c1[%],_boundary : (no arg) : (+)
+#@cli crop : x0[%],x1[%],_boundary_conditions : x0[%],y0[%],x1[%],y1[%],_boundary_conditions : x0[%],y0[%],z0[%],x1[%],y1[%],z1[%],_boundary_conditions : x0[%],y0[%],z0[%],c0[%],x1[%],y1[%],z1[%],c1[%],_boundary_conditions : (no arg) : (+)
 #@cli : Crop selected images with specified region coordinates.
 #@cli : (eq. to '-z').
-#@cli : 'boundary' can be { 0=dirichlet | 1=neumann }.
+#@cli : 'boundary_conditions' can be { 0=dirichlet | 1=neumann }.
 #@cli : (no arg) runs interactive mode (uses the instant display window [0] if opened).
-#@cli : Default value: 'boundary=0'.
+#@cli : Default value: 'boundary_conditions=0'.
 #@cli : $ image.jpg --crop -230,-230,280,280,1 -crop[0] -230,-230,280,280,0
 #@cli : $ image.jpg -crop 25%,25%,75%,75%
 
@@ -7293,40 +7293,40 @@ elevate : -check "${1=64}>0" -skip ${2=1},${3=1}
     -done
   -rm[0,1] -nm $nm -endl -done -v +
 
-#@cli expand_x : size_x>=0,_boundary={ 0=dirichlet | 1=neumann | 2=periodic }
+#@cli expand_x : size_x>=0,_boundary_conditions={ 0=dirichlet | 1=neumann | 2=periodic }
 #@cli : Expand selected images along the x-axis.
-#@cli : Default value: 'border=1'.
+#@cli : Default value: 'boundary_conditions=1'.
 #@cli : $ image.jpg -expand_x 30,0
 expand_x : -check "$1>=0 && ${2=1}>=0 && $2<=2"
   -e[^-1] "Expand image$? along the x-axis with size $1 and boundary conditions $2."
   -v - -repeat $! -r[$>] {$>,w+2*$1},100%,100%,100%,0,$2,0.5,0.5,0.5 -done -v +
 
-#@cli expand_xy : size>=0,_boundary={ 0=dirichlet | 1=neumann | 2=periodic }
+#@cli expand_xy : size>=0,_boundary_conditions={ 0=dirichlet | 1=neumann | 2=periodic }
 #@cli : Expand selected images along the xy-axes.
-#@cli : Default value: 'border=1'.
+#@cli : Default value: 'boundary_conditions=1'.
 #@cli : $ image.jpg -expand_xy 30,0
 expand_xy : -check "$1>=0 && ${2=1}>=0 && $2<=2"
   -e[^-1] "Expand image$? along the xy-axes with size $1 and boundary conditions $2."
   -v - -repeat $! -r[$>] {$>,w+2*$1},{$>,h+2*$1},100%,100%,0,$2,0.5,0.5,0.5 -done -v +
 
-#@cli expand_xyz : size>=0,_boundary={ 0=dirichlet | 1=neumann | 2=periodic }
+#@cli expand_xyz : size>=0,_boundary_conditions={ 0=dirichlet | 1=neumann | 2=periodic }
 #@cli : Expand selected images along the xyz-axes.
-#@cli : Default value: 'border=1'.
+#@cli : Default value: 'boundary_conditions=1'.
 expand_xyz : -check "$1>=0 && ${2=1}>=0 && $2<=2"
   -e[^-1] "Expand image$? along the xyz-axes with size $1 and boundary conditions $2."
   -v - -repeat $! -r[$>] {$>,w+2*$1},{$>,h+2*$1},{$>,d+2*$1},100%,0,$2,0.5,0.5,0.5 -done -v +
 
-#@cli expand_y : size_y>=0,_boundary={ 0=dirichlet | 1=neumann | 2=periodic }
+#@cli expand_y : size_y>=0,_boundary_conditions={ 0=dirichlet | 1=neumann | 2=periodic }
 #@cli : Expand selected images along the y-axis.
-#@cli : Default value: 'border=1'.
+#@cli : Default value: 'boundary_conditions=1'.
 #@cli : $ image.jpg -expand_y 30,0
 expand_y : -check "$1>=0 && ${2=1}>=0 && $2<=2"
   -e[^-1] "Expand image$? along the y-axis with size $1 and boundary conditions $2."
   -v - -repeat $! -r[$>] 100%,{$>,h+2*$1},100%,100%,0,$2,0.5,0.5,0.5 -done -v +
 
-#@cli expand_z : size_z>=0,_boundary={ 0=dirichlet | 1=neumann | 2=periodic }
+#@cli expand_z : size_z>=0,_boundary_conditions={ 0=dirichlet | 1=neumann | 2=periodic }
 #@cli : Expand selected images along the z-axis.
-#@cli : Default value: 'border=1'.
+#@cli : Default value: 'boundary_conditions=1'.
 expand_z : -check "$1>=0 && ${2=1}>=0 && $2<=2"
   -e[^-1] "Expand image$? along the z-axis with size $1 and boundary conditions $2."
   -v - -repeat $! -r[$>] 100%,100%,{$>,d+2*$1},100%,0,$2,0.5,0.5,0.5 -done -v +
@@ -7467,31 +7467,31 @@ _montage :
 
 #@cli r : eq. to '-resize'. : (+)
 
-#@cli resize : [image],_interpolation,_boundary,_ax,_ay,_az,_ac : {[image_w] | width>0[%]},_{[image_h] | height>0[%]},_{[image_d] | depth>0[%]},_{[image_s] | spectrum>0[%]},_interpolation,_boundary,_ax,_ay,_az,_ac : (no arg) : (+)
+#@cli resize : [image],_interpolation,_boundary_conditions,_ax,_ay,_az,_ac : {[image_w] | width>0[%]},_{[image_h] | height>0[%]},_{[image_d] | depth>0[%]},_{[image_s] | spectrum>0[%]},_interpolation,_boundary_conditions,_ax,_ay,_az,_ac : (no arg) : (+)
 #@cli : Resize selected images with specified geometry.
 #@cli : (eq. to '-r').
 #@cli : 'interpolation' can be { -1=none (memory content) | 0=none | 1=nearest | 2=average | 3=linear | 4=grid | 5=bicubic | 6=lanczos }.
-#@cli : 'boundary' has different meanings, according to the chosen 'interpolation' mode :
-#@cli : . When 'interpolation=={ -1 | 1 | 2 | 4 }', 'boundary' is meaningless.
-#@cli : . When 'interpolation==0', 'boundary' can be { 0=dirichlet | 1=neumann | 2=periodic }.
-#@cli : . When 'interpolation=={ 3 | 5 | 6 }', 'boundary' can be { 0=none | 1=neumann }.
+#@cli : 'boundary_conditions' has different meanings, according to the chosen 'interpolation' mode :
+#@cli : . When 'interpolation=={ -1 | 1 | 2 | 4 }', 'boundary_conditions' is meaningless.
+#@cli : . When 'interpolation==0', 'boundary_conditions' can be { 0=dirichlet | 1=neumann | 2=periodic }.
+#@cli : . When 'interpolation=={ 3 | 5 | 6 }', 'boundary_conditions' can be { 0=none | 1=neumann }.
 #@cli : 'ax,ay,az,ac' set the centering along each axis when 'interpolation=0 or 4'
 #@cli : (set to '0' by default, must be defined in range [0,1]).
 #@cli : (no arg) runs interactive mode (uses the instant display window [0] if opened).
-#@cli : Default values: 'interpolation=1', 'boundary=0' and 'ax=ay=az=ac=0'.
+#@cli : Default values: 'interpolation=1', 'boundary_conditions=0' and 'ax=ay=az=ac=0'.
 #@cli : $ image.jpg (0,1;0,1^0,0;1,1^1,1;1,1) -resize[-1] [-2],3 -mul[-2] [-1]
 #@cli : $ image.jpg --resize[-1] 256,128,1,3,2 --resize[-1] 120%,120%,1,3,0,1,0.5,0.5 --resize[-1] 120%,120%,1,3,0,0,0.2,0.2 --resize[-1] [0],[0],1,3,4
 
-#@cli resize_pow2 : _interpolation,_boundary,_ax,_ay,_az,_ac
+#@cli resize_pow2 : _interpolation,_boundary_conditions,_ax,_ay,_az,_ac
 #@cli : Resize selected images so that each dimension is a power of 2.
 #@cli : 'interpolation' can be { -1=none (memory content) | 0=none | 1=nearest | 2=average | 3=linear | 4=grid | 5=bicubic | 6=lanczos }.
-#@cli : 'boundary' has different meanings, according to the chosen 'interpolation' mode :
-#@cli : . When 'interpolation=={ -1 | 1 | 2 | 4 }', 'boundary' is meaningless.
-#@cli : . When 'interpolation==0', 'boundary' can be { 0=dirichlet | 1=neumann | 2=periodic }.
-#@cli : . When 'interpolation=={ 3 | 5 | 6 }', 'boundary' can be { 0=none | 1=neumann }.
+#@cli : 'boundary_conditions' has different meanings, according to the chosen 'interpolation' mode :
+#@cli : . When 'interpolation=={ -1 | 1 | 2 | 4 }', 'boundary_conditions' is meaningless.
+#@cli : . When 'interpolation==0', 'boundary_conditions' can be { 0=dirichlet | 1=neumann | 2=periodic }.
+#@cli : . When 'interpolation=={ 3 | 5 | 6 }', 'boundary_conditions' can be { 0=none | 1=neumann }.
 #@cli : 'ax,ay,az,ac' set the centering along each axis when 'interpolation=0'
 #@cli : (set to '0' by default, must be defined in range [0,1]).
-#@cli : Default values: 'interpolation=0', 'boundary=0' and 'ax=ay=az=ac=0'.
+#@cli : Default values: 'interpolation=0', 'boundary_conditions=0' and 'ax=ay=az=ac=0'.
 #@cli : $ image.jpg --resize_pow2[-1] 0
 resize_pow2 : -check "isint(${1=0}) && $1>=-1 && $1<=6" -skip ${2=0},${3=0},${4=0},${5=0},${6=0}
   -e[^-1] "Resize image$? so that each dimension is a power of 2."
@@ -7527,17 +7527,17 @@ r2dx :
   -v - _gmic_s="$?" -v +
   -_resize2dx $*
 
-#@cli resize2dx : width[%]>0,_interpolation,_boundary,_ax,_ay,_az,_ac
+#@cli resize2dx : width[%]>0,_interpolation,_boundary_conditions,_ax,_ay,_az,_ac
 #@cli : Resize selected images along the x-axis, preserving 2d ratio.
 #@cli : (eq. to '-r2dx').
 #@cli : 'interpolation' can be { -1=none (memory content) | 0=none | 1=nearest | 2=average | 3=linear | 4=grid | 5=bicubic | 6=lanczos }.
-#@cli : 'boundary' has different meanings, according to the chosen 'interpolation' mode :
-#@cli : . When 'interpolation=={ -1 | 1 | 2 | 4 }', 'boundary' is meaningless.
-#@cli : . When 'interpolation==0', 'boundary' can be { 0=dirichlet | 1=neumann | 2=periodic }.
-#@cli : . When 'interpolation=={ 3 | 5 | 6 }', 'boundary' can be { 0=none | 1=neumann }.
+#@cli : 'boundary_conditions' has different meanings, according to the chosen 'interpolation' mode :
+#@cli : . When 'interpolation=={ -1 | 1 | 2 | 4 }', 'boundary_conditions' is meaningless.
+#@cli : . When 'interpolation==0', 'boundary_conditions' can be { 0=dirichlet | 1=neumann | 2=periodic }.
+#@cli : . When 'interpolation=={ 3 | 5 | 6 }', 'boundary_conditions' can be { 0=none | 1=neumann }.
 #@cli : 'ax,ay,az,ac' set the centering along each axis when 'interpolation=0'
 #@cli : (set to '0' by default, must be defined in range [0,1]).
-#@cli : Default values: 'interpolation=3', 'boundary=0' and 'ax=ay=az=ac=0'.
+#@cli : Default values: 'interpolation=3', 'boundary_conditions=0' and 'ax=ay=az=ac=0'.
 #@cli : $ image.jpg --resize2dx 100,2 -append x
 resize2dx :
   -v - _gmic_s="$?" -v +
@@ -7555,17 +7555,17 @@ r2dy :
   -v - _gmic_s="$?" -v +
   -_resize2dy $*
 
-#@cli resize2dy : height[%]>=0,_interpolation,_boundary,_ax,_ay,_az,_ac
+#@cli resize2dy : height[%]>=0,_interpolation,_boundary_conditions,_ax,_ay,_az,_ac
 #@cli : Resize selected images along the y-axis, preserving 2d ratio.
 #@cli : (eq. to '-r2dy').
 #@cli : 'interpolation' can be { -1=none (memory content) | 0=none | 1=nearest | 2=average | 3=linear | 4=grid | 5=bicubic | 6=lanczos }.
-#@cli : 'boundary' has different meanings, according to the chosen 'interpolation' mode :
-#@cli : . When 'interpolation=={ -1 | 1 | 2 | 4 }', 'boundary' is meaningless.
-#@cli : . When 'interpolation==0', 'boundary' can be { 0=dirichlet | 1=neumann | 2=periodic }.
-#@cli : . When 'interpolation=={ 3 | 5 | 6 }', 'boundary' can be { 0=none | 1=neumann }.
+#@cli : 'boundary_conditions' has different meanings, according to the chosen 'interpolation' mode :
+#@cli : . When 'interpolation=={ -1 | 1 | 2 | 4 }', 'boundary_conditions' is meaningless.
+#@cli : . When 'interpolation==0', 'boundary_conditions' can be { 0=dirichlet | 1=neumann | 2=periodic }.
+#@cli : . When 'interpolation=={ 3 | 5 | 6 }', 'boundary_conditions' can be { 0=none | 1=neumann }.
 #@cli : 'ax,ay,az,ac' set the centering along each axis when 'interpolation=0'
 #@cli : (set to '0' by default, must be defined in range [0,1]).
-#@cli : Default values: 'interpolation=3', 'boundary=0' and 'ax=ay=az=ac=0'.
+#@cli : Default values: 'interpolation=3', 'boundary_conditions=0' and 'ax=ay=az=ac=0'.
 #@cli : $ image.jpg --resize2dy 100,2 -append x
 resize2dy :
   -v - _gmic_s="$?" -v +
@@ -7583,17 +7583,17 @@ r3dx :
   -v - _gmic_s="$?" -v +
   -_resize3dx $*
 
-#@cli resize3dx : width[%]>0,_interpolation,_boundary,_ax,_ay,_az,_ac
+#@cli resize3dx : width[%]>0,_interpolation,_boundary_conditions,_ax,_ay,_az,_ac
 #@cli : Resize selected images along the x-axis, preserving 3d ratio.
 #@cli : (eq. to '-r3dx').
 #@cli : 'interpolation' can be { -1=none (memory content) | 0=none | 1=nearest | 2=average | 3=linear | 4=grid | 5=bicubic | 6=lanczos }.
-#@cli : 'boundary' has different meanings, according to the chosen 'interpolation' mode :
-#@cli : . When 'interpolation=={ -1 | 1 | 2 | 4 }', 'boundary' is meaningless.
-#@cli : . When 'interpolation==0', 'boundary' can be { 0=dirichlet | 1=neumann | 2=periodic }.
-#@cli : . When 'interpolation=={ 3 | 5 | 6 }', 'boundary' can be { 0=none | 1=neumann }.
+#@cli : 'boundary_conditions' has different meanings, according to the chosen 'interpolation' mode :
+#@cli : . When 'interpolation=={ -1 | 1 | 2 | 4 }', 'boundary_conditions' is meaningless.
+#@cli : . When 'interpolation==0', 'boundary_conditions' can be { 0=dirichlet | 1=neumann | 2=periodic }.
+#@cli : . When 'interpolation=={ 3 | 5 | 6 }', 'boundary_conditions' can be { 0=none | 1=neumann }.
 #@cli : 'ax,ay,az,ac' set the centering along each axis when 'interpolation=0'
 #@cli : (set to '0' by default, must be defined in range [0,1]).
-#@cli : Default values: 'interpolation=3', 'boundary=0' and 'ax=ay=az=ac=0'.
+#@cli : Default values: 'interpolation=3', 'boundary_conditions=0' and 'ax=ay=az=ac=0'.
 resize3dx :
   -v - _gmic_s="$?" -v +
   -_$0 $*
@@ -7610,17 +7610,17 @@ r3dy :
   -v - _gmic_s="$?" -v +
   -_resize3dy $*
 
-#@cli resize3dy : height[%]>0,_interpolation,_boundary,_ax,_ay,_az,_ac
+#@cli resize3dy : height[%]>0,_interpolation,_boundary_conditions,_ax,_ay,_az,_ac
 #@cli : Resize selected images along the y-axis, preserving 3d ratio.
 #@cli : (eq. to '-r3dy').
 #@cli : 'interpolation' can be { -1=none (memory content) | 0=none | 1=nearest | 2=average | 3=linear | 4=grid | 5=bicubic | 6=lanczos }.
-#@cli : 'boundary' has different meanings, according to the chosen 'interpolation' mode :
-#@cli : . When 'interpolation=={ -1 | 1 | 2 | 4 }', 'boundary' is meaningless.
-#@cli : . When 'interpolation==0', 'boundary' can be { 0=dirichlet | 1=neumann | 2=periodic }.
-#@cli : . When 'interpolation=={ 3 | 5 | 6 }', 'boundary' can be { 0=none | 1=neumann }.
+#@cli : 'boundary_conditions' has different meanings, according to the chosen 'interpolation' mode :
+#@cli : . When 'interpolation=={ -1 | 1 | 2 | 4 }', 'boundary_conditions' is meaningless.
+#@cli : . When 'interpolation==0', 'boundary_conditions' can be { 0=dirichlet | 1=neumann | 2=periodic }.
+#@cli : . When 'interpolation=={ 3 | 5 | 6 }', 'boundary_conditions' can be { 0=none | 1=neumann }.
 #@cli : 'ax,ay,az,ac' set the centering along each axis when 'interpolation=0'
 #@cli : (set to '0' by default, must be defined in range [0,1]).
-#@cli : Default values: 'interpolation=3', 'boundary=0' and 'ax=ay=az=ac=0'.
+#@cli : Default values: 'interpolation=3', 'boundary_conditions=0' and 'ax=ay=az=ac=0'.
 resize3dy :
   -v - _gmic_s="$?" -v +
   -_$0 $*
@@ -7637,17 +7637,17 @@ r3dz :
   -v - _gmic_s="$?" -v +
   -_resize3dz $*
 
-#@cli resize3dz : depth[%]>0,_interpolation,_boundary,_ax,_ay,_az,_ac
+#@cli resize3dz : depth[%]>0,_interpolation,_boundary_conditions,_ax,_ay,_az,_ac
 #@cli : Resize selected images along the z-axis, preserving 3d ratio.
 #@cli : (eq. to '-r3dz').
 #@cli : 'interpolation' can be { -1=none (memory content) | 0=none | 1=nearest | 2=average | 3=linear | 4=grid | 5=bicubic | 6=lanczos }.
-#@cli : 'boundary' has different meanings, according to the chosen 'interpolation' mode :
-#@cli : . When 'interpolation=={ -1 | 1 | 2 | 4 }', 'boundary' is meaningless.
-#@cli : . When 'interpolation==0', 'boundary' can be { 0=dirichlet | 1=neumann | 2=periodic }.
-#@cli : . When 'interpolation=={ 3 | 5 | 6 }', 'boundary' can be { 0=none | 1=neumann }.
+#@cli : 'boundary_conditions' has different meanings, according to the chosen 'interpolation' mode :
+#@cli : . When 'interpolation=={ -1 | 1 | 2 | 4 }', 'boundary_conditions' is meaningless.
+#@cli : . When 'interpolation==0', 'boundary_conditions' can be { 0=dirichlet | 1=neumann | 2=periodic }.
+#@cli : . When 'interpolation=={ 3 | 5 | 6 }', 'boundary_conditions' can be { 0=none | 1=neumann }.
 #@cli : 'ax,ay,az,ac' set the centering along each axis when 'interpolation=0'
 #@cli : (set to '0' by default, must be defined in range [0,1]).
-#@cli : Default values: 'interpolation=3', 'boundary=0' and 'ax=ay=az=ac=0'.
+#@cli : Default values: 'interpolation=3', 'boundary_conditions=0' and 'ax=ay=az=ac=0'.
 resize3dz :
   -v - _gmic_s="$?" -v +
   -_$0 $*
@@ -7659,12 +7659,12 @@ _resize3dz : -check "$1>0 && ${2=3}>=0 && $2<=6 && ${3=0}>=0 && $3<=2 && ${4=0}>
     -r[$>] {max(1,w*$size/d)},{max(1,h*$size/d)},{max(1,$size)},100%,${2-7}
   -endl -done -v +
 
-#@cli rotate : angle,_interpolation,_boundary,_center_x[%],_center_y[%] : u,v,w,angle,interpolation,boundary,_center_x[%],_center_y[%],_center_z[%] : (+)
+#@cli rotate : angle,_interpolation,_boundary_conditions,_center_x[%],_center_y[%] : u,v,w,angle,interpolation,boundary_conditions,_center_x[%],_center_y[%],_center_z[%] : (+)
 #@cli : Rotate selected images with specified angle (in deg.), and optionally 3d axis (u,v,w).
 #@cli : 'interpolation' can be { 0=none | 1=linear | 2=bicubic }.
-#@cli : 'boundary' can be { 0=dirichlet | 1=neumann | 2=periodic }.
+#@cli : 'boundary_conditions' can be { 0=dirichlet | 1=neumann | 2=periodic }.
 #@cli : When a rotation center (cx,cy,_cz) is specified, the size of the image is preserved.
-#@cli : Default values: 'interpolation=1', 'boundary=0' and 'center_x=center_y=(undefined)'.
+#@cli : Default values: 'interpolation=1', 'boundary_conditions=0' and 'center_x=center_y=(undefined)'.
 #@cli : $ image.jpg --rotate -25,1,2,50%,50% -rotate[0] 25
 
 #@cli rotate_tileable : angle,_max_size_factor>=0
@@ -7708,7 +7708,7 @@ rotate_tileable : -check ${2=8}>=0
 
 #@cli rows : { [image0] | y0[%] },_{ [image1] | y1[%] } : (+)
 #@cli : Keep only specified rows of selected images.
-#@cli : Dirichlet boundary is used when specified rows are out of range.
+#@cli : Dirichlet boundary conditions are used when specified rows are out of range.
 #@cli : $ image.jpg -rows -25%,50%
 
 #@cli scale2x
@@ -7940,11 +7940,11 @@ _seamcarve :
     -rprogress {a=w/$1;if(a<1,a*100,100/a)}
   -while {w!=$1}
 
-#@cli shift : vx[%],_vy[%],_vz[%],_vc[%],_boundary : (+)
+#@cli shift : vx[%],_vy[%],_vz[%],_vc[%],_boundary_conditions : (+)
 #@cli : Shift selected images by specified displacement vector.
 #@cli : Displacement vector can be non-integer in which case linear interpolation of the shift is computed.
-#@cli : 'boundary' can be { 0=dirichlet | 1=neumann | 2=periodic }.
-#@cli : Default value: 'boundary=0'.
+#@cli : 'boundary_conditions' can be { 0=dirichlet | 1=neumann | 2=periodic }.
+#@cli : Default value: 'boundary_conditions=0'.
 #@cli : $ image.jpg --shift[0] 50%,50%,0,0,0 --shift[0] 50%,50%,0,0,1 --shift[0] 50%,50%,0,0,2
 
 #@cli shrink_x : size_x>=0
@@ -7982,7 +7982,7 @@ shrink_z : -check "$1>=0"
 
 #@cli slices : { [image0] | z0[%] },_{ [image1] | z1[%] } : (+)
 #@cli : Keep only specified slices of selected images.
-#@cli : Dirichlet boundary is used when specified slices are out of range.
+#@cli : Dirichlet boundary conditions are used when specified slices are out of range.
 
 #@cli sort : _ordering={ + | - },_axis={ x | y | z | c } : (+)
 #@cli : Sort pixel values of selected images.
@@ -8042,12 +8042,12 @@ upscale_smart : -skip ${2=100%},${3=100%} -check "${4=2}>=0 && ${5=0.4}>=0 && $5
     -endif
   -endl -done -v +
 
-#@cli warp : [warping_field],_mode,_interpolation,_boundary,_nb_frames>0 : (+)
+#@cli warp : [warping_field],_mode,_interpolation,_boundary_conditions,_nb_frames>0 : (+)
 #@cli : Warp selected image with specified displacement field.
 #@cli : 'mode' can be { 0=backward-absolute | 1=backward-relative | 2=forward-absolute | 3=forward-relative }.
 #@cli : 'interpolation' can be { 0=nearest-neighbor | 1=linear | 2=cubic }.
-#@cli : 'boundary' can be { 0=dirichlet | 1=neumann | 2=periodic }.
-#@cli : Default values: 'mode=0', 'interpolation=1', 'boundary=1' and 'nb_frames=1'.
+#@cli : 'boundary_conditions' can be { 0=dirichlet | 1=neumann | 2=periodic }.
+#@cli : Default values: 'mode=0', 'interpolation=1', 'boundary_conditions=1' and 'nb_frames=1'.
 #@cli : $ image.jpg 100%,100%,1,2,'X=x/w-0.5;Y=y/h-0.5;R=(X*X+Y*Y)^0.5;A=atan2(Y,X);130*R*if(c==0,cos(4*A),sin(8*A))' -warp[-2] [-1],1,1,0 -quiver[-1] [-1],10,1,1,1,100
 #@cli : $$
 
@@ -8079,13 +8079,13 @@ bandpass : -skip ${1=0},${2=20%}
 
 #@cli b : eq. to '-blur'. : (+)
 
-#@cli blur : std_variation>=0[%],_boundary,_kernel : axes,std_variation>=0[%],_boundary,_kernel : (+)
+#@cli blur : std_variation>=0[%],_boundary_conditions,_kernel : axes,std_variation>=0[%],_boundary_conditions,_kernel : (+)
 #@cli : Blur selected images by a quasi-gaussian or gaussian filter (recursive implementation).
 #@cli : (eq. to '-b').
-#@cli : 'boundary' can be { 0=dirichlet | 1=neumann } and 'kernel' can be { 0=quasi-gaussian (faster) | 1=gaussian }.
+#@cli : 'boundary_conditions' can be { 0=dirichlet | 1=neumann } and 'kernel' can be { 0=quasi-gaussian (faster) | 1=gaussian }.
 #@cli : When specified, argument 'axes' is a sequence of { x | y | z | c }.
 #@cli : Specifying one axis multiple times apply also the blur multiple times.
-#@cli : Default values: 'boundary=1' and 'kernel=0'.
+#@cli : Default values: 'boundary_conditions=1' and 'kernel=0'.
 #@cli : $ image.jpg --blur 5,0 --blur[0] 5,1
 #@cli : $ image.jpg --blur y,10%
 #@cli : $$
@@ -8125,9 +8125,9 @@ blur_bloom : -check "${1=1}>=0 && ${2=2}>=0 && isint(${3=5}) && $3>=0 && isint($
   -uncommand _bloom0,_bloom1,_bloom2,_bloom3,_bloom4
   -v +
 
-#@cli blur_linear : amplitude1[%],_amplitude2[%],_angle,_boundary={ 0=dirichlet | 1=neumann }
+#@cli blur_linear : amplitude1[%],_amplitude2[%],_angle,_boundary_conditions={ 0=dirichlet | 1=neumann }
 #@cli : Apply linear blur on selected images, with specified angle and amplitudes.
-#@cli : Default values: 'amplitude2=0', 'angle=0' and 'boundary=1'.
+#@cli : Default values: 'amplitude2=0', 'angle=0' and 'boundary_conditions=1'.
 #@cli : $ image.jpg --blur_linear 10,0,45
 #@cli : $$
 blur_linear : -skip ${2=0},${3=0},${4=1}
@@ -8164,56 +8164,56 @@ blur_selective : -check "${1=5}>=0 && ${2=0.5}>=0 && isint(${3=5}) && $3>0"
     -repeat $3 --==. $> -*. ... -+[-2,-1] -b.. {$1/($3+1)} -done
   -rm.. -nm $nm -endl -done -v +
 
-#@cli blur_x : amplitude[%]>=0,_boundary={ 0=dirichlet | 1=neumann }
+#@cli blur_x : amplitude[%]>=0,_boundary_conditions={ 0=dirichlet | 1=neumann }
 #@cli : Blur selected images along the x-axis.
-#@cli : Default value: 'boundary=1'.
+#@cli : Default value: 'boundary_conditions=1'.
 #@cli : $ image.jpg --blur_x 6
 #@cli : $$
 blur_x : -skip ${2=1}
   -e[^-1] "Blur image$? along the x-axis, with sigma $1 and "${-arg\ 1+!$2,neumann,dirichlet}" boundary conditions."
   -v - -deriche $1,0,x,$2 -v +
 
-#@cli blur_xy : amplitude_x[%],amplitude_y[%],_boundary={ 0=dirichlet | 1=neumann }
+#@cli blur_xy : amplitude_x[%],amplitude_y[%],_boundary_conditions={ 0=dirichlet | 1=neumann }
 #@cli : Blur selected images along the X and Y axes.
-#@cli : Default value: 'boundary=1'.
+#@cli : Default value: 'boundary_conditions=1'.
 #@cli : $ image.jpg --blur_xy 6
 #@cli : $$
 blur_xy : -skip ${2=$1},${3=1}
   -e[^-1] "Blur image$? along the xy-axes, with sigma $1 and "${-arg\ 1+!$2,neumann,dirichlet}" boundary conditions."
   -v - -deriche $1,0,x,$3 -deriche $2,0,y,$3 -v +
 
-#@cli blur_xyz : amplitude_x[%],amplitude_y[%],amplitude_z,_boundary={ 0=dirichlet | 1=neumann }
+#@cli blur_xyz : amplitude_x[%],amplitude_y[%],amplitude_z,_boundary_conditions={ 0=dirichlet | 1=neumann }
 #@cli : Blur selected images along the X, Y and Z axes.
-#@cli : Default value: 'boundary=1'.
+#@cli : Default value: 'boundary_conditions=1'.
 #@cli : $$
 blur_xyz : -skip ${4=1}
   -e[^-1] "Blur image$? along the xyz-axes, with sigma $1 and "${-arg\ 1+!$2,neumann,dirichlet}" boundary conditions."
   -v - -deriche $1,0,x,$4 -deriche $2,0,y,$4 -deriche $3,0,z,$4 -v +
 
-#@cli blur_y : amplitude[%]>=0,_boundary={ 0=dirichlet | 1=neumann }
+#@cli blur_y : amplitude[%]>=0,_boundary_conditions={ 0=dirichlet | 1=neumann }
 #@cli : Blur selected images along the y-axis.
-#@cli : Default value: 'boundary=1'.
+#@cli : Default value: 'boundary_conditions=1'.
 #@cli : $ image.jpg --blur_y 6
 #@cli : $$
 blur_y : -skip ${2=1}
   -e[^-1] "Blur image$? along the y-axis, with sigma $1 and "${-arg\ 1+!$2,neumann,dirichlet}" boundary conditions."
   -v - -deriche $1,0,y,$2 -v +
 
-#@cli blur_z : amplitude[%]>=0,_boundary={ 0=dirichlet | 1=neumann }
+#@cli blur_z : amplitude[%]>=0,_boundary_conditions={ 0=dirichlet | 1=neumann }
 #@cli : Blur selected images along the z-axis.
-#@cli : Default value: 'boundary=1'.
+#@cli : Default value: 'boundary_conditions=1'.
 #@cli : $$
 blur_z : -skip ${2=1}
   -e[^-1] "Blur image$? along the z-axis, with sigma $1 and "${-arg\ 1+!$2,neumann,dirichlet}" boundary conditions."
   -v - -deriche $1,0,z,$2 -v +
 
-#@cli boxfilter : size>=0[%],_order,_boundary,_nb_iter>=0 : axes,size>=0[%],_order,_boundary,_nb_iter>=0 : (+)
+#@cli boxfilter : size>=0[%],_order,_boundary_conditions,_nb_iter>=0 : axes,size>=0[%],_order,_boundary_conditions,_nb_iter>=0 : (+)
 #@cli : Blur selected images by a box filter of specified size (fast recursive implementation).
 #@cli : 'order' can be { 0=smooth | 1=1st-derivative | 2=2nd-derivative }.
-#@cli : 'boundary' can be { 0=dirichlet | 1=neumann }.
+#@cli : 'boundary_conditions' can be { 0=dirichlet | 1=neumann }.
 #@cli : When specified, argument 'axes' is a sequence of { x | y | z | c }.
 #@cli : Specifying one axis multiple times apply also the blur multiple times.
-#@cli : Default values: 'order=0', 'boundary=1' and 'nb_iter=1'.
+#@cli : Default values: 'order=0', 'boundary_conditions=1' and 'nb_iter=1'.
 #@cli : $ image.jpg --boxfilter 5%
 #@cli : $ image.jpg --boxfilter y,3,1
 
@@ -8224,10 +8224,10 @@ compose_freq :
   -e[^-1] "Compose low and high frequency part$? into new images."
   -v - -repeat {int($!/2)} -+[$>,{$>+1}] -done -v +
 
-#@cli convolve : [mask],_boundary,_is_normalized={ 0 | 1 } : (+)
+#@cli convolve : [mask],_boundary_conditions,_is_normalized={ 0 | 1 } : (+)
 #@cli : Convolve selected images by specified mask.
-#@cli : 'boundary' can be { 0=dirichlet | 1=neumann }.
-#@cli : Default values: 'boundary=1' and 'is_normalized=0'.
+#@cli : 'boundary_conditions' can be { 0=dirichlet | 1=neumann }.
+#@cli : Default values: 'boundary_conditions=1' and 'is_normalized=0'.
 #@cli : $ image.jpg (0,1,0;1,-4,1;0,1,0) -convolve[-2] [-1] -keep[-2]
 #@cli : $ image.jpg (0,1,0) -resize[-1] 130,1,1,1,3 --convolve[0] [1]
 #@cli : $$
@@ -8246,10 +8246,10 @@ convolve_fft : -check ${-is_image_arg\ $1}
     -ifft -rm.
   -endl -done -v +
 
-#@cli correlate : [mask],_boundary,_is_normalized={ 0 | 1 } : (+)
+#@cli correlate : [mask],_boundary_conditions,_is_normalized={ 0 | 1 } : (+)
 #@cli : Correlate selected images by specified mask.
-#@cli : 'boundary' can be { 0=dirichlet | 1=neumann }.
-#@cli : Default values: 'boundary=1' and 'is_normalized=0'.
+#@cli : 'boundary_conditions' can be { 0=dirichlet | 1=neumann }.
+#@cli : Default values: 'boundary_conditions=1' and 'is_normalized=0'.
 #@cli : $ image.jpg (0,1,0;1,-4,1;0,1,0) -correlate[-2] [-1] -keep[-2]
 #@cli : $ image.jpg --crop 40%,40%,60%,60% --correlate[0] [-1],0,1
 
@@ -8494,36 +8494,36 @@ denoise_patchpca : -check "${1=1.8} && $1>=0 && isint(${2=7}) && $2>0 && isint($
     -max[weights] 0.01 -/[aggreg,weights] -k[aggreg] -nm $nm
   -endl -done -v +
 
-#@cli deriche : std_variation>=0[%],order={ 0 | 1 | 2 },axis={ x | y | z | c },_boundary : (+)
+#@cli deriche : std_variation>=0[%],order={ 0 | 1 | 2 },axis={ x | y | z | c },_boundary_conditions : (+)
 #@cli : Apply Deriche recursive filter on selected images, along specified axis and with
 #@cli : specified standard deviation, order and boundary conditions.
-#@cli : 'boundary' can be { 0=dirichlet | 1=neumann }.
-#@cli : Default value: 'boundary=1'.
+#@cli : 'boundary_conditions' can be { 0=dirichlet | 1=neumann }.
+#@cli : Default value: 'boundary_conditions=1'.
 #@cli : $ image.jpg --deriche 3,1,x
 #@cli : $ image.jpg --deriche 30,0,x -deriche[-2] 30,0,y -add
 #@cli : $$
 
-#@cli dilate : size>=0 : size_x>=0,size_y>=0,size_z>=0 : [kernel],_boundary,_is_real={ 0=binary-mode | 1=real-mode } : (+)
+#@cli dilate : size>=0 : size_x>=0,size_y>=0,size_z>=0 : [kernel],_boundary_conditions,_is_real={ 0=binary-mode | 1=real-mode } : (+)
 #@cli : Dilate selected images by a rectangular or the specified structuring element.
-#@cli : 'boundary' can be { 0=dirichlet | 1=neumann }.
-#@cli : Default values: 'size_z=1', 'boundary=1' and 'is_real=0'.
+#@cli : 'boundary_conditions' can be { 0=dirichlet | 1=neumann }.
+#@cli : Default values: 'size_z=1', 'boundary_conditions=1' and 'is_real=0'.
 #@cli : $ image.jpg --dilate 10
 
-#@cli dilate_circ : _size>=0,_boundary,_is_normalized={ 0 | 1 }
+#@cli dilate_circ : _size>=0,_boundary_conditions,_is_normalized={ 0 | 1 }
 #@cli : Apply circular dilation of selected image by specified size.
-#@cli : Default values: 'boundary=1' and 'is_normalized=0'.
+#@cli : Default values: 'boundary_conditions=1' and 'is_normalized=0'.
 #@cli : $ image.jpg --dilate_circ 7
 dilate_circ : -check $1>=0 -skip ${2=1},${3=0}
-  -e[^-1] "Apply circular dilation of image$? by size $1, boundary $2 and is_normalized $3."
+  -e[^-1] "Apply circular dilation of image$? by size $1, boundary conditions $2 and is_normalized $3."
   -if {$1<2} -return -endif
   -v - -shape_circle $1 -dilate[^-1] .,$2,$3 -rm. -v +
 
-#@cli dilate_oct : _size>=0,_boundary,_is_normalized={ 0 | 1 }
+#@cli dilate_oct : _size>=0,_boundary_conditions,_is_normalized={ 0 | 1 }
 #@cli : Apply octagonal dilation of selected image by specified size.
-#@cli : Default values: 'boundary=1' and 'is_normalized=0'.
+#@cli : Default values: 'boundary_conditions=1' and 'is_normalized=0'.
 #@cli : $ image.jpg --dilate_oct 7
 dilate_oct : -check $1>=0 -skip ${2=1},${3=0}
-  -e[^-1] "Apply octagonal dilation of image$? by size $1, boundary $2 and is_normalized $3."
+  -e[^-1] "Apply octagonal dilation of image$? by size $1, boundary conditions $2 and is_normalized $3."
   -v -
   -if {$1<2} -return -endif
   -if {$1&1} ss={$1} -else ss={$1+1} -endif
@@ -8553,10 +8553,10 @@ _jf_circle :
   -else -ir. 0,{$1/2-0.25}
   -endif
 
-#@cli dilate_threshold : size_x>=1,size_y>=1,size_z>=1,_threshold>=0,_boundary
+#@cli dilate_threshold : size_x>=1,size_y>=1,size_z>=1,_threshold>=0,_boundary_conditions
 #@cli : Dilate selected images in the (X,Y,Z,I) space.
-#@cli : 'boundary' can be { 0=dirichlet | 1=neumann }.
-#@cli : Default values: 'size_y=size_x', 'size_z=1', 'threshold=255' and 'boundary=1'.
+#@cli : 'boundary_conditions' can be { 0=dirichlet | 1=neumann }.
+#@cli : Default values: 'size_y=size_x', 'size_z=1', 'threshold=255' and 'boundary_conditions=1'.
 dilate_threshold : -check "isint($1) && $1>=1 && isint(${2=$1}) && $2>=1 && isint(${3=1}) && $3>=1 && ${4=255}>=0 && isint(${5=1}) && $5>=0"
   -e[^-1] "Erode image$? with mask $1x$2x$3, threshold $4 and "${-arg\ $5,dirichlet,neumann}" boundary conditions."
   -v - -l[]
@@ -8621,27 +8621,27 @@ edges : -skip ${1=15%}
   -e[^-1] "Estimate image contours of image$?, with threshold $1."
   -v - -gradient_norm -b 0.5 ->= $1 -distance 0 -equalize -negate -c 30%,70% -n 0,1 -v +
 
-#@cli erode : size>=0 : size_x>=0,size_y>=0,_size_z>=0 : [kernel],_boundary,_is_real={ 0=binary-mode | 1=real-mode } : (+)
+#@cli erode : size>=0 : size_x>=0,size_y>=0,_size_z>=0 : [kernel],_boundary_conditions,_is_real={ 0=binary-mode | 1=real-mode } : (+)
 #@cli : Erode selected images by a rectangular or the specified structuring element.
-#@cli : 'boundary' can be { 0=dirichlet | 1=neumann }.
-#@cli : Default values: 'size_z=1', 'boundary=1' and 'is_real=0'.
+#@cli : 'boundary_conditions' can be { 0=dirichlet | 1=neumann }.
+#@cli : Default values: 'size_z=1', 'boundary_conditions=1' and 'is_real=0'.
 #@cli : $ image.jpg --erode 10
 
-#@cli erode_circ : _size>=0,_boundary,_is_normalized={ 0 | 1 }
+#@cli erode_circ : _size>=0,_boundary_conditions,_is_normalized={ 0 | 1 }
 #@cli : Apply circular erosion of selected images by specified size.
-#@cli : Default values: 'boundary=1' and 'is_normalized=0'.
+#@cli : Default values: 'boundary_conditions=1' and 'is_normalized=0'.
 #@cli : $ image.jpg --erode_circ 7
 erode_circ : -check $1>=0 -skip ${2=1},${3=0}
-  -e[^-1] "Apply circular erosion of image$? by size $1, boundary $2 and is_normalized $3."
+  -e[^-1] "Apply circular erosion of image$? by size $1, boundary conditions $2 and is_normalized $3."
   -if {$1<2} -return -endif
   -v - -shape_circle $1 -erode[^-1] .,$2,$3 -rm. -v +
 
-#@cli erode_oct : _size>=0,_boundary,_is_normalized={ 0 | 1 }
+#@cli erode_oct : _size>=0,_boundary_conditions,_is_normalized={ 0 | 1 }
 #@cli : Apply octagonal erosion of selected images by specified size.
-#@cli : Default values: 'boundary=1' and 'is_normalized=0'.
+#@cli : Default values: 'boundary_conditions=1' and 'is_normalized=0'.
 #@cli : $ image.jpg --erode_oct 7
 erode_oct : -check $1>=0 -skip ${2=1},${3=0}
-  -e[^-1] "Apply octagonal erosion of image$? by size $1, boundary $2 and is_normalized $3."
+  -e[^-1] "Apply octagonal erosion of image$? by size $1, boundary conditions $2 and is_normalized $3."
   -v -
   -if {$1<2} -return -endif
   -if {$1&1} ss={$1} -else ss={$1+1} -endif
@@ -8653,10 +8653,10 @@ erode_oct : -check $1>=0 -skip ${2=1},${3=0}
     -if {$q>0} -repeat $q -erode. [1],$2,$3 -done -endif
   -mv. 2 -done -rm[0,1] -v +
 
-#@cli erode_threshold : size_x>=1,size_y>=1,size_z>=1,_threshold>=0,_boundary
+#@cli erode_threshold : size_x>=1,size_y>=1,size_z>=1,_threshold>=0,_boundary_conditions
 #@cli : Erode selected images in the (X,Y,Z,I) space.
-#@cli : 'boundary' can be { 0=dirichlet | 1=neumann }.
-#@cli : Default values: 'size_y=size_x', 'size_z=1', 'threshold=255' and 'boundary=1'.
+#@cli : 'boundary_conditions' can be { 0=dirichlet | 1=neumann }.
+#@cli : Default values: 'size_y=size_x', 'size_z=1', 'threshold=255' and 'boundary_conditions=1'.
 erode_threshold : -check "isint($1) && $1>=1 && isint(${2=$1}) && $2>=1 && isint(${3=1}) && $3>=1 && ${4=255}>=0 && isint(${5=1}) && $5>=0"
   -e[^-1] "Erode image$? with mask $1x$2x$3, threshold $4 and "${-arg\ $5,dirichlet,neumann}" boundary conditions."
   -v - -l[]
@@ -9777,11 +9777,11 @@ unsharp_octave : -check "${1=4}>0 && ${3=2}>=0" -skip ${2=1},${4=0}
     -rm[0] -/ $weight
   -nm $nm -endl -done -v +
 
-#@cli vanvliet : std_variation>=0[%],order={ 0 | 1 | 2 | 3 },axis={ x | y | z | c },_boundary : (+)
+#@cli vanvliet : std_variation>=0[%],order={ 0 | 1 | 2 | 3 },axis={ x | y | z | c },_boundary_conditions : (+)
 #@cli : Apply Vanvliet recursive filter on selected images, along specified axis and with
 #@cli : specified standard deviation, order and boundary conditions.
-#@cli : 'boundary' can be { 0=dirichlet | 1=neumann }.
-#@cli : Default value: 'boundary=1'.
+#@cli : 'boundary_conditions' can be { 0=dirichlet | 1=neumann }.
+#@cli : Default value: 'boundary_conditions=1'.
 #@cli : $ image.jpg --vanvliet 3,1,x
 #@cli : $ image.jpg --vanvliet 30,0,x -vanvliet[-2] 30,0,y -add
 
@@ -15029,9 +15029,9 @@ deform : -skip ${1=10}
     2%,2%,1,2 -noise. $1 -r. ..,..,1,2,5 -warp.. .,1,1,1 -rm.
   -endl -done -v +
 
-#@cli euclidean2polar : _center_x[%],_center_y[%],_stretch_factor>0,_boundary={ 0=dirichlet | 1=neumann | 2=periodic }
+#@cli euclidean2polar : _center_x[%],_center_y[%],_stretch_factor>0,_boundary_conditions={ 0=dirichlet | 1=neumann | 2=periodic }
 #@cli : Apply euclidean to polar transform on selected images.
-#@cli : Default values: 'center_x=center_y=50%', 'stretch_factor=1' and 'boundary=1'.
+#@cli : Default values: 'center_x=center_y=50%', 'stretch_factor=1' and 'boundary_conditions=1'.
 #@cli : $ image.jpg --euclidean2polar ,
 euclidean2polar : -skip ${1=50%},${2=50%} -check "${3=1}>0 && isint(${4=1}) && $4>=0 && $4<=2"
   -e[^-1] "Apply euclidean to polar transform on image$?, with center point ($1,$2), stretch factor $3 and "${-arg\ 1+$4,dirichlet,neumann,periodic}" boundary conditions."
@@ -15081,9 +15081,9 @@ fisheye : -skip ${1=50},${2=50},${3=50},${4=1.2}
     -warp.. .,1,1,1 -rm.
   -endl -done -v +
 
-#@cli flower : _amplitude,_frequency,_offset_r[%],_angle,_center_x[%],_center_y[%],_boundary={ 0=dirichlet | 1=neumann | 2=periodic }
+#@cli flower : _amplitude,_frequency,_offset_r[%],_angle,_center_x[%],_center_y[%],_boundary_conditions={ 0=dirichlet | 1=neumann | 2=periodic }
 #@cli : Apply flower deformation on selected images.
-#@cli : Default values: 'amplitude=30', 'frequency=6', 'offset_r=0', 'angle=0', 'center_x=center_y=50%' and 'boundary=2'.
+#@cli : Default values: 'amplitude=30', 'frequency=6', 'offset_r=0', 'angle=0', 'center_x=center_y=50%' and 'boundary_conditions=2'.
 #@cli : $ image.jpg -flower ,
 flower : -skip ${1=30},${2=6},${3=0},${4=0},${5=50%},${6=50%},${7=2}
   -e[^-1] "Apply flower deformation on image$?, with amplitude $1, frequency $2, offset $3, angle $4 deg. and center point ($1,$2)."
@@ -15093,9 +15093,9 @@ flower : -skip ${1=30},${2=6},${3=0},${4=0},${5=50%},${6=50%},${7=2}
     -transform_polar "r + $3 + R*$1/100*cos(a*$2+$4*pi/180)","a",$5,$6,$7
   -endif -v +
 
-#@cli kaleidoscope : _center_x[%],_center_y[%],_radius,_angle,_boundary={ 0=dirichlet | 1=neumann | 2=periodic }
+#@cli kaleidoscope : _center_x[%],_center_y[%],_radius,_angle,_boundary_conditions={ 0=dirichlet | 1=neumann | 2=periodic }
 #@cli : Create kaleidoscope effect from selected images.
-#@cli : Default values: 'center_x=center_y=50%', 'radius=100', 'angle=30' and 'boundary=1'.
+#@cli : Default values: 'center_x=center_y=50%', 'radius=100', 'angle=30' and 'boundary_conditions=1'.
 #@cli : $ image.jpg --kaleidoscope ,
 kaleidoscope : -skip ${1=50%},${2=50%},${3=100},${4=30},${5=1}
   -e[^-1] "Create kaleidoscope effect from image$?, with center point ($1,$2), radius $3, angle $4 deg."
@@ -15153,9 +15153,9 @@ nadirzenith2equirectangular :
     -to_a[0] -warp[0] [1],0,0,0 -k...
   -endl -done -v +
 
-#@cli polar2euclidean : _center_x[%],_center_y[%],_stretch_factor>0,_boundary={ 0=dirichlet | 1=neumann | 2=periodic }
+#@cli polar2euclidean : _center_x[%],_center_y[%],_stretch_factor>0,_boundary_conditions={ 0=dirichlet | 1=neumann | 2=periodic }
 #@cli : Apply euclidean to polar transform on selected images.
-#@cli : Default values: 'center_x=center_y=50%', 'stretch_factor=1' and 'boundary=1'.
+#@cli : Default values: 'center_x=center_y=50%', 'stretch_factor=1' and 'boundary_conditions=1'.
 #@cli : $ image.jpg --euclidean2polar ,
 polar2euclidean : -skip ${1=50%},${2=50%} -check "${3=1}>0 && isint(${4=1}) && $4>=0 && $4<=2"
   -e[^-1] "Apply polar to euclidean transform on image$?, with center point ($1,$2), stretch factor $3 and "${-arg\ 1+$4,dirichlet,neumann,periodic}" boundary conditions."
@@ -15204,9 +15204,9 @@ _ripple2 : -f {-$1/2}*"cos(i*"{2*pi/$2}")"
 _ripple3 : -f {-$1/2}*"abs(cos(i*"{2*pi/$2}"))"
 _ripple4 : -skip $* -n 0,{h-1} 1,{h} -rand. {-$1/2},{$1/2} m={im} M={iM} -b. {$2/10} -n. $m,$M -map.. . -rm.
 
-#@cli rotoidoscope : _center_x[%],_center_y[%],_tiles>0,_smoothness[%]>=0,_boundary={ 0=dirichlet | 1=neumann | 2=periodic }
+#@cli rotoidoscope : _center_x[%],_center_y[%],_tiles>0,_smoothness[%]>=0,_boundary_conditions={ 0=dirichlet | 1=neumann | 2=periodic }
 #@cli : Create rotational kaleidoscope effect from selected images.
-#@cli : Default values: 'cx=cy=50%', 'tiles=10', 'smoothness=1' and 'boundary=1'.
+#@cli : Default values: 'cx=cy=50%', 'tiles=10', 'smoothness=1' and 'boundary_conditions=1'.
 #@cli : $ image.jpg --rotoidoscope ,
 rotoidoscope : -skip ${1=50%},${2=50%},${5=1} -check "${3=10}>0 && ${4=1}>=0"
   -e[^-1] "Create rotational kaleidoscope effect from image$?, with center point ($1,$2), $3 tiles and smoothness $4."
@@ -15214,9 +15214,9 @@ rotoidoscope : -skip ${1=50%},${2=50%},${5=1} -check "${3=10}>0 && ${4=1}>=0"
     -repeat $3 --rotate[0] {360/$3},1,$5,$1,$2 -blend_edges $4 -done
   -endl -done -v +
 
-#@cli symmetrize : _x[%],_y[%],_angle,_boundary={ 0=dirichlet | 1=neumann | 2=periodic },_is_antisymmetry={ 0 | 1 },_swap_sides={ 0 | 1 }
+#@cli symmetrize : _x[%],_y[%],_angle,_boundary_conditions={ 0=dirichlet | 1=neumann | 2=periodic },_is_antisymmetry={ 0 | 1 },_swap_sides={ 0 | 1 }
 #@cli : Symmetrize selected image regarding specified axis.
-#@cli : Default values: 'x=y=50%', 'angle=90', 'boundary=1', 'is_antisymmetry=0' and 'swap_sides=0'.
+#@cli : Default values: 'x=y=50%', 'angle=90', 'boundary_conditions=1', 'is_antisymmetry=0' and 'swap_sides=0'.
 #@cli : $ image.jpg --symmetrize 50%,50%,45 --symmetrize[-1] 50%,50%,-45
 symmetrize : -skip ${1=50%},${2=50%},${3=90},${4=1},${5=0},${6=0}
   -e[^-1] "Symmetrize image$?, regarding axis ($1,$2,$3 deg.)."
@@ -15232,9 +15232,9 @@ symmetrize : -skip ${1=50%},${2=50%},${3=90},${4=1},${5=0},${6=0}
   -endl -done
   -v +
 
-#@cli transform_polar : "expr_radius",_"expr_angle",_center_x[%],_center_y[%],_boundary={ 0=dirichlet | 1=neumann }
+#@cli transform_polar : "expr_radius",_"expr_angle",_center_x[%],_center_y[%],_boundary_conditions={ 0=dirichlet | 1=neumann }
 #@cli : Apply user-defined transform on polar representation of selected images.
-#@cli : Default values: 'expr_radius=R-r', 'expr_rangle=a', 'center_x=center_y=50%' and 'boundary=1'.
+#@cli : Default values: 'expr_radius=R-r', 'expr_rangle=a', 'center_x=center_y=50%' and 'boundary_conditions=1'.
 #@cli : $ image.jpg --transform_polar[0] R*(r/R)^2,a --transform_polar[0] r,2*a
 transform_polar : -skip "${1=R-r}","${2=a}",${3=50%},${4=50%},${5=1}
   -e[^-1] "Apply custom polar transform with 'new_r = $1', 'new_a = $2', center point ($3%,$4%)."
@@ -15250,9 +15250,9 @@ transform_polar : -skip "${1=R-r}","${2=a}",${3=50%},${4=50%},${5=1}
         i("$cx" + nr*cos(na), "$cy" + nr*sin(na), z, c,1,$5)"
   -endl -done -v +
 
-#@cli twirl : _amplitude,_center_x[%],_center_y[%],_boundary={ 0=dirichlet | 1=neumann | 2=periodic }
+#@cli twirl : _amplitude,_center_x[%],_center_y[%],_boundary_conditions={ 0=dirichlet | 1=neumann | 2=periodic }
 #@cli : Apply twirl deformation on selected images.
-#@cli : Default values: 'amplitude=1', 'center_x=center_y=50%' and 'boundary=1'.
+#@cli : Default values: 'amplitude=1', 'center_x=center_y=50%' and 'boundary_conditions=1'.
 #@cli : $ image.jpg --twirl 0.6
 twirl : -skip ${1=1},${2=50%},${3=50%},${4=1}
   -e[^-1] "Apply twirl deformation on image$?, with amplitude $1 and center point at ($2%,$3%)."
@@ -15260,9 +15260,9 @@ twirl : -skip ${1=1},${2=50%},${3=50%},${4=1}
     [$>],[$>],1,1,$1*x -channels. -1,0 -warp[$>] .,1,1,2 -rm.
   -done -polar2euclidean $2,$3,1,1 -v +
 
-#@cli warp_perspective : _x-angle,_y-angle,_zoom>0,_x-center,_y-center,_boundary={ 0=dirichlet | 1=neumann | 2=periodic }
+#@cli warp_perspective : _x-angle,_y-angle,_zoom>0,_x-center,_y-center,_boundary_conditions={ 0=dirichlet | 1=neumann | 2=periodic }
 #@cli : Warp selected images with perspective deformation.
-#@cli : Default values: 'x-angle=1.5', 'y-angle=0', 'zoom=1', 'x-center=y-center=50' and 'boundary=2'.
+#@cli : Default values: 'x-angle=1.5', 'y-angle=0', 'zoom=1', 'x-center=y-center=50' and 'boundary_conditions=2'.
 #@cli : $ image.jpg --warp_perspective ,
 warp_perspective : -skip ${1=1.5},${2=0},${3=1},${4=50},${5=50},${6=2}
   -e[^-1] "Apply perspective warp on image$?, with angles ($1 deg.,$2 deg.), zoom $3 and offsets ($4,$5)."
@@ -15324,9 +15324,9 @@ _wind5 : -u -1,-1
 _wind6 : -u 0,-1
 _wind7 : -u 1,-1
 
-#@cli zoom : _factor,_cx,_cy,_cz,_boundary={ 0=dirichlet | 1=neumann | 2=periodic }
+#@cli zoom : _factor,_cx,_cy,_cz,_boundary_conditions={ 0=dirichlet | 1=neumann | 2=periodic }
 #@cli : Apply zoom factor to selected images.
-#@cli : Default values: 'factor=1', 'cx=cy=cz=0.5' and 'boundary=0'.
+#@cli : Default values: 'factor=1', 'cx=cy=cz=0.5' and 'boundary_conditions=0'.
 #@cli : $ image.jpg --zoom[0] 0.6 --zoom[0] 1.5
 zoom : -skip ${1=2},${2=0.5},${3=0.5},${4=0.5},${5=0}
   -e[^-1] "Apply zoom effect on image$?, with factor $1 and center ($2,$3)."
@@ -16388,9 +16388,9 @@ register_nonrigid : -check ${-is_image_arg\ $1}" && ${2=0.2}>=0 && ${3=5}>0 && $
     -warp[$>] .,1,1,1 -rm.
   -done -rm. -v +
 
-#@cli register_rigid : [destination],_smoothness>=0,_boundary={ 0=dirichlet | 1=neumann | 2=periodic }
+#@cli register_rigid : [destination],_smoothness>=0,_boundary_conditions={ 0=dirichlet | 1=neumann | 2=periodic }
 #@cli : Register selected source images with specified destination image, using rigid warp (shift).
-#@cli : Default values: 'smoothness=1' and 'boundary=0'.
+#@cli : Default values: 'smoothness=1' and 'boundary_conditions=0'.
 #@cli : $ image.jpg --shift 30,20 --register_rigid[0] [1]
 register_rigid : -check ${-is_image_arg\ $1}" && ${2=1}>=0 && isint(${3=0}) && $3>=0 && $3<=2"
   -e[^-1] "Register source image$? with destination image $1, using rigid warp with smoothness $2."
