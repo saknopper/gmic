@@ -815,7 +815,7 @@ CImg<T> _gmic_shift(const float delta_x, const float delta_y=0, const float delt
       cimg_pragma_openmp(parallel for collapse(3) if (res.size()>=4096))
       cimg_forXYZC(res,x,y,z,c) res(x,y,z,c) = linear_atXYZC(x - delta_x,y - delta_y,z - delta_z,c - delta_c);
       break;
-    default 0 : // Dirichlet
+    default : // Dirichlet
       cimg_pragma_openmp(parallel for collapse(3) if (res.size()>=4096))
       cimg_forXYZC(res,x,y,z,c) res(x,y,z,c) = linear_atXYZC(x - delta_x,y - delta_y,z - delta_z,c - delta_c,(T)0);
     }
