@@ -5208,19 +5208,19 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                (cimg_sscanf(st0,"%f%c%c",&a0,&sep0,&end)==2 && sep0=='%')) &&
               (cimg_sscanf(st1,"%f%c",&a1,&end)==1 ||
                (cimg_sscanf(st1,"%f%c%c",&a1,&sep1,&end)==2 && sep1=='%')) &&
-              boundary<=1) {
+              boundary<=3) {
             print(images,0,"Crop image%s with coordinates (%g%s) - (%g%s) and "
                   "%s boundary conditions.",
                   gmic_selection.data(),
                   a0,sep0=='%'?"%":"",
                   a1,sep1=='%'?"%":"",
-                  boundary?"neumann":"dirichlet");
+                  boundary==0?"dirichlet":boundary==1?"neumann":boundary==2?"periodic":"mirror");
             cimg_forY(selection,l) {
               CImg<T> &img = images[selection[l]];
               const int
                 x0 = (int)cimg::round(sep0=='%'?a0*(img.width() - 1)/100:a0),
                 x1 = (int)cimg::round(sep1=='%'?a1*(img.width() - 1)/100:a1);
-              gmic_apply(crop(x0,x1,(bool)boundary));
+              gmic_apply(crop(x0,x1,boundary));
             }
             ++position;
           } else if ((boundary=0,cimg_sscanf(argument,
@@ -5239,7 +5239,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                       (cimg_sscanf(st2,"%f%c%c",&a2,&sep2,&end)==2 && sep2=='%')) &&
                      (cimg_sscanf(st3,"%f%c",&a3,&end)==1 ||
                       (cimg_sscanf(st3,"%f%c%c",&a3,&sep3,&end)==2 && sep3=='%')) &&
-                     boundary<=1) {
+                     boundary<=3) {
             print(images,0,
                   "Crop image%s with coordinates (%g%s,%g%s) - (%g%s,%g%s) and "
                   "%s boundary conditions.",
@@ -5248,7 +5248,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                   a1,sep1=='%'?"%":"",
                   a2,sep2=='%'?"%":"",
                   a3,sep3=='%'?"%":"",
-                  boundary?"neumann":"dirichlet");
+                  boundary==0?"dirichlet":boundary==1?"neumann":boundary==2?"periodic":"mirror");
             cimg_forY(selection,l) {
               CImg<T> &img = images[selection[l]];
               const int
@@ -5256,7 +5256,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                 y0 = (int)cimg::round(sep1=='%'?a1*(img.height() - 1)/100:a1),
                 x1 = (int)cimg::round(sep2=='%'?a2*(img.width() - 1)/100:a2),
                 y1 = (int)cimg::round(sep3=='%'?a3*(img.height() - 1)/100:a3);
-              gmic_apply(crop(x0,y0,x1,y1,(bool)boundary));
+              gmic_apply(crop(x0,y0,x1,y1,boundary));
             }
             ++position;
           } else if ((boundary=0,cimg_sscanf(argument,
@@ -5278,7 +5278,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                       (cimg_sscanf(st4,"%f%c%c",&a4,&sep4,&end)==2 && sep4=='%')) &&
                      (cimg_sscanf(st5,"%f%c",&a5,&end)==1 ||
                       (cimg_sscanf(st5,"%f%c%c",&a5,&sep5,&end)==2 && sep5=='%')) &&
-                     boundary<=1) {
+                     boundary<=3) {
             print(images,0,"Crop image%s with coordinates (%g%s,%g%s,%g%s) - (%g%s,%g%s,%g%s) "
                   "and %s boundary conditions.",
                   gmic_selection.data(),
@@ -5288,7 +5288,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                   a3,sep3=='%'?"%":"",
                   a4,sep4=='%'?"%":"",
                   a5,sep5=='%'?"%":"",
-                  boundary?"neumann":"dirichlet");
+                  boundary==0?"dirichlet":boundary==1?"neumann":boundary==2?"periodic":"mirror");
             cimg_forY(selection,l) {
               CImg<T> &img = images[selection[l]];
               const int
@@ -5298,7 +5298,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                 x1 = (int)cimg::round(sep3=='%'?a3*(img.width() - 1)/100:a3),
                 y1 = (int)cimg::round(sep4=='%'?a4*(img.height() - 1)/100:a4),
                 z1 = (int)cimg::round(sep5=='%'?a5*(img.depth() - 1)/100:a5);
-              gmic_apply(crop(x0,y0,z0,x1,y1,z1,(bool)boundary));
+              gmic_apply(crop(x0,y0,z0,x1,y1,z1,boundary));
             }
             ++position;
           } else if ((boundary=0,cimg_sscanf(argument,
@@ -5326,7 +5326,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                       (cimg_sscanf(st6,"%f%c%c",&a6,&sep6,&end)==2 && sep6=='%')) &&
                      (cimg_sscanf(st7,"%f%c",&a7,&end)==1 ||
                       (cimg_sscanf(st7,"%f%c%c",&a7,&sep7,&end)==2 && sep7=='%')) &&
-                     boundary<=1) {
+                     boundary<=3) {
             print(images,0,
                   "Crop image%s with coordinates (%g%s,%g%s,%g%s,%g%s) - (%g%s,%g%s,%g%s,%g%s) "
                   "and %s boundary conditions.",
@@ -5339,7 +5339,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                   a5,sep5=='%'?"%":"",
                   a6,sep6=='%'?"%":"",
                   a7,sep7=='%'?"%":"",
-                  boundary?"neumann":"dirichlet");
+                  boundary==0?"dirichlet":boundary==1?"neumann":boundary==2?"periodic":"mirror");
             cimg_forY(selection,l) {
               CImg<T> &img = images[selection[l]];
               const int
@@ -5351,7 +5351,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                 y1 = (int)cimg::round(sep5=='%'?a5*(img.height() - 1)/100:a5),
                 z1 = (int)cimg::round(sep6=='%'?a6*(img.depth() - 1)/100:a6),
                 v1 = (int)cimg::round(sep7=='%'?a7*(img.spectrum() - 1)/100:a7);
-              gmic_apply(crop(x0,y0,z0,v0,x1,y1,z1,v1,(bool)boundary));
+              gmic_apply(crop(x0,y0,z0,v0,x1,y1,z1,v1,boundary));
             }
             ++position;
           } else {

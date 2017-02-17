@@ -7262,7 +7262,7 @@ autocrop_seq : -skip ${1=auto}
 #@cli crop : x0[%],x1[%],_boundary_conditions : x0[%],y0[%],x1[%],y1[%],_boundary_conditions : x0[%],y0[%],z0[%],x1[%],y1[%],z1[%],_boundary_conditions : x0[%],y0[%],z0[%],c0[%],x1[%],y1[%],z1[%],c1[%],_boundary_conditions : (no arg) : (+)
 #@cli : Crop selected images with specified region coordinates.
 #@cli : (eq. to '-z').
-#@cli : 'boundary_conditions' can be { 0=dirichlet | 1=neumann }.
+#@cli : 'boundary_conditions' can be { 0=dirichlet | 1=neumann | 2=periodic | 3=mirror }.
 #@cli : (no arg) runs interactive mode (uses the instant display window [0] if opened).
 #@cli : Default value: 'boundary_conditions=0'.
 #@cli : $ image.jpg --crop -230,-230,280,280,1 -crop[0] -230,-230,280,280,0
