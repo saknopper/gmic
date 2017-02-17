@@ -5760,7 +5760,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                   boundary?"neumann":"dirichlet",
                   is_normalized?"":"out");
             const CImg<T> kernel = gmic_image_arg(*ind);
-            cimg_forY(selection,l) gmic_apply(convolve(kernel,boundary,(bool)is_normalized));
+            cimg_forY(selection,l) gmic_apply(convolve(kernel,(bool)boundary,(bool)is_normalized));
           } else arg_error("convolve");
           is_released = false; ++position; continue;
         }
@@ -5787,7 +5787,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                   boundary?"neumann":"dirichlet",
                   is_normalized?"":"out");
             const CImg<T> kernel = gmic_image_arg(*ind);
-            cimg_forY(selection,l) gmic_apply(correlate(kernel,boundary,(bool)is_normalized));
+            cimg_forY(selection,l) gmic_apply(correlate(kernel,(bool)boundary,(bool)is_normalized));
           } else arg_error("correlate");
           is_released = false; ++position; continue;
         }
@@ -6188,7 +6188,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                   boundary?"neumann":"dirichlet",
                   is_real?"real":"binary");
             const CImg<T> kernel = gmic_image_arg(*ind);
-            cimg_forY(selection,l) gmic_apply(dilate(kernel,boundary,(bool)is_real));
+            cimg_forY(selection,l) gmic_apply(dilate(kernel,(bool)boundary,(bool)is_real));
           } else if ((cimg_sscanf(argument,"%f%c",
                                   &sx,&end)==1) &&
                      sx>=0) {
@@ -6703,7 +6703,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                   boundary?"neumann":"dirichlet",
                   is_real?"real":"binary");
             const CImg<T> kernel = gmic_image_arg(*ind);
-            cimg_forY(selection,l) gmic_apply(erode(kernel,boundary,(bool)is_real));
+            cimg_forY(selection,l) gmic_apply(erode(kernel,(bool)boundary,(bool)is_real));
           } else if ((cimg_sscanf(argument,"%f%c",
                                   &sx,&end)==1) &&
                      sx>=0) {
