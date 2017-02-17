@@ -7662,7 +7662,7 @@ _resize3dz : -check "$1>0 && ${2=3}>=0 && $2<=6 && ${3=0}>=0 && $3<=2 && ${4=0}>
 #@cli rotate : angle,_interpolation,_boundary_conditions,_center_x[%],_center_y[%] : u,v,w,angle,interpolation,boundary_conditions,_center_x[%],_center_y[%],_center_z[%] : (+)
 #@cli : Rotate selected images with specified angle (in deg.), and optionally 3d axis (u,v,w).
 #@cli : 'interpolation' can be { 0=none | 1=linear | 2=bicubic }.
-#@cli : 'boundary_conditions' can be { 0=dirichlet | 1=neumann | 2=periodic }.
+#@cli : 'boundary_conditions' can be { 0=dirichlet | 1=neumann | 2=periodic | 3=mirror }.
 #@cli : When a rotation center (cx,cy,_cz) is specified, the size of the image is preserved.
 #@cli : Default values: 'interpolation=1', 'boundary_conditions=0' and 'center_x=center_y=(undefined)'.
 #@cli : $ image.jpg --rotate -25,1,2,50%,50% -rotate[0] 25
