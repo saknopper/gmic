@@ -12224,7 +12224,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                cimg_sscanf(argument,"[%255[a-zA-Z0-9_.%+-]],%u,%u,%u,%f%c",
                            indices,&mode,&interpolation,&boundary,&nb_frames,&end)==5) &&
               (ind=selection2cimg(indices,images.size(),images_names,"-warp")).height()==1 &&
-              mode<=3 && interpolation<=2 && boundary<=2 && nb_frames>=0.5) {
+              mode<=3 && interpolation<=2 && boundary<=3 && nb_frames>=0.5) {
             const CImg<T> warping_field = gmic_image_arg(*ind);
             nb_frames = cimg::round(nb_frames);
             if (nb_frames==1) {
@@ -12234,7 +12234,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                     mode<=2?"backward":"forward",mode%2?"relative":"absolute",
                     *ind,
                     interpolation==2?"cubic":interpolation==1?"linear":"nearest-neighbor",
-                    boundary==0?"dirichlet":boundary==1?"neumann":"periodic");
+                    boundary==0?"dirichlet":boundary==1?"neumann":boundary==2?"periodic":"mirror");
               cimg_forY(selection,l) gmic_apply(warp(warping_field,mode,interpolation,boundary));
             } else {
               print(images,0,"Warp image%s with %s-%s displacement field [%u], %s interpolation, "
@@ -12243,7 +12243,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                     mode<=2?"backward":"forward",mode%2?"relative":"absolute",
                     *ind,
                     interpolation==2?"cubic":interpolation==1?"linear":"nearest-neighbor",
-                    boundary==0?"dirichlet":boundary==1?"neumann":"periodic",
+                    boundary==0?"dirichlet":boundary==1?"neumann":boundary==2?"periodic":"mirror",
                     (int)nb_frames);
               unsigned int off = 0;
               cimg_forY(selection,l) {
