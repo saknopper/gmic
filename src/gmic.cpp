@@ -784,7 +784,11 @@ CImg<T> get_gmic_set(const double value,
 CImg<T>& gmic_shift(const float delta_x, const float delta_y=0, const float delta_z=0, const float delta_c=0,
                     const unsigned int boundary_conditions=0, const bool interpolation=false) {
   if (is_empty()) return *this;
-  const int idelta_x = (int)delta_x, idelta_y = (int)delta_y, idelta_z = (int)delta_z, idelta_c = (int)delta_c;
+  const int
+    idelta_x = (int)cimg::round(delta_x),
+    idelta_y = (int)cimg::round(delta_y),
+    idelta_z = (int)cimg::round(delta_z),
+    idelta_c = (int)cimg::round(delta_c);
   if (!interpolation ||
       (delta_x==(float)idelta_x && delta_y==(float)idelta_y && delta_z==(float)idelta_z && delta_c==(float)idelta_c))
     return shift(idelta_x,idelta_y,idelta_z,idelta_c,boundary_conditions); // Integer displacement.
@@ -794,7 +798,11 @@ CImg<T>& gmic_shift(const float delta_x, const float delta_y=0, const float delt
 CImg<T> get_gmic_shift(const float delta_x, const float delta_y=0, const float delta_z=0, const float delta_c=0,
                        const unsigned int boundary_conditions=0, const bool interpolation=false) const {
   if (is_empty()) return CImg<T>::empty();
-  const int idelta_x = (int)delta_x, idelta_y = (int)delta_y, idelta_z = (int)delta_z, idelta_c = (int)delta_c;
+  const int
+    idelta_x = (int)cimg::round(delta_x),
+    idelta_y = (int)cimg::round(delta_y),
+    idelta_z = (int)cimg::round(delta_z),
+    idelta_c = (int)cimg::round(delta_c);
   if (!interpolation ||
       (delta_x==(float)idelta_x && delta_y==(float)idelta_y && delta_z==(float)idelta_z && delta_c==(float)idelta_c))
     return (+*this).shift(idelta_x,idelta_y,idelta_z,idelta_c,boundary_conditions); // Integer displacement.
@@ -10893,10 +10901,10 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             cimg_forY(selection,l) {
               CImg<T> &img = images[selection[l]];
               const float
-                ndx = sepx=='%'?cimg::round(dx*img.width()/100):dx,
-                ndy = sepy=='%'?cimg::round(dy*img.height()/100):dy,
-                ndz = sepz=='%'?cimg::round(dz*img.depth()/100):dz,
-                ndc = sepc=='%'?cimg::round(dc*img.spectrum()/100):dc;
+                ndx = sepx=='%'?dx*img.width()/100:dx,
+                ndy = sepy=='%'?dy*img.height()/100:dy,
+                ndz = sepz=='%'?dz*img.depth()/100:dz,
+                ndc = sepc=='%'?dc*img.spectrum()/100:dc;
               gmic_apply(gmic_shift(ndx,ndy,ndz,ndc,boundary,(bool)interpolation));
             }
           } else arg_error("shift");
