@@ -757,7 +757,7 @@ _help_usage :
 \n       . Function '"${c}"resize(A,size,_interpolation,_boundary_conditions)"$n"' returns a resized version of
 \n          a vector '"${g}"A"$n"' with specified interpolation mode. '"${g}"interpolation'"$n" can be "$g"{ -1=none
 \n          (memory content) | 0=none | 1=nearest | 2=average | 3=linear | 4=grid | 5=bicubic |
-\n          6=lanczos }"$n", and '"${g}"boundary_conditions'"$n"  can be "$g"{ 0=dirichlet | 1=neumann | 2=periodic }"$n".
+\n          6=lanczos }"$n", and '"${g}"boundary_conditions'"$n"  can be "$g"{ 0=dirichlet | 1=neumann | 2=periodic | 3=mirror }"$n".
 \n       . Function '"${c}"find(A,B,_is_forward,_starting_indice)"$n"' returns the index where sub-vector "${g}"B"$n"
 \n          appears in vector "${g}"A"$n", (or "${g}"-1"$n" if "${g}"B"$n" is not found in "${g}"A"$n"). Argument "${g}"A"$n" can be also replaced by
 \n          an image indice "${g}"#ind"$n".
@@ -819,7 +819,7 @@ _help_usage :
 \n       . '"${c}"i(_a,_b,_c,_d,_interpolation_type,_boundary_conditions)"$n"': return the value of the pixel
 \n          located at position "$g"(a,b,c,d)"$n" in the associated image, if any ("${g}"0"$n" otherwise).
 \n          '"${g}"interpolation_type"$n"' can be "$g"{ 0=nearest neighbor | other=linear }"$n".
-\n          '"${g}"boundary_conditions"$n"' can be "$g"{ 0=dirichlet | 1=neumann | 2=periodic }"$n".
+\n          '"${g}"boundary_conditions"$n"' can be "$g"{ 0=dirichlet | 1=neumann | 2=periodic | 3=mirror }"$n".
 \n          Omitted coordinates are replaced by their default values which are respectively
 \n          "${c}"x, y, z, c, interpolation"$n" and "${c}"boundary"$n".
 \n          For instance command '"${c}"-fill 0.5*(i(x+1)-i(x-1))"$n"' will estimate the X-derivative of an
@@ -7293,42 +7293,42 @@ elevate : -check "${1=64}>0" -skip ${2=1},${3=1}
     -done
   -rm[0,1] -nm $nm -endl -done -v +
 
-#@cli expand_x : size_x>=0,_boundary_conditions={ 0=dirichlet | 1=neumann | 2=periodic }
+#@cli expand_x : size_x>=0,_boundary_conditions={ 0=dirichlet | 1=neumann | 2=periodic | 3=mirror }
 #@cli : Expand selected images along the x-axis.
 #@cli : Default value: 'boundary_conditions=1'.
 #@cli : $ image.jpg -expand_x 30,0
-expand_x : -check "$1>=0 && ${2=1}>=0 && $2<=2"
-  -e[^-1] "Expand image$? along the x-axis with size $1 and boundary conditions $2."
+expand_x : -check "$1>=0 && ${2=1}>=0 && $2<=3"
+  -e[^-1] "Expand image$? along the x-axis with size $1 and "${"-arg 1+$2,dirichlet,neumann,periodic,mirror"}" boundary conditions."
   -v - -repeat $! -r[$>] {$>,w+2*$1},100%,100%,100%,0,$2,0.5,0.5,0.5 -done -v +
 
-#@cli expand_xy : size>=0,_boundary_conditions={ 0=dirichlet | 1=neumann | 2=periodic }
+#@cli expand_xy : size>=0,_boundary_conditions={ 0=dirichlet | 1=neumann | 2=periodic | 3=mirror }
 #@cli : Expand selected images along the xy-axes.
 #@cli : Default value: 'boundary_conditions=1'.
 #@cli : $ image.jpg -expand_xy 30,0
-expand_xy : -check "$1>=0 && ${2=1}>=0 && $2<=2"
-  -e[^-1] "Expand image$? along the xy-axes with size $1 and boundary conditions $2."
+expand_xy : -check "$1>=0 && ${2=1}>=0 && $2<=3"
+  -e[^-1] "Expand image$? along the xy-axes with size $1 and "${"-arg 1+$2,dirichlet,neumann,periodic,mirror"}" boundary conditions."
   -v - -repeat $! -r[$>] {$>,w+2*$1},{$>,h+2*$1},100%,100%,0,$2,0.5,0.5,0.5 -done -v +
 
-#@cli expand_xyz : size>=0,_boundary_conditions={ 0=dirichlet | 1=neumann | 2=periodic }
+#@cli expand_xyz : size>=0,_boundary_conditions={ 0=dirichlet | 1=neumann | 2=periodic | 3=mirror }
 #@cli : Expand selected images along the xyz-axes.
 #@cli : Default value: 'boundary_conditions=1'.
-expand_xyz : -check "$1>=0 && ${2=1}>=0 && $2<=2"
-  -e[^-1] "Expand image$? along the xyz-axes with size $1 and boundary conditions $2."
+expand_xyz : -check "$1>=0 && ${2=1}>=0 && $2<=3"
+  -e[^-1] "Expand image$? along the xyz-axes with size $1 and "${"-arg 1+$2,dirichlet,neumann,periodic,mirror"}" boundary conditions."
   -v - -repeat $! -r[$>] {$>,w+2*$1},{$>,h+2*$1},{$>,d+2*$1},100%,0,$2,0.5,0.5,0.5 -done -v +
 
-#@cli expand_y : size_y>=0,_boundary_conditions={ 0=dirichlet | 1=neumann | 2=periodic }
+#@cli expand_y : size_y>=0,_boundary_conditions={ 0=dirichlet | 1=neumann | 2=periodic | 3=mirror }
 #@cli : Expand selected images along the y-axis.
 #@cli : Default value: 'boundary_conditions=1'.
 #@cli : $ image.jpg -expand_y 30,0
-expand_y : -check "$1>=0 && ${2=1}>=0 && $2<=2"
-  -e[^-1] "Expand image$? along the y-axis with size $1 and boundary conditions $2."
+expand_y : -check "$1>=0 && ${2=1}>=0 && $2<=3"
+  -e[^-1] "Expand image$? along the y-axis with size $1 and "${"-arg 1+$2,dirichlet,neumann,periodic,mirror"}" boundary conditions."
   -v - -repeat $! -r[$>] 100%,{$>,h+2*$1},100%,100%,0,$2,0.5,0.5,0.5 -done -v +
 
-#@cli expand_z : size_z>=0,_boundary_conditions={ 0=dirichlet | 1=neumann | 2=periodic }
+#@cli expand_z : size_z>=0,_boundary_conditions={ 0=dirichlet | 1=neumann | 2=periodic | 3=mirror }
 #@cli : Expand selected images along the z-axis.
 #@cli : Default value: 'boundary_conditions=1'.
-expand_z : -check "$1>=0 && ${2=1}>=0 && $2<=2"
-  -e[^-1] "Expand image$? along the z-axis with size $1 and boundary conditions $2."
+expand_z : -check "$1>=0 && ${2=1}>=0 && $2<=3"
+  -e[^-1] "Expand image$? along the z-axis with size $1 and "${"-arg 1+$2,dirichlet,neumann,periodic,mirror"}" boundary conditions."
   -v - -repeat $! -r[$>] 100%,100%,{$>,d+2*$1},100%,0,$2,0.5,0.5,0.5 -done -v +
 
 #@cli montage : "_layout_code",_montage_mode={ 0<=centering<=1 | 2<=scale+2<=3 },_output_mode={ 0=single layer | 1=multiple layers },"_processing_command"
@@ -7487,7 +7487,7 @@ _montage :
 #@cli : 'interpolation' can be { -1=none (memory content) | 0=none | 1=nearest | 2=average | 3=linear | 4=grid | 5=bicubic | 6=lanczos }.
 #@cli : 'boundary_conditions' has different meanings, according to the chosen 'interpolation' mode :
 #@cli : . When 'interpolation=={ -1 | 1 | 2 | 4 }', 'boundary_conditions' is meaningless.
-#@cli : . When 'interpolation==0', 'boundary_conditions' can be { 0=dirichlet | 1=neumann | 2=periodic }.
+#@cli : . When 'interpolation==0', 'boundary_conditions' can be { 0=dirichlet | 1=neumann | 2=periodic | 3=mirror }.
 #@cli : . When 'interpolation=={ 3 | 5 | 6 }', 'boundary_conditions' can be { 0=none | 1=neumann }.
 #@cli : 'ax,ay,az,ac' set the centering along each axis when 'interpolation=0'
 #@cli : (set to '0' by default, must be defined in range [0,1]).
@@ -7533,7 +7533,7 @@ r2dx :
 #@cli : 'interpolation' can be { -1=none (memory content) | 0=none | 1=nearest | 2=average | 3=linear | 4=grid | 5=bicubic | 6=lanczos }.
 #@cli : 'boundary_conditions' has different meanings, according to the chosen 'interpolation' mode :
 #@cli : . When 'interpolation=={ -1 | 1 | 2 | 4 }', 'boundary_conditions' is meaningless.
-#@cli : . When 'interpolation==0', 'boundary_conditions' can be { 0=dirichlet | 1=neumann | 2=periodic }.
+#@cli : . When 'interpolation==0', 'boundary_conditions' can be { 0=dirichlet | 1=neumann | 2=periodic | 3=mirror }.
 #@cli : . When 'interpolation=={ 3 | 5 | 6 }', 'boundary_conditions' can be { 0=none | 1=neumann }.
 #@cli : 'ax,ay,az,ac' set the centering along each axis when 'interpolation=0'
 #@cli : (set to '0' by default, must be defined in range [0,1]).
@@ -7543,7 +7543,7 @@ resize2dx :
   -v - _gmic_s="$?" -v +
   -_$0 $*
 
-_resize2dx : -check "$1>0 && ${2=3}>=0 && $2<=6 && ${3=0}>=0 && $3<=2 && ${4=0}>=0 && $4<=1 && ${5=0}>=0 && $5<=1 && ${6=0}>=0 && $6<=1 && ${7=0}>=0 && $7<=1"
+_resize2dx : -check "$1>0 && ${2=3}>=0 && $2<=6 && ${3=0}>=0 && $3<=3 && ${4=0}>=0 && $4<=1 && ${5=0}>=0 && $5<=1 && ${6=0}>=0 && $6<=1 && ${7=0}>=0 && $7<=1"
   -e[0--3] "Resize 2d image"$_gmic_s" to $1 pixels along the x-axis, preserving 2d ratio."
   -v - -repeat $! -l[$>]
     size={if(${-is_percent\ $1},$1*w,$1)}
@@ -7561,7 +7561,7 @@ r2dy :
 #@cli : 'interpolation' can be { -1=none (memory content) | 0=none | 1=nearest | 2=average | 3=linear | 4=grid | 5=bicubic | 6=lanczos }.
 #@cli : 'boundary_conditions' has different meanings, according to the chosen 'interpolation' mode :
 #@cli : . When 'interpolation=={ -1 | 1 | 2 | 4 }', 'boundary_conditions' is meaningless.
-#@cli : . When 'interpolation==0', 'boundary_conditions' can be { 0=dirichlet | 1=neumann | 2=periodic }.
+#@cli : . When 'interpolation==0', 'boundary_conditions' can be { 0=dirichlet | 1=neumann | 2=periodic | 3=mirror }.
 #@cli : . When 'interpolation=={ 3 | 5 | 6 }', 'boundary_conditions' can be { 0=none | 1=neumann }.
 #@cli : 'ax,ay,az,ac' set the centering along each axis when 'interpolation=0'
 #@cli : (set to '0' by default, must be defined in range [0,1]).
@@ -7571,7 +7571,7 @@ resize2dy :
   -v - _gmic_s="$?" -v +
   -_$0 $*
 
-_resize2dy : -check "$1>=0 && ${2=3}>=0 && $2<=6 && ${3=0}>=0 && $3<=2 && ${4=0}>=0 && $4<=1 && ${5=0}>=0 && $5<=1 && ${6=0}>=0 && $6<=1 && ${7=0}>=0 && $7<=1"
+_resize2dy : -check "$1>=0 && ${2=3}>=0 && $2<=6 && ${3=0}>=0 && $3<=3 && ${4=0}>=0 && $4<=1 && ${5=0}>=0 && $5<=1 && ${6=0}>=0 && $6<=1 && ${7=0}>=0 && $7<=1"
   -e[0--3] "Resize 2d image"$_gmic_s" to $1 pixels along the y-axis, preserving 2d ratio."
   -v - -repeat $! -l[$>]
     size={if(${-is_percent\ $1},$1*h,$1)}
@@ -7589,7 +7589,7 @@ r3dx :
 #@cli : 'interpolation' can be { -1=none (memory content) | 0=none | 1=nearest | 2=average | 3=linear | 4=grid | 5=bicubic | 6=lanczos }.
 #@cli : 'boundary_conditions' has different meanings, according to the chosen 'interpolation' mode :
 #@cli : . When 'interpolation=={ -1 | 1 | 2 | 4 }', 'boundary_conditions' is meaningless.
-#@cli : . When 'interpolation==0', 'boundary_conditions' can be { 0=dirichlet | 1=neumann | 2=periodic }.
+#@cli : . When 'interpolation==0', 'boundary_conditions' can be { 0=dirichlet | 1=neumann | 2=periodic | 3=mirror }.
 #@cli : . When 'interpolation=={ 3 | 5 | 6 }', 'boundary_conditions' can be { 0=none | 1=neumann }.
 #@cli : 'ax,ay,az,ac' set the centering along each axis when 'interpolation=0'
 #@cli : (set to '0' by default, must be defined in range [0,1]).
@@ -7598,7 +7598,7 @@ resize3dx :
   -v - _gmic_s="$?" -v +
   -_$0 $*
 
-_resize3dx : -check "$1>0 && ${2=3}>=0 && $2<=6 && ${3=0}>=0 && $3<=2 && ${4=0}>=0 && $4<=1 && ${5=0}>=0 && $5<=1 && ${6=0}>=0 && $6<=1 && ${7=0}>=0 && $7<=1"
+_resize3dx : -check "$1>0 && ${2=3}>=0 && $2<=6 && ${3=0}>=0 && $3<=3 && ${4=0}>=0 && $4<=1 && ${5=0}>=0 && $5<=1 && ${6=0}>=0 && $6<=1 && ${7=0}>=0 && $7<=1"
   -e[0--3] "Resize 3d image"$_gmic_s" to $1 pixels along the x-axis, preserving 3d ratio."
   -v - -repeat $! -l[$>]
     size={if(${-is_percent\ $1},$1*w,$1)}
@@ -7616,7 +7616,7 @@ r3dy :
 #@cli : 'interpolation' can be { -1=none (memory content) | 0=none | 1=nearest | 2=average | 3=linear | 4=grid | 5=bicubic | 6=lanczos }.
 #@cli : 'boundary_conditions' has different meanings, according to the chosen 'interpolation' mode :
 #@cli : . When 'interpolation=={ -1 | 1 | 2 | 4 }', 'boundary_conditions' is meaningless.
-#@cli : . When 'interpolation==0', 'boundary_conditions' can be { 0=dirichlet | 1=neumann | 2=periodic }.
+#@cli : . When 'interpolation==0', 'boundary_conditions' can be { 0=dirichlet | 1=neumann | 2=periodic | 3=mirror }.
 #@cli : . When 'interpolation=={ 3 | 5 | 6 }', 'boundary_conditions' can be { 0=none | 1=neumann }.
 #@cli : 'ax,ay,az,ac' set the centering along each axis when 'interpolation=0'
 #@cli : (set to '0' by default, must be defined in range [0,1]).
@@ -7625,7 +7625,7 @@ resize3dy :
   -v - _gmic_s="$?" -v +
   -_$0 $*
 
-_resize3dy : -check "$1>0 && ${2=3}>=0 && $2<=6 && ${3=0}>=0 && $3<=2 && ${4=0}>=0 && $4<=1 && ${5=0}>=0 && $5<=1 && ${6=0}>=0 && $6<=1 && ${7=0}>=0 && $7<=1"
+_resize3dy : -check "$1>0 && ${2=3}>=0 && $2<=6 && ${3=0}>=0 && $3<=3 && ${4=0}>=0 && $4<=1 && ${5=0}>=0 && $5<=1 && ${6=0}>=0 && $6<=1 && ${7=0}>=0 && $7<=1"
   -e[0--3] "Resize 3d image"$_gmic_s" to $1 pixels along the y-axis, preserving 3d ratio."
   -v - -repeat $! -l[$>]
     size={if(${-is_percent\ $1},$1*h,$1)}
@@ -7643,7 +7643,7 @@ r3dz :
 #@cli : 'interpolation' can be { -1=none (memory content) | 0=none | 1=nearest | 2=average | 3=linear | 4=grid | 5=bicubic | 6=lanczos }.
 #@cli : 'boundary_conditions' has different meanings, according to the chosen 'interpolation' mode :
 #@cli : . When 'interpolation=={ -1 | 1 | 2 | 4 }', 'boundary_conditions' is meaningless.
-#@cli : . When 'interpolation==0', 'boundary_conditions' can be { 0=dirichlet | 1=neumann | 2=periodic }.
+#@cli : . When 'interpolation==0', 'boundary_conditions' can be { 0=dirichlet | 1=neumann | 2=periodic | 3=mirror }.
 #@cli : . When 'interpolation=={ 3 | 5 | 6 }', 'boundary_conditions' can be { 0=none | 1=neumann }.
 #@cli : 'ax,ay,az,ac' set the centering along each axis when 'interpolation=0'
 #@cli : (set to '0' by default, must be defined in range [0,1]).
@@ -7652,7 +7652,7 @@ resize3dz :
   -v - _gmic_s="$?" -v +
   -_$0 $*
 
-_resize3dz : -check "$1>0 && ${2=3}>=0 && $2<=6 && ${3=0}>=0 && $3<=2 && ${4=0}>=0 && $4<=1 && ${5=0}>=0 && $5<=1 && ${6=0}>=0 && $6<=1 && ${7=0}>=0 && $7<=1"
+_resize3dz : -check "$1>0 && ${2=3}>=0 && $2<=6 && ${3=0}>=0 && $3<=3 && ${4=0}>=0 && $4<=1 && ${5=0}>=0 && $5<=1 && ${6=0}>=0 && $6<=1 && ${7=0}>=0 && $7<=1"
   -e[0--3] "Resize 3d image"$_gmic_s" to $1 pixels along the z-axis, preserving 3d ratio."
   -v - -repeat $! -l[$>]
     size={if(${-is_percent\ $1},$1*d,$1)}
@@ -8045,8 +8045,8 @@ upscale_smart : -skip ${2=100%},${3=100%} -check "${4=2}>=0 && ${5=0.4}>=0 && $5
 #@cli warp : [warping_field],_mode,_interpolation,_boundary_conditions,_nb_frames>0 : (+)
 #@cli : Warp selected image with specified displacement field.
 #@cli : 'mode' can be { 0=backward-absolute | 1=backward-relative | 2=forward-absolute | 3=forward-relative }.
-#@cli : 'interpolation' can be { 0=nearest-neighbor | 1=linear | 2=cubic | 3=mirror }.
-#@cli : 'boundary_conditions' can be { 0=dirichlet | 1=neumann | 2=periodic }.
+#@cli : 'interpolation' can be { 0=nearest-neighbor | 1=linear | 2=cubic }.
+#@cli : 'boundary_conditions' can be { 0=dirichlet | 1=neumann | 2=periodic | 3=mirror }.
 #@cli : Default values: 'mode=0', 'interpolation=1', 'boundary_conditions=1' and 'nb_frames=1'.
 #@cli : $ image.jpg 100%,100%,1,2,'X=x/w-0.5;Y=y/h-0.5;R=(X*X+Y*Y)^0.5;A=atan2(Y,X);130*R*if(c==0,cos(4*A),sin(8*A))' -warp[-2] [-1],1,1,0 -quiver[-1] [-1],10,1,1,1,100
 #@cli : $$
@@ -15029,12 +15029,12 @@ deform : -skip ${1=10}
     2%,2%,1,2 -noise. $1 -r. ..,..,1,2,5 -warp.. .,1,1,1 -rm.
   -endl -done -v +
 
-#@cli euclidean2polar : _center_x[%],_center_y[%],_stretch_factor>0,_boundary_conditions={ 0=dirichlet | 1=neumann | 2=periodic }
+#@cli euclidean2polar : _center_x[%],_center_y[%],_stretch_factor>0,_boundary_conditions={ 0=dirichlet | 1=neumann | 2=periodic | 3=mirror }
 #@cli : Apply euclidean to polar transform on selected images.
 #@cli : Default values: 'center_x=center_y=50%', 'stretch_factor=1' and 'boundary_conditions=1'.
 #@cli : $ image.jpg --euclidean2polar ,
-euclidean2polar : -skip ${1=50%},${2=50%} -check "${3=1}>0 && isint(${4=1}) && $4>=0 && $4<=2"
-  -e[^-1] "Apply euclidean to polar transform on image$?, with center point ($1,$2), stretch factor $3 and "${-arg\ 1+$4,dirichlet,neumann,periodic}" boundary conditions."
+euclidean2polar : -skip ${1=50%},${2=50%} -check "${3=1}>0 && isint(${4=1}) && $4>=0 && $4<=3"
+  -e[^-1] "Apply euclidean to polar transform on image$?, with center point ($1,$2), stretch factor $3 and "${"-arg 1+$4,dirichlet,neumann,periodic,mirror"}" boundary conditions."
   -v - -repeat $! -l[$>]
     cx={if(${-is_percent\ $1},$1*(w-1),$1)}
     cy={if(${-is_percent\ $2},$2*(h-1),$2)}
@@ -15081,11 +15081,11 @@ fisheye : -skip ${1=50},${2=50},${3=50},${4=1.2}
     -warp.. .,1,1,1 -rm.
   -endl -done -v +
 
-#@cli flower : _amplitude,_frequency,_offset_r[%],_angle,_center_x[%],_center_y[%],_boundary_conditions={ 0=dirichlet | 1=neumann | 2=periodic }
+#@cli flower : _amplitude,_frequency,_offset_r[%],_angle,_center_x[%],_center_y[%],_boundary_conditions={ 0=dirichlet | 1=neumann | 2=periodic | 3=mirror}
 #@cli : Apply flower deformation on selected images.
-#@cli : Default values: 'amplitude=30', 'frequency=6', 'offset_r=0', 'angle=0', 'center_x=center_y=50%' and 'boundary_conditions=2'.
+#@cli : Default values: 'amplitude=30', 'frequency=6', 'offset_r=0', 'angle=0', 'center_x=center_y=50%' and 'boundary_conditions=3'.
 #@cli : $ image.jpg -flower ,
-flower : -skip ${1=30},${2=6},${3=0},${4=0},${5=50%},${6=50%},${7=2}
+flower : -skip ${1=30},${2=6},${3=0},${4=0},${5=50%},${6=50%},${7=3}
   -e[^-1] "Apply flower deformation on image$?, with amplitude $1, frequency $2, offset $3, angle $4 deg. and center point ($1,$2)."
   -v - -if ${-is_percent\ $3}
     -transform_polar "r + (R*$3) + R*$1/100*cos(a*$2+$4*pi/180)","a",$5,$6,$7
@@ -15093,11 +15093,11 @@ flower : -skip ${1=30},${2=6},${3=0},${4=0},${5=50%},${6=50%},${7=2}
     -transform_polar "r + $3 + R*$1/100*cos(a*$2+$4*pi/180)","a",$5,$6,$7
   -endif -v +
 
-#@cli kaleidoscope : _center_x[%],_center_y[%],_radius,_angle,_boundary_conditions={ 0=dirichlet | 1=neumann | 2=periodic }
+#@cli kaleidoscope : _center_x[%],_center_y[%],_radius,_angle,_boundary_conditions={ 0=dirichlet | 1=neumann | 2=periodic | 3=mirror }
 #@cli : Create kaleidoscope effect from selected images.
-#@cli : Default values: 'center_x=center_y=50%', 'radius=100', 'angle=30' and 'boundary_conditions=1'.
+#@cli : Default values: 'center_x=center_y=50%', 'radius=100', 'angle=30' and 'boundary_conditions=3'.
 #@cli : $ image.jpg --kaleidoscope ,
-kaleidoscope : -skip ${1=50%},${2=50%},${3=100},${4=30},${5=1}
+kaleidoscope : -skip ${1=50%},${2=50%},${3=100},${4=30},${5=3}
   -e[^-1] "Create kaleidoscope effect from image$?, with center point ($1,$2), radius $3, angle $4 deg."
   -v - -euclidean2polar $1,$2,1,$5 -repeat $! -l[$>]
     --columns 0,$3% -rows. 0,$4% -r. ..,0,2 -nm[1] {0,n} -rm[0]
@@ -15153,12 +15153,12 @@ nadirzenith2equirectangular :
     -to_a[0] -warp[0] [1],0,0,0 -k...
   -endl -done -v +
 
-#@cli polar2euclidean : _center_x[%],_center_y[%],_stretch_factor>0,_boundary_conditions={ 0=dirichlet | 1=neumann | 2=periodic }
+#@cli polar2euclidean : _center_x[%],_center_y[%],_stretch_factor>0,_boundary_conditions={ 0=dirichlet | 1=neumann | 2=periodic | 3=mirror }
 #@cli : Apply euclidean to polar transform on selected images.
 #@cli : Default values: 'center_x=center_y=50%', 'stretch_factor=1' and 'boundary_conditions=1'.
 #@cli : $ image.jpg --euclidean2polar ,
-polar2euclidean : -skip ${1=50%},${2=50%} -check "${3=1}>0 && isint(${4=1}) && $4>=0 && $4<=2"
-  -e[^-1] "Apply polar to euclidean transform on image$?, with center point ($1,$2), stretch factor $3 and "${-arg\ 1+$4,dirichlet,neumann,periodic}" boundary conditions."
+polar2euclidean : -skip ${1=50%},${2=50%} -check "${3=1}>0 && isint(${4=1}) && $4>=0 && $4<=3"
+  -e[^-1] "Apply polar to euclidean transform on image$?, with center point ($1,$2), stretch factor $3 and "${"-arg 1+$4,dirichlet,neumann,periodic,mirror"}" boundary conditions."
   -v - -repeat $! -l[$>]
     cx={if(${-is_percent\ $1},$1*(w-1),$1)}
     cy={if(${-is_percent\ $2},$2*(h-1),$2)}
@@ -15204,21 +15204,21 @@ _ripple2 : -f {-$1/2}*"cos(i*"{2*pi/$2}")"
 _ripple3 : -f {-$1/2}*"abs(cos(i*"{2*pi/$2}"))"
 _ripple4 : -skip $* -n 0,{h-1} 1,{h} -rand. {-$1/2},{$1/2} m={im} M={iM} -b. {$2/10} -n. $m,$M -map.. . -rm.
 
-#@cli rotoidoscope : _center_x[%],_center_y[%],_tiles>0,_smoothness[%]>=0,_boundary_conditions={ 0=dirichlet | 1=neumann | 2=periodic }
+#@cli rotoidoscope : _center_x[%],_center_y[%],_tiles>0,_smoothness[%]>=0,_boundary_conditions={ 0=dirichlet | 1=neumann | 2=periodic | 3=mirror }
 #@cli : Create rotational kaleidoscope effect from selected images.
-#@cli : Default values: 'cx=cy=50%', 'tiles=10', 'smoothness=1' and 'boundary_conditions=1'.
+#@cli : Default values: 'cx=cy=50%', 'tiles=10', 'smoothness=1' and 'boundary_conditions=3'.
 #@cli : $ image.jpg --rotoidoscope ,
-rotoidoscope : -skip ${1=50%},${2=50%},${5=1} -check "${3=10}>0 && ${4=1}>=0"
+rotoidoscope : -skip ${1=50%},${2=50%},${5=1} -check "${3=10}>0 && ${4=3}>=0"
   -e[^-1] "Create rotational kaleidoscope effect from image$?, with center point ($1,$2), $3 tiles and smoothness $4."
   -v - -repeat $! -l[$>]
     -repeat $3 --rotate[0] {360/$3},1,$5,$1,$2 -blend_edges $4 -done
   -endl -done -v +
 
-#@cli symmetrize : _x[%],_y[%],_angle,_boundary_conditions={ 0=dirichlet | 1=neumann | 2=periodic },_is_antisymmetry={ 0 | 1 },_swap_sides={ 0 | 1 }
+#@cli symmetrize : _x[%],_y[%],_angle,_boundary_conditions={ 0=dirichlet | 1=neumann | 2=periodic | 3=mirror },_is_antisymmetry={ 0 | 1 },_swap_sides={ 0 | 1 }
 #@cli : Symmetrize selected image regarding specified axis.
-#@cli : Default values: 'x=y=50%', 'angle=90', 'boundary_conditions=1', 'is_antisymmetry=0' and 'swap_sides=0'.
+#@cli : Default values: 'x=y=50%', 'angle=90', 'boundary_conditions=3', 'is_antisymmetry=0' and 'swap_sides=0'.
 #@cli : $ image.jpg --symmetrize 50%,50%,45 --symmetrize[-1] 50%,50%,-45
-symmetrize : -skip ${1=50%},${2=50%},${3=90},${4=1},${5=0},${6=0}
+symmetrize : -skip ${1=50%},${2=50%},${3=90},${4=3},${5=0},${6=0}
   -e[^-1] "Symmetrize image$?, regarding axis ($1,$2,$3 deg.)."
   -v -
   theta={$3*pi/180} u={cos($theta)} v={sin($theta)}
@@ -15250,17 +15250,17 @@ transform_polar : -skip "${1=R-r}","${2=a}",${3=50%},${4=50%},${5=1}
         i("$cx" + nr*cos(na), "$cy" + nr*sin(na), z, c,1,$5)"
   -endl -done -v +
 
-#@cli twirl : _amplitude,_center_x[%],_center_y[%],_boundary_conditions={ 0=dirichlet | 1=neumann | 2=periodic }
+#@cli twirl : _amplitude,_center_x[%],_center_y[%],_boundary_conditions={ 0=dirichlet | 1=neumann | 2=periodic | 3=mirror }
 #@cli : Apply twirl deformation on selected images.
-#@cli : Default values: 'amplitude=1', 'center_x=center_y=50%' and 'boundary_conditions=1'.
+#@cli : Default values: 'amplitude=1', 'center_x=center_y=50%' and 'boundary_conditions=3'.
 #@cli : $ image.jpg --twirl 0.6
-twirl : -skip ${1=1},${2=50%},${3=50%},${4=1}
+twirl : -skip ${1=1},${2=50%},${3=50%},${4=3}
   -e[^-1] "Apply twirl deformation on image$?, with amplitude $1 and center point at ($2%,$3%)."
   -v - -euclidean2polar $2,$3,1,$4 -repeat $!
     [$>],[$>],1,1,$1*x -channels. -1,0 -warp[$>] .,1,1,2 -rm.
   -done -polar2euclidean $2,$3,1,1 -v +
 
-#@cli warp_perspective : _x-angle,_y-angle,_zoom>0,_x-center,_y-center,_boundary_conditions={ 0=dirichlet | 1=neumann | 2=periodic }
+#@cli warp_perspective : _x-angle,_y-angle,_zoom>0,_x-center,_y-center,_boundary_conditions={ 0=dirichlet | 1=neumann | 2=periodic | 3=mirror }
 #@cli : Warp selected images with perspective deformation.
 #@cli : Default values: 'x-angle=1.5', 'y-angle=0', 'zoom=1', 'x-center=y-center=50' and 'boundary_conditions=2'.
 #@cli : $ image.jpg --warp_perspective ,
@@ -15324,7 +15324,7 @@ _wind5 : -u -1,-1
 _wind6 : -u 0,-1
 _wind7 : -u 1,-1
 
-#@cli zoom : _factor,_cx,_cy,_cz,_boundary_conditions={ 0=dirichlet | 1=neumann | 2=periodic }
+#@cli zoom : _factor,_cx,_cy,_cz,_boundary_conditions={ 0=dirichlet | 1=neumann | 2=periodic | 3=mirror }
 #@cli : Apply zoom factor to selected images.
 #@cli : Default values: 'factor=1', 'cx=cy=cz=0.5' and 'boundary_conditions=0'.
 #@cli : $ image.jpg --zoom[0] 0.6 --zoom[0] 1.5
@@ -16388,11 +16388,11 @@ register_nonrigid : -check ${-is_image_arg\ $1}" && ${2=0.2}>=0 && ${3=5}>0 && $
     -warp[$>] .,1,1,1 -rm.
   -done -rm. -v +
 
-#@cli register_rigid : [destination],_smoothness>=0,_boundary_conditions={ 0=dirichlet | 1=neumann | 2=periodic }
+#@cli register_rigid : [destination],_smoothness>=0,_boundary_conditions={ 0=dirichlet | 1=neumann | 2=periodic | 3=mirror }
 #@cli : Register selected source images with specified destination image, using rigid warp (shift).
 #@cli : Default values: 'smoothness=1' and 'boundary_conditions=0'.
 #@cli : $ image.jpg --shift 30,20 --register_rigid[0] [1]
-register_rigid : -check ${-is_image_arg\ $1}" && ${2=1}>=0 && isint(${3=0}) && $3>=0 && $3<=2"
+register_rigid : -check ${-is_image_arg\ $1}" && ${2=1}>=0 && isint(${3=0}) && $3>=0 && $3<=3"
   -e[^-1] "Register source image$? with destination image $1, using rigid warp with smoothness $2."
   -v - -pass$1 0 -equalize. -b. $2 -n. 0,255
   -repeat {$!-1}
@@ -26654,10 +26654,11 @@ fx_thin_edges_preview :
 #@gui : Y-warping = text{"(w+h)/20 * sin(x*20/w)"}
 #@gui : Relative warping = bool(1)
 #@gui : Interpolation = choice(1,"Nearest neighbor","Linear")
-#@gui : Boundary = choice(1,"Black","Nearest","Repeat")
+#@gui : Boundary = choice(3,"Transparent","Nearest","Periodic","Mirror")
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>12/29/2010</i>.</small>")
 fx_custom_deformation :
-   -repeat $!
+  -if {!$5} -to_a -endif
+  -repeat $!
     --norm. . -f.. "$1" -f. "$2"
     -a[-2,-1] c -warp.. .,$3,$4,$5,1 -rm.
   -mv. 0 -done
@@ -26670,7 +26671,7 @@ fx_custom_deformation :
 #@gui : Radius = float(0.2,0,1)
 #@gui : Symmetry = choice("None","Inside","Outside")
 #@gui : Interpolation = choice(1,"Nearest neighbor","Linear")
-#@gui : Boundary = choice(1,"Transparent","Nearest","Repeat")
+#@gui : Boundary = choice(3,"Transparent","Nearest","Periodic","Mirror")
 #@gui : Preview reference circle = bool(1)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>01/08/2013</i>.</small>")
 fx_circle_transform :
@@ -26707,7 +26708,7 @@ fx_circle_transform_preview :
 #@gui : Aspect ratio = float(0,-1,1)
 #@gui : X-shift = float(0,-5,5)
 #@gui : Y-shift = float(0,-5,5)
-#@gui : Boundary = choice(2,"Transparent","Nearest","Repeat")
+#@gui : Boundary = choice(3,"Transparent","Nearest","Periodic","Mirror")
 #@gui : Anti-aliasing = int(0,0,3)
 #@gui : sep = separator()
 #@gui : Specify different output size = _bool(0)
@@ -26883,10 +26884,11 @@ fx_equirectangular2nadirzenith :
 #@gui : X-center (%) = float(50,0,100)
 #@gui : Y-center (%) = float(50,0,100)
 #@gui : Stretch factor = float(1,0.1,10)
-#@gui : Boundary = choice(1,"Black","Nearest","Repeat")
+#@gui : Boundary = choice(1,"Transparent","Nearest","Periodic","Mirror")
 #@gui : Inverse transform = bool(0)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>12/29/2010</i>.</small>")
 fx_euclidean2polar :
+  -if {!$4} -to_a -endif
   -if $5 -polar2euclidean $1%,$2%,$3,$4 -else -euclidean2polar $1%,$2%,$3,$4 -endif
 
 #@gui Fish-eye : fisheye, fisheye(1)
@@ -26903,9 +26905,10 @@ fx_euclidean2polar :
 #@gui : Angle = float(0,0,360)
 #@gui : X-center (%) = float(50,0,100)
 #@gui : Y-center (%) = float(50,0,100)
-#@gui : Boundary = choice(1,"Black","Nearest","Repeat")
+#@gui : Boundary = choice(3,"Transparent","Nearest","Periodic","Mirror")
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>12/29/2010</i>.</small>")
 fx_flower :
+  -if {!$7} -to_a -endif
   -flower $1,$2,$3%,$4,$5%,$6%,$7
 
 #@gui Kaleidoscope [blended] : fx_rotoidoscope, fx_rotoidoscope(1)
@@ -26913,9 +26916,10 @@ fx_flower :
 #@gui : Y-center (%) = float(50,0,100)
 #@gui : Angular tiles = int(10,1,72)
 #@gui : Smoothness = float(0.5,0,5)
-#@gui : Boundary = choice(2,"Black","Nearest","Repeat")
+#@gui : Boundary = choice(3,"Transparent","Nearest","Periodic","Mirror")
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>12/29/2010</i>.</small>")
 fx_rotoidoscope :
+  -if {!$5} -to_a -endif
   -rotoidoscope $1%,$2%,$3,$4%,$5
 
 #@gui Kaleidoscope [polar] : fx_kaleidoscope, fx_kaleidoscope(1)
@@ -26925,19 +26929,21 @@ fx_rotoidoscope :
 #@gui : Y-offset (%) = float(0,0,100)
 #@gui : Radius cut = float(100,0,100)
 #@gui : Angle cut = float(10,0,100)
-#@gui : Boundary = choice(2,"Black","Nearest","Repeat")
+#@gui : Boundary = choice(3,"Transparent","Nearest","Periodic","Mirror")
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>12/29/2010</i>.</small>")
 fx_kaleidoscope :
+  -if {!$7} -to_a -endif
   -shift $3%,$4%,0,0,2 -kaleidoscope $1%,$2%,$5,$6,$7
 
 #@gui Kaleidoscope [symmetry] : fx_symmetrizoscope, fx_symmetrizoscope(1)
 #@gui : Iterations = int(4,1,32)
 #@gui : Angle = float(0,0,360)
-#@gui : Boundary = choice(1,"Transparent","Nearest","Repeat")
+#@gui : Boundary = choice(3,"Transparent","Nearest","Periodic","Mirror")
 #@gui : Symmetry sides = choice("Backward","Forward","Swap")
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>01/07/2013</i>.</small>")
 fx_symmetrizoscope :
-  -to_rgba -repeat $1
+  -if {!$3} -to_a -endif
+  -repeat $1
     ang={$2+180*$>/max(1,$1-1)}
     -symmetrize 50%,50%,$ang,$3,0,{if($4!=2,$4,$>%2)}
   -done
@@ -26950,9 +26956,10 @@ fx_symmetrizoscope :
 #@gui : Y-center = float(50,0,100)
 #@gui : X-offset = float(0,0,100)
 #@gui : Y-offset = float(0,0,100)
-#@gui : Boundary = choice(2,"Black","Nearest","Repeat")
+#@gui : Boundary = choice(2,"Transparent","Nearest","Periodic","Mirror")
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>12/29/2010</i>.</small>")
 fx_warp_perspective :
+  -if {!$8} -to_a -endif
   -shift $6%,$7%,0,0,2 -warp_perspective $1,$2,$3,$4,$5,$8
 
 #@gui Polar transform : fx_transform_polar, fx_transform_polar(1)
@@ -26961,9 +26968,10 @@ fx_warp_perspective :
 #@gui : Y-center (%) = float(50,0,100)
 #@gui : Radius = text{"r + R/10*cos(a*5)"}
 #@gui : Angle = text{"a"}
-#@gui : Boundary = choice(1,"Black","Nearest","Repeat")
+#@gui : Boundary = choice(3,"Transparent","Nearest","Periodic","Mirror")
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>12/29/2010</i>.</small>")
 fx_transform_polar :
+  -if {!$6} -to_a -endif
   -if {$1==0}
     -transform_polar "$4","$5",$2%,$3%,$6
   -elif {$1==1}
@@ -27107,12 +27115,13 @@ fx_map_sphere_preview :
 #@gui : X-center = float(50,0,100)
 #@gui : Y-center = float(50,0,100)
 #@gui : Angle = float(90,0,360)
-#@gui : Boundary = choice(1,"Transparent","Nearest","Repeat")
+#@gui : Boundary = choice(0,"Transparent","Nearest","Periodic","Mirror")
 #@gui : Type = choice("Symmetry","Antisymmetry")
 #@gui : Swap sides = bool(0)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>01/07/2013</i>.</small>")
 fx_symmetrize :
-  -to_rgba -symmetrize $1%,$2%,$3,$4,$5,$6
+  -if {!$4} -to_a -endif
+  -symmetrize $1%,$2%,$3,$4,$5,$6
 
 fx_symmetrize_preview :
   -fx_symmetrize $*
@@ -27161,9 +27170,10 @@ fx_textured_glass_preview :
 #@gui : Amplitude = float(1,-5,5)
 #@gui : X-center (%) = float(50,0,100)
 #@gui : Y-center (%) = float(50,0,100)
-#@gui : Boundary = choice(1,"Black","Nearest","Repeat")
+#@gui : Boundary = choice(3,"Transparent","Nearest","Periodic","Mirror")
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>12/29/2010</i>.</small>")
 fx_twirl :
+  -if {!$4} -to_a -endif
   -twirl $1,$2%,$3%,$4
 
 #@gui Water : water, water(0)
@@ -27201,10 +27211,10 @@ fx_wind_preview :
 #@gui : Factor = float(2,0.01,10)
 #@gui : X-center = float(50,0,100)
 #@gui : Y-center = float(50,0,100)
-#@gui : Boundary = choice(0,"Black","Nearest","Repeat")
+#@gui : Boundary = choice(0,"Transparent","Nearest","Periodic","Mirror")
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>12/29/2010</i>.</small>")
 fx_zoom :
-  -if {$1<1} -to_rgba -endif
+  -if {!$4" && "$1<1} -to_a -endif
   -zoom $1,{$2%},{$3%},0,$4
 
 
@@ -27689,15 +27699,16 @@ fx_watermark_visible : -skip "${1= }"
 #@gui : sep = separator()
 #@gui : Correlated channels = bool(0)
 #@gui : Interpolation = choice(1,"Nearest neighbor","Linear")
-#@gui : Boundary = choice(1,"Black","Nearest","Repeat")
+#@gui : Boundary = choice(3,"Transparent","Nearest","Periodic","Mirror")
 #@gui : sep = separator(), Channel(s) = choice("All","RGBA [all]","RGB [all]","RGB [red]","RGB [green]","RGB [blue]","RGBA [alpha]","Linear RGB [all]","Linear RGB [red]","Linear RGB [green]","Linear RGB [blue]","YCbCr [luminance]","YCbCr [blue-red chrominances]","YCbCr [blue chrominance]","YCbCr [red chrominance]","YCbCr [green chrominance]","Lab [lightness]","Lab [ab-chrominances]","Lab [a-chrominance]","Lab [b-chrominance]","Lch [ch-chrominances]","Lch [c-chrominance]","Lch [h-chrominance]","HSV [hue]","HSV [saturation]","HSV [value]","HSI [intensity]","HSL [lightness]","CMYK [cyan]","CMYK [magenta]","CMYK [yellow]","CMYK [key]","YIQ [luma]","YIQ [chromas]")
 #@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>09/02/2016</i>.</small>")
 fx_warp_by_intensity :
+  -if {!$7} -to_a -endif
   -ac "-_fx_warp_by_intensity ${1-7}",$8
 
 _fx_warp_by_intensity :
-  -if $5 -f "ni=norm2(R,G,B);J((ni-$3)*$1,(ni-$4)*$2,0,$6,$7)"
+  -if $5 -f "ni = norm2(R,G,B); J((ni-$3)*$1,(ni-$4)*$2,0,$6,$7)"
   -else -f "j((i-$3)*$1,(i-$4)*$2,0,0,$6,$7)"
   -endif
 
@@ -28741,7 +28752,7 @@ fx_emulate_film_collage_various :
 #@gui : Angle = float(0,0,360)
 #@gui : Zoom = float(1,0.1,5)
 #@gui : Mirror = choice("None","x-axis","y-axis","xy-axes")
-#@gui : Boundary = choice(1,"Black","Nearest","Repeat")
+#@gui : Boundary = choice(1,"Transparent","Nearest","Periodic","Mirror")
 #@gui : Drawing mode = choice{"Replace","Replace (sharpest)","Behind","Below"}
 #@gui : View outlines only = bool(0)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>06/11/2012</i>.</small>")
