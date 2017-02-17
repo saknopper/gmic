@@ -782,18 +782,20 @@ CImg<T> get_gmic_set(const double value,
 }
 
 CImg<T>& gmic_shift(const float delta_x, const float delta_y=0, const float delta_z=0, const float delta_c=0,
-                    const unsigned int boundary_conditions=0, const bool is_linear=false) {
+                    const unsigned int boundary_conditions=0, const bool interpolation=false) {
+  if (is_empty()) return *this;
   const int idelta_x = (int)delta_x, idelta_y = (int)delta_y, idelta_z = (int)delta_z, idelta_c = (int)delta_c;
-  if (!is_linear ||
+  if (!interpolation ||
       (delta_x==(float)idelta_x && delta_y==(float)idelta_y && delta_z==(float)idelta_z && delta_c==(float)idelta_c))
     return shift(idelta_x,idelta_y,idelta_z,idelta_c,boundary_conditions); // Integer displacement.
   return _gmic_shift(delta_x,delta_y,delta_z,delta_c,boundary_conditions).move_to(*this);
 }
 
 CImg<T> get_gmic_shift(const float delta_x, const float delta_y=0, const float delta_z=0, const float delta_c=0,
-                       const unsigned int boundary_conditions=0, const bool is_linear=false) const {
+                       const unsigned int boundary_conditions=0, const bool interpolation=false) const {
+  if (is_empty()) return CImg<T>::empty();
   const int idelta_x = (int)delta_x, idelta_y = (int)delta_y, idelta_z = (int)delta_z, idelta_c = (int)delta_c;
-  if (!is_linear ||
+  if (!interpolation ||
       (delta_x==(float)idelta_x && delta_y==(float)idelta_y && delta_z==(float)idelta_z && delta_c==(float)idelta_c))
     return (+*this).shift(idelta_x,idelta_y,idelta_z,idelta_c,boundary_conditions); // Integer displacement.
   return _gmic_shift(delta_x,delta_y,delta_z,delta_c,boundary_conditions);
@@ -804,16 +806,31 @@ CImg<T> _gmic_shift(const float delta_x, const float delta_y=0, const float delt
   CImg<T> res(_width,_height,_depth,_spectrum);
   if (delta_c!=0) // 4D shift
     switch (boundary_conditions) {
+    case 3 : { // Mirror
+      const float w2 = 2.0f*width(), h2 = 2.0f*height(), d2 = 2.0f*depth(), s2 = 2.0f*spectrum();
+      cimg_pragma_openmp(parallel for collapse(3) if (res.size()>=4096))
+      cimg_forXYZC(res,x,y,z,c) {
+        const float
+          mx = cimg::mod(x - delta_x,w2),
+          my = cimg::mod(y - delta_y,h2),
+          mz = cimg::mod(z - delta_z,d2),
+          mc = cimg::mod(c - delta_c,s2);
+        res(x,y,z,c) = _linear_atXYZC(mx<width()?mx:w2 - mx - 1,
+                                      my<height()?my:h2 - my - 1,
+                                      mz<depth()?mz:d2 - mz - 1,
+                                      mc<spectrum()?mc:s2 - mc - 1);
+      }
+    } break;
     case 2 : // Periodic
       cimg_pragma_openmp(parallel for collapse(3) if (res.size()>=4096))
-      cimg_forXYZC(res,x,y,z,c) res(x,y,z,c) = linear_atXYZC(cimg::mod(x - delta_x,(float)_width),
-                                                             cimg::mod(y - delta_y,(float)_height),
-                                                             cimg::mod(z - delta_z,(float)_depth),
-                                                             cimg::mod(c - delta_c,(float)_spectrum));
+      cimg_forXYZC(res,x,y,z,c) res(x,y,z,c) = _linear_atXYZC(cimg::mod(x - delta_x,(float)_width),
+                                                              cimg::mod(y - delta_y,(float)_height),
+                                                              cimg::mod(z - delta_z,(float)_depth),
+                                                              cimg::mod(c - delta_c,(float)_spectrum));
       break;
     case 1 : // Neumann
       cimg_pragma_openmp(parallel for collapse(3) if (res.size()>=4096))
-      cimg_forXYZC(res,x,y,z,c) res(x,y,z,c) = linear_atXYZC(x - delta_x,y - delta_y,z - delta_z,c - delta_c);
+      cimg_forXYZC(res,x,y,z,c) res(x,y,z,c) = _linear_atXYZC(x - delta_x,y - delta_y,z - delta_z,c - delta_c);
       break;
     default : // Dirichlet
       cimg_pragma_openmp(parallel for collapse(3) if (res.size()>=4096))
@@ -821,15 +838,28 @@ CImg<T> _gmic_shift(const float delta_x, const float delta_y=0, const float delt
     }
   else if (delta_z!=0) // 3D shift
     switch (boundary_conditions) {
+    case 3 : { // Mirror
+      const float w2 = 2.0f*width(), h2 = 2.0f*height(), d2 = 2.0f*depth();
+      cimg_pragma_openmp(parallel for collapse(3) if (res.size()>=4096))
+      cimg_forC(res,c) cimg_forXYZ(res,x,y,z) {
+        const float
+          mx = cimg::mod(x - delta_x,w2),
+          my = cimg::mod(y - delta_y,h2),
+          mz = cimg::mod(z - delta_z,d2);
+        res(x,y,z,c) = _linear_atXYZ(mx<width()?mx:w2 - mx - 1,
+                                     my<height()?my:h2 - my - 1,
+                                     mz<depth()?mz:d2 - mz - 1,c);
+      }
+    } break;
     case 2 : // Periodic
       cimg_pragma_openmp(parallel for collapse(3) if (res.size()>=4096))
-      cimg_forC(res,c) cimg_forXYZ(res,x,y,z) res(x,y,z,c) = linear_atXYZ(cimg::mod(x - delta_x,(float)_width),
-                                                                          cimg::mod(y - delta_y,(float)_height),
-                                                                          cimg::mod(z - delta_z,(float)_depth),c);
+      cimg_forC(res,c) cimg_forXYZ(res,x,y,z) res(x,y,z,c) = _linear_atXYZ(cimg::mod(x - delta_x,(float)_width),
+                                                                           cimg::mod(y - delta_y,(float)_height),
+                                                                           cimg::mod(z - delta_z,(float)_depth),c);
     break;
     case 1 : // Neumann
       cimg_pragma_openmp(parallel for collapse(3) if (res.size()>=4096))
-      cimg_forC(res,c) cimg_forXYZ(res,x,y,z) res(x,y,z,c) = linear_atXYZ(x - delta_x,y - delta_y,z - delta_z,c);
+      cimg_forC(res,c) cimg_forXYZ(res,x,y,z) res(x,y,z,c) = _linear_atXYZ(x - delta_x,y - delta_y,z - delta_z,c);
       break;
     default : // Dirichlet
       cimg_pragma_openmp(parallel for collapse(3) if (res.size()>=4096))
@@ -837,14 +867,25 @@ CImg<T> _gmic_shift(const float delta_x, const float delta_y=0, const float delt
     }
   else if (delta_y!=0) // 2D shift
     switch (boundary_conditions) {
+    case 3 : { // Mirror
+      const float w2 = 2.0f*width(), h2 = 2.0f*height();
+      cimg_pragma_openmp(parallel for collapse(3) if (res.size()>=4096))
+      cimg_forZC(res,z,c) cimg_forXY(res,x,y) {
+        const float
+          mx = cimg::mod(x - delta_x,w2),
+          my = cimg::mod(y - delta_y,h2);
+        res(x,y,z,c) = _linear_atXY(mx<width()?mx:w2 - mx - 1,
+                                    my<height()?my:h2 - my - 1,z,c);
+      }
+    } break;
     case 2 : // Periodic
       cimg_pragma_openmp(parallel for collapse(3) if (res.size()>=4096))
-      cimg_forZC(res,z,c) cimg_forXY(res,x,y) res(x,y,z,c) = linear_atXY(cimg::mod(x - delta_x,(float)_width),
-                                                                         cimg::mod(y - delta_y,(float)_height),z,c);
+      cimg_forZC(res,z,c) cimg_forXY(res,x,y) res(x,y,z,c) = _linear_atXY(cimg::mod(x - delta_x,(float)_width),
+                                                                          cimg::mod(y - delta_y,(float)_height),z,c);
       break;
     case 1 : // Neumann
       cimg_pragma_openmp(parallel for collapse(3) if (res.size()>=4096))
-      cimg_forZC(res,z,c) cimg_forXY(res,x,y) res(x,y,z,c) = linear_atXY(x - delta_x,y - delta_y,z,c);
+      cimg_forZC(res,z,c) cimg_forXY(res,x,y) res(x,y,z,c) = _linear_atXY(x - delta_x,y - delta_y,z,c);
       break;
     default : // Dirichlet
       cimg_pragma_openmp(parallel for collapse(3) if (res.size()>=4096))
@@ -852,13 +893,21 @@ CImg<T> _gmic_shift(const float delta_x, const float delta_y=0, const float delt
     }
   else // 1D shift
     switch (boundary_conditions) {
+    case 3 : { // Mirror
+      const float w2 = 2.0f*width();
+      cimg_pragma_openmp(parallel for collapse(3) if (res.size()>=4096))
+      cimg_forYZC(res,y,z,c) cimg_forX(res,x) {
+        const float mx = cimg::mod(x - delta_x,w2);
+        res(x,y,z,c) = _linear_atX(mx<width()?mx:w2 - mx - 1,y,z,c);
+      }
+    } break;
     case 2 : // Periodic
       cimg_pragma_openmp(parallel for collapse(3) if (res.size()>=4096))
-      cimg_forYZC(res,y,z,c) cimg_forX(res,x) res(x,y,z,c) = linear_atX(cimg::mod(x - delta_x,(float)_width),y,z,c);
+      cimg_forYZC(res,y,z,c) cimg_forX(res,x) res(x,y,z,c) = _linear_atX(cimg::mod(x - delta_x,(float)_width),y,z,c);
       break;
     case 1 : // Neumann
       cimg_pragma_openmp(parallel for collapse(3) if (res.size()>=4096))
-      cimg_forYZC(res,y,z,c) cimg_forX(res,x) res(x,y,z,c) = linear_atX(x - delta_x,y,z,c);
+      cimg_forYZC(res,y,z,c) cimg_forX(res,x) res(x,y,z,c) = _linear_atX(x - delta_x,y,z,c);
       break;
     default : // Dirichlet
       cimg_pragma_openmp(parallel for collapse(3) if (res.size()>=4096))
@@ -10030,7 +10079,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                   valy,sepy=='%'?"%x":"x",
                   valz,sepz=='%'?"%x":"x",
                   valc,sepc=='%'?"% ":"",
-                  interpolation<=0?"no":interpolation==1?"nearest neighbor":
+                  interpolation<=0?"no":interpolation==1?"nearest-neighbor":
                   interpolation==2?"moving average":interpolation==3?"linear":
                   interpolation==4?"grid":interpolation==5?"cubic":"lanczos",
                   boundary<=0?"dirichlet":boundary==1?"neumann":boundary==2?"periodic":"mirror",
@@ -10801,7 +10850,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
         if (!std::strcmp("-shift",command)) {
           gmic_substitute_args(false);
           float dx = 0, dy = 0, dz = 0, dc = 0;
-          unsigned int is_float = 0;
+          unsigned int interpolation = 0;
           sepx = sepy = sepz = sepc = *argx = *argy = *argz = *argc = 0;
           boundary = 0;
           if ((cimg_sscanf(argument,"%255[0-9.eE%+-]%c",
@@ -10818,7 +10867,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                            argx,argy,argz,argc,&boundary,&end)==5 ||
                cimg_sscanf(argument,"%255[0-9.eE%+-],%255[0-9.eE%+-],%255[0-9.eE%+-],"
                            "%255[0-9.eE%+-],%u,%u%c",
-                           argx,argy,argz,argc,&boundary,&is_float,&end)==6) &&
+                           argx,argy,argz,argc,&boundary,&interpolation,&end)==6) &&
               (cimg_sscanf(argx,"%f%c",&dx,&end)==1 ||
                (cimg_sscanf(argx,"%f%c%c",&dx,&sepx,&end)==2 && sepx=='%')) &&
               (!*argy ||
@@ -10830,17 +10879,17 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
               (!*argc ||
                cimg_sscanf(argc,"%f%c",&dc,&end)==1 ||
                (cimg_sscanf(argc,"%f%c%c",&dc,&sepc,&end)==2 && sepc=='%')) &&
-              boundary<=3 && is_float<=1) {
+              boundary<=3 && interpolation<=1) {
             print(images,0,
-                  "Shift image%s by %s displacement vector (%g%s,%g%s,%g%s,%g%s) and "
-                  "%s boundary conditions.",
+                  "Shift image%s by displacement vector (%g%s,%g%s,%g%s,%g%s), "
+                  "%s boundary conditions and %s interpolation.",
                   gmic_selection.data(),
-                  is_float?"float":"non-float",
                   dx,sepx=='%'?"%":"",
                   dy,sepy=='%'?"%":"",
                   dz,sepz=='%'?"%":"",
                   dc,sepc=='%'?"%":"",
-                  boundary==0?"dirichlet":boundary==1?"neumann":boundary==2?"periodic":"mirror");
+                  boundary==0?"dirichlet":boundary==1?"neumann":boundary==2?"periodic":"mirror",
+                  interpolation?"linear":"nearest-neighbor");
             cimg_forY(selection,l) {
               CImg<T> &img = images[selection[l]];
               const float
@@ -10848,7 +10897,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                 ndy = sepy=='%'?cimg::round(dy*img.height()/100):dy,
                 ndz = sepz=='%'?cimg::round(dz*img.depth()/100):dz,
                 ndc = sepc=='%'?cimg::round(dc*img.spectrum()/100):dc;
-              gmic_apply(gmic_shift(ndx,ndy,ndz,ndc,boundary,is_float));
+              gmic_apply(gmic_shift(ndx,ndy,ndz,ndc,boundary,(bool)interpolation));
             }
           } else arg_error("shift");
           is_released = false; ++position; continue;

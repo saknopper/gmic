@@ -7940,11 +7940,11 @@ _seamcarve :
     -rprogress {a=w/$1;if(a<1,a*100,100/a)}
   -while {w!=$1}
 
-#@cli shift : vx[%],_vy[%],_vz[%],_vc[%],_boundary_conditions,_is_linear={ 0 | 1 } : (+)
+#@cli shift : vx[%],_vy[%],_vz[%],_vc[%],_boundary_conditions,_interpolation={ 0=nearest_neighbor | 1=linear } : (+)
 #@cli : Shift selected images by specified displacement vector.
 #@cli : Displacement vector can be non-integer in which case linear interpolation of the shift is computed.
 #@cli : 'boundary_conditions' can be { 0=dirichlet | 1=neumann | 2=periodic | 3=mirror }.
-#@cli : Default value: 'boundary_conditions=0' and 'is_linear=0'.
+#@cli : Default value: 'boundary_conditions=0' and 'interpolation=0'.
 #@cli : $ image.jpg --shift[0] 50%,50%,0,0,0 --shift[0] 50%,50%,0,0,1 --shift[0] 50%,50%,0,0,2
 
 #@cli shrink_x : size_x>=0
