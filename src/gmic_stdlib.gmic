@@ -7473,7 +7473,7 @@ _montage :
 #@cli : 'interpolation' can be { -1=none (memory content) | 0=none | 1=nearest | 2=average | 3=linear | 4=grid | 5=bicubic | 6=lanczos }.
 #@cli : 'boundary_conditions' has different meanings, according to the chosen 'interpolation' mode :
 #@cli : . When 'interpolation=={ -1 | 1 | 2 | 4 }', 'boundary_conditions' is meaningless.
-#@cli : . When 'interpolation==0', 'boundary_conditions' can be { 0=dirichlet | 1=neumann | 2=periodic }.
+#@cli : . When 'interpolation==0', 'boundary_conditions' can be { 0=dirichlet | 1=neumann | 2=periodic | 3=mirror }.
 #@cli : . When 'interpolation=={ 3 | 5 | 6 }', 'boundary_conditions' can be { 0=none | 1=neumann }.
 #@cli : 'ax,ay,az,ac' set the centering along each axis when 'interpolation=0 or 4'
 #@cli : (set to '0' by default, must be defined in range [0,1]).

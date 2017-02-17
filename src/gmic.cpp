@@ -9940,7 +9940,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                cimg_sscanf(argument,"[%255[a-zA-Z0-9_.%+-]],%d,%u,%f,%f,%f,%f%c",
                            indices,&interpolation,&boundary,&cx,&cy,&cz,&cc,&end)==7) &&
               (ind=selection2cimg(indices,images.size(),images_names,"-resize")).height()==1 &&
-              interpolation>=-1 && interpolation<=6 && boundary<=2 &&
+              interpolation>=-1 && interpolation<=6 && boundary<=3 &&
               cx>=0 && cx<=1 && cy>=0 && cy<=1 && cz>=0 && cz<=1 && cc>=0 && cc<=1) {
             const int
               nvalx = images[*ind].width(),
@@ -9954,7 +9954,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                   interpolation<=0?"no":interpolation==1?"nearest-neighbor":
                   interpolation==2?"moving average":interpolation==3?"linear":
                   interpolation==4?"grid":interpolation==5?"cubic":"lanczos",
-                  boundary<=0?"dirichlet":boundary==1?"neumann":"periodic",
+                  boundary<=0?"dirichlet":boundary==1?"neumann":boundary==2?"periodic":"mirror",
                   cx,cy,cz,cc);
             cimg_forY(selection,l) gmic_apply(resize(nvalx,nvaly,nvalz,nvalc,interpolation,boundary,cx,cy,cz,cc));
             ++position;
@@ -10019,7 +10019,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                       (sepc=0,cimg_sscanf(argc,"%f%c",&valc,&sepc)==1 && valc>=1) ||
                       (cimg_sscanf(argc,"%f%c%c",&valc,&sepc,&end)==2 && sepc=='%')) &&
                      valx>0 && valy>0 && valz>0 && valc>0 &&
-                     interpolation>=-1 && interpolation<=6 && boundary<=2 &&
+                     interpolation>=-1 && interpolation<=6 && boundary<=3 &&
                      cx>=0 && cx<=1 && cy>=0 && cy<=1 && cz>=0 && cz<=1 && cc>=0 && cc<=1) {
             if (indx) { valx = (float)images[*indx].width(); sepx = 0; }
             if (indy) { valy = (float)images[*indy].height(); sepy = 0; }
@@ -10036,7 +10036,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                   interpolation<=0?"no":interpolation==1?"nearest neighbor":
                   interpolation==2?"moving average":interpolation==3?"linear":
                   interpolation==4?"grid":interpolation==5?"cubic":"lanczos",
-                  boundary<=0?"dirichlet":boundary==1?"neumann":"periodic",
+                  boundary<=0?"dirichlet":boundary==1?"neumann":boundary==2?"periodic":"mirror",
                   cx,cy,cz,cc);
             cimg_forY(selection,l) {
               CImg<T>& img = images[selection[l]];
