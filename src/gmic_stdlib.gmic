@@ -8015,28 +8015,29 @@ split_tiles : -skip ${2=$1},${3=0}
   -endif
   -v - -repeat $! -l[$<] -s y,$2 -s x,$1 -if $3 -r [0],[0],100%,100%,0 -endif -endl -done -v +
 
-#@cli undistort : _center_x[%],_center_y[%],-1<_alpha<1,aspect_ratio,_boundary_conditions
+#@cli undistort : -1<=_amplitude<=1,_aspect_ratio,_zoom,_center_x[%],_center_y[%],_boundary_conditions
 #@cli : Correct barrel/pincushion distortions occuring with wide-angle lens.
 #@cli : References:
 #@cli : [1] Zhang Z. (1999). Flexible camera calibration by viewing a plane from unknown orientation.
 #@cli : [2] Andrew W. Fitzgibbon (2001). Simultaneous linear estimation of multiple view geometry and lens distortion.
 #@cli : 'boundary_conditions' can be { 0=dirichlet | 1=neumann | 2=periodic | 3=mirror }.
-#@cli : Default values: 'center_x=center_y=50%', 'alpha=1', 'aspect_ratio=1' and 'boundary_conditions=0'.
-undistort : -skip ${1=50%},${2=50%} -check "${5=0}>=0 && $5<=3 && ${3=0.1}>-1 && $3<1 && ${4=1}"
-  -e[^-1] "Undistort barrel/pincushion effect in image$?, with center ($1,$2), alpha $3, aspect ratio $4 and "${"-arg 1+$5,dirichlet,neumann,periodic,mirror"}" boundary conditions."
+#@cli : Default values: 'amplitude=0.25', 'aspect_ratio=0', 'zoom=0', 'center_x=center_y=50%'  and 'boundary_conditions=0'.
+undistort : -check "${1=0.1}>=-1 && $1<=1 && ${6=0}>=0 && $6<=3" -skip ${2=0},${3=0},${4=50%},${5=50%}
+  -e[^-1] "Undistort barrel/pincushion effect in image$?, with amplitude $1, aspect ratio $2, zoom factor $3, center ($4,$5) and "${"-arg 1+$6,dirichlet,neumann,periodic,mirror"}" boundary conditions."
   -v - -repeat $! -l[$>]
-    center_x={${"-is_percent $1"}?w*$1:$1}
-    center_y={${"-is_percent $2"}?h*$2:$2}
+    center_x={${"-is_percent $4"}?w*$4:$4}
+    center_y={${"-is_percent $5"}?h*$5:$5}
     -f "
       const interpolation = 1;
-      const boundary = $5;
+      const boundary = $6;
       const center_x = "$center_x";
       const center_y = "$center_y";
-      const alpha = $3;
-      const ratio = $4;
+      const alpha = cut($1,-0.999,0.999);
+      const ratio = $2>=0?1+$2:1/(1-$2);
+      const zoom = $3>=0?1+$3:1/(1-$3);
       const M = max(w,h);
-      x = 2*(x - center_x)/(ratio*M);
-      y = 2*(y - center_y)/M;
+      x = 2*(x - center_x)/(zoom*ratio*M);
+      y = 2*(y - center_y)/(zoom*M);
       r = norm(x,y);
       nr = r/(1 - alpha*r^2);
       if (r>0,
@@ -27212,22 +27213,21 @@ fx_twirl :
   -if {!$4} -to_a -endif
   -twirl $1,$2%,$3%,$4
 
-#@gui Undistort : fx_undistort, fx_undistort_preview(1)
-#@gui : Barrel/pincushion = float(0,-1,1)
+#@gui Distort lens : fx_distort_lens, fx_distort_lens_preview(1)
+#@gui : Amplitude = float(0.1,-1,1)
 #@gui : Aspect ratio = float(0,-2,2)
+#@gui : Zoom = float(0,-4,4)
 #@gui : X-center (%) = float(50,0,100)
 #@gui : Y-center (%) = float(50,0,100)
 #@gui : Boundary = choice(0,"Transparent","Nearest","Periodic","Mirror")
 #@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>02/18/2017</i>.</small>")
-fx_undistort :
-  -if {!$5} -to_a -endif
-  alpha=$1
-  ratio={$2>=0?1+$2:1/(1-$2)}
-  -undistort $3%,$4%,{cut($alpha,-0.99,0.99)},$ratio,$5
+fx_distort_lens :
+  -if {!$6} -to_a -endif
+  -undistort ${1-3},$4%,$5%,$6
 
-fx_undistort_preview :
-  -gui_split_preview "-fx_undistort $*",$-1,0,1
+fx_distort_lens_preview :
+  -gui_split_preview "-fx_distort_lens $*",$-1,0,1
 
 #@gui Water : water, water(0)
 #@gui : Amplitude = float(30,0,300)
