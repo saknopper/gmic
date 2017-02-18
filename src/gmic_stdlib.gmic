@@ -26801,6 +26801,22 @@ fx_conformal_maps :
 fx_conformal_maps_preview :
   -fx_conformal_maps ${1-3},"$4",${5-11},0,0,0
 
+#@gui Distort lens : fx_distort_lens, fx_distort_lens_preview(1)
+#@gui : Amplitude = float(0.1,-1,1)
+#@gui : Aspect ratio = float(0,-2,2)
+#@gui : Zoom = float(0,-4,4)
+#@gui : X-center (%) = float(50,0,100)
+#@gui : Y-center (%) = float(50,0,100)
+#@gui : Boundary = choice(0,"Transparent","Nearest","Periodic","Mirror")
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
+#@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>02/18/2017</i>.</small>")
+fx_distort_lens :
+  -if {!$6} -to_a -endif
+  -undistort ${1-3},$4%,$5%,$6
+
+fx_distort_lens_preview :
+  -gui_split_preview "-fx_distort_lens $*",$-1,0,1
+
 #@gui Drop water : fx_drop_water, fx_drop_water_preview(1)
 #@gui : note = note("<small><b>Shape geometry:</b></small>")
 #@gui : Shapes = choice("Procedural","Opaque regions on top layer")
@@ -27212,22 +27228,6 @@ fx_textured_glass_preview :
 fx_twirl :
   -if {!$4} -to_a -endif
   -twirl $1,$2%,$3%,$4
-
-#@gui Distort lens : fx_distort_lens, fx_distort_lens_preview(1)
-#@gui : Amplitude = float(0.1,-1,1)
-#@gui : Aspect ratio = float(0,-2,2)
-#@gui : Zoom = float(0,-4,4)
-#@gui : X-center (%) = float(50,0,100)
-#@gui : Y-center (%) = float(50,0,100)
-#@gui : Boundary = choice(0,"Transparent","Nearest","Periodic","Mirror")
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
-#@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>02/18/2017</i>.</small>")
-fx_distort_lens :
-  -if {!$6} -to_a -endif
-  -undistort ${1-3},$4%,$5%,$6
-
-fx_distort_lens_preview :
-  -gui_split_preview "-fx_distort_lens $*",$-1,0,1
 
 #@gui Water : water, water(0)
 #@gui : Amplitude = float(30,0,300)
