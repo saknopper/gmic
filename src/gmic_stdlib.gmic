@@ -8015,6 +8015,39 @@ split_tiles : -skip ${2=$1},${3=0}
   -endif
   -v - -repeat $! -l[$<] -s y,$2 -s x,$1 -if $3 -r [0],[0],100%,100%,0 -endif -endl -done -v +
 
+#@cli undistort : _center_x[%],_center_y[%],-1<_alpha<1,aspect_ratio,_boundary_conditions
+#@cli : Correct barrel/pincushion distortions occuring with wide-angle lens.
+#@cli : References:
+#@cli : [1] Zhang Z. (1999). Flexible camera calibration by viewing a plane from unknown orientation.
+#@cli : [2] Andrew W. Fitzgibbon (2001). Simultaneous linear estimation of multiple view geometry and lens distortion.
+#@cli : 'boundary_conditions' can be { 0=dirichlet | 1=neumann | 2=periodic | 3=mirror }.
+#@cli : Default values: 'center_x=center_y=50%', 'alpha=1', 'aspect_ratio=1' and 'boundary_conditions=0'.
+undistort : -skip ${1=50%},${2=50%} -check "${5=0}>=0 && $5<=3 && ${3=0.1}>-1 && $3<1 && ${4=1}"
+  -e[^-1] "Undistort barrel/pincushion effect in image$?, with center ($1,$2), alpha $3, aspect ratio $4 and "${"-arg 1+$5,dirichlet,neumann,periodic,mirror"}" boundary conditions."
+  -v - -repeat $! -l[$>]
+    center_x={${"-is_percent $1"}?w*$1:$1}
+    center_y={${"-is_percent $2"}?h*$2:$2}
+    -f "
+      const interpolation = 1;
+      const boundary = $5;
+      const center_x = "$center_x";
+      const center_y = "$center_y";
+      const alpha = $3;
+      const ratio = $4;
+      const M = max(w,h);
+      x = 2*(x - center_x)/(ratio*M);
+      y = 2*(y - center_y)/M;
+      r = norm(x,y);
+      nr = r/(1 - alpha*r^2);
+      if (r>0,
+        nx = nr/r*x; ny = nr/r*y,
+        nx = x; ny = y
+      );
+      x = 0.5*nx*ratio*M + center_x;
+      y = 0.5*ny*M + center_y;
+      I(x,y)"
+  -endl -done -v +
+
 #@cli y : eq. to '-unroll'. : (+)
 
 #@cli unroll : _axis={ x | y | z | c } : (+)
@@ -24427,12 +24460,15 @@ fx_vector_painting_preview :
 #@gui : Color = float(40,0,60)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>12/29/2010</i>.</small>")
 
-#@gui Whirl drawing : draw_whirl, fx_draw_whirl_preview(0)
+#@gui Whirl drawing : fx_draw_whirl, fx_draw_whirl_preview(0)
 #@gui : Amplitude = float(20,0,100)
 #@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>12/29/2010</i>.</small>")
+fx_draw_whirl :
+  -repeat $! -l[$>] -split_opacity -draw_whirl[0] $* -a c -endl -done
+
 fx_draw_whirl_preview :
-  -gui_split_preview "-draw_whirl $*",$-1
+  -gui_split_preview "-fx_draw_whirl $*",$-1
 
 
 #@gui _<b>Black &amp; white</b>
@@ -27175,6 +27211,23 @@ fx_textured_glass_preview :
 fx_twirl :
   -if {!$4} -to_a -endif
   -twirl $1,$2%,$3%,$4
+
+#@gui Undistort : fx_undistort, fx_undistort_preview(1)
+#@gui : Barrel/pincushion = float(0,-1,1)
+#@gui : Aspect ratio = float(0,-2,2)
+#@gui : X-center (%) = float(50,0,100)
+#@gui : Y-center (%) = float(50,0,100)
+#@gui : Boundary = choice(0,"Transparent","Nearest","Periodic","Mirror")
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
+#@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>02/18/2017</i>.</small>")
+fx_undistort :
+  -if {!$5} -to_a -endif
+  alpha=$1
+  ratio={$2>=0?1+$2:1/(1-$2)}
+  -undistort $3%,$4%,{cut($alpha,-0.99,0.99)},$ratio,$5
+
+fx_undistort_preview :
+  -gui_split_preview "-fx_undistort $*",$-1,0,1
 
 #@gui Water : water, water(0)
 #@gui : Amplitude = float(30,0,300)

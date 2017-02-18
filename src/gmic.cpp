@@ -4453,7 +4453,8 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
   CImg<T> g_img;
 
   unsigned int next_debug_line = ~0U, next_debug_filename = ~0U, _debug_line, _debug_filename,
-    is_high_connectivity, __ind = 0, boundary = 0, pattern = 0, exit_on_anykey = 0, wind = 0;
+    is_high_connectivity, __ind = 0, boundary = 0, pattern = 0, exit_on_anykey = 0, wind = 0,
+    interpolation = 0;
   char end, sep = 0, sep0 = 0, sep1 = 0, sepx = 0, sepy = 0, sepz = 0, sepc = 0, axis = 0;
   double vmin = 0, vmax = 0, value, value0, value1, nvalue, nvalue0, nvalue1;
   bool is_endlocal = false;
@@ -9974,9 +9975,9 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
           float valx = 100, valy = 100, valz = 100, valc = 100, cx = 0, cy = 0, cz = 0, cc = 0;
           CImg<char> indicesy(256), indicesz(256), indicesc(256);
           CImg<unsigned int> ind, indx, indy, indz, indc;
-          int interpolation = 1;
           *indices = *indicesy = *indicesz = *indicesc = *argx = *argy = *argz = *argc = sep = 0;
           sepx = sepy = sepz = sepc = '%';
+          interpolation = 1;
           boundary = 0;
 
           if (((cimg_sscanf(argument,"[%255[a-zA-Z0-9_.%+-]%c%c",
@@ -10229,8 +10230,8 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
         if (!std::strcmp("-rotate",command)) {
           gmic_substitute_args(false);
           float angle = 0, u = 0, v = 0, w = 0, cx = 0, cy = 0, cz = 0;
-          unsigned int interpolation = 1;
           char sep2 = sep1 = sep0 = *argx = *argy = *argz = 0;
+          interpolation = 1;
           boundary = 0;
           if ((cimg_sscanf(argument,"%f%c",
                            &angle,&end)==1 ||
@@ -10858,9 +10859,8 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
         if (!std::strcmp("-shift",command)) {
           gmic_substitute_args(false);
           float dx = 0, dy = 0, dz = 0, dc = 0;
-          unsigned int interpolation = 0;
           sepx = sepy = sepz = sepc = *argx = *argy = *argz = *argc = 0;
-          boundary = 0;
+          interpolation = boundary = 0;
           if ((cimg_sscanf(argument,"%255[0-9.eE%+-]%c",
                            argx,&end)==1 ||
                cimg_sscanf(argument,"%255[0-9.eE%+-],%255[0-9.eE%+-]%c",
@@ -11100,7 +11100,8 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
           gmic_substitute_args(true);
           float amplitude = 0, sharpness = 0.7f, anisotropy = 0.3f, alpha = 0.6f,
             sigma = 1.1f, dl =0.8f, da = 30.0f, gauss_prec = 2.0f;
-          unsigned int interpolation = 0, is_fast_approximation = 1;
+          unsigned int is_fast_approximation = 1;
+          interpolation = 0;
           sep = 0;
           if ((cimg_sscanf(argument,"%f%c",
                            &amplitude,&end)==1 ||
@@ -12268,8 +12269,9 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
         // Warp.
         if (!std::strcmp("-warp",command)) {
           gmic_substitute_args(true);
-          unsigned int interpolation = 1, mode = 0;
+          unsigned int mode = 0;
           float nb_frames = 1;
+          interpolation = 1;
           boundary = 1;
           sep = 0;
           if (((cimg_sscanf(argument,"[%255[a-zA-Z0-9_.%+-]%c%c",
