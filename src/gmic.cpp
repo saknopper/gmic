@@ -9977,25 +9977,25 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
           CImg<unsigned int> ind, indx, indy, indz, indc;
           *indices = *indicesy = *indicesz = *indicesc = *argx = *argy = *argz = *argc = sep = 0;
           sepx = sepy = sepz = sepc = '%';
-          interpolation = 1;
+          int iinterpolation = 1;
           boundary = 0;
 
           if (((cimg_sscanf(argument,"[%255[a-zA-Z0-9_.%+-]%c%c",
                             indices,&sep,&end)==2 && sep==']') ||
                cimg_sscanf(argument,"[%255[a-zA-Z0-9_.%+-]],%d%c",
-                           indices,&interpolation,&end)==2 ||
+                           indices,&iinterpolation,&end)==2 ||
                cimg_sscanf(argument,"[%255[a-zA-Z0-9_.%+-]],%d,%u%c",
-                           indices,&interpolation,&boundary,&end)==3 ||
+                           indices,&iinterpolation,&boundary,&end)==3 ||
                cimg_sscanf(argument,"[%255[a-zA-Z0-9_.%+-]],%d,%u,%f%c",
-                           indices,&interpolation,&boundary,&cx,&end)==4 ||
+                           indices,&iinterpolation,&boundary,&cx,&end)==4 ||
                cimg_sscanf(argument,"[%255[a-zA-Z0-9_.%+-]],%d,%u,%f,%f%c",
-                           indices,&interpolation,&boundary,&cx,&cy,&end)==5 ||
+                           indices,&iinterpolation,&boundary,&cx,&cy,&end)==5 ||
                cimg_sscanf(argument,"[%255[a-zA-Z0-9_.%+-]],%d,%u,%f,%f,%f%c",
-                           indices,&interpolation,&boundary,&cx,&cy,&cz,&end)==6 ||
+                           indices,&iinterpolation,&boundary,&cx,&cy,&cz,&end)==6 ||
                cimg_sscanf(argument,"[%255[a-zA-Z0-9_.%+-]],%d,%u,%f,%f,%f,%f%c",
-                           indices,&interpolation,&boundary,&cx,&cy,&cz,&cc,&end)==7) &&
+                           indices,&iinterpolation,&boundary,&cx,&cy,&cz,&cc,&end)==7) &&
               (ind=selection2cimg(indices,images.size(),images_names,"-resize")).height()==1 &&
-              interpolation>=-1 && interpolation<=6 && boundary<=3 &&
+              iinterpolation>=-1 && iinterpolation<=6 && boundary<=3 &&
               cx>=0 && cx<=1 && cy>=0 && cy<=1 && cz>=0 && cz<=1 && cc>=0 && cc<=1) {
             const int
               nvalx = images[*ind].width(),
@@ -10006,14 +10006,14 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                   "%s boundary conditions and alignment (%g,%g,%g,%g).",
                   gmic_selection.data(),
                   nvalx,nvaly,nvalz,nvalc,
-                  interpolation<=0?"no":interpolation==1?"nearest-neighbor":
-                  interpolation==2?"moving average":interpolation==3?"linear":
-                  interpolation==4?"grid":interpolation==5?"cubic":"lanczos",
+                  iinterpolation<=0?"no":iinterpolation==1?"nearest-neighbor":
+                  iinterpolation==2?"moving average":iinterpolation==3?"linear":
+                  iinterpolation==4?"grid":iinterpolation==5?"cubic":"lanczos",
                   boundary<=0?"dirichlet":boundary==1?"neumann":boundary==2?"periodic":"mirror",
                   cx,cy,cz,cc);
-            cimg_forY(selection,l) gmic_apply(resize(nvalx,nvaly,nvalz,nvalc,interpolation,boundary,cx,cy,cz,cc));
+            cimg_forY(selection,l) gmic_apply(resize(nvalx,nvaly,nvalz,nvalc,iinterpolation,boundary,cx,cy,cz,cc));
             ++position;
-          } else if ((cx=cy=cz=cc=0, interpolation=1, boundary=0, true) &&
+          } else if ((cx=cy=cz=cc=0, iinterpolation=1, boundary=0, true) &&
                      (cimg_sscanf(argument,"%255[][a-zA-Z0-9_.eE%+-]%c",
                                   argx,&end)==1 ||
                       cimg_sscanf(argument,"%255[][a-zA-Z0-9_.eE%+-],%255[][a-zA-Z0-9_.eE%+-]%c",
@@ -10026,26 +10026,26 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                                   argx,argy,argz,argc,&end)==4 ||
                       cimg_sscanf(argument,"%255[][a-zA-Z0-9_.eE%+-],%255[][a-zA-Z0-9_.eE%+-],"
                                   "%255[][a-zA-Z0-9_.eE%+-],%255[][a-zA-Z0-9_.eE%+-],%d%c",
-                                  argx,argy,argz,argc,&interpolation,&end)==5 ||
+                                  argx,argy,argz,argc,&iinterpolation,&end)==5 ||
                       cimg_sscanf(argument,"%255[][a-zA-Z0-9_.eE%+-],%255[][a-zA-Z0-9_.eE%+-],"
                                   "%255[][a-zA-Z0-9_.eE%+-],%255[][a-zA-Z0-9_.eE%+-],%d,%u%c",
-                                  argx,argy,argz,argc,&interpolation,&boundary,&end)==6 ||
+                                  argx,argy,argz,argc,&iinterpolation,&boundary,&end)==6 ||
                       cimg_sscanf(argument,"%255[][a-zA-Z0-9_.eE%+-],%255[][a-zA-Z0-9_.eE%+-],"
                                   "%255[][a-zA-Z0-9_.eE%+-],%255[][a-zA-Z0-9_.eE%+-],%d,%u,%f%c",
-                                  argx,argy,argz,argc,&interpolation,&boundary,&cx,&end)==7 ||
+                                  argx,argy,argz,argc,&iinterpolation,&boundary,&cx,&end)==7 ||
                       cimg_sscanf(argument,"%255[][a-zA-Z0-9_.eE%+-],%255[][a-zA-Z0-9_.eE%+-],"
                                   "%255[][a-zA-Z0-9_.eE%+-],%255[][a-zA-Z0-9_.eE%+-],%d,%u,%f,"
                                   "%f%c",
-                                  argx,argy,argz,argc,&interpolation,&boundary,&cx,&cy,&end)==8||
+                                  argx,argy,argz,argc,&iinterpolation,&boundary,&cx,&cy,&end)==8||
                       cimg_sscanf(argument,"%255[][a-zA-Z0-9_.eE%+-],%255[][a-zA-Z0-9_.eE%+-],"
                                   "%255[][a-zA-Z0-9_.eE%+-],%255[][a-zA-Z0-9_.eE%+-],%d,%u,%f,"
                                   "%f,%f%c",
-                                  argx,argy,argz,argc,&interpolation,&boundary,
+                                  argx,argy,argz,argc,&iinterpolation,&boundary,
                                   &cx,&cy,&cz,&end)==9 ||
                       cimg_sscanf(argument,"%255[][a-zA-Z0-9_.eE%+-],%255[][a-zA-Z0-9_.eE%+-],"
                                   "%255[][a-zA-Z0-9_.eE%+-],%255[][a-zA-Z0-9_.eE%+-],%d,%u,%f,"
                                   "%f,%f,%f%c",
-                                  argx,argy,argz,argc,&interpolation,&boundary,
+                                  argx,argy,argz,argc,&iinterpolation,&boundary,
                                   &cx,&cy,&cz,&cc,&end)==10) &&
                      ((cimg_sscanf(argx,"[%255[a-zA-Z0-9_.%+-]%c%c",indices,&sepx,&end)==2 &&
                        sepx==']' &&
@@ -10074,7 +10074,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                       (sepc=0,cimg_sscanf(argc,"%f%c",&valc,&sepc)==1 && valc>=1) ||
                       (cimg_sscanf(argc,"%f%c%c",&valc,&sepc,&end)==2 && sepc=='%')) &&
                      valx>0 && valy>0 && valz>0 && valc>0 &&
-                     interpolation>=-1 && interpolation<=6 && boundary<=3 &&
+                     iinterpolation>=-1 && iinterpolation<=6 && boundary<=3 &&
                      cx>=0 && cx<=1 && cy>=0 && cy<=1 && cz>=0 && cz<=1 && cc>=0 && cc<=1) {
             if (indx) { valx = (float)images[*indx].width(); sepx = 0; }
             if (indy) { valy = (float)images[*indy].height(); sepy = 0; }
@@ -10088,9 +10088,9 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                   valy,sepy=='%'?"%x":"x",
                   valz,sepz=='%'?"%x":"x",
                   valc,sepc=='%'?"% ":"",
-                  interpolation<=0?"no":interpolation==1?"nearest-neighbor":
-                  interpolation==2?"moving average":interpolation==3?"linear":
-                  interpolation==4?"grid":interpolation==5?"cubic":"lanczos",
+                  iinterpolation<=0?"no":iinterpolation==1?"nearest-neighbor":
+                  iinterpolation==2?"moving average":iinterpolation==3?"linear":
+                  iinterpolation==4?"grid":iinterpolation==5?"cubic":"lanczos",
                   boundary<=0?"dirichlet":boundary==1?"neumann":boundary==2?"periodic":"mirror",
                   cx,cy,cz,cc);
             cimg_forY(selection,l) {
@@ -10104,7 +10104,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                 nvaly = _nvaly?_nvaly:1,
                 nvalz = _nvalz?_nvalz:1,
                 nvalc = _nvalc?_nvalc:1;
-              gmic_apply(resize(nvalx,nvaly,nvalz,nvalc,interpolation,boundary,cx,cy,cz,cc));
+              gmic_apply(resize(nvalx,nvaly,nvalz,nvalc,iinterpolation,boundary,cx,cy,cz,cc));
             }
             ++position;
           } else {
@@ -11379,9 +11379,10 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
         // Extract 3d streamline.
         if (!std::strcmp("-streamline3d",command)) {
           gmic_substitute_args(false);
-          unsigned int interp = 2, is_backward = 0, is_oriented_only = 0;
+          unsigned int is_backward = 0, is_oriented_only = 0;
           float x = 0, y = 0, z = 0, L = 100, dl = 0.1f;
           sepx = sepy = sepz = *formula = 0;
+          interpolation = 2;
           if ((cimg_sscanf(argument,"%255[0-9.eE%+-],%255[0-9.eE%+-],%255[0-9.eE%+-]%c",
                            argx,argy,argz,&end)==3 ||
                cimg_sscanf(argument,"%255[0-9.eE%+-],%255[0-9.eE%+-],%255[0-9.eE%+-],%f%c",
@@ -11389,13 +11390,13 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                cimg_sscanf(argument,"%255[0-9.eE%+-],%255[0-9.eE%+-],%255[0-9.eE%+-],%f,%f%c",
                            argx,argy,argz,&L,&dl,&end)==5 ||
                cimg_sscanf(argument,"%255[0-9.eE%+-],%255[0-9.eE%+-],%255[0-9.eE%+-],%f,%f,%u%c",
-                           argx,argy,argz,&L,&dl,&interp,&end)==6 ||
+                           argx,argy,argz,&L,&dl,&interpolation,&end)==6 ||
                cimg_sscanf(argument,"%255[0-9.eE%+-],%255[0-9.eE%+-],%255[0-9.eE%+-],%f,%f,%u,"
                            "%u%c",
-                           argx,argy,argz,&L,&dl,&interp,&is_backward,&end)==7 ||
+                           argx,argy,argz,&L,&dl,&interpolation,&is_backward,&end)==7 ||
                cimg_sscanf(argument,"%255[0-9.eE%+-],%255[0-9.eE%+-],%255[0-9.eE%+-],%f,%f,%u,"
                            "%u,%u%c",
-                           argx,argy,argz,&L,&dl,&interp,&is_backward,
+                           argx,argy,argz,&L,&dl,&interpolation,&is_backward,
                            &is_oriented_only,&end)==8) &&
               (cimg_sscanf(argx,"%f%c",&x,&end)==1 ||
                (cimg_sscanf(argx,"%f%c%c",&x,&sepx,&end)==2 && sepx=='%')) &&
@@ -11405,7 +11406,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
               (!*argz ||
                cimg_sscanf(argz,"%f%c",&z,&end)==1 ||
                (cimg_sscanf(argz,"%f%c%c",&z,&sepz,&end)==2 && sepz=='%')) &&
-              L>=0 && dl>0 && interp<4 && is_backward<=1 && is_oriented_only<=1) {
+              L>=0 && dl>0 && interpolation<4 && is_backward<=1 && is_oriented_only<=1) {
             print(images,0,"Extract 3d streamline from image%s, starting from (%g%s,%g%s,%g%s).",
                   gmic_selection.data(),
                   x,sepx=='%'?"%":"",
@@ -11418,7 +11419,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                 nx = cimg::round(sepx=='%'?x*(img.width() - 1)/100:x),
                 ny = cimg::round(sepy=='%'?y*(img.height() - 1)/100:y),
                 nz = cimg::round(sepz=='%'?z*(img.depth() - 1)/100:z);
-              img.get_streamline(nx,ny,nz,L,dl,interp,
+              img.get_streamline(nx,ny,nz,L,dl,interpolation,
                                  (bool)is_backward,(bool)is_oriented_only).move_to(vertices);
               if (vertices.width()>1) {
                 primitives.assign(vertices.width() - 1,1,2);
@@ -11446,18 +11447,18 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                       cimg_sscanf(argument,"'%4095[^']',%f,%f,%f,%f,%f%c",
                                   formula,&x,&y,&z,&L,&dl,&end)==6 ||
                       cimg_sscanf(argument,"'%4095[^']',%f,%f,%f,%f,%f,%u%c",
-                                  formula,&x,&y,&z,&L,&dl,&interp,&end)==7 ||
+                                  formula,&x,&y,&z,&L,&dl,&interpolation,&end)==7 ||
                       cimg_sscanf(argument,"'%4095[^']',%f,%f,%f,%f,%f,%u,%u%c",
-                                  formula,&x,&y,&z,&L,&dl,&interp,&is_backward,&end)==8 ||
+                                  formula,&x,&y,&z,&L,&dl,&interpolation,&is_backward,&end)==8 ||
                       cimg_sscanf(argument,"'%4095[^']',%f,%f,%f,%f,%f,%u,%u,%u%c",
-                                  formula,&x,&y,&z,&L,&dl,&interp,&is_backward,
+                                  formula,&x,&y,&z,&L,&dl,&interpolation,&is_backward,
                                   &is_oriented_only,&end)==9) &&
-                     dl>0 && interp<4) {
+                     dl>0 && interpolation<4) {
             strreplace_fw(formula);
             print(images,0,"Extract 3d streamline from formula '%s', starting from (%g,%g,%g).",
                   formula,
                   x,y,z);
-            CImg<T>::streamline((const char *)formula,x,y,z,L,dl,interp,
+            CImg<T>::streamline((const char *)formula,x,y,z,L,dl,interpolation,
                                 (bool)is_backward,(bool)is_oriented_only).move_to(vertices);
             if (vertices.width()>1) {
               primitives.assign(vertices.width() - 1,1,2);
