@@ -32,21 +32,31 @@ OutputBaseFilename=gmic_gimp_XXX_win64
 
 [Files]
 Source: gmic-gimp-build\gmic_gimpYYY.exe; DestDir: {app}
+Source: gmic-gimp-build\gmic_gimpYYY.exe; DestDir: {app}
 Source: gmic-gimp-build\gmic_film_cluts.gmz; DestDir: {app}
 Source: gmic-gimp-build\libcurl-4.dll; DestDir: {app}
 Source: gmic-gimp-build\libeay32.dll; DestDir: {app}
-Source: gmic-gimp-build\libeay32__.dll; DestDir: {app}
+Source: gmic-gimp-build\libffi-6.dll; DestDir: {app}
 Source: gmic-gimp-build\libfftw3-3.dll; DestDir: {app}
 Source: gmic-gimp-build\libgcc_s_seh-1.dll; DestDir: {app}
+Source: gmic-gimp-build\libgmp-10.dll; DestDir: {app}
+Source: gmic-gimp-build\libgnutls-30.dll; DestDir: {app}
 Source: gmic-gimp-build\libgomp-1.dll; DestDir: {app}
+Source: gmic-gimp-build\libhogweed-4.dll; DestDir: {app}
+Source: gmic-gimp-build\libiconv-2.dll; DestDir: {app}
+Source: gmic-gimp-build\libidn-11.dll; DestDir: {app}
+Source: gmic-gimp-build\libintl-8.dll; DestDir: {app}
+Source: gmic-gimp-build\libnettle-6.dll; DestDir: {app}
+Source: gmic-gimp-build\libnghttp2-14.dll; DestDir: {app}
+Source: gmic-gimp-build\libp11-kit-0.dll; DestDir: {app}
 Source: gmic-gimp-build\libpng16-16.dll; DestDir: {app}
-Source: gmic-gimp-build\libssh2-1__.dll; DestDir: {app}
+Source: gmic-gimp-build\librtmp-1.dll; DestDir: {app}
+Source: gmic-gimp-build\libssh2-1.dll; DestDir: {app}
 Source: gmic-gimp-build\libstdc++-6.dll; DestDir: {app}
+Source: gmic-gimp-build\libtasn1-6.dll; DestDir: {app}
 Source: gmic-gimp-build\libwinpthread-1.dll; DestDir: {app}
-Source: gmic-gimp-build\pthreadGC2-w64.dll; DestDir: {app}
 Source: gmic-gimp-build\ssleay32.dll; DestDir: {app}
 Source: gmic-gimp-build\zlib1.dll; DestDir: {app}
-Source: gmic-gimp-build\zlib1__.dll; DestDir: {app}
 
 ;[Icons]
 ;Name: {userstartmenu}\Gimp\Gmic_Gimp\Uninstall Gmic_Gimp; Filename: {uninstallexe}
