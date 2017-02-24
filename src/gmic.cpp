@@ -731,7 +731,7 @@ const CImg<T>& gmic_print(const char *const title, const bool is_debug,
   std::fprintf(cimg::output(),"%s%s%s%s:\n  %ssize%s = (%u,%u,%u,%u) [%lu %s of %s%ss].\n  %sdata%s = %s",
                cimg::t_magenta,cimg::t_bold,title,cimg::t_normal,
                cimg::t_bold,cimg::t_normal,_width,_height,_depth,_spectrum,
-               (unsigned long)(mdisp==0?msiz:(mdisp==1?(msiz>>10):(msiz>>20))),
+               mdisp==0?msiz:(mdisp==1?(msiz>>10):(msiz>>20)),
                mdisp==0?"b":(mdisp==1?"Kio":"Mio"),
                _is_shared?"shared ":"",
                cimg::type<T>::string(),
@@ -4433,6 +4433,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
   }
   typedef typename cimg::superset<T,float>::type Tfloat;
   typedef typename cimg::superset<T,cimg_long>::type Tlong;
+  typedef typename cimg::last<T,cimg_ulong>::type ulongT;
   typedef typename cimg::last<T,cimg_long>::type longT;
   typedef typename cimg::last<T,cimg_uint64>::type uint64T;
   typedef typename cimg::last<T,cimg_int64>::type int64T;
@@ -9483,7 +9484,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
 #if cimg_OS!=2
 
 #if defined(__MACOSX__) || defined(__APPLE__)
-            const uint64T stacksize = (uint64T)8*1024*1024;
+            const ulongT stacksize = (ulongT)8*1024*1024;
             pthread_attr_t thread_attr;
             if (!pthread_attr_init(&thread_attr) && !pthread_attr_setstacksize(&thread_attr,stacksize))
               // Reserve enough stack size for the new thread.
@@ -13634,20 +13635,20 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
 
           // Raw file.
           float dx = 0, dy = 1, dz = 1, dc = 1;
-          uint64T offset = 0;
+          ulongT offset = 0;
           *argx = 0;
           if (!*options ||
               cimg_sscanf(options,"%f%c",&dx,&end)==1 ||
               cimg_sscanf(options,"%f,%f%c",&dx,&dy,&end)==2 ||
               cimg_sscanf(options,"%f,%f,%f%c",&dx,&dy,&dz,&end)==3 ||
               cimg_sscanf(options,"%f,%f,%f,%f%c",&dx,&dy,&dz,&dc,&end)==4 ||
-              cimg_sscanf(options,"%f,%f,%f,%f," cimg_fuint64 ",%c",&dx,&dy,&dz,&dc,&offset,&end)==5 ||
+              cimg_sscanf(options,"%f,%f,%f,%f,%lu%c",&dx,&dy,&dz,&dc,&offset,&end)==5 ||
               cimg_sscanf(options,"%255[a-z64]%c",argx,&end)==1 ||
               cimg_sscanf(options,"%255[a-z64],%f%c",argx,&dx,&end)==2 ||
               cimg_sscanf(options,"%255[a-z64],%f,%f%c",argx,&dx,&dy,&end)==3 ||
               cimg_sscanf(options,"%255[a-z64],%f,%f,%f%c",argx,&dx,&dy,&dz,&end)==4 ||
               cimg_sscanf(options,"%255[a-z64],%f,%f,%f,%f%c",argx,&dx,&dy,&dz,&dc,&end)==5 ||
-              cimg_sscanf(options,"%255[a-z64],%f,%f,%f,%f," cimg_fuint64 ",%c",argx,&dx,&dy,&dz,&dc,&offset,
+              cimg_sscanf(options,"%255[a-z64],%f,%f,%f,%f,%lu%c",argx,&dx,&dy,&dz,&dc,&offset,
                           &end)==6) {
             const char *const stype = *argx?argx:cimg::type<T>::string();
             dx = cimg::round(dx);
@@ -13662,7 +13663,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
 
             if (offset)
               print(images,0,"Input raw file '%s' (offset: %lu) with type '%s' at position%s",
-                    _filename0,(unsigned long)offset,stype,
+                    _filename0,offset,stype,
                     _gmic_selection.data());
             else
               print(images,0,"Input raw file '%s' with type '%s' at position%s",
