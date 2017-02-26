@@ -16718,22 +16718,22 @@ pink_wshed : -check "${1=4}==4 || $1==8 || $1==6 || $1==26" -skip ${2=0},${3=0}
     -if {d==1}
       -check "${1=4}==4 || $1==8"
       -repeat $! -l[$>]
-        -if {$2!=0} -negate -endif
         -f max(min(i,255),0)
+        -if {$2!=0} -negate 255 -endif
         -if {$3>=0} -pink heightminima,$1,$3 -endif
         -pink wshedtopo,$1
-        -if {$2!=0} -negate -endif
+        -if {$2!=0} -negate 255 -endif
       -endl -done
     -else
       -check "$1==6 || $1==26"
       -repeat $! -l[$>]
-        -if {$2!=0} -negate -endif
         -f max(min(i,255),0)
+        -if {$2!=0} -negate 255 -endif
         -if {$3>=0}
           -pink heightminima,$1,$3
         -endif
         -pink wshedtopo,$1
-        -if {$2!=0} -negate -endif
+        -if {$2!=0} -negate 255 -endif
       -endl -done
     -endif
     -if {$s>1} -a[-$s--1] c -endif
