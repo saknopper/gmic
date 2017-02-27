@@ -42,7 +42,6 @@
 
 // Include necessary header files.
 //--------------------------------
-#define cimg_display_type 0
 #include "gmic.h"
 #include "gmic_stdlib.h"
 #include <pthread.h>
