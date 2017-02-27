@@ -18415,7 +18415,7 @@ x_bouncing :
 #@cli : Set 'colorspace' to 'last' to apply last defined color curves without opening interactive windows.
 #@cli : Default value: 'colorspace=rgb'.
 x_color_curves : -skip ${1=rgb}
-  -if {!{*,u}} -error[0--3] "Command '-$0': No display available." -return -endif
+  -if {['"$1"']!='last'&&!{*,u}} -error[0--3] "Command '-$0': No display available." -return -endif
   -v - -use_vt100 g=$_gmic_g c=$_gmic_c n=$_gmic_n r=$_gmic_r -v +
   -e[^-1] "Apply color curves of image$?, in the '$1' colorspace."
   -if {['"$1"']=='last'} -v -
