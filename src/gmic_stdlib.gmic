@@ -22341,8 +22341,8 @@ gui_autocrop_layers :
 #@gui_en About G'MIC : _none_, fx_logo_en
 #@gui_en : note = note{"
 #@gui_en : <span foreground="purple">( <b>G</b>REYC's <b>M</b>agic for <b>I</b>mage <b>C</b>omputing )</span>\n\nis proposed to you by"}
-#@gui_en : note = link("David Tschumperl\303\251","http://tschumperle.users.greyc.fr/")
-#@gui_en : note = link("S\303\251bastien Fourey","https://foureys.users.greyc.fr/")
+#@gui_en : note = link("David Tschumperl&#233;","http://tschumperle.users.greyc.fr/")
+#@gui_en : note = link("S&#233;bastien Fourey","https://foureys.users.greyc.fr/")
 #@gui_en : note = link{"( IMAGE Team / GREYC Laboratory - CNRS UMR 6072 )","http://www.greyc.fr/node/36"}
 #@gui_en : note = note{"
 #@gui_en : This plug-in is based on our open-source libraries <b>G'MIC</b> and <b>CImg</b> (C++ Template Image Processing Library),
@@ -22426,8 +22426,8 @@ fx_logo_en :
 #@gui_fr A propos de G'MIC : _none_, fx_logo_fr
 #@gui_fr : note = note{"
 #@gui_fr : <span foreground="purple">( <b>G</b>REYC's <b>M</b>agic for <b>I</b>mage <b>C</b>omputing )</span>\n\nvous est propos&#233; par"}
-#@gui_fr : note = link("David Tschumperl\303\251","http://tschumperle.users.greyc.fr/")
-#@gui_fr : note = link("S\303\251bastien Fourey","https://foureys.users.greyc.fr/")
+#@gui_fr : note = link("David Tschumperl&#233;","http://tschumperle.users.greyc.fr/")
+#@gui_fr : note = link("S&#233;bastien Fourey","https://foureys.users.greyc.fr/")
 #@gui_fr : note = link{"( Equipe IMAGE / Laboratoire GREYC - CNRS UMR 6072 )","http://www.greyc.fr/image"}
 #@gui_fr : note = note{"
 #@gui_fr : Ce greffon est bas&#233; sur nos biblioth&#232;ques libres <b>G'MIC</b> et <b>CImg</b> (C++ Template Image Processing Library),
@@ -22456,8 +22456,8 @@ fx_logo_fr :
 #@gui_ca G'MIC per al GIMP : _none_, fx_logo_ca
 #@gui_ca : note = note{"
 #@gui_ca : <span foreground="purple">( <b>G</b>REYC's <b>M</b>agic for <b>I</b>mage <b>C</b>omputing )</span>\n\n &#233;s una gentilesa de"}
-#@gui_ca : note = link("David Tschumperl\303\251","http://tschumperle.users.greyc.fr/")
-#@gui_ca : note = link("S\303\251bastien Fourey","https://foureys.users.greyc.fr/")
+#@gui_ca : note = link("David Tschumperl&#233;","http://tschumperle.users.greyc.fr/")
+#@gui_ca : note = link("S&#233;bastien Fourey","https://foureys.users.greyc.fr/")
 #@gui_ca : note = link{"( IMAGE Team / GREYC Laboratory - CNRS UMR 6072 )","http://www.greyc.fr/node/36"}
 #@gui_ca : note = note{"
 #@gui_ca : Aquest connector est&#224; basat en les biblioteques de codi obert <b>G'MIC</b> i <b>CImg</b> (C++ Template Image Processing Library),
@@ -22485,8 +22485,8 @@ fx_logo_ca :
 #@gui_ja About G'MIC : _none_, fx_logo_en
 #@gui_ja : note = note{"
 #@gui_ja : <span foreground="purple">( <b>G</b>REYC's <b>M</b>agic for <b>I</b>mage <b>C</b>omputing )</span>\n\nis proposed to you by"}
-#@gui_ja : note = link("David Tschumperl\303\251","http://tschumperle.users.greyc.fr/")
-#@gui_ja : note = link("S\303\251bastien Fourey","https://foureys.users.greyc.fr/")
+#@gui_ja : note = link("David Tschumperl&#233;","http://tschumperle.users.greyc.fr/")
+#@gui_ja : note = link("S&#233;bastien Fourey","https://foureys.users.greyc.fr/")
 #@gui_ja : note = link{"( IMAGE Team / GREYC Laboratory - CNRS UMR 6072 )","http://www.greyc.fr/node/36"}
 #@gui_ja : note = note{"
 #@gui_ja : This plug-in is based on our open-source libraries <b>G'MIC</b> and <b>CImg</b> (C++ Template Image Processing Library),
