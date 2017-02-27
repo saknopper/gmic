@@ -287,7 +287,7 @@ rm -f img/gmic_stdlib*.jpg image.jpg
 if [ "$1" == "final" ]; then
     \gmic -v - ../src/gmic_stdlib.gmic raw:../src/gmic_stdlib.gmic,uchar _prerelease= -__help html >& reference.shtml;
 else
-    \gmic -v - ../src/gmic_stdlib.gmic raw:../src/gmic_stdlib.gmic,uchar _prerelease=`date +%Y%m%d` -__help html >& reference.shtml;
+    \gmic -v - ../src/gmic_stdlib.gmic raw:../src/gmic_stdlib.gmic,uchar _prerelease=`date +%y%m%d` -__help html >& reference.shtml;
 fi
 rm -f image.jpg
 \gmic ../src/gmic_stdlib.gmic -update_gallery_html
@@ -300,7 +300,7 @@ cd html
 if [ "$1" == "final" ]; then
     \gmic -v - ../src/gmic_stdlib.gmic raw:../src/gmic_stdlib.gmic,uchar _version=$SVERSION _prerelease= -__help latex >& reference.tex;
 else
-    \gmic -v - ../src/gmic_stdlib.gmic raw:../src/gmic_stdlib.gmic,uchar _version=$SVERSION _prerelease=`date +%Y%m%d` -__help latex >& reference.tex;
+    \gmic -v - ../src/gmic_stdlib.gmic raw:../src/gmic_stdlib.gmic,uchar _version=$SVERSION _prerelease=`date +%y%m%d` -__help latex >& reference.tex;
 fi
 pdflatex reference.tex
 makeindex reference

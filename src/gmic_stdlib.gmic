@@ -22199,9 +22199,11 @@ gui_split_preview : -skip ${3=0},${4=0}
         -gsp.. -to_colormode[-2,-1] 0
         -_gsp -_after -_before
       -elif {$2==6} # Duplicate left.
+        -if {!$4} -rm. . -endif
         -gsp. -to_colormode[-2,-1] 0
         -_gsp -_before -_after
       -else # Duplicate right.
+        -if {!$4} -rm.. . -endif
         -gsp.. -to_colormode[-2,-1] 0
         -_gsp -_after -_before
       -endif
@@ -22223,9 +22225,11 @@ gui_split_preview : -skip ${3=0},${4=0}
         -gsp.. -to_colormode[-2,-1] {max({-2,s},s)}
         -_gsp -_after -_before
       -elif {$2==5} # Duplicate top.
+        -if {!$4} -rm. . -endif
         -gsp. -to_colormode[-2,-1] 0
         -_gsp -_before -_after
       -else # Duplicate bottom.
+        -if {!$4} -rm.. . -endif
         -gsp.. -to_colormode[-2,-1] 0
         -_gsp -_after -_before
       -endif
@@ -25380,7 +25384,7 @@ fx_boost_chroma :
   -endl -a c -endl -done
 
 fx_boost_chroma_preview :
-  -gui_split_preview "-fx_boost_chroma $*",$-1
+  -gui_split_preview "-fx_boost_chroma $*",$-1,0,1
 
 #@gui Channel processing : fx_channel_processing, fx_channel_processing_preview(1)
 #@gui : Brightness (%) = float(0,-100,100)
