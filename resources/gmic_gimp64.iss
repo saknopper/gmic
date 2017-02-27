@@ -1,6 +1,6 @@
 ;---------------------------------------------
 ;
-; File : gmic_gimp.iss
+; File : gmic_gimp64.iss
 ;
 ; Description : Inno Setup Script to create
 ;               a Windows installer for
@@ -31,7 +31,6 @@ DirExistsWarning=no
 OutputBaseFilename=gmic_gimp_XXX_win64
 
 [Files]
-Source: gmic-gimp-build\gmic_gimpYYY.exe; DestDir: {app}
 Source: gmic-gimp-build\gmic_gimpYYY.exe; DestDir: {app}
 Source: gmic-gimp-build\gmic_film_cluts.gmz; DestDir: {app}
 Source: gmic-gimp-build\libcurl-4.dll; DestDir: {app}
