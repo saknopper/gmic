@@ -87,29 +87,28 @@ if [ "$OSTYPE" == "msys" ]; then
             rm -rf ${OUTDIR1} ${OUTDIR2} ${OUTZIP1} ${OUTZIP2} ${OUTINST} &&
             sed s\/XXX\/${VERSION}${SUFFIX}\/g /e/work/src/gmic/resources/gmic_gimp_gtk64.iss > tmp1.iss &&
             sed s\/YYY\/${RELEASE1}\/g tmp1.iss > tmp.iss
-            cd gmic-src && make clean && rm -f gmic gmic_gimp_gtk *.o && \
+        cd gmic-src && make clean && rm -f gmic gmic_gimp_gtk *.o && \
             make OPT_CFLAGS="-O3 -m64 -mtune=generic" cli gimp libc libcstatic
     else
-            # For 32 bits version (MSYS1)
-            echo " - Release number : $VERSION$SUFFIX (32 bits)" &&
-                OUTDIR1=gmic-${VERSION}${SUFFIX}-win32 &&
-                OUTDIR2=gmic-gimp-gtk-${VERSION}${SUFFIX}-win32 &&
-                OUTZIP1=gmic_${VERSION}${SUFFIX}_win32.zip &&
-                OUTZIP2=gmic_gimp_gtk_${VERSION}${SUFFIX}_win32.zip &&
-                OUTINST=gmic_gimp_gtk_${VERSION}${SUFFIX}_win32.exe &&
-                rm -rf ${OUTDIR1} ${OUTDIR2} ${OUTZIP1} ${OUTZIP2} ${OUTINST} &&
-                sed s\/XXX\/${VERSION}${SUFFIX}\/g /e/work/src/gmic/resources/gmic_gimp_gtk32.iss > tmp1.iss &&
-                sed s\/YYY\/${RELEASE1}\/g tmp1.iss > tmp.iss
-                cd gmic-src && make clean && rm -f gmic gmic_gimp_gtk *.o && \
-                make CC="g++ -I/mingw/include -I/env/gcc492/mingw32/include -I/env/gcc492/mingw32/i686-w64-mingw32/include -I/opencv/include -I/opencv/include/opencv -I/opencv/include/opencv2" \
-                     MANDATORY_LIBS+="-L/env/gcc492/mingw32/lib -L/env/gcc492/mingw32/i686-w64-mingw32/lib -L/mingw/lib -lz" \
-                     OPT_CFLAGS="-O3 -march=i686 -mtune=generic" \
-                     OPENCV_LIBS+="/opencv/lib/opencv_calib3d2410.lib /opencv/lib/opencv_contrib2410.lib /opencv/lib/opencv_core2410.lib /opencv/lib/opencv_features2d2410.lib /opencv/lib/opencv_flann2410.lib /opencv/lib/opencv_gpu2410.lib /opencv/lib/opencv_highgui2410.lib /opencv/lib/opencv_imgproc2410.lib /opencv/lib/opencv_legacy2410.lib /opencv/lib/opencv_ml2410.lib /opencv/lib/opencv_nonfree2410.lib /opencv/lib/opencv_objdetect2410.lib /opencv/lib/opencv_ocl2410.lib /opencv/lib/opencv_photo2410.lib /opencv/lib/opencv_stitching2410.lib /opencv/lib/opencv_superres2410.lib /opencv/lib/opencv_video2410.lib /opencv/lib/opencv_videostab2410.lib" cli gimp libc # libcstatic
+        # For 32 bits version (MSYS1)
+        echo " - Release number : $VERSION$SUFFIX (32 bits)" &&
+            OUTDIR1=gmic-${VERSION}${SUFFIX}-win32 &&
+            OUTDIR2=gmic-gimp-gtk-${VERSION}${SUFFIX}-win32 &&
+            OUTZIP1=gmic_${VERSION}${SUFFIX}_win32.zip &&
+            OUTZIP2=gmic_gimp_gtk_${VERSION}${SUFFIX}_win32.zip &&
+            OUTINST=gmic_gimp_gtk_${VERSION}${SUFFIX}_win32.exe &&
+            rm -rf ${OUTDIR1} ${OUTDIR2} ${OUTZIP1} ${OUTZIP2} ${OUTINST} &&
+            sed s\/XXX\/${VERSION}${SUFFIX}\/g /e/work/src/gmic/resources/gmic_gimp_gtk32.iss > tmp1.iss &&
+            sed s\/YYY\/${RELEASE1}\/g tmp1.iss > tmp.iss
+        cd gmic-src && make clean && rm -f gmic gmic_gimp_gtk *.o && \
+            make CC="g++ -I/mingw/include -I/env/gcc492/mingw32/include -I/env/gcc492/mingw32/i686-w64-mingw32/include -I/opencv/include -I/opencv/include/opencv -I/opencv/include/opencv2" \
+                 MANDATORY_LIBS+="-L/env/gcc492/mingw32/lib -L/env/gcc492/mingw32/i686-w64-mingw32/lib -L/mingw/lib -lz" \
+                 OPT_CFLAGS="-O3 -march=i686 -mtune=generic" \
+                 OPENCV_LIBS+="/opencv/lib/opencv_calib3d2410.lib /opencv/lib/opencv_contrib2410.lib /opencv/lib/opencv_core2410.lib /opencv/lib/opencv_features2d2410.lib /opencv/lib/opencv_flann2410.lib /opencv/lib/opencv_gpu2410.lib /opencv/lib/opencv_highgui2410.lib /opencv/lib/opencv_imgproc2410.lib /opencv/lib/opencv_legacy2410.lib /opencv/lib/opencv_ml2410.lib /opencv/lib/opencv_nonfree2410.lib /opencv/lib/opencv_objdetect2410.lib /opencv/lib/opencv_ocl2410.lib /opencv/lib/opencv_photo2410.lib /opencv/lib/opencv_stitching2410.lib /opencv/lib/opencv_superres2410.lib /opencv/lib/opencv_video2410.lib /opencv/lib/opencv_videostab2410.lib" cli gimp libc # libcstatic
 
-        fi
     fi
     cp -f gmic_gimp_gtk.exe ../gmic-gimp-gtk-build/ &&
-#        cp -f gmic_gimp_gtk.exe gmic.exe libcgmic.dll libcgmic.def libcgmicstatic.dll libcgmicstatic.def ../gmic-build/ &&
+        #        cp -f gmic_gimp_gtk.exe gmic.exe libcgmic.dll libcgmic.def libcgmicstatic.dll libcgmicstatic.def ../gmic-build/ &&
         cp -f gmic_gimp_gtk.exe gmic.exe libcgmic.dll libcgmic.def ../gmic-build/ &&
         cd .. &&
 
@@ -143,7 +142,7 @@ fi
 DIST=`lsb_release -d | tail -c+13 | xargs`
 BITS=`uname -m`
 
-if [ "$DIST" != "Ubuntu 16.04.1 LTS" ] || [ "$BITS" != "x86_64" ] ; then
+if [ "$DIST" != "Ubuntu 16.04.2 LTS" ] || [ "$BITS" != "x86_64" ] ; then
     SF_HOME=/media/sf_dtschump/
     cd ${SF_HOME}/work/src
     RELEASE0=`grep "#define gmic_version" gmic/src/gmic.h | tail -c5`
