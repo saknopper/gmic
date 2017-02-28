@@ -19,31 +19,30 @@ AppVersion=XXX
 AppPublisherURL=http://gmic.eu/
 DefaultDirName={%USERPROFILE|{userdesktop}\..}\.gimp-2.8\plug-ins\
 DefaultGroupName={#AppName}
-UninstallDisplayIcon={app}\gmic_gimp.exe
+UninstallDisplayIcon={app}\gmic_gimp_gtk.exe
 LicenseFile={#file AddBackslash(SourcePath) + "CeCILL.rtf"}
-VersionInfoVersion=XXX
 OutputDir={#SourcePath}
 UninstallFilesDir={app}\uninst
 AppendDefaultDirName=false
 UsePreviousAppDir=true
 DirExistsWarning=no
-OutputBaseFilename=gmic_gimp_XXX_win32
+OutputBaseFilename=gmic_gimp_gtk_XXX_win32
 
 [Files]
-Source: gmic-gimp-build\gmic_gimpYYY.exe; DestDir: {app}
-Source: gmic-gimp-build\gmic_film_cluts.gmz; DestDir: {app}
-Source: gmic-gimp-build\libcurl-4.dll; DestDir: {app}
-Source: gmic-gimp-build\libeay32_.dll; DestDir: {app}
-Source: gmic-gimp-build\libfftw3-3.dll; DestDir: {app}
-Source: gmic-gimp-build\libgcc_s_dw2-1.dll; DestDir: {app}
-Source: gmic-gimp-build\libgomp-1.dll; DestDir: {app}
-Source: gmic-gimp-build\libpng16-16.dll; DestDir: {app}
-Source: gmic-gimp-build\libssh2-1_.dll; DestDir: {app}
-Source: gmic-gimp-build\libstdc++-6.dll; DestDir: {app}
-Source: gmic-gimp-build\libwinpthread-1.dll; DestDir: {app}
-Source: gmic-gimp-build\pthreadGC2-w32.dll; DestDir: {app}
-Source: gmic-gimp-build\zlib1.dll; DestDir: {app}
-Source: gmic-gimp-build\zlib1_.dll; DestDir: {app}
+Source: gmic-gimp-gtk-build\gmic_gimp_gtk.exe; DestDir: {app}
+Source: gmic-gimp-gtk-build\gmic_film_cluts.gmz; DestDir: {app}
+Source: gmic-gimp-gtk-build\libcurl-4.dll; DestDir: {app}
+Source: gmic-gimp-gtk-build\libeay32_.dll; DestDir: {app}
+Source: gmic-gimp-gtk-build\libfftw3-3.dll; DestDir: {app}
+Source: gmic-gimp-gtk-build\libgcc_s_dw2-1.dll; DestDir: {app}
+Source: gmic-gimp-gtk-build\libgomp-1.dll; DestDir: {app}
+Source: gmic-gimp-gtk-build\libpng16-16.dll; DestDir: {app}
+Source: gmic-gimp-gtk-build\libssh2-1_.dll; DestDir: {app}
+Source: gmic-gimp-gtk-build\libstdc++-6.dll; DestDir: {app}
+Source: gmic-gimp-gtk-build\libwinpthread-1.dll; DestDir: {app}
+Source: gmic-gimp-gtk-build\pthreadGC2-w32.dll; DestDir: {app}
+Source: gmic-gimp-gtk-build\zlib1.dll; DestDir: {app}
+Source: gmic-gimp-gtk-build\zlib1_.dll; DestDir: {app}
 
 ;[Icons]
 ;Name: {userstartmenu}\Gimp\Gmic_Gimp\Uninstall Gmic_Gimp; Filename: {uninstallexe}

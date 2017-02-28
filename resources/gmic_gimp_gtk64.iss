@@ -19,42 +19,41 @@ AppVersion=XXX
 AppPublisherURL=http://gmic.eu/
 DefaultDirName={%USERPROFILE|{userdesktop}\..}\.gimp-2.8\plug-ins\
 DefaultGroupName={#AppName}
-UninstallDisplayIcon={app}\gmic_gimp.exe
+UninstallDisplayIcon={app}\gmic_gimp_gtk.exe
 LicenseFile={#file AddBackslash(SourcePath) + "CeCILL.rtf"}
-VersionInfoVersion=XXX
 OutputDir={#SourcePath}
 UninstallFilesDir={app}\uninst
 AppendDefaultDirName=false
 UsePreviousAppDir=true
 DirExistsWarning=no
-OutputBaseFilename=gmic_gimp_XXX_win64
+OutputBaseFilename=gmic_gimp_gtk_XXX_win64
 
 [Files]
-Source: gmic-gimp-build\gmic_gimpYYY.exe; DestDir: {app}
-Source: gmic-gimp-build\gmic_film_cluts.gmz; DestDir: {app}
-Source: gmic-gimp-build\libcurl-4.dll; DestDir: {app}
-Source: gmic-gimp-build\libeay32.dll; DestDir: {app}
-Source: gmic-gimp-build\libffi-6.dll; DestDir: {app}
-Source: gmic-gimp-build\libfftw3-3.dll; DestDir: {app}
-Source: gmic-gimp-build\libgcc_s_seh-1.dll; DestDir: {app}
-Source: gmic-gimp-build\libgmp-10.dll; DestDir: {app}
-Source: gmic-gimp-build\libgnutls-30.dll; DestDir: {app}
-Source: gmic-gimp-build\libgomp-1.dll; DestDir: {app}
-Source: gmic-gimp-build\libhogweed-4.dll; DestDir: {app}
-Source: gmic-gimp-build\libiconv-2.dll; DestDir: {app}
-Source: gmic-gimp-build\libidn-11.dll; DestDir: {app}
-Source: gmic-gimp-build\libintl-8.dll; DestDir: {app}
-Source: gmic-gimp-build\libnettle-6.dll; DestDir: {app}
-Source: gmic-gimp-build\libnghttp2-14.dll; DestDir: {app}
-Source: gmic-gimp-build\libp11-kit-0.dll; DestDir: {app}
-Source: gmic-gimp-build\libpng16-16.dll; DestDir: {app}
-Source: gmic-gimp-build\librtmp-1.dll; DestDir: {app}
-Source: gmic-gimp-build\libssh2-1.dll; DestDir: {app}
-Source: gmic-gimp-build\libstdc++-6.dll; DestDir: {app}
-Source: gmic-gimp-build\libtasn1-6.dll; DestDir: {app}
-Source: gmic-gimp-build\libwinpthread-1.dll; DestDir: {app}
-Source: gmic-gimp-build\ssleay32.dll; DestDir: {app}
-Source: gmic-gimp-build\zlib1.dll; DestDir: {app}
+Source: gmic-gimp-gtk-build\gmic_gimp_gtk.exe; DestDir: {app}
+Source: gmic-gimp-gtk-build\gmic_film_cluts.gmz; DestDir: {app}
+Source: gmic-gimp-gtk-build\libcurl-4.dll; DestDir: {app}
+Source: gmic-gimp-gtk-build\libeay32.dll; DestDir: {app}
+Source: gmic-gimp-gtk-build\libffi-6.dll; DestDir: {app}
+Source: gmic-gimp-gtk-build\libfftw3-3.dll; DestDir: {app}
+Source: gmic-gimp-gtk-build\libgcc_s_seh-1.dll; DestDir: {app}
+Source: gmic-gimp-gtk-build\libgmp-10.dll; DestDir: {app}
+Source: gmic-gimp-gtk-build\libgnutls-30.dll; DestDir: {app}
+Source: gmic-gimp-gtk-build\libgomp-1.dll; DestDir: {app}
+Source: gmic-gimp-gtk-build\libhogweed-4.dll; DestDir: {app}
+Source: gmic-gimp-gtk-build\libiconv-2.dll; DestDir: {app}
+Source: gmic-gimp-gtk-build\libidn-11.dll; DestDir: {app}
+Source: gmic-gimp-gtk-build\libintl-8.dll; DestDir: {app}
+Source: gmic-gimp-gtk-build\libnettle-6.dll; DestDir: {app}
+Source: gmic-gimp-gtk-build\libnghttp2-14.dll; DestDir: {app}
+Source: gmic-gimp-gtk-build\libp11-kit-0.dll; DestDir: {app}
+Source: gmic-gimp-gtk-build\libpng16-16.dll; DestDir: {app}
+Source: gmic-gimp-gtk-build\librtmp-1.dll; DestDir: {app}
+Source: gmic-gimp-gtk-build\libssh2-1.dll; DestDir: {app}
+Source: gmic-gimp-gtk-build\libstdc++-6.dll; DestDir: {app}
+Source: gmic-gimp-gtk-build\libtasn1-6.dll; DestDir: {app}
+Source: gmic-gimp-gtk-build\libwinpthread-1.dll; DestDir: {app}
+Source: gmic-gimp-gtk-build\ssleay32.dll; DestDir: {app}
+Source: gmic-gimp-gtk-build\zlib1.dll; DestDir: {app}
 
 ;[Icons]
 ;Name: {userstartmenu}\Gimp\Gmic_Gimp\Uninstall Gmic_Gimp; Filename: {uninstallexe}
