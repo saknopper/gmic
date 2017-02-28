@@ -11,8 +11,7 @@
 ;
 ;---------------------------------------------
 
-#define AppName "G'MIC for GIMP"
-#define AppVersion GetFileVersion(AddBackslash(SourcePath) + "GMIC_Gimp.exe")
+#define AppName "G'MIC for GIMP (Qt version)"
 
 [Setup]
 AppName={#AppName}
@@ -33,15 +32,21 @@ OutputBaseFilename=gmic_gimp_qt_XXX_win64
 [Files]
 Source: gmic-gimp-qt-build\gmic_gimp_qt.exe; DestDir: {app}
 Source: gmic-gimp-qt-build\gmic_film_cluts.gmz; DestDir: {app}
+Source: gmic-gimp-qt-build\libbz2-1.dll; DestDir: {app}
 Source: gmic-gimp-qt-build\libffi-6.dll; DestDir: {app}
 Source: gmic-gimp-qt-build\libfftw3-3.dll; DestDir: {app}
+Source: gmic-gimp-qt-build\libfreetype-6.dll; DestDir: {app}
 Source: gmic-gimp-qt-build\libgcc_s_seh-1.dll; DestDir: {app}
+Source: gmic-gimp-qt-build\libglib-2.0-0.dll; DestDir: {app}
 Source: gmic-gimp-qt-build\libgomp-1.dll; DestDir: {app}
+Source: gmic-gimp-qt-build\libgraphite2.dll; DestDir: {app}
+Source: gmic-gimp-qt-build\libharfbuzz-0.dll; DestDir: {app}
 Source: gmic-gimp-qt-build\libiconv-2.dll; DestDir: {app}
 Source: gmic-gimp-qt-build\libicudt57.dll; DestDir: {app}
 Source: gmic-gimp-qt-build\libicuin57.dll; DestDir: {app}
 Source: gmic-gimp-qt-build\libicuuc57.dll; DestDir: {app}
 Source: gmic-gimp-qt-build\libintl-8.dll; DestDir: {app}
+Source: gmic-gimp-qt-build\libpcre-1.dll; DestDir: {app}
 Source: gmic-gimp-qt-build\libpcre16-0.dll; DestDir: {app}
 Source: gmic-gimp-qt-build\libpng16-16.dll; DestDir: {app}
 Source: gmic-gimp-qt-build\libstdc++-6.dll; DestDir: {app}

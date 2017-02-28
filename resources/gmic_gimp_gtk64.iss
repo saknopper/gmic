@@ -1,6 +1,6 @@
 ;---------------------------------------------
 ;
-; File : gmic_gimp32.iss
+; File : gmic_gimp_gtk64.iss
 ;
 ; Description : Inno Setup Script to create
 ;               a Windows installer for
@@ -11,8 +11,7 @@
 ;
 ;---------------------------------------------
 
-#define AppName "G'MIC for GIMP"
-#define AppVersion GetFileVersion(AddBackslash(SourcePath) + "GMIC_Gimp.exe")
+#define AppName "G'MIC for GIMP (Gtk version)"
 
 [Setup]
 AppName={#AppName}
@@ -28,23 +27,34 @@ UninstallFilesDir={app}\uninst
 AppendDefaultDirName=false
 UsePreviousAppDir=true
 DirExistsWarning=no
-OutputBaseFilename=gmic_gimp_XXX_win32
+OutputBaseFilename=gmic_gimp_XXX_win64
 
 [Files]
 Source: gmic-gimp-build\gmic_gimpYYY.exe; DestDir: {app}
 Source: gmic-gimp-build\gmic_film_cluts.gmz; DestDir: {app}
 Source: gmic-gimp-build\libcurl-4.dll; DestDir: {app}
-Source: gmic-gimp-build\libeay32_.dll; DestDir: {app}
+Source: gmic-gimp-build\libeay32.dll; DestDir: {app}
+Source: gmic-gimp-build\libffi-6.dll; DestDir: {app}
 Source: gmic-gimp-build\libfftw3-3.dll; DestDir: {app}
-Source: gmic-gimp-build\libgcc_s_dw2-1.dll; DestDir: {app}
+Source: gmic-gimp-build\libgcc_s_seh-1.dll; DestDir: {app}
+Source: gmic-gimp-build\libgmp-10.dll; DestDir: {app}
+Source: gmic-gimp-build\libgnutls-30.dll; DestDir: {app}
 Source: gmic-gimp-build\libgomp-1.dll; DestDir: {app}
+Source: gmic-gimp-build\libhogweed-4.dll; DestDir: {app}
+Source: gmic-gimp-build\libiconv-2.dll; DestDir: {app}
+Source: gmic-gimp-build\libidn-11.dll; DestDir: {app}
+Source: gmic-gimp-build\libintl-8.dll; DestDir: {app}
+Source: gmic-gimp-build\libnettle-6.dll; DestDir: {app}
+Source: gmic-gimp-build\libnghttp2-14.dll; DestDir: {app}
+Source: gmic-gimp-build\libp11-kit-0.dll; DestDir: {app}
 Source: gmic-gimp-build\libpng16-16.dll; DestDir: {app}
-Source: gmic-gimp-build\libssh2-1_.dll; DestDir: {app}
+Source: gmic-gimp-build\librtmp-1.dll; DestDir: {app}
+Source: gmic-gimp-build\libssh2-1.dll; DestDir: {app}
 Source: gmic-gimp-build\libstdc++-6.dll; DestDir: {app}
+Source: gmic-gimp-build\libtasn1-6.dll; DestDir: {app}
 Source: gmic-gimp-build\libwinpthread-1.dll; DestDir: {app}
-Source: gmic-gimp-build\pthreadGC2-w32.dll; DestDir: {app}
+Source: gmic-gimp-build\ssleay32.dll; DestDir: {app}
 Source: gmic-gimp-build\zlib1.dll; DestDir: {app}
-Source: gmic-gimp-build\zlib1_.dll; DestDir: {app}
 
 ;[Icons]
 ;Name: {userstartmenu}\Gimp\Gmic_Gimp\Uninstall Gmic_Gimp; Filename: {uninstallexe}

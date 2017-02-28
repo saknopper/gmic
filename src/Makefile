@@ -302,18 +302,18 @@ GMIC_STATIC_CLI_LIBS = $(PARALLEL_LIBS) \
 
 # GIMP plug-in interface: Standard build.
 #----------------------------------------
-GMIC_GIMP_CFLAGS = $(MANDATORY_CFLAGS) $(ABORT_CFLAGS) $(PARALLEL_CFLAGS) $(FFTW_CFLAGS) $(CURL_CFLAGS) $(PNG_CFLAGS) -Dcimg_use_rng -DGIMP_DISABLE_DEPRECATED
-GMIC_GIMP_LIBS = $(MANDATORY_LIBS) $(PARALLEL_LIBS) $(FFTW_LIBS) $(CURL_LIBS) $(PNG_LIBS)
+GMIC_GIMP_GTK_CFLAGS = $(MANDATORY_CFLAGS) $(ABORT_CFLAGS) $(PARALLEL_CFLAGS) $(FFTW_CFLAGS) $(CURL_CFLAGS) $(PNG_CFLAGS) -Dcimg_use_rng -DGIMP_DISABLE_DEPRECATED
+GMIC_GIMP_GTK_LIBS = $(MANDATORY_LIBS) $(PARALLEL_LIBS) $(FFTW_LIBS) $(CURL_LIBS) $(PNG_LIBS)
 ifeq ($(OS),Unix) # Unix.
-GMIC_GIMP_CFLAGS += $(OPENMP_CFLAGS) $(X11_CFLAGS)
-GMIC_GIMP_LIBS += $(OPENMP_LIBS) $(X11_LIBS)
+GMIC_GIMP_GTK_CFLAGS += $(OPENMP_CFLAGS) $(X11_CFLAGS)
+GMIC_GIMP_GTK_LIBS += $(OPENMP_LIBS) $(X11_LIBS)
 else
 ifeq ($(OS),Darwin) # MaxOSX.
-GMIC_GIMP_CFLAGS += $(X11_CFLAGS)
-GMIC_GIMP_LIBS += $(X11_LIBS)
+GMIC_GIMP_GTK_CFLAGS += $(X11_CFLAGS)
+GMIC_GIMP_GTK_LIBS += $(X11_LIBS)
 else # Windows.
-GMIC_GIMP_CFLAGS += $(OPENMP_CFLAGS) $(GDI32_CFLAGS)
-GMIC_GIMP_LIBS += -mwindows $(OPENMP_LIBS) $(GDI32_LIBS) -lpthread -DPSAPI_VERSION=1 -lpsapi
+GMIC_GIMP_GTK_CFLAGS += $(OPENMP_CFLAGS) $(GDI32_CFLAGS)
+GMIC_GIMP_GTK_LIBS += -mwindows $(OPENMP_LIBS) $(GDI32_LIBS) -lpthread -DPSAPI_VERSION=1 -lpsapi
 endif
 endif
 
@@ -418,7 +418,7 @@ debug:
 	$(MAKE) "CFLAGS+=$(GMIC_CLI_CFLAGS) $(DEBUG_CFLAGS)" "LIBS+=$(GMIC_CLI_LIBS)" gmic
 
 gimp:
-	$(MAKE) "CFLAGS+=$(GMIC_GIMP_CFLAGS) $(OPT_CFLAGS)" "LIBS+=$(GMIC_GIMP_LIBS)" gmic_gimp
+	$(MAKE) "CFLAGS+=$(GMIC_GIMP_GTK_CFLAGS) $(OPT_CFLAGS)" "LIBS+=$(GMIC_GIMP_GTK_LIBS)" gmic_gimp_gtk
 
 gmicol:
 	$(MAKE) "CFLAGS+=$(GMICOL_CFLAGS) $(OPT_CFLAGS)" "LIBS+=$(GMICOL_LIBS)" gmic
@@ -505,21 +505,21 @@ endif
 	@if [ ! -f use_libcgmic.c ]; then ln -fs ../../gmic-community/libcgmic/use_libcgmic.c .; fi
 	$(CC) -std=c99 -o use_libcgmic_static use_libcgmic.c -L. -lcgmicstatic
 
-# gmic_gimp
-gmic_gimp.o: gmic.cpp gmic.h gmic_stdlib.h CImg.h
-	$(CXX) -o gmic_gimp.o -c gmic.cpp -Dgmic_gui $(CFLAGS)
+# gmic_gimp_gtk
+gmic_gimp_gtk.o: gmic.cpp gmic.h gmic_stdlib.h CImg.h
+	$(CXX) -o gmic_gimp_gtk.o -c gmic.cpp -Dgmic_gui $(CFLAGS)
 
-gmic_gimp: gmic_gimp.o gmic_gimp.cpp
+gmic_gimp_gtk: gmic_gimp_gtk.o gmic_gimp_gtk.cpp
 ifeq ($(OS),Darwin)
 ifeq (,$(wildcard /tmp/skl))
-	$(CXX) -o gmic_gimp$(VERSION1) gmic_gimp.cpp gmic_gimp.o -Dgmic_gui `gimptool-2.0$(EXE) --cflags` `gimptool-2.0$(EXE) --libs` $(CFLAGS) $(LIBS)
+	$(CXX) -o gmic_gimp_gtk gmic_gimp_gtk.cpp gmic_gimp_gtk.o -Dgmic_gui `gimptool-2.0$(EXE) --cflags` `gimptool-2.0$(EXE) --libs` $(CFLAGS) $(LIBS)
 else
-	$(CXX) -o gmic_gimp$(VERSION1) gmic_gimp.cpp gmic_gimp.o -Dgmic_gui `gimptool-2.0$(EXE) --cflags` $(subst -L/opt/local,-L/tmp/skl/Gimp.app/Contents/Resources,$(shell gimptool-2.0$(EXE) --libs) $(CFLAGS) $(LIBS))
+	$(CXX) -o gmic_gimp_gtk gmic_gimp_gtk.cpp gmic_gimp_gtk.o -Dgmic_gui `gimptool-2.0$(EXE) --cflags` $(subst -L/opt/local,-L/tmp/skl/Gimp.app/Contents/Resources,$(shell gimptool-2.0$(EXE) --libs) $(CFLAGS) $(LIBS))
 endif
 else
-	$(CXX) -o gmic_gimp$(VERSION1) gmic_gimp.cpp gmic_gimp.o -Dgmic_gui `gimptool-2.0$(EXE) --cflags` `gimptool-2.0$(EXE) --libs` $(CFLAGS) $(LIBS)
+	$(CXX) -o gmic_gimp_gtk gmic_gimp_gtk.cpp gmic_gimp_gtk.o -Dgmic_gui `gimptool-2.0$(EXE) --cflags` `gimptool-2.0$(EXE) --libs` $(CFLAGS) $(LIBS)
 endif
-	$(STRIP) gmic_gimp$(VERSION1)$(EXE)
+	$(STRIP) gmic_gimp_gtk$(EXE)
 
 # gmic
 gmic: gmic.cpp gmic.h gmic_stdlib.h CImg.h
@@ -616,7 +616,7 @@ man:
 # Install/uninstall/clean procedures.
 install:
 	mkdir -p $(DESTDIR)$(PLUGINDIR)/
-	cp -f gmic_gimp$(VERSION1) $(DESTDIR)$(PLUGINDIR)/
+	cp -f gmic_gimp_gtk$(EXE) $(DESTDIR)$(PLUGINDIR)/
 	cp -f ../resources/gmic_film_cluts.gmz $(DESTDIR)$(PLUGINDIR)/
 	mkdir -p $(DESTDIR)$(USR)/$(BIN)/
 	cp -f gmic $(DESTDIR)$(USR)/$(BIN)/
@@ -675,7 +675,7 @@ uninstall:
 distclean: clean
 
 clean:
-	rm -rf CImg.h gmic_stdlib.h gmic$(EXE) gmic_gimp$(VERSION1)$(EXE) use_libgmic$(EXE) use_libcgmic$(EXE) use_libcgmic_static$(EXE) gmic*.o libgmic* libcgmic* *~
+	rm -rf CImg.h gmic_stdlib.h gmic$(EXE) gmic_gimp_gtk$(EXE) use_libgmic$(EXE) use_libcgmic$(EXE) use_libcgmic_static$(EXE) gmic*.o libgmic* libcgmic* *~
 	@if [ -h ../zart ]; then rm -f ../zart; fi
 	@if [ -h gmic_libc.h ]; then rm -f gmic_libc.h; fi
 	@if [ -h gmic_libc.cpp ]; then rm -f gmic_libc.cpp; fi
