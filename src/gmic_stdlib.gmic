@@ -7331,6 +7331,28 @@ expand_z : -check "$1>=0 && ${2=1}>=0 && $2<=3"
   -e[^-1] "Expand image$? along the z-axis with size $1 and "${"-arg 1+$2,dirichlet,neumann,periodic,mirror"}" boundary conditions."
   -v - -repeat $! -r[$>] 100%,100%,{$>,d+2*$1},100%,0,$2,0.5,0.5,0.5 -done -v +
 
+#@cli extract_region : [label_image],_extract_xyz_coordinates={ 0 | 1 },_label_1,...,_label_M
+#@cli : Extract all pixels of selected images whose corresponding label in '[label_image]' is equal to 'label_m',
+#@cli : and output them as M column images.
+#@cli : Default value: 'extract_xyz_coordinates=0'.
+#@cli : $ image.jpg --blur 3 -quantize. 4,0 --extract_region[0] [1],0,1,3
+extract_region : -check ${"-is_image_arg $1"}" && isval(${2=0})"
+  -e[^-1] "Extract pixels of image$N for labels (${3--1}) in $1, with"${"-arg 1+!!$2,out"}" coordinates."
+  -v - $=arg -pass$1 -mv. 0 -repeat {$!-1} -l[0,{1+$<}]
+    -repeat {$#-2}
+      {1,[1,whd,1,s+($2?3:0)]}
+      -f[0] ">init(k = 0);
+              if (i=="${arg{3+$>}}",
+                if ($2,
+                  I[#-1,k++] = [ I(#1),x,y,z ],
+                  I[#-1,k++] = I(#1));
+              );
+              end(resize(#-1,1,k,1,s#-1,0));
+              i"
+    -done
+    -rm[1]
+  -endl -done -rm[0] -v +
+
 #@cli montage : "_layout_code",_montage_mode={ 0<=centering<=1 | 2<=scale+2<=3 },_output_mode={ 0=single layer | 1=multiple layers },"_processing_command"
 #@cli : Create a single image montage from selected images, according to specified layout code :
 #@cli : - 'X' to assemble all images using an automatically estimated layout.
@@ -17830,24 +17852,6 @@ path_tmp :
     -if ${-is_windows} _path_tmp=$_path_tmp{`92`} -else _path_tmp=$_path_tmp/ -endif
   -endif
   -u $_path_tmp
-  -v +
-
-#@cli region_feature : region_label,feature,_default_value
-#@cli : Return feature for a specified region.
-#@cli : This function requires two images [img,region_label] in the selection.
-#@cli : Argument 'feature' is a string that corresponds to the way the feature would
-#@cli : be asked for the entire image.
-#@cli : Default value: 'default_value=0'.
-#@cli : $ image.jpg --luminance -quantize[-1] 2 -label[-1] 0,1 mean=${"-region_feature[0,1] 10,\"{ia}\""} sum=${"-region_feature[0,1] 10,\"{is}\""}
-region_feature : -skip "${3=0}"
-  -v -
-  s={-2,s} --channels. 0 -==. $1 -^. -1 --. 1 -r. ... -+. ...
-  -l.
-    -s. -,inf -a y                         # Keep only pixel values inside the selected region.
-    -if $! -r. 1,{h/$s},1,$s,-1 -u $2 -rm. # If region is not empty, compute the feature.
-    -else -u $3                            # Otherwise set a default return value.
-    -endif
-  -endl
   -v +
 
 #@cli reset

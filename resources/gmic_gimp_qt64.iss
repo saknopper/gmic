@@ -33,7 +33,6 @@ OutputBaseFilename=gmic_gimp_qt_XXX_win64
 Source: gmic-gimp-qt-build\gmic_gimp_qt.exe; DestDir: {app}
 Source: gmic-gimp-qt-build\gmic_film_cluts.gmz; DestDir: {app}
 Source: gmic-gimp-qt-build\libbz2-1.dll; DestDir: {app}
-Source: gmic-gimp-qt-build\libffi-6.dll; DestDir: {app}
 Source: gmic-gimp-qt-build\libfftw3-3.dll; DestDir: {app}
 Source: gmic-gimp-qt-build\libfreetype-6.dll; DestDir: {app}
 Source: gmic-gimp-qt-build\libgcc_s_seh-1.dll; DestDir: {app}
@@ -56,6 +55,10 @@ Source: gmic-gimp-qt-build\Qt5Gui.dll; DestDir: {app}
 Source: gmic-gimp-qt-build\Qt5Network.dll; DestDir: {app}
 Source: gmic-gimp-qt-build\Qt5Widgets.dll; DestDir: {app}
 Source: gmic-gimp-qt-build\zlib1.dll; DestDir: {app}
+Source: gmic-gimp-qt-build\platforms\qdirect2d.dll; DestDir\platforms: {app}
+Source: gmic-gimp-qt-build\platforms\qminimal.dll; DestDir\platforms: {app}
+Source: gmic-gimp-qt-build\platforms\qoffscreen.dll; DestDir\platforms: {app}
+Source: gmic-gimp-qt-build\platforms\qwindows.dll; DestDir\platforms: {app}
 
 ;[Icons]
 ;Name: {userstartmenu}\Gimp\Gmic_Gimp\Uninstall Gmic_Gimp; Filename: {uninstallexe}
