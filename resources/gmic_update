@@ -8,3 +8,5 @@ cd $HOME/work/src/gmic
 git pull
 cd $HOME/work/src/gmic-community
 git pull
+cd $HOME/work/src/gmic_qt
+git pull
