@@ -53,7 +53,6 @@ if [ "$OSTYPE" == "msys" ]; then
         rm -rf gmic
     mkdir gmic
     cp -rf /e/work/src/gmic/src gmic
-    cp -rf /e/work/src/gmic_qt gmic_qt
     cp -rf /e/work/src/gmic-community/libcgmic/*gmic* gmic/src
     cp -rf /e/work/src/gmic/resources/gmic_film_cluts.gmz gmic-build
     cp -rf /e/work/src/gmic/resources/gmic_film_cluts.gmz gmic-gimp-gtk-build
@@ -80,6 +79,7 @@ if [ "$OSTYPE" == "msys" ]; then
     if [ -f msys2 ]; then
 
         # For 64 bits version (MSYS2)
+        cp -rf /e/work/src/gmic_qt gmic_qt
         echo " - Release number : $VERSION$SUFFIX (64 bits)" &&
             OUTDIR1=gmic-${VERSION}${SUFFIX}-win64 &&
             OUTDIR2=gmic-gimp-gtk-${VERSION}${SUFFIX}-win64 &&
