@@ -23276,7 +23276,7 @@ fx_array_preview :
 #@gui : Output filename = _text("gmic_asciiart.txt")
 #@gui : sep = separator(), link = link("Click here for a detailed description of this filter.","http://www.gimpchat.com/viewtopic.php?f=28&t=10047")
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>03/27/2014</i>.</small>")
-fx_asciiart : -skip ${10=},${11=},${12=}
+fx_asciiart : -skip ${10=},"${11=}","${12=}"
   -repeat $! -l[$>] -to_rgb
     -apply_gamma {10^$7} -b $8% -n 0,255
     -if {$1==0} dict="$2"
@@ -32186,13 +32186,13 @@ fx_animate_preview : -skip ${4=1},${5=0},${6=$5}
 #@gui : Specular lightness = float(0.5,0,1)
 #@gui : Specular shininess = float(0.7,0,3)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>12/29/2010</i>.</small>")
-fx_animate_elevation3d :
+fx_animate_elevation3d : -skip "${4=}"
   -if $3 filename="$4/gmic_elevation3d.png" -else filename="" -endif
   -_fx_elevation3d ${5-6}
   -animate fx_render3d,"${7-8},${10-19},$9",\
                          "${7-8},${20-29},$9",$1,$2,{``$filename}
 
-fx_animate_elevation3d_preview :
+fx_animate_elevation3d_preview : -skip "${4=}"
   w={w} h={h}
   -_fx_elevation3d ${5-6}
   -fx_animate_preview fx_render3d,$w","$h",${10-19},$9",\
@@ -32233,13 +32233,13 @@ fx_animate_elevation3d_preview :
 #@gui : Specular lightness = float(0.5,0,1)
 #@gui : Specular shininess = float(0.7,0,3)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>12/29/2010</i>.</small>")
-fx_animate_extrude3d :
+fx_animate_extrude3d : -skip "${4=}"
   -if $3 filename="$4/gmic_extrude3d.png" -else filename="" -endif
   -_fx_extrude3d ${5-7}
   -animate fx_render3d,"${8-9},${11-20},$10",\
                          "${8-9},${21-30},$10",$1,$2,{``$filename}
 
-fx_animate_extrude3d_preview :
+fx_animate_extrude3d_preview : -skip "${4=}"
   w={w} h={h}
   -_fx_extrude3d ${5-7}
   -fx_animate_preview fx_render3d,$w","$h",${11-20},$10",\
@@ -32278,13 +32278,13 @@ fx_animate_extrude3d_preview :
 #@gui : Specular lightness = float(0.5,0,1)
 #@gui : Specular shininess = float(0.7,0,3)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>12/29/2010</i>.</small>")
-fx_animate_imageobject3d :
+fx_animate_imageobject3d : -skip "${4=}"
   -if $3 filename="$4/gmic_imageobject3d.png" -else filename="" -endif
   -_fx_imageobject3d "_",$5
   -animate fx_render3d,"${6-7},${9-18},$8",\
                          "${6-7},${19-28},$8",$1,$2,{``$filename}
 
-fx_animate_imageobject3d_preview :
+fx_animate_imageobject3d_preview : -skip "${4=}"
   w={w} h={h}
   -_fx_imageobject3d "_preview_",$5
   -fx_animate_preview fx_render3d,$w","$h",${9-18},$8",\
@@ -32367,12 +32367,12 @@ fx_transition3d_preview :
 #@gui : Pencil type = float(0.3,0,5)
 #@gui : Amplitude = float(60,0,200)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>12/29/2010</i>.</small>")
-fx_animate_pencilbw :
+fx_animate_pencilbw : -skip "${4=}"
   -if $3 filename="$4/gmic_pencilbw.png" -else filename="" -endif
   -animate pencilbw,"${5-6}",\
                     "${7-8}",$1,$2,{``$filename}
 
-fx_animate_pencilbw_preview :
+fx_animate_pencilbw_preview : -skip "${4=}"
   -fx_animate_preview pencilbw,"${5-6}",\
                                  "${7-8}"
 
@@ -32388,12 +32388,12 @@ fx_animate_pencilbw_preview :
 #@gui : Edge threshold = float(10,0,30)
 #@gui : Smoothness = float(20,0,30)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>12/29/2010</i>.</small>")
-fx_animate_stencilbw :
+fx_animate_stencilbw : -skip "${4=}"
   -if $3 filename="$4/gmic_stencilbw.png" -else filename="" -endif
   -animate stencilbw,"${5-6}",\
                      "${7-8}",$1,$2,{``$filename}
 
-fx_animate_stencilbw_preview :
+fx_animate_stencilbw_preview : -skip "${4=}"
   -fx_animate_preview stencilbw,"${5-6}",\
                                   "${7-8}"
 
@@ -32417,12 +32417,12 @@ fx_animate_stencilbw_preview :
 #@gui : Edge thickness = float(0.1,0,1)
 #@gui : Color strength = float(1.5,0,3)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>12/29/2010</i>.</small>")
-fx_animate_cartoon :
+fx_animate_cartoon : -skip "${4=}"
   -if $3 filename="$4/gmic_cartoon.png" -else filename="" -endif
   -animate cartoon,"${6-10},$5",\
                    "${11-15},$5",$1,$2,{``$filename}
 
-fx_animate_cartoon_preview :
+fx_animate_cartoon_preview : -skip "${4=}"
   -fx_animate_preview cartoon,"${6-10},$5",\
                                 "${11-15},$5"
 
@@ -32440,12 +32440,12 @@ fx_animate_cartoon_preview :
 #@gui : Smoothness = float(0,0,10)
 #@gui : Edge threshold = float(30,0,30)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>12/29/2010</i>.</small>")
-fx_animate_edges :
+fx_animate_edges : -skip "${4=}"
   -if $3 filename="$4/gmic_edges.png" -else filename="" -endif
   -animate fx_edges,"${6-7},$5",\
                       "${8-9},$5",$1,$2,{``$filename}
 
-fx_animate_edges_preview :
+fx_animate_edges_preview : -skip "${4=}"
   -fx_animate_preview fx_edges,"${6-7},$5",\
                                    "${8-9},$5"
 
@@ -32533,12 +32533,12 @@ fx_lavalampbw_preview :
 #@gui : Thickness = float(0,0,50)
 #@gui : Color = color(255,255,255,255)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>04/18/2011</i>.</small>")
-fx_animate_lissajous :
+fx_animate_lissajous : -skip "${4=}"
   -if $3 filename="$4/gmic_lissajous.png" -else filename="" -endif
   -animate fx_lissajous,"${5-22}",\
                           "${23-40}",$1,$2,{``$filename}
 
-fx_animate_lissajous_preview :
+fx_animate_lissajous_preview : -skip "${4=}"
   -fx_animate_preview fx_lissajous,"${5-22}",\
                                        "${23-40}",0
 
@@ -32561,12 +32561,12 @@ fx_animate_lissajous_preview :
 #@gui : Orientations = int(5,2,20)
 #@gui : Offset = float(180,0,180)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>12/29/2010</i>.</small>")
-fx_animate_rodilius :
+fx_animate_rodilius : -skip "${4=}"
   -if $3 filename="$4/gmic_rodilius.png" -else filename="" -endif
   -animate rodilius,"${6-10},$5",\
                     "${11-15},$5",$1,$2,{``$filename}
 
-fx_animate_rodilius_preview :
+fx_animate_rodilius_preview : -skip "${4=}"
   -fx_animate_preview rodilius,"${6-10},$5",\
                                  "${11-15},$5"
 
@@ -32580,12 +32580,12 @@ fx_animate_rodilius_preview :
 #@gui : note = note{"\n<b>Ending parameters :</b>"}
 #@gui : Amplitude = float(3,0,8)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>12/29/2010</i>.</small>")
-fx_animate_glow :
+fx_animate_glow : -skip "${4=}"
   -if $3 filename="$4/gmic_glow.png" -else filename="" -endif
   -animate glow,"$5",\
                 "$6",$1,$2,{``$filename}
 
-fx_animate_glow_preview :
+fx_animate_glow_preview : -skip "${4=}"
   -fx_animate_preview glow,"$5",\
                              "$6"
 
