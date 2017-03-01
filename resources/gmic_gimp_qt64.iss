@@ -21,7 +21,6 @@ DefaultDirName={%USERPROFILE|{userdesktop}\..}\.gimp-2.8\plug-ins\
 DefaultGroupName={#AppName}
 UninstallDisplayIcon={app}\gmic_gimp_qt.exe
 LicenseFile={#file AddBackslash(SourcePath) + "CeCILL.rtf"}
-VersionInfoVersion=XXX
 OutputDir={#SourcePath}
 UninstallFilesDir={app}\uninst
 AppendDefaultDirName=false
@@ -55,10 +54,10 @@ Source: gmic-gimp-qt-build\Qt5Gui.dll; DestDir: {app}
 Source: gmic-gimp-qt-build\Qt5Network.dll; DestDir: {app}
 Source: gmic-gimp-qt-build\Qt5Widgets.dll; DestDir: {app}
 Source: gmic-gimp-qt-build\zlib1.dll; DestDir: {app}
-Source: gmic-gimp-qt-build\platforms\qdirect2d.dll; DestDir\platforms: {app}
-Source: gmic-gimp-qt-build\platforms\qminimal.dll; DestDir\platforms: {app}
-Source: gmic-gimp-qt-build\platforms\qoffscreen.dll; DestDir\platforms: {app}
-Source: gmic-gimp-qt-build\platforms\qwindows.dll; DestDir\platforms: {app}
+Source: gmic-gimp-qt-build\platforms\qdirect2d.dll; DestDir: {app}\platforms
+Source: gmic-gimp-qt-build\platforms\qminimal.dll; DestDir: {app}\platforms
+Source: gmic-gimp-qt-build\platforms\qoffscreen.dll; DestDir: {app}\platforms
+Source: gmic-gimp-qt-build\platforms\qwindows.dll; DestDir: {app}\platforms
 
 ;[Icons]
 ;Name: {userstartmenu}\Gimp\Gmic_Gimp\Uninstall Gmic_Gimp; Filename: {uninstallexe}
