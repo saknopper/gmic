@@ -105,8 +105,8 @@ if [ "$OSTYPE" == "msys" ]; then
             OUTDIR2=gmic-gimp-gtk-${VERSION}${SUFFIX}-win32 &&
             OUTZIP1=gmic_${VERSION}${SUFFIX}_win32.zip &&
             OUTZIP2=gmic_gimp_gtk_${VERSION}${SUFFIX}_win32.zip &&
-            OUTINST=gmic_gimp_gtk_${VERSION}${SUFFIX}_win32.exe &&
-            rm -rf ${OUTDIR1} ${OUTDIR2} ${OUTZIP1} ${OUTZIP2} ${OUTINST} &&
+            OUTINST1=gmic_gimp_gtk_${VERSION}${SUFFIX}_win32.exe &&
+            rm -rf ${OUTDIR1} ${OUTDIR2} ${OUTZIP1} ${OUTZIP2} ${OUTINST1} &&
             sed s\/XXX\/${VERSION}${SUFFIX}\/g /e/work/src/gmic/resources/gmic_gimp_gtk32.iss > tmp.iss &&
             sed s\/YYY\/${RELEASE1}\/g tmp1.iss > installer_gtk.iss
         cd gmic/src && make clean && rm -f gmic gmic_gimp_gtk *.o && \
