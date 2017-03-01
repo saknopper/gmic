@@ -47,7 +47,7 @@ if [ "$OSTYPE" == "msys" ]; then
 
     echo &&
         echo " - Build G'MIC package for Windows." &&
-        cd &&
+        cd $HOME &&
 
         # Input sources.
         rm -rf gmic
@@ -58,7 +58,7 @@ if [ "$OSTYPE" == "msys" ]; then
     cp -rf /e/work/src/gmic/resources/gmic_film_cluts.gmz gmic-gimp-gtk-build
 
     # Get version number.
-    cd gmic/src &&
+    cd $HOME/gmic/src &&
         RELEASE0=`grep "#define gmic_version" gmic.h | tail -c5` &&
         RELEASE1=`echo $RELEASE0 | head -c1` &&
         RELEASE2=`echo $RELEASE0 | head -c2 | tail -c1` &&
@@ -74,7 +74,7 @@ if [ "$OSTYPE" == "msys" ]; then
         fi &&
         sed "s/rm -rf CImg.h gmic_stdlib.h /rm -rf /" Makefile > /tmp/Makefile
     mv /tmp/Makefile Makefile
-    cd ../../
+    cd $HOME
 
     if [ -f msys2 ]; then
 
@@ -94,9 +94,9 @@ if [ "$OSTYPE" == "msys" ]; then
             sed s\/YYY\/${RELEASE1}\/g tmp.iss > installer_gtk.iss
         sed s\/XXX\/${VERSION}${SUFFIX}\/g /e/work/src/gmic/resources/gmic_gimp_qt64.iss > tmp.iss &&
             sed s\/YYY\/${RELEASE1}\/g tmp.iss > installer_qt.iss
-        cd gmic/src && make clean && rm -f gmic gmic_gimp_gtk *.o && \
+        cd $HOME/gmic/src && make clean && rm -f gmic gmic_gimp_gtk *.o && \
             make OPT_CFLAGS="-O3 -m64 -mtune=generic" cli gimp libc libcstatic
-        cd ../../gmic_qt && make distclean && qmake HOST=gimp gmic_qt.pro && make release
+        cd $HOME/gmic_qt && make distclean && qmake HOST=gimp gmic_qt.pro && make release
     else
 
         # For 32 bits version (MSYS1)
@@ -109,14 +109,14 @@ if [ "$OSTYPE" == "msys" ]; then
             rm -rf ${OUTDIR1} ${OUTDIR2} ${OUTZIP1} ${OUTZIP2} ${OUTINST1} &&
             sed s\/XXX\/${VERSION}${SUFFIX}\/g /e/work/src/gmic/resources/gmic_gimp_gtk32.iss > tmp.iss &&
             sed s\/YYY\/${RELEASE1}\/g tmp1.iss > installer_gtk.iss
-        cd gmic/src && make clean && rm -f gmic gmic_gimp_gtk *.o && \
+        cd $HOME/gmic/src && make clean && rm -f gmic gmic_gimp_gtk *.o && \
             make CC="g++ -I/mingw/include -I/env/gcc492/mingw32/include -I/env/gcc492/mingw32/i686-w64-mingw32/include -I/opencv/include -I/opencv/include/opencv -I/opencv/include/opencv2" \
                  MANDATORY_LIBS+="-L/env/gcc492/mingw32/lib -L/env/gcc492/mingw32/i686-w64-mingw32/lib -L/mingw/lib -lz" \
                  OPT_CFLAGS="-O3 -march=i686 -mtune=generic" \
                  OPENCV_LIBS+="/opencv/lib/opencv_calib3d2410.lib /opencv/lib/opencv_contrib2410.lib /opencv/lib/opencv_core2410.lib /opencv/lib/opencv_features2d2410.lib /opencv/lib/opencv_flann2410.lib /opencv/lib/opencv_gpu2410.lib /opencv/lib/opencv_highgui2410.lib /opencv/lib/opencv_imgproc2410.lib /opencv/lib/opencv_legacy2410.lib /opencv/lib/opencv_ml2410.lib /opencv/lib/opencv_nonfree2410.lib /opencv/lib/opencv_objdetect2410.lib /opencv/lib/opencv_ocl2410.lib /opencv/lib/opencv_photo2410.lib /opencv/lib/opencv_stitching2410.lib /opencv/lib/opencv_superres2410.lib /opencv/lib/opencv_video2410.lib /opencv/lib/opencv_videostab2410.lib" cli gimp libc # libcstatic
 
     fi
-    cd ../../
+    cd $HOME
     cp -f gmic/src/gmic_gimp_gtk.exe gmic-gimp-gtk-build/ &&
         cp -f gmic/src/gmic_gimp_gtk.exe gmic/src/gmic.exe gmic/src/libcgmic.dll gmic/src/libcgmic.def gmic-build/ &&
         cp -f gmic_qt/release/gmic_gimp_qt.exe gmic-gimp-qt-build/
