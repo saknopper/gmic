@@ -233,9 +233,12 @@ DIR=/tmp/gmic-${VERSION}${SUFFIX}
 rm -f gmic_${VERSION}${SUFFIX}_*.deb gmic_${VERSION}${SUFFIX}.tar.gz deb_gmic_${VERSION}${SUFFIX}.tar.gz \
    gmic_${VERSION}${SUFFIX}_win32.zip gmic_${VERSION}${SUFFIX}_win64.zip \
    gmic_gimp_gtk_${VERSION}${SUFFIX}_linux32.zip gmic_gimp_gtk_${VERSION}${SUFFIX}_linux64.zip \
+   gmic_gimp_qt_${VERSION}${SUFFIX}_linux32.zip gmic_gimp_qt_${VERSION}${SUFFIX}_linux64.zip \
    gmic_gimp_gtk_${VERSION}${SUFFIX}_yakkety64.zip \
+   gmic_gimp_qt_${VERSION}${SUFFIX}_yakkety64.zip \
    gmic_gimp_gtk_${VERSION}${SUFFIX}_win32.zip gmic_gimp_gtk_${VERSION}${SUFFIX}_win32.exe \
    gmic_gimp_gtk_${VERSION}${SUFFIX}_win64.zip gmic_gimp_gtk_${VERSION}${SUFFIX}_win64.exe \
+   gmic_gimp_qt_${VERSION}${SUFFIX}_win64.zip gmic_gimp_qt_${VERSION}${SUFFIX}_win64.exe \
    gmic_static_${VERSION}${SUFFIX}_*.zip
 
 echo
@@ -361,10 +364,6 @@ if [ "$1" == "final" ]; then
     sed "s/PRERELEASE_CFLAGS = /NO_PRERELEASE_CFLAGS = /" Makefile > /tmp/Makefile
     mv /tmp/Makefile Makefile
 fi
-#sed s\/_gmic_versio3\/$VERSION\/g Makefile > /tmp/Makefile
-#mv /tmp/Makefile Makefile
-#sed s\/_gmic_versio1\/$RELEASE1\/g Makefile > /tmp/Makefile
-#mv /tmp/Makefile Makefile
 sed "s/rm -rf CImg.h gmic_stdlib.h /rm -rf /" Makefile > /tmp/Makefile
 mv /tmp/Makefile Makefile
 make clean
