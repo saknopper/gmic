@@ -646,6 +646,12 @@ ifneq ($(OS),Darwin)
 	@if [ -f ../zart/zart ]; then \
 	  cp -f ../zart/zart $(DESTDIR)$(USR)/$(BIN)/; \
         fi
+	@if [ -f ../gmic_qt/gmic_qt ]; then \
+	  cp -f ../gmic_qt/gmic_qt $(DESTDIR)$(USR)/$(BIN)/; \
+        fi
+	@if [ -f ../gmic_qt/gmic_gimp_qt ]; then \
+	  cp -f ../gmic_qt/gmic_gimp_qt $(DESTDIR)$(PLUGINDIR)/; \
+        fi
 endif
 	mkdir -p $(DESTDIR)$(USR)/share/man/
 	mkdir -p $(DESTDIR)$(USR)/share/man/man1/
@@ -666,8 +672,11 @@ endif
         fi
 
 uninstall:
+	rm -f $(DESTDIR)$(PLUGINDIR)/gmic_gimp_gtk
+	rm -f $(DESTDIR)$(PLUGINDIR)/gmic_gimp_qt
 	rm -f $(DESTDIR)$(USR)/$(BIN)/gmic
 	rm -f $(DESTDIR)$(USR)/$(BIN)/zart
+	rm -f $(DESTDIR)$(USR)/$(BIN)/gmic_qt
 	rm -f $(DESTDIR)$(USR)/$(INCLUDE)/gmic.h
 	rm -f $(DESTDIR)$(USR)/$(LIB)/libgmic.so.$(VERSION)
 	rm -f $(DESTDIR)$(USR)/$(LIB)/libgmic.so.$(VERSION1)
