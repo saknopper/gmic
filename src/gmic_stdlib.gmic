@@ -24596,9 +24596,9 @@ fx_charcoal_preview :
 #@gui : Input type = _choice("B&amp;W photograph","Lineart")
 #@gui : Output type = _choice{"Colorized image (1 layer)","Colors only (1 layer)","Image + Colors (2 layers)","Image + Colors (multi-layers)"}
 #@gui : View resolution = _choice{1,"Small (faster)","Medium","High (slower)","Very high (even slower)"}
-#@gui : 1st additional palette (.gpl file) = _file("")
-#@gui : 2nd additional palette (.gpl file) = _file("")
-#@gui : Image to grab color from (.png file) = _file("")
+#@gui : 1st additional palette (.gpl file) = _file()
+#@gui : 2nd additional palette (.gpl file) = _file()
+#@gui : Image to grab color from (.png file) = _file()
 #@gui : sep = separator()
 #@gui : note = note{"<small><b>Description:</b>\n
 #@gui : This filter allows to quickly colorize a B&amp;W image or lineart.
@@ -24632,7 +24632,7 @@ fx_charcoal_preview :
 #@gui : sep = separator(), note = note("<small>You can find more information on how to use this filter here :</small>")
 #@gui : link = link("David Revoy's G'MIC Colorization Page","http://www.davidrevoy.com/article240/gmic-line-art-colorization")
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>07/12/2016</i>.</small>")
-fx_colorize_interactive :
+fx_colorize_interactive : -skip "${4=},${5=},${6=}"
   N=$! nm={n}
   resolution={arg(1+$3,512,1024,2048,0)}
   -nm "[G"{`39`}"MIC] Colorize"
@@ -24659,7 +24659,7 @@ fx_colorize_interactive :
   -nm $nm
   -u \{$1\}\{$2\}\{$3\}\{"$4"\}\{"$5"\}\{"$6"\}\{0\}\{{w},{h}\}\{$status\}
 
-fx_colorize_interactive_preview :
+fx_colorize_interactive_preview : -skip "${4=},${5=},${6=}"
   -if $7  # Clear control points.
     -gui_print_preview "No preview\n  available",,"(Control points cleared)"
     -u \{$1\}\{$2\}\{$3\}\{"$4"\}\{"$5"\}\{"$6"\}\{0\}\{{w},{h}\}\{-1\}

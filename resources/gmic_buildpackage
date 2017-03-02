@@ -325,8 +325,8 @@ rm -f gmic_stdlib.gmic gmic_stdlib.$SVERSION
 cd ..
 #exit
 
-# Construct a clean version of G'MIC directory.
-#----------------------------------------------
+# Construct a clean version of the G'MIC folder.
+#------------------------------------------------
 echo " - Construct clean version of the G'MIC directory."
 rm -rf $DIR
 mkdir $DIR
