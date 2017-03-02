@@ -449,9 +449,13 @@ else
 	cd ../zart && qmake CONFIG=release zart.pro && $(MAKE) && $(STRIP) zart
 endif
 
+gmic_gimp_qt: CImg.h gmic_stdlib.h
+	@if [ ! -d ../gmic_qt ]; then ln -fs ../gmic_qt ..; fi
+	cd ../gmic_qt && qmake CONFIG=release PRERELEASE=`date +%y%m%d` HOST=gimp gmic_qt.pro && $(MAKE) && $(STRIP) gmic_gimp_qt
+
 gmic_qt: CImg.h gmic_stdlib.h
 	@if [ ! -d ../gmic_qt ]; then ln -fs ../gmic_qt ..; fi
-	cd ../gmic_qt && qmake CONFIG=release PRERELEASE=`date +%y%m%d` gmic_qt.pro && $(MAKE) && $(STRIP) gmic_gimp_qt
+	cd ../gmic_qt && qmake CONFIG=release PRERELEASE=`date +%y%m%d` HOST=none gmic_qt.pro && $(MAKE) && $(STRIP) gmic_qt
 
 # Internal rules to build compilation modules.
 
@@ -664,7 +668,6 @@ endif
 uninstall:
 	rm -f $(DESTDIR)$(USR)/$(BIN)/gmic
 	rm -f $(DESTDIR)$(USR)/$(BIN)/zart
-	rm -f $(DESTDIR)$(USR)/$(BIN)/gmic_qt
 	rm -f $(DESTDIR)$(USR)/$(INCLUDE)/gmic.h
 	rm -f $(DESTDIR)$(USR)/$(LIB)/libgmic.so.$(VERSION)
 	rm -f $(DESTDIR)$(USR)/$(LIB)/libgmic.so.$(VERSION1)
