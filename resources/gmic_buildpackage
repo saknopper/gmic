@@ -253,8 +253,8 @@ cd gmic/src/
 cp -f gmic_stdlib.gmic ../html/
 cp -f gmic_stdlib.gmic ../html/gmic_stdlib.$SVERSION
 make stdlib CImg.h
-ln -fs ../../gmic-community/zart ..
-ln -fs ../../gmic-community/gmic_qt ..
+ln -fs ../gmic-community/zart ..
+ln -fs ../gmic-community/gmic_qt ..
 ln -fs ../../gmic-community/libcgmic/gmic_libc.cpp .
 ln -fs ../../gmic-community/libcgmic/gmic_libc.h .
 ln -fs ../../gmic-community/libcgmic/use_libcgmic.c .
@@ -412,8 +412,6 @@ rm -rf `basename $DIR`/src/use_libcgmic.c
 tar chvf ${TARFILE} `basename $DIR`
 gzip ${TARFILE}
 cp -f ${TARFILE}.gz ${HOME}/work/src/
-
-return;
 
 if [ "$1" == "final" ]; then
     lftp ftp://$GMIC_LOGIN:$GMIC_PASSWD@ftp.gmic.eu -e "put -O /www/gmic/files/source/ ${HOME}/work/src/${TARFILE}.gz; quit";

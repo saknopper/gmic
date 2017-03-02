@@ -8,7 +8,6 @@
 #                 . the G'MIC plug-in for GIMP (type 'make gimp').
 #                 . the G'MIC interpreter, as a C++ library (type 'make lib').
 #                 . the G'MIC C library (type 'make libc' or 'make libcstatic').
-#                 . the ZArt software (type 'make zart').
 #                 . To compile all of them, just type 'make', or 'make all').
 #
 #                ( http://gmic.eu )
@@ -445,10 +444,14 @@ static:
 zart: CImg.h gmic_stdlib.h
 	@if [ ! -d ../zart ]; then ln -fs ../gmic-community/zart ..; fi
 ifeq ($(OS),Darwin)
-	cd ../zart && qmake zart.pro && $(MAKE) && $(STRIP) zart.app/Contents/MacOS/zart
+	cd ../zart && qmake CONFIG=release zart.pro && $(MAKE) && $(STRIP) zart.app/Contents/MacOS/zart
 else
-	cd ../zart && qmake zart.pro && $(MAKE) && $(STRIP) zart
+	cd ../zart && qmake CONFIG=release zart.pro && $(MAKE) && $(STRIP) zart
 endif
+
+gmic_qt: CImg.h gmic_stdlib.h
+	@if [ ! -d ../gmic_qt ]; then ln -fs ../gmic_qt ..; fi
+	cd ../gmic_qt && qmake CONFIG=release PRERELEASE=`date +%y%m%d` gmic_qt.pro && $(MAKE) && $(STRIP) gmic_gimp_qt
 
 # Internal rules to build compilation modules.
 
@@ -661,6 +664,7 @@ endif
 uninstall:
 	rm -f $(DESTDIR)$(USR)/$(BIN)/gmic
 	rm -f $(DESTDIR)$(USR)/$(BIN)/zart
+	rm -f $(DESTDIR)$(USR)/$(BIN)/gmic_qt
 	rm -f $(DESTDIR)$(USR)/$(INCLUDE)/gmic.h
 	rm -f $(DESTDIR)$(USR)/$(LIB)/libgmic.so.$(VERSION)
 	rm -f $(DESTDIR)$(USR)/$(LIB)/libgmic.so.$(VERSION1)
@@ -677,6 +681,7 @@ distclean: clean
 clean:
 	rm -rf CImg.h gmic_stdlib.h gmic$(EXE) gmic_gimp_gtk$(EXE) use_libgmic$(EXE) use_libcgmic$(EXE) use_libcgmic_static$(EXE) gmic*.o libgmic* libcgmic* *~
 	@if [ -h ../zart ]; then rm -f ../zart; fi
+	@if [ -h ../gmic_qt ]; then rm -f ../gmic_qt; fi
 	@if [ -h gmic_libc.h ]; then rm -f gmic_libc.h; fi
 	@if [ -h gmic_libc.cpp ]; then rm -f gmic_libc.cpp; fi
 	@if [ -h use_libcgmic.c ]; then rm -f use_libcgmic.c; fi
