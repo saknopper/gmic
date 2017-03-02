@@ -259,7 +259,7 @@ cp -f gmic_stdlib.gmic ../html/
 cp -f gmic_stdlib.gmic ../html/gmic_stdlib.$SVERSION
 make stdlib CImg.h
 ln -fs ../gmic-community/zart ..
-ln -fs ../gmic-community/gmic_qt ..
+ln -fs ../gmic_qt ..
 ln -fs ../../gmic-community/libcgmic/gmic_libc.cpp .
 ln -fs ../../gmic-community/libcgmic/gmic_libc.h .
 ln -fs ../../gmic-community/libcgmic/use_libcgmic.c .
