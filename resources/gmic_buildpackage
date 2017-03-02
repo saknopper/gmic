@@ -97,8 +97,7 @@ if [ "$OSTYPE" == "msys" ]; then
         cd $HOME/gmic/src && make clean && rm -f gmic gmic_gimp_gtk *.o && \
             make OPT_CFLAGS="-O3 -m64 -mtune=generic" cli gimp libc libcstatic
         cd $HOME/gmic_qt &&
-            sed s\/170101\/`date +%y%m%d`\/g gmic_qt.pro > tmp.pro &&
-            make distclean && qmake PRERELEASE=`date +%y%m%d` HOST=gimp tmp.pro && make release
+            make distclean && qmake PRERELEASE=`date +%y%m%d` HOST=gimp gmic_qt.pro && make release
     else
 
         # For 32 bits version (MSYS1)
@@ -389,9 +388,9 @@ rm -r `find . -name "\#*"`
 rm -r `find . -name "CVS"`
 rm -r `find . -name ".git"`
 cd zart
-sed "s+GMIC_PATH = ../../gmic/src/+GMIC_PATH = ../src/+" zart.pro > /tmp/zart.pro
-mv /tmp/zart.pro zart.pro
-qmake CONFIG=release
+#sed "s+GMIC_PATH = ../../gmic/src/+GMIC_PATH = ../src/+" zart.pro > /tmp/zart.pro
+#mv /tmp/zart.pro zart.pro
+qmake CONFIG=release GMIC_PATH=../src zart.pro
 
 # Create .tar.gz source archives.
 #--------------------------------
