@@ -81,7 +81,8 @@ if [ "$OSTYPE" == "msys" ]; then
     if [ -f msys2 ]; then
 
         # For 64 bits version (MSYS2)
-        cp -rf /e/work/src/gmic_qt gmic_qt
+        rm -rf gmic_qt
+        cp -rf /e/work/src/gmic_qt $HOME
         echo " - Release number : $VERSION$SUFFIX (64 bits)" &&
             OUTDIR1=gmic-${VERSION}${SUFFIX}-win64 &&
             OUTDIR2=gmic-gimp-gtk-${VERSION}${SUFFIX}-win64 &&
