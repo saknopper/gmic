@@ -70,6 +70,8 @@ if [ "$OSTYPE" == "msys" ]; then
             SUFFIX="";
             sed "s/PRERELEASE_CFLAGS = /NO_PRERELEASE_CFLAGS = /" Makefile > /tmp/Makefile
             mv /tmp/Makefile Makefile
+            sed "s/PRERELEASE = /NO_PRERELEASE = /" Makefile > /tmp/Makefile
+            mv /tmp/Makefile Makefile
         else SUFFIX=_pre;
         fi &&
         sed "s/rm -rf CImg.h gmic_stdlib.h /rm -rf /" Makefile > /tmp/Makefile
@@ -96,8 +98,12 @@ if [ "$OSTYPE" == "msys" ]; then
             sed s\/YYY\/${RELEASE1}\/g tmp.iss > installer_qt.iss
         cd $HOME/gmic/src && make clean && rm -f gmic gmic_gimp_gtk *.o && \
             make OPT_CFLAGS="-O3 -m64 -mtune=generic" cli gimp libc libcstatic
-        cd $HOME/gmic_qt &&
+        cd $HOME/gmic_qt
+        if [ "$1" == "final" ]; then
             make distclean && qmake PRERELEASE=`date +%y%m%d` HOST=gimp gmic_qt.pro && make release
+        else
+            make distclean && qmake PRERELEASE= HOST=gimp gmic_qt.pro && make release
+        fi
     else
 
         # For 32 bits version (MSYS1)
@@ -370,6 +376,8 @@ mv /tmp/changelog changelog
 cd $DIR/src
 if [ "$1" == "final" ]; then
     sed "s/PRERELEASE_CFLAGS = /NO_PRERELEASE_CFLAGS = /" Makefile > /tmp/Makefile
+    mv /tmp/Makefile Makefile
+    sed "s/PRERELEASE = /NO_PRERELEASE = /" Makefile > /tmp/Makefile
     mv /tmp/Makefile Makefile
 fi
 sed "s/rm -rf CImg.h gmic_stdlib.h /rm -rf /" Makefile > /tmp/Makefile

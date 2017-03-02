@@ -120,7 +120,8 @@ endif
 #-------------------------------------------------
 
 # Flags set to describe a 'prerelease' version.
-PRERELEASE_CFLAGS = -Dgmic_prerelease="\\\"`date +%y%m%d`\\\""
+PRERELEASE = `date +%y%m%d`
+PRERELEASE_CFLAGS = -Dgmic_prerelease="\\\"$(PRERELEASE)\\\""
 
 # Minimal set of flags that is mandatory to compile G'MIC.
 MANDATORY_CFLAGS = -Dgmic_build -Dcimg_use_zlib `pkg-config --cflags zlib || echo -I$(USR)/$(INCLUDE)` $(PRERELEASE_CFLAGS)
@@ -451,11 +452,11 @@ endif
 
 gmic_gimp_qt: CImg.h gmic_stdlib.h
 	@if [ ! -d ../gmic_qt ]; then ln -fs ../gmic_qt ..; fi
-	cd ../gmic_qt && qmake CONFIG+=release PRERELEASE=`date +%y%m%d` HOST=gimp gmic_qt.pro && $(MAKE) && $(STRIP) gmic_gimp_qt
+	cd ../gmic_qt && qmake CONFIG+=release PRERELEASE=$(PRERELEASE) HOST=gimp gmic_qt.pro && $(MAKE) && $(STRIP) gmic_gimp_qt
 
 gmic_qt: CImg.h gmic_stdlib.h
 	@if [ ! -d ../gmic_qt ]; then ln -fs ../gmic_qt ..; fi
-	cd ../gmic_qt && qmake CONFIG+=release PRERELEASE=`date +%y%m%d` HOST=none gmic_qt.pro && $(MAKE) && $(STRIP) gmic_qt
+	cd ../gmic_qt && qmake CONFIG+=release PRERELEASE=$(PRERELEASE) HOST=none gmic_qt.pro && $(MAKE) && $(STRIP) gmic_qt
 
 # Internal rules to build compilation modules.
 
