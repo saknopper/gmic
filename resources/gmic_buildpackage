@@ -202,7 +202,7 @@ if [ "$DIST" != "Ubuntu 16.04.2 LTS" ] || [ "$BITS" != "x86_64" ] ; then
         tar zxvf deb_${TARFILE}.gz &&
         find gmic-${VERSION}${SUFFIX} -exec touch {} ;
     cd $DIR/src &&
-        sed "s/\$(MAKE) cli gimp lib/\$(MAKE) cli gimp lib libc zart gmic_gimp_qt/g" Makefile > /tmp/Makefile &&
+        sed "s/\$(MAKE) cli gimp lib/\$(MAKE) cli gimp lib libc zart gmic_qt gmic_gimp_qt/g" Makefile > /tmp/Makefile &&
         mv /tmp/Makefile Makefile && cd ../..
     cd $DIR &&
         dpkg-buildpackage -d -j3 -rfakeroot;
@@ -439,7 +439,7 @@ cp ${HOME}/work/src/deb_${TARFILE}.gz /tmp/ &&
     tar zxvf deb_${TARFILE}.gz &&
     find gmic-${VERSION}${SUFFIX} -exec touch {} \; &&
     cd $DIR/src &&
-    sed "s/\$(MAKE) cli gimp lib/\$(MAKE) cli gimp lib libc zart gmic_gimp_qt/g" Makefile > /tmp/Makefile &&
+    sed "s/\$(MAKE) cli gimp lib/\$(MAKE) cli gimp lib libc zart gmic_qt gmic_gimp_qt/g" Makefile > /tmp/Makefile &&
     mv /tmp/Makefile Makefile && cd ../..
 cd $DIR &&
     dpkg-buildpackage -d -j3 -rfakeroot;
