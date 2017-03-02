@@ -253,7 +253,8 @@ cd gmic/src/
 cp -f gmic_stdlib.gmic ../html/
 cp -f gmic_stdlib.gmic ../html/gmic_stdlib.$SVERSION
 make stdlib CImg.h
-ln -fs ../gmic-community/zart ..
+ln -fs ../../gmic-community/zart ..
+ln -fs ../../gmic-community/gmic_qt ..
 ln -fs ../../gmic-community/libcgmic/gmic_libc.cpp .
 ln -fs ../../gmic-community/libcgmic/gmic_libc.h .
 ln -fs ../../gmic-community/libcgmic/use_libcgmic.c .
@@ -348,9 +349,15 @@ cp -Lrf debian $DIR
 cd ..
 cd zart
 qmake
-make clean
+make distclean
 mkdir $DIR/zart
 cp -Lrf images include src ui *.xml *.html README zart.pro zart.qrc $DIR/zart
+cd ..
+cd gmic_qt
+qmake
+make distclean
+mkdir $DIR/gmic_qt
+cp -Lrf icons images include resources src ui README gmic_qt.pro gmic_qt.rc gmic_qt_resources.rc $DIR/gmic_qt
 cd ..
 
 cd $DIR
@@ -398,12 +405,16 @@ cp -f deb_${TARFILE}.gz ${HOME}/work/src/
 
 rm -rf `basename $DIR`/debian
 rm -rf `basename $DIR`/zart
+rm -rf `basename $DIR`/gmic_qt
 rm -rf `basename $DIR`/src/gmic_libc.cpp
 rm -rf `basename $DIR`/src/gmic_libc.h
 rm -rf `basename $DIR`/src/use_libcgmic.c
 tar chvf ${TARFILE} `basename $DIR`
 gzip ${TARFILE}
 cp -f ${TARFILE}.gz ${HOME}/work/src/
+
+exit;
+
 if [ "$1" == "final" ]; then
     lftp ftp://$GMIC_LOGIN:$GMIC_PASSWD@ftp.gmic.eu -e "put -O /www/gmic/files/source/ ${HOME}/work/src/${TARFILE}.gz; quit";
     lftp ftp://$GMIC_LOGIN:$GMIC_PASSWD@ftp.gmic.eu -e "put -O /www/gmic/files/source/ ${HOME}/work/src/${TARFILE}.gz -o gmic_source.tar.gz; quit";
