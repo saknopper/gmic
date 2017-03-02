@@ -362,7 +362,7 @@ cd gmic_qt
 qmake gmic_qt.pro
 make distclean
 mkdir $DIR/gmic_qt
-cp -Lrf icons images include resources src ui README gmic_qt.pro gmic_qt.rc gmic_qt_resources.rc $DIR/gmic_qt
+cp -Lrf icons images include resources src ui README.txt gmic_qt.pro gmic_qt.qrc gmic_qt_resource.rc $DIR/gmic_qt
 cd ..
 
 cd $DIR
