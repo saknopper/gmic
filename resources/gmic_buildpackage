@@ -196,7 +196,7 @@ if [ "$DIST" != "Ubuntu 16.04.2 LTS" ] || [ "$BITS" != "x86_64" ] ; then
         tar zxvf deb_${TARFILE}.gz &&
         find gmic-${VERSION}${SUFFIX} -exec touch {} ;
     cd $DIR/src &&
-        sed "s/\$(MAKE) cli gimp lib/\$(MAKE) cli gimp lib libc zart/g" Makefile > /tmp/Makefile &&
+        sed "s/\$(MAKE) cli gimp lib/\$(MAKE) cli gimp lib libc zart gmic_gimp_qt/g" Makefile > /tmp/Makefile &&
         mv /tmp/Makefile Makefile && cd ../..
     cd $DIR &&
         dpkg-buildpackage -d -j3 -rfakeroot;
@@ -347,13 +347,13 @@ cp -Lrf gmic_film_cluts.gmz $DIR/resources
 cp -Lrf debian $DIR
 cd ..
 cd zart
-qmake
+qmake zart.pro
 make distclean
 mkdir $DIR/zart
 cp -Lrf images include src ui *.xml *.html README zart.pro zart.qrc $DIR/zart
 cd ..
 cd gmic_qt
-qmake
+qmake gmic_qt.pro
 make distclean
 mkdir $DIR/gmic_qt
 cp -Lrf icons images include resources src ui README gmic_qt.pro gmic_qt.rc gmic_qt_resources.rc $DIR/gmic_qt
@@ -431,7 +431,7 @@ cp ${HOME}/work/src/deb_${TARFILE}.gz /tmp/ &&
     tar zxvf deb_${TARFILE}.gz &&
     find gmic-${VERSION}${SUFFIX} -exec touch {} \; &&
     cd $DIR/src &&
-    sed "s/\$(MAKE) cli gimp lib/\$(MAKE) cli gimp lib libc zart/g" Makefile > /tmp/Makefile &&
+    sed "s/\$(MAKE) cli gimp lib/\$(MAKE) cli gimp lib libc zart gmic_gimp_qt/g" Makefile > /tmp/Makefile &&
     mv /tmp/Makefile Makefile && cd ../..
 cd $DIR &&
     dpkg-buildpackage -d -j3 -rfakeroot;
