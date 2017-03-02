@@ -445,18 +445,18 @@ static:
 zart: CImg.h gmic_stdlib.h
 	@if [ ! -d ../zart ]; then ln -fs ../gmic-community/zart ..; fi
 ifeq ($(OS),Darwin)
-	cd ../zart && qmake CONFIG+=release zart.pro && $(MAKE) && $(STRIP) zart.app/Contents/MacOS/zart
+	cd ../zart && qmake CONFIG+=release GMIC_PATH=../src zart.pro && $(MAKE) && $(STRIP) zart.app/Contents/MacOS/zart
 else
-	cd ../zart && qmake CONFIG+=release zart.pro && $(MAKE) && $(STRIP) zart
+	cd ../zart && qmake CONFIG+=release GMIC_PATH=../src zart.pro && $(MAKE) && $(STRIP) zart
 endif
 
 gmic_gimp_qt: CImg.h gmic_stdlib.h
 	@if [ ! -d ../gmic_qt ]; then ln -fs ../gmic_qt ..; fi
-	cd ../gmic_qt && qmake CONFIG+=release PRERELEASE=$(PRERELEASE) HOST=gimp gmic_qt.pro && $(MAKE) && $(STRIP) gmic_gimp_qt
+	cd ../gmic_qt && qmake CONFIG+=release GMIC_PATH=../src PRERELEASE=$(PRERELEASE) HOST=gimp gmic_qt.pro && $(MAKE) && $(STRIP) gmic_gimp_qt
 
 gmic_qt: CImg.h gmic_stdlib.h
 	@if [ ! -d ../gmic_qt ]; then ln -fs ../gmic_qt ..; fi
-	cd ../gmic_qt && qmake CONFIG+=release PRERELEASE=$(PRERELEASE) HOST=none gmic_qt.pro && $(MAKE) && $(STRIP) gmic_qt
+	cd ../gmic_qt && qmake CONFIG+=release GMIC_PATH=../src PRERELEASE=$(PRERELEASE) HOST=none gmic_qt.pro && $(MAKE) && $(STRIP) gmic_qt
 
 # Internal rules to build compilation modules.
 
