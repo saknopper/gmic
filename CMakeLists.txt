@@ -299,12 +299,12 @@ if(BUILD_PLUGIN)
       include_directories(${GIMPUI_INCLUDE_DIRS})
       link_directories(${GIMPUI_LIBRARY_DIRS})
 
-      add_executable(gmic_gimp ${CLI_Includes} ${CLI_Sources} ./src/gmic_gimp.cpp)
-      add_dependencies(gmic_gimp gmic_extra_headers)
+      add_executable(gmic_gimp_gtk ${CLI_Includes} ${CLI_Sources} ./src/gmic_gimp_gtk.cpp)
+      add_dependencies(gmic_gimp_gtk gmic_extra_headers)
 
-      set_target_properties(gmic_gimp PROPERTIES COMPILE_FLAGS " -Dgmic_gui")
+      set_target_properties(gmic_gimp_gtk PROPERTIES COMPILE_FLAGS " -Dgmic_gui")
 
-      target_link_libraries(gmic_gimp
+      target_link_libraries(gmic_gimp_gtk
 	${X11_LIBRARIES}
 	${TIFF_LIBRARIES}
 	${PNG_LIBRARIES}
@@ -320,10 +320,10 @@ if(BUILD_PLUGIN)
 	)
 
       if (PLUGIN_INSTALL_PREFIX)
-        INSTALL(TARGETS gmic_gimp RUNTIME DESTINATION ${PLUGIN_INSTALL_PREFIX})
+        INSTALL(TARGETS gmic_gimp_gtk RUNTIME DESTINATION ${PLUGIN_INSTALL_PREFIX})
         INSTALL(FILES ${CMAKE_SOURCE_DIR}/resources/gmic_film_cluts.gmz DESTINATION ${PLUGIN_INSTALL_PREFIX})
       else (PLUGIN_INSTALL_PREFIX)
-        INSTALL(TARGETS gmic_gimp RUNTIME DESTINATION ${GIMP_PREFIX}/lib/gimp/2.0/plug-ins)
+        INSTALL(TARGETS gmic_gimp_gtk RUNTIME DESTINATION ${GIMP_PREFIX}/lib/gimp/2.0/plug-ins)
         INSTALL(FILES ${CMAKE_SOURCE_DIR}/resources/gmic_film_cluts.gmz DESTINATION ${GIMP_PREFIX}/lib/gimp/2.0/plug-ins)
       endif  (PLUGIN_INSTALL_PREFIX)
 
