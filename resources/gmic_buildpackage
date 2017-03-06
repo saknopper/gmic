@@ -217,14 +217,14 @@ if [ "$DIST" != "Ubuntu 16.04.2 LTS" ] || [ "$BITS" != "x86_64" ] ; then
     mv ../gmic_${VERSION}_${ARCH}.deb ../$PAK
 
     if [ "$CODENAME" == "ubuntu_yakkety" ]; then
-        zip -j -r -9 ../$PLU2 src/gmic_gimp_gtk README &&
+        zip -r -9 ../$PLU2 src/gmic_gimp_gtk README &&
             cd .. &&
             cp -f $PLU2 $PAK $SF_HOME/work/src/
     elif [ "$CODENAME" == "debian_wheezy" ]; then
-        zip -j -r -9 ../$PLU src/gmic_gimp_gtk README &&
+        zip -r -9 ../$PLU src/gmic_gimp_gtk README &&
             cd src && make clean && make GMIC_STATIC_CLI_PATH=/usr/lib/${PARCH}-linux-gnu static && mv gmic ../ &&
             cd .. && rm -rf man src zart debian && cd .. &&
-            zip -j -r -9 $STA $DIR &&
+            zip -r -9 $STA $DIR &&
             cp -f $PLU $PAK $STA $SF_HOME/work/src/
     else
         cd .. &&
