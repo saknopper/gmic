@@ -24827,7 +24827,7 @@ fx_autofill_lineart_preview :
 #@gui : sep = separator(), Preview type = choice(0,"Colored geometry","Colored regions","Colored lineart")
 #@gui : sep = separator(), note = note("<small>Authors: <i>David Tschumperl&#233;</i>, <i>S&#233;bastien Fourey</i> and <i>David Revoy</i>.      Latest update: <i>12/13/2016</i>.</small>")
 fx_colorize_lineart_smartcoloring :
-  -_fx_colorize_lineart_smartcoloring $*,-1
+  -_fx_colorize_lineart_smartcoloring $*,-1 -round
 
 fx_colorize_lineart_smartcoloring_preview :
   -if {$1" && "$!<2} -gui_warning_preview "A top layer with color spots is missing, for this colorization mode." -return -endif
