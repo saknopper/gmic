@@ -1,6 +1,6 @@
 /*
  #
- #  File        : gmic_gimp.cpp
+ #  File        : gmic_gimp_gtk.cpp
  #                ( C++ source file )
  #
  #  Description : G'MIC for GIMP - A plug-in to allow the use
@@ -63,7 +63,7 @@
 // Manage different versions of the GIMP API.
 #define _gimp_item_is_valid gimp_item_is_valid
 #define _gimp_image_get_item_position gimp_image_get_item_position
-#if GIMP_MINOR_VERSION<=7 && GIMP_MICRO_VERSION<14
+#if GIMP_MAJOR_VERSION<=2 && GIMP_MINOR_VERSION<=7 && GIMP_MICRO_VERSION<14
 #define _gimp_item_get_visible gimp_drawable_get_visible
 #else
 #define _gimp_item_get_visible gimp_item_get_visible
@@ -119,7 +119,7 @@ GtkWidget *param_frame = 0;                    // The right frame containing the
 GtkWidget *param_pane = 0;                     // The right scrolled window, containing the right frame.
 GtkWidget *markup2ascii = 0;                   // Used to convert markup to ascii strings.
 GimpPDBStatusType status = GIMP_PDB_SUCCESS;   // The plug-in return status.
-#if GIMP_MINOR_VERSION>8
+#if GIMP_MAJOR_VERSION>=3 || GIMP_MINOR_VERSION>8
 GimpColorProfile* img_profile = 0;             // The color profile of the image.
 #endif
 
@@ -389,7 +389,7 @@ void load_dialog_params() {
 
 // Get layer blending mode from string.
 //-------------------------------------
-#if GIMP_MINOR_VERSION>8
+#if GIMP_MAJOR_VERSION>=3 || GIMP_MINOR_VERSION>8
 typedef GimpLayerMode GimpLayerModeEffects;
 #define GIMP_NORMAL_MODE        GIMP_LAYER_MODE_NORMAL
 #define GIMP_DISSOLVE_MODE      GIMP_LAYER_MODE_DISSOLVE
@@ -1705,7 +1705,7 @@ void convert_image2uchar(CImg<T>& img) {
 // (Much thanks to Andrea Ferrero for his contribution on this).
 template<typename T>
 CImg<T>& apply_icc(CImg<T>& img) {
-#if GIMP_MINOR_VERSION<=8
+#if GIMP_MAJOR_VERSION<=2 && GIMP_MINOR_VERSION<=8
   cimg::unused(img);
 #else
   if (!img || img.spectrum()<3 || img.spectrum()>4 || !img_profile) return img;
@@ -1728,7 +1728,7 @@ CImg<T>& apply_icc(CImg<T>& img) {
 // Color-correct preview image.
 //-----------------------------
 void preview_with_icc() {
-#if GIMP_MINOR_VERSION>8
+#if GIMP_MAJOR_VERSION>=3 || GIMP_MINOR_VERSION>8
   img_profile = gimp_image_get_effective_color_profile(image_id);
   GimpColorConfig *const color_config = gimp_get_color_configuration();
   if (!img_profile || !color_config) return;
@@ -1923,7 +1923,7 @@ CImg<int> get_input_layers(CImgList<T>& images, const unsigned int input_mode=~0
     if (!gimp_drawable_mask_intersect(input_layers[l],&rgn_x,&rgn_y,&rgn_width,&rgn_height)) continue;
     const int spectrum = (gimp_drawable_is_rgb(input_layers[l])?3:1) +
       (gimp_drawable_has_alpha(input_layers[l])?1:0);
-#if GIMP_MINOR_VERSION<=8
+#if GIMP_MAJOR_VERSION<=2 && GIMP_MINOR_VERSION<=8
     GimpDrawable *drawable = gimp_drawable_get(input_layers[l]);
     GimpPixelRgn region;
     gimp_pixel_rgn_init(&region,drawable,rgn_x,rgn_y,rgn_width,rgn_height,false,false);
@@ -1999,7 +1999,7 @@ void set_preview_factor() {
         const float
           pw = (float)gimp_preview_width,
           ph = (float)gimp_preview_height;
-#if GIMP_MINOR_VERSION<=8
+#if GIMP_MAJOR_VERSION<=2 && GIMP_MINOR_VERSION<=8
         const float
           dw = (float)gimp_zoom_preview_get_drawable(GIMP_ZOOM_PREVIEW(gui_preview))->width,
           dh = (float)gimp_zoom_preview_get_drawable(GIMP_ZOOM_PREVIEW(gui_preview))->height;
@@ -2137,7 +2137,7 @@ void _gimp_preview_invalidate() {
 
   computed_preview.assign();
 
-#if GIMP_MINOR_VERSION<=8
+#if GIMP_MAJOR_VERSION<=2 && GIMP_MINOR_VERSION<=8
   const bool is_valid_preview_drawable = gui_preview && GIMP_IS_PREVIEW(gui_preview) &&
     _gimp_item_is_valid(gimp_zoom_preview_get_drawable(GIMP_ZOOM_PREVIEW(gui_preview))->drawable_id);
 #else
@@ -2170,7 +2170,7 @@ void _gimp_preview_invalidate() {
       gimp_context_set_interpolation(mode);
     }
 
-#if GIMP_MINOR_VERSION<=8
+#if GIMP_MAJOR_VERSION<=2 && GIMP_MINOR_VERSION<=8
     GimpDrawable *const preview_drawable =
       gimp_drawable_get(gimp_image_get_active_drawable(preview_image_id?preview_image_id:image_id));
     gui_preview = gimp_zoom_preview_new(preview_drawable);
@@ -2964,7 +2964,7 @@ void process_image(const char *const command_line, const bool is_apply) {
           calibrate_image(img,layer_dimensions(p,3),false);
           if (gimp_drawable_mask_intersect(layers[p],&rgn_x,&rgn_y,&rgn_width,&rgn_height)) {
 
-#if GIMP_MINOR_VERSION<=8
+#if GIMP_MAJOR_VERSION<=2 && GIMP_MINOR_VERSION<=8
             GimpDrawable *drawable = gimp_drawable_get(layers[p]);
             GimpPixelRgn region;
             gimp_pixel_rgn_init(&region,drawable,rgn_x,rgn_y,rgn_width,rgn_height,true,true);
@@ -3029,7 +3029,7 @@ void process_image(const char *const command_line, const bool is_apply) {
             else if (layer_name) gimp_item_set_name(layer_id,layer_name);
             gimp_image_insert_layer(image_id,layer_id,-1,layer_pos + p);
 
-#if GIMP_MINOR_VERSION<=8
+#if GIMP_MAJOR_VERSION<=2 && GIMP_MINOR_VERSION<=8
             GimpDrawable *drawable = gimp_drawable_get(layer_id);
             GimpPixelRgn region;
             gimp_pixel_rgn_init(&region,drawable,0,0,drawable->width,drawable->height,true,true);
@@ -3094,7 +3094,7 @@ void process_image(const char *const command_line, const bool is_apply) {
           else if (layer_name) gimp_item_set_name(layer_id,layer_name);
           gimp_image_insert_layer(image_id,layer_id,-1,p);
 
-#if GIMP_MINOR_VERSION<=8
+#if GIMP_MAJOR_VERSION<=2 && GIMP_MINOR_VERSION<=8
           GimpDrawable *drawable = gimp_drawable_get(layer_id);
           GimpPixelRgn region;
           gimp_pixel_rgn_init(&region,drawable,0,0,drawable->width,drawable->height,true,true);
@@ -3134,7 +3134,7 @@ void process_image(const char *const command_line, const bool is_apply) {
       if (spt.images.size()) {
         const gint active_layer_id = gimp_image_get_active_layer(image_id);
         if (active_layer_id>=0) {
-#if GIMP_MINOR_VERSION<=8
+#if GIMP_MAJOR_VERSION<=2 && GIMP_MINOR_VERSION<=8
           const int nimage_id = gimp_image_new(max_width,max_height,max_spectrum<=2?GIMP_GRAY:GIMP_RGB);
 #else
           const int nimage_id = gimp_image_new_with_precision(max_width,max_height,max_spectrum<=2?GIMP_GRAY:GIMP_RGB,
@@ -3164,7 +3164,7 @@ void process_image(const char *const command_line, const bool is_apply) {
             else if (layer_name) gimp_item_set_name(layer_id,layer_name);
             gimp_image_insert_layer(nimage_id,layer_id,-1,p);
 
-#if GIMP_MINOR_VERSION<=8
+#if GIMP_MAJOR_VERSION<=2 && GIMP_MINOR_VERSION<=8
             GimpDrawable *drawable = gimp_drawable_get(layer_id);
             GimpPixelRgn region;
             gimp_pixel_rgn_init(&region,drawable,0,0,drawable->width,drawable->height,true,true);
@@ -3233,7 +3233,7 @@ void process_preview() {
   const CImg<char> command_line = get_command_line(true);
   if (!command_line || std::strstr(command_line," -_none_")) return;
 
-#if GIMP_MINOR_VERSION>8
+#if GIMP_MAJOR_VERSION>=3 || GIMP_MINOR_VERSION>8
   img_profile = gimp_image_get_effective_color_profile(image_id);
 #endif
 
@@ -3495,7 +3495,7 @@ void process_preview() {
     const float
       pw = (float)gimp_preview_width,
       ph = (float)gimp_preview_height;
-#if GIMP_MINOR_VERSION<=8
+#if GIMP_MAJOR_VERSION<=2 && GIMP_MINOR_VERSION<=8
     const float
       dw = (float)gimp_zoom_preview_get_drawable(GIMP_ZOOM_PREVIEW(gui_preview))->width,
       dh = (float)gimp_zoom_preview_get_drawable(GIMP_ZOOM_PREVIEW(gui_preview))->height;
@@ -4374,7 +4374,7 @@ void gmic_run(const gchar *name, gint nparams, const GimpParam *param,
               gint *nreturn_vals, GimpParam **return_vals) {
 
   // Init plug-in variables.
-#if GIMP_MINOR_VERSION>8
+#if GIMP_MAJOR_VERSION>=3 || GIMP_MINOR_VERSION>8
   gegl_init(NULL,NULL);
   gimp_plugin_enable_precision();
 #endif
@@ -4417,7 +4417,7 @@ void gmic_run(const gchar *name, gint nparams, const GimpParam *param,
 
   try {
     image_id = param[1].data.d_drawable;
-#if GIMP_MINOR_VERSION<=8
+#if GIMP_MAJOR_VERSION<=2 && GIMP_MINOR_VERSION<=8
     gimp_tile_cache_ntiles(2*(gimp_image_width(image_id)/gimp_tile_width() + 1));
 #endif
 
