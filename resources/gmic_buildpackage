@@ -180,19 +180,17 @@ if [ "$OSTYPE" == "msys" ]; then
         rm -f installer_gtk.iss
 
     # Construct G'MIC for GIMP (Qt) archive and installer.
-    if [ -f msys2 ]; then
-        cp -rf build${BITS}-gimp-qt ${OUTDIR_GIMP_QT} &&
-            cp -f /e/work/src/gmic/COPYING ${OUTDIR_GIMP_QT} &&
-            sed s\/_gmic_version\/${VERSION}${SUFFIX}\/ /e/work/src/gmic/README > ${OUTDIR_GIMP_QT}/README &&
-            zip -r -9 ${OUTZIP_GIMP_QT} ${OUTDIR_GIMP_QT} &&
-            cp -f ${OUTZIP_GIMP_QT} /e/work/src/
+    cp -rf build${BITS}-gimp-qt ${OUTDIR_GIMP_QT} &&
+        cp -f /e/work/src/gmic/COPYING ${OUTDIR_GIMP_QT} &&
+        sed s\/_gmic_version\/${VERSION}${SUFFIX}\/ /e/work/src/gmic/README > ${OUTDIR_GIMP_QT}/README &&
+        zip -r -9 ${OUTZIP_GIMP_QT} ${OUTDIR_GIMP_QT} &&
+        cp -f ${OUTZIP_GIMP_QT} /e/work/src/
 
-        /c/Program\ Files\ \(x86\)/Inno\ Setup\ 5/ISCC.exe installer_qt.iss
-        touch ${OUTINST_GIMP_QT} &&
-            sleep 3 &&
-            cp -f ${OUTINST_GIMP_QT} /e/work/src/ &&
-            rm -f installer_qt.iss
-    fi
+    /c/Program\ Files\ \(x86\)/Inno\ Setup\ 5/ISCC.exe installer_qt.iss
+    touch ${OUTINST_GIMP_QT} &&
+        sleep 3 &&
+        cp -f ${OUTINST_GIMP_QT} /e/work/src/ &&
+        rm -f installer_qt.iss
 
     echo " - All done!"
     return;
