@@ -84,40 +84,40 @@ if [ "$OSTYPE" == "msys" ]; then
 
     rm -rf gmic_qt
     cp -rf /e/work/src/gmic_qt $HOME
-    echo " - Release number : $VERSION$SUFFIX (64 bits)"
-    OUTDIR_CLI=gmic-cli-${VERSION}${SUFFIX}-win64
-    OUTZIP_CLI=gmic_cli_${VERSION}${SUFFIX}_win64.zip
+    echo " - Release number : $VERSION$SUFFIX ($BITS bits)"
+    OUTDIR_CLI=gmic-cli-${VERSION}${SUFFIX}-win${BITS}
+    OUTZIP_CLI=gmic_cli_${VERSION}${SUFFIX}_win${BITS}.zip
     rm -rf ${OUTDIR_CLI} ${OUTZIP_CLI}
 
-    OUTDIR_LIB=gmic-lib-${VERSION}${SUFFIX}-win64
-    OUTZIP_LIB=gmic_lib_${VERSION}${SUFFIX}_win64.zip
+    OUTDIR_LIB=gmic-lib-${VERSION}${SUFFIX}-win${BITS}
+    OUTZIP_LIB=gmic_lib_${VERSION}${SUFFIX}_win${BITS}.zip
     rm -rf ${OUTDIR_LIB} ${OUTZIP_LIB}
 
-    OUTDIR_ZART=gmic-zart-${VERSION}${SUFFIX}-win64
-    OUTZIP_ZART=gmic_zart_${VERSION}${SUFFIX}_win64.zip
+    OUTDIR_ZART=gmic-zart-${VERSION}${SUFFIX}-win${BITS}
+    OUTZIP_ZART=gmic_zart_${VERSION}${SUFFIX}_win${BITS}.zip
     rm -rf ${OUTDIR_ZART} ${OUTZIP_ZART}
 
-    OUTDIR_QT=gmic-qt-${VERSION}${SUFFIX}-win64
-    OUTZIP_QT=gmic_qt_${VERSION}${SUFFIX}_win64.zip
+    OUTDIR_QT=gmic-qt-${VERSION}${SUFFIX}-win${BITS}
+    OUTZIP_QT=gmic_qt_${VERSION}${SUFFIX}_win${BITS}.zip
     rm -rf ${OUTDIR_QT} ${OUTZIP_QT}
 
-    OUTDIR_GIMP_GTK=gmic-gimp-gtk-${VERSION}${SUFFIX}-win64
-    OUTZIP_GIMP_GTK=gmic_gimp_gtk_${VERSION}${SUFFIX}_win64.zip
-    OUTINST_GIMP_GTK=gmic_gimp_gtk_${VERSION}${SUFFIX}_win64.exe
+    OUTDIR_GIMP_GTK=gmic-gimp-gtk-${VERSION}${SUFFIX}-win${BITS}
+    OUTZIP_GIMP_GTK=gmic_gimp_gtk_${VERSION}${SUFFIX}_win${BITS}.zip
+    OUTINST_GIMP_GTK=gmic_gimp_gtk_${VERSION}${SUFFIX}_win${BITS}.exe
     rm -rf ${OUTDIR_GIMP_GTK} ${OUTZIP_GIMP_GTK} ${OUTINST_GIMP_GTK}
 
-    OUTDIR_GIMP_QT=gmic-gimp-qt-${VERSION}${SUFFIX}-win64
-    OUTZIP_GIMP_QT=gmic_gimp_qt_${VERSION}${SUFFIX}_win64.zip
-    OUTINST_GIMP_QT=gmic_gimp_qt_${VERSION}${SUFFIX}_win64.exe
+    OUTDIR_GIMP_QT=gmic-gimp-qt-${VERSION}${SUFFIX}-win${BITS}
+    OUTZIP_GIMP_QT=gmic_gimp_qt_${VERSION}${SUFFIX}_win${BITS}.zip
+    OUTINST_GIMP_QT=gmic_gimp_qt_${VERSION}${SUFFIX}_win${BITS}.exe
     rm -rf ${OUTDIR_GIMP_QT} ${OUTZIP_GIMP_QT} ${OUTINST_GIMP_QT}
 
-    sed s\/XXX\/${VERSION}${SUFFIX}\/g /e/work/src/gmic/resources/gmic_gimp_gtk64.iss > tmp.iss &&
+    sed s\/XXX\/${VERSION}${SUFFIX}\/g /e/work/src/gmic/resources/gmic_gimp_gtk${BITS}.iss > tmp.iss &&
         sed s\/YYY\/${RELEASE1}\/g tmp.iss > installer_gtk.iss
-    sed s\/XXX\/${VERSION}${SUFFIX}\/g /e/work/src/gmic/resources/gmic_gimp_qt64.iss > tmp.iss &&
+    sed s\/XXX\/${VERSION}${SUFFIX}\/g /e/work/src/gmic/resources/gmic_gimp_qt${BITS}.iss > tmp.iss &&
         sed s\/YYY\/${RELEASE1}\/g tmp.iss > installer_qt.iss
 
     cd $HOME/gmic/src && make clean && rm -f gmic gmic_gimp_gtk *.o && \
-        make OPT_CFLAGS="-O3 -m64 -mtune=generic" cli gimp libc libcstatic
+        make OPT_CFLAGS="-O3 -m${BITS} -mtune=generic" cli gimp libc libcstatic
 
     cd $HOME/gmic/zart && rm -rf .obj && qmake GMIC_PATH=../src zart.pro && make clean && make release
 
