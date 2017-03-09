@@ -45,8 +45,11 @@
 #------------------------------------
 if [ "$OSTYPE" == "msys" ]; then
 
+    BITS=`g++ -v 2>&1 | grep Target | tail -c+9`
+    if [ "$BITS" == "x86_64-w64-mingw32" ]; then BITS=64; else BITS=32; fi
+
     echo &&
-        echo " - Build G'MIC package for Windows." &&
+        echo " - Build G'MIC package for Windows ($BITS bits)." &&
         cd $HOME &&
 
         # Input sources.
@@ -55,8 +58,8 @@ if [ "$OSTYPE" == "msys" ]; then
     cp -rf /e/work/src/gmic/src gmic
     cp -rf /e/work/src/gmic-community/libcgmic/*gmic* gmic/src
     cp -rf /e/work/src/gmic-community/zart gmic/
-    cp -rf /e/work/src/gmic/resources/gmic_film_cluts.gmz gmic-gimp-gtk-build
-    cp -rf /e/work/src/gmic/resources/gmic_film_cluts.gmz gmic-gimp-qt-build
+    cp -rf /e/work/src/gmic/resources/gmic_film_cluts.gmz build${BITS}-gimp-gtk
+    cp -rf /e/work/src/gmic/resources/gmic_film_cluts.gmz build${BITS}-gimp-qt
 
     # Get version number.
     cd $HOME/gmic/src &&
@@ -124,35 +127,35 @@ if [ "$OSTYPE" == "msys" ]; then
     fi
 
     cd $HOME
-    cp -f gmic/src/gmic.exe gmic-cli-build/
-    cp -f gmic/src/libcgmic.d* gmic/src/libcgmicstatic.d* gmic-lib-build/
-    cp -f gmic/src/zart/release/zart.exe gmic-zart-build/
-    cp -f gmic/src/gmic_gimp_gtk.exe gmic-gimp-gtk-build/
-    cp -f gmic_qt/release/gmic_gimp_qt.exe gmic-gimp-qt-build/
+    cp -f gmic/src/gmic.exe build${BITS}-cli/
+    cp -f gmic/src/libcgmic.d* gmic/src/libcgmicstatic.d* build${BITS}-lib/
+    cp -f gmic/src/zart/release/zart.exe build${BITS}-zart/
+    cp -f gmic/src/gmic_gimp_gtk.exe build${BITS}-gimp-gtk/
+    cp -f gmic_qt/release/gmic_gimp_qt.exe build${BITS}-gimp-qt/
 
     # Construct G'MIC (CLI) archive.
-    cp -rf gmic-cli-build ${OUTDIR_CLI} &&
+    cp -rf build${BITS}-cli ${OUTDIR_CLI} &&
         cp -f /e/work/src/gmic/COPYING ${OUTDIR_CLI} &&
         sed s\/_gmic_version\/${VERSION}${SUFFIX}\/ /e/work/src/gmic/README > ${OUTDIR_CLI}/README &&
         zip -r -9 ${OUTZIP_CLI} ${OUTDIR_CLI} &&
         cp -f ${OUTZIP_CLI} /e/work/src/
 
     # Construct G'MIC (LIB) archive.
-    cp -rf gmic-lib-build ${OUTDIR_LIB} &&
+    cp -rf build${BITS}-lib ${OUTDIR_LIB} &&
         cp -f /e/work/src/gmic/COPYING ${OUTDIR_LIB} &&
         sed s\/_gmic_version\/${VERSION}${SUFFIX}\/ /e/work/src/gmic/README > ${OUTDIR_LIB}/README &&
         zip -r -9 ${OUTZIP_LIB} ${OUTDIR_LIB} &&
         cp -f ${OUTZIP_LIB} /e/work/src/
 
     # Construct ZART archive.
-    cp -rf gmic-zart-build ${OUTDIR_ZART} &&
+    cp -rf build${BITS}-zart ${OUTDIR_ZART} &&
         cp -f /e/work/src/gmic/COPYING ${OUTDIR_ZART} &&
         sed s\/_gmic_version\/${VERSION}${SUFFIX}\/ /e/work/src/gmic/README > ${OUTDIR_ZART}/README &&
         zip -r -9 ${OUTZIP_ZART} ${OUTDIR_ZART} &&
         cp -f ${OUTZIP_ZART} /e/work/src/
 
     # Construct G'MIC for GIMP (GTK) archive and installer.
-    cp -rf gmic-gimp-gtk-build ${OUTDIR2} &&
+    cp -rf build${BITS}-gimp-gtk ${OUTDIR2} &&
         cp -f /e/work/src/gmic/COPYING ${OUTDIR2} &&
         sed s\/_gmic_version\/${VERSION}${SUFFIX}\/ /e/work/src/gmic/README > ${OUTDIR2}/README &&
         zip -r -9 ${OUTZIP2} ${OUTDIR2} &&
@@ -166,7 +169,7 @@ if [ "$OSTYPE" == "msys" ]; then
 
     # Construct G'MIC for GIMP (Qt) archive and installer.
     if [ -f msys2 ]; then
-        cp -rf gmic-gimp-qt-build ${OUTDIR3} &&
+        cp -rf build${BITS}-gimp-qt ${OUTDIR3} &&
             cp -f /e/work/src/gmic/COPYING ${OUTDIR3} &&
             sed s\/_gmic_version\/${VERSION}${SUFFIX}\/ /e/work/src/gmic/README > ${OUTDIR3}/README &&
             zip -r -9 ${OUTZIP3} ${OUTDIR3} &&
