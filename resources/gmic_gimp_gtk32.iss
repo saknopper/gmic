@@ -35,7 +35,7 @@ Source: build32-gimp-gtk\libcurl-4.dll; DestDir: {app}
 Source: build32-gimp-gtk\libeay32.dll; DestDir: {app}
 Source: build32-gimp-gtk\libffi-6.dll; DestDir: {app}
 Source: build32-gimp-gtk\libfftw3-3.dll; DestDir: {app}
-Source: build32-gimp-gtk\libgcc_s_seh-1.dll; DestDir: {app}
+Source: build32-gimp-gtk\libgcc_s_dw2-1.dll; DestDir: {app}
 Source: build32-gimp-gtk\libgmp-10.dll; DestDir: {app}
 Source: build32-gimp-gtk\libgnutls-30.dll; DestDir: {app}
 Source: build32-gimp-gtk\libgomp-1.dll; DestDir: {app}

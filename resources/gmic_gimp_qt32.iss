@@ -34,7 +34,7 @@ Source: build32-gimp-qt\gmic_film_cluts.gmz; DestDir: {app}
 Source: build32-gimp-qt\libbz2-1.dll; DestDir: {app}
 Source: build32-gimp-qt\libfftw3-3.dll; DestDir: {app}
 Source: build32-gimp-qt\libfreetype-6.dll; DestDir: {app}
-Source: build32-gimp-qt\libgcc_s_seh-1.dll; DestDir: {app}
+Source: build32-gimp-qt\libgcc_s_dw2-1.dll; DestDir: {app}
 Source: build32-gimp-qt\libglib-2.0-0.dll; DestDir: {app}
 Source: build32-gimp-qt\libgomp-1.dll; DestDir: {app}
 Source: build32-gimp-qt\libgraphite2.dll; DestDir: {app}
