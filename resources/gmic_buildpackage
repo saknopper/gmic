@@ -81,22 +81,39 @@ if [ "$OSTYPE" == "msys" ]; then
 
     rm -rf gmic_qt
     cp -rf /e/work/src/gmic_qt $HOME
-    echo " - Release number : $VERSION$SUFFIX (64 bits)" &&
-        OUTDIR1=gmic-cli-${VERSION}${SUFFIX}-win64 &&
-        OUTDIR2=gmic-gimp-gtk-${VERSION}${SUFFIX}-win64 &&
-        OUTDIR3=gmic-gimp-qt-${VERSION}${SUFFIX}-win64 &&
-        OUTZIP1=gmic_cli_${VERSION}${SUFFIX}_win64.zip &&
-        OUTZIP2=gmic_gimp_gtk_${VERSION}${SUFFIX}_win64.zip &&
-        OUTZIP3=gmic_gimp_qt_${VERSION}${SUFFIX}_win64.zip &&
-        OUTINST2=gmic_gimp_gtk_${VERSION}${SUFFIX}_win64.exe &&
-        OUTINST3=gmic_gimp_qt_${VERSION}${SUFFIX}_win64.exe &&
-        rm -rf ${OUTDIR1} ${OUTDIR2} ${OUTDIR3} ${OUTZIP1} ${OUTZIP2} ${OUTZIP3} ${OUTINST2} ${OUTINST3} &&
-        sed s\/XXX\/${VERSION}${SUFFIX}\/g /e/work/src/gmic/resources/gmic_gimp_gtk64.iss > tmp.iss &&
+    echo " - Release number : $VERSION$SUFFIX (64 bits)"
+    OUTDIR_CLI=gmic-cli-${VERSION}${SUFFIX}-win64
+    OUTZIP_CLI=gmic_cli_${VERSION}${SUFFIX}_win64.zip
+    rm -rf ${OUTDIR_CLI} ${OUTZIP_CLI}
+
+    OUTDIR_LIB=gmic-lib-${VERSION}${SUFFIX}-win64
+    OUTZIP_LIB=gmic_lib_${VERSION}${SUFFIX}_win64.zip
+    rm -rf ${OUTDIR_LIB} ${OUTZIP_LIB}
+
+    OUTDIR_ZART=gmic-zart-${VERSION}${SUFFIX}-win64
+    OUTZIP_ZART=gmic_zart_${VERSION}${SUFFIX}_win64.zip
+    rm -rf ${OUTDIR_ZART} ${OUTZIP_ZART}
+
+    OUTDIR_GIMP_GTK=gmic-gimp-gtk-${VERSION}${SUFFIX}-win64
+    OUTZIP_GIMP_GTK=gmic_gimp_gtk_${VERSION}${SUFFIX}_win64.zip
+    OUTINST_GIMP_GTK=gmic_gimp_gtk_${VERSION}${SUFFIX}_win64.exe
+    rm -rf ${OUTDIR_GIMP_GTK} ${OUTZIP_GIMP_GTK} ${OUTINST_GIMP_GTK}
+
+    OUTDIR_GIMP_QT=gmic-gimp-qt-${VERSION}${SUFFIX}-win64
+    OUTZIP_GIMP_QT=gmic_gimp_qt_${VERSION}${SUFFIX}_win64.zip
+    OUTINST_GIMP_QT=gmic_gimp_qt_${VERSION}${SUFFIX}_win64.exe
+    rm -rf ${OUTDIR_GIMP_QT} ${OUTZIP_GIMP_QT} ${OUTINST_GIMP_QT}
+
+    sed s\/XXX\/${VERSION}${SUFFIX}\/g /e/work/src/gmic/resources/gmic_gimp_gtk64.iss > tmp.iss &&
         sed s\/YYY\/${RELEASE1}\/g tmp.iss > installer_gtk.iss
     sed s\/XXX\/${VERSION}${SUFFIX}\/g /e/work/src/gmic/resources/gmic_gimp_qt64.iss > tmp.iss &&
         sed s\/YYY\/${RELEASE1}\/g tmp.iss > installer_qt.iss
+
     cd $HOME/gmic/src && make clean && rm -f gmic gmic_gimp_gtk *.o && \
         make OPT_CFLAGS="-O3 -m64 -mtune=generic" cli gimp libc libcstatic
+
+    cd $HOME/zart && qmake GMIC_PATH=../src zart.pro && make clean && make release
+
     cd $HOME/gmic_qt
     if [ "$1" == "final" ]; then
         qmake PRERELEASE= HOST=none gmic_qt.pro && make clean && make release
@@ -108,17 +125,33 @@ if [ "$OSTYPE" == "msys" ]; then
 
     cd $HOME
     cp -f gmic/src/gmic.exe gmic-cli-build/
+    cp -f gmic/src/libcgmic.d* gmic/src/libcgmicstatic.d* gmic-lib-build/
+    cp -f gmic/src/zart/release/zart.exe gmic-zart-build/
     cp -f gmic/src/gmic_gimp_gtk.exe gmic-gimp-gtk-build/
     cp -f gmic_qt/release/gmic_gimp_qt.exe gmic-gimp-qt-build/
 
-    # Construct full G'MIC binary archive.
-    cp -rf gmic-cli-build ${OUTDIR1} &&
-        cp -f /e/work/src/gmic/COPYING ${OUTDIR1} &&
-        sed s\/_gmic_version\/${VERSION}${SUFFIX}\/ /e/work/src/gmic/README > ${OUTDIR1}/README &&
-        zip -r -9 ${OUTZIP1} ${OUTDIR1} &&
-        cp -f ${OUTZIP1} /e/work/src/
+    # Construct G'MIC (CLI) archive.
+    cp -rf gmic-cli-build ${OUTDIR_CLI} &&
+        cp -f /e/work/src/gmic/COPYING ${OUTDIR_CLI} &&
+        sed s\/_gmic_version\/${VERSION}${SUFFIX}\/ /e/work/src/gmic/README > ${OUTDIR_CLI}/README &&
+        zip -r -9 ${OUTZIP_CLI} ${OUTDIR_CLI} &&
+        cp -f ${OUTZIP_CLI} /e/work/src/
 
-    # Construct G'MIC for GIMP (GTK) binary archive and installer.
+    # Construct G'MIC (LIB) archive.
+    cp -rf gmic-lib-build ${OUTDIR_LIB} &&
+        cp -f /e/work/src/gmic/COPYING ${OUTDIR_LIB} &&
+        sed s\/_gmic_version\/${VERSION}${SUFFIX}\/ /e/work/src/gmic/README > ${OUTDIR_LIB}/README &&
+        zip -r -9 ${OUTZIP_LIB} ${OUTDIR_LIB} &&
+        cp -f ${OUTZIP_LIB} /e/work/src/
+
+    # Construct ZART archive.
+    cp -rf gmic-zart-build ${OUTDIR_ZART} &&
+        cp -f /e/work/src/gmic/COPYING ${OUTDIR_ZART} &&
+        sed s\/_gmic_version\/${VERSION}${SUFFIX}\/ /e/work/src/gmic/README > ${OUTDIR_ZART}/README &&
+        zip -r -9 ${OUTZIP_ZART} ${OUTDIR_ZART} &&
+        cp -f ${OUTZIP_ZART} /e/work/src/
+
+    # Construct G'MIC for GIMP (GTK) archive and installer.
     cp -rf gmic-gimp-gtk-build ${OUTDIR2} &&
         cp -f /e/work/src/gmic/COPYING ${OUTDIR2} &&
         sed s\/_gmic_version\/${VERSION}${SUFFIX}\/ /e/work/src/gmic/README > ${OUTDIR2}/README &&
@@ -131,7 +164,7 @@ if [ "$OSTYPE" == "msys" ]; then
         cp -f ${OUTINST2} /e/work/src/ &&
         rm -f installer_gtk.iss
 
-    # Construct G'MIC for GIMP (Qt) binary archive and installer.
+    # Construct G'MIC for GIMP (Qt) archive and installer.
     if [ -f msys2 ]; then
         cp -rf gmic-gimp-qt-build ${OUTDIR3} &&
             cp -f /e/work/src/gmic/COPYING ${OUTDIR3} &&
