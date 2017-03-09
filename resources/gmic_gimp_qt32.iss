@@ -1,6 +1,6 @@
 ;---------------------------------------------
 ;
-; File : gmic_gimp_qt64.iss
+; File : gmic_gimp_qt32.iss
 ;
 ; Description : Inno Setup Script to create
 ;               a Windows installer for
@@ -29,35 +29,35 @@ DirExistsWarning=no
 OutputBaseFilename=gmic_gimp_qt_XXX_win64
 
 [Files]
-Source: build64-gimp-qt\gmic_gimp_qt.exe; DestDir: {app}
-Source: build64-gimp-qt\gmic_film_cluts.gmz; DestDir: {app}
-Source: build64-gimp-qt\libbz2-1.dll; DestDir: {app}
-Source: build64-gimp-qt\libfftw3-3.dll; DestDir: {app}
-Source: build64-gimp-qt\libfreetype-6.dll; DestDir: {app}
-Source: build64-gimp-qt\libgcc_s_seh-1.dll; DestDir: {app}
-Source: build64-gimp-qt\libglib-2.0-0.dll; DestDir: {app}
-Source: build64-gimp-qt\libgomp-1.dll; DestDir: {app}
-Source: build64-gimp-qt\libgraphite2.dll; DestDir: {app}
-Source: build64-gimp-qt\libharfbuzz-0.dll; DestDir: {app}
-Source: build64-gimp-qt\libiconv-2.dll; DestDir: {app}
-Source: build64-gimp-qt\libicudt57.dll; DestDir: {app}
-Source: build64-gimp-qt\libicuin57.dll; DestDir: {app}
-Source: build64-gimp-qt\libicuuc57.dll; DestDir: {app}
-Source: build64-gimp-qt\libintl-8.dll; DestDir: {app}
-Source: build64-gimp-qt\libpcre-1.dll; DestDir: {app}
-Source: build64-gimp-qt\libpcre16-0.dll; DestDir: {app}
-Source: build64-gimp-qt\libpng16-16.dll; DestDir: {app}
-Source: build64-gimp-qt\libstdc++-6.dll; DestDir: {app}
-Source: build64-gimp-qt\libwinpthread-1.dll; DestDir: {app}
-Source: build64-gimp-qt\Qt5Core.dll; DestDir: {app}
-Source: build64-gimp-qt\Qt5Gui.dll; DestDir: {app}
-Source: build64-gimp-qt\Qt5Network.dll; DestDir: {app}
-Source: build64-gimp-qt\Qt5Widgets.dll; DestDir: {app}
-Source: build64-gimp-qt\zlib1.dll; DestDir: {app}
-Source: build64-gimp-qt\platforms\qdirect2d.dll; DestDir: {app}\platforms
-Source: build64-gimp-qt\platforms\qminimal.dll; DestDir: {app}\platforms
-Source: build64-gimp-qt\platforms\qoffscreen.dll; DestDir: {app}\platforms
-Source: build64-gimp-qt\platforms\qwindows.dll; DestDir: {app}\platforms
+Source: build32-gimp-qt\gmic_gimp_qt.exe; DestDir: {app}
+Source: build32-gimp-qt\gmic_film_cluts.gmz; DestDir: {app}
+Source: build32-gimp-qt\libbz2-1.dll; DestDir: {app}
+Source: build32-gimp-qt\libfftw3-3.dll; DestDir: {app}
+Source: build32-gimp-qt\libfreetype-6.dll; DestDir: {app}
+Source: build32-gimp-qt\libgcc_s_seh-1.dll; DestDir: {app}
+Source: build32-gimp-qt\libglib-2.0-0.dll; DestDir: {app}
+Source: build32-gimp-qt\libgomp-1.dll; DestDir: {app}
+Source: build32-gimp-qt\libgraphite2.dll; DestDir: {app}
+Source: build32-gimp-qt\libharfbuzz-0.dll; DestDir: {app}
+Source: build32-gimp-qt\libiconv-2.dll; DestDir: {app}
+Source: build32-gimp-qt\libicudt57.dll; DestDir: {app}
+Source: build32-gimp-qt\libicuin57.dll; DestDir: {app}
+Source: build32-gimp-qt\libicuuc57.dll; DestDir: {app}
+Source: build32-gimp-qt\libintl-8.dll; DestDir: {app}
+Source: build32-gimp-qt\libpcre-1.dll; DestDir: {app}
+Source: build32-gimp-qt\libpcre16-0.dll; DestDir: {app}
+Source: build32-gimp-qt\libpng16-16.dll; DestDir: {app}
+Source: build32-gimp-qt\libstdc++-6.dll; DestDir: {app}
+Source: build32-gimp-qt\libwinpthread-1.dll; DestDir: {app}
+Source: build32-gimp-qt\Qt5Core.dll; DestDir: {app}
+Source: build32-gimp-qt\Qt5Gui.dll; DestDir: {app}
+Source: build32-gimp-qt\Qt5Network.dll; DestDir: {app}
+Source: build32-gimp-qt\Qt5Widgets.dll; DestDir: {app}
+Source: build32-gimp-qt\zlib1.dll; DestDir: {app}
+Source: build32-gimp-qt\platforms\qdirect2d.dll; DestDir: {app}\platforms
+Source: build32-gimp-qt\platforms\qminimal.dll; DestDir: {app}\platforms
+Source: build32-gimp-qt\platforms\qoffscreen.dll; DestDir: {app}\platforms
+Source: build32-gimp-qt\platforms\qwindows.dll; DestDir: {app}\platforms
 
 ;[Icons]
 ;Name: {userstartmenu}\Gimp\Gmic_Gimp\Uninstall Gmic_Gimp; Filename: {uninstallexe}
