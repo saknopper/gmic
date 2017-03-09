@@ -97,6 +97,10 @@ if [ "$OSTYPE" == "msys" ]; then
     OUTZIP_ZART=gmic_zart_${VERSION}${SUFFIX}_win64.zip
     rm -rf ${OUTDIR_ZART} ${OUTZIP_ZART}
 
+    OUTDIR_QT=gmic-qt-${VERSION}${SUFFIX}-win64
+    OUTZIP_QT=gmic_qt_${VERSION}${SUFFIX}_win64.zip
+    rm -rf ${OUTDIR_QT} ${OUTZIP_QT}
+
     OUTDIR_GIMP_GTK=gmic-gimp-gtk-${VERSION}${SUFFIX}-win64
     OUTZIP_GIMP_GTK=gmic_gimp_gtk_${VERSION}${SUFFIX}_win64.zip
     OUTINST_GIMP_GTK=gmic_gimp_gtk_${VERSION}${SUFFIX}_win64.exe
@@ -115,9 +119,9 @@ if [ "$OSTYPE" == "msys" ]; then
     cd $HOME/gmic/src && make clean && rm -f gmic gmic_gimp_gtk *.o && \
         make OPT_CFLAGS="-O3 -m64 -mtune=generic" cli gimp libc libcstatic
 
-    cd $HOME/zart && qmake GMIC_PATH=../src zart.pro && make clean && make release
+    cd $HOME/gmic/zart && rm -rf .obj && qmake GMIC_PATH=../src zart.pro && make clean && make release
 
-    cd $HOME/gmic_qt
+    cd $HOME/gmic_qt && rm -rf .obj
     if [ "$1" == "final" ]; then
         qmake PRERELEASE= HOST=none gmic_qt.pro && make clean && make release
         qmake PRERELEASE= HOST=gimp gmic_qt.pro && make release
@@ -129,7 +133,8 @@ if [ "$OSTYPE" == "msys" ]; then
     cd $HOME
     cp -f gmic/src/gmic.exe build${BITS}-cli/
     cp -f gmic/src/libcgmic.d* gmic/src/libcgmicstatic.d* build${BITS}-lib/
-    cp -f gmic/src/zart/release/zart.exe build${BITS}-zart/
+    cp -f gmic/zart/release/zart.exe build${BITS}-zart/
+    cp -f gmic_qt/release/gmic_qt.exe build${BITS}-qt/
     cp -f gmic/src/gmic_gimp_gtk.exe build${BITS}-gimp-gtk/
     cp -f gmic_qt/release/gmic_gimp_qt.exe build${BITS}-gimp-qt/
 
@@ -154,31 +159,38 @@ if [ "$OSTYPE" == "msys" ]; then
         zip -r -9 ${OUTZIP_ZART} ${OUTDIR_ZART} &&
         cp -f ${OUTZIP_ZART} /e/work/src/
 
+    # Construct G'MIC (Qt standalong) archive.
+    cp -rf build${BITS}-qt ${OUTDIR_QT} &&
+        cp -f /e/work/src/gmic/COPYING ${OUTDIR_QT} &&
+        sed s\/_gmic_version\/${VERSION}${SUFFIX}\/ /e/work/src/gmic/README > ${OUTDIR_QT}/README &&
+        zip -r -9 ${OUTZIP_QT} ${OUTDIR_QT} &&
+        cp -f ${OUTZIP_QT} /e/work/src/
+
     # Construct G'MIC for GIMP (GTK) archive and installer.
-    cp -rf build${BITS}-gimp-gtk ${OUTDIR2} &&
-        cp -f /e/work/src/gmic/COPYING ${OUTDIR2} &&
-        sed s\/_gmic_version\/${VERSION}${SUFFIX}\/ /e/work/src/gmic/README > ${OUTDIR2}/README &&
-        zip -r -9 ${OUTZIP2} ${OUTDIR2} &&
-        cp -f ${OUTZIP2} /e/work/src/
+    cp -rf build${BITS}-gimp-gtk ${OUTDIR_GIMP_GTK} &&
+        cp -f /e/work/src/gmic/COPYING ${OUTDIR_GIMP_GTK} &&
+        sed s\/_gmic_version\/${VERSION}${SUFFIX}\/ /e/work/src/gmic/README > ${OUTDIR_GIMP_GTK}/README &&
+        zip -r -9 ${OUTZIP_GIMP_GTK} ${OUTDIR_GIMP_GTK} &&
+        cp -f ${OUTZIP_GIMP_GTK} /e/work/src/
 
     /c/Program\ Files\ \(x86\)/Inno\ Setup\ 5/ISCC.exe installer_gtk.iss
-    touch ${OUTINST2} &&
+    touch ${OUTINST_GIMP_GTK} &&
         sleep 3 &&
-        cp -f ${OUTINST2} /e/work/src/ &&
+        cp -f ${OUTINST_GIMP_GTK} /e/work/src/ &&
         rm -f installer_gtk.iss
 
     # Construct G'MIC for GIMP (Qt) archive and installer.
     if [ -f msys2 ]; then
-        cp -rf build${BITS}-gimp-qt ${OUTDIR3} &&
-            cp -f /e/work/src/gmic/COPYING ${OUTDIR3} &&
-            sed s\/_gmic_version\/${VERSION}${SUFFIX}\/ /e/work/src/gmic/README > ${OUTDIR3}/README &&
-            zip -r -9 ${OUTZIP3} ${OUTDIR3} &&
-            cp -f ${OUTZIP3} /e/work/src/
+        cp -rf build${BITS}-gimp-qt ${OUTDIR_GIMP_QT} &&
+            cp -f /e/work/src/gmic/COPYING ${OUTDIR_GIMP_QT} &&
+            sed s\/_gmic_version\/${VERSION}${SUFFIX}\/ /e/work/src/gmic/README > ${OUTDIR_GIMP_QT}/README &&
+            zip -r -9 ${OUTZIP_GIMP_QT} ${OUTDIR_GIMP_QT} &&
+            cp -f ${OUTZIP_GIMP_QT} /e/work/src/
 
         /c/Program\ Files\ \(x86\)/Inno\ Setup\ 5/ISCC.exe installer_qt.iss
-        touch ${OUTINST3} &&
+        touch ${OUTINST_GIMP_QT} &&
             sleep 3 &&
-            cp -f ${OUTINST3} /e/work/src/ &&
+            cp -f ${OUTINST_GIMP_QT} /e/work/src/ &&
             rm -f installer_qt.iss
     fi
 
