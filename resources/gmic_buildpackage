@@ -52,6 +52,9 @@ if [ "$OSTYPE" == "msys" ]; then
         echo " - Build G'MIC package for Windows ($BITS bits)." &&
         cd $HOME &&
 
+        # Clean old packages.
+        rm -f gmic_*${VERSION}${SUFFIX}* &
+
         # Input sources.
         rm -rf gmic
     mkdir gmic
@@ -270,16 +273,7 @@ VERSION=$RELEASE1.$RELEASE2.$RELEASE3
 SVERSION=$RELEASE1$RELEASE2$RELEASE3
 if [ "$1" == "final" ]; then SUFFIX=""; else SUFFIX=_pre; fi
 DIR=/tmp/gmic-${VERSION}${SUFFIX}
-rm -f gmic_${VERSION}${SUFFIX}_*.deb gmic_${VERSION}${SUFFIX}.tar.gz deb_gmic_${VERSION}${SUFFIX}.tar.gz \
-   gmic_${VERSION}${SUFFIX}_win32.zip gmic_${VERSION}${SUFFIX}_win64.zip \
-   gmic_gimp_gtk_${VERSION}${SUFFIX}_linux32.zip gmic_gimp_gtk_${VERSION}${SUFFIX}_linux64.zip \
-   gmic_gimp_qt_${VERSION}${SUFFIX}_linux32.zip gmic_gimp_qt_${VERSION}${SUFFIX}_linux64.zip \
-   gmic_gimp_gtk_${VERSION}${SUFFIX}_yakkety64.zip \
-   gmic_gimp_qt_${VERSION}${SUFFIX}_yakkety64.zip \
-   gmic_gimp_gtk_${VERSION}${SUFFIX}_win32.zip gmic_gimp_gtk_${VERSION}${SUFFIX}_win32.exe \
-   gmic_gimp_gtk_${VERSION}${SUFFIX}_win64.zip gmic_gimp_gtk_${VERSION}${SUFFIX}_win64.exe \
-   gmic_gimp_qt_${VERSION}${SUFFIX}_win64.zip gmic_gimp_qt_${VERSION}${SUFFIX}_win64.exe \
-   gmic_static_${VERSION}${SUFFIX}_*.zip
+rm -f gmic_*${VERSION}${SUFFIX}* deb_gmic_*
 
 echo
 echo " - Release number : $VERSION$SUFFIX"
