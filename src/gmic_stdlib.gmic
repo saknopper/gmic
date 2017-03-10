@@ -4385,7 +4385,7 @@ _update_server_binaries :
       -endif
     -done
     -if {$n<$N} -wait 5000 -endif
-  -while {$n<$N" && "$|<$t0+60*120}
+  -while {$n<$N" && "$|<$t0+60*60*4}
   -v +
   -if {$n<$N} -e[] "- Partial uploads done (timeout reached)."
   -else -e[] "- All uploads done !"
