@@ -53,7 +53,7 @@ if [ "$OSTYPE" == "msys" ]; then
     cd $HOME
 
     # Clean old packages and input sources.
-    rm -rf gmic gmic_qt gmic_*${VERSION}${SUFFIX}*_win* gmic-*${VERSION}${SUFFIX}*-win* *.iss
+    rm -rf gmic gmic_qt gmic_*${VERSION}${SUFFIX}*_win${BITS}* gmic-*${VERSION}${SUFFIX}*-win${BITS}* *.iss
     mkdir gmic
     cp -rf /e/work/src/gmic_qt $HOME
     cp -rf /e/work/src/gmic/src $HOME/gmic
