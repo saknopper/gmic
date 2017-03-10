@@ -53,7 +53,7 @@ if [ "$OSTYPE" == "msys" ]; then
         cd $HOME &&
 
         # Clean old packages.
-        rm -f gmic_*${VERSION}${SUFFIX}* &
+        rm -f gmic_*${VERSION}${SUFFIX}* &&
 
         # Input sources.
         rm -rf gmic
