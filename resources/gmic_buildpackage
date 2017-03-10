@@ -45,84 +45,77 @@
 #------------------------------------
 if [ "$OSTYPE" == "msys" ]; then
 
+    # Determine 32/64 bits architecture.
     BITS=`g++ -v 2>&1 | grep Target | tail -c+9`
     if [ "$BITS" == "x86_64-w64-mingw32" ]; then BITS=64; else BITS=32; fi
-
-    echo &&
-        echo " - Build G'MIC package for Windows ($BITS bits)." &&
-        cd $HOME &&
-
-        # Clean old packages.
-        rm -f gmic_*${VERSION}${SUFFIX}* &&
-
-        # Input sources.
-        rm -rf gmic
-    mkdir gmic
-    cp -rf /e/work/src/gmic/src gmic
-    cp -rf /e/work/src/gmic-community/libcgmic/*gmic* gmic/src
-    cp -rf /e/work/src/gmic-community/zart gmic/
-    cp -rf /e/work/src/gmic/resources/gmic_film_cluts.gmz build${BITS}-gimp-gtk
-    cp -rf /e/work/src/gmic/resources/gmic_film_cluts.gmz build${BITS}-gimp-qt
-
-    # Get version number.
-    cd $HOME/gmic/src &&
-        RELEASE0=`grep "#define gmic_version" gmic.h | tail -c5` &&
-        RELEASE1=`echo $RELEASE0 | head -c1` &&
-        RELEASE2=`echo $RELEASE0 | head -c2 | tail -c1` &&
-        RELEASE3=`echo $RELEASE0 | head -c3 | tail -c1` &&
-        VERSION=$RELEASE1.$RELEASE2.$RELEASE3 &&
-        SVERSION=$RELEASE1$RELEASE2$RELEASE3 &&
-
-        if [ "$1" == "final" ]; then
-            SUFFIX="";
-            sed "s/PRERELEASE_CFLAGS = /NO_PRERELEASE_CFLAGS = /" Makefile > /tmp/Makefile
-            mv /tmp/Makefile Makefile
-            sed "s/PRERELEASE = /NO_PRERELEASE = /" Makefile > /tmp/Makefile
-            mv /tmp/Makefile Makefile
-        else SUFFIX=_pre;
-        fi &&
-        sed "s/rm -rf CImg.h gmic_stdlib.h /rm -rf /" Makefile > /tmp/Makefile
-    mv /tmp/Makefile Makefile
+    echo
+    echo " - Build G'MIC packages for Windows ($BITS bits)."
     cd $HOME
 
-    rm -rf gmic_qt
+    # Clean old packages and input sources.
+    rm -rf gmic gmic_qt gmic_*${VERSION}${SUFFIX}*-win* gmic-*${VERSION}${SUFFIX}*-win* *.iss
+    mkdir gmic
     cp -rf /e/work/src/gmic_qt $HOME
-    echo " - Release number : $VERSION$SUFFIX ($BITS bits)"
-    OUTDIR_CLI=gmic-cli-${VERSION}${SUFFIX}-win${BITS}
-    OUTZIP_CLI=gmic_cli_${VERSION}${SUFFIX}_win${BITS}.zip
-    rm -rf ${OUTDIR_CLI} ${OUTZIP_CLI}
+    cp -rf /e/work/src/gmic/src $HOME/gmic
+    cp -rf /e/work/src/gmic-community/libcgmic/*gmic* $HOME/gmic/src
+    cp -rf /e/work/src/gmic-community/zart $HOME/gmic/
+    cp -rf /e/work/src/gmic/resources/gmic_film_cluts.gmz $HOME/build${BITS}-gimp-gtk
+    cp -rf /e/work/src/gmic/resources/gmic_film_cluts.gmz $HOME/build${BITS}-gimp-qt
 
-    OUTDIR_LIB=gmic-lib-${VERSION}${SUFFIX}-win${BITS}
-    OUTZIP_LIB=gmic_lib_${VERSION}${SUFFIX}_win${BITS}.zip
-    rm -rf ${OUTDIR_LIB} ${OUTZIP_LIB}
+    # Get version number.
+    cd $HOME/gmic/src
+    RELEASE0=`grep "#define gmic_version" gmic.h | tail -c5`
+    RELEASE1=`echo $RELEASE0 | head -c1`
+    RELEASE2=`echo $RELEASE0 | head -c2 | tail -c1`
+    RELEASE3=`echo $RELEASE0 | head -c3 | tail -c1`
+    VERSION=$RELEASE1.$RELEASE2.$RELEASE3
+    SVERSION=$RELEASE1$RELEASE2$RELEASE3
+    echo " - Release number : $VERSION$SUFFIX."
 
-    OUTDIR_ZART=gmic-zart-${VERSION}${SUFFIX}-win${BITS}
-    OUTZIP_ZART=gmic_zart_${VERSION}${SUFFIX}_win${BITS}.zip
-    rm -rf ${OUTDIR_ZART} ${OUTZIP_ZART}
+    if [ "$1" == "final" ]; then
+        SUFFIX="";
+        sed "s/PRERELEASE_CFLAGS = /NO_PRERELEASE_CFLAGS = /" Makefile > /tmp/Makefile
+        mv /tmp/Makefile Makefile
+        sed "s/PRERELEASE = /NO_PRERELEASE = /" Makefile > /tmp/Makefile
+        mv /tmp/Makefile Makefile
+    else SUFFIX=_pre;
+    fi
+    sed "s/rm -rf CImg.h gmic_stdlib.h /rm -rf /" Makefile > /tmp/Makefile
+    mv /tmp/Makefile Makefile
 
-    OUTDIR_QT=gmic-qt-${VERSION}${SUFFIX}-win${BITS}
-    OUTZIP_QT=gmic_qt_${VERSION}${SUFFIX}_win${BITS}.zip
-    rm -rf ${OUTDIR_QT} ${OUTZIP_QT}
-
-    OUTDIR_GIMP_GTK=gmic-gimp-gtk-${VERSION}${SUFFIX}-win${BITS}
-    OUTZIP_GIMP_GTK=gmic_gimp_gtk_${VERSION}${SUFFIX}_win${BITS}.zip
-    OUTINST_GIMP_GTK=gmic_gimp_gtk_${VERSION}${SUFFIX}_win${BITS}.exe
-    rm -rf ${OUTDIR_GIMP_GTK} ${OUTZIP_GIMP_GTK} ${OUTINST_GIMP_GTK}
-
-    OUTDIR_GIMP_QT=gmic-gimp-qt-${VERSION}${SUFFIX}-win${BITS}
-    OUTZIP_GIMP_QT=gmic_gimp_qt_${VERSION}${SUFFIX}_win${BITS}.zip
-    OUTINST_GIMP_QT=gmic_gimp_qt_${VERSION}${SUFFIX}_win${BITS}.exe
-    rm -rf ${OUTDIR_GIMP_QT} ${OUTZIP_GIMP_QT} ${OUTINST_GIMP_QT}
-
+    cd $HOME
     sed s\/XXX\/${VERSION}${SUFFIX}\/g /e/work/src/gmic/resources/gmic_gimp_gtk${BITS}.iss > tmp.iss &&
         sed s\/YYY\/${RELEASE1}\/g tmp.iss > installer_gtk.iss
     sed s\/XXX\/${VERSION}${SUFFIX}\/g /e/work/src/gmic/resources/gmic_gimp_qt${BITS}.iss > tmp.iss &&
         sed s\/YYY\/${RELEASE1}\/g tmp.iss > installer_qt.iss
 
-    cd $HOME/gmic/src && make clean && rm -f gmic gmic_gimp_gtk *.o && \
-        make OPT_CFLAGS="-O3 -m${BITS} -mtune=generic" cli gimp libc libcstatic
+    # Define output files (archives/installers).
+    OUTDIR_CLI=gmic-cli-${VERSION}${SUFFIX}-win${BITS}
+    OUTZIP_CLI=gmic_cli_${VERSION}${SUFFIX}_win${BITS}.zip
 
-    cd $HOME/gmic/zart && rm -rf .obj && qmake GMIC_PATH=../src zart.pro && make clean && make release
+    OUTDIR_LIB=gmic-lib-${VERSION}${SUFFIX}-win${BITS}
+    OUTZIP_LIB=gmic_lib_${VERSION}${SUFFIX}_win${BITS}.zip
+
+    OUTDIR_ZART=gmic-zart-${VERSION}${SUFFIX}-win${BITS}
+    OUTZIP_ZART=gmic_zart_${VERSION}${SUFFIX}_win${BITS}.zip
+
+    OUTDIR_QT=gmic-qt-${VERSION}${SUFFIX}-win${BITS}
+    OUTZIP_QT=gmic_qt_${VERSION}${SUFFIX}_win${BITS}.zip
+
+    OUTDIR_GIMP_GTK=gmic-gimp-gtk-${VERSION}${SUFFIX}-win${BITS}
+    OUTZIP_GIMP_GTK=gmic_gimp_gtk_${VERSION}${SUFFIX}_win${BITS}.zip
+    OUTINST_GIMP_GTK=gmic_gimp_gtk_${VERSION}${SUFFIX}_win${BITS}.exe
+
+    OUTDIR_GIMP_QT=gmic-gimp-qt-${VERSION}${SUFFIX}-win${BITS}
+    OUTZIP_GIMP_QT=gmic_gimp_qt_${VERSION}${SUFFIX}_win${BITS}.zip
+    OUTINST_GIMP_QT=gmic_gimp_qt_${VERSION}${SUFFIX}_win${BITS}.exe
+
+    # Compile sources.
+    cd $HOME/gmic/src && make clean && rm -f gmic gmic_gimp_gtk *.o
+    make OPT_CFLAGS="-O3 -m${BITS} -mtune=generic" cli gimp libc libcstatic
+
+    cd $HOME/gmic/zart && rm -rf .obj && qmake GMIC_PATH=../src zart.pro && make clean
+    make release
 
     cd $HOME/gmic_qt && rm -rf .obj
     if [ "$1" == "final" ]; then
@@ -133,6 +126,7 @@ if [ "$OSTYPE" == "msys" ]; then
         qmake PRERELEASE=`date +%y%m%d` HOST=gimp gmic_qt.pro && make release
     fi
 
+    # Copy binaries into their respective folders.
     cd $HOME
     cp -f gmic/src/gmic.exe build${BITS}-cli/
     cp -f gmic/src/libcgmic.d* gmic/src/libcgmicstatic.d* build${BITS}-lib/
@@ -180,7 +174,6 @@ if [ "$OSTYPE" == "msys" ]; then
     touch ${OUTINST_GIMP_GTK} &&
         sleep 3 &&
         cp -f ${OUTINST_GIMP_GTK} /e/work/src/ &&
-        rm -f installer_gtk.iss
 
     # Construct G'MIC for GIMP (Qt) archive and installer.
     cp -rf build${BITS}-gimp-qt ${OUTDIR_GIMP_QT} &&
@@ -193,7 +186,6 @@ if [ "$OSTYPE" == "msys" ]; then
     touch ${OUTINST_GIMP_QT} &&
         sleep 3 &&
         cp -f ${OUTINST_GIMP_QT} /e/work/src/ &&
-        rm -f installer_qt.iss
 
     echo " - All done!"
     return;
