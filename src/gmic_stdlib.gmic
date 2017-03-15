@@ -24822,6 +24822,8 @@ fx_autofill_lineart_preview :
 #@gui : Contour detection (%) = float(95,0,100)
 #@gui : Contour erosion = int(0,-1,10)
 #@gui : note = note{"<small>Set <i>Contour erosion</i> to <i>-1</i> for erosion based on automatic estimation of stroke thickness.</small>"}
+#@gui : Discard contour guides = bool(0)
+#@gui : note = note{"<small>Add strokes with a saturated color having high value (e.g. pure red) on your lineart allows to guide the colorization algorithm with virtual contours.</small>"}
 #@gui : Output region delimiters = _bool(0)
 #@gui : sep = separator(), note = note{"<small><b>For <i>Random colors</i> mode only:</b></small>"}
 #@gui : Maximal color saturation = int(32,0,255)
@@ -24838,17 +24840,17 @@ fx_autofill_lineart_preview :
 #@gui : Minimal region area = float(10,0,100)
 #@gui : Allow self intersections = bool(1)
 #@gui : sep = separator(), Preview type = choice(0,"Colored geometry","Colored regions","Colored lineart")
-#@gui : sep = separator(), note = note("<small>Authors: <i>David Tschumperl&#233;</i>, <i>S&#233;bastien Fourey</i> and <i>David Revoy</i>.      Latest update: <i>12/13/2016</i>.</small>")
+#@gui : sep = separator(), note = note("<small>Authors: <i>David Tschumperl&#233;</i>, <i>S&#233;bastien Fourey</i> and <i>David Revoy</i>.      Latest update: <i>03/15/2017</i>.</small>")
 fx_colorize_lineart_smartcoloring :
   -_fx_colorize_lineart_smartcoloring $*,-1 -round
 
 fx_colorize_lineart_smartcoloring_preview :
   -if {$1" && "$!<2} -gui_warning_preview "A top layer with color spots is missing, for this colorization mode." -return -endif
-  -_fx_colorize_lineart_smartcoloring ${1-3},0,${5--1}
+  -_fx_colorize_lineart_smartcoloring ${1-4},0,${6--1}
 
 _fx_colorize_lineart_smartcoloring :
   -if {$1" && "$!<2} -error "A top layer with color strokes is missing, for this colorization mode." -endif
-  min_color_area={$14^2}
+  min_color_area={$15^2}
 
   -repeat {$1?1:$!} inds=${-arg\ 1+$1,$<,0--1} -l[$inds]
 
@@ -24880,7 +24882,7 @@ _fx_colorize_lineart_smartcoloring :
 
     # Retrieve closed binary shape.
     _keep_keycoords={$-1==0}
-    [strokes] -close_binary. ${8-13},$min_color_area,$15 -nm. new_strokes
+    [strokes] -close_binary. ${9-14},$min_color_area,$16 -nm. new_strokes
 
     -if {$-1==0} # Render estimated geometry
       --negate[strokes] -*. 255 -to_rgb.
@@ -24900,13 +24902,13 @@ _fx_colorize_lineart_smartcoloring :
       --l[new_strokes] -* -1 -+ 1 --b 1% -b.. 1 -min -endl
       -watershed... .,0 -rm. -map.. . -rm.
 
-      -if {!$7} -rm[strokes] # No color shading
+      -if {!$8} -rm[strokes] # No color shading
       -else # Shade colors
         -j[strokes] [new_strokes] -distance[strokes] 0 -*[strokes] -1
         -eq[new_strokes] 0 -label_fg[new_strokes] 0,0
         -if $min_color_area --area_fg[new_strokes] 0,0 -gt. $min_color_area -*[new_strokes,-1] -endif
         -watershed[new_strokes] [strokes],0 -rm[strokes]
-        -srgb2rgb. -guided. [new_strokes],{1+$7/5},0 -rgb2srgb.
+        -srgb2rgb. -guided. [new_strokes],{1+$8/5},0 -rgb2srgb.
       -endif
       -rm[new_strokes]
       -nm. new_colors
@@ -24917,7 +24919,7 @@ _fx_colorize_lineart_smartcoloring :
       -if $min_color_area --area_fg[new_strokes] 0,0 xy_bg={[xM,yM]} -gt. $min_color_area -*[new_strokes,-1] -endif
       -watershed[new_strokes] [strokes],0 -rm[strokes]
       ind_bg={new_strokes,i($xy_bg)}
-      -srand 0 {new_strokes,iM+1},1,1,3,">arg(1+c,j(-1) + u(85,125),u(1,max(3,$5))/255,u(min(252,$6),255)/255)"
+      -srand 0 {new_strokes,iM+1},1,1,3,">arg(1+c,j(-1) + u(85,125),u(1,max(3,$6))/255,u(min(252,$7),255)/255)"
       -hsi2rgb. -round. -point. $ind_bg,0,0,1,255 -point. 0,0,0,1,255
       -map[new_strokes] . -rm.
       -nm[new_strokes] new_colors
@@ -24927,7 +24929,7 @@ _fx_colorize_lineart_smartcoloring :
     ind_lineart=$lineart
     ind_colors=$new_colors
 
-    -if $4 # Output region delimiters
+    -if $5 # Output region delimiters
       100%,100%,1,1,"const boundary = 1; J(#"$new_colors",1)!=I(#"$new_colors") || J(#"$new_colors",0,1)!=I(#"$new_colors")"
       -*. 255 -channels. -3,0 -sh. 0,2 -fc. 255,0,0 -rm.
       -gui_set_layer_name. $nm" [region delimiters]"
@@ -24939,6 +24941,15 @@ _fx_colorize_lineart_smartcoloring :
     -if {$-1==-1} # Rendering : Lineart and color layers
       -if {!$is_alpha} -gui_set_layer_mode[$ind_lineart] multiply -endif
 
+      -if $4 -l[0] # Discard contour guides
+        -if $is_alpha
+          100%,100%,1,3,255 -blend. [0],alpha,1 -rgb2hsv. -channels. 2 -*. 255 -negate.
+          -channels.. 0,{0,s-2} s={0,s} -luminance[0] -to_colormode[0] $s -a c
+        -else
+          s={s} -to_rgb -rgb2hsv -channels 2 -* 255 -to_colormode $s
+        -endif
+      -endl -endif
+
     -elif {$-1==0} # Preview : Colored geometry
       -if {$is_alpha} -channels[$ind_lineart] 100% -negate[$ind_lineart] -endif -to_rgb[$ind_lineart]
       -n[$ind_lineart] 180,255
@@ -24948,6 +24959,9 @@ _fx_colorize_lineart_smartcoloring :
       -k[$ind_colors]
     -else # Preview : Colored lineart
       -if {$is_alpha} -channels[$ind_lineart] 100% -negate[$ind_lineart] -endif -to_rgb[$ind_lineart]
+
+      -if $4 -l[$ind_lineart] s={s} -to_rgb -rgb2hsv -channels 2 -* 255 -to_colormode $s -endl -endif
+
       -blend[$ind_lineart,$ind_colors] multiply -k[$ind_lineart]
     -endif
 
