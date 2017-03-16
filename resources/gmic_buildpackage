@@ -53,9 +53,9 @@ if [ "$OSTYPE" == "msys" ]; then
     cd $HOME
 
     # Clean old packages and input sources.
-    rm -rf gmic gmic_qt gmic_*${VERSION}${SUFFIX}*_win${BITS}* gmic-*${VERSION}${SUFFIX}*-win${BITS}* *.iss
+    rm -rf gmic gmic-qt gmic_*${VERSION}${SUFFIX}*_win${BITS}* gmic-*${VERSION}${SUFFIX}*-win${BITS}* *.iss
     mkdir gmic
-    cp -rf /e/work/src/gmic_qt $HOME
+    cp -rf /e/work/src/gmic-qt $HOME
     cp -rf /e/work/src/gmic/src $HOME/gmic
     cp -rf /e/work/src/gmic-community/libcgmic/*gmic* $HOME/gmic/src
     cp -rf /e/work/src/gmic-community/zart $HOME/gmic/
@@ -117,7 +117,7 @@ if [ "$OSTYPE" == "msys" ]; then
     cd $HOME/gmic/zart && rm -rf .obj && qmake GMIC_PATH=../src zart.pro && make clean
     make release
 
-    cd $HOME/gmic_qt && rm -rf .obj
+    cd $HOME/gmic-qt && rm -rf .obj
     if [ "$1" == "final" ]; then
         qmake PRERELEASE= HOST=none gmic_qt.pro && make clean && make release
         qmake PRERELEASE= HOST=gimp gmic_qt.pro && make release
@@ -131,9 +131,9 @@ if [ "$OSTYPE" == "msys" ]; then
     cp -f gmic/src/gmic.exe build${BITS}-cli/
     cp -f gmic/src/libcgmic.d* gmic/src/libcgmicstatic.d* build${BITS}-lib/
     cp -f gmic/zart/release/zart.exe build${BITS}-zart/
-    cp -f gmic_qt/release/gmic_qt.exe build${BITS}-qt/
+    cp -f gmic-qt/release/gmic_qt.exe build${BITS}-qt/
     cp -f gmic/src/gmic_gimp_gtk.exe build${BITS}-gimp-gtk/
-    cp -f gmic_qt/release/gmic_gimp_qt.exe build${BITS}-gimp-qt/
+    cp -f gmic-qt/release/gmic_gimp_qt.exe build${BITS}-gimp-qt/
 
     # Construct G'MIC (CLI) archive.
     cp -rf build${BITS}-cli ${OUTDIR_CLI} &&
@@ -278,7 +278,7 @@ cp -f gmic_stdlib.gmic ../html/
 cp -f gmic_stdlib.gmic ../html/gmic_stdlib.$SVERSION
 make stdlib CImg.h
 ln -fs ../gmic-community/zart ..
-ln -fs ../gmic_qt ..
+ln -fs ../gmic-qt ..
 ln -fs ../../gmic-community/libcgmic/gmic_libc.cpp .
 ln -fs ../../gmic-community/libcgmic/gmic_libc.h .
 ln -fs ../../gmic-community/libcgmic/use_libcgmic.c .
@@ -377,11 +377,11 @@ make distclean
 mkdir $DIR/zart
 cp -Lrf images include src ui *.xml *.html README zart.pro zart.qrc $DIR/zart
 cd ..
-cd gmic_qt
+cd gmic-qt
 qmake gmic_qt.pro
 make distclean
-mkdir $DIR/gmic_qt
-cp -Lrf translations icons images include resources src ui README gmic_qt.pro gmic_qt.qrc gmic_qt_resource.rc $DIR/gmic_qt
+mkdir $DIR/gmic-qt
+cp -Lrf translations icons images include resources src ui README gmic_qt.pro gmic_qt.qrc gmic_qt_resource.rc $DIR/gmic-qt
 cd ..
 
 cd $DIR
@@ -431,7 +431,7 @@ cp -f deb_${TARFILE}.gz ${HOME}/work/src/
 
 rm -rf `basename $DIR`/debian
 rm -rf `basename $DIR`/zart
-rm -rf `basename $DIR`/gmic_qt
+rm -rf `basename $DIR`/gmic-qt
 rm -rf `basename $DIR`/src/gmic_libc.cpp
 rm -rf `basename $DIR`/src/gmic_libc.h
 rm -rf `basename $DIR`/src/use_libcgmic.c
