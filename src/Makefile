@@ -109,6 +109,18 @@ SO = .dll
 PIC =
 endif
 
+ifneq (,$(wildcard ../../gmic/src))
+ZART_GMIC_PATH=../../gmic/src
+else
+ZART_GMIC_PATH=../src
+endif
+
+ifneq (,$(wildcard ../../gmic/src))
+QT_GMIC_PATH=../gmic/src
+else
+QT_GMIC_PATH=../src
+endif
+
 ifdef NOSTRIP
 STRIP = echo skip strip
 else
@@ -445,18 +457,18 @@ static:
 zart: CImg.h gmic_stdlib.h
 	@if [ ! -d ../zart ]; then ln -fs ../gmic-community/zart ..; fi
 ifeq ($(OS),Darwin)
-	cd ../zart && qmake CONFIG+=release GMIC_PATH=../src zart.pro && $(MAKE) && $(STRIP) zart.app/Contents/MacOS/zart
+	cd ../zart && qmake CONFIG+=release GMIC_PATH=$(ZART_GMIC_PATH) zart.pro && $(MAKE) && $(STRIP) zart.app/Contents/MacOS/zart
 else
-	cd ../zart && qmake CONFIG+=release GMIC_PATH=../src zart.pro && $(MAKE) && $(STRIP) zart
+	cd ../zart && qmake CONFIG+=release GMIC_PATH=$(ZART_GMIC_PATH) zart.pro && $(MAKE) && $(STRIP) zart
 endif
 
 gimp_qt: CImg.h gmic_stdlib.h
 	@if [ ! -d ../gmic-qt ]; then ln -fs ../gmic-qt ..; fi
-	cd ../gmic-qt && qmake CONFIG+=release GMIC_PATH=../src PRERELEASE=$(PRERELEASE) HOST=gimp gmic_qt.pro && $(MAKE) && $(STRIP) gmic_gimp_qt
+	cd ../gmic-qt && qmake CONFIG+=release GMIC_PATH=$(QT_GMIC_PATH) PRERELEASE=$(PRERELEASE) HOST=gimp gmic_qt.pro && $(MAKE) && $(STRIP) gmic_gimp_qt
 
 gmic_qt: CImg.h gmic_stdlib.h
 	@if [ ! -d ../gmic-qt ]; then ln -fs ../gmic-qt ..; fi
-	cd ../gmic-qt && qmake CONFIG+=release GMIC_PATH=../src PRERELEASE=$(PRERELEASE) HOST=none gmic_qt.pro && $(MAKE) && $(STRIP) gmic_qt
+	cd ../gmic-qt && qmake CONFIG+=release GMIC_PATH=$(QT_GMIC_PATH) PRERELEASE=$(PRERELEASE) HOST=none gmic_qt.pro && $(MAKE) && $(STRIP) gmic_qt
 
 # Internal rules to build compilation modules.
 
