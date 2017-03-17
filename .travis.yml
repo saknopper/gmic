@@ -66,7 +66,7 @@ addons:
     #build_command_prepend: ./configure
     # This command will be added as an argument to "cov-build" to compile
     # the project for analysis
-    build_command: "make -C src NO_SRIPDLIB=1 gimp cli lib"
+    build_command: "make -C src NO_SRIPDLIB=1 gimp_gtk cli lib"
     # Pattern to match selecting branches that will run analysis
     branch_pattern: coverity_scan
 
@@ -141,7 +141,7 @@ script:
         OMPFLAGS="OPENMP_CFLAGS= OPENMP_LIBS=";
     fi;
     if [ -z "$TRAVIS_OS_NAME" -o "$TRAVIS_OS_NAME" = "linux" ]; then
-        GIMP=gimp;
+        GIMP=gimp_gtk;
     fi;
     if [ "$CC" = "gcc" -a ! -z "$GCC_VERSION" ]; then
         CXX="${CXX}-${GCC_VERSION}";
