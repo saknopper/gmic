@@ -636,13 +636,16 @@ man:
 # Install/uninstall/clean procedures.
 install:
 	mkdir -p $(DESTDIR)$(PLUGINDIR)/
-	cp -f gmic_gimp_gtk$(EXE) $(DESTDIR)$(PLUGINDIR)/
 	cp -f ../resources/gmic_film_cluts.gmz $(DESTDIR)$(PLUGINDIR)/
 	mkdir -p $(DESTDIR)$(USR)/$(BIN)/
 	cp -f gmic $(DESTDIR)$(USR)/$(BIN)/
 	mkdir -p $(DESTDIR)$(USR)/$(INCLUDE)/
 	cp -f gmic.h $(DESTDIR)$(USR)/$(INCLUDE)/
+	@if [ -f gmic_gimp_gtk$(EXE) ];	cp -f gmic_gimp_gtk$(EXE) $(DESTDIR)$(PLUGINDIR)/; fi
 	@if [ -f gmic_libc.h ]; then cp -f gmic_libc.h $(DESTDIR)$(USR)/$(INCLUDE)/; fi
+	@if [ -f ../zart/zart ]; then cp -f ../zart/zart $(DESTDIR)$(USR)/$(BIN)/; fi
+	@if [ -f ../gmic-qt/gmic_qt ]; then cp -f ../gmic-qt/gmic_qt $(DESTDIR)$(USR)/$(BIN)/; fi
+	@if [ -f ../gmic-qt/gmic_gimp_qt ]; then cp -f ../gmic-qt/gmic_gimp_qt $(DESTDIR)$(PLUGINDIR)/; fi
 
 ifneq ($(OS),Darwin)
 	mkdir -p $(DESTDIR)$(USR)/share
@@ -655,15 +658,6 @@ ifneq ($(OS),Darwin)
 	  cp -f libcgmic.so $(DESTDIR)$(USR)/$(LIB)/libcgmic.so.$(VERSION); \
           ln -fs libcgmic.so.$(VERSION) $(DESTDIR)$(USR)/$(LIB)/libcgmic.so.$(VERSION1) ; \
           ln -fs libcgmic.so.$(VERSION1) $(DESTDIR)$(USR)/$(LIB)/libcgmic.so; \
-        fi
-	@if [ -f ../zart/zart ]; then \
-	  cp -f ../zart/zart $(DESTDIR)$(USR)/$(BIN)/; \
-        fi
-	@if [ -f ../gmic-qt/gmic_qt ]; then \
-	  cp -f ../gmic-qt/gmic_qt $(DESTDIR)$(USR)/$(BIN)/; \
-        fi
-	@if [ -f ../gmic-qt/gmic_gimp_qt ]; then \
-	  cp -f ../gmic-qt/gmic_gimp_qt $(DESTDIR)$(PLUGINDIR)/; \
         fi
 endif
 	mkdir -p $(DESTDIR)$(USR)/share/man/
@@ -704,11 +698,7 @@ uninstall:
 distclean: clean
 
 clean:
-	rm -rf CImg.h gmic_stdlib.h gmic$(EXE) gmic_gimp_gtk$(EXE) use_libgmic$(EXE) use_libcgmic$(EXE) use_libcgmic_static$(EXE) gmic*.o libgmic* libcgmic* *~
-	@if [ -h ../zart ]; then rm -f ../zart; fi
-	@if [ -h ../gmic-qt ]; then rm -f ../gmic-qt; fi
-	@if [ -h gmic_libc.h ]; then rm -f gmic_libc.h; fi
-	@if [ -h gmic_libc.cpp ]; then rm -f gmic_libc.cpp; fi
-	@if [ -h use_libcgmic.c ]; then rm -f use_libcgmic.c; fi
+	rm -rf CImg.h gmic_stdlib.h gmic$(EXE) gmic_gimp_gtk$(EXE) use_libgmic$(EXE) use_libcgmic$(EXE) use_libcgmic_static$(EXE) gmic*.o gmic_libc.* libgmic* libcgmic* use_libcgmic* *~
+	rm -rf ../zart ../gmic-qt
 
 # End of Makefile.
