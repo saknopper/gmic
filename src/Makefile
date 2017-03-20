@@ -641,7 +641,7 @@ install:
 	cp -f gmic $(DESTDIR)$(USR)/$(BIN)/
 	mkdir -p $(DESTDIR)$(USR)/$(INCLUDE)/
 	cp -f gmic.h $(DESTDIR)$(USR)/$(INCLUDE)/
-	@if [ -f gmic_gimp_gtk$(EXE) ];	cp -f gmic_gimp_gtk$(EXE) $(DESTDIR)$(PLUGINDIR)/; fi
+	@if [ -f gmic_gimp_gtk$(EXE) ];	then cp -f gmic_gimp_gtk$(EXE) $(DESTDIR)$(PLUGINDIR)/; fi
 	@if [ -f gmic_libc.h ]; then cp -f gmic_libc.h $(DESTDIR)$(USR)/$(INCLUDE)/; fi
 	@if [ -f ../zart/zart ]; then cp -f ../zart/zart $(DESTDIR)$(USR)/$(BIN)/; fi
 	@if [ -f ../gmic-qt/gmic_qt ]; then cp -f ../gmic-qt/gmic_qt $(DESTDIR)$(USR)/$(BIN)/; fi
