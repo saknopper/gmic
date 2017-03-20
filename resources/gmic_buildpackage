@@ -463,7 +463,7 @@ cp ${HOME}/work/src/deb_${TARFILE}.gz /tmp/ &&
     tar zxvf deb_${TARFILE}.gz &&
     find gmic-${VERSION}${SUFFIX} -exec touch {} \; &&
     cd $DIR/src &&
-    sed "s/\$(MAKE) cli gimp_gtk lib/\$(MAKE) cli gimp_gtk lib libc zart gmic_qt gimp_qt/g" Makefile > /tmp/Makefile &&
+    sed "s/\$(MAKE) cli gimp_gtk lib/\$(MAKE) cli lib libc zart gmic_qt gimp_qt/g" Makefile > /tmp/Makefile &&
     mv /tmp/Makefile Makefile && cd ../..
 cd $DIR &&
     dpkg-buildpackage -d -j3 -rfakeroot;
