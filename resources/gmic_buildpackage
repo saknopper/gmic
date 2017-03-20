@@ -213,15 +213,16 @@ if [ "$DIST" != "Ubuntu 16.04.2 LTS" ] || [ "$BITS" != "x86_64" ] ; then
     if [ "$1" == "final" ]; then SUFFIX=""; else SUFFIX=_pre; fi
     TARFILE=gmic_${VERSION}${SUFFIX}.tar
     PAK=gmic_${VERSION}${SUFFIX}_${CODENAME}_${ARCH}.deb
-    PLU=gmic_gimp_gtk_${VERSION}${SUFFIX}_linux${BITS}.zip
-    PLU2=gmic_gimp_gtk_${VERSION}${SUFFIX}_yakkety${BITS}.zip
+    PLUGTK=gmic_gimp_gtk_${VERSION}${SUFFIX}_linux${BITS}.zip
+    PLUGTK2=gmic_gimp_gtk_${VERSION}${SUFFIX}_yakkety${BITS}.zip
+    PLUQT=gmic_gimp_qt_${VERSION}${SUFFIX}_linux${BITS}.zip
     STA=gmic_static_${VERSION}${SUFFIX}_linux${BITS}.zip
     DIR=gmic-${VERSION}${SUFFIX}
     while [ ! -f deb_${TARFILE}.gz ]; do sleep 10; done
     sleep 10
     cp deb_${TARFILE}.gz /tmp/ &&
         cd /tmp/ &&
-        rm -rf $PAK $PLU $DIR &&
+        rm -rf $PAK $PLUGTK $DIR &&
         touch deb_${TARFILE}.gz &&
         tar zxvf deb_${TARFILE}.gz &&
         find gmic-${VERSION}${SUFFIX} -exec touch {} ;
@@ -237,15 +238,18 @@ if [ "$DIST" != "Ubuntu 16.04.2 LTS" ] || [ "$BITS" != "x86_64" ] ; then
     mv ../gmic_${VERSION}_${ARCH}.deb ../$PAK
 
     if [ "$CODENAME" == "ubuntu_yakkety" ]; then
-        zip -r -9 ../$PLU2 src/gmic_gimp_gtk README &&
+        zip -j -r -9 ../$PLUGTK2 src/gmic_gimp_gtk README &&
             cd .. &&
-            cp -f $PLU2 $PAK $SF_HOME/work/src/
+            cp -f $PLUGTK2 $PAK $SF_HOME/work/src/
     elif [ "$CODENAME" == "debian_wheezy" ]; then
-        zip -r -9 ../$PLU src/gmic_gimp_gtk README &&
+        zip -j -r -9 ../$PLUGTK src/gmic_gimp_gtk README &&
             cd src && make clean && make GMIC_STATIC_CLI_PATH=/usr/lib/${PARCH}-linux-gnu static && mv gmic ../ &&
             cd .. && rm -rf man src zart debian && cd .. &&
             zip -r -9 $STA $DIR &&
-            cp -f $PLU $PAK $STA $SF_HOME/work/src/
+            cp -f $PLUGTK $PAK $STA $SF_HOME/work/src/
+    elif [ "$CODENAME" == "debian_jessie" ]; then
+        zip -j -r -9 ../$PLUQT gmic-qt/gmic_gimp_qt README &&
+            cp -f $PLUGQT $PAK $SF_HOME/work/src/
     else
         cd .. &&
             cp -f $PAK $SF_HOME/work/src/
