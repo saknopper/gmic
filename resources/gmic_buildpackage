@@ -249,6 +249,7 @@ if [ "$DIST" != "Ubuntu 16.04.2 LTS" ] || [ "$BITS" != "x86_64" ] ; then
             cp -f $PLUGTK $PAK $STA $SF_HOME/work/src/
     elif [ "$CODENAME" == "debian_jessie" ]; then
         zip -j -r -9 ../$PLUQT gmic-qt/gmic_gimp_qt README &&
+            cd .. &&
             cp -f $PLUGQT $PAK $SF_HOME/work/src/
     else
         cd .. &&
