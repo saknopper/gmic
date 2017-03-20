@@ -215,7 +215,7 @@ if [ "$DIST" != "Ubuntu 16.04.2 LTS" ] || [ "$BITS" != "x86_64" ] ; then
     PAK=gmic_${VERSION}${SUFFIX}_${CODENAME}_${ARCH}.deb
     PLUGTK=gmic_gimp_gtk_${VERSION}${SUFFIX}_linux${BITS}.zip
     PLUGTK2=gmic_gimp_gtk_${VERSION}${SUFFIX}_yakkety${BITS}.zip
-    PLUQT=gmic_gimp_qt_${VERSION}${SUFFIX}_linux${BITS}.zip
+    PLUGQT=gmic_gimp_qt_${VERSION}${SUFFIX}_linux${BITS}.zip
     STA=gmic_static_${VERSION}${SUFFIX}_linux${BITS}.zip
     DIR=gmic-${VERSION}${SUFFIX}
     while [ ! -f deb_${TARFILE}.gz ]; do sleep 10; done
@@ -248,7 +248,7 @@ if [ "$DIST" != "Ubuntu 16.04.2 LTS" ] || [ "$BITS" != "x86_64" ] ; then
             zip -r -9 $STA $DIR &&
             cp -f $PLUGTK $PAK $STA $SF_HOME/work/src/
     elif [ "$CODENAME" == "debian_jessie" ]; then
-        zip -j -r -9 ../$PLUQT gmic-qt/gmic_gimp_qt README &&
+        zip -j -r -9 ../$PLUGQT gmic-qt/gmic_gimp_qt README &&
             cd .. &&
             cp -f $PLUGQT $PAK $SF_HOME/work/src/
     else
