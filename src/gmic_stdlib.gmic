@@ -17114,7 +17114,7 @@ file_rm :
   -e[^-1] "Remove file '$1'."
   -v -
   -if ${-is_windows}
-    1 -nm. "$1" dir={f} base={b} ext={x} -rm. com=""
+    1 -nm. "$1" dir={/{f}} base={/{b}} ext={/{x}} -rm. com=""
     -if {narg($dir)} com="cd \""$dir"\\\" && " -endif
     -if {narg($ext)} com=${com}"del \""$base.$ext"\"" -else com=${com}"del \""$base"\"" -endif
     -x $com
@@ -22667,6 +22667,7 @@ _gui_download_all_data :
 #@gui : note = note{"\n<span foreground="purple" underline="single">Supporters:</span>"}
 #@gui : note = note{" <b>-</b> A big hug goes to these friends who supported the project:"}
 #@gui : note = note{"<i>
+#@gui : <a href="http://www.viewbug.com/KennZaney">Kenneth Simons</a>
 #@gui : <a href="https://www.flickr.com/photos/114936163@N05/">Milos Ciuk</a>,
 #@gui : Manlio Barolo,
 #@gui : John Lewandowski,
