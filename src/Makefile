@@ -546,7 +546,7 @@ gmic: gmic.cpp gmic.h gmic_stdlib.h CImg.h
 	$(CXX) -o gmic gmic.cpp -Dgmic_main $(CFLAGS) $(LIBS)
 
 # header files
-gmic_stdlib.h:
+gmic_stdlib.h: gmic_stdlib.gmic
 	@echo -n "> Retrieve G'MIC Standard Library..."
 	@$(WGET) gmic_stdlib.h http://gmic.eu/gmic_stdlib.h
 	@touch gmic_stdlib.h
