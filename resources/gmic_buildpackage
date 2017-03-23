@@ -161,7 +161,7 @@ if [ "$OSTYPE" == "msys" ]; then
         sleep 3 &&
         cp -f ${OUTINST_GIMP_GTK} /e/work/src/
 
-    if [ "$BITS" == "64" ]
+#    if [ "$BITS" == "64" ]
 
        # # Construct ZART archive.
        # cp -rf build${BITS}-zart ${OUTDIR_ZART} &&
@@ -189,7 +189,7 @@ if [ "$OSTYPE" == "msys" ]; then
            sleep 3 &&
            cp -f ${OUTINST_GIMP_QT} /e/work/src/
 
-    fi
+#    fi
 
     echo " - All done!"
     return;
