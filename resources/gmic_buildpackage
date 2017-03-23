@@ -149,20 +149,6 @@ if [ "$OSTYPE" == "msys" ]; then
         zip -r -9 ${OUTZIP_LIB} ${OUTDIR_LIB} &&
         cp -f ${OUTZIP_LIB} /e/work/src/
 
-    # Construct ZART archive.
-    cp -rf build${BITS}-zart ${OUTDIR_ZART} &&
-        cp -f /e/work/src/gmic/COPYING ${OUTDIR_ZART} &&
-        sed s\/_gmic_version\/${VERSION}${SUFFIX}\/ /e/work/src/gmic/README > ${OUTDIR_ZART}/README &&
-        zip -r -9 ${OUTZIP_ZART} ${OUTDIR_ZART} &&
-        cp -f ${OUTZIP_ZART} /e/work/src/
-
-    # Construct G'MIC (Qt standalong) archive.
-    cp -rf build${BITS}-qt ${OUTDIR_QT} &&
-        cp -f /e/work/src/gmic/COPYING ${OUTDIR_QT} &&
-        sed s\/_gmic_version\/${VERSION}${SUFFIX}\/ /e/work/src/gmic/README > ${OUTDIR_QT}/README &&
-        zip -r -9 ${OUTZIP_QT} ${OUTDIR_QT} &&
-        cp -f ${OUTZIP_QT} /e/work/src/
-
     # Construct G'MIC for GIMP (GTK) archive and installer.
     cp -rf build${BITS}-gimp-gtk ${OUTDIR_GIMP_GTK} &&
         cp -f /e/work/src/gmic/COPYING ${OUTDIR_GIMP_GTK} &&
@@ -173,19 +159,37 @@ if [ "$OSTYPE" == "msys" ]; then
     /c/Program\ Files\ \(x86\)/Inno\ Setup\ 5/ISCC.exe installer_gtk.iss
     touch ${OUTINST_GIMP_GTK} &&
         sleep 3 &&
-        cp -f ${OUTINST_GIMP_GTK} /e/work/src/ &&
+        cp -f ${OUTINST_GIMP_GTK} /e/work/src/
 
-    # Construct G'MIC for GIMP (Qt) archive and installer.
-    cp -rf build${BITS}-gimp-qt ${OUTDIR_GIMP_QT} &&
-        cp -f /e/work/src/gmic/COPYING ${OUTDIR_GIMP_QT} &&
-        sed s\/_gmic_version\/${VERSION}${SUFFIX}\/ /e/work/src/gmic/README > ${OUTDIR_GIMP_QT}/README &&
-        zip -r -9 ${OUTZIP_GIMP_QT} ${OUTDIR_GIMP_QT} &&
-        cp -f ${OUTZIP_GIMP_QT} /e/work/src/
+    if [ "$BITS" == "64" ]
 
-    /c/Program\ Files\ \(x86\)/Inno\ Setup\ 5/ISCC.exe installer_qt.iss
-    touch ${OUTINST_GIMP_QT} &&
-        sleep 3 &&
-        cp -f ${OUTINST_GIMP_QT} /e/work/src/ &&
+       # # Construct ZART archive.
+       # cp -rf build${BITS}-zart ${OUTDIR_ZART} &&
+       #     cp -f /e/work/src/gmic/COPYING ${OUTDIR_ZART} &&
+       #     sed s\/_gmic_version\/${VERSION}${SUFFIX}\/ /e/work/src/gmic/README > ${OUTDIR_ZART}/README &&
+       #     zip -r -9 ${OUTZIP_ZART} ${OUTDIR_ZART} &&
+       #     cp -f ${OUTZIP_ZART} /e/work/src/
+
+       # # Construct G'MIC (Qt standalone) archive.
+       # cp -rf build${BITS}-qt ${OUTDIR_QT} &&
+       #     cp -f /e/work/src/gmic/COPYING ${OUTDIR_QT} &&
+       #     sed s\/_gmic_version\/${VERSION}${SUFFIX}\/ /e/work/src/gmic/README > ${OUTDIR_QT}/README &&
+       #     zip -r -9 ${OUTZIP_QT} ${OUTDIR_QT} &&
+       #     cp -f ${OUTZIP_QT} /e/work/src/
+
+       # Construct G'MIC for GIMP (Qt) archive and installer.
+       cp -rf build${BITS}-gimp-qt ${OUTDIR_GIMP_QT} &&
+           cp -f /e/work/src/gmic/COPYING ${OUTDIR_GIMP_QT} &&
+           sed s\/_gmic_version\/${VERSION}${SUFFIX}\/ /e/work/src/gmic/README > ${OUTDIR_GIMP_QT}/README &&
+           zip -r -9 ${OUTZIP_GIMP_QT} ${OUTDIR_GIMP_QT} &&
+           cp -f ${OUTZIP_GIMP_QT} /e/work/src/
+
+       /c/Program\ Files\ \(x86\)/Inno\ Setup\ 5/ISCC.exe installer_qt.iss
+       touch ${OUTINST_GIMP_QT} &&
+           sleep 3 &&
+           cp -f ${OUTINST_GIMP_QT} /e/work/src/
+
+    fi
 
     echo " - All done!"
     return;
