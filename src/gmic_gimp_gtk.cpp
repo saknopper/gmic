@@ -4477,8 +4477,8 @@ void gmic_run(const gchar *name, gint nparams, const GimpParam *param,
     case GIMP_RUN_NONINTERACTIVE : {
       const unsigned int _input_mode = get_input_mode(), _output_mode = get_output_mode();
       set_input_mode(param[3].data.d_int32 + 2);
-      set_output_mode(0);
-      process_image(param[4].data.d_string,false);
+      set_output_mode(param[4].data.d_int32 + 2);
+      process_image(param[5].data.d_string,false);
       set_input_mode(_input_mode + 2);
       set_output_mode(_output_mode + 2);
     } break;
@@ -4509,14 +4509,15 @@ void gmic_query() {
     {GIMP_PDB_INT32,    (gchar*)"input",    (gchar*)"Input layers mode, when non-interactive"
      "(0=none, 1=active, 2=all, 3=active & below, 4=active & above, 5=all visibles, 6=all invisibles, "
      "7=all visibles (decr.), 8=all invisibles (decr.), 9=all (decr.))"},
+    {GIMP_PDB_INT32,    (gchar*)"output",    (gchar*)"Output layers mode, when non-interactive"
+     "(0=in-place, 1=new layers, 2=new active layers, 3=new image)"},
     {GIMP_PDB_STRING,   (gchar*)"command",  (gchar*)"G'MIC command string, when non-interactive"},
   };
 
   set_locale();
 
   CImg<char> name(64), blurb(64), path(64);
-  cimg_snprintf(name,name.width(),"plug-in-gmic%u",
-                gmic_version/100);
+  cimg_snprintf(name,name.width(),"plug-in-gmic-gtk");
   cimg_snprintf(blurb,blurb.width(),"G'MIC - %u.%u.%u (GTK)",
                 gmic_version/100,
                 (gmic_version/10)%10,
@@ -4525,7 +4526,7 @@ void gmic_query() {
                 gmic_version/100,
                 (gmic_version/10)%10);
   const char *const author = "David Tschumperl\303\251";
-  gimp_install_procedure(name,                // name
+  gimp_install_procedure(name,               // name
                          blurb,              // blurb
                          blurb,              // help
                          author,             // author
