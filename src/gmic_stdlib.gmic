@@ -32883,7 +32883,7 @@ fx_custom_code_preview : -skip "${1=-skip ,}"
   -endif
 
 #@gui Games &amp; demos : fx_gmic_demos, fx_gmic_demos_preview
-#@gui : Selection = choice("2048","Blobs editor","Bouncing balls","Fire effect","Fireworks","Fish-eye effect","Fourier filtering",
+#@gui : Selection = choice("2048","Blobs editor","Bouncing balls","Connect-4","Fire effect","Fireworks","Fish-eye effect","Fourier filtering",
 #@gui : "Histogram","Hough transform","Jawbreaker","Virtual landscape","The game of life","Light effect","Mandelbrot explorer","3d metaballs","Minesweeper",
 #@gui : "Minimal path","Pacman","Paint","Plasma effect","RGB quantization","3d reflection","3d rubber object","Shadebobs","Spline editor",
 #@gui : "Tetris","Tic-tac-toe","3d waves","Fractal whirl")
@@ -32895,7 +32895,7 @@ fx_custom_code_preview : -skip "${1=-skip ,}"
 #@gui : </small>"}
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>09/10/2014</i>.</small>")
 fx_gmic_demos :
-  coms=2048,blobs,bouncing,fire,fireworks,fisheye,fourier,histogram,hough,jawbreaker,landscape,life,light,\
+  coms=2048,blobs,bouncing,connect4,fire,fireworks,fisheye,fourier,histogram,hough,jawbreaker,landscape,life,light,\
        mandelbrot,metaballs3d,minesweeper,minimal_path,pacman,paint,plasma,quantize_rgb,reflection3d,\
        rubber3d,shadebobs,spline,tetris,tictactoe,waves,whirl
   com=${-arg\ {1+$1},$coms}
