@@ -18011,7 +18011,7 @@ demo : -check "isint(${1=2}) && $1>=0 && $1<=2"
 -------------------------------------"
   -v - -l[]
   parallel_mode={1-if($1!=2,$1,$_cpus>=2)}
-  350,620,1,3 --plasma. 1,1,5 -n. 0,230 -water. 100
+  350,630,1,3 --plasma. 1,1,5 -n. 0,230 -water. 100
   (0.1;0.03^0;0.1^0.2;0.1) -r. ..,3 -*[-2,-1]
   (0;1) -r. ..,..,1,1,3 -pow. 1.5 -n. 0.2,1.15 -*[-2,-1] -c. 0,255
 
@@ -18956,13 +18956,11 @@ x_connect4 :
   -r[cache,cachem] 100%,600%,1,100%,0,2
 
   # Render board.
-  7,6 -nm. board
-
+  3,3 -nm. board
+#  7,6 -nm. board
   --r[cache,cachem] {board,[w,h]*$R},1,100%,0,2 -a[-2,-1] c
   -i.. 100%,100%,1,3,64 -blend[-2,-1] alpha
-  -nm. visu
-
-  -w[visu] 100%,100%,0,"[G'MIC] Connect Four"
+  -nm. visu -w[visu] 100%,100%,0,"[G'MIC] Connect Four"
 
   # Start game.
   turn=0 is_falling=0 x=-1 yv=0 dyv=0 winner=
@@ -18971,19 +18969,27 @@ x_connect4 :
     # Estimate ymax for each column.
     -if {!narg($ymax)}
       -i[ymax] {board,w},1,1,1,"y=-1; for (k = 0, k<h#"$board", ++k, if(!i(#"$board",x,k),y = k)); y"
+      -if {iM<0} winner=-1,-1,-1 -endif # Draw game
     -endif
 
     -if {narg($winner)} # End of game animation
-      x={arg(1,$winner)} y={arg(2,$winner)} c={arg(3,$winner)}
       -i[tmpvisu] [visu]
-      -repeat 4
-        [token$turn]
-        -rgb2hsv. -sh. 1,2 -*. {1.5+sin(5*$|)} -c. 0,1 -rm. -hsv2rgb.
-        -j. [cache],0,0,0,0,1,[cachem],255
-        -j[tmpvisu] .,{$R*[$x,$y]},0,0,1 -rm.
-        x+={$c!=2?1:0}
-        y+={$c==1?0:$c==4?-1:1}
-      -done
+      x={arg(1,$winner)} y={arg(2,$winner)} c={arg(3,$winner)}
+      -if {$x<0} # Draw game
+        -if {!narg($text)}
+          0 -t. "Draw game",0,0,57,1,1 -r2dx. {tmpvisu,w/2} -expand_xy. 3,0 --dilate. 5 -n.. 0,255 -to_rgb..
+          -nms[-2,-1] text,textm
+        -endif
+        -j[tmpvisu] [text],{tmpvisu,([w,h]-[w#$text,h#$text])/2},0,0,{0.5*(1+sin(5*$|))},[textm]
+      -else
+        -repeat 4
+          [token$turn]
+          -rgb2hsv. -sh. 1,2 -*. {1.5+sin(5*$|)} -c. 0,1 -rm. -hsv2rgb.
+          -j. [cache],0,0,0,0,1,[cachem],255
+          -j[tmpvisu] .,{$R*[$x,$y]},0,0,1 -rm.
+          x+={$c!=2?1:0} y+={$c==1?0:$c==4?-1:1}
+        -done
+      -endif
       -w[tmpvisu] 100%,100% -rm[tmpvisu] -wait 20
 
     -elif {!$is_falling} # Manage column selection
