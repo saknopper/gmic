@@ -18956,8 +18956,7 @@ x_connect4 :
   -r[cache,cachem] 100%,600%,1,100%,0,2
 
   # Render board.
-  3,3 -nm. board
-#  7,6 -nm. board
+  7,6 -nm. board
   --r[cache,cachem] {board,[w,h]*$R},1,100%,0,2 -a[-2,-1] c
   -i.. 100%,100%,1,3,64 -blend[-2,-1] alpha
   -nm. visu -w[visu] 100%,100%,0,"[G'MIC] Connect Four"
