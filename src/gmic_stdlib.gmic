@@ -18019,34 +18019,35 @@ demo : -check "isint(${1=2}) && $1>=0 && $1<=2"
   0 -t. "1- 2048 game\n"\
         "2- Blobs editor\n"\
         "3- Bouncing balls\n"\
-        "4- Fire effect\n"\
-        "5- Fireworks\n"\
-        "6- Fish-eye effect\n"\
-        "7- Fourier filtering\n"\
-        "8- Histogram demo\n"\
-        "9- Hough transform\n"\
-        "10- Jawbreaker\n"\
-        "11- Virtual landscape\n"\
-        "12- The game of life\n"\
-        "13- Light effect\n"\
-        "14- Mandelbrot explorer\n"\
-        "15- 3d metaballs\n"\
-        "16- Minesweeper\n"\
-        "17- Minimal path\n"\
-        "18- Pacman\n"\
-        "19- Paint\n"\
-        "20- Plasma effect\n"\
-        "21- RGB quantization\n"\
-        "22- 3d reflection\n"\
-        "23- 3d rubber object\n"\
-        "24- Shade bobs\n"\
-        "25- Spline editor\n"\
-        "26- Tetris\n"\
-        "27- Tic-tac-toe\n"\
-        "28- Image waves\n"\
-        "29- Fractal whirls\n"\
-        "30- Color curves\n",0,0,18,1,255,255,255
-  commands=-x_2048,-x_blobs,-x_bouncing,-x_fire,-x_fireworks,-x_fisheye,-x_fourier,-x_histogram,-x_hough,\
+        "4- Connect four\n"\
+        "5- Fire effect\n"\
+        "6- Fireworks\n"\
+        "7- Fish-eye effect\n"\
+        "8- Fourier filtering\n"\
+        "9- Histogram demo\n"\
+        "10- Hough transform\n"\
+        "11- Jawbreaker\n"\
+        "12- Virtual landscape\n"\
+        "13- The game of life\n"\
+        "14- Light effect\n"\
+        "15- Mandelbrot explorer\n"\
+        "16- 3d metaballs\n"\
+        "17- Minesweeper\n"\
+        "18- Minimal path\n"\
+        "19- Pacman\n"\
+        "20- Paint\n"\
+        "21- Plasma effect\n"\
+        "22- RGB quantization\n"\
+        "23- 3d reflection\n"\
+        "24- 3d rubber object\n"\
+        "25- Shade bobs\n"\
+        "26- Spline editor\n"\
+        "27- Tetris\n"\
+        "28- Tic-tac-toe\n"\
+        "29- Image waves\n"\
+        "30- Fractal whirls\n"\
+        "31- Color curves\n",0,0,18,1,255,255,255
+  commands=-x_2048,-x_blobs,-x_bouncing,-x_connect4,-x_fire,-x_fireworks,-x_fisheye,-x_fourier,-x_histogram,-x_hough,\
            -x_jawbreaker,-x_landscape,-x_life,-x_light,-x_mandelbrot,-x_metaballs3d,-x_minesweeper,-x_minimal_path,\
            -x_pacman,-x_paint,-x_plasma,-x_quantize_rgb,-x_reflection3d,-x_rubber3d,-x_shadebobs,\
            -x_spline,-x_tetris,-x_tictactoe,-x_waves,-x_whirl,-_demo_color_curves
@@ -18918,6 +18919,124 @@ __x_colorize :
     -b. 0.05% -n. 0,1 -sqr. --b. 0.5% -n[-2,-1] 0,1 -min[-2,-1]
   -endif
   -nm. potential
+
+#@cli x_connect4
+#@cli : Launch the Connect Four game.
+x_connect4 :
+  -if {!{*,u}} -error[0--3] "Command '-$0': No display available." -return -endif
+  -v - -use_vt100 g=$_gmic_g c=$_gmic_c n=$_gmic_n r=$_gmic_r -v +
+  -e[] "\n
+------ "${g}"Connect Four"$n" --------------------------------------------\n
+----\n
+---- Connect four tokens in a row, column or diagonally\n
+---- to win the game.\n
+----\n
+---- "${c}"Left mouse button"$n" on a column inserts a new token.\n
+---- Keys '"${c}"ESC"$n"', '"${c}"Q"$n"' or '"${c}"ENTER"$n"' close the current window.\n
+----\n
+----------------------------------------------------------------"
+  -v - -l[]
+
+  # Create sprite graphics.
+  R={u={*,u};v={*,v};int(0.5*min(u/7,v/6))}
+
+  {2*$R},{2*$R} -circle. 50%,50%,32%,1,1 -b. 2% -g. xy -+[-2,-1] -n. 0,1
+  --n. -1,0.5 -abs. -negate. --f. 200 -rv[-3--1] -a[-3--1] c -hsv2rgb.
+  -to_rgba. -circle. 50%,50%,27%,1,0
+
+  {4*$R},{4*$R} -circle. 50%,50%,20%,1,1 -b. 1% -g. xy -+[-2,-1] -n. 0,1 -negate.
+  -pow. 0.5 --n. -1,0.8 -abs. -negate. --f. 10 -rv[-3--1] -a[-3--1] c
+  . -sh. 0 -f. 60 -rm. -hsv2rgb[-2,-1]
+  100%,100% -circle. 50%,50%,30%,1,255 -a[-3,-2] .,c -rm.
+
+  -r2dx[-3--1] $R -s[-3--1] c,-3 -rm...
+  -n 0,255 -round
+  -nms cache,cachem,token0,token1,tokenm
+  --b[cachem] 2% -shift. 1%,1%,0,0,2 -max[cachem,-1]
+  -r[cache,cachem] 100%,600%,1,100%,0,2
+
+  # Render board.
+  7,6 -nm. board
+
+  --r[cache,cachem] {board,[w,h]*$R},1,100%,0,2 -a[-2,-1] c
+  -i.. 100%,100%,1,3,64 -blend[-2,-1] alpha
+  -nm. visu
+
+  -w[visu] 100%,100%,0,"[G'MIC] Connect Four"
+
+  # Start game.
+  turn=0 is_falling=0 x=-1 yv=0 dyv=0 winner=
+  -do
+
+    # Estimate ymax for each column.
+    -if {!narg($ymax)}
+      -i[ymax] {board,w},1,1,1,"y=-1; for (k = 0, k<h#"$board", ++k, if(!i(#"$board",x,k),y = k)); y"
+    -endif
+
+    -if {narg($winner)} # End of game animation
+      x={arg(1,$winner)} y={arg(2,$winner)} c={arg(3,$winner)}
+      -i[tmpvisu] [visu]
+      -repeat 4
+        [token$turn]
+        -rgb2hsv. -sh. 1,2 -*. {1.5+sin(5*$|)} -c. 0,1 -rm. -hsv2rgb.
+        -j. [cache],0,0,0,0,1,[cachem],255
+        -j[tmpvisu] .,{$R*[$x,$y]},0,0,1 -rm.
+        x+={$c!=2?1:0}
+        y+={$c==1?0:$c==4?-1:1}
+      -done
+      -w[tmpvisu] 100%,100% -rm[tmpvisu] -wait 20
+
+    -elif {!$is_falling} # Manage column selection
+      x={visu,X={*,x};X<0?X:int(X*w#$board/w)}
+      yM={i("#"$ymax,$x)}
+      -if {board,$x<0" || "$x>=w} -w[visu] 100%,100%
+      -else
+        [visu] $R,100%,1,3,($yM>=0?1:0)*($turn?[255,255,0]:[255,0,0])
+        -j.. .,{$x*$R},0,0,0,{$yM>=0?0.15:0.3} -rm.
+        -w. 100%,100% -rm.
+      -endif
+      -wait
+      -if {{*,-b}&1" && "$yM>=0} is_falling=1 yv=0 dyv=1 -endif
+
+    -else # Manage token falling animation
+
+      -if {!narg($column)}
+
+        $R,{board,h*$R},1,3,64
+        -repeat {board,h} v={board,i($x,$>)} -if $v -j. [token{$v-1}],0,{$>*$R},0,0,1,[tokenm],255 -endif -done
+        -nm. column
+      -endif
+
+      yM={i("#"$ymax,$x)}
+      [column]
+      -j. [token$turn],0,$yv,0,0,1,[tokenm],255
+      -j. [cache],0,0,0,0,1,[cachem],255
+      -i[tmpvisu] [visu]
+      -j[tmpvisu] ..,{$R*$x},0,0,0 -rm.. -w[tmpvisu] 100%,100%
+      -if {$yv>=$yM*$R}
+        -j[visu] [tmpvisu] is_falling=0
+        -=[board] {$turn+1},$x,$yM
+        -rm[ymax,column]
+
+        # Check end of game.
+        --f[board] "if (!i,0,
+                      case_h = i==j(1) && i==j(2) && i==j(3);
+                      case_v = i==j(0,1) && i==j(0,2) && i==j(0,3);
+                      case_d1 = i==j(1,1) && i==j(2,2) && i==j(3,3);
+                      case_d2 = i==j(1,-1) && i==j(2,-2) && i==j(3,-3);
+                      case_h?1:case_v?2:case_d1?3:case_d2?4)"
+        -if {iM} winner={[xM,yM,i(xM,yM)]} # Player won !
+        -else turn={($turn+1)%2}
+        -endif
+        -rm.
+      -endif
+      -rm[tmpvisu]
+      yv={min($yM*$R,$yv+$dyv)} dyv+={visu,h/100}
+      -wait 20
+    -endif
+
+  -while {{*}" && "!{*,ESC}" && "!{*,Q}}
+  -rm -endl -v +
 
 #@cli x_fire
 #@cli : Launch the fire effect demo.
