@@ -18979,11 +18979,11 @@ x_connect4 :
           0 -t. "Draw game",0,0,57,1,1 -r2dx. {tmpvisu,w/2} -expand_xy. 3,0 --dilate. 5 -n.. 0,255 -to_rgb..
           -nms[-2,-1] text,textm
         -endif
-        -j[tmpvisu] [text],{tmpvisu,([w,h]-[w#$text,h#$text])/2},0,0,{0.5*(1+sin(5*$|))},[textm]
+        -j[tmpvisu] [text],{tmpvisu,([w,h]-[w#$text,h#$text])/2},0,0,{0.7+0.3*sin(5*$|)},[textm]
       -else
         -repeat 4
           [token$turn]
-          -rgb2hsv. -sh. 1,2 -*. {1.5+sin(5*$|)} -c. 0,1 -rm. -hsv2rgb.
+          -rgb2hsv. -sh. 1,2 -+. {0.4*sin(5*$|)} -c. 0,1 -rm. -hsv2rgb.
           -j. [cache],0,0,0,0,1,[cachem],255
           -j[tmpvisu] .,{$R*[$x,$y]},0,0,1 -rm.
           x+={$c!=2?1:0} y+={$c==1?0:$c==4?-1:1}
