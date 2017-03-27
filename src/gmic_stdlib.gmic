@@ -18938,7 +18938,8 @@ x_connect4 :
   -v - -l[]
 
   # Create sprite graphics.
-  R={u={*,u};v={*,v};int(0.5*min(u/7,v/6))}
+  7,6 -nm. board
+  R={board,u={*,u};v={*,v};int(0.5*min(u/w,v/h))}
 
   {2*$R},{2*$R} -circle. 50%,50%,32%,1,1 -b. 2% -g. xy -+[-2,-1] -n. 0,1
   --n. -1,0.5 -abs. -negate. --f. 200 -rv[-3--1] -a[-3--1] c -hsv2rgb.
@@ -18951,12 +18952,10 @@ x_connect4 :
 
   -r2dx[-3--1] $R -s[-3--1] c,-3 -rm...
   -n 0,255 -round
-  -nms cache,cachem,token0,token1,tokenm
+  -nms[^0] cache,cachem,token0,token1,tokenm
   --b[cachem] 2% -shift. 1%,1%,0,0,2 -max[cachem,-1]
   -r[cache,cachem] 100%,600%,1,100%,0,2
 
-  # Render board.
-  7,6 -nm. board
   --r[cache,cachem] {board,[w,h]*$R},1,100%,0,2 -a[-2,-1] c
   -i.. 100%,100%,1,3,64 -blend[-2,-1] alpha
   -nm. visu -w[visu] 100%,100%,0,"[G'MIC] Connect Four"
