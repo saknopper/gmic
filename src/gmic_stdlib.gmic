@@ -18939,9 +18939,6 @@ x_connect4 :
 
   # Create sprite graphics.
   7,6 -nm. board
-
-  -line[board] 3,5,3,3,1,1
-
   R={board,u={*,u};v={*,v};int(0.5*min(u/w,v/h))}
 
   {2*$R},{2*$R} -circle. 50%,50%,32%,1,1 -b. 2% -g. xy -+[-2,-1] -n. 0,1
@@ -19017,20 +19014,15 @@ x_connect4 :
           yM={i("#"$ymax,$>)}
           -if {$yM>=0}
             --=[board] {1+$turn},$>,$yM
-#            -w 0 -d.
             -f. "
 const p = "$turn" + 1;
 const op = 3 - p;
 
-mx = x;
-my = y;
-
 case(dx,dy) = (
   pgood = pbad = 0;
   for (k = 0, k<4, ++k,
-    X = mx + k*dx;
-    Y = my + k*dy;
-#    print([dy,my,Y]);
+    X = x + k*dx;
+    Y = y + k*dy;
     if (X<w && Y>=0 && Y<h,
       val = i(X,Y);
       if (pgood>=0 && val==op, pgood = -1, pgood+=!!val);
@@ -19042,30 +19034,17 @@ case(dx,dy) = (
   pgood - pbad;
 );
 
-score = 0;
-score0 = case(1,0);
-#print(pi);
-score1 = case(0,1);
-#print([x,y,score0,score1]);
-
-score+= case(1,1);
-score+= case(1,-1);
+case(1,0) +
+case(0,1) +
+case(1,1) +
+case(1,-1);
 "
-            -v + -e "Col = "$>", SCORE = "{is} -v -
-#            -w 0 -d.
-
-
             score={is} -rm.
             -if {$score>$best_score} best_score=$score best_col=$> -endif
           -endif
         -done
-
-        -v + -e "BEST COL = "$best_col", BEST SCORE = "$best_score -v -
-
-#        x={board,round(u(w-1))}
         x=$best_col
         is_falling=1 yv=0 dyv=1
-
       -endif
 
     -else # Manage token falling animation
