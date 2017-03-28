@@ -18939,6 +18939,9 @@ x_connect4 :
 
   # Create sprite graphics.
   7,6 -nm. board
+
+#  -line[board] 3,5,5,5,1,1
+
   R={board,u={*,u};v={*,v};int(0.5*min(u/w,v/h))}
 
   {2*$R},{2*$R} -circle. 50%,50%,32%,1,1 -b. 2% -g. xy -+[-2,-1] -n. 0,1
@@ -18951,13 +18954,15 @@ x_connect4 :
   100%,100% -circle. 50%,50%,30%,1,255 -a[-3,-2] .,c -rm.
 
   -r2dx[-3--1] $R -s[-3--1] c,-3 -rm...
-  -n 0,255 -round
-  -nms[^0] cache,cachem,token0,token1,tokenm
+  -n[^0] 0,255 -round[^0] -nms[^0] cache,cachem,token0,token1,tokenm
   --b[cachem] 2% -shift. 1%,1%,0,0,2 -max[cachem,-1]
   -r[cache,cachem] 100%,600%,1,100%,0,2
 
-  --r[cache,cachem] {board,[w,h]*$R},1,100%,0,2 -a[-2,-1] c
-  -i.. 100%,100%,1,3,64 -blend[-2,-1] alpha
+  {board,[w,h]*$R},1,3,64
+  -repeat {board,h},y -repeat {board,w},x
+    val={board,i($x,$y)} -if $val -j. [token{$val-1}],{$x*$R},{$y*$R},0,0,1,[tokenm],255 -endif
+  -done -done
+  --r[cache,cachem] {board,[w,h]*$R},1,100%,0,2 -a[-2,-1] c -blend[-2,-1] alpha
   -nm. visu -w[visu] 100%,100%,0,"[G'MIC] Connect Four"
 
   # Start game.
@@ -18991,21 +18996,71 @@ x_connect4 :
       -w[tmpvisu] 100%,100% -rm[tmpvisu] -wait 20
 
     -elif {!$is_falling} # Manage column selection
-      x={visu,X={*,x};X<0?X:int(X*w#$board/w)}
-      yM={i("#"$ymax,$x)}
-      -if {board,$x<0" || "$x>=w} -w[visu] 100%,100%
-      -else
-        [visu] $R,100%,1,3,($yM>=0?1:0)*($turn?[255,255,0]:[255,0,0])
-        -j.. .,{$x*$R},0,0,0,{$yM>=0?0.15:0.3} -rm.
-        -w. 100%,100% -rm.
+
+      -if {!$turn} # Player's turn
+        x={visu,X={*,x};X<0?X:int(X*w#$board/w)}
+        yM={i("#"$ymax,$x)}
+        -if {board,$x<0" || "$x>=w} -w[visu] 100%,100%
+        -else
+          [visu] $R,100%,1,3,($yM>=0?1:0)*($turn?[255,255,0]:[255,0,0])
+          -j.. .,{$x*$R},0,0,0,{$yM>=0?0.15:0.3} -rm.
+          -w. 100%,100% -rm.
+        -endif
+        -wait
+        -if {{*,-b}&1" && "$yM>=0} is_falling=1 yv=0 dyv=1 -endif
+
+      -else # Computer's turn
+
+        # Evaluate board score
+        best_score=0 best_col=-1
+        -repeat {board,w}
+          yM={i("#"$ymax,$>)}
+          -if {$yM>=0}
+            --=[board] {1+$turn},$>,$yM
+ #           -w 0 -d.
+            -f. "
+const p = "$turn" + 1;
+const op = 3 - p;
+
+case(dx,dy) = (
+  patt = pdef = 0;
+  for (k = 0, k<4, ++k,
+    X = x + k*dx;
+    Y = y + k*dy;
+    if (X<w && Y>=0 && Y<h,
+      val = i(X,Y);
+      if (patt>=0 && val==op, patt = -1, patt+=!!val);
+      if (pdef>=0 && val==p,  pdef = -1, pdef+=!!val);
+    );
+  );
+  patt = patt<0?0:(10^patt);
+  pdef = pdef<0?0:(10^pdef);
+  patt + pdef;
+);
+
+case(1,0)
++ case(0,1)
++ case(1,1)
++ case(1,-1)
+"
+#            -w 0 -d.
+
+            score={is} -rm.
+            -if {$score>$best_score} best_score=$score best_col=$> -endif
+          -endif
+        -done
+
+        -v + -e "BEST SCORE = "$best_score -v -
+
+#        x={board,round(u(w-1))}
+        x=$best_col
+        is_falling=1 yv=0 dyv=1
+
       -endif
-      -wait
-      -if {{*,-b}&1" && "$yM>=0} is_falling=1 yv=0 dyv=1 -endif
 
     -else # Manage token falling animation
 
       -if {!narg($column)}
-
         $R,{board,h*$R},1,3,64
         -repeat {board,h} v={board,i($x,$>)} -if $v -j. [token{$v-1}],0,{$>*$R},0,0,1,[tokenm],255 -endif -done
         -nm. column
