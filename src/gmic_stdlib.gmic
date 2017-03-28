@@ -18940,7 +18940,7 @@ x_connect4 :
   # Create sprite graphics.
   7,6 -nm. board
 
-#  -line[board] 3,5,5,5,1,1
+  -line[board] 3,5,3,3,1,1
 
   R={board,u={*,u};v={*,v};int(0.5*min(u/w,v/h))}
 
@@ -19012,45 +19012,55 @@ x_connect4 :
       -else # Computer's turn
 
         # Evaluate board score
-        best_score=0 best_col=-1
+        best_score=-inf best_col=-1
         -repeat {board,w}
           yM={i("#"$ymax,$>)}
           -if {$yM>=0}
             --=[board] {1+$turn},$>,$yM
- #           -w 0 -d.
+#            -w 0 -d.
             -f. "
 const p = "$turn" + 1;
 const op = 3 - p;
 
+mx = x;
+my = y;
+
 case(dx,dy) = (
-  patt = pdef = 0;
+  pgood = pbad = 0;
   for (k = 0, k<4, ++k,
-    X = x + k*dx;
-    Y = y + k*dy;
+    X = mx + k*dx;
+    Y = my + k*dy;
+#    print([dy,my,Y]);
     if (X<w && Y>=0 && Y<h,
       val = i(X,Y);
-      if (patt>=0 && val==op, patt = -1, patt+=!!val);
-      if (pdef>=0 && val==p,  pdef = -1, pdef+=!!val);
+      if (pgood>=0 && val==op, pgood = -1, pgood+=!!val);
+      if (pbad>=0 && val==p,  pbad = -1, pbad+=!!val);
     );
   );
-  patt = patt<0?0:(10^patt);
-  pdef = pdef<0?0:(10^pdef);
-  patt + pdef;
+  pgood = pgood<0?0:(10^pgood);
+  pbad = pbad<0?0:(10^pbad);
+  pgood - pbad;
 );
 
-case(1,0)
-+ case(0,1)
-+ case(1,1)
-+ case(1,-1)
+score = 0;
+score0 = case(1,0);
+#print(pi);
+score1 = case(0,1);
+#print([x,y,score0,score1]);
+
+score+= case(1,1);
+score+= case(1,-1);
 "
+            -v + -e "Col = "$>", SCORE = "{is} -v -
 #            -w 0 -d.
+
 
             score={is} -rm.
             -if {$score>$best_score} best_score=$score best_col=$> -endif
           -endif
         -done
 
-        -v + -e "BEST SCORE = "$best_score -v -
+        -v + -e "BEST COL = "$best_col", BEST SCORE = "$best_score -v -
 
 #        x={board,round(u(w-1))}
         x=$best_col
