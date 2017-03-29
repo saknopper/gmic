@@ -19011,7 +19011,7 @@ x_connect4 :
         -w. 100%,100% -rm.
       -endif
       -wait
-      -if {{*,-b}&1" && "$yM>=0} is_falling=1 yv=0 dyv=1 # Manual play
+      -if {{*,-b}&1" && "$yM>=0" && "$x>=0} is_falling=1 yv=0 dyv=1 # Manual play
       -elif {{*,-SPACE}" || "{*,-ENTER}} # Automatic play
         best_score=-inf best_col=-1
         -repeat {board,w}
