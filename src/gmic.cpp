@@ -9285,7 +9285,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                    filename,e.what());
               g_list.save_ffmpeg_external(filename,(unsigned int)fps);
             }
-          } else { // Any other format.
+          } else { // Any other extension.
             g_list.assign(selection.height());
             cimg_forY(selection,l) if (!gmic_check(images[selection(l)]))
               CImg<unsigned int>::vector(selection(l)).move_to(empty_indices);
@@ -9312,7 +9312,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                     "(options '%s' specified).",
                     _filename.data(),ext,options.data());
 
-            g_list.save(filename);
+            if (g_list.size()==1) g_list[0].save(filename); else g_list.save(filename);
           }
 
           if (*cext) { // When output forced to 'ext' : copy final file to specified location.
