@@ -2007,13 +2007,6 @@ CImg<T> get_texturize_CImg3d(const CImg<T>& texture, const CImg<T>& coords) cons
   return points.get_object3dtoCImg3d(primitives,colors,opacities,false);
 }
 
-static CImgList<T>& load_gmz(const char *filename, CImgList<T>& images, CImgList<charT> &names) {
-  images.load_cimg(filename);
-  names.assign(images.size());
-  cimglist_for(names,l) CImg<char>::string("toto").move_to(names[l]);
-  return images;
-}
-
 static const CImgList<T>& save_gmz(const char *filename, const CImgList<T>& images, const CImgList<charT>& names) {
   CImgList<T> gmz(images.size() + 1);
   cimglist_for(images,l) gmz[l].assign(images[l],true);
@@ -9240,7 +9233,6 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                                                  "Command '-output': File '%s', invalid "
                                                  "specified pixel type '%s'.",
                                                  _filename.data(),stype);
-            g_list.assign(); g_list_c.assign();
           } else if (!cimg::strcasecmp(ext,"avi") ||
                      !cimg::strcasecmp(ext,"mov") ||
                      !cimg::strcasecmp(ext,"asf") ||
@@ -9342,6 +9334,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                       _filename.data(),filename_tmp.data());
             }
           }
+          g_list.assign(); g_list_c.assign();
           if (is_stdout) std::fflush(stdout);
           is_released = true; ++position; continue;
         }
