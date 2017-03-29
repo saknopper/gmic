@@ -2007,6 +2007,22 @@ CImg<T> get_texturize_CImg3d(const CImg<T>& texture, const CImg<T>& coords) cons
   return points.get_object3dtoCImg3d(primitives,colors,opacities,false);
 }
 
+static CImgList<T>& load_gmz(const char *filename, CImgList<T>& images, CImgList<charT> &names) {
+  images.load_cimg(filename);
+  names.assign(images.size());
+  cimglist_for(names,l) CImg<char>::string("toto").move_to(names[l]);
+  return images;
+}
+
+static const CImgList<T>& save_gmz(const char *filename, const CImgList<T>& images, const CImgList<charT>& names) {
+  CImgList<T> gmz(images.size() + 1);
+  cimglist_for(images,l) gmz[l].assign(images[l],true);
+  CImg<charT> gmz_info = CImg<charT>::string("GMZ");
+  gmz_info.append((names>'x'),'x').unroll('y').move_to(gmz.back());
+  gmz.save_cimg(filename,true);
+  return images;
+}
+
 //--------------- End of CImg plug-in ----------------------------
 
 #else // #ifdef cimg_plugin
@@ -9191,14 +9207,11 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             const char *const stype = cimg_sscanf(options,"%255[a-z64]%c",argx,&end)==1?argx:
               cimg::type<T>::string();
             g_list.assign(selection.height());
-            CImgList<char> gmz_info(1 + selection.height());
-            CImg<char>::string("GMZ").move_to(gmz_info[0]);
+            g_list_c.assign(selection.height());
             cimg_forY(selection,l) {
-              const unsigned int uind = selection[l];
-              g_list[l].assign(images[uind],images[uind]?true:false);
-              CImg<char>::string(images_names[uind]).move_to(gmz_info[1 + l]);
+              g_list[l].assign(images[selection[l]],images[selection[l]]?true:false);
+              g_list_c[l].assign(images_names[selection[l]],true);
             }
-            (gmz_info>'x').unroll('y').move_to(g_list);
             print(images,0,"Output image%s as %s file '%s', with pixel type '%s'.",
                   gmic_selection.data(),
                   uext.data(),_filename.data(),
@@ -9206,9 +9219,9 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
 
 #define gmic_save_gmz(value_type,svalue_type) \
               if (!std::strcmp(stype,svalue_type)) \
-                CImgList<value_type>(g_list, \
-                                     cimg::type<T>::string()==cimg::type<value_type>::string()). \
-                                     save_cimg(filename,true);
+                CImg<value_type>::save_gmz(filename, \
+                         CImgList<value_type>(g_list,cimg::type<T>::string()==cimg::type<value_type>::string()), \
+                         g_list_c);
             gmic_save_gmz(unsigned char,"uchar")
             else gmic_save_gmz(unsigned char,"unsigned char")
               else gmic_save_gmz(char,"char")
@@ -9279,7 +9292,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                    filename,e.what());
               g_list.save_ffmpeg_external(filename,(unsigned int)fps);
             }
-          } else {
+          } else { // Any other format.
             g_list.assign(selection.height());
             cimg_forY(selection,l) if (!gmic_check(images[selection(l)]))
               CImg<unsigned int>::vector(selection(l)).move_to(empty_indices);
