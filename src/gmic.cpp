@@ -9240,6 +9240,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                                                  "Command '-output': File '%s', invalid "
                                                  "specified pixel type '%s'.",
                                                  _filename.data(),stype);
+            g_list.assign(); g_list_c.assign();
           } else if (!cimg::strcasecmp(ext,"avi") ||
                      !cimg::strcasecmp(ext,"mov") ||
                      !cimg::strcasecmp(ext,"asf") ||
@@ -9341,7 +9342,6 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                       _filename.data(),filename_tmp.data());
             }
           }
-          g_list.assign();
           if (is_stdout) std::fflush(stdout);
           is_released = true; ++position; continue;
         }
