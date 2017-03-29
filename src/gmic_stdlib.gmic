@@ -19080,7 +19080,7 @@ x_connect4 :
     -endif
 
   -while {{*}" && "!{*,ESC}" && "!{*,Q}}
-  -rm -endl -v +
+  -rm -w 0 -endl -v +
 
 #@cli x_fire
 #@cli : Launch the fire effect demo.
