@@ -19014,10 +19014,10 @@ x_connect4 :
                  const op = 3 - p;
                  case(dx,dy) = (
                    pgood = pbad = 0;
-                   for (k = 0, k<4, ++k,
+                   for (k = -2, k<2, ++k,
                      X = x + k*dx;
                      Y = y + k*dy;
-                     if (X<w && Y>=0 && Y<h,
+                     if (X>=0 && X<w && Y>=0 && Y<h,
                        val = i(X,Y);
                        if (pgood>=0 && val==op, pgood = -1, pgood+=!!val);
                        if (pbad>=0 && val==p,  pbad = -1, pbad+=!!val);
