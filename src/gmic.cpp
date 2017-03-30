@@ -13296,7 +13296,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
           CImg<char> s_value(256); *s_value = 0;
           char separator = 0;
           value = 0;
-          if (cimg_sscanf(nargument,"%255[0-9.eE+-]%c",s_value.data(),&separator)==2 &&
+          if (cimg_sscanf(nargument,"%255[0-9.eEinfa+-]%c",s_value.data(),&separator)==2 &&
               cimg_sscanf(s_value,"%lf%c",&value,&end)==1) {
             if (cx>maxcx) maxcx = cx;
             if (cy>maxcy) maxcy = cy;
@@ -13319,7 +13319,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
           CImg<char> s_value(256); *s_value = 0;
           char separator = 0;
           value = 0;
-          if (cimg_sscanf(nargument,"%255[0-9.eE+-]%c",s_value.data(),&separator)==2 &&
+          if (cimg_sscanf(nargument,"%255[0-9.eEinfa+-]%c",s_value.data(),&separator)==2 &&
               cimg_sscanf(s_value,"%lf%c",&value,&end)==1) {
             img(cx,cy,cz,cc) = (T)value;
             switch (separator) {
