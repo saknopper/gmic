@@ -429,6 +429,8 @@ endif
 debug:
 	$(MAKE) "CFLAGS+=$(GMIC_CLI_CFLAGS) $(DEBUG_CFLAGS)" "LIBS+=$(GMIC_CLI_LIBS)" gmic
 
+gimp : gimp_qt
+
 gimp_gtk:
 	$(MAKE) "CFLAGS+=$(GMIC_GIMP_GTK_CFLAGS) $(OPT_CFLAGS)" "LIBS+=$(GMIC_GIMP_GTK_LIBS)" gmic_gimp_gtk
 
