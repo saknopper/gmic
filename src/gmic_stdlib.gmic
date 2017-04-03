@@ -26801,7 +26801,7 @@ fx_local_orientation_preview :
   -gui_split_preview "-fx_local_orientation ${^0}",$-1
 
 #@gui Morphological filter : fx_morpho_v2, fx_morpho_v2_preview(0)
-#@gui : Action = choice("Erosion","Dilation","Opening","Closing","Original - Erosion","Dilation - Original","Original - Opening","Closing - Original")
+#@gui : Action = choice{"Erosion","Dilation","Opening","Closing","Original - Erosion","Dilation - Original","Original - Opening","Closing - Original","Original - (Opening + Closing)/2","Closing - Opening"}
 #@gui : Kernel = choice(0,"Square","Octagonal","Circular","Custom")
 #@gui : Size = int(5,2,60)
 #@gui : note = note("<small>Parameter <i>Size</i> is inactive for <i>Custom</i> kernel.</small>")
@@ -26833,14 +26833,26 @@ _fx_morpho_v2 :
     -m "my_erode : ("$ckernel") -erode[^-1] . -rm."
     -m "my_dilate : ("$ckernel") -dilate[^-1] . -rm."
   -endif
+  # Erosion
   -if {$1==0} -m "my_action : -my_erode $3"
+  # Dilation
   -elif {$1==1} -m "my_action : -my_dilate $3"
+  # Opening
   -elif {$1==2} -m "my_action : -my_erode $3 -my_dilate $3"
+  # Closing
   -elif {$1==3} -m "my_action : -my_dilate $3 -my_erode $3"
+  # Original - Erosion
   -elif {$1==4} -m "my_action : --my_erode $3 --"
+  # Dilation - Original
   -elif {$1==5} -m "my_action : --my_dilate $3 -rv --"
+  # Original - Opening
   -elif {$1==6} -m "my_action : --my_erode $3 -my_dilate. $3 --"
-  -else -m "my_action : --my_dilate $3 -my_erode. $3 -rv --"
+  # Closing - Original
+  -elif {$1==7} -m "my_action : --my_dilate $3 -my_erode. $3 -rv --"
+  # Original - (Opening + Closing)/2
+  -elif {$1==8} -m "my_action : --my_erode $3 -my_dilate. $3 --my_dilate.. $3 -my_erode. $3 -+[-2,-1] -/. 2 --"
+  # Closing - Opening
+  -else -m "my_action : --my_erode $3 -my_dilate. $3 -my_dilate.. $3 -my_erode.. $3 --"
   -endif
   -repeat $! -l[$>]
     -if {!$6} -split_opacity -endif
