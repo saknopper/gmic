@@ -26860,7 +26860,7 @@ _fx_morpho_v2 :
     -a c
   -endl -done
   -if $5 -repeat $! -l[$>] -split_opacity -negate[0] -a c -endl -done -endif
-  -uncommand my_erode,my_dilate
+  -uncommand my_erode,my_dilate,my_action
 
 #@gui Segmentation : fx_segment_watershed, fx_segment_watershed_preview(0)
 #@gui : Edge threshold = float(2,0,15)
@@ -27004,7 +27004,7 @@ fx_conformal_maps :
            csin(z) = (iz = [ -z[1],z[0] ]; (cexp(iz) - cexp(-iz)/2));
            ctan(z) = csin(z)//ccos(z);
            boundary = $10;
-           interpolation=1;
+           interpolation = 1;
            const f = max(w,h);
            const f0 = max(w#0,h#0);
            i = [0,1];
