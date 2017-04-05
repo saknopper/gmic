@@ -19012,12 +19012,12 @@ x_connect4 :
       -endif
       -wait
       -if {{*,-b}&1" && "$yM>=0" && "$x>=0} is_falling=1 yv=0 dyv=1 # Manual play
-      -elif {{*,-SPACE}" || "{*,-ENTER}} # Automatic play
-        best_score=-inf best_col=-1
-        -repeat {board,w}
-          yM={i("#"$ymax,$>)}
+      -elif {{*,-SPACE}" || "{*,-ENTER}} # Computer play
+        max_score1=-inf max_col1=-1 min_score2=inf max_col2=-1
+        -repeat {board,w},move1
+          yM={i("#"$ymax,$move1)}
           -if {$yM>=0}
-            --=[board] {1+$turn},$>,$yM
+            --=[board] {1+$turn},$move1,$yM
             -f. "const p = "$turn" + 1;
                  const op = 3 - p;
                  case(dx,dy) = (
@@ -19036,11 +19036,11 @@ x_connect4 :
                    pgood - pbad;
                  );
                  case(1,0) + case(0,1) + case(1,1) + case(1,-1)"
-            score={is+u} -rm.
-            -if {$score>$best_score} best_score=$score best_col=$> -endif
+            score1={is+u} -rm.
+            -if {$score1>$max_score1} max_score1=$score1 max_col1=$move1 -endif
           -endif
         -done
-        x=$best_col is_falling=1 yv=0 dyv=1
+        x=$max_col1 is_falling=1 yv=0 dyv=1
       -endif
 
     -else # Manage token falling animation
