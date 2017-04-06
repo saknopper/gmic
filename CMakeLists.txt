@@ -41,6 +41,7 @@ IF(NOT "${PRERELEASE_TAG}" STREQUAL "")
 ENDIF(NOT "${PRERELEASE_TAG}" STREQUAL "")
 
 set(EXTRA_LIBRARIES)
+set(CLI_COMPILE_FLAGS)
 
 
 # OpenMP support
@@ -104,7 +105,7 @@ if(ENABLE_OPENCV)
   pkg_check_modules(OPENCV opencv)
 endif(ENABLE_OPENCV)
 if(OPENCV_FOUND)
-  set(COMPILE_FLAGS "${COMPILE_FLAGS} -Dcimg_use_opencv ")
+  set(CLI_COMPILE_FLAGS "${CLI_COMPILE_FLAGS} -Dcimg_use_opencv ")
   include_directories(${OPENCV_INCLUDE_DIRS})
   link_directories(${OPENCV_LIBRARY_DIRS})
 endif(OPENCV_FOUND)
@@ -114,7 +115,7 @@ if(ENABLE_GRAPHICSMAGICK)
   pkg_check_modules(GRAPHICSMAGICK GraphicsMagick++)
 endif(ENABLE_GRAPHICSMAGICK)
 if(GRAPHICSMAGICK_FOUND)
-  set(COMPILE_FLAGS "${COMPILE_FLAGS} -Dcimg_use_magick ")
+  set(CLI_COMPILE_FLAGS "${CLI_COMPILE_FLAGS} -Dcimg_use_magick ")
   include_directories(${GRAPHICSMAGICK_INCLUDE_DIRS})
   link_directories(${GRAPHICSMAGICK_LIBRARY_DIRS})
 endif(GRAPHICSMAGICK_FOUND)
@@ -124,7 +125,7 @@ if(ENABLE_TIFF)
   find_package (TIFF)
 endif(ENABLE_TIFF)
 if(TIFF_FOUND)
-  set(COMPILE_FLAGS "${COMPILE_FLAGS} -Dcimg_use_tiff ")
+  set(CLI_COMPILE_FLAGS "${CLI_COMPILE_FLAGS} -Dcimg_use_tiff ")
   include_directories(${TIFF_INCLUDE_DIRS})
   link_directories(${TIFF_LIBRARY_DIRS})
 endif(TIFF_FOUND)
@@ -134,7 +135,7 @@ if(ENABLE_PNG)
   find_package (PNG)
 endif(ENABLE_PNG)
 if(PNG_FOUND)
-  set(COMPILE_FLAGS "${COMPILE_FLAGS} -Dcimg_use_png ")
+  set(CLI_COMPILE_FLAGS "${CLI_COMPILE_FLAGS} -Dcimg_use_png ")
   include_directories(${PNG_INCLUDE_DIRS})
   link_directories(${PNG_LIBRARY_DIRS})
 endif(PNG_FOUND)
@@ -144,7 +145,7 @@ if(ENABLE_JPEG)
   find_package (JPEG)
 endif(ENABLE_JPEG)
 if(JPEG_FOUND)
-  set(COMPILE_FLAGS "${COMPILE_FLAGS} -Dcimg_use_jpeg ")
+  set(CLI_COMPILE_FLAGS "${CLI_COMPILE_FLAGS} -Dcimg_use_jpeg ")
   include_directories(${JPEG_INCLUDE_DIRS})
   link_directories(${JPEG_LIBRARY_DIRS})
 endif(JPEG_FOUND)
@@ -154,7 +155,7 @@ if(ENABLE_OPENEXR)
   pkg_check_modules(OPENEXR OpenEXR)
 endif(ENABLE_OPENEXR)
 if(OPENEXR_FOUND)
-  set(COMPILE_FLAGS "${COMPILE_FLAGS} -Dcimg_use_openexr ")
+  set(CLI_COMPILE_FLAGS "${CLI_COMPILE_FLAGS} -Dcimg_use_openexr ")
   include_directories(${OPENEXR_INCLUDE_DIRS})
   link_directories(${OPENEXR_LIBRARY_DIRS})
 endif(OPENEXR_FOUND)
@@ -223,6 +224,7 @@ ENDIF(MINGW)
 if(BUILD_LIB)
   add_library(libgmic SHARED ${CLI_Includes} ${CLI_Sources})
   add_dependencies(libgmic gmic_extra_headers)
+  set_target_properties(libgmic PROPERTIES COMPILE_FLAGS "${CLI_COMPILE_FLAGS} ")
   set_target_properties(libgmic PROPERTIES SOVERSION "1" OUTPUT_NAME "gmic")
   IF(NOT APPLE)
     set_target_properties(libgmic PROPERTIES LINK_FLAGS "-Wl,-soname,libgmic.so.1")
@@ -248,6 +250,7 @@ endif(BUILD_LIB)
 if(BUILD_LIB_STATIC)
   add_library(libgmicstatic STATIC ${CLI_Includes} ${CLI_Sources})
   add_dependencies(libgmicstatic gmic_extra_headers)
+  set_target_properties(libgmicstatic PROPERTIES COMPILE_FLAGS "${CLI_COMPILE_FLAGS} ")
   set_target_properties(libgmicstatic PROPERTIES OUTPUT_NAME "gmic")
   target_link_libraries(libgmicstatic
     ${X11_LIBRARIES}
@@ -270,7 +273,7 @@ endif(BUILD_LIB_STATIC)
 if(BUILD_CLI)
   add_executable(gmic ${CLI_Includes} ${CLI_Sources})
   add_dependencies(gmic gmic_extra_headers)
-  set_target_properties(gmic PROPERTIES COMPILE_FLAGS " -Dgmic_main ")
+  set_target_properties(gmic PROPERTIES COMPILE_FLAGS "${CLI_COMPILE_FLAGS} -Dgmic_main ")
   target_link_libraries(gmic
     ${X11_LIBRARIES}
     ${TIFF_LIBRARIES}
@@ -306,12 +309,6 @@ if(BUILD_PLUGIN)
 
       target_link_libraries(gmic_gimp_gtk
 	${X11_LIBRARIES}
-	${TIFF_LIBRARIES}
-	${PNG_LIBRARIES}
-	${JPEG_LIBRARIES}
-        ${GRAPHICSMAGICK_LIBRARIES}
-	${OPENEXR_LIBRARIES}
-        ${OPENCV_LIBRARIES}
 	${ZLIB_LIBRARIES}
 	${FFTW3_LIBRARIES}
 	${GIMP_LIBRARIES}

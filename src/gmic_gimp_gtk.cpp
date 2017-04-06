@@ -68,6 +68,9 @@
 #else
 #define _gimp_item_get_visible gimp_item_get_visible
 #endif
+#ifndef GIMP_STOCK_RESET
+#define GIMP_STOCK_RESET GIMP_ICON_RESET
+#endif
 
 using namespace cimg_library;
 
