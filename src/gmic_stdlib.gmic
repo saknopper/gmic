@@ -22852,6 +22852,7 @@ _gui_download_all_data :
 #@gui : note = note{"\n<span foreground="purple" underline="single">Supporters:</span>"}
 #@gui : note = note{" <b>-</b> A big hug goes to these friends who supported the project:"}
 #@gui : note = note{"<i>
+#@gui : Sven Kraft,
 #@gui : Frederik Elwert,
 #@gui : Jessica Leonard,
 #@gui : <a href="https://www.viewbug.com/member/KennZaney">Kenneth Simons</a>,
