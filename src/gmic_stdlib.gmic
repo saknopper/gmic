@@ -1782,24 +1782,41 @@ display_parametric : -check "${1=512}>0 && ${2=$1}>0 && ${4=0}>=0" -skip ${3=3},
     -nm. $nm
   -endl -done -v +
 
-#@cli dp : eq. to '-display_polar'.
+#@cli dp : eq. to '-display_parallel'.
 dp :
   -v - _gmic_s="$?" -v +
-  -_display_polar $*
+  -_display_parallel
+
+#@cli display_parallel
+#@cli : Display each selected image in a separate interactive display window.
+#@cli : (eq. to '-dp').
+display_parallel :
+  -v - _gmic_s="$?" -v +
+  -_$0
+
+_display_parallel :
+  -e[0--3] "Display image$? in parallel."
+  -print
+  -v -
+  $!,1,1,1,x ({'{^}'}) -rm..
+  -l.
+    -s -,{','} -y x
+    -i[0--2] ({'-d['})
+    -i[2--2:2] ({'],'})
+    ({']'})
+    -a x com={t} -rm
+  -endl
+  -m "__dp : -parallel "$com -__dp -uncommand __dp
+  -d[] -v +
 
 #@cli display_polar : _width>32,_height>32,_outline_type,_fill_R,_fill_G,_fill_B,_theta_start,_theta_end,_xlabel,_ylabel
 #@cli : Render polar curve from selected image data.
-#@cli : (eq. to '-dp').
 #@cli : 'outline_type' can be { r<0=dots with radius -r | 0=no outline | r>0=lines+dots with radius r }.
 #@cli : 'fill_color' can be { -1=no fill | R,G,B=fill with specified color }.
 #@cli : Default values: 'width=500', 'height=width', 'outline_type=1', 'fill_R=fill_G=fill_B=200', 'theta_start=0', 'theta_end=360', 'xlabel="x-axis"' and 'ylabel="y-axis"'.
 #@cli : $ 300,1,1,1,'0.3+abs(cos(10*pi*x/w))+u(0.4)' -display_polar 512,512,4,200,255,200
 #@cli : $ 3000,1,1,1,'x^3/1e10' -display_polar 400,400,1,-1,,,0,{15*360}
-display_polar :
-  -v - _gmic_s="$?" -v +
-  -_$0 $*
-
-_display_polar : -check "${1=500}>32 && ${2=$1}>32" -skip ${3=1},${4=200},${5=$4},${6=$5},${7=0},${8=360},"${9=x-axis}","${10=y-axis}"
+display_polar : -check "${1=500}>32 && ${2=$1}>32" -skip ${3=1},${4=200},${5=$4},${6=$5},${7=0},${8=360},"${9=x-axis}","${10=y-axis}"
   -e[0--3] "Render $1x$2 polar graph plot from data of image"$_gmic_s", with outline $4 and fill color ($4,$5,$6)."
   -v - -repeat $! -l[$>] nm={0,n}
 
