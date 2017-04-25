@@ -423,7 +423,7 @@ const char *s_blendmode(const GimpLayerModeEffects &blendmode) {
   case GIMP_SCREEN_MODE : return "screen";
   case GIMP_OVERLAY_MODE : return "overlay";
   case GIMP_DIFFERENCE_MODE : return "difference";
-  case GIMP_ADDITION_MODE : return "add";
+  case GIMP_ADDITION_MODE : return "addition";
   case GIMP_SUBTRACT_MODE : return "subtract";
   case GIMP_DARKEN_ONLY_MODE : return "darken";
   case GIMP_LIGHTEN_ONLY_MODE : return "lighten";
@@ -439,7 +439,7 @@ const char *s_blendmode(const GimpLayerModeEffects &blendmode) {
   case GIMP_GRAIN_EXTRACT_MODE : return "grainextract";
   case GIMP_GRAIN_MERGE_MODE : return "grainmerge";
   case GIMP_COLOR_ERASE_MODE : return "colorerase";
-  default : return "alpha";
+//  default : return "alpha";
   }
   return "alpha";
 }
