@@ -390,31 +390,10 @@ void load_dialog_params() {
 #if (GIMP_MAJOR_VERSION>=3 || GIMP_MINOR_VERSION>8) && !defined(GIMP_NORMAL_MODE)
 typedef GimpLayerMode GimpLayerModeEffects;
 #define GIMP_NORMAL_MODE        GIMP_LAYER_MODE_NORMAL
-#define GIMP_DISSOLVE_MODE      GIMP_LAYER_MODE_DISSOLVE
-#define GIMP_BEHIND_MODE        GIMP_LAYER_MODE_BEHIND
-#define GIMP_MULTIPLY_MODE      GIMP_LAYER_MODE_MULTIPLY_LEGACY
-#define GIMP_SCREEN_MODE        GIMP_LAYER_MODE_SCREEN_LEGACY
-#define GIMP_OVERLAY_MODE       GIMP_LAYER_MODE_OVERLAY_LEGACY
-#define GIMP_DIFFERENCE_MODE    GIMP_LAYER_MODE_DIFFERENCE_LEGACY
-#define GIMP_ADDITION_MODE      GIMP_LAYER_MODE_ADDITION_LEGACY
-#define GIMP_SUBTRACT_MODE      GIMP_LAYER_MODE_SUBTRACT_LEGACY
-#define GIMP_DARKEN_ONLY_MODE   GIMP_LAYER_MODE_DARKEN_ONLY_LEGACY
-#define GIMP_LIGHTEN_ONLY_MODE  GIMP_LAYER_MODE_LIGHTEN_ONLY_LEGACY
-#define GIMP_HUE_MODE           GIMP_LAYER_MODE_HSV_HUE_LEGACY
-#define GIMP_SATURATION_MODE    GIMP_LAYER_MODE_HSV_SATURATION_LEGACY
-#define GIMP_COLOR_MODE         GIMP_LAYER_MODE_HSL_COLOR_LEGACY
-#define GIMP_VALUE_MODE         GIMP_LAYER_MODE_HSV_VALUE_LEGACY
-#define GIMP_DIVIDE_MODE        GIMP_LAYER_MODE_DIVIDE_LEGACY
-#define GIMP_DODGE_MODE         GIMP_LAYER_MODE_DODGE_LEGACY
-#define GIMP_BURN_MODE          GIMP_LAYER_MODE_BURN_LEGACY
-#define GIMP_HARDLIGHT_MODE     GIMP_LAYER_MODE_HARDLIGHT_LEGACY
-#define GIMP_SOFTLIGHT_MODE     GIMP_LAYER_MODE_SOFTLIGHT_LEGACY
-#define GIMP_GRAIN_EXTRACT_MODE GIMP_LAYER_MODE_GRAIN_EXTRACT_LEGACY
-#define GIMP_GRAIN_MERGE_MODE   GIMP_LAYER_MODE_GRAIN_MERGE_LEGACY
-#define GIMP_COLOR_ERASE_MODE   GIMP_LAYER_MODE_COLOR_ERASE
 #endif
 
 const char *s_blendmode(const GimpLayerModeEffects &blendmode) {
+#if GIMP_MAJOR_VERSION<=2 && GIMP_MINOR_VERSION<=8
   switch (blendmode) {
   case GIMP_NORMAL_MODE : return "alpha";
   case GIMP_DISSOLVE_MODE : return "dissolve";
@@ -439,8 +418,53 @@ const char *s_blendmode(const GimpLayerModeEffects &blendmode) {
   case GIMP_GRAIN_EXTRACT_MODE : return "grainextract";
   case GIMP_GRAIN_MERGE_MODE : return "grainmerge";
   case GIMP_COLOR_ERASE_MODE : return "colorerase";
-//  default : return "alpha";
+  default : return "alpha";
   }
+#else
+  switch (blendmode) {
+  case GIMP_LAYER_MODE_NORMAL : return "alpha";
+  case GIMP_LAYER_MODE_REPLACE : return "replace";
+  case GIMP_LAYER_MODE_DISSOLVE : return "dissolve";
+  case GIMP_LAYER_MODE_BEHIND : return "behind";
+  case GIMP_LAYER_MODE_COLOR_ERASE : return "colorerase";
+  case GIMP_LAYER_MODE_ERASE : return "erase";
+  case GIMP_LAYER_MODE_ANTI_ERASE : return "antierase";
+  case GIMP_LAYER_MODE_MERGE : return "merge";
+  case GIMP_LAYER_MODE_SPLIT : return "split";
+  case GIMP_LAYER_MODE_LIGHTEN_ONLY : return "lighten";
+  case GIMP_LAYER_MODE_LUMA_LIGHTEN_ONLY : return "lumalighten";
+  case GIMP_LAYER_MODE_SCREEN : return "screen";
+  case GIMP_LAYER_MODE_DODGE : return "dodge";
+  case GIMP_LAYER_MODE_ADDITION : return "addition";
+  case GIMP_LAYER_MODE_DARKEN_ONLY : return "darken";
+  case GIMP_LAYER_MODE_LUMA_DARKEN_ONLY : return "lumadarken";
+  case GIMP_LAYER_MODE_MULTIPLY : return "multiply";
+  case GIMP_LAYER_MODE_BURN : return "burn";
+  case GIMP_LAYER_MODE_OVERLAY : return "overlay";
+  case GIMP_LAYER_MODE_SOFTLIGHT : return "softlight";
+  case GIMP_LAYER_MODE_HARDLIGHT : return "hardlight";
+  case GIMP_LAYER_MODE_VIVID_LIGHT : return "vividlight";
+  case GIMP_LAYER_MODE_PIN_LIGHT : return "pinlight";
+  case GIMP_LAYER_MODE_LINEAR_LIGHT : return "linearlight";
+  case GIMP_LAYER_MODE_HARD_MIX : return "hardmix";
+  case GIMP_LAYER_MODE_DIFFERENCE : return "difference";
+  case GIMP_LAYER_MODE_SUBTRACT : return "subtract";
+  case GIMP_LAYER_MODE_GRAIN_EXTRACT : return "grainextract";
+  case GIMP_LAYER_MODE_GRAIN_MERGE : return "grainmerge";
+  case GIMP_LAYER_MODE_DIVIDE : return "divide";
+  case GIMP_LAYER_MODE_HSV_HUE : return "hue";
+  case GIMP_LAYER_MODE_HSV_SATURATION : return "saturation";
+  case GIMP_LAYER_MODE_HSL_COLOR : return "color";
+  case GIMP_LAYER_MODE_HSV_VALUE : return "value";
+  case GIMP_LAYER_MODE_LCH_HUE : return "lchhue";
+  case GIMP_LAYER_MODE_LCH_CHROMA : return "lchchroma";
+  case GIMP_LAYER_MODE_LCH_COLOR : return "lchcolor";
+  case GIMP_LAYER_MODE_LCH_LIGHTNESS : return "lchlightness";
+  case GIMP_LAYER_MODE_LUMINANCE : return "luminance";
+  case GIMP_LAYER_MODE_EXCLUSION : return "exclusion";
+  default : return "alpha";
+  }
+#endif
   return "alpha";
 }
 
@@ -457,6 +481,8 @@ void get_output_layer_props(const char *const s, GimpLayerModeEffects &blendmode
   // Read output blending mode.
   const char *S = std::strstr(s,"mode(");
   bool is_blendmode = false;
+
+#if GIMP_MAJOR_VERSION<=2 && GIMP_MINOR_VERSION<=8
   _get_output_layer_blendmode("alpha",GIMP_NORMAL_MODE);
   _get_output_layer_blendmode("normal",GIMP_NORMAL_MODE);
   _get_output_layer_blendmode("dissolve",GIMP_DISSOLVE_MODE);
@@ -479,6 +505,49 @@ void get_output_layer_props(const char *const s, GimpLayerModeEffects &blendmode
   _get_output_layer_blendmode("saturation",GIMP_SATURATION_MODE);
   _get_output_layer_blendmode("color",GIMP_COLOR_MODE);
   _get_output_layer_blendmode("value",GIMP_VALUE_MODE);
+#else
+  _get_output_layer_blendmode("alpha",GIMP_LAYER_MODE_NORMAL);
+  _get_output_layer_blendmode("normal",GIMP_LAYER_MODE_NORMAL);
+  _get_output_layer_blendmode("replace",GIMP_LAYER_MODE_REPLACE);
+  _get_output_layer_blendmode("dissolve",GIMP_LAYER_MODE_DISSOLVE);
+  _get_output_layer_blendmode("behind",GIMP_LAYER_MODE_BEHIND);
+  _get_output_layer_blendmode("colorerase",GIMP_LAYER_MODE_COLOR_ERASE);
+  _get_output_layer_blendmode("erase",GIMP_LAYER_MODE_ERASE);
+  _get_output_layer_blendmode("antierase",GIMP_LAYER_MODE_ANTI_ERASE);
+  _get_output_layer_blendmode("merge",GIMP_LAYER_MODE_MERGE);
+  _get_output_layer_blendmode("split",GIMP_LAYER_MODE_SPLIT);
+  _get_output_layer_blendmode("lighten",GIMP_LAYER_MODE_LIGHTEN_ONLY);
+  _get_output_layer_blendmode("lumalighten",GIMP_LAYER_MODE_LUMA_LIGHTEN_ONLY);
+  _get_output_layer_blendmode("screen",GIMP_LAYER_MODE_SCREEN);
+  _get_output_layer_blendmode("dodge",GIMP_LAYER_MODE_DODGE);
+  _get_output_layer_blendmode("addition",GIMP_LAYER_MODE_ADDITION);
+  _get_output_layer_blendmode("darken",GIMP_LAYER_MODE_DARKEN_ONLY);
+  _get_output_layer_blendmode("lumadarken",GIMP_LAYER_MODE_LUMA_DARKEN_ONLY);
+  _get_output_layer_blendmode("multiply",GIMP_LAYER_MODE_MULTIPLY);
+  _get_output_layer_blendmode("burn",GIMP_LAYER_MODE_BURN);
+  _get_output_layer_blendmode("overlay",GIMP_LAYER_MODE_OVERLAY);
+  _get_output_layer_blendmode("softlight",GIMP_LAYER_MODE_SOFTLIGHT);
+  _get_output_layer_blendmode("hardlight",GIMP_LAYER_MODE_HARDLIGHT);
+  _get_output_layer_blendmode("vividlight",GIMP_LAYER_MODE_VIVID_LIGHT);
+  _get_output_layer_blendmode("pinlight",GIMP_LAYER_MODE_PIN_LIGHT);
+  _get_output_layer_blendmode("linearlight",GIMP_LAYER_MODE_LINEAR_LIGHT);
+  _get_output_layer_blendmode("hardmix",GIMP_LAYER_MODE_HARD_MIX);
+  _get_output_layer_blendmode("difference",GIMP_LAYER_MODE_DIFFERENCE);
+  _get_output_layer_blendmode("subtract",GIMP_LAYER_MODE_SUBTRACT);
+  _get_output_layer_blendmode("grainextract",GIMP_LAYER_MODE_GRAIN_EXTRACT);
+  _get_output_layer_blendmode("grainmerge",GIMP_LAYER_MODE_GRAIN_MERGE);
+  _get_output_layer_blendmode("divide",GIMP_LAYER_MODE_DIVIDE);
+  _get_output_layer_blendmode("hue",GIMP_LAYER_MODE_HSV_HUE);
+  _get_output_layer_blendmode("saturation",GIMP_LAYER_MODE_HSV_SATURATION);
+  _get_output_layer_blendmode("color",GIMP_LAYER_MODE_HSL_COLOR);
+  _get_output_layer_blendmode("value",GIMP_LAYER_MODE_HSV_VALUE);
+  _get_output_layer_blendmode("lchhue",GIMP_LAYER_MODE_LCH_HUE);
+  _get_output_layer_blendmode("lchchroma",GIMP_LAYER_MODE_LCH_CHROMA);
+  _get_output_layer_blendmode("lchcolor",GIMP_LAYER_MODE_LCH_COLOR);
+  _get_output_layer_blendmode("lchlightness",GIMP_LAYER_MODE_LCH_LIGHTNESS);
+  _get_output_layer_blendmode("luminance",GIMP_LAYER_MODE_LUMINANCE);
+  _get_output_layer_blendmode("exclusion",GIMP_LAYER_MODE_EXCLUSION);
+#endif
 
   // Read output opacity.
   double _opacity = 0;
