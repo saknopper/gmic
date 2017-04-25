@@ -463,7 +463,7 @@ void get_output_layer_props(const char *const s, GimpLayerModeEffects &blendmode
   _get_output_layer_blendmode("lighten",GIMP_LIGHTEN_ONLY_MODE);
   _get_output_layer_blendmode("screen",GIMP_SCREEN_MODE);
   _get_output_layer_blendmode("dodge",GIMP_DODGE_MODE);
-  _get_output_layer_blendmode("add",GIMP_ADDITION_MODE);
+  _get_output_layer_blendmode("addition",GIMP_ADDITION_MODE);
   _get_output_layer_blendmode("darken",GIMP_DARKEN_ONLY_MODE);
   _get_output_layer_blendmode("multiply",GIMP_MULTIPLY_MODE);
   _get_output_layer_blendmode("burn",GIMP_BURN_MODE);
