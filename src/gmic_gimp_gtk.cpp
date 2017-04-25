@@ -126,11 +126,6 @@ GimpPDBStatusType status = GIMP_PDB_SUCCESS;   // The plug-in return status.
 GimpColorProfile* img_profile = 0;             // The color profile of the image.
 #endif
 
-const char *s_blendmode[] = { "alpha","dissolve","behind","multiply","screen","overlay","difference",
-                              "add","subtract","darken","lighten","hue","saturation","color","value",
-                              "divide","dodge","burn","hardlight","softlight","grainextract",
-                              "grainmerge","colorerase" };
-
 void create_dialog_gui(const bool preview_on_right);
 
 // Set/get plug-in persistent variables, using GIMP {get,set}_data() features.
@@ -418,6 +413,36 @@ typedef GimpLayerMode GimpLayerModeEffects;
 #define GIMP_GRAIN_MERGE_MODE   GIMP_LAYER_MODE_GRAIN_MERGE_LEGACY
 #define GIMP_COLOR_ERASE_MODE   GIMP_LAYER_MODE_COLOR_ERASE
 #endif
+
+const char *s_blendmode(const GimpLayerModeEffects &blendmode) {
+  switch (blendmode) {
+  case GIMP_NORMAL_MODE : return "alpha";
+  case GIMP_DISSOLVE_MODE : return "dissolve";
+  case GIMP_BEHIND_MODE : return "behind";
+  case GIMP_MULTIPLY_MODE : return "multiply";
+  case GIMP_SCREEN_MODE : return "screen";
+  case GIMP_OVERLAY_MODE : return "overlay";
+  case GIMP_DIFFERENCE_MODE : return "difference";
+  case GIMP_ADDITION_MODE : return "add";
+  case GIMP_SUBTRACT_MODE : return "subtract";
+  case GIMP_DARKEN_ONLY_MODE : return "darken";
+  case GIMP_LIGHTEN_ONLY_MODE : return "lighten";
+  case GIMP_HUE_MODE : return "hue";
+  case GIMP_SATURATION_MODE : return "saturation";
+  case GIMP_COLOR_MODE : return "color";
+  case GIMP_VALUE_MODE : return "value";
+  case GIMP_DIVIDE_MODE : return "divide";
+  case GIMP_DODGE_MODE : return "dodge";
+  case GIMP_BURN_MODE : return "burn";
+  case GIMP_HARDLIGHT_MODE : return "hardlight";
+  case GIMP_SOFTLIGHT_MODE : return "softlight";
+  case GIMP_GRAIN_EXTRACT_MODE : return "grainextract";
+  case GIMP_GRAIN_MERGE_MODE : return "grainmerge";
+  case GIMP_COLOR_ERASE_MODE : return "colorerase";
+  default : return "alpha";
+  }
+  return "alpha";
+}
 
 void get_output_layer_props(const char *const s, GimpLayerModeEffects &blendmode, double &opacity,
                             int &posx, int &posy, CImg<char>& name) {
@@ -2818,7 +2843,7 @@ void process_image(const char *const command_line, const bool is_apply) {
     CImg<char> _layer_name = CImg<char>::string(gimp_item_get_name(layers[p]));
     cimg_for(_layer_name,pn,char) if (*pn=='(') *pn = 21; else if (*pn==')') *pn = 22;
     cimg_snprintf(layer_name,layer_name.width(),"mode(%s),opacity(%g),pos(%d,%d),name(%s)",
-                  s_blendmode[blendmode],opacity,posx,posy,
+                  s_blendmode(blendmode),opacity,posx,posy,
                   _layer_name.data());
     CImg<char>::string(layer_name).move_to(spt.images_names);
   }
@@ -3287,15 +3312,17 @@ void process_preview() {
         const GimpLayerModeEffects blendmode = gimp_layer_get_mode(*layers);
         int posx = 0, posy = 0;
         gimp_drawable_offsets(*layers,&posx,&posy);
+
         const int
           w = gimp_drawable_width(*layers),
           h = gimp_drawable_height(*layers),
           ox = (int)(posx*wp/w),
           oy = (int)(posy*hp/h);
+
         CImg<char> _layer_name = CImg<char>::string(gimp_item_get_name(*layers));
         cimg_for(_layer_name,p,char) if (*p=='(') *p = '['; else if (*p==')') *p = ']';
         cimg_snprintf(layer_name,layer_name.width(),"mode(%s),opacity(%g),pos(%d,%d),name(%s)",
-                      s_blendmode[blendmode],opacity,ox,oy,
+                      s_blendmode(blendmode),opacity,ox,oy,
                       _layer_name.data());
         CImg<char>::string(layer_name).move_to(spt.images_names[0]);
       } else {
@@ -3318,6 +3345,7 @@ void process_preview() {
 
           // Retrieve resized and cropped preview layers.
           cimg_forY(layers,p) {
+
             const float opacity = gimp_layer_get_opacity(layers[p]);
             const GimpLayerModeEffects blendmode = gimp_layer_get_mode(layers[p]);
             int posx = 0, posy = 0;
@@ -3337,7 +3365,7 @@ void process_preview() {
                                              std::max(1.0,cimg::round(img.height()*ratio))).
               move_to(spt.images[p]);
             cimg_snprintf(layer_name,layer_name.width(),"mode(%s),opacity(%g),pos(%d,%d)",
-                          s_blendmode[blendmode],opacity,ox,oy);
+                          s_blendmode(blendmode),opacity,ox,oy);
             CImg<char>::string(layer_name).move_to(spt.images_names[p]);
           }
         }
