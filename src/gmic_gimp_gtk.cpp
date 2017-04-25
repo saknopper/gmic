@@ -423,12 +423,10 @@ const char *s_blendmode(const GimpLayerModeEffects &blendmode) {
 #else
   switch (blendmode) {
   case GIMP_LAYER_MODE_NORMAL : return "alpha";
-  case GIMP_LAYER_MODE_REPLACE : return "replace";
   case GIMP_LAYER_MODE_DISSOLVE : return "dissolve";
   case GIMP_LAYER_MODE_BEHIND : return "behind";
   case GIMP_LAYER_MODE_COLOR_ERASE : return "colorerase";
   case GIMP_LAYER_MODE_ERASE : return "erase";
-  case GIMP_LAYER_MODE_ANTI_ERASE : return "antierase";
   case GIMP_LAYER_MODE_MERGE : return "merge";
   case GIMP_LAYER_MODE_SPLIT : return "split";
   case GIMP_LAYER_MODE_LIGHTEN_ONLY : return "lighten";
@@ -508,12 +506,10 @@ void get_output_layer_props(const char *const s, GimpLayerModeEffects &blendmode
 #else
   _get_output_layer_blendmode("alpha",GIMP_LAYER_MODE_NORMAL);
   _get_output_layer_blendmode("normal",GIMP_LAYER_MODE_NORMAL);
-  _get_output_layer_blendmode("replace",GIMP_LAYER_MODE_REPLACE);
   _get_output_layer_blendmode("dissolve",GIMP_LAYER_MODE_DISSOLVE);
   _get_output_layer_blendmode("behind",GIMP_LAYER_MODE_BEHIND);
   _get_output_layer_blendmode("colorerase",GIMP_LAYER_MODE_COLOR_ERASE);
   _get_output_layer_blendmode("erase",GIMP_LAYER_MODE_ERASE);
-  _get_output_layer_blendmode("antierase",GIMP_LAYER_MODE_ANTI_ERASE);
   _get_output_layer_blendmode("merge",GIMP_LAYER_MODE_MERGE);
   _get_output_layer_blendmode("split",GIMP_LAYER_MODE_SPLIT);
   _get_output_layer_blendmode("lighten",GIMP_LAYER_MODE_LIGHTEN_ONLY);
