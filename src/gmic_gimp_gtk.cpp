@@ -389,7 +389,7 @@ void load_dialog_params() {
 //-------------------------------------
 #if (GIMP_MAJOR_VERSION>=3 || GIMP_MINOR_VERSION>8) && !defined(GIMP_NORMAL_MODE)
 typedef GimpLayerMode GimpLayerModeEffects;
-#define GIMP_NORMAL_MODE        GIMP_LAYER_MODE_NORMAL
+#define GIMP_NORMAL_MODE GIMP_LAYER_MODE_NORMAL
 #endif
 
 const char *s_blendmode(const GimpLayerModeEffects &blendmode) {
