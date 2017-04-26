@@ -1809,6 +1809,33 @@ _display_parallel :
   -m "__dp : -parallel "$com -__dp -uncommand __dp
   -d[] -v +
 
+#@cli dp0 : eq. to '-display_parallel0'.
+dp0 :
+  -v - _gmic_s="$?" -v +
+  -_display_parallel0
+
+#@cli display_parallel0
+#@cli : Display each selected image in a separate interactive display window, without value normalization.
+#@cli : (eq. to '-dp0').
+display_parallel0 :
+  -v - _gmic_s="$?" -v +
+  -_$0
+
+_display_parallel0 :
+  -e[0--3] "Display image$? in parallel, without value normalization."
+  -print
+  -v -
+  $!,1,1,1,x ({'{^}'}) -rm..
+  -l.
+    -s -,{','} -y x
+    -i[0--2] ({'-d0['})
+    -i[2--2:2] ({'],'})
+    ({']'})
+    -a x com={t} -rm
+  -endl
+  -m "__dp0 : -parallel "$com -__dp0 -uncommand __dp0
+  -d[] -v +
+
 #@cli display_polar : _width>32,_height>32,_outline_type,_fill_R,_fill_G,_fill_B,_theta_start,_theta_end,_xlabel,_ylabel
 #@cli : Render polar curve from selected image data.
 #@cli : 'outline_type' can be { r<0=dots with radius -r | 0=no outline | r>0=lines+dots with radius r }.
