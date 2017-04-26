@@ -23067,8 +23067,8 @@ _gui_download_all_data :
 #@gui : </i>"}
 #@gui : sep = separator()
 #@gui : note = note{"\n<span foreground="purple" underline="single">Postcard senders:</span>"}
-#@gui : note = note{" <b>-</b> We've received <b>40</b> postcards from <b>G'MIC</b> enthusiasts so far.
-#@gui :               You could be the <b>41st</b> sender :)"}
+#@gui : note = note{" <b>-</b> We've received <b>42</b> postcards from <b>G'MIC</b> enthusiasts so far.
+#@gui :               You could be the <b>43rd</b> sender :)"}
 #@gui : note = note{" <b>-</b> A big hug goes to these postcard senders (recently received first) :"}
 #@gui : note = note{"<i>
 #@gui : <a href="http://cimg.eu/img/postcard68.jpg">Richard Gledson</a> (Newcastle upon tyne/England),
