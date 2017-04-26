@@ -4387,6 +4387,7 @@ _update_server_binaries :
   file$N=gmic_$1_debian_jessie_i386.deb   N+=1
   file$N=gmic_$1_debian_wheezy_amd64.deb  N+=1
   file$N=gmic_$1_debian_wheezy_i386.deb   N+=1
+  file$N=gmic_$1_ubuntu_zesty_amd64.deb   N+=1
   file$N=gmic_$1_ubuntu_yakkety_amd64.deb N+=1
   file$N=gmic_$1_ubuntu_xenial_amd64.deb  N+=1
   file$N=gmic_$1_ubuntu_trusty_i386.deb   N+=1
@@ -4430,6 +4431,8 @@ _update_server_binaries :
 
         -v + -e[] "- Upload file '"$file"' to 'http://gmic.eu/files/prerelease/"$file_short -v -
         -_update_server_upload $file,"files/prerelease/"$file_short
+        -v + -e[] "- Upload file '"$file"' to 'http://gmic.eu/files/prerelease_"$folder/$file_short -v -
+        -_update_server_upload $file,"files/prerelease_"$folder/$file_short
 
         -if {!$is_pre}
           -v + -e[] "- Upload file '"$file"' to 'http://gmic.eu/files/"$folder/$file"'." -v -

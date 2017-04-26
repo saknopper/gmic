@@ -199,9 +199,10 @@
 <div id="bloc_option"><div id="top_rouge"><div id="text_top">The team</div></div>
   <div id="center"><div id="text_centre_intro">
 
-      Project Manager and Main Developer:
+      Project Managers and Main Developers:
       <ul>
-        <li><a href="http://tschumperle.users.greyc.fr/"><b>David Tschumperl&eacute;</b></a></li>
+        <li><a href="http://tschumperle.users.greyc.fr/"><b>David Tschumperl&eacute;</b></a> (core, CLI interface, C++ and G'MIC libraries)</li>
+        <li><a href="https://foureys.users.greyc.fr/"><b>S&eacute;bastien Fourey</b></a> (G'MIC-Qt, G'MIC online and ZArt).</li>
       </ul>
       &nbsp;&nbsp;&nbsp;(Check out his <a href="http://opensource.graphics">blog</a>)
       <br/><br/>
@@ -225,7 +226,6 @@
                 <li><a href="http://zonderr.wordpress.com/"><b>J&eacute;rome Ferrari</b></a> (testing, code, tutorials).</li>
                 <li><a href="http://photoflowblog.blogspot.fr"><b>Andrea Ferrero</b></a> (testing, code).</li>
                 <li><a href="https://plus.google.com/u/0/117150607704159021783/posts"><b>Chris Fiedler</b></a> (gfx).</li>
-                <li><a href="http://www.greyc.ensicaen.fr/~seb/"><b>S&eacute;bastien Fourey</b></a> (developer of ZArt, G'MIC online and G'MIC Qt).</li>
                 <li><a href="http://www.flickr.com/photos/53229621@N02/"><b>Gentlemanbeggar</b></a> (filters).</li>
                 <li><a href="https://github.com/0ion9"><b>David Gowers</b></a> (testing).</li>
                 <li><a href="http://claes-particle.blogspot.com/"><b>Claes Holmerson</b></a> (tutorials).</li>

@@ -39,49 +39,50 @@
                     installers/source for Windows/Mac/Linux<br/><br/></td>
                 </tr>
                 <tr>
-                  <td><a href="http://gmic.eu/files/windows/gmic_win64.zip"><img alt="" src="img/download_win64.png" border="0"></img></a></td><td>&nbsp;&nbsp;</td>
-                  <td><a href="http://gmic.eu/files/windows/gmic_win64.zip"><font size="3">G'MIC for Windows (64 bits)</font></a><br/>
+                  <td><a href="http://gmic.eu/files/prerelease_windows/gmic_win64.zip"><img alt="" src="img/download_win64.png" border="0"></img></a></td><td>&nbsp;&nbsp;</td>
+                  <td><a href="http://gmic.eu/files/prerelease_windows/gmic_win64.zip"><font size="3">G'MIC for Windows (64 bits)</font></a><br/>
                     zip file<br/><br/></td>
                 </tr>
                 <tr>
-                  <td><a href="http://gmic.eu/files/windows/gmic_win32.zip"><img alt="" src="img/download_win32.png" border="0"></img></a></td><td>&nbsp;&nbsp;</td>
-                  <td><a href="http://gmic.eu/files/windows/gmic_win32.zip"><font size="3">G'MIC for Windows (32 bits)</font></a><br/>
+                  <td><a href="http://gmic.eu/files/prerelease_windows/gmic_win32.zip"><img alt="" src="img/download_win32.png" border="0"></img></a></td><td>&nbsp;&nbsp;</td>
+                  <td><a href="http://gmic.eu/files/prerelease_windows/gmic_win32.zip"><font size="3">G'MIC for Windows (32 bits)</font></a><br/>
                     zip file<br/><br/></td>
                 </tr>
                 <tr>
-                  <td><a href="http://gmic.eu/files/linux/gmic_debian_jessie_amd64.deb"><img alt="" src="img/download_debian64.png" border="0"></img></a></td><td>&nbsp;&nbsp;</td>
-                  <td><a href="http://gmic.eu/files/linux/gmic_debian_jessie_amd64.deb"><font size="3">G'MIC for Debian 8 <i>Jessie</i> (64 bits)</font></a><br/>
+                  <td><a href="http://gmic.eu/files/prerelease_linux/gmic_debian_jessie_amd64.deb"><img alt="" src="img/download_debian64.png" border="0"></img></a></td><td>&nbsp;&nbsp;</td>
+                  <td><a href="http://gmic.eu/files/prerelease_linux/gmic_debian_jessie_amd64.deb"><font size="3">G'MIC for Debian 8 <i>Jessie</i> (64 bits)</font></a><br/>
                     deb file<br/>
-                    alternative: <a href="http://gmic.eu/files/linux/gmic_debian_wheezy_amd64.deb">for Debian 7 <i>Wheezy</i> (64 bits)</a><br/><br/></td>
+                    alternative: <a href="http://gmic.eu/files/prerelease_linux/gmic_debian_wheezy_amd64.deb">for Debian 7 <i>Wheezy</i> (64 bits)</a><br/><br/></td>
                 </tr>
                 <tr>
-                  <td><a href="http://gmic.eu/files/linux/gmic_debian_jessie_i386.deb"><img alt="" src="img/download_debian32.png" border="0"></img></a></td><td>&nbsp;&nbsp;</td>
-                  <td><a href="http://gmic.eu/files/linux/gmic_debian_jessie_i386.deb"><font size="3">G'MIC for Debian 8 <i>Jessie</i> (32 bits)</font></a><br/>
+                  <td><a href="http://gmic.eu/files/prerelease_linux/gmic_debian_jessie_i386.deb"><img alt="" src="img/download_debian32.png" border="0"></img></a></td><td>&nbsp;&nbsp;</td>
+                  <td><a href="http://gmic.eu/files/prerelease_linux/gmic_debian_jessie_i386.deb"><font size="3">G'MIC for Debian 8 <i>Jessie</i> (32 bits)</font></a><br/>
                     deb file<br/>
-                    alternative: <a href="http://gmic.eu/files/linux/gmic_debian_wheezy_i386.deb">for Debian 7 <i>Wheezy</i> (32 bits)</a><br/><br/></td>
+                    alternative: <a href="http://gmic.eu/files/prerelease_linux/gmic_debian_wheezy_i386.deb">for Debian 7 <i>Wheezy</i> (32 bits)</a><br/><br/></td>
                 </tr>
                 <tr>
-                  <td><a href="http://gmic.eu/files/linux/gmic_ubuntu_vivid_amd64.deb"><img alt="" src="img/download_ubuntu64.png" border="0"></img></a></td><td>&nbsp;&nbsp;</td>
+                  <td><a href="http://gmic.eu/files/prerelease_linux/gmic_ubuntu_vivid_amd64.deb"><img alt="" src="img/download_ubuntu64.png" border="0"></img></a></td><td>&nbsp;&nbsp;</td>
                   <td>
-                    <a href="http://gmic.eu/files/linux/gmic_ubuntu_trusty_amd64.deb"><font size="3">G'MIC for Ubuntu 14.04 LTS <i>Trusty</i> (64 bits)</font></a><br/>
+                    <a href="http://gmic.eu/files/prerelease_linux/gmic_ubuntu_trusty_amd64.deb"><font size="3">G'MIC for Ubuntu 14.04 LTS <i>Trusty</i> (64 bits)</font></a><br/>
                     deb file<br/>
-                    alternative1: <a href="http://gmic.eu/files/linux/gmic_ubuntu_vivid_amd64.deb">for Ubuntu 15.04 <i>Vivid</i> (64 bits)</a><br/>
-                    alternative2: <a href="http://gmic.eu/files/linux/gmic_ubuntu_xenial_amd64.deb">for Ubuntu 16.04 <i>Xenial</i> (64 bits)</a><br/>
-                    alternative3: <a href="http://gmic.eu/files/linux/gmic_ubuntu_yakkety_amd64.deb">for Ubuntu 16.10 <i>Yakkety</i> (64 bits)</a><br/><br/></td>
+                    alternative 1: <a href="http://gmic.eu/files/prerelease_linux/gmic_ubuntu_vivid_amd64.deb">for Ubuntu 15.04 <i>Vivid</i> (64 bits)</a><br/>
+                    alternative 2: <a href="http://gmic.eu/files/prerelease_linux/gmic_ubuntu_xenial_amd64.deb">for Ubuntu 16.04 <i>Xenial</i> (64 bits)</a><br/>
+                    alternative 3: <a href="http://gmic.eu/files/prerelease_linux/gmic_ubuntu_yakkety_amd64.deb">for Ubuntu 16.10 <i>Yakkety</i> (64 bits)</a><br/>
+                    alternative 4: <a href="http://gmic.eu/files/prerelease_linux/gmic_ubuntu_zesty_amd64.deb">for Ubuntu 17.04 <i>Zesty</i> (64 bits)</a><br/><br/></td>
                 </tr>
                 <tr>
-                  <td><a href="http://gmic.eu/files/linux/gmic_ubuntu_trusty_i386.deb"><img alt="" src="img/download_ubuntu32.png" border="0"></img></a></td><td>&nbsp;&nbsp;</td>
-                  <td><a href="http://gmic.eu/files/linux/gmic_ubuntu_trusty_i386.deb"><font size="3">G'MIC for Ubuntu 14.04 LTS <i>Trusty</i> (32 bits)</font></a><br/>
+                  <td><a href="http://gmic.eu/files/prerelease_linux/gmic_ubuntu_trusty_i386.deb"><img alt="" src="img/download_ubuntu32.png" border="0"></img></a></td><td>&nbsp;&nbsp;</td>
+                  <td><a href="http://gmic.eu/files/prerelease_linux/gmic_ubuntu_trusty_i386.deb"><font size="3">G'MIC for Ubuntu 14.04 LTS <i>Trusty</i> (32 bits)</font></a><br/>
                     deb file<br/><br/></td>
                 </tr>
                 <tr>
-                  <td><a href="http://gmic.eu/files/linux/gmic_static_linux64.zip"><img alt="" src="img/download_linux64.png" border="0"></img></a></td><td>&nbsp;&nbsp;</td>
-                  <td><a href="http://gmic.eu/files/linux/gmic_static_linux64.zip"><font size="3">G'MIC for Linux, static version (64 bits)</font></a><br/>
+                  <td><a href="http://gmic.eu/files/prerelease_linux/gmic_static_linux64.zip"><img alt="" src="img/download_linux64.png" border="0"></img></a></td><td>&nbsp;&nbsp;</td>
+                  <td><a href="http://gmic.eu/files/prerelease_linux/gmic_static_linux64.zip"><font size="3">G'MIC for Linux, static version (64 bits)</font></a><br/>
                     zip file, <i>beware: without display capabilities!</i><br/><br/></td>
                 </tr>
                 <tr>
-                  <td><a href="http://gmic.eu/files/linux/gmic_static_linux32.zip"><img alt="" src="img/download_linux32.png" border="0"></img></a></td><td>&nbsp;&nbsp;</td>
-                  <td><a href="http://gmic.eu/files/linux/gmic_static_linux32.zip"><font size="3">G'MIC for Linux, static version (32 bits)</font></a><br/>
+                  <td><a href="http://gmic.eu/files/prerelease_linux/gmic_static_linux32.zip"><img alt="" src="img/download_linux32.png" border="0"></img></a></td><td>&nbsp;&nbsp;</td>
+                  <td><a href="http://gmic.eu/files/prerelease_linux/gmic_static_linux32.zip"><font size="3">G'MIC for Linux, static version (32 bits)</font></a><br/>
                     zip file, <i>beware: without display capabilities!</i><br/><br/></td>
                 </tr>
                 <tr>
@@ -91,11 +92,13 @@
                     alternative: <a href="http://www.partha.com/">Partha version (64 bits)</a><br/><br/></td>
                 </tr>
                 <tr>
-                  <td><a href="http://gmic.eu/files/source/gmic_source.tar.gz"><img alt="" src="img/download_source.png" border="0"></img></a></td><td>&nbsp;&nbsp;</td>
-                  <td><a href="http://gmic.eu/files/source/gmic_source.tar.gz"><font size="3">G'MIC source</font></a><br/>
+                  <td><a href="http://gmic.eu/files/prerelease/gmic_source.tar.gz"><img alt="" src="img/download_source.png" border="0"></img></a></td><td>&nbsp;&nbsp;</td>
+                  <td><a href="http://gmic.eu/files/prerelease/gmic_source.tar.gz"><font size="3">G'MIC source</font></a><br/>
                     tar.gz file (current <i>development version</i>)<br/>
-                    alternative1: <a href="https://github.com/dtschump/gmic">git repository</a><br/>
-                    alternative2: <a href="http://gmic.eu/files/source/gmic_source.tar.gz">Latest stable (.tar.gz)</a><br/><br/></td>
+                    alternative 1: <a href="http://gmic.eu/files/source/gmic_source.tar.gz">Latest stable (.tar.gz)</a><br/>
+                    alternative 2: <a href="https://github.com/dtschump/gmic">git repository (G'MIC core)</a><br/>
+                    alternative 3: <a href="https://github.com/c-koi/gmic-qt">git repository (G'MIC-Qt)</a><br/>
+                    alternative 4: <a href="https://github.com/dtschump/gmic-community">git repository (ZArt and community files)</a><br/><br/></td>
                 </tr>
                 <tr>
                   <td><a href="http://gmic.eu/files/prerelease"><img alt="" src="img/download_prerelease.png" border="0"></img></a></td><td>&nbsp;&nbsp;</td>
@@ -120,20 +123,20 @@
   <div id="center"><div id="text_centre_intro">
 
       <ul>
-        <!-- <li><b><font color="black">PPA for Ubuntu:</font></b> -->
-        <!--   On Ubuntu (Linux), there is a frequently updated PPA (Personal Package Archives), -->
-        <!--   maintained by <a href="https://plus.google.com/u/0/117581776478455814502/posts">Thorsten "otto" Stettin</a> -->
-        <!--   which may be used to ease the installation of <b><font color="#000066">G'MIC</font></b>, and to get quick updates as well. -->
-        <!--   <\!-- <b>Beware</b>, <i>Thorsten</i> applies unofficial patches on the <b><font color="#000066">G'MIC</font></b> source code in the builds available on his PPA. -\-> -->
-        <!--   <\!-- This may lead to malfunction or strange behaviors (GIMP plug-in entry moved away from the <b>Filters/</b> menu, for instance). -\-> -->
-        <!--   <\!-- So, use this PPA at your own risk, and report bugs only to <i>Thorsten</i> if you use it. -\-> -->
-        <!--   <br/>To enable Thorsten's PPA, type the following commands in a terminal:<br/><br/> -->
-        <!--   <font style="font-family:monospace;"> -->
-        <!--     sudo add-apt-repository ppa:otto-kesselgulasch/gimp<br/> -->
-        <!--     sudo apt-get update<br/> -->
-        <!--     sudo apt-get install gmic gimp-gmic<br/> -->
-        <!--   </font><br/> -->
-        <!-- </li> -->
+        <li><b><font color="black">PPA for Ubuntu:</font></b>
+          On Ubuntu (Linux), there is a frequently updated PPA (Personal Package Archives),
+          maintained by <a href="https://plus.google.com/u/0/117581776478455814502/posts">Thorsten "otto" Stettin</a>
+          which may be used to ease the installation of <b><font color="#000066">G'MIC</font></b>, and to get quick updates as well.
+          <!-- <b>Beware</b>, <i>Thorsten</i> applies unofficial patches on the <b><font color="#000066">G'MIC</font></b> source code in the builds available on his PPA. -->
+          <!-- This may lead to malfunction or strange behaviors (GIMP plug-in entry moved away from the <b>Filters/</b> menu, for instance). -->
+          <!-- So, use this PPA at your own risk, and report bugs only to <i>Thorsten</i> if you use it. -->
+          <br/>To enable Thorsten's PPA, type the following commands in a terminal:<br/><br/>
+          <font style="font-family:monospace;">
+            sudo add-apt-repository ppa:otto-kesselgulasch/gimp<br/>
+            sudo apt-get update<br/>
+            sudo apt-get install gmic gimp-gmic<br/>
+          </font><br/>
+        </li>
         <li><b><font color="black">Packages for Fedora:</font></b>
           should be available <a href="http://www.nosuchhost.net/~cheese/fedora/packages/ALL/x86_64/gmic.html">here</a>.
         </li>
