@@ -201,10 +201,10 @@
 
       Project Managers and Main Developers:
       <ul>
-        <li><a href="http://tschumperle.users.greyc.fr/"><b>David Tschumperl&eacute;</b></a> (core, CLI interface, C++ and G'MIC libraries)</li>
+        <li><a href="http://tschumperle.users.greyc.fr/"><b>David Tschumperl&eacute;</b></a> (core, CLI interface, C++ and G'MIC libraries)
+          &nbsp;&nbsp;&nbsp;(Check out his <a href="http://opensource.graphics">blog</a>)</li>
         <li><a href="https://foureys.users.greyc.fr/"><b>S&eacute;bastien Fourey</b></a> (G'MIC-Qt, G'MIC online and ZArt).</li>
       </ul>
-      &nbsp;&nbsp;&nbsp;(Check out his <a href="http://opensource.graphics">blog</a>)
       <br/><br/>
       Contributors:
       <table><tbody><tr>
