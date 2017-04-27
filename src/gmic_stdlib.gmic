@@ -18184,8 +18184,8 @@ demo : -check "isint(${1=2}) && $1>=0 && $1<=2"
   -rm -w 0 -endl -v 0 -e[] ""
 
 _demo_color_curves :
+  -v - -use_vt100 g=$_gmic_g c=$_gmic_c n=$_gmic_n r=$_gmic_r -v +
   -if {!narg($__demo_color_curve)}
-    -v - -use_vt100 g=$_gmic_g c=$_gmic_c n=$_gmic_n r=$_gmic_r -v +
     -e[] "\n
 ------ "${g}"Color curves"$n" ----------------------------------------------------------------------------\n
 ----\n
@@ -18200,7 +18200,7 @@ _demo_color_curves :
 ---- Keys '"${c}"ESC"$n"', '"${c}"Q"$n"' or '"${c}"ENTER"$n"' close the current window.\n
 ----\n
 ------------------------------------------------------------------------------------------------"
-    -v - __demo_color_curve=1 -sp ? -x_color_curves rgb -v +
+    -v - __demo_color_curve=1 -sp ? -x_color_curves rgb __demo_color_curve= -v +
   -else
     -e[] "\n
 ------ "${g}"Color curves"$n" ----------------------------------------------------------------------------\n
