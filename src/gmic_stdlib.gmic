@@ -1798,6 +1798,7 @@ _display_parallel :
   -e[0--3] "Display image$? in parallel."
   -print
   -v -
+  -if {$!<=1} -d -v + -return -endif
   $!,1,1,1,x ({'{^}'}) -rm..
   -l.
     -s -,{','} -y x
@@ -1825,6 +1826,7 @@ _display_parallel0 :
   -e[0--3] "Display image$? in parallel, without value normalization."
   -print
   -v -
+  -if {$!<=1} -d0 -v + -return -endif
   $!,1,1,1,x ({'{^}'}) -rm..
   -l.
     -s -,{','} -y x
@@ -3360,7 +3362,7 @@ sp : -skip "${1=?}",${2=0}
   -_sample[] "$1",${2--1}
   -if {!${}} -noarg -endif
 
-#@cli sample : _name={ ? | apples | barbara | boats | bottles | butterfly | cameraman | car | cat | cliff | dog | duck | eagle | elephant | earth | flower | fruits | greece | gummy | house | inside | landscape | leaf | lena | lion | mandrill | monkey | parrots | pencils | peppers | rooster | rose | square | teddy | tiger | wall | waterfall | zelda },_width={ >=0 | 0 (auto) },_height = { >=0 | 0 (auto) } : (no arg)
+#@cli sample : _name={ ? | apples | barbara | boats | bottles | butterfly | cameraman | car | cat | cliff | dog | duck | eagle | elephant | earth | flower | fruits | greece | gummy | house | inside | landscape | leaf | lena | leno | lion | mandrill | monkey | parrots | pencils | peppers | rooster | rose | square | teddy | tiger | wall | waterfall | zelda },_width={ >=0 | 0 (auto) },_height = { >=0 | 0 (auto) } : (no arg)
 #@cli : Input a new sample RGB image (opt. with specified size).
 #@cli : (eq. to '-sp').
 #@cli : Argument 'name' can be replaced by an integer which serves as a sample index.
@@ -3374,8 +3376,8 @@ _sample : -skip "${1=?}" -check "isint(${2=0}) && $2>=0 && isint(${3=0}) && $3>=
   N=${"-arg2var _name,"\
       apples,barbara,boats,bottles,butterfly,cameraman,car,cat,cliff,\
       dog,duck,eagle,elephant,earth,flower,fruits,greece,gummy,house,\
-      inside,landscape,leaf,lena,lion,mandrill,monkey,parrots,pencils,\
-      peppers,rooster,rose,square,teddy,tiger,wall,waterfall,zelda}
+      inside,landscape,leaf,lena,leno,lion,mandrill,monkey,parrots,\
+      pencils,peppers,rooster,rose,square,teddy,tiger,wall,waterfall,zelda}
 
   is_random=0 is_arg=1
   -if {['"$1"']=='?'} is_random=1
@@ -33230,7 +33232,7 @@ _fx_intarsia :
 
 #@gui Sample image : fx_image_sample, fx_image_sample_preview
 #@gui : Input = choice("Random","Apples","Barbara","Boats","Bottles","Butterfly","Cameraman","Car","Cat","Cliff","Dog","Duck","Eagle","Elephant","Earth","Flower",
-#@gui : "Fruits","Greece","Gummy","House","Inside","Landscape","Leaf","Lena","Lion","Mandrill","Monkey","Parrots","Pencils","Peppers","Rooster","Rose",
+#@gui : "Fruits","Greece","Gummy","House","Inside","Landscape","Leaf","Lena","Leno","Lion","Mandrill","Monkey","Parrots","Pencils","Peppers","Rooster","Rose",
 #@gui : "Square","Teddy","Tiger","Wall","Waterfall","Zelda")
 #@gui : note = note("<small>Choosing <b>0</b> for parameters <i>Width</i> or <i>Height</i> means <i>Automatic</i>.</small>")
 #@gui : Width = _int(0,0,1024)
