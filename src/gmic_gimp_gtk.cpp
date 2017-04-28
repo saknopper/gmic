@@ -1806,10 +1806,11 @@ CImg<T>& apply_icc(CImg<T>& img) {
   GimpColorConfig *const color_config = gimp_get_color_configuration();
   if (!color_config) return img;
   const Babl *const fmt = babl_format(img.spectrum()==3?"R'G'B' float":"R'G'B'A float");
-  GimpColorTransform *const transform = gimp_widget_get_color_transform(gui_preview,color_config,img_profile,fmt,fmt);
-/*  GimpImage *const image = gimp_item_get_image(image_id);
-  GimpColorTransform *const transform = gimp_image_get_color_transform_from_srgb_double(image);
-*/
+//  GimpColorTransform *const transform = gimp_widget_get_color_transform(gui_preview,color_config,img_profile,fmt,fmt);
+
+//  GimpImage *const image =
+  GimpColorTransform *const transform = gimp_image_get_color_transform_from_srgb_double(gimp_item_get_image(image_id));
+
   if (!transform) return img;
 
   CImg<float> corrected;

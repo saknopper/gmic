@@ -22921,7 +22921,7 @@ _gui_download_all_data :
 #@gui : note = note{"\n<span foreground="purple" underline="single">Supporters:</span>"}
 #@gui : note = note{" <b>-</b> A big hug goes to these friends who supported the project:"}
 #@gui : note = note{"<i>
-#@gui : Stefan St&#228;dtler-Ley,
+#@gui : <a href="http://www.gus-verlag.de/verlag/Artelier/">Stefan St&#228;dtler-Ley</a>,
 #@gui : Michel Pastor,
 #@gui : Sz.U,
 #@gui : Sven Kraft,
