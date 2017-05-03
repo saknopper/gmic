@@ -581,6 +581,7 @@ gmicol_light_leaks_preview :
 
 #@web clone("Light patch")
 #@web clone("Light rays")
+#@web clone("Pop shadows")
 #@web clone("Relief light")
 #@web clone("Shadow patch")
 

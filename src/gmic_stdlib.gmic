@@ -30040,6 +30040,24 @@ fx_lightrays :
   -lightrays $1,$2%,$3%,$4,$5
   -if $6 -repeat $! -r[$>] 100%,100%,1,{{$>,s}+({$>,s}%2)} -done -endif
 
+#@gui Pop shadows : fx_pop_shadows, fx_pop_shadows_preview(1)
+#@gui : Strength = float(0.75,0,1)
+#@gui : Scale = float(5,0,20)
+#@gui : Post-normalize = bool(1)
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
+#@gui : sep = separator(), note = note("<small>Authors: <i>Morgan Hardwood</i> and <i>David Tschumperl&#233;</i>.      Latest update: <i>05/03/2017</i>.</small>")
+fx_pop_shadows :
+  -repeat $! -l[$>] -split_opacity -l[0]
+    .x2
+    -luminance.. -negate.. imM={-2,[im,iM]} -b.. $2% -n.. $imM
+    -blend[0,1] overlay,$1
+    -max
+    -if $3 -n 0,255 -endif
+  -endl -a c -endl -done
+
+fx_pop_shadows_preview :
+  -gui_split_preview "-fx_pop_shadows $*",$-1
+
 #@gui Relief light : fx_light_relief, fx_light_relief(1)
 #@gui : Ambient lightness = float(0.3,0,5)
 #@gui : Specular lightness = float(0.2,0,2)
