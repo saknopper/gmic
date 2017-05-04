@@ -162,7 +162,7 @@
       </pre>
       You are now ready to compile the following <b><font color="#000066">G'MIC</font></b> interfaces:
       <a href="http://gmic.eu/reference.shtml"><i>gmic</i></a> (command-line tool),
-      <a href="http://gmic.eu/gimp.shtml"><i>gmic_gimp</i></a> (Qt and GTK-based plug-ins for <a href="http://www.gimp.org">GIMP</a>),
+      <a href="http://gmic.eu/gimp.shtml"><i>gmic_gimp_qt</i></a> and <a href="http://gmic.eu/gimp.shtml"><i>gmic_gimp_gtk</i></a> (Qt and GTK-based plug-ins for <a href="http://www.gimp.org">GIMP</a>),
       <a href="http://gmic.eu/img/zart.jpg" class="highslide" onclick="return hs.expand(this)"><i>ZArt</i></a><div class="highslide-caption">Screenshot of <b>ZArt</b> in action.</div>
       and
       <a href="http://gmic.eu/libgmic.shtml"><i>libgmic</i></a> (<b><font color="#000066">G'MIC</font></b> C++ library). Just type:
@@ -173,7 +173,8 @@
       and go out for a long drink (the compilation takes time). Alternatively, you may want to:<br/>
       <ul>
         <li>
-          Compile the <b><a href="gimp.shtml">GIMP plug-in</a></b> only. If so, type &nbsp;&nbsp;<tt style="font-family:monospace;">$ make gimp_qt</tt>&nbsp;&nbsp; or <tt style="font-family:monospace;">$ make gimp_gtk</tt>
+          Compile the <b><a href="gimp.shtml">GIMP plug-in</a></b> only. If so, type &nbsp;&nbsp;<tt style="font-family:monospace;">$ make gimp_qt</tt>
+          &nbsp;&nbsp;or&nbsp;&nbsp; <tt style="font-family:monospace;">$ make gimp_gtk</tt>
         </li>
         <li>
           Compile the <b><a href="libgmic.shtml">libgmic</a></b> library only. If so, type &nbsp;&nbsp;<tt style="font-family:monospace;">$ make lib</tt>

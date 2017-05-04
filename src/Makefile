@@ -463,14 +463,17 @@ ifeq ($(OS),Darwin)
 else
 	cd ../zart && qmake CONFIG+=release GMIC_PATH=$(ZART_GMIC_PATH) zart.pro && $(MAKE) && $(STRIP) zart
 endif
+	@echo "'zart' has been compiled in '../zart'."
 
 gimp_qt: CImg.h gmic_stdlib.h
 	@if [ ! -d ../gmic-qt ]; then ln -fs ../gmic-qt ..; fi
 	cd ../gmic-qt && qmake CONFIG+=release GMIC_PATH=$(QT_GMIC_PATH) PRERELEASE=$(PRERELEASE) HOST=gimp gmic_qt.pro && $(MAKE) && $(STRIP) gmic_gimp_qt
+	@echo "'gmic_gimp_qt' has been compiled in '../gmic-qt'."
 
 gmic_qt: CImg.h gmic_stdlib.h
 	@if [ ! -d ../gmic-qt ]; then ln -fs ../gmic-qt ..; fi
 	cd ../gmic-qt && qmake CONFIG+=release GMIC_PATH=$(QT_GMIC_PATH) PRERELEASE=$(PRERELEASE) HOST=none gmic_qt.pro && $(MAKE) && $(STRIP) gmic_qt
+	@echo "'gmic_qt' has been compiled in '../gmic-qt'."
 
 # Internal rules to build compilation modules.
 
