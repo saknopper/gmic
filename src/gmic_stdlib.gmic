@@ -3360,20 +3360,34 @@ shape_star : -check "${1=512}>=0 && ${2=5}>0 && ${3=0.5}>=0 && $3<=1"
 
 #@cli sp : eq. to '-sample'.
 sp : -skip "${1=?}",${2=0}
-  -_sample[] "$1",${2--1}
-  -if {!${}} -noarg -endif
+  -v - -_sample[] "$1",${2--1}
+  -if {!${}} -noarg -endif -v +
 
-#@cli sample : _name={ ? | apples | barbara | boats | bottles | butterfly | cameraman | car | cat | cliff | dog | duck | eagle | elephant | earth | flower | fruits | greece | gummy | house | inside | landscape | leaf | lena | leno | lion | mandrill | monkey | parrots | pencils | peppers | rooster | rose | square | teddy | tiger | wall | waterfall | zelda },_width={ >=0 | 0 (auto) },_height = { >=0 | 0 (auto) } : (no arg)
+#@cli sample : _name1={ ? | apples | barbara | boats | bottles | butterfly | cameraman | car | cat | cliff | dog | duck | eagle | elephant | earth | flower | fruits | greece | gummy | house | inside | landscape | leaf | lena | leno | lion | mandrill | monkey | parrots | pencils | peppers | rooster | rose | square | teddy | tiger | wall | waterfall | zelda },_name2,...,_width={ >=0 | 0 (auto) },_height = { >=0 | 0 (auto) } : (no arg)
 #@cli : Input a new sample RGB image (opt. with specified size).
 #@cli : (eq. to '-sp').
 #@cli : Argument 'name' can be replaced by an integer which serves as a sample index.
 #@cli : $ -repeat 6 -sample -done
 sample : -skip "${1=?}",${2=0}
-  -_sample[] "$1",${2--1}
-  -if {!${}} -noarg -endif
+  -v - -_sample[] "$1",${2--1}
+  -if {!${}} -noarg -endif -v +
 
-_sample : -skip "${1=?}" -check "isint(${2=0}) && $2>=0 && isint(${3=0}) && $3>=0"
-  -v -
+_sample :
+  -if {"$#>=3 && isval($-2) && isint($-2) && $-2>=0 && isval($-1) && isint($-1) && $-1>=0"} # W and H specified.
+    N={$#-2} W=$-2 H=$-1
+  -elif {"$#>=2 && isval($-1) && isint($-1) && $-1>=0"} # Only W specified.
+    N={$#-1} W=$-1 H=0
+  -else # No dimensions specified
+    N={$#} W=0 H=0
+  -endif
+  $=arg
+  -repeat $N
+    sample=${arg{1+$>}}
+    -__sample $sample,$W,$H
+    -v + -e[0--4] "Input sample image '"{n}"' (1 image "{w}x{h}x{d}x{s}")." -v -
+  -done
+
+__sample :
   N=${"-arg2var _name,"\
       apples,barbara,boats,bottles,butterfly,cameraman,car,cat,cliff,\
       dog,duck,eagle,elephant,earth,flower,fruits,greece,gummy,house,\
@@ -3392,7 +3406,7 @@ _sample : -skip "${1=?}" -check "isint(${2=0}) && $2>=0 && isint(${3=0}) && $3>=
       -else -break
       -endif
     -done
-    -if {$sample<0} is_arg=0 is_random=1 -endif   # -v + -error[0--5] "Command '-sample': Invalid sample name '$1'." -endif
+    -if {$sample<0} is_arg=0 is_random=1 -endif
   -endif
   -if $is_random sample={round(u(1,$N))} -endif
   sample=${_name$sample}
@@ -3412,9 +3426,7 @@ _sample : -skip "${1=?}" -check "isint(${2=0}) && $2>=0 && isint(${3=0}) && $3>=
     -if {w/$2>h/$3} -r2dy. $3 -else -r2dx. $2 -endif
     -r. $2,$3,1,100%,0,0,0.5,0.5 -round.
   -endif
-
-  -v + -e[0--3] "Input sample image '"$sample"' (1 image "{w}x{h}x{d}x{s}")." -v -
-  -nm. $sample -u $is_arg -v +
+  -nm. $sample -u $is_arg
 
 #@cli srand : value : (no arg) : (+)
 #@cli : Set random generator seed.
@@ -5697,7 +5709,7 @@ _inrange :
 #@cli map_clut : [clut] | "clut_name"
 #@cli : Map specified RGB color LUT to selected images.
 #@cli : $ image.jpg -uniform_distribution {2^6},3 -mirror[-1] x --map_clut[0] [1]
-map_clut : # -check ${-is_image_arg\ $1}
+map_clut :
   -e[^-1] "Map color LUT $1 on image$?."
   -v -
   -if {!$!} -v + -return -endif
