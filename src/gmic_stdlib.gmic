@@ -3363,7 +3363,7 @@ sp : -skip "${1=?}",${2=0}
   -v - -_sample[] "$1",${2--1}
   -if {!${}} -noarg -endif -v +
 
-#@cli sample : _name1={ ? | apples | barbara | boats | bottles | butterfly | cameraman | car | cat | cliff | dog | duck | eagle | elephant | earth | flower | fruits | greece | gummy | house | inside | landscape | leaf | lena | leno | lion | mandrill | monkey | parrots | pencils | peppers | rooster | rose | square | teddy | tiger | wall | waterfall | zelda },_name2,...,_width={ >=0 | 0 (auto) },_height = { >=0 | 0 (auto) } : (no arg)
+#@cli sample : _name1={ ? | apples | barbara | boats | bottles | butterfly | cameraman | car | cat | cliff | dog | duck | eagle | elephant | earth | flower | fruits | greece | gummy | house | inside | landscape | leaf | lena | leno | lion | mandrill | monkey | parrots | pencils | peppers | rooster | rose | square | teddy | tiger | wall | waterfall | zelda },_name2,...,_nameN,_width={ >=0 | 0 (auto) },_height = { >=0 | 0 (auto) } : (no arg)
 #@cli : Input a new sample RGB image (opt. with specified size).
 #@cli : (eq. to '-sp').
 #@cli : Argument 'name' can be replaced by an integer which serves as a sample index.
