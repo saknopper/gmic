@@ -3390,8 +3390,8 @@ _sample :
       pencils,peppers,rooster,rose,square,teddy,tiger,wall,waterfall,zelda}
   is_arg=1
   -repeat $N
-    arg=${arg{1+$>}}
-    -if {['$arg']=='?'} arg={round(u(1,$M))}
+    arg=${arg{1+$>}} is_rand{1+$>}=0
+    -if {['$arg']=='?'} arg={round(u(1,$M))} is_rand{1+$>}=1
     -elif {!isval($arg)" || "!isint($arg)} -repeat $M name=${_sp_name{1+$>}} -if {'$name'!=0" && "'$name'==['$arg']} arg={1+$>} -break -endif -done -endif
     -if {!isval($arg)" || "!isint($arg)} is_arg=0 -break -endif
     arg{1+$>}=$arg
@@ -3407,7 +3407,7 @@ _sample :
     url=http://gmic.eu/img/sample_$name.png
     -if $filename $filename
     -else
-      -if $is_random -l[] $url -o. $filename -onfail -testimage2d {m=max($W,$H);m>0?m:400} -endl
+      -if ${is_rand{1+$>}} -l[] $url -o. $filename -onfail -testimage2d {m=max($W,$H);m>0?m:400} -endl
       -else $url -o. $filename
       -endif
     -endif
