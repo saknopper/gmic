@@ -3404,10 +3404,11 @@ _sample :
 
     # Retrieve image data.
     filename=${_path_rc}sample_$name.png
+    url=http://gmic.eu/img/sample_$name.png
     -if $filename $filename
     -else
-      -if $is_random -l[] http://gmic.eu/img/sample_$name.png -o. $filename -onfail -testimage2d {m=max($W,$H);m>0?m:400} -endl
-      -else http://gmic.eu/img/sample_$name.png -o. $filename
+      -if $is_random -l[] $url -o. $filename -onfail -testimage2d {m=max($W,$H);m>0?m:400} -endl
+      -else $url -o. $filename
       -endif
     -endif
 
