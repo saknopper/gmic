@@ -3381,11 +3381,14 @@ _sample :
     N={$#} W=0 H=0
   -endif
   $=arg
+  is_arg=1
   -repeat $N
     sample=${arg{1+$>}}
     -__sample $sample,$W,$H
+    is_arg&=${}
     -v + -e[0--4] "Input sample image '"{n}"' (1 image "{w}x{h}x{d}x{s}")." -v -
   -done
+  -u $is_arg
 
 __sample :
   N=${"-arg2var _name,"\
