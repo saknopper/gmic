@@ -3380,56 +3380,48 @@ _sample :
   -else # No dimensions specified
     N={$#} W=0 H=0
   -endif
-  $=arg
-  is_arg=1
-  -repeat $N
-    sample=${arg{1+$>}}
-    -__sample $sample,$W,$H
-    is_arg&=${}
-    -v + -e[0--4] "Input sample image '"{n}"' (1 image "{w}x{h}x{d}x{s}")." -v -
-  -done
-  -u $is_arg
 
-__sample :
-  N=${"-arg2var _name,"\
+  # Check validity of given arguments.
+  $=arg
+  M=${"-arg2var _sp_name,"\
       apples,barbara,boats,bottles,butterfly,cameraman,car,cat,cliff,\
       dog,duck,eagle,elephant,earth,flower,fruits,greece,gummy,house,\
       inside,landscape,leaf,lena,leno,lion,mandrill,monkey,parrots,\
       pencils,peppers,rooster,rose,square,teddy,tiger,wall,waterfall,zelda}
+  is_arg=1
+  -repeat $N
+    arg=${arg{1+$>}}
+    -if {['$arg']=='?'} arg={round(u(1,$M))}
+    -elif {!isval($arg)" || "!isint($arg)} -repeat $M name=${_sp_name{1+$>}} -if {'$name'!=0" && "'$name'==['$arg']} arg={1+$>} -break -endif -done -endif
+    -if {!isval($arg)" || "!isint($arg)} is_arg=0 -break -endif
+    arg{1+$>}=$arg
+  -done
+  -if {!$is_arg} N=1 W=0 H=0 arg1={round(u(1,$M))} -endif
 
-  is_random=0 is_arg=1
-  -if {['"$1"']=='?'} is_random=1
-  -elif {isval("$1")} sample={(round($1)%$N)+1}
-  -else
-    sample=-1
-    -repeat inf
-      name=${_name{1+$>}}
-      -if {'$name'!=0}
-        -if {'$name'==['"$1"']} sample={$>+1} -break -endif
-      -else -break
+  # Input sample images.
+  -repeat $N
+    name=${_sp_name${arg{1+$>}}}
+
+    # Retrieve image data.
+    filename=${_path_rc}sample_$name.png
+    -if $filename $filename
+    -else
+      -if $is_random -l[] http://gmic.eu/img/sample_$name.png -o. $filename -onfail -testimage2d {m=max($W,$H);m>0?m:400} -endl
+      -else http://gmic.eu/img/sample_$name.png -o. $filename
       -endif
-    -done
-    -if {$sample<0} is_arg=0 is_random=1 -endif
-  -endif
-  -if $is_random sample={round(u(1,$N))} -endif
-  sample=${_name$sample}
-
-  filename=${_path_rc}sample_$sample.png
-  -if $filename $filename
-  -else
-    -if $is_random -l[] http://gmic.eu/img/sample_$sample.png -o. $filename -onfail -testimage2d {m=max($2,$3);m>0?m:400} -endl
-    -else http://gmic.eu/img/sample_$sample.png -o. $filename
     -endif
-    -+. 0
-  -endif
 
-  -if {$2>0" && "$3==0} -r2dx. $2 -round.
-  -elif {$2==0" && "$3>0} -r2dy. $3 -round.
-  -elif {$2>0" && "$3>0}
-    -if {w/$2>h/$3} -r2dy. $3 -else -r2dx. $2 -endif
-    -r. $2,$3,1,100%,0,0,0.5,0.5 -round.
-  -endif
-  -nm. $sample -u $is_arg
+    # Resize to desired dimensions.
+    -if {$W>0" && "$H==0} -r2dx. $W -round.
+    -elif {$W==0" && "$H>0} -r2dy. $H -round.
+    -elif {$W>0" && "$H>0}
+      -if {w/$W>h/$H} -r2dy. $H -else -r2dx. $W -endif
+      -r. $W,$H,1,100%,0,0,0.5,0.5 -round.
+    -endif
+    -nm. $name
+    -v + -e[0--2] "Input sample image '"{n}"' (1 image "{w}x{h}x{d}x{s}")." -v -
+  -done
+  -+. 0 -u $is_arg
 
 #@cli srand : value : (no arg) : (+)
 #@cli : Set random generator seed.
