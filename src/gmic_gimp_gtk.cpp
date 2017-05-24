@@ -3,7 +3,7 @@
  #  File        : gmic_gimp_gtk.cpp
  #                ( C++ source file )
  #
- #  Description : G'MIC for GIMP - A plug-in to allow the use
+ #  Description : G'MIC-GTK for GIMP - A plug-in to allow the use
  #                of G'MIC commands in GIMP.
  #
  #  Copyright   : David Tschumperle
@@ -590,7 +590,7 @@ const char *t(const char *const s) {
     }
     _t("Warning: Preview may be inaccurate, default zoom factor has been modified.",
        "Av\303\255s: Previsualitzaci\303\263 pot ser inexacta, factor de zoom s'ha modificat.");
-    _t("G'MIC for GIMP","G'MIC per al GIMP");
+    _t("G'MIC-GTK for GIMP","G'MIC-GTK per al GIMP");
     _t("<i>Select a filter...</i>","<i>Selecciona un filtre...</i>");
     _t("<i>No parameters to set...</i>","<i>Sense par\303\240metres...</i>");
     _t("<b> Input / Output </b>","<b> Entrades / Sortides </b>");
@@ -653,7 +653,7 @@ const char *t(const char *const s) {
     }
     _t("Warning: Preview may be inaccurate, default zoom factor has been modified.",
        "Waarschuwing: Voorbeeld mogelijk niet correct, zoomratio veranderd.");
-    _t("G'MIC for GIMP","G'MIC voor GIMP");
+    _t("G'MIC-GTK for GIMP","G'MIC-GTK voor GIMP");
     _t("<i>Select a filter...</i>","<i>Kies een filter...</i>");
     _t("<i>No parameters to set...</i>","<i>Geen parameters nodig...</i>");
     _t("<b> Input / Output </b>","<b> Input / Output </b>");
@@ -717,7 +717,7 @@ const char *t(const char *const s) {
     _t("Warning: Preview may be inaccurate, default zoom factor has been modified.",
        "Avertissement: L'aper\303\247u est probablement inexact, le facteur de zoom a "
        "\303\251t\303\251 modifi\303\251.");
-    _t("G'MIC for GIMP","G'MIC pour GIMP");
+    _t("G'MIC-GTK for GIMP","G'MIC-GTK pour GIMP");
     _t("<i>Select a filter...</i>","<i>Choisissez un filtre...</i>");
     _t("<i>No parameters to set...</i>","<i>Pas de param&#232;tres...</i>");
     _t("<b> Input / Output </b>","<b> Entr&#233;es / Sorties </b>");
@@ -780,7 +780,7 @@ const char *t(const char *const s) {
     }
     _t("Warning: Preview may be inaccurate, default zoom factor has been modified.",
        "Warnung: Vorschau kann ungenau sein, vergr\303\266\303\237erung wurde ver\303\244ndert.");
-    _t("G'MIC for GIMP","G'MIC f\303\274r GIMP");
+    _t("G'MIC-GTK for GIMP","G'MIC-GTK f\303\274r GIMP");
     _t("<i>Select a filter...</i>","<i>W\303\244hlen Sie einen Filter...</i>");
     _t("<i>No parameters to set...</i>","<i>Keine w\303\244hlbaren Parameter...</i>");
     _t("<b> Input / Output </b>","<b> Eingabe / Ausgabe </b>");
@@ -843,7 +843,7 @@ const char *t(const char *const s) {
     }
     _t("Warning: Preview may be inaccurate, default zoom factor has been modified.",
        "Attenzione: L'anteprima pu\303\262 essere inaccurata, il fattore di zoom \303\250 stato modificato.");
-    _t("G'MIC for GIMP","G'MIC per GIMP");
+    _t("G'MIC-GTK for GIMP","G'MIC-GTK per GIMP");
     _t("<i>Select a filter...</i>","<i>Sciegliete un Filtro...</i>");
     _t("<i>No parameters to set...</i>","<i>Filtro senza Parametri...</i>");
     _t("<b> Input / Output </b>","<b> Input / Output </b>");
@@ -916,7 +916,7 @@ const char *t(const char *const s) {
        "\xE3\x81\xBE\xE3\x81\x99,"
        "\xE6\x8B\xA1\xE5\xA4\xA7\xE7\x8E\x87\xE3\x81\x8C\xE5\xA4\x89\xE6\x9B\xB4\xE3\x81\x95\xE3\x82\x8C\xE3\x81\xBE"
        "\xE3\x81\x97\xE3\x81\x9F.");
-    _t("G'MIC for GIMP","G'MIC for GIMP");
+    _t("G'MIC-GTK for GIMP","G'MIC-GTK for GIMP");
     _t("<i>Select a filter...</i>","<i>\xE3\x83\x95\xE3\x82\xA3\xE3\x83\xAB\xE3\x82\xBF\xE3\x82\x92\xE9\x81\xB8\xE6\x8A"
        "\x9E\xE3\x81\x97\xE3\x81\xA6\xE3\x81\x8F\xE3\x81\xA0\xE3\x81\x95\xE3\x81\x84...</i>");
     _t("<i>No parameters to set...</i>","<i>\xE8\xA8\xAD\xE5\xAE\x9A\xE3\x81\x99\xE3\x82\x8B\xE3\x83\x91\xE3\x83\xA9"
@@ -1016,7 +1016,7 @@ const char *t(const char *const s) {
     _t("Warning: Preview may be inaccurate, default zoom factor has been modified.",
        "Uwaga: Podgl\304\205d mo\305\274e si\304\231 r\303\263\305\274ni\304\207 od "
        "efektu ko\305\204cowego, ze wzgl\304\231du na zmian\304\231 przybli\305\274enia.");
-    _t("G'MIC for GIMP","G'MIC dla GIMP");
+    _t("G'MIC-GTK for GIMP","G'MIC-GTK dla GIMP");
     _t("<i>Select a filter...</i>","<i>Wybierz filtr...</i>");
     _t("<i>No parameters to set...</i>","<i>Brak parametr\304\205w do ustawienia...</i>");
     _t("<b> Input / Output </b>","<b> Wej\305\233cie / Wyj\305\233cie </b>");
@@ -1080,7 +1080,7 @@ const char *t(const char *const s) {
     _t("Warning: Preview may be inaccurate, default zoom factor has been modified.",
        "Aten\303\247\303\243o: a pr\303\251-visualiza\303\247\303\243o pode "
        "estar incorreta, o fator amplia\303\247\303\243o foi modificado.");
-    _t("G'MIC for GIMP","G'MIC para o GIMP");
+    _t("G'MIC-GTK for GIMP","G'MIC-GTK para o GIMP");
     _t("<i>Select a filter...</i>","<i>Escolha um filtro</i>");
     _t("<i>No parameters to set...</i>","<i>Sem par\303\242metros para configurar...</i>");
     _t("<b> Input / Output </b>","<b> Entrada / Saida </b>");
@@ -1143,7 +1143,7 @@ const char *t(const char *const s) {
     }
     _t("Warning: Preview may be inaccurate, default zoom factor has been modified.",
        "Upozorenje : Pregled mo\305\276e biti neta\304\215na, zum faktor je modifikovan.");
-    _t("G'MIC for GIMP","G'MIC za GIMP");
+    _t("G'MIC-GTK for GIMP","G'MIC-GTK za GIMP");
     _t("<i>Select a filter...</i>","<i>Izaberite filter...</i>");
     _t("<i>No parameters to set...</i>","<i>Nema parametara za pode\305\241avanje...</i>");
     _t("<b> Input / Output </b>","<b> Ulazni podaci / Rezultati </b>");
@@ -1206,7 +1206,7 @@ const char *t(const char *const s) {
     }
     _t("Warning: Preview may be inaccurate, default zoom factor has been modified.",
        "Advertencia: La vista previa puede ser inexacta, el factor de zoom ha sido modificado.");
-    _t("G'MIC for GIMP","G'MIC para GIMP");
+    _t("G'MIC-GTK for GIMP","G'MIC-GTK para GIMP");
     _t("<i>Select a filter...</i>","<i>Selecciona un filtro...</i>");
     _t("<i>No parameters to set...</i>","<i>Sin par\303\241metros...</i>");
     _t("<b> Input / Output </b>","<b> Entrada / Salida </b>");
@@ -3000,11 +3000,11 @@ void process_image(const char *const command_line, const bool is_apply) {
       CImg<char> dialog_title(64);
 #ifdef gmic_prerelease
       cimg_snprintf(dialog_title,dialog_title.width(),"%s - %d.%d.%d_pre#%s",
-                    t("G'MIC for GIMP"),
+                    t("G'MIC-GTK for GIMP"),
                     gmic_version/100,(gmic_version/10)%10,gmic_version%10,gmic_prerelease);
 #else
       cimg_snprintf(dialog_title,dialog_title.width(),"%s - %d.%d.%d",
-                    t("G'MIC for GIMP"),
+                    t("G'MIC-GTK for GIMP"),
                     gmic_version/100,(gmic_version/10)%10,gmic_version%10);
 #endif
       gtk_window_set_title(GTK_WINDOW(message),dialog_title);
@@ -4153,13 +4153,13 @@ void create_dialog_gui(const bool preview_on_right) {
   CImg<char> dialog_title(64);
 #ifdef gmic_prerelease
   cimg_snprintf(dialog_title,dialog_title.width(),"%s %d.%d - %s %u bits - %d.%d.%d_pre#%s",
-                t("G'MIC for GIMP"),
+                t("G'MIC-GTK for GIMP"),
                 GIMP_MAJOR_VERSION,GIMP_MINOR_VERSION,
                 cimg::stros(),sizeof(void*)==8?64:32,
                 gmic_version/100,(gmic_version/10)%10,gmic_version%10,gmic_prerelease);
 #else
   cimg_snprintf(dialog_title,dialog_title.width(),"%s %d.%d - %s %u bits - %d.%d.%d",
-                t("G'MIC for GIMP"),
+                t("G'MIC-GTK for GIMP"),
                 GIMP_MAJOR_VERSION,GIMP_MINOR_VERSION,
                 cimg::stros(),sizeof(void*)==8?64:32,
                 gmic_version/100,(gmic_version/10)%10,gmic_version%10);
