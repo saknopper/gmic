@@ -1955,7 +1955,7 @@ _display_quiver : -check "${1=16}>0 && ${2=1.5}>=0 && isint(${3=2}) && $3>=0 && 
 drgba : -skip "${1=none}"
   -v - _gmic_s="$?" -v +
   -_display_rgba ${^0}
-  -v - -if {"!isval($1)"} -noarg -endif -v +
+  -v - -if {!${}} -noarg -endif -v +
 
 #@cli display_rgba : _background_RGB_color
 #@cli : Render selected RGBA images over a checkerboard background.
@@ -1965,10 +1965,10 @@ drgba : -skip "${1=none}"
 display_rgba : -skip "${1=none}"
   -v - _gmic_s="$?" -v +
   -_$0 ${^0}
-  -v - -if {"!isval($1)"} -noarg -endif -v +
+  -v - -if {!${}} -noarg -endif -v +
 
 _display_rgba : -skip "${1=}"
-  -v - is_rgb={"isval($1)"} -v +
+  -v - -l[] is_rgb={"isval($1)"} -onfail is_rgb=0 -endl -v +
   -if $is_rgb -e[0--4] "Render RGBA image"$_gmic_s" over RGB background ($*)."
   -else -e[0--4] "Render RGBA image"$_gmic_s" over a checkerboard background."
   -endif
@@ -1978,7 +1978,7 @@ _display_rgba : -skip "${1=}"
     -endif
     -nm[0] {1,n}
     -sh. {s-1} -j[0] [1],0,0,0,0,1,[2],255 -k[0]
-  -endif -endl -done -to_rgb -v +
+  -endif -endl -done -to_rgb -u $is_rgb -v +
 
 #@cli dt : eq. to '-display_tensors'.
 dt :
