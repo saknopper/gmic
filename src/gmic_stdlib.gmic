@@ -3392,7 +3392,8 @@ _sample :
   -repeat $N
     arg=${arg{1+$>}} is_rand{1+$>}=0
     -if {['$arg']=='?'} arg={round(u(1,$M))} is_rand{1+$>}=1
-    -elif {!isval($arg)" || "!isint($arg)} -repeat $M name=${_sp_name{1+$>}} -if {'$name'!=0" && "'$name'==['$arg']} arg={1+$>} -break -endif -done -endif
+    -elif {!isval($arg)" || "!isint($arg)} -repeat $M name=${_sp_name{1+$>}} -if {'$name'!=0" && "'$name'==['$arg']} arg={1+$>} -break -endif -done
+    -else arg={($arg%$M)+1} -endif
     -if {!isval($arg)" || "!isint($arg)} is_arg=0 -break -endif
     arg{1+$>}=$arg
   -done
