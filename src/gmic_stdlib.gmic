@@ -22928,6 +22928,7 @@ _gui_download_all_data :
 #@gui : note = note{"\n<span foreground="purple" underline="single">Supporters:</span>"}
 #@gui : note = note{" <b>-</b> A big hug goes to these friends who supported the project:"}
 #@gui : note = note{"<i>
+#@gui : Paul Buckley,
 #@gui : <a href="http://www.flickr.com/newmikey">Mike Bing</a>,
 #@gui : Olivier Lecarme,
 #@gui : Edward Ingram,
@@ -24144,7 +24145,7 @@ fx_brushify_preview :
   -if $19
     -_fx_brushify $*
     -if {$1==0} -rm.. -elif {$1==1} -rm[0] -endif
-    -rr2d. {0,w/5},{0,h/5},0,2 -n. 0,255
+    -rr2d. {0,max(1,w/5)},{0,max(1,h/5)},0,2 -n. 0,255
     -frame. 3,3,0 -frame. 1,1,255 -frame. 1,1,0
     -to_rgb. -to. "Brush",4,2,13,2,1,255,255,0 -to_a.
     -j[^-1] .,2,2 -rm.
