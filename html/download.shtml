@@ -92,8 +92,8 @@
                     alternative: <a href="http://www.partha.com/">Partha version (64 bits)</a><br/><br/></td>
                 </tr>
                 <tr>
-                  <td><a href="http://gmic.eu/files/prerelease/gmic_source.tar.gz"><img alt="" src="img/download_source.png" border="0"></img></a></td><td>&nbsp;&nbsp;</td>
-                  <td><a href="http://gmic.eu/files/prerelease/gmic_source.tar.gz"><font size="3">G'MIC source</font></a><br/>
+                  <td><a href="http://gmic.eu/files/gmic_source.tar.gz"><img alt="" src="img/download_source.png" border="0"></img></a></td><td>&nbsp;&nbsp;</td>
+                  <td><a href="http://gmic.eu/files/gmic_source.tar.gz"><font size="3">G'MIC source</font></a><br/>
                     <b>tar.gz file</b> (current <i>development version</i>)<br/>
                     alternative 1: <a href="http://gmic.eu/files/source/gmic_source.tar.gz">Latest stable (.tar.gz)</a><br/>
                     alternative 2: <a href="https://github.com/dtschump/gmic">git repository (G'MIC core)</a><br/>
