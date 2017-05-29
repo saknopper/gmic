@@ -22351,7 +22351,7 @@ gui_filter_sources : -skip ${1=0},${2=1}
     -if $local -m $local -gui_filter_sources $1,0 -return -endif
   -endif
 
-  # Import faves from previous version 1.7.9.
+  # Import faves from previous version 1.7.x.
   -if {isfile($_path_rc/gimp_faves)" && "!isfile($_path_rc/gui_faves)} -l[]
     -i raw:$_path_rc/gimp_faves,uchar -replace_str "gimp_","fx_"
     -o raw:$_path_rc/gui_faves,uchar
@@ -23190,77 +23190,11 @@ fx_gmicky_preview :
 #@gui : - <b>07/07/2011</b> : version <i>1.5.0</i>.\n
 #@gui : - <b>08/20/2014</b> : version <i>1.6.0</i>.\n
 #@gui : - <b>03/25/2016</b> : version <i>1.7.0</i>.\n
-#@gui : - <span foreground="purple"><b>11/18/2016</b> : version <i>1.7.9</i> (Current stable).</span>\n
-#@gui : - <b>01/11/2017</b> : version <i>2.0.0</i> (Current beta).\n
+#@gui : - <span foreground="purple"><b>05/29/2017</b> : version <i>2.0.0</i> (Current stable).</span>\n
 #@gui : "}
 #@gui : sep = separator()
-#@gui : link = link("View latest changelog","https://discuss.pixls.us/t/release-of-gmic-1-7-9")
-#@gui : link = link("View incoming changelog","https://discuss.pixls.us/t/release-of-gmic-2-0-0")
-
-# #@gui Search filters : _none_, gui_search_filters
-# #@gui : note = note("<small><i>Type the filter name you want to search for...</i></small>")
-# #@gui : Find = text(0,"")
-# #@gui : Sort by = choice("Filter names","Full path")
-# #@gui : Include category/command names in the search = bool(0)
-# #@gui : sep = separator()
-# #@gui : Matches = _text(1,"")
-# #@gui : sep = separator(), note = note("<small>Authors: <i>Garagecoder</i> and <i>David Tschumperl&#233;</i>.      Latest update : <i>07/06/2015</i>.</small>")
-# gui_search_filters : -skip "${1=}"
-#   -l[]
-
-#     # Retrieve filter file.
-#     date_current={date(2)+31*(date(1)+12*date(0))}
-#     file_filters=${_path_rc}gui_filters
-#     date_filters={date(2,$file_filters)+31*(date(1,$file_filters)+12*date(0,$file_filters))} # Date of filter file.
-#     -if {$date_filters<0" || "$date_current-$date_filters>0} # Filter file needs to be refreshed.
-#       -l[] -i raw:http://gmic.eu/gui_filters.txt,uchar -o raw:$file_filters,uchar -onfail -endl -rm
-#     -endif
-#     -l[] -i raw:$file_filters,uchar -onfail 0 -endl
-
-#     # Format search term.
-#     ({'" $1"'}) -+. 'if(i>=65&&i<=90,32,0)' -autocrop. 32 term={t} -rm.
-
-#     # Perform the search.
-#     --l
-#       -+ 'if(i>=65&&i<=90,32,0)' -s -,10
-#       -if $2 -replace_seq {``{'"(in "{`39`}'}},1e10
-#       -else -replace_seq {``{'"(command "{`39`}'}},1e10
-#       -endif
-#       -replace_seq {``{'"* "'}},1e10
-#       -if {narg("$1")}
-#         -if {!$3} # Exclude category name from the search.
-#           -if $2 -replace_seq {``{'" (command "{`39`}'}},0
-#           -else -replace_seq {``{'" (in "{`39`}'}},0
-#           -endif
-#           -ap "-f '>if(y>1&&!i[y-1],0,i)'"
-#         -endif
-#         -replace_seq {``{'$term'}},-1e5
-#       -else -f -(iM<=255)
-#       -endif
-#       -a x -r 100%,1,1,1,2 -lt 0
-#     -endl
-
-#     # Remove lines that don't fit.
-#     -s[0] -,10 -a[^-1] x
-#     -rv -a y -discard x,0
-#     -if {!w} -rm ({'"\n** no match found!\n"'})
-#     -else
-#       -rows 1,100%
-#       -s x
-#       -autocrop 0 -autocrop 32 N=$!
-#       -i[^0] (10)
-#       -i[0] ({'"** "$N" match"${"-if {"$N"!=1} -u es -else -u \"\" -endif"}" found:\n\n"'})
-#       -y -f 'if(y==0&&i>=97&&i<=122,i-32,i)'
-#       -i[^0,-1] ({'"- "'}) -y -a y
-#     -endif
-#     -replace_str. "&","&amp;"
-#     res="{\"$1\"}{$2}{$3}{"{t}"}"
-#     -rm
-#   -endl
-#   -if {narg("$1")} -gui_print_preview "Search filters",,"whose names contain:\n\n      $1"
-#   -else -gui_print_preview "Search filters",,"(all filters)"
-#   -endif
-#   -u $res
+#@gui : link = link("View latest changelog","https://discuss.pixls.us/t/release-of-gmic-2-0-0")
+##@gui : link = link("View incoming changelog","https://discuss.pixls.us/t/release-of-gmic-2-0-0")
 
 #@gui User satisfaction survey : gui_survey, gui_survey_preview
 #@gui : note = note{"<small>Please help us by taking a few seconds to share your feelings about the G'MIC project. Thank you for giving us the opportunity to serve you better!</small>"}
