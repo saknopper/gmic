@@ -1433,6 +1433,7 @@ clut : -check "isval(${2=64}) && $2>0"
       -decompress_clut $2,$2,$2 -round
       -o. ${_path_rc}clut_$1.cimgz,uchar
     -endif
+    -nm "[CLUT: $1]"
   -endl -v +
 
 #@cli m : eq. to '-command'. : (+)
@@ -2814,45 +2815,80 @@ gmicky_wilber :
 #@cli : $$
 
 #@cli input_cube : "filename",_convert_1d_cluts_to_3d={ 0 | 1 }.
-#@cli : Insert CLUT data from a .cube filename (Adobe CLUT format).
-#@cli : Default value: 'convert_1d_cluts_to_3d=0'.
+#@cli : Insert CLUT data from a .cube filename (Adobe CLUT file format).
+#@cli : Default value: 'convert_1d_cluts_to_3d=1'.
 input_cube : -skip ${2=1}
   -e[^-1] "Input CLUT from file '$1'."
   -v - -l[]
-    -i raw:"$1",uchar -f "i<32 && i!=10?32:i" -s -,10
-    -repeat $! -if {$<,i==_'#'} -rm[$<] -endif -done # Discard lines of comments.
-    -apply_parallel "-autocrop 32"
-    -remove_empty
-
-    # Parse header to retrieve CLUT info.
-    min=0,0,0 max=1,1,1 dim= size=
-    -repeat $!
-      -if {same([{$>,^}],'DOMAIN_MIN',10)}
-        -l[$>] -rows 10,100% -autocrop 32 -split -,32 min={{0,t}},{{1,t}},{{2,t}} -k[0] -endl
-      -elif {same([{$>,^}],'DOMAIN_MAX',10)}
-        -l[$>] -rows 10,100% -autocrop 32 -split -,32 max={{0,t}},{{1,t}},{{2,t}} -k[0] -endl
-      -elif {same([{$>,^}],'LUT_1D_SIZE',11)}
-        -l[$>] -rows 11,100% dim=1 size={{t}} -endl
-      -elif {same([{$>,^}],'LUT_3D_SIZE',11)}
-        -l[$>] -rows 11,100% dim=3 size={{t}} -endl
-      -elif {$>,i>=_'0'&&i<=_'9'} -k[$>--1] -break
-      -endif
-    -done
-    -if {!narg($dim)" || "(0$dim!=1" && "0$dim!=3)} -error "Command '-input_cube': Undefined or invalid CLUT dimension, in file '$1'."
-    -elif {!narg($size)" || "0$size<=0} -error "Command '-input_cube': Undefined CLUT size, in file '$1'."
+    -i raw:"$1",uchar
+    -f "i<_' ' && i!=10?_' ':i"
+    -i[0] 0
+    range={"
+      line = vector512();
+      dmin = [ 0,0,0 ];
+      dmax = [ 1,1,1 ];
+      dim = size = 0;
+      target = 0;
+      pos = 0;
+      while (pos<h,
+        while (i[#-1,pos]<_' ', ++pos);
+        npos = find(#-1,'\n',1,pos);
+        if (npos<0, npos = h);
+        l = npos - pos;
+        copy(line[0],i[pos],l);
+        line[l] = 0;
+        if (same(line,'LUT_1D_SIZE ',12),
+          copy(line[0],line[12],size(line) - 12);
+          size = stod(line);
+          dim = 1;
+          resize(#0,3,size,1,1,0);
+        ,_(else); if (same(line,'LUT_3D_SIZE ',12),
+          copy(line[0],line[12],size(line) - 12);
+          size = stod(line);
+          dim = 3;
+          resize(#0,3,size,size,size,0);
+        ,_(else); if (same(line,'DOMAIN_MIN ',11),
+          copy(line[0],line[11],size(line) - 11);
+          dmin[0] = stod(line);
+          ind = find(line,_' ');
+          copy(line[0],line[ind + 1],size(line) - ind);
+          dmin[1] = stod(line);
+          ind = find(line,_' ');
+          copy(line[0],line[ind + 1],size(line) - ind);
+          dmin[2] = stod(line);
+        ,_(else); if (same(line,'DOMAIN_MAX ',11),
+          copy(line[0],line[11],size(line) - 11);
+          dmax[0] = stod(line);
+          ind = find(line,_' ');
+          copy(line[0],line[ind + 1],size(line) - ind);
+          dmax[1] = stod(line);
+          ind = find(line,_' ');
+          copy(line[0],line[ind + 1],size(line) - ind);
+          dmax[2] = stod(line);
+        ,_(else); val = stod(line); if (!isnan(val),
+          do (
+            i[#0,target++] = val;
+            ind = find(line,_' ');
+            if (ind<0, break());
+            copy(line[0],line[ind + 1],size(line) - ind);
+            val = stod(line);
+          ,_(while); !isnan(val));
+        )))));
+        pos = ++npos;
+      );
+      [dmin,dmax];"}
+    -rm.
+    -permute yzcx
+    -if {[$range]!=[0,0,0,1,1,1]}
+      -f "init(
+            range = ["$range"];
+            dmin = range[0,3];
+            dmax = range[3,3];
+            delta = dmax - dmin;
+          );
+          (I - dmin)*255/delta"
     -endif
-
-    # Get CLUT data
-    -apply_parallel "-split -,32 ({{0,t}}^{{1,t}}^{{2,t}}) -k." -a y
-    -if {$dim==1}
-      -if $2 -s c -y... x -y. z -r $size,$size,$size -a c
-      -else -transpose
-      -endif
-    -else -r $size,$size,$size,3,-1
-    -endif
-
-    # Renormalize to [0-255] range.
-    -repeat 3 -sh $> --. {arg(1+$>,$min)} -*. {255/(arg(1+$>,$max)-arg(1+$>,$min))} -rm. -done
+    -if {"w>1 && h==1 && d==1 && $2"} size={w} -s c -y.. y -y. z -r $size,$size,$size -a c -endif
     -nm "$1"
   -endl -v +
 
