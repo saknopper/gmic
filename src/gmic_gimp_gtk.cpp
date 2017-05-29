@@ -1807,7 +1807,6 @@ CImg<T>& apply_icc(CImg<T>& img) {
   if (!color_config) return img;
   const Babl *const fmt = babl_format(img.spectrum()==3?"R'G'B' float":"R'G'B'A float");
   GimpColorTransform *const transform = gimp_widget_get_color_transform(gui_preview,color_config,img_profile,fmt,fmt);
-//  GimpColorTransform *const transform = gimp_image_get_color_transform_from_srgb_double(gimp_item_get_image(image_id));
   if (!transform) return img;
   CImg<float> corrected;
   img.get_permute_axes("cxyz").move_to(corrected)/=255;
