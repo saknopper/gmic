@@ -26,7 +26,7 @@
             Of course, the plug-in is highly customizable and it is possible to add your own custom <b><font color="#000066">G'MIC</font></b>-written
             filters in it.<br/><br/>
 
-            The <b><font color="#000066">G'MIC</font></b> comes in two flavors: <i>Qt</i>-based and <i>GTK</i>-based. It is highly recommended
+            The <b><font color="#000066">G'MIC</font></b> plug-in comes in two flavors: <i>Qt</i>-based and <i>GTK</i>-based. It is highly recommended
             to use the <i>Qt</i>-based interface when possible, as it has much better features (large and resizable preview, filter search engine, etc.).
             The <i>GTK</i>-based interface is a sequel of older <b><font color="#000066">G'MIC</font></b> versions
             and will be probably discontinued in the future.
