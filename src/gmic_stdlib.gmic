@@ -2865,14 +2865,14 @@ input_cube : -skip ${2=1}
           ind = find(line,_' ');
           copy(line[0],line[ind + 1],size(line) - ind);
           dmax[2] = stod(line);
-        ,_(else); val = stod(line); if (!isnan(val),
+        ,_(else); val = stod(line); if (val>=0,
           do (
             i[#0,target++] = val;
             ind = find(line,_' ');
             if (ind<0, break());
             copy(line[0],line[ind + 1],size(line) - ind);
             val = stod(line);
-          ,_(while); !isnan(val));
+          ,_(while); val>=0);
         )))));
         pos = ++npos;
       );
