@@ -2877,6 +2877,7 @@ input_cube : -skip ${2=1}
         pos = ++npos;
       );
       [dmin,dmax];"}
+
     -rm.
     -permute yzcx
     -if {[$range]!=[0,0,0,1,1,1]}
