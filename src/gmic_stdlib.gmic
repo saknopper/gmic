@@ -2887,6 +2887,7 @@ input_cube : -skip ${2=1}
             delta = dmax - dmin;
           );
           (I - dmin)*255/delta"
+    -else -* 255
     -endif
     -if {"w>1 && h==1 && d==1 && $2"} size={w} -s c -y.. y -y. z -r $size,$size,$size -a c -endif
     -nm "$1"
