@@ -2865,14 +2865,14 @@ input_cube : -skip ${2=1}
           ind = find(line,_' ');
           copy(line[0],line[ind + 1],size(line) - ind);
           dmax[2] = stod(line);
-        ,_(else); val = stod(line); if (!isnan(val),
+        ,_(else); val = stod(line); if (val>=0,
           do (
             i[#0,target++] = val;
             ind = find(line,_' ');
             if (ind<0, break());
             copy(line[0],line[ind + 1],size(line) - ind);
             val = stod(line);
-          ,_(while); !isnan(val));
+          ,_(while); val>=0);
         )))));
         pos = ++npos;
       );
@@ -4362,7 +4362,7 @@ update_server :
     -replace_str "<i>David Tschumperl&#233;</i>","<i><a href=\""$url"\">David Tschumperl&#233;</a></i>"
     -o cimgz:/tmp/update$_version.gmic,uchar
 
-    (180,200)
+    (180,200,201)
     -repeat {w}
       v={i[$>]}
       -_update_server_upload[] ${_path_rc}update$_version.gmic,plain_update$v.gmic
@@ -23233,10 +23233,11 @@ fx_gmicky_preview :
 #@gui : - <b>08/20/2014</b> : version <i>1.6.0</i>.\n
 #@gui : - <b>03/25/2016</b> : version <i>1.7.0</i>.\n
 #@gui : - <span foreground="purple"><b>05/29/2017</b> : version <i>2.0.0</i> (Current stable).</span>\n
+#@gui : - <b>05/31/2017</b> : version <i>2.0.1</i> (Current prerelease).\n
 #@gui : "}
 #@gui : sep = separator()
 #@gui : link = link("View latest changelog","https://discuss.pixls.us/t/release-of-gmic-2-0-0")
-##@gui : link = link("View incoming changelog","https://discuss.pixls.us/t/release-of-gmic-2-0-0")
+#@gui : link = link("View incoming changelog","https://discuss.pixls.us/t/release-of-gmic-2-0-1")
 
 #@gui User satisfaction survey : gui_survey, gui_survey_preview
 #@gui : note = note{"<small>Please help us by taking a few seconds to share your feelings about the G'MIC project. Thank you for giving us the opportunity to serve you better!</small>"}
