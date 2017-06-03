@@ -22636,13 +22636,13 @@ gui_autocrop_layers :
 # #@gui : note = note{"A <b>new version</b> of the G'MIC plug-in is available!
 # #@gui : You are strongly encouraged to download and install this updated version, by clicking on one of the following urls :"}
 # #@gui : note = note{"\n<span foreground="purple"><u>Windows version :</u></span>"}
-# #@gui : url = link{"Download G'MIC plug-in for Windows (64 bits)","http://gmic.eu/files/latest/gmic_gimp_win64.exe"}
-# #@gui : url = link{"Download G'MIC plug-in for Windows (32 bits)","http://gmic.eu/files/latest/gmic_gimp_win32.exe"}
+# #@gui : url = link{"Download G'MIC plug-in for Windows (64 bits)","http://gmic.eu/files/windows/gmic_gimp_win64.exe"}
+# #@gui : url = link{"Download G'MIC plug-in for Windows (32 bits)","http://gmic.eu/files/windows/gmic_gimp_win32.exe"}
 # #@gui : note = note{"<b>Installation </b>: unzip the archive files and copy them into folder\n
 # #@gui :              <i>C:\\Program Files\\GIMP\\lib\\gimp\\2.0\\plug-ins\</i>"}
 # #@gui : note = note{"\n<span foreground="purple"><u>Linux version :</u></span>"}
-# #@gui : url = link{"Download plug-in for Linux (64 bits)","http://gmic.eu/files/latest/gmic_gimp_linux64.zip"}
-# #@gui : url = link{"Download plug-in for Linux (32 bits)","http://gmic.eu/files/latest/gmic_gimp_linux32.zip"}
+# #@gui : url = link{"Download plug-in for Linux (64 bits)","http://gmic.eu/files/linux/gmic_gimp_linux64.zip"}
+# #@gui : url = link{"Download plug-in for Linux (32 bits)","http://gmic.eu/files/linux/gmic_gimp_linux32.zip"}
 # #@gui : note = note{"<b>Installation </b>: unzip the archive files and copy them in folder\n
 # #@gui :              <i>/usr/lib/gimp/2.0/plug-ins/</i>"}
 # #@gui : note = note{"\nNote that there will be no updated filters anymore for your current plug-in version.
