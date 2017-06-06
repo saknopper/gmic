@@ -553,15 +553,17 @@ gmic: gmic.cpp gmic.h gmic_stdlib.h CImg.h
 # header files
 gmic_stdlib.h: gmic_stdlib.gmic
 	@echo -n "> Retrieve G'MIC Standard Library..."
-	@$(WGET) gmic_stdlib.h http://gmic.eu/gmic_stdlib.h
-	@touch gmic_stdlib.h
+	@if [ ! -f ./gmic_stdlib.h ]; then \
+	  $(WGET) gmic_stdlib.h http://gmic.eu/gmic_stdlib.h; \
+	  touch gmic_stdlib.h; \
+	fi
 	@echo " done!"
 
 CImg.h:
 	@echo -n "> Retrieve CImg Library..."
 	@if [ -f ../../CImg/CImg.h ]; then \
           if [ ! -f ./CImg.h ]; then ln -s ../../CImg/CImg.h .; fi; \
-        else \
+        elif [ ! -e ./CImg.h ] \
           $(WGET) CImg.h https://github.com/dtschump/CImg/blob/master/CImg.h?raw=true; \
           touch CImg.h; \
         fi
