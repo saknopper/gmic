@@ -3972,6 +3972,8 @@ void create_parameters_gui(const bool reset_params) {
 
           // Check for a filename or folder name argument.
           if (!found_valid_argument && (!cimg::strcasecmp(argument_type,"file") ||
+                                        !cimg::strcasecmp(argument_type,"filein") ||
+                                        !cimg::strcasecmp(argument_type,"fileout") ||
                                         !cimg::strcasecmp(argument_type,"folder"))) {
             GtkWidget *const label = gtk_label_new(argument_name);
             gtk_widget_show(label);
@@ -3980,9 +3982,9 @@ void create_parameters_gui(const bool reset_params) {
             gtk_misc_set_alignment(GTK_MISC(label),0,0.5);
             GtkWidget *const
               file_chooser = gtk_file_chooser_button_new(argument_name,
-                                                         cimg::lowercase(argument_type[1])=='i'?
-                                                         GTK_FILE_CHOOSER_ACTION_OPEN:
-                                                         GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER);
+                                                         cimg::lowercase(argument_type[1])=='o'?
+                                                         GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER:
+                                                         GTK_FILE_CHOOSER_ACTION_OPEN);
             gtk_widget_show(file_chooser);
 
             char *value = argument_arg;

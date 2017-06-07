@@ -92,7 +92,7 @@
 #      _ 'choice(_default_indice,Choice0,..,ChoiceN)'     : Add a integer parameter (as a combobox).
 #      _ 'color(defaultR,defaultG,defaultB,_defaultA)'    : Add R,G,B[,A] parameters (as a colorchooser).
 #      _ 'value(value)'                                   : Add a pre-defined value parameter (not displayed).
-#      _ 'file(_default_filename)'                        : Add a filename parameter (as a filechooser).
+#      _ 'file[_in,_out](_default_filename)'              : Add a filename parameter (as a filechooser).
 #      _ 'float(default_value,min_value,max_value)'       : Add a float-valued parameter (as a float slider).
 #      _ 'folder(_default_foldername)'                    : Add a foldername parameter (as a folderchooser).
 #      _ 'int(default_value,min_value,max_value)'         : Add a integer parameter (as an integer slider).
