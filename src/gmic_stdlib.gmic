@@ -10458,22 +10458,46 @@ ssd_patch : -check ${-is_image_arg\ $1} -skip ${2=0},${3=0}
 #@cli : $ image.jpg -threshold 50% --thinning
 thinning :
   -e[^-1] "Compute skeleton of binary image$?, using morphological thinning."
-  -v - ->= 50% -* 2 -- 1
-  (-1,-1,-1;0,1,0;1,1,1) (0,-1,-1;1,1,-1;0,1,0) --rotate[-2,-1] 90 --rotate[-2,-1] 90 --rotate[-2,-1] 90
-  -repeat {$!-8}  # Start skeleton refinement.
-    bavg={-9,is}
-    -repeat 99999
-      --correlate[-9] [-8] ->=. 7 -*. 2 --[-10,-1]
-      --correlate[-9] [-7] ->=. 6 -*. 2 --[-10,-1]
-      --correlate[-9] [-6] ->=. 7 -*. 2 --[-10,-1]
-      --correlate[-9] [-5] ->=. 6 -*. 2 --[-10,-1]
-      --correlate[-9] [-4] ->=. 7 -*. 2 --[-10,-1]
-      --correlate[-9] ... ->=. 6 -*. 2 --[-10,-1]
-      --correlate[-9] .. ->=. 7 -*. 2 --[-10,-1]
-      --correlate[-9] . ->=. 6 -*. 2 --[-10,-1]
-      aavg={-9,is} -if {$aavg==$bavg} -break -endif bavg=$aavg
+  -v -
+  # Build hit&miss lookup table.
+  512,8,1,1,"*
+    init(
+      M0 = [ -1,-1,-1,0,1,0,1,1,1 ];
+      M1 = [ 0,-1,-1,1,1,-1,0,1,0 ];
+      M2 = [ 1,0,-1,1,1,-1,1,0,-1 ];
+      M3 = [ 0,1,0,1,1,-1,0,-1,-1 ];
+      M4 = [ 1,1,1,0,1,0,-1,-1,-1 ];
+      M5 = [ 0,1,0,-1,1,1,-1,-1,0 ];
+      M6 = [ -1,0,1,-1,1,1,-1,0,1 ];
+      M7 = [ -1,-1,0,-1,1,1,0,1,0 ];
+    );
+    p = (x>>4)&1;
+    N = 2*[ (x>>8)&1, (x>>7)&1, (x>>6)&1, (x>>5)&1, p, (x>>3)&1, (x>>2)&1, (x>>1)&1, x&1 ] - 1;
+    hit = p==0?0:1 - (
+            y==0?(sum(M0*N)==7):
+            y==1?(sum(M1*N)==6):
+            y==2?(sum(M2*N)==7):
+            y==3?(sum(M3*N)==6):
+            y==4?(sum(M4*N)==7):
+            y==5?(sum(M5*N)==6):
+            y==6?(sum(M6*N)==7):
+            sum(M7*N)==6)"
+  (256,128,64;32,16,8;4,2,1)
+
+  # Compute iterative hit&miss transforms.
+  -repeat {$!-2} -l[$>,-2,-1]
+    sum={0,is}
+    -repeat inf
+      m={$>%8}
+      -correlate[0] [2] -sh[1] $m,$m,0,0 -map[0] . -rm.
+      -if {$m==7}
+        new_sum={0,is}
+        -if {$sum==$new_sum} -break -endif
+        sum=$new_sum
+      -endif
     -done
-  -mv[-9] 0 -done -rm[-8--1] -+ 1 -/ 2 -v +
+  -endl -done
+  -rm[-2,-1] -v +
 
 #@cli tones : N>0
 #@cli : Get N tones masks from selected images.
