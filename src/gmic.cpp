@@ -4273,7 +4273,7 @@ CImg<char> gmic::substitute_item(const char *const source,
 
         // Substitute '$>' and '$<' -> Forward/backward indice of current loop.
       } else if (nsource[1]=='>' || nsource[1]=='<') {
-        if (!repeatdones)
+        if (!nb_repeatdones)
           error(images,0,0,
                 "Item substitution '$%c': There is no loop currently running.",
                 nsource[1]);
