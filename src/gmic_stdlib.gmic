@@ -10476,9 +10476,9 @@ thinning :
   -repeat {$!-2} -l[$>,-2,-1]
     sum={0,is}
     -repeat inf
-      m={$>%8}
+      m={1,$>%h}
       -correlate[0] [2] -sh[1] $m,$m,0,0 -map[0] . -rm.
-      -if {$m==7}
+      -if {1,$m==h-1}
         new_sum={0,is}
         -if {$sum==$new_sum} -break -endif
         sum=$new_sum
