@@ -5092,6 +5092,24 @@ sort_str :
 #@cli : $ image.jpg -and {128+64}
 #@cli : $ image.jpg --mirror x -and
 
+#@cli argmax :
+#@cli : Compute the argmax of selected images. Returns a single image
+#@cli : with each pixel value being the indice of the input image with maximal value.
+#@cli : $ image.jpg -sample lena,lion,square --argmax
+argmax :
+  -e[^-1] "Compute argmax of image$?."
+  -v - -repeat $! str=$str${c}i#$> c=, -done
+  ${-max_whds},"argmax("$str")" -k. -v +
+
+#@cli argmin :
+#@cli : Compute the argmin of selected images. Returns a single image
+#@cli : with each pixel value being the indice of the input image with minimal value.
+#@cli : $ image.jpg -sample lena,lion,square --argmin
+argmin :
+  -e[^-1] "Compute argmin of image$?."
+  -v - -repeat $! str=$str${c}i#$> c=, -done
+  ${-max_whds},"argmin("$str")" -k. -v +
+
 #@cli asin : (+)
 #@cli : Compute the pointwise arc-sine of selected images.
 #@cli : $ image.jpg --normalize -1,1 -asin[-1]
