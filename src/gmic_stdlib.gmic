@@ -5099,7 +5099,7 @@ sort_str :
 argmax :
   -e[^-1] "Compute argmax of image$?."
   -v - -repeat $! str=$str${c}i#$> c=, -done
-  ${-max_whds},"argmax("$str")" -k. -v +
+  ${-max_whds},"argmax("$str")" -k. -nm [argmax] -v +
 
 #@cli argmin :
 #@cli : Compute the argmin of selected images. Returns a single image
@@ -5108,7 +5108,7 @@ argmax :
 argmin :
   -e[^-1] "Compute argmin of image$?."
   -v - -repeat $! str=$str${c}i#$> c=, -done
-  ${-max_whds},"argmin("$str")" -k. -v +
+  ${-max_whds},"argmin("$str")" -k. -nm [argmin] -v +
 
 #@cli asin : (+)
 #@cli : Compute the pointwise arc-sine of selected images.
