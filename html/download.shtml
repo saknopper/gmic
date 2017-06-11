@@ -39,31 +39,31 @@
                     <b>installers/source for Windows/Mac/Linux</b><br/><br/></td>
                 </tr>
                 <tr>
-                  <td><a href="http://gmic.eu/files/prerelease_windows/gmic_win64.zip"><img alt="" src="img/download_win64.png" border="0"></img></a></td><td>&nbsp;&nbsp;</td>
-                  <td><a href="http://gmic.eu/files/prerelease_windows/gmic_win64.zip"><font size="3">G'MIC for Windows (64 bits)</font></a><br/>
+                  <td><a href="http://gmic.eu/files/prerelease_windows/gmic_cli_win64.zip"><img alt="" src="img/download_win64.png" border="0"></img></a></td><td>&nbsp;&nbsp;</td>
+                  <td><a href="http://gmic.eu/files/prerelease_windows/gmic_cli_win64.zip"><font size="3">G'MIC for Windows (64 bits) - <i>command-line interface</i></font></a><br/>
                     <b>zip file</b><br/><br/></td>
                 </tr>
                 <tr>
-                  <td><a href="http://gmic.eu/files/prerelease_windows/gmic_win32.zip"><img alt="" src="img/download_win32.png" border="0"></img></a></td><td>&nbsp;&nbsp;</td>
-                  <td><a href="http://gmic.eu/files/prerelease_windows/gmic_win32.zip"><font size="3">G'MIC for Windows (32 bits)</font></a><br/>
+                  <td><a href="http://gmic.eu/files/prerelease_windows/gmic_cli_win32.zip"><img alt="" src="img/download_win32.png" border="0"></img></a></td><td>&nbsp;&nbsp;</td>
+                  <td><a href="http://gmic.eu/files/prerelease_windows/gmic_cli_win32.zip"><font size="3">G'MIC for Windows (32 bits) - <i>command-line interface</i></font></a><br/>
                     <b>zip file</b><br/><br/></td>
                 </tr>
                 <tr>
                   <td><a href="http://gmic.eu/files/prerelease_linux/gmic_debian_jessie_amd64.deb"><img alt="" src="img/download_debian64.png" border="0"></img></a></td><td>&nbsp;&nbsp;</td>
-                  <td><a href="http://gmic.eu/files/prerelease_linux/gmic_debian_jessie_amd64.deb"><font size="3">G'MIC for Debian 8 <i>Jessie</i> (64 bits)</font></a><br/>
+                  <td><a href="http://gmic.eu/files/prerelease_linux/gmic_debian_jessie_amd64.deb"><font size="3">G'MIC for Debian 8 <i>Jessie</i> (64 bits) - <i>all interfaces</i></font></a><br/>
                     <b>deb file</b><br/>
                     alternative: <a href="http://gmic.eu/files/prerelease_linux/gmic_debian_wheezy_amd64.deb">for Debian 7 <i>Wheezy</i> (64 bits)</a><br/><br/></td>
                 </tr>
                 <tr>
                   <td><a href="http://gmic.eu/files/prerelease_linux/gmic_debian_jessie_i386.deb"><img alt="" src="img/download_debian32.png" border="0"></img></a></td><td>&nbsp;&nbsp;</td>
-                  <td><a href="http://gmic.eu/files/prerelease_linux/gmic_debian_jessie_i386.deb"><font size="3">G'MIC for Debian 8 <i>Jessie</i> (32 bits)</font></a><br/>
+                  <td><a href="http://gmic.eu/files/prerelease_linux/gmic_debian_jessie_i386.deb"><font size="3">G'MIC for Debian 8 <i>Jessie</i> (32 bits) - <i>all interfaces</i></font></a><br/>
                     <b>deb file</b><br/>
                     alternative: <a href="http://gmic.eu/files/prerelease_linux/gmic_debian_wheezy_i386.deb">for Debian 7 <i>Wheezy</i> (32 bits)</a><br/><br/></td>
                 </tr>
                 <tr>
                   <td><a href="http://gmic.eu/files/prerelease_linux/gmic_ubuntu_vivid_amd64.deb"><img alt="" src="img/download_ubuntu64.png" border="0"></img></a></td><td>&nbsp;&nbsp;</td>
                   <td>
-                    <a href="http://gmic.eu/files/prerelease_linux/gmic_ubuntu_trusty_amd64.deb"><font size="3">G'MIC for Ubuntu 14.04 LTS <i>Trusty</i> (64 bits)</font></a><br/>
+                    <a href="http://gmic.eu/files/prerelease_linux/gmic_ubuntu_trusty_amd64.deb"><font size="3">G'MIC for Ubuntu 14.04 LTS <i>Trusty</i> (64 bits) - <i>all interfaces</i></font></a><br/>
                     <b>deb file</b><br/>
                     alternative 1: <a href="http://gmic.eu/files/prerelease_linux/gmic_ubuntu_vivid_amd64.deb">for Ubuntu 15.04 <i>Vivid</i> (64 bits)</a><br/>
                     alternative 2: <a href="http://gmic.eu/files/prerelease_linux/gmic_ubuntu_xenial_amd64.deb">for Ubuntu 16.04 <i>Xenial</i> (64 bits)</a><br/>
@@ -72,17 +72,17 @@
                 </tr>
                 <tr>
                   <td><a href="http://gmic.eu/files/prerelease_linux/gmic_ubuntu_trusty_i386.deb"><img alt="" src="img/download_ubuntu32.png" border="0"></img></a></td><td>&nbsp;&nbsp;</td>
-                  <td><a href="http://gmic.eu/files/prerelease_linux/gmic_ubuntu_trusty_i386.deb"><font size="3">G'MIC for Ubuntu 14.04 LTS <i>Trusty</i> (32 bits)</font></a><br/>
+                  <td><a href="http://gmic.eu/files/prerelease_linux/gmic_ubuntu_trusty_i386.deb"><font size="3">G'MIC for Ubuntu 14.04 LTS <i>Trusty</i> (32 bits) - <i>all interfaces</i></font></a><br/>
                     <b>deb file</b><br/><br/></td>
                 </tr>
                 <tr>
                   <td><a href="http://gmic.eu/files/prerelease_linux/gmic_static_linux64.zip"><img alt="" src="img/download_linux64.png" border="0"></img></a></td><td>&nbsp;&nbsp;</td>
-                  <td><a href="http://gmic.eu/files/prerelease_linux/gmic_static_linux64.zip"><font size="3">G'MIC for Linux, static version (64 bits)</font></a><br/>
+                  <td><a href="http://gmic.eu/files/prerelease_linux/gmic_static_linux64.zip"><font size="3">G'MIC for Linux, static version (64 bits) - <i>command-line interface</i></font></a><br/>
                     <b>zip file</b>, <i>beware: without display capabilities!</i><br/><br/></td>
                 </tr>
                 <tr>
                   <td><a href="http://gmic.eu/files/prerelease_linux/gmic_static_linux32.zip"><img alt="" src="img/download_linux32.png" border="0"></img></a></td><td>&nbsp;&nbsp;</td>
-                  <td><a href="http://gmic.eu/files/prerelease_linux/gmic_static_linux32.zip"><font size="3">G'MIC for Linux, static version (32 bits)</font></a><br/>
+                  <td><a href="http://gmic.eu/files/prerelease_linux/gmic_static_linux32.zip"><font size="3">G'MIC for Linux, static version (32 bits) - <i>command-line interface</i></font></a><br/>
                     <b>zip file</b>, <i>beware: without display capabilities!</i><br/><br/></td>
                 </tr>
                 <tr>
