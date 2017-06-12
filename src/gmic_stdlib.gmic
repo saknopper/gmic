@@ -5098,7 +5098,7 @@ sort_str :
 #@cli : $ image.jpg -sample lena,lion,square --argmax
 argmax :
   -e[^-1] "Compute argmax of image$?."
-  -v - -repeat $! str=$str${c}i#$> c=, -done
+  -v - $!,1,1,1,x ({'{^}'}) -l. -s +,{','} -i[0--1:2] ({'i#'}) -y -a y str={t} -endl -rm[-2,-1]
   ${-max_whds},"argmax("$str")" -k. -nm [argmax] -v +
 
 #@cli argmin :
@@ -5107,7 +5107,8 @@ argmax :
 #@cli : $ image.jpg -sample lena,lion,square --argmin
 argmin :
   -e[^-1] "Compute argmin of image$?."
-  -v - -repeat $! str=$str${c}i#$> c=, -done
+  -if {!$!} -return -endif
+  -v - $!,1,1,1,x ({'{^}'}) -l. -s +,{','} -i[0--1:2] ({'i#'}) -y -a y str={t} -endl -rm[-2,-1]
   ${-max_whds},"argmin("$str")" -k. -nm [argmin] -v +
 
 #@cli asin : (+)
