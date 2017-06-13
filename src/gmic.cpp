@@ -2789,6 +2789,13 @@ const char *gmic::set_variable(const char *const name, const char *const value,
     if (operation=='=') {
       if (!is_name_found) _operation = 0; // New variable.
       else CImg<char>::string(value).move_to(__variables[ind]);
+    } else if (operation=='.') {
+      if (!is_name_found)
+        error("Operation '.=' requested on undefined variable '%s'.",
+              name);
+//      __variables[ind].print("DEBUG");
+      ((CImg<char>::string(__variables[ind],false,true),CImg<char>::string(value,true,true))>'x').
+        move_to(__variables[ind]);
     } else {
       const char *const s_operation = operation=='+'?"+":operation=='-'?"-":operation=='*'?"*":operation=='/'?"/":
         operation=='%'?"%":operation=='&'?"&":operation=='|'?"|":operation=='^'?"^":
@@ -13131,7 +13138,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
           if ((sep1=='>' || sep1=='<') && sep0==sep1) s_op_left = s_op_right - 2;
           else {
             sep1 = 0;
-            if (sep0=='+' || sep0=='-' || sep0=='*' || sep0=='/' ||
+            if (sep0=='+' || sep0=='-' || sep0=='*' || sep0=='/' || sep0=='.' ||
                 sep0=='%' || sep0=='&' || sep0=='|' || sep0=='^') s_op_left = s_op_right - 1;
             else sep0 = 0;
           }
@@ -13166,12 +13173,12 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             is_valid_name&=(is_multiarg || varvalues.width()==1);
           }
 
-          // Update values of variables.
+          // Assign or update values of variables.
           if (is_valid_name) {
-            const char *new_value = 0;
             if (sep0=='+' || sep0=='-' || sep0=='*' || sep0=='/' ||
                 sep0=='%' || sep0=='&' || sep0=='|' || sep0=='^' ||
-                sep0=='<' || sep0=='>') {
+                sep0=='.' || sep0=='<' || sep0=='>') {
+              const char *new_value = 0;
               if (varnames) {
                 cimglist_for(varnames,l) {
                   new_value = set_variable(varnames[l],varvalues[is_multiarg?l:0],sep0,variables_sizes);
