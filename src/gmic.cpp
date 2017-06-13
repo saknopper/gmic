@@ -13209,7 +13209,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                   else
                     print(images,0,"Update %s variable %s%c=%s -> %s.",
                           *title=='_'?"global":"local",
-                          title,sep0,name.data(),title,new_value);
+                          title,sep0,name.data(),new_value);
                 }
               }
             } else {
