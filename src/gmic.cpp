@@ -13143,12 +13143,15 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
           const char *s = std::strchr(item,',');
           if (!s || s>s_op_right) { // Single variable assignment
             is_valid_name = cimg_sscanf(item,"%255[a-zA-Z0-9_]",title)==1 && (*title<'0' || *title>'9');
-            is_valid_name &= (item + std::strlen(title)==s_op_left);
+            is_valid_name&=(item + std::strlen(title)==s_op_left);
           } else { // Multi-variable assignment
 
             const CImg<char> comma(1,1,1,1,',');
             CImg<char>(s_op_right + 1,std::strlen(item) - (s_op_right - item)).
               get_split(comma,0,false).move_to(varvalues);
+            cimglist_for(varvalues,l) if (varvalues[l].back())
+              varvalues[l].resize(1,varvalues[l].height() + 1,1,1,0);
+
             s = item;
             while (s<s_op_left) {
               const char *ns = std::strchr(s,',');
@@ -13161,6 +13164,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
               else { is_valid_name = false; break; }
               s = ns + 1;
             }
+            is_valid_name&=(varnames.width()==varvalues.width() || varvalues.width()==1);
 
             std::fprintf(stderr,"\nDEBUG : item='%s', sep0 = %d, sep1 = %d, valid = %d\n",
                          item,(int)sep0,(int)sep1,(int)is_valid_name);
