@@ -11578,9 +11578,10 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
               get_serialize((bool)is_compressed).move_to(serialized);
 
           gmic_substitute_args(false);
-          bool is_compressed0 = false;
 #ifdef cimg_use_zlib
-          is_compressed0 = true;
+          bool is_compressed0 = true;
+#else
+          bool is_compressed0 = false;
 #endif
           unsigned int is_compressed = is_compressed0?1U:0U, is_gmz = 1;
           if ((cimg_sscanf(argument,"%255[a-z ]%c",
