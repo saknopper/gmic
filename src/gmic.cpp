@@ -13123,32 +13123,72 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
       }  // if (*item=='-') {
 
       // Variable assignment.
-      if (!is_input_command) {
-        const char *const s_eq = std::strchr(item,'=');
-        if (s_eq) {
-          sep0 = s_eq>item?*(s_eq - 1):0;
-          sep1 = s_eq>item + 1?*(s_eq - 2):0;
-          if (cimg_sscanf(item,"%255[a-zA-Z0-9_]",title)==1 && (*title<'0' || *title>'9')) {
-            pattern = (unsigned int)std::strlen(title);
+      if (!is_input_command && (*item=='_' || (*item>='a' && *item<='z') || (*item>='A' && *item<'Z'))) {
+        const char *const s_op_right = std::strchr(item,'=');
+        if (s_op_right) {
+          const char *s_op_left = s_op_right;
+          sep0 = s_op_right>item?*(s_op_right - 1):0;
+          sep1 = s_op_right>item + 1?*(s_op_right - 2):0;
+          if ((sep1=='>' || sep1=='<') && sep0==sep1) s_op_left = s_op_right - 2;
+          else {
+            sep1 = 0;
+            if (sep0=='+' || sep0=='-' || sep0=='*' || sep0=='/' ||
+                sep0=='%' || sep0=='&' || sep0=='|' || sep0=='^') s_op_left = s_op_right - 1;
+            else sep0 = 0;
+          }
+
+          // Check validity of variable name(s).
+          bool is_valid_name = true;
+          CImgList<char> varnames, varvalues;
+          const char *s = std::strchr(item,',');
+          if (!s || s>s_op_right) { // Single variable assignment
+            is_valid_name = cimg_sscanf(item,"%255[a-zA-Z0-9_]",title)==1 && (*title<'0' || *title>'9');
+            is_valid_name &= (item + std::strlen(title)==s_op_left);
+          } else { // Multi-variable assignment
+
+            const CImg<char> comma(1,1,1,1,',');
+            CImg<char>(s_op_right + 1,std::strlen(item) - (s_op_right - item)).
+              get_split(comma,0,false).move_to(varvalues);
+            s = item;
+            while (s<s_op_left) {
+              const char *ns = std::strchr(s,',');
+              if (ns==s) { is_valid_name = false; break; }
+              if (!ns || ns>=s_op_left) ns = s_op_left;
+              CImg<char>(s,ns - s + 1).move_to(name);
+              name.back() = 0;
+              if (cimg_sscanf(name,"%255[a-zA-Z0-9_]%c",title,&sep)==1 && (*title<'0' || *title>'9'))
+                name.move_to(varnames);
+              else { is_valid_name = false; break; }
+              s = ns + 1;
+            }
+
+            std::fprintf(stderr,"\nDEBUG : item='%s', sep0 = %d, sep1 = %d, valid = %d\n",
+                         item,(int)sep0,(int)sep1,(int)is_valid_name);
+            varnames.print("VARNAMES");
+            varvalues.print("VARVALUES");
+          }
+
+          // Operate on variables.
+          if (is_valid_name) {
             const char *new_value = 0;
-            if ((sep0=='<' || sep0=='>') && sep1==sep0 && s_eq==item + pattern + 2) {
-              new_value = set_variable(title,s_eq + 1,sep0,variables_sizes);
-              _gmic_argument_text(s_eq + 1,name.assign(128),is_verbose);
+            if (sep0=='<' || sep0=='>') {
+              new_value = set_variable(title,s_op_right + 1,sep0,variables_sizes);
+              _gmic_argument_text(s_op_right + 1,name.assign(128),is_verbose);
               print(images,0,"Update %s variable %s%c%c='%s' -> %s='%s'.",
                     *title=='_'?"global":"local",
                     title,sep0,sep0,name.data(),title,new_value);
               continue;
-            } else if ((sep0=='+' || sep0=='-' || sep0=='*' || sep0=='/' ||
-                        sep0=='%' || sep0=='&' || sep0=='|' || sep0=='^') && s_eq==item + pattern + 1) {
-              new_value = set_variable(title,s_eq + 1,sep0,variables_sizes);
-              _gmic_argument_text(s_eq + 1,name.assign(128),is_verbose);
+            } else if (sep0=='+' || sep0=='-' || sep0=='*' || sep0=='/' ||
+                       sep0=='%' || sep0=='&' || sep0=='|' || sep0=='^') {
+              new_value = set_variable(title,s_op_right + 1,sep0,variables_sizes);
+              _gmic_argument_text(s_op_right + 1,name.assign(128),is_verbose);
               print(images,0,"Update %s variable %s%c='%s' -> %s='%s'.",
                     *title=='_'?"global":"local",
                     title,sep0,name.data(),title,new_value);
               continue;
-            } else if (s_eq==item + pattern) {
-              set_variable(title,s_eq + 1,'=',variables_sizes);
-              _gmic_argument_text(s_eq + 1,name.assign(128),is_verbose);
+            } else {
+              set_variable(title,s_op_right + 1,'=',variables_sizes);
+              _gmic_argument_text(s_op_right + 1,name.assign(128),is_verbose);
               print(images,0,"Set %s variable %s='%s'.",
                     *title=='_'?"global":"local",
                     title,name.data());
