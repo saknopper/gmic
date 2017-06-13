@@ -6292,7 +6292,7 @@ colormap : -check "isint($1) && $1>=0" -skip ${2=1},${3=1}
     -r {w*h*d},1,1,100%,-1
 
     -if $1 # Estimate quantized colormap.
-      -if {!$2} -_colormap $1                              # Just run the median-cut algorithm
+      -if {!$2} -_colormap $1 # Just run the median-cut algorithm
       -else
         --_colormap $1
         -do
@@ -6311,7 +6311,7 @@ colormap : -check "isint($1) && $1>=0" -skip ${2=1},${3=1}
       -ap "-discard x" -a x
 
     -endif
-    -if $3 --norm -rv -a c -sort +,x -channels 1,100% -endif             # Sort colors by increasing norm.
+    -if $3 --norm -rv -a c -sort +,x -channels 1,100% -endif # Sort colors by increasing norm.
     -nm "[colormap of "$nm"]"
   -endl -done -v +
 
