@@ -13151,7 +13151,6 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
               get_split(comma,0,false).move_to(varvalues);
             cimglist_for(varvalues,l) if (varvalues[l].back())
               varvalues[l].resize(1,varvalues[l].height() + 1,1,1,0);
-
             s = item;
             while (s<s_op_left) {
               const char *ns = std::strchr(s,',');
