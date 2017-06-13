@@ -13164,28 +13164,14 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             }
             is_multiarg = varnames.width()==varvalues.width();
             is_valid_name&=(is_multiarg || varvalues.width()==1);
-
-/*            if (is_valid_name) {
-              pattern = std::min(_title.width() - 1U,(unsigned int)(s_op_left - item));
-              std::strncpy(title,item,pattern);
-              title[pattern] = 0;
-            }
-*/
-
           }
 
           // Update values of variables.
           if (is_valid_name) {
             const char *new_value = 0;
-            if (sep0=='<' || sep0=='>') {
-              new_value = set_variable(title,s_op_right + 1,sep0,variables_sizes);
-              _gmic_argument_text(s_op_right + 1,name.assign(128),is_verbose);
-              print(images,0,"Update %s variable %s%c%c='%s' -> %s='%s'.",
-                    *s=='_'?"global":"local",
-                    s,sep0,sep0,name.data(),title,new_value);
-
-            } else if (sep0=='+' || sep0=='-' || sep0=='*' || sep0=='/' ||
-                       sep0=='%' || sep0=='&' || sep0=='|' || sep0=='^') {
+            if (sep0=='+' || sep0=='-' || sep0=='*' || sep0=='/' ||
+                sep0=='%' || sep0=='&' || sep0=='|' || sep0=='^' ||
+                sep0=='<' || sep0=='>') {
               if (varnames) {
                 cimglist_for(varnames,l) {
                   new_value = set_variable(varnames[l],varvalues[is_multiarg?l:0],sep0,variables_sizes);
@@ -13194,8 +13180,12 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                     CImg<char>::string(new_value).move_to(name);
                     cimg::strellipsize(name,80,true);
                     cimg::strellipsize(varnames[l],80,true);
-                    cimg_snprintf(message,message.width(),"%s%c=%s -> %s, ",
-                                  varnames[l].data(),sep0,varvalues[is_multiarg?l:0].data(),name.data());
+                    if (sep0=='<' || sep0=='>')
+                      cimg_snprintf(message,message.width(),"%s%c%c=%s -> %s, ",
+                                    varnames[l].data(),sep0,sep0,varvalues[is_multiarg?l:0].data(),name.data());
+                    else
+                      cimg_snprintf(message,message.width(),"%s%c=%s -> %s, ",
+                                    varnames[l].data(),sep0,varvalues[is_multiarg?l:0].data(),name.data());
                     CImg<char>::string(message,false).move_to(varnames[l]);
                   }
                 }
@@ -13212,9 +13202,14 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                 if (is_verbose) {
                   cimg::strellipsize(title,80,true);
                   _gmic_argument_text(s_op_right + 1,name.assign(128),is_verbose);
-                  print(images,0,"Update %s variable %s%c=%s -> %s.",
-                        *title=='_'?"global":"local",
-                        title,sep0,name.data(),title,new_value);
+                  if (sep0=='<' || sep0=='>')
+                    print(images,0,"Update %s variable %s%c%c=%s -> %s.",
+                          *title=='_'?"global":"local",
+                          title,sep0,sep0,name.data(),title,new_value);
+                  else
+                    print(images,0,"Update %s variable %s%c=%s -> %s.",
+                          *title=='_'?"global":"local",
+                          title,sep0,name.data(),title,new_value);
                 }
               }
             } else {
