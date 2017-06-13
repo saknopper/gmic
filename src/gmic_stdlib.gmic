@@ -6296,8 +6296,8 @@ colormap : -check "isint($1) && $1>=0" -skip ${2=1},${3=1}
       -else
 
         --_colormap $1
-
-      -d
+#        {w}
+#      -d
 
         m={im} M={iM} -n. 0,255                            # Keep track of the initial statistics
         --_colormap $1 --index.. . -*. 256 -+[-3,-1]       # Initialize k-means labels and add them on the image
