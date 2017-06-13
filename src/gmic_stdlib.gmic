@@ -389,6 +389,10 @@ _help_usage :
 \n    '"${g}"+="$n"' (addition), '"${g}"-="$n"' (subtraction), '"${g}"*="$n"' (multiplication), '"${g}"/="$n"' (division), '"${g}"%="$n"' (modulo),
 \n    '"${g}"&="$n"' (bitwise and), '"${g}"|="$n"' (bitwise or), '"${g}"^="$n"' (power), '"${g}"<<="$n"' and '"${g}">>="$n"' (bitwise left and right
 \n    shifts). As in pipeline: '"${c}"foo=1 foo+=3"$n"'.
+\n
+\n  - Multiple variable assignments and updates are allowed, with expressions:
+\n    '"${c}"name1,name2,...,nameN=value"$n"' or '"${c}"name1,name2,...,nameN=value1,value2,...,valueN"$n"'
+\n    where operator '"${g}"="$n"' can be replaced by one of the arithmetic operators listed below (e.g. '"${g}"+="$n"').
 "
 
   -_help_section "Command items and selections"
