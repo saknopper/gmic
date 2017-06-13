@@ -6288,30 +6288,22 @@ colormap : -check "isint($1) && $1>=0" -skip ${2=1},${3=1}
   -if $1 -e[0--3] "Estimate colormap with $1 entries for image$?, by "${-arg\ 1+!$2,k-means,median-cut}" method."
   -else -e[0--3] "Estimate full colormap for image$?."
   -endif
-  -v - -repeat $! -l[$>]
+  -v - -repeat $! -l[$>] nm={b}
     -r {w*h*d},1,1,100%,-1
 
     -if $1 # Estimate quantized colormap.
       -if {!$2} -_colormap $1                              # Just run the median-cut algorithm
       -else
-
-#        --_colormap $1
-#        {w}
-#      -d
-
-        m={im} M={iM} -n. 0,255                            # Keep track of the initial statistics
-        --_colormap $1 --index.. . -*. 256 -+[-3,-1]       # Initialize k-means labels and add them on the image
-
-        # Start k-means iterations.
+        --_colormap $1
         -do
-          -repeat {s}                                      # Estimate new colormap
-            -sh[0] $> --histogram. {$1*256},0,{$1*256-1} -rm..
-            -i.. 256,1,1,1,'x' -r.. {w},1,1,1,0,2 -*.. . -r[-2,-1] $1,1,1,1,2 -max. 0.01 -/[-2,-1]
-          -done -a[2--1] c
-          --.. . -abs.. diff={{-2,is}/w} -rm..             # Compute colormap difference
-          -&.. 255 --index.. .,0,0 -*. 256 -+[-3,-1]       # Compute new k-means labels
-        -while {$diff>0.5}
-        -rm.. -*. {($M-$m)/255} -+. $m                     # Convert colormap values back to initial value range
+          --index.. .  # Find nearest cluster for each color
+          ..,1,1,{-2,s+1}
+          -f.. ">I[#3,i]+=[ I[#0,x],1 ]" -rm..
+          -f. "s = i(x,0,0,s-1); s?I/s:[ I[#1,x], 0 ]"
+          ---.. . diff={is/w} -rm. # Compute colormap difference
+          -j.. . -rm.
+        -while {$diff>0.05}
+        -rm..
       -endif
 
     -else # Extract full colormap.
@@ -6319,8 +6311,8 @@ colormap : -check "isint($1) && $1>=0" -skip ${2=1},${3=1}
       -ap "-discard x" -a x
 
     -endif
-    -if $3 --norm -rv -a y -sort +,x -rows 1 -endif             # Sort colors by increasing norm.
-    -nm "[colormap of "{b}"]"
+    -if $3 --norm -rv -a c -sort +,x -channels 1,100% -endif             # Sort colors by increasing norm.
+    -nm "[colormap of "$nm"]"
   -endl -done -v +
 
 _colormap : # Implementation of the median-cut algorithm.
@@ -6335,7 +6327,6 @@ _colormap : # Implementation of the median-cut algorithm.
     -__colormap $b -__colormap {$!-2} # Update box variances
   -done
   -rm. -r 1,1,1,100%,2 -a x # Average value in each box and append as final colormap
-  --norm. -rv -a c -sort +,x -channels 1,100% # Sort resulting colormap by increasing norm
   -uncommand __colormap
 
 #@cli compose_channels
