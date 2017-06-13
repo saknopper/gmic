@@ -13144,6 +13144,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
           if (!s || s>s_op_right) { // Single variable assignment
             is_valid_name = cimg_sscanf(item,"%255[a-zA-Z0-9_]",title)==1 && (*title<'0' || *title>'9');
             is_valid_name&=(item + std::strlen(title)==s_op_left);
+            s = title;
 
           } else { // Multi-variable assignment
             const CImg<char> comma(1,1,1,1,',');
@@ -13164,11 +13165,8 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
               s = ns + 1;
             }
             is_valid_name&=(varnames.width()==varvalues.width() || varvalues.width()==1);
-
-            std::fprintf(stderr,"\nDEBUG : item='%s', sep0 = %d, sep1 = %d, valid = %d\n",
-                         item,(int)sep0,(int)sep1,(int)is_valid_name);
-            varnames.print("VARNAMES");
-            varvalues.print("VARVALUES");
+            if (is_valid_name) CImg<char>(item,s_op_left - item + 1).move_to(name);
+            name.back() = 0; s = name;
           }
 
           // Assign values to variables.
@@ -13178,23 +13176,28 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
               new_value = set_variable(title,s_op_right + 1,sep0,variables_sizes);
               _gmic_argument_text(s_op_right + 1,name.assign(128),is_verbose);
               print(images,0,"Update %s variable %s%c%c='%s' -> %s='%s'.",
-                    *title=='_'?"global":"local",
-                    title,sep0,sep0,name.data(),title,new_value);
+                    *s=='_'?"global":"local",
+                    s,sep0,sep0,name.data(),title,new_value);
               continue;
             } else if (sep0=='+' || sep0=='-' || sep0=='*' || sep0=='/' ||
                        sep0=='%' || sep0=='&' || sep0=='|' || sep0=='^') {
               new_value = set_variable(title,s_op_right + 1,sep0,variables_sizes);
               _gmic_argument_text(s_op_right + 1,name.assign(128),is_verbose);
               print(images,0,"Update %s variable %s%c='%s' -> %s='%s'.",
-                    *title=='_'?"global":"local",
-                    title,sep0,name.data(),title,new_value);
+                    *s=='_'?"global":"local",
+                    s,sep0,name.data(),title,new_value);
               continue;
             } else {
-              set_variable(title,s_op_right + 1,'=',variables_sizes);
-              _gmic_argument_text(s_op_right + 1,name.assign(128),is_verbose);
-              print(images,0,"Set %s variable %s='%s'.",
-                    *title=='_'?"global":"local",
-                    title,name.data());
+              if (varnames)
+                cimglist_for(varnames,l) set_variable(varnames[l],varvalues[l%varnames.width()],'=',variables_sizes);
+              else
+                set_variable(title,s_op_right + 1,'=',variables_sizes);
+              varnames.assign(1);
+              _gmic_argument_text(s_op_right + 1,varnames[0].assign(128),is_verbose);
+              print(images,0,"Set %s variable%s %s='%s'.",
+                    *s=='_'?"global":"local",
+                    varvalues.width()>1?"s":"",
+                    s,varnames[0].data());
               continue;
             }
           }
