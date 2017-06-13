@@ -6295,7 +6295,7 @@ colormap : -check "isint($1) && $1>=0" -skip ${2=1},${3=1}
       -if {!$2} -_colormap $1                              # Just run the median-cut algorithm
       -else
 
-        --_colormap $1
+#        --_colormap $1
 #        {w}
 #      -d
 
