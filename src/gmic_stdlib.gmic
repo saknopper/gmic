@@ -6285,16 +6285,13 @@ colorblind : -check "isint($1) && $1>=0 && $1<=7"
 #@cli : $ image.jpg --colormap[0] 4 --colormap[0] 8 --colormap[0] 16
 #@cli : $$
 colormap : -check "isint($1) && $1>=0" -skip ${2=1},${3=1}
-  -if $1
-    -e[0--3] "Estimate colormap with $1 entries for image$?, by "${-arg\ 1+!$2,k-means,median-cut}" method."
-  -else
-    -e[0--3] "Estimate full colormap for image$?."
+  -if $1 -e[0--3] "Estimate colormap with $1 entries for image$?, by "${-arg\ 1+!$2,k-means,median-cut}" method."
+  -else -e[0--3] "Estimate full colormap for image$?."
   -endif
   -v - -repeat $! -l[$>]
-    -if $1
+    -r {w*h*d},1,1,100%,-1
 
-      # Estimate quantized colormap.
-      -r {w*h*d},1,1,100%,-1
+    -if $1 # Estimate quantized colormap.
       -if {!$2} -_colormap $1                              # Just run the median-cut algorithm
       -else
         m={im} M={iM} -n. 0,255                            # Keep track of the initial statistics
@@ -6311,10 +6308,8 @@ colormap : -check "isint($1) && $1>=0" -skip ${2=1},${3=1}
         -while {$diff>0.5}
         -rm.. -*. {($M-$m)/255} -+. $m                     # Convert colormap values back to initial value range
       -endif
-    -else
 
-      # Extract full colormap.
-      -r {w*h*d},1,1,100%,-1
+    -else # Extract full colormap.
       -repeat {s} -ap "-sort +,x" -s x,0 -ap "-shift 0,0,0,1,2" -done
       -ap "-discard x" -a x
 
@@ -6337,25 +6332,6 @@ _colormap : # Implementation of the median-cut algorithm.
   -rm. -r 1,1,1,100%,2 -a x # Average value in each box and append as final colormap
   --norm. -rv -a c -sort +,x -channels 1,100% # Sort resulting colormap by increasing norm
   -uncommand __colormap
-
-  # -repeat {$1-1}
-  #   $!,1,1,{s},-1
-  #   -repeat {$!-1}
-  #     -skip {"
-  #       V = vectors();
-  #       if (w#"$>"<2, V = -1,
-  #         for (k = 0, k<s, ++k,
-  #           V[k] = variance(crop(#"$>",0,0,0,k,w#"$>",1,1,1));
-  #         )
-  #       );
-  #       I["$>"] = V"}
-  #   -done
-  #   c={[xM,cM]}
-  #   b={([$c])[0]} # Indice of the box with highest variance
-  #   a={([$c])[1]} # Indice of the axis with highest variance inside box 'b'
-  #   -rm. -shift[$b] 0,0,0,{-$a},2 -sort[$b] +,x -shift[$b] 0,0,0,$a,2 -s[$b] x,2 # Split selected box along its median axis
-  # -done
-  # -r 1,1,1,100%,2 -a x # Average value in each box and append as final colormap.
 
 #@cli compose_channels
 #@cli : Compose all channels of each selected image, using specified arithmetic operator (+,-,or,min,...).
