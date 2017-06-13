@@ -149,6 +149,9 @@
         <li><b><font color="black">Packages for Fedora:</font></b>
           should be available <a href="http://www.nosuchhost.net/~cheese/fedora/packages/ALL/x86_64/gmic.html">here</a>.
         </li>
+        <li><b><font color="black">Packages for Gentoo:</font></b>
+          should be available <a href="https://packages.gentoo.org/packages/media-gfx/gmic">here</a>.
+        </li>
       </ul>
 
   </div></div><div id="footer"><img alt="" src="images/footer.jpg" /></div></div>

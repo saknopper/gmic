@@ -2207,8 +2207,8 @@ static DWORD WINAPI gmic_parallel(void *arg)
 #endif // #if cimg_OS!=2
 {
   st_gmic_parallel<T> &st = *(st_gmic_parallel<T>*)arg;
-  unsigned int pos = 0;
   try {
+    unsigned int pos = 0;
     st.gmic_instance.is_debug_info = false;
     st.gmic_instance._run(st.commands_line,pos,*st.images,*st.images_names,
                           *st.parent_images,*st.parent_images_names,
@@ -2602,7 +2602,8 @@ CImgList<char> gmic::commands_line_to_CImgList(const char *const commands_line) 
   }
   if (is_dquoted) {
     CImg<char> str; CImg<char>::string(commands_line).move_to(str); // Discard debug info inside string.
-    char *ptrd = str, c = 0;
+    ptrd = str;
+    c = 0;
     bool _is_debug_info = false;
     cimg_for(str,ptrs,char) {
       c = *ptrs;
@@ -2911,8 +2912,7 @@ gmic& gmic::add_commands(const char *const data_commands,
 
   if (is_debug) {
     CImg<unsigned int> hdist(512);
-    unsigned int nb_commands = 0;
-    cimg_forX(hdist,i) { hdist[i] = commands[i].size(); nb_commands+=commands[i].size(); }
+    cimg_forX(hdist,i) hdist[i] = commands[i].size();
     const CImg<double> st = hdist.get_stats();
     cimg_snprintf(com,com.width(),
                   "Distribution of command hashes: [ %s ], min = %u, max = %u, mean = %g, std = %g.",
@@ -9758,7 +9758,6 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
         if (!std::strcmp("-patchmatch",command)) {
           gmic_substitute_args(true);
           float patch_width, patch_height, patch_depth = 1, nb_iterations = 5, nb_randoms = 5;
-          const CImg<T> *initialization = 0;
           unsigned int is_score = 0;
           *argx = 0; ind0.assign();
           if (((cimg_sscanf(argument,"[%255[a-zA-Z0-9_.%+-]],%f,%c",
@@ -9782,6 +9781,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                (ind0=selection2cimg(argx,images.size(),images_names,"-patchmatch")).height()==1) &&
               patch_width>=1 && patch_height>=1 && patch_depth>=1 &&
               nb_iterations>=0 && nb_randoms>=0 && is_score<=1) {
+            const CImg<T> *initialization = 0;
             patch_width = cimg::round(patch_width);
             patch_height = cimg::round(patch_height);
             patch_depth = cimg::round(patch_depth);
@@ -12298,7 +12298,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
               print(images,0,"Warp image%s with %s-%s displacement field [%u], %s interpolation, "
                     "%s boundary conditions.",
                     gmic_selection.data(),
-                    mode<=2?"backward":"forward",mode%2?"relative":"absolute",
+                    mode<=2?"backward":"forward",(mode%2)?"relative":"absolute",
                     *ind,
                     interpolation==2?"cubic":interpolation==1?"linear":"nearest-neighbor",
                     boundary==0?"dirichlet":boundary==1?"neumann":boundary==2?"periodic":"mirror");
@@ -12307,7 +12307,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
               print(images,0,"Warp image%s with %s-%s displacement field [%u], %s interpolation, "
                     "%s boundary conditions and %d frames.",
                     gmic_selection.data(),
-                    mode<=2?"backward":"forward",mode%2?"relative":"absolute",
+                    mode<=2?"backward":"forward",(mode%2)?"relative":"absolute",
                     *ind,
                     interpolation==2?"cubic":interpolation==1?"linear":"nearest-neighbor",
                     boundary==0?"dirichlet":boundary==1?"neumann":boundary==2?"periodic":"mirror",
@@ -13123,12 +13123,13 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
 
       // Variable assignment.
       if (!is_input_command) {
-        const char *const s_eq = std::strchr(item,'='), *new_value = 0;
+        const char *const s_eq = std::strchr(item,'=');
         if (s_eq) {
           sep0 = s_eq>item?*(s_eq - 1):0;
           sep1 = s_eq>item + 1?*(s_eq - 2):0;
           if (cimg_sscanf(item,"%255[a-zA-Z0-9_]",title)==1 && (*title<'0' || *title>'9')) {
             pattern = (unsigned int)std::strlen(title);
+            const char *new_value = 0;
             if ((sep0=='<' || sep0=='>') && sep1==sep0 && s_eq==item + pattern + 2) {
               new_value = set_variable(title,s_eq + 1,sep0,variables_sizes);
               _gmic_argument_text(s_eq + 1,name.assign(128),is_verbose);
