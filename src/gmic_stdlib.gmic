@@ -6295,21 +6295,21 @@ colormap : -check "isint($1) && $1>=0" -skip ${2=1},${3=1}
 
       # Estimate quantized colormap.
       -r {w*h},1,1,100%,-1
-      -if {!$2} -_colormap $1                              # Just run the median-cut algorithm.
+      -if {!$2} -_colormap $1                              # Just run the median-cut algorithm
       -else
-        m={im} M={iM} -n. 0,255                            # Keep track of the initial statistics.
-        --_colormap $1 --index.. . -*. 256 -+[-3,-1]       # Initialize k-means labels and add them on the image.
+        m={im} M={iM} -n. 0,255                            # Keep track of the initial statistics
+        --_colormap $1 --index.. . -*. 256 -+[-3,-1]       # Initialize k-means labels and add them on the image
 
         # Start k-means iterations.
         -do
-          -repeat {s}                                      # Estimate new colormap.
+          -repeat {s}                                      # Estimate new colormap
             -sh[0] $> --histogram. {$1*256},0,{$1*256-1} -rm..
             -i.. 256,1,1,1,'x' -r.. {w},1,1,1,0,2 -*.. . -r[-2,-1] $1,1,1,1,2 -max. 0.01 -/[-2,-1]
           -done -a[2--1] c
-          --.. . -abs.. diff={{-2,is}/w} -rm..             # Compute colormap difference.
-          -&.. 255 --index.. .,0,0 -*. 256 -+[-3,-1]       # Compute new k-means labels.
+          --.. . -abs.. diff={{-2,is}/w} -rm..             # Compute colormap difference
+          -&.. 255 --index.. .,0,0 -*. 256 -+[-3,-1]       # Compute new k-means labels
         -while {$diff>0.5}
-        -rm.. -*. {($M-$m)/255} -+. $m                     # Convert colormap values back to initial value range.
+        -rm.. -*. {($M-$m)/255} -+. $m                     # Convert colormap values back to initial value range
       -endif
     -else
 
@@ -6325,13 +6325,19 @@ colormap : -check "isint($1) && $1>=0" -skip ${2=1},${3=1}
 
 _colormap : # Implementation of the median-cut algorithm.
   -repeat {$1-1}
-    $!,{s} -repeat {$!-1},n # Compute box variances along all axes and find highest one (without a single element).
-      -repeat {$n,s} -sh[$n] $> -=.. {w>1?iv:-1},$n,$> -rm. -done
+    $!,1,1,{s}
+    -repeat {$!-1}
+      -skip {"
+        V = vectors();
+        for (k = 0, k<s, ++k,
+          V[k] = variance(crop(#"$>",0,0,0,k,w#"$>",1,1,1));
+        );
+        I["$>"] = V"}
     -done
-    c={[xM,yM]}
-    b={x=[$c];x[0]} # Indice of the box with highest variance.
-    a={x=[$c];x[1]} # Indice of the axis with highest variance inside box 'b'.
-    -rm. -shift[$b] 0,0,0,{-$a},2 -sort[$b] +,x -shift[$b] 0,0,0,$a,2 -s[$b] x,2 # Split selected box along its median axis.
+    c={[xM,cM]}
+    b={([$c])[0]} # Indice of the box with highest variance
+    a={([$c])[1]} # Indice of the axis with highest variance inside box 'b'
+    -rm. -shift[$b] 0,0,0,{-$a},2 -sort[$b] +,x -shift[$b] 0,0,0,$a,2 -s[$b] x,2 # Split selected box along its median axis
   -done
   -r 1,1,1,100%,2 -a x # Average value in each box and append as final colormap.
 

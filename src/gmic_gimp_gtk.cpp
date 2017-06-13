@@ -1654,7 +1654,7 @@ CImgList<char> update_filters(const bool try_net_update, const bool is_silent=fa
   CImg<char> label(256);
   indice_faves = gmic_entries.size();
   if (file_gmic_faves) {
-    for (unsigned int line_nb = 1; std::fscanf(file_gmic_faves," %[^\n]",line.data())==1; ++line_nb) {
+    for (unsigned int line_nb = 1; std::fscanf(file_gmic_faves," %4095[^\n]",line.data())==1; ++line_nb) {
       char sep = 0;
       if (cimg_sscanf(line,"{%255[^}]}{%255[^}]}{%255[^}]}{%255[^}]%c",
                       label.data(),entry.data(),command.data(),preview_command.data(),&sep)==5 && sep=='}') {
@@ -3668,7 +3668,6 @@ void create_parameters_gui(const bool reset_params) {
       } else break;
     }
 
-    unsigned int current_table_line = 0;
     if (!nb_arguments) { // Filter requires no parameters -> 1x1 table with default message.
       table = gtk_table_new(1,1,false);
       gtk_widget_show(table);
@@ -3694,8 +3693,11 @@ void create_parameters_gui(const bool reset_params) {
       // Parse arguments list and add recognized one to the table.
       if (event_infos) delete[] event_infos;
       event_infos = new void*[2*nb_arguments];
-      unsigned int current_argument = 0;
       const bool is_fave = filter>=indice_faves;
+      unsigned int
+        current_argument = 0,
+        current_table_line = 0;
+
       for (const char *argument = gmic_arguments[filter].data(); *argument; ) {
         int err = cimg_sscanf(argument,"%255[^=]=%31[ a-zA-Z_](%65535[^)]",
                               argument_name.data(),_argument_type.data(),&(argument_arg[0]=0));
@@ -3833,12 +3835,13 @@ void create_parameters_gui(const bool reset_params) {
             GtkWidget *const combobox = gtk_combo_box_new_text();
             gtk_widget_show(combobox);
             CImg<char> s_entry(1024); *s_entry = 0;
-            char end = 0; int err = 0;
+            char end = 0;
             unsigned int value = 0;
             const char *entries = argument_arg;
             if (cimg_sscanf(entries,"%u",&value)==1)
               entries+=cimg_snprintf(s_entry,s_entry.width(),"%u",value) + 1;
             while (*entries) {
+              int err = 0;
               if ((err = cimg_sscanf(entries,"%1023[^,]%c",s_entry.data(),&end))>0) {
                 entries += std::strlen(s_entry) + (err==2?1:0);
                 cimg::strpare(s_entry,' ',false,true);
