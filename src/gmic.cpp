@@ -13153,21 +13153,6 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             is_valid_name&=(item + std::strlen(title)==s_op_left);
 
           } else { // Multi-variable assignment
-            s = s_op_right + 1; // Parse sequence of values
-            if (!*s) CImg<char>(1,1,1,1,0).move_to(varvalues);
-            else {
-              const char *const s_end = item + std::strlen(item);
-              while (s<s_end) {
-                const char *ns = std::strchr(s,',');
-                if (!ns) ns = s_end;
-                CImg<char>(s,ns - s + 1).move_to(name);
-                name.back() = 0;
-                name.move_to(varvalues);
-                s = ns + 1;
-              }
-              if (*(s_end - 1)==',') CImg<char>(1,1,1,1,0).move_to(varvalues);
-            }
-
             s = item; // Parse sequence of variable names
             while (s<s_op_left) {
               const char *ns = std::strchr(s,',');
@@ -13182,6 +13167,23 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             }
             is_multiarg = varnames.width()==varvalues.width();
             is_valid_name&=(is_multiarg || varvalues.width()==1);
+
+            if (is_valid_name) {
+              s = s_op_right + 1; // Parse sequence of values
+              if (!*s) CImg<char>(1,1,1,1,0).move_to(varvalues);
+              else {
+                const char *const s_end = item + std::strlen(item);
+                while (s<s_end) {
+                  const char *ns = std::strchr(s,',');
+                  if (!ns) ns = s_end;
+                  CImg<char>(s,ns - s + 1).move_to(name);
+                  name.back() = 0;
+                  name.move_to(varvalues);
+                  s = ns + 1;
+                }
+                if (*(s_end - 1)==',') CImg<char>(1,1,1,1,0).move_to(varvalues);
+              }
+            }
           }
 
           // Assign or update values of variables.
