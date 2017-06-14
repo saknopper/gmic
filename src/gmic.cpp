@@ -2793,9 +2793,10 @@ const char *gmic::set_variable(const char *const name, const char *const value,
       if (!is_name_found)
         error("Operation '.=' requested on undefined variable '%s'.",
               name);
-//      __variables[ind].print("DEBUG");
-      ((CImg<char>::string(__variables[ind],false,true),CImg<char>::string(value,true,true))>'x').
-        move_to(__variables[ind]);
+      if (*value) {
+        --__variables[ind]._width;
+        __variables[ind].append(CImg<char>::string(value,true,true),'x');
+      }
     } else {
       const char *const s_operation = operation=='+'?"+":operation=='-'?"-":operation=='*'?"*":operation=='/'?"/":
         operation=='%'?"%":operation=='&'?"&":operation=='|'?"|":operation=='^'?"^":
