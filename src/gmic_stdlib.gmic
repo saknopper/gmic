@@ -24617,6 +24617,82 @@ fx_posterize :
 fx_posterize_preview :
   -gui_split_preview "-fx_posterize $*",$-1,0,1
 
+#@gui Quadtree painting : fx_paint_quadtree, fx_paint_quadtree_preview(0)
+#@gui : Precision = int(1024,2,4096)
+#@gui : Regularity = float(0.4,0,2)
+#@gui : Smoothness (%) = float(10,0,100)
+#@gui : Primary radius = float(1.2,0,2)
+#@gui : Secondary radius = float(0.5,0,2)
+#@gui : Anisotropy = float(2,0,4)
+#@gui : Outline = int(0,0,16)
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
+#@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>12/29/2010</i>.</small>")
+fx_paint_quadtree :
+  -v - -m "_pqt : -sh 3 -u {w>1&&h>1?iv*(w*h)^$2:0} -k[0]"
+  -repeat $! -l[$>]
+    -to_rgb wh={[w,h]} -r {u=max(w,h);[u,u]},1,100%,0,1,0.5,0.5
+
+    # Compute quadtree decomposition.
+    --norm. -a c
+    -_pqt (0,0,{w-1},{h-1},${})
+    -repeat $1
+      --columns. 100% n={yM} -rm.
+      x0={i(0,$n)} y0={i(1,$n)} x1={i(2,$n)} y1={i(3,$n)}
+      xc={round(($x1+$x0)/2)} yc={round(($y1+$y0)/2)} xc1={$xc-1} yc1={$yc-1}
+      B0=$x0,$y0,$xc1,$yc1 --crop[0] $B0 -_pqt. B0=$B0,${} -rm.
+      B1=$xc,$y0,$x1,$yc1 --crop[0] $B1 -_pqt. B1=$B1,${} -rm.
+      B2=$x0,$yc,$xc1,$y1 --crop[0] $B2 -_pqt. B2=$B2,${} -rm.
+      B3=$xc,$yc,$x1,$y1 --crop[0] $B3 -_pqt. B3=$B3,${} -rm.
+      -r. 100%,{h+3},1,1,0 ($B0) -j.. .,0,$n -rm. ($B1;$B2;$B3) -j.. .,0,{-2,h-3} -rm.
+    -done
+
+    # Estimate useful characteristics for each quad.
+    -channels[0] 0,2 --structuretensors[0] -b. {5*$3%}% -a[0,-1] c
+    -r. {w+7},100%,1,1,0
+    -repeat {h}
+      x0={i(0,$>)} y0={i(1,$>)} x1={i(2,$>)} y1={i(3,$>)}
+      --crop[0] $x0,$y0,$x1,$y1
+      -l. -s c ({[ia#0,ia#1,ia#2,ia#3,ia#4,ia#5,w*h]}) -k. -endl
+      -j.. .,5,$> -rm.
+    -done
+    -mirror. x -sort. -,y -mirror. x # Sort by decreasing quad area
+
+    # Resynthetize image.
+    -permute. cyzx
+    [0],[0],1,4
+    -f.. ">"${-math_lib}"
+      const outline = $7;
+      P = I;
+      X0 = P[0,2];
+      X1 = P[2,2];
+      Xc = (X0 + X1)/2;
+      R = X1[0] - X0[0];
+      r = $5*R;
+      R*=$4;
+      col = [ P[5,3],255 ];
+      colo = [ 0,0,0,255 ];
+
+      T = [ P[8],P[9],P[9],P[10] ];
+      eig = eig(T);
+      anisotropy = (1 + eig[1])/(1 + eig[0]);
+
+      r *= anisotropy^$6;
+      angle = atan2(eig[5],eig[4])*180/pi;
+      if (outline>0, draw_ellipse(#-1,Xc,R + outline,r + outline,angle,1,colo));
+      draw_ellipse(#-1,Xc,R,r,angle,1,col);
+      I"
+
+    -channels[0] 0,2
+    -guided[0] .,10,10 -blend[0,-1] alpha
+    -k[0] -r $wh,1,100%,0,0,0.5,0.5
+  -endl -done
+  -uncommand _pqt -v +
+
+
+fx_paint_quadtree_preview :
+  -gui_split_preview "-fx_paint_quadtree $*",$-1
+
+
 #@gui Rodilius : fx_rodilius, fx_rodilius_preview(1)
 #@gui : Amplitude = float(10,0,30)
 #@gui : Thickness = float(10,0,100)
