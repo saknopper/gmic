@@ -13153,12 +13153,22 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             is_valid_name&=(item + std::strlen(title)==s_op_left);
 
           } else { // Multi-variable assignment
-            const CImg<char> comma(1,1,1,1,',');
-            CImg<char>(s_op_right + 1,std::strlen(item) - (s_op_right - item)).
-              get_split(comma,0,false).move_to(varvalues);
-            cimglist_for(varvalues,l) if (varvalues[l].back())
-              varvalues[l].resize(1,varvalues[l].height() + 1,1,1,0);
-            s = item;
+            s = s_op_right + 1; // Parse sequence of values
+            if (!*s) CImg<char>(1,1,1,1,0).move_to(varvalues);
+            else {
+              const char *const s_end = item + std::strlen(item);
+              while (s<s_end) {
+                const char *ns = std::strchr(s,',');
+                if (!ns) ns = s_end;
+                CImg<char>(s,ns - s + 1).move_to(name);
+                name.back() = 0;
+                name.move_to(varvalues);
+                s = ns + 1;
+              }
+              if (*(s_end - 1)==',') CImg<char>(1,1,1,1,0).move_to(varvalues);
+            }
+
+            s = item; // Parse sequence of variable names
             while (s<s_op_left) {
               const char *ns = std::strchr(s,',');
               if (ns==s) { is_valid_name = false; break; }
@@ -13189,10 +13199,10 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                     cimg::strellipsize(name,80,true);
                     cimg::strellipsize(varnames[l],80,true);
                     if (sep0=='<' || sep0=='>')
-                      cimg_snprintf(message,message.width(),"%s%c%c=%s -> %s, ",
+                      cimg_snprintf(message,message.width(),"'%s%c%c=%s'->'%s', ",
                                     varnames[l].data(),sep0,sep0,varvalues[is_multiarg?l:0].data(),name.data());
                     else
-                      cimg_snprintf(message,message.width(),"%s%c=%s -> %s, ",
+                      cimg_snprintf(message,message.width(),"'%s%c=%s'->'%s', ",
                                     varnames[l].data(),sep0,varvalues[is_multiarg?l:0].data(),name.data());
                     CImg<char>::string(message,false).move_to(varnames[l]);
                   }
@@ -13211,11 +13221,11 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                   cimg::strellipsize(title,80,true);
                   _gmic_argument_text(s_op_right + 1,name.assign(128),is_verbose);
                   if (sep0=='<' || sep0=='>')
-                    print(images,0,"Update %s variable %s%c%c=%s -> %s.",
+                    print(images,0,"Update %s variable '%s%c%c=%s'->'%s'.",
                           *title=='_'?"global":"local",
                           title,sep0,sep0,name.data(),new_value);
                   else
-                    print(images,0,"Update %s variable %s%c=%s -> %s.",
+                    print(images,0,"Update %s variable '%s%c=%s'->'%s'.",
                           *title=='_'?"global":"local",
                           title,sep0,name.data(),new_value);
                 }
@@ -13227,7 +13237,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                   if (is_verbose) {
                     if (is_multiarg || !l) cimg::strellipsize(varvalues[l],80,true);
                     cimg::strellipsize(varnames[l],80,true);
-                    cimg_snprintf(message,message.width(),"%s=%s, ",
+                    cimg_snprintf(message,message.width(),"'%s=%s', ",
                                   varnames[l].data(),varvalues[is_multiarg?l:0].data());
                     CImg<char>::string(message,false).move_to(varnames[l]);
                   }
@@ -13245,7 +13255,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                 if (is_verbose) {
                   cimg::strellipsize(title,80,true);
                   _gmic_argument_text(s_op_right + 1,name.assign(128),is_verbose);
-                  print(images,0,"Set %s variable %s=%s.",
+                  print(images,0,"Set %s variable '%s=%s'.",
                         *title=='_'?"global":"local",
                         title,name.data());
                 }
