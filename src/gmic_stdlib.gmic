@@ -24628,7 +24628,7 @@ fx_posterize_preview :
 #@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>12/29/2010</i>.</small>")
 fx_paint_quadtree :
-  -v - -m "_pqt : -sh 3 -u {w>1&&h>1?iv*(w*h)^$2:0} -k[0]"
+  -v - -m "_pqt : -sh 3 -u {w>1&&h>1?iv*(w*h)^$2:-1} -k[0]"
   -repeat $! -l[$>]
     -to_rgb wh={[w,h]} -r {u=max(w,h);[u,u]},1,100%,0,1,0.5,0.5
 
@@ -24663,10 +24663,17 @@ fx_paint_quadtree :
     -f.. ">"${-math_lib}"
       const outline = $7;
       P = I;
-      X0 = P[0,2];
-      X1 = P[2,2];
-      Xc = (X0 + X1)/2;
-      R = X1[0] - X0[0];
+      Xpp = P[0,2];
+      Xnn = P[2,2];
+      Xnp = [ Xnn[0],Xpp[1] ];
+      Xpn = [ Xpp[0],Xnn[1] ];
+      Xcc = (Xpp + Xnn)/2;
+      Xcp = [ Xcc[0],Xpp[1] ];
+      Xnc = [ Xnn[0],Xcc[1] ];
+      Xcn = [ Xcc[0],Xnn[1] ];
+      Xpc = [ Xpp[0],Xcc[1] ];
+
+      R = (Xnn[0] - Xpp[0])/2;
       r = $5*R;
       R*=$4;
       col = [ P[5,3],255 ];
@@ -24675,11 +24682,23 @@ fx_paint_quadtree :
       T = [ P[8],P[9],P[9],P[10] ];
       eig = eig(T);
       anisotropy = (1 + eig[1])/(1 + eig[0]);
+      r*=anisotropy^$6;
 
-      r *= anisotropy^$6;
       angle = atan2(eig[5],eig[4])*180/pi;
-      if (outline>0, draw_ellipse(#-1,Xc,R + outline,r + outline,angle,1,colo));
-      draw_ellipse(#-1,Xc,R,r,angle,1,col);
+#      if (outline>0, draw_ellipse(#-1,Xc,R + outline,r + outline,angle,1,colo));
+#      draw_ellipse(#-1,Xc,R,r,angle,1,col);
+
+#draw_rectangle(#-1,X0,X2,1,col);
+
+if ((angle>=0 && angle<90) || angle<-90,
+  draw_triangle(#-1,Xpp,Xnp,Xnn,1,col);
+  draw_triangle(#-1,Xpp,Xnn,Xpn,1,col/1.5),
+
+  draw_triangle(#-1,Xnp,Xnn,Xpn,1,col);
+  draw_triangle(#-1,Xnp,Xpp,Xpn,1,col/2)
+);
+
+
       I"
 
     -channels[0] 0,2
