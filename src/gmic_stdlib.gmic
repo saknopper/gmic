@@ -24625,7 +24625,7 @@ fx_posterize_preview :
 #@gui : Primary radius = float(3,0,5)
 #@gui : Secondary radius = float(1.5,0,5)
 #@gui : Anisotropy = float(1,0,4)
-#@gui : Only leafs = bool(0)
+#@gui : Only leafs = bool(1)
 #@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>06/15/2017</i>.</small>")
 fx_quadtree :
