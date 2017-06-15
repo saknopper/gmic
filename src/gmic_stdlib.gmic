@@ -24660,12 +24660,21 @@ fx_quadtree :
     -done
     -shift. 2,0,0,0,2 -sort. +,y levelmax={i(0,h-1)} -shift. -2,0,0,0,2 # Sort by quadtree level order
 
-    # Estimate image average in each quad.
+    # Estimate data average in each quad.
     -channels[0] 0,2 --structuretensors[0] -a[0,-1] c
+    -cumulate[0] xy # Use cumulative image for fast averaging
     -r. {w+6},100%,1,1,0
     -repeat {h}
       x0,y0,x1,y1={crop(0,$>,4,1)}
-      --crop[0] $x0,$y0,$x1,$y1,3 -r. 1,1,1,100%,2 -y. x # Color and diff tensor average
+      ({0,"
+        const px0 = "$x0" - 1;
+        const py0 = "$y0" - 1;
+        const x1 = min(w - 1,"$x1");
+        const y1 = min(h - 1,"$y1");
+        const w = x1 - px0;
+        const h = y1 - py0;
+        (I(x1,y1) + I(px0,py0) - I(x1,py0) - I(px0,y1))/(w*h)
+      "})
       -j.. .,{-2,w-6},$> -rm.
     -done
 
