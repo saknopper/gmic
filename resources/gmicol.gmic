@@ -194,6 +194,7 @@ gmicol_brushify_preview :
 #@web clone("Polygonize [energy]")
 #@web clone("Poster edges")
 #@web clone("Posterize")
+#@web clone("Quadtree variations")
 #@web clone("Rodilius")
 #@web clone("Sharp abstract")
 #@web clone("Smooth abstract")
