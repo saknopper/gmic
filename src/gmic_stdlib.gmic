@@ -676,7 +676,7 @@ _help_usage :
 \n       "${c}"ror()"$n" (right bit rotation)"${c}", round(), sign(), sin(), sinc(), sinh(), sqrt(), std(),
 \n       sum(), tan(), tanh(), variance(), xor()"$n".
 \n
-\n       . '"${c}"atan2(x,y)"$n"' is the version of '"${c}"atan()"$n"' with two arguments '"${g}"y"$n"' and '"${g}"x"$n"' (as in C/C++).
+\n       . '"${c}"atan2(y,x)"$n"' is the version of '"${c}"atan()"$n"' with two arguments '"${g}"y"$n"' and '"${g}"x"$n"' (as in C/C++).
 \n       . '"${c}"permut(k,n,with_order)"$n"' computes the number of permutations of "${g}"k"$n" objects from a set of
 \n          "${g}"n"$n" objects.
 \n       . '"${c}"gauss(x,_sigma)"$n"' returns '"${g}"exp(-x^2/(2*s^2))/sqrt(2*pi*sigma^2)'"$n".
