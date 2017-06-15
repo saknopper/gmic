@@ -24662,8 +24662,7 @@ fx_quadtree :
 
     # Estimate data average in each quad.
     -channels[0] 0,2 --structuretensors[0] -a[0,-1] c
-
-#    -/[0] 255 -cumulate[0] xy # Use cumulative image for fast averaging
+#    -cumulate[0] xy # Use cumulative image for fast averaging
     -r. {w+6},100%,1,1,0
     -repeat {h}
       x0,y0,x1,y1={crop(0,$>,4,1)}
@@ -24675,8 +24674,7 @@ fx_quadtree :
       #   const w = x1 - px0;
       #   const h = y1 - py0;
       #   (I(x1,y1) + I(px0,py0) - I(x1,py0) - I(px0,y1))/(w*h)
-      # "}) -*. 255
-
+      # "})
       --crop[0] $x0,$y0,$x1,$y1,3 -r. 1,1,1,100%,2 -y. x
       -j.. .,{-2,w-6},$> -rm.
     -done
