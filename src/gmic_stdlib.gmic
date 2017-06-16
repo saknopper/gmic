@@ -22999,7 +22999,7 @@ _gui_download_all_data :
 #@gui : note = note{"\n<span foreground="purple" underline="single">Supporters:</span>"}
 #@gui : note = note{" <b>-</b> A big hug goes to these friends who supported the project:"}
 #@gui : note = note{"<i>
-#@gui : Arleta Lesniewska,
+#@gui : <a href="https://www.behance.net/kontaktarl1e0a">Arleta Lesniewska</a>,
 #@gui : Nicola Giaccobe,
 #@gui : Helmut M&#252;hleisen,
 #@gui : Paul Buckley,
