@@ -430,6 +430,8 @@ debug:
 gimp : gimp_qt
 
 gimp_gtk:
+	@echo "\n** Warning: The GTK-based interface of the G'MIC plug-in for GIMP is now obsolete, please compile the Qt-based interface instead!"
+	@echo "** For this purpose, type: $$ make gimp\n"
 	$(MAKE) "CFLAGS+=$(GMIC_GIMP_GTK_CFLAGS) $(OPT_CFLAGS)" "LIBS+=$(GMIC_GIMP_GTK_LIBS)" gmic_gimp_gtk
 
 gmicol:
@@ -474,14 +476,14 @@ gmic_qt: CImg.h gmic_stdlib.h gmic_qt_path
 gmic_qt_path:
 	@if [ ! -d ../gmic-qt ]; then \
 	  if [ ! -d ../../gmic-qt ]; then \
-	    echo "\n*** Warning: 'gmic-qt' folder was not found !"; \
-	    echo "*** It is mandatory to compile the G'MIC plug-in for GIMP 'gmic_gimp_qt',"; \
-	    echo "*** as well as the standalone Qt-based interface 'gmic_qt'."; \
-            echo "*** Trying to retrieve it, with: $$ cd ../../ && git clone https://github.com/c-koi/gmic-qt.git\n"; \
+	    echo "\n** Warning: 'gmic-qt' folder was not found !"; \
+	    echo "** It is mandatory to compile the G'MIC plug-in for GIMP 'gmic_gimp_qt',"; \
+	    echo "** as well as the standalone Qt-based interface 'gmic_qt'."; \
+            echo "** Trying to retrieve it, with: $$ cd ../../ && git clone https://github.com/c-koi/gmic-qt.git\n"; \
 	    if cd ../../ && git clone https://github.com/c-koi/gmic-qt.git; then \
-              echo "\n*** Success !\n"; \
+              echo "\n** Success !\n"; \
 	    else \
-              echo "\n*** Fatal error: Failed to retrieve folder 'gmic-qt', compilation will probably ends shortly !\n"; \
+              echo "\n** Fatal error: Failed to retrieve folder 'gmic-qt', compilation will probably ends shortly !\n"; \
 	    fi \
 	  else ln -fs ../gmic-qt ..; \
          fi \
