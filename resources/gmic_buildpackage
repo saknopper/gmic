@@ -231,7 +231,7 @@ if [ "$DIST" != "Ubuntu 16.04.2 LTS" ] || [ "$BITS" != "x86_64" ] ; then
         tar zxvf deb_${TARFILE}.gz &&
         find gmic-${VERSION}${SUFFIX} -exec touch {} ;
     cd $DIR/src
-    sed "s/\$(MAKE) cli gimp_gtk lib/\$(MAKE) cli gimp_gtk lib libc zart/g" Makefile > /tmp/Makefile && mv /tmp/Makefile Makefile
+    sed "s/\$(MAKE) cli gimp lib/\$(MAKE) cli gimp_gtk lib libc zart/g" Makefile > /tmp/Makefile && mv /tmp/Makefile Makefile
     if [ -f $HOME/is_qt5 ]; then
         sed "s/\$(MAKE) cli gimp_gtk lib libc zart/\$(MAKE) cli lib libc zart gmic_qt gimp_qt/g" Makefile > /tmp/Makefile && mv /tmp/Makefile Makefile
     fi
