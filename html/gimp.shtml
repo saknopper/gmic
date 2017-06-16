@@ -26,12 +26,6 @@
             Of course, the plug-in is highly customizable and it is possible to add your own custom <b><font color="#000066">G'MIC</font></b>-written
             filters in it.<br/><br/>
 
-            The <b><font color="#000066">G'MIC</font></b> plug-in comes in two flavors: <i>Qt</i>-based and <i>GTK</i>-based. It is highly recommended
-            to use the <i>Qt</i>-based interface when possible, as it has much better features (large and resizable preview, filter search engine, etc.).
-            The <i>GTK</i>-based interface is a sequel of older <b><font color="#000066">G'MIC</font></b> versions
-            and will be probably discontinued in the future.
-            <br/><br/>
-
             Here you will find pre-compiled binaries of the plug-in for common architectures. Pick one archive below, and run the installer or unzip the file contents
             into your <a href="http://www.gimp.org">GIMP</a> plug-in directory.
             If you want to build the plug-in directly from the source, <a href="download.shtml#source">follow these instructions</a>.
@@ -44,30 +38,23 @@
                   <td><a href="http://gmic.eu/files/prerelease_windows/gmic_gimp_qt_win64.exe"><img alt="" src="img/download_win64.png" border="0"></img></a></td><td>&nbsp;&nbsp;</td>
                   <td><a href="http://gmic.eu/files/prerelease_windows/gmic_gimp_qt_win64.exe"><font size="3">G'MIC plug-in for Windows (Qt interface, 64bits)</font></a><br/>
                     <b>installer</b><br/>
-                    alternative 1: <a href="http://gmic.eu/files/prerelease_windows/gmic_gimp_qt_win64.zip">zip file (Qt interface)</a><br/>
-                    alternative 2: <a href="http://gmic.eu/files/prerelease_windows/gmic_gimp_gtk_win64.exe">installer (GTK interface)</a><br/>
-                    alternative 3: <a href="http://gmic.eu/files/prerelease_windows/gmic_gimp_gtk_win64.zip">zip file (GTK interface)</a><br/><br/></td>
+                    alternative: <a href="http://gmic.eu/files/prerelease_windows/gmic_gimp_qt_win64.zip">zip file (Qt interface)</a><br/>
                 </tr>
                 <tr>
                   <td><a href="http://gmic.eu/files/prerelease_windows/gmic_gimp_qt_win32.exe"><img alt="" src="img/download_win32.png" border="0"></img></a></td><td>&nbsp;&nbsp;</td>
                   <td><a href="http://gmic.eu/files/prerelease_windows/gmic_gimp_qt_win32.exe"><font size="3">G'MIC plug-in for Windows (Qt interface, 32bits)</font></a><br/>
                     <b>installer</b><br/>
-                    alternative 1: <a href="http://gmic.eu/files/prerelease_windows/gmic_gimp_qt_win32.zip">zip file (Qt interface)</a><br/>
-                    alternative 2: <a href="http://gmic.eu/files/prerelease_windows/gmic_gimp_gtk_win32.exe">installer (GTK interface)</a><br/>
-                    alternative 3: <a href="http://gmic.eu/files/prerelease_windows/gmic_gimp_gtk_win32.zip">zip file (GTK interface)</a><br/><br/></td>
+                    alternative: <a href="http://gmic.eu/files/prerelease_windows/gmic_gimp_qt_win32.zip">zip file (Qt interface)</a><br/>
                 </tr>
                 <tr>
                   <td><a href="http://gmic.eu/files/prerelease_linux/gmic_gimp_qt_linux64.zip"><img alt="" src="img/download_linux64.png" border="0"></img></a></td><td>&nbsp;&nbsp;</td>
                   <td><a href="http://gmic.eu/files/prerelease_linux/gmic_gimp_qt_linux64.zip"><font size="3">G'MIC plug-in for Linux (Qt interface, 64bits)</font></a><br/>
                     <b>zip file</b><br/>
-                    alternative 1: <a href="http://gmic.eu/files/prerelease_linux/gmic_gimp_gtk_linux64.zip">zip file (GTK interface)</a><br/>
-                    alternative 2: <a href="http://gmic.eu/files/prerelease_linux/gmic_gimp_gtk_yakkety64.zip">version for Ubuntu 16.10 <i>Yakkety</i> (GTK interface)</a><br/><br/></td>
                 </tr>
                 <tr>
                   <td><a href="http://gmic.eu/files/prerelease_linux/gmic_gimp_qt_linux32.zip"><img alt="" src="img/download_linux32.png" border="0"></img></a></td><td>&nbsp;&nbsp;</td>
                   <td><a href="http://gmic.eu/files/prerelease_linux/gmic_gimp_qt_linux32.zip"><font size="3">G'MIC plug-in for Linux (Qt interface, 32bits)</font></a><br/>
                     <b>zip file</b><br/>
-                    alternative 1: <a href="http://gmic.eu/files/prerelease_linux/gmic_gimp_gtk_linux32.zip">zip file (GTK interface)</a><br/><br/></td>
                 </tr>
                 <tr>
                   <td><a href="http://karo03.bplaced.de/gmic/release/"><img alt="" src="img/download_macosx.png" border="0"></img></a></td><td>&nbsp;&nbsp;</td>
