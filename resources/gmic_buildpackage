@@ -365,7 +365,7 @@ cd ..
 echo " - Construct clean version of the G'MIC directory."
 rm -rf $DIR
 mkdir $DIR
-cp -Lrf COPYING README CMakeLists.txt $DIR
+cp -Lrf COPYING README $DIR
 mkdir $DIR/src
 cd src
 cp -Lrf Makefile CImg.h gmic.cpp gmic.h gmic_stdlib.h gmic_stdlib.gmic gmic_gimp_gtk.cpp gmic_in_script.scm use_libgmic.cpp gmic_libc.cpp gmic_libc.h use_libcgmic.c $DIR/src
@@ -380,6 +380,7 @@ cd resources
 cp -Lrf gmic_bashcompletion.sh $DIR/resources
 cp -Lrf gmic_film_cluts.gmz $DIR/resources
 cp -Lrf debian $DIR
+cp -Lrf CMakeLists.txt $DIR/resources
 cd ..
 cd zart
 qmake zart.pro
