@@ -355,6 +355,7 @@ cd ..
 echo " - Upload G'MIC web page."
 cd html
 lftp ftp://$GMIC_LOGIN:$GMIC_PASSWD@ftp.gmic.eu -e "mirror -RL . /www/gmic/ ; quit"
+lftp ftp://$GMIC_LOGIN:$GMIC_PASSWD@ftp.gmic.eu -e "put -O \"/www/gmic/tutorial\" header.html; quit"
 rm -f gmic_stdlib.gmic gmic_stdlib.$SVERSION
 cd ..
 #exit
