@@ -98,6 +98,7 @@
               </tr>
             </table>
 
+
             <br/>Other open-source projects are known to use some of the <b><font color="#000066">G'MIC</font></b> features:
             <ul>
               <li><b><a href="http://ekd.tuxfamily.org/">EKD</a></b>, a free software dedicated to postproduction processing for videos and images.</li>
@@ -106,10 +107,13 @@
               <li><b><a href="http://aferrero2707.github.io/PhotoFlow/">Photoflow</a></b>, a fully non-destructive photo retouching program.</li>
               <li><b><a href="http://veejayhq.net/">Veejay</a></b>, a visual instrument and realtime video sampler.</li>
             </ul>
-            <p>Purchasing <b>proprietary licenses</b> for using <b><font color="#000066">G'MIC</font></b> in closed-source
-            applications is possible. <a href="http://tschumperle.users.greyc.fr">Contact us</a> if you are interested in getting one.</p>
-
-
+            <p>
+              The <font color="#000066"><b>G'MIC</b></font> source code has been registered to the <a href="http://app.legalis.net/paris/">APP</a>
+              (French Agency for the Protection of Programs) by the <a href="http://www.cnrs.fr/index.php">CNRS</a>,
+              under registration number:<br/>
+              <i>IDDN.FR.001.170024.000.S.P.2017.000.21000.</i><br/>
+              Purchasing <b>proprietary licenses</b> for using <b><font color="#000066">G'MIC</font></b> in closed-source
+              applications is possible. <a href="http://tschumperle.users.greyc.fr">Contact us</a> if you are interested in getting one.</p>
           </td>
       </tr></table>
 
@@ -290,6 +294,7 @@
         </table>
       </center>
   </div></div><div id="footer"><img alt="" src="images/footer.jpg" /></div></div>
+
 
 <!--#include file="copyright.html" -->
 <!--#include file="footer.html" -->
