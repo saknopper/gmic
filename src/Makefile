@@ -394,25 +394,23 @@ GMICOL_LIBS = $(MANDATORY_LIBS) $(OPENMP_LIBS) $(PARALLEL_LIBS) $(PNG_LIBS) $(JP
 #--------------------------
 
 # Main default entries.
-print-%: ; @echo $*=$($*)
-
 all: CImg.h gmic_stdlib.h
 ifeq ($(OS),Unix)
 	@echo "**"
 	@echo "** Start building G'MIC with default Unix configuration."
 	@echo "**"
-	$(MAKE) cli gimp_gtk lib
+	$(MAKE) cli gimp lib
 else
 ifeq ($(OS),Darwin)
 	@echo "**"
 	@echo "** Start building G'MIC with default MacOSX configuration."
 	@echo "**"
-	$(MAKE) cli gimp_gtk lib
+	$(MAKE) cli gimp lib
 else
 	@echo "**"
 	@echo "** Start building G'MIC with default Windows configuration."
 	@echo "**"
-	$(MAKE) cli gimp_gtk
+	$(MAKE) cli gimp
 endif
 endif
 
@@ -465,15 +463,29 @@ else
 endif
 	@echo "'zart' has been compiled in '../zart'."
 
-gimp_qt: CImg.h gmic_stdlib.h
-	@if [ ! -d ../gmic-qt ]; then ln -fs ../gmic-qt ..; fi
+gimp_qt: CImg.h gmic_stdlib.h gmic_qt_path
 	cd ../gmic-qt && qmake CONFIG+=release GMIC_PATH=$(QT_GMIC_PATH) PRERELEASE=$(PRERELEASE) HOST=gimp gmic_qt.pro && $(MAKE) && $(STRIP) gmic_gimp_qt
 	@echo "'gmic_gimp_qt' has been compiled in '../gmic-qt'."
 
-gmic_qt: CImg.h gmic_stdlib.h
-	@if [ ! -d ../gmic-qt ]; then ln -fs ../gmic-qt ..; fi
+gmic_qt: CImg.h gmic_stdlib.h gmic_qt_path
 	cd ../gmic-qt && qmake CONFIG+=release GMIC_PATH=$(QT_GMIC_PATH) PRERELEASE=$(PRERELEASE) HOST=none gmic_qt.pro && $(MAKE) && $(STRIP) gmic_qt
 	@echo "'gmic_qt' has been compiled in '../gmic-qt'."
+
+gmic_qt_path:
+	@if [ ! -d ../gmic-qt ]; then \
+	  if [ ! -d ../../gmic-qt ]; then \
+	    echo "\n*** Warning: 'gmic-qt' folder was not found !"; \
+	    echo "*** It is mandatory to compile the G'MIC plug-in for GIMP 'gmic_gimp_qt',"; \
+	    echo "*** as well as the standalone Qt-based interface 'gmic_qt'."; \
+            echo "*** Trying to retrieve it, with: $$ cd ../../ && git clone https://github.com/c-koi/gmic-qt.git\n"; \
+	    if cd ../../ && git clone https://github.com/c-koi/gmic-qt.git; then \
+              echo "\n*** Success !\n"; \
+	    else \
+              echo "\n*** Fatal error: Failed to retrieve folder 'gmic-qt', compilation will probably ends shortly !\n"; \
+	    fi \
+	  else ln -fs ../gmic-qt ..; \
+         fi \
+	fi
 
 # Internal rules to build compilation modules.
 
