@@ -8015,7 +8015,7 @@ _scale_dcci2x_smooth : -skip ${3=5}
 
 _scale_dcci2x_mask : -skip ${1=1.15}
   # combine edge mask with interp outputs
-  --lt. {1/$1} -gt.. $1 -*[-4] .. -*... .
+  --<. {1/$1} ->.. $1 -*[-4] .. -*... .
   -or[-2,-1] -not. -*[-4,-1] -+[-3--1]
 
 #@cli seamcarve : _width[%]>=0,_height[%]>=0,_is_priority_channel={ 0 | 1 },_is_antialiasing={ 0 | 1 },_maximum_seams[%]>=0
@@ -9176,7 +9176,7 @@ inpaint_patchmatch : -check ${-is_image_arg\ $1}"&& ${2=0}>=0 && isint(${3=9}) &
 
       # Compute image and mask at current scales.
       --r[img,mask] $scale%,$scale%,1,100%,2 -nms[-2,-1] scaled_img,scaled_mask
-      -ge[scaled_mask] 0.95
+      ->=[scaled_mask] 0.95
       -if {scaled_mask,!iM} -rm[scaled_img,scaled_mask] -continue -endif # Skip scale (if too low).
       --f[scaled_img] -4096 --j[scaled_img] .,0,0,0,0,1,[scaled_mask] -rm.. -nm. scaled_reference
 
@@ -9794,7 +9794,7 @@ solidify : -check "${1=75%}>=0 && isint(${2=1}) && $2>=0 && $2<=2 && ${3=20}>=0"
   -v - s0="isotropic" s1="delaunay-oriented" s2="edge-oriented"
   -v + -e[^-1] "Solidify transparent image$? with smoothness $1 and $3 iterations of "${s$2}" diffusion." -v -
   -repeat $! -l[$>] -split_opacity
-    -if {$!>1} -le. 128 -inpaint_diffusion.. [1],${1-3} -rm. -c 0,255 -endif
+    -if {$!>1} -<=. 128 -inpaint_diffusion.. [1],${1-3} -rm. -c 0,255 -endif
   -endl -done -v +
 
 #@cli syntexturize : _width[%]>0,_height[%]>0
@@ -10445,7 +10445,7 @@ segment_watershed : -check "${1=2}>=0"
 #@cli : $ image.jpg -threshold 50% --skeleton 0
 skeleton : -check ${1=0}>=0
   -e[^-1] "Compute skeleton of binary image$?."
-  -v - ->= 50% -distance 0 -b $1 -sharpen 1e10 ->= 100%
+  -v - -distance 0 -b $1 -sharpen 1e10 ->= 100%
   -repeat $! --erode[$>] 2 --[$>,-1] -done -v +
 
 #@cli ssd_patch : [patch],_use_fourier={ 0 | 1 },_boundary_conditions={ 0=dirichlet | 1=neumann }
@@ -10781,7 +10781,7 @@ close_binary : -check "${1=85}>=0 && $1<=100 && ${2=2}>=0 && ${3=80}>=0 && ${4=2
   -repeat $! -l[$>] nm={n}
 
     # Ensure input is a 2d binary image.
-    -slices 50% -channels 0 -gt 0
+    -slices 50% -channels 0 -> 0
     -nm. strokes
 
     # Extract primary edgel normals.
@@ -10868,7 +10868,7 @@ close_binary : -check "${1=85}>=0 && $1<=100 && ${2=2}>=0 && ${3=80}>=0 && ${4=2
 
     # Detect end points.
     --compose_channels[e_curvatures] max -nm. curvatures
-    --ge[curvatures] {$endpoint_threshold%}
+    -->=[curvatures] {$endpoint_threshold%}
     -label_fg. 0,1 -nm. keypoints
     -if {iM>0}
       {iM},1,1,3,-1 -nm. keycoords
@@ -14899,7 +14899,7 @@ pixelsort : -check "(str1='${1=+}'; str1=='+' || str1=='-') && "\
     -if {'$3'!=0} -pass$3 0 -else --compose_channels[$>] + -endif
     -if {'$4'!=0} -pass$4 0 -else [$>],[$>],[$>],1,1 -endif
     -l[$>,-2,-1]
-      nm={0,n} -ge. 50% -mv.. 0 -a c
+      nm={0,n} ->=. 50% -mv.. 0 -a c
       order={`";'$1'=='+'?'<':'>'"`}
       -if {'$2'=='x';}
         -_pixelsort $order -channels 1,{s-2}
@@ -16629,7 +16629,7 @@ transition : -check ${-is_image_arg\ $1}" && $2>=0 && ${3=0}>=0 && $3<=100" -ski
       --j[2] [1],0,0,0,0,1,. -rm..
       -nm. $nm0\ ""#{1+$>}
     -endif -done -else -repeat $2 -if {$4<0" || "$>==$frame}
-      --ge[0] {($>+0.5)/$2}
+      -->=[0] {($>+0.5)/$2}
       --j[2] [1],0,0,0,0,1,. -rm..
       -nm. $nm0\ ""#{1+$>}
     -endif -done -endif
@@ -24606,7 +24606,7 @@ fx_posterize :
     -bilateral.. .,5,10 -rm.
     -srgb2rgb --colormap $4 -rgb2srgb
     -index.. .,0,0
-    -if $5 --area.. 0,0 -lt. $5 -inpaint... .,0,3 -rm. -endif
+    -if $5 --area.. 0,0 -<. $5 -inpaint... .,0,3 -rm. -endif
     -map.. . -rm.
     -if $6 --norm (0,1,0;1,1,1;0,1,0) --dilate.. . -rm.. --[-2,-1] -!=. 0 100%,100%,1,{0,s} -j... .,0,0,0,0,{$6%},.. -rm[-2,-1] -endif
     -if $7 -n 0,255 -endif
@@ -24873,7 +24873,7 @@ fx_sharp_abstract_preview :
 fx_smooth_abstract :
   -repeat $! -l[$>] -split_opacity -l[0]
     -srgb2rgb
-    mM={[im,iM]} --b $4 -n. $mM -gradient_norm. -le. {50-$5}
+    mM={[im,iM]} --b $4 -n. $mM -gradient_norm. -<=. {50-$5}
     -inpaint_diffusion[0] [1],$1%,$2,$3 -rm.
     -rgb2srgb -c 0,255
   -endl -a c -endl -done
@@ -25197,7 +25197,7 @@ fx_autofill_lineart :
         fact={2^-$<}
         nw={0,max(1,round(w*$fact))}
         nh={0,max(1,round(h*$fact))}
-        --r[0] $nw,$nh,1,1,2 -if $2 -normalize_local. , -endif --ge. {min(99.5,$1)}%
+        --r[0] $nw,$nh,1,1,2 -if $2 -normalize_local. , -endif -->=. {min(99.5,$1)}%
 
         -if $colors
           -scale2x[colors] -r[colors] .,1 -*[colors,-1] -rv[-2,-1]
@@ -25209,7 +25209,7 @@ fx_autofill_lineart :
       # Inpaint regions that are too small.
       --area. 0,1 label_maxarea={"P=[xM,yM];i(#-2,P)-1"}
       -if {$3>1}
-        -gt. {$3*sqrt($3)} -*[-2,-1]
+        ->. {$3*sqrt($3)} -*[-2,-1]
         -b.. 0.8 -watershed. ..
       -else
         -rm.
@@ -25286,7 +25286,7 @@ _fx_colorize_lineart_smartcoloring :
     -if $is_alpha -sh. 100% is_alpha={iM-im>64} -rm. -endif
     -if $is_alpha -channels. 100%
     -else -luminance. -negate. -endif
-    -gt. {255*(1-$2%)}
+    ->. {255*(1-$2%)}
     -nm. strokes
 
     # Erode strokes (estimate stroke thickness if needed).
@@ -25299,7 +25299,7 @@ _fx_colorize_lineart_smartcoloring :
       -rm[-3--1]
     -endif
     -if $erode_size -erode[strokes] {2*$erode_size} -endif
-    -area_fg[strokes] 0,1 -gt[strokes] 4
+    -area_fg[strokes] 0,1 ->[strokes] 4
 
     # Retrieve closed binary shape.
     _keep_keycoords={$-1==0}
@@ -25327,7 +25327,7 @@ _fx_colorize_lineart_smartcoloring :
       -else # Shade colors
         -j[strokes] [new_strokes] -distance[strokes] 0 -*[strokes] -1
         -eq[new_strokes] 0 -label_fg[new_strokes] 0,0
-        -if $min_color_area --area_fg[new_strokes] 0,0 -gt. $min_color_area -*[new_strokes,-1] -endif
+        -if $min_color_area --area_fg[new_strokes] 0,0 ->. $min_color_area -*[new_strokes,-1] -endif
         -watershed[new_strokes] [strokes],0 -rm[strokes]
         -srgb2rgb. -guided. [new_strokes],{1+$8/5},0 -rgb2srgb.
       -endif
@@ -25337,7 +25337,7 @@ _fx_colorize_lineart_smartcoloring :
     -else # Mode: Random colorization
       -j[strokes] [new_strokes] -distance[strokes] 0 -*[strokes] -1
       -eq[new_strokes] 0 -label_fg[new_strokes] 0,0
-      -if $min_color_area --area_fg[new_strokes] 0,0 xy_bg={[xM,yM]} -gt. $min_color_area -*[new_strokes,-1] -endif
+      -if $min_color_area --area_fg[new_strokes] 0,0 xy_bg={[xM,yM]} ->. $min_color_area -*[new_strokes,-1] -endif
       -watershed[new_strokes] [strokes],0 -rm[strokes]
       ind_bg={new_strokes,i($xy_bg)}
       -srand 0 {new_strokes,iM+1},1,1,3,">arg(1+c,j(-1) + u(85,125),u(1,max(3,$6))/255,u(min(252,$7),255)/255)"
@@ -25514,10 +25514,10 @@ fx_engrave :
         ->= {100-$5}%
       -endl
       -if {$7>0} # Flat region removal.
-        -gradient_norm[1] -b[1] $3 -lt[1] $7 -max[0,1]
+        -gradient_norm[1] -b[1] $3 -<[1] $7 -max[0,1]
       -endif
-      -if {$6<0} -area_fg 0,0 -gt {$f*$6*$6}
-      -elif {$6>0} -== 0 -area_fg 0,0 -gt {$f*$6*$6} -== 0
+      -if {$6<0} -area_fg 0,0 -> {$f*$6*$6}
+      -elif {$6>0} -== 0 -area_fg 0,0 -> {$f*$6*$6} -== 0
       -endif
       -* 255
       -if $14 -r $wh,1,1,2 -endif
@@ -26671,7 +26671,7 @@ fx_selective_desaturation :
     --fc $1,$2,$3
     --[1] [0] -norm[1] -/[1] {1e-6+iM}
     -if $4 -*[1] -{max(0.01,$5)} -+[1] 1
-    -else -ge[1] {5*$5}%
+    -else ->=[1] {5*$5}%
     -endif
     -c[1] 0,1
     -rgb2hsl[0] -s[0] c
@@ -27067,7 +27067,7 @@ fx_morpho_v2 :
 fx_morpho_v2_preview :
   -gui_split_preview "-fx_morpho_v2 ${1-3},\"$4\",${5--1}",$-1
   -if {$2==3}
-    ({'"$4"'}) -f. "(i>=_'0' && i<=_'9') || i==_',' || i==_';'?i:-1" -discard. -1 ({t}) -rr2d. {0,max(24,w/6)},{0,max(24,h/6)},0,1 -gt. 0 -*. 255
+    ({'"$4"'}) -f. "(i>=_'0' && i<=_'9') || i==_',' || i==_';'?i:-1" -discard. -1 ({t}) -rr2d. {0,max(24,w/6)},{0,max(24,h/6)},0,1 ->. 0 -*. 255
     -to_rgba. -frame. 1,1,0,0,0,0,255 -frame. 1,1,255 -frame. 1,1,0,0,0,0,255
     -j[^-1] .,2,2,0,0,0.75 -rm.
   -else
@@ -27134,7 +27134,7 @@ fx_segment_watershed_preview :
 fx_skeleton :
   -remove_opacity
   -if {!$4} -norm -endif
-  -b $2%
+  -b $2% ->= 50%
   -if $1 -thinning -else -skeleton $3% -endif
   -* 255
 
@@ -27323,7 +27323,7 @@ fx_drop_water :
     # Create binary shapes (i.e. opacity map).
     -srand $5
     -if $1 # Shape from top layer.
-      -pass[0] 0 -to_a. -channels. 100% -ge. 50%
+      -pass[0] 0 -to_a. -channels. 100% ->=. 50%
       -r. [0],[0],1,1,0,0,0.5,0.5
     -else # Procedural shape.
       100%,100%
@@ -27335,7 +27335,7 @@ fx_drop_water :
         -b. {$rmin+($rmax-$rmin)*$>/9}%,0,1
         -j.. .,0,0,0,0,0.5 -rm.
       -done
-      -ge. 10%
+      ->=. 10%
     -endif
     -nm. shape
 
@@ -27360,7 +27360,7 @@ fx_drop_water :
 
     # Drop shadow.
     --shift[shape] {-$11*$ca}%,{-$11*$sa}%,0,0,1
-    --. [shape] -ge. 1 -b. $13% -n. 0,1
+    --. [shape] ->=. 1 -b. $13% -n. 0,1
     -nm. shadow
     -b[shape] $14% -n. 0,1  # Add diffuse shadow around each drop.
 
@@ -28163,7 +28163,7 @@ fx_rain :
     100%,100% -l.
       -noise 300 -c 0,255 -b 1,0
       -c {100-$3}%,100%
-      --ge 40% -blend shapeaverage0
+      -->= 40% -blend shapeaverage0
       -blur_linear $2,$4,$1
       -max -n 0,255 -apply_gamma $5
       -nm name($nm),mode(screen),opacity({$6*100})
@@ -29476,7 +29476,7 @@ fx_frame_smooth :
      sx={$1%*max(w,h)} sy={$2%*max(w,h)}
      100%,100%,1,1,0
      -if $3 r={1+1/$3} -f. '1-(abs(x/w-0.5)^$r+abs(y/h-0.5)^$r)^(1/$r)'
-       v={min(i(w/2,0),i(w-1,h/2),i(w/2,h-1),i(0,h/2))} -le. $v
+       v={min(i(w/2,0),i(w-1,h/2),i(w/2,h-1),i(0,h/2))} -<=. $v
      -endif
      -frame $sx,$sy,1
      -inpaint_diffusion[0] [1],100%,1,15
@@ -29946,7 +29946,7 @@ fx_stroke :
         -if {$6!=100} wh={w},{h} -r $6%,$6%,1,1,3 -r $wh,1,1,0,0,0.5,0.5 -endif
         -shift $7,$8
       -endif
-      -gt {99.99-min(99.99,$2)}%
+      -> {99.99-min(99.99,$2)}%
       -distance $5,$4
       ($9^$10^$11^$12)
       -if {$1>1} ($13^$14^$15^$16) -a[-2,-1] x -r. $1,1,1,4,3 -c. 0,255 -endif
@@ -30329,7 +30329,7 @@ fx_camouflage :
     -channels 0 -r {w+16},{h+16},1,1,0 -rand 0,16
     amp=$3 -do -smooth {min(50,$amp)},0,1 amp-=50 -while {$amp>0}
     -shrink_xy. 8 -n 1,$2 -round
-    -repeat $1 --area 0,0 -lt. {1+2^$>} -inpaint[0] [1],0,3 -rm. -done
+    -repeat $1 --area 0,0 -<. {1+2^$>} -inpaint[0] [1],0,3 -rm. -done
     --colormap 0 -n.. 0,{w-1}
     4,1,1,3,"col=[${4-15}];col[3*x,3]"
     -r. ..,..,1,3,3 -rm.. -map.. . -rm.
@@ -31155,7 +31155,7 @@ fx_smooth_anisotropic_preview :
 fx_smooth_antialias :
   -repeat $! -l[$>]
     --diffusiontensors 0,1,1,$3,$3
-    --gradient_norm.. -ge. $2% -*[-2,-1]
+    --gradient_norm.. ->=. $2% -*[-2,-1]
     -smooth.. .,{$1^1/3},0.5,120,2,1 -rm.
   -endl -done
 
