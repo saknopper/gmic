@@ -36,24 +36,24 @@
               <table align="center" border="0" cellpadding="2" cellspacing="0" width="80%">
                 <tr>
                   <td><a href="http://gmic.eu/files/prerelease_windows/gmic_gimp_qt_win64.exe"><img alt="" src="img/download_win64.png" border="0"></img></a></td><td>&nbsp;&nbsp;</td>
-                  <td><a href="http://gmic.eu/files/prerelease_windows/gmic_gimp_qt_win64.exe"><font size="3">G'MIC plug-in for Windows (Qt interface, 64bits)</font></a><br/>
+                  <td><a href="http://gmic.eu/files/prerelease_windows/gmic_gimp_qt_win64.exe"><font size="3">G'MIC plug-in for Windows (64bits)</font></a><br/>
                     <b>installer</b><br/>
-                    alternative: <a href="http://gmic.eu/files/prerelease_windows/gmic_gimp_qt_win64.zip">zip file (Qt interface)</a><br/>
+                    alternative: <a href="http://gmic.eu/files/prerelease_windows/gmic_gimp_qt_win64.zip">zip file</a><br/>
                 </tr>
                 <tr>
                   <td><a href="http://gmic.eu/files/prerelease_windows/gmic_gimp_qt_win32.exe"><img alt="" src="img/download_win32.png" border="0"></img></a></td><td>&nbsp;&nbsp;</td>
-                  <td><a href="http://gmic.eu/files/prerelease_windows/gmic_gimp_qt_win32.exe"><font size="3">G'MIC plug-in for Windows (Qt interface, 32bits)</font></a><br/>
+                  <td><a href="http://gmic.eu/files/prerelease_windows/gmic_gimp_qt_win32.exe"><font size="3">G'MIC plug-in for Windows (32bits)</font></a><br/>
                     <b>installer</b><br/>
-                    alternative: <a href="http://gmic.eu/files/prerelease_windows/gmic_gimp_qt_win32.zip">zip file (Qt interface)</a><br/>
+                    alternative: <a href="http://gmic.eu/files/prerelease_windows/gmic_gimp_qt_win32.zip">zip file</a><br/>
                 </tr>
                 <tr>
                   <td><a href="http://gmic.eu/files/prerelease_linux/gmic_gimp_qt_linux64.zip"><img alt="" src="img/download_linux64.png" border="0"></img></a></td><td>&nbsp;&nbsp;</td>
-                  <td><a href="http://gmic.eu/files/prerelease_linux/gmic_gimp_qt_linux64.zip"><font size="3">G'MIC plug-in for Linux (Qt interface, 64bits)</font></a><br/>
+                  <td><a href="http://gmic.eu/files/prerelease_linux/gmic_gimp_qt_linux64.zip"><font size="3">G'MIC plug-in for Linux (64bits)</font></a><br/>
                     <b>zip file</b><br/>
                 </tr>
                 <tr>
                   <td><a href="http://gmic.eu/files/prerelease_linux/gmic_gimp_qt_linux32.zip"><img alt="" src="img/download_linux32.png" border="0"></img></a></td><td>&nbsp;&nbsp;</td>
-                  <td><a href="http://gmic.eu/files/prerelease_linux/gmic_gimp_qt_linux32.zip"><font size="3">G'MIC plug-in for Linux (Qt interface, 32bits)</font></a><br/>
+                  <td><a href="http://gmic.eu/files/prerelease_linux/gmic_gimp_qt_linux32.zip"><font size="3">G'MIC plug-in for Linux (32bits)</font></a><br/>
                     <b>zip file</b><br/>
                 </tr>
                 <tr>
