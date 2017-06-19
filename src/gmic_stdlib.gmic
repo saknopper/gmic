@@ -17788,6 +17788,20 @@ math_lib :
     (arg(1 + int(_I[0]/60),[_c,_x,0],[_x,_c,0],[0,_c,_x],[0,_x,_c],[_x,0,_c],[_c,0,_x])+=_I[2] - _c)*=255;
   );
 
+  is_intriangle(P,A,B,C) = ( # Test is a point is inside a triangle
+    _v0 = C - A;
+    _v1 = B - A;
+    _v2 = P - A;
+    _dot00 = dot(_v0,_v0);
+    _dot01 = dot(_v0,_v1);
+    _dot02 = dot(_v0,_v2);
+    _dot11 = dot(_v1,_v1);
+    _dot12 = dot(_v1,_v2);
+    _invDenom = 1/(_dot00*_dot11 - _dot01*_dot01);
+    _u = (_dot11*_dot02 - _dot01*_dot12)*_invDenom;
+    _v = (_dot00*_dot12 - _dot01*_dot02)*_invDenom;
+    _u>=0 && _v>=0 && _u + _v<1);
+
   length_spline(P0,T0,P1,T1) = ( # Compute the length of a spline P0-P1 with tangents T0,T1
     _P0 = P0;
     _P1 = P1;
