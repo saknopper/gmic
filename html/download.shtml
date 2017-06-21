@@ -73,7 +73,7 @@
                 <tr>
                   <td><a href="http://gmic.eu/files/prerelease_linux/gmic_ubuntu_vivid_amd64.deb"><img alt="" src="img/download_ubuntu64.png" border="0"></img></a></td><td>&nbsp;&nbsp;</td>
                   <td>
-                    <a href="http://gmic.eu/files/prerelease_linux/gmic_ubuntu_trusty_amd64.deb"><font size="3">G'MIC for Ubuntu 16.04 LTS <i>Xenial</i> (64 bits) - <i>all interfaces</i></font></a><br/>
+                    <a href="http://gmic.eu/files/prerelease_linux/gmic_ubuntu_xenial_amd64.deb"><font size="3">G'MIC for Ubuntu 16.04 LTS <i>Xenial</i> (64 bits) - <i>all interfaces</i></font></a><br/>
                     <b>deb file</b><br/>
                     alternative 1: <a href="http://gmic.eu/files/prerelease_linux/gmic_ubuntu_vivid_amd64.deb">for Ubuntu 15.04 <i>Vivid</i> (64 bits)</a><br/>
                     alternative 2: <a href="http://gmic.eu/files/prerelease_linux/gmic_ubuntu_yakkety_amd64.deb">for Ubuntu 16.10 <i>Yakkety</i> (64 bits)</a><br/>

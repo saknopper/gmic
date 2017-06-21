@@ -10801,29 +10801,29 @@ close_binary : -check "${1=85}>=0 && $1<=100 && ${2=2}>=0 && ${3=80}>=0 && ${4=2
       next(img,p) = ( # Used when shape is made of '!=0' (in 8-connexity)
         p0 = p#[0,2] + pn[4*p#[2],2];
         p1 = p#[0,2] + pn[4*p#[2] + 2,2];
-        case = !!i(#img,p0) + 2*!!i(#img,p1);
+        case = !!i(#img,p0[0],p0[1],0,0) + 2*!!i(#img,p1[0],p1[1],0,0);
         !case?[ p[0],p[1],(p[2]+1)%4 ]:case==1?[ p0[0],p0[1],p[2] ]:[ p1[0],p1[1],(p[2]-1)%4 ];
       );
 
       previous(img,p) = ( # Used when shape is made of '!=0' (in 8-connexity)
         p0 = p#[0,2] + pp[4*p#[2],2];
         p1 = p#[0,2] + pp[4*p#[2] + 2,2];
-        case = !!i(#img,p0) + 2*!!i(#img,p1);
+        case = !!i(#img,p0[0],p0[1],0,0) + 2*!!i(#img,p1[0],p1[1],0,0);
         !case?[ p[0],p[1],(p[2]-1)%4 ]:case==1?[ p0[0],p0[1],p[2] ]:[ p1[0],p1[1],(p[2]+1)%4 ];
       );
 
       next2(img,p) = ( # Used when shape is made of '{ 0 | 4 }' (in 4-connexity)
         p0 = p#[0,2] + pn[4*p#[2],2];
         p1 = p#[0,2] + pn[4*p#[2] + 2,2];
-        case = !(i(#img,p0)&3) + 2*!(i(#img,p1)&3);
+        case = !(i(#img,p0[0],p0[1],0,0)&3) + 2*!(i(#img,p1[0],p1[1],0,0)&3);
         case==1?[ p0[0],p0[1],p[2] ]:case==3?[ p1[0],p1[1],(p[2]-1)%4 ]:[ p[0],p[1],(p[2]+1)%4 ];
       );
 
       next3(img,p) = ( # Used when shape is made of '{ 1 | 2 }' (in 4-connexity)
         p0 = p#[0,2] + pn[4*p#[2],2];
         p1 = p#[0,2] + pn[4*p#[2] + 2,2];
-        val1 = i(#img,p0);
-        val2 = i(#img,p1);
+        val1 = i(#img,p0[0],p0[1],0,0);
+        val2 = i(#img,p1[0],p1[1],0,0);
         case = (val1==1 || val1==2) + 2*(val2==1 || val2==2);
         case==1?[ p0[0],p0[1],p[2] ]:case==3?[ p1[0],p1[1],(p[2]-1)%4 ]:[ p[0],p[1],(p[2]+1)%4 ];
       );
