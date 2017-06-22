@@ -24644,7 +24644,6 @@ fx_posterize_preview :
 #@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>06/15/2017</i>.</small>")
 fx_quadtree :
-  -v -
   mode,precision,homogeneity,outline,radius1,radius2,anisotropy,only_leafs,preview_type=$*
   -m "_qt : -sh 3 -u {w>1&&h>1?iv*(w*h)^"$homogeneity":-0.1} -k[0]" # Function used to split quads
   -repeat $! -l[$>]
@@ -24747,8 +24746,7 @@ fx_quadtree :
     -endif
     -k[0]
   -endl -done
-  -uncommand _qt -v +
-
+  -uncommand _qt
 
 fx_quadtree_preview :
   -gui_split_preview "-fx_quadtree $*",$-1
