@@ -25036,9 +25036,9 @@ fx_charcoal_preview :
 #@gui : Input type = _choice("B&amp;W photograph","Lineart")
 #@gui : Output type = _choice{"Colorized image (1 layer)","Colors only (1 layer)","Image + Colors (2 layers)","Image + Colors (multi-layers)"}
 #@gui : View resolution = _choice{1,"Small (faster)","Medium","High (slower)","Very high (even slower)"}
-#@gui : 1st additional palette (.gpl file) = _file()
-#@gui : 2nd additional palette (.gpl file) = _file()
-#@gui : Image to grab color from (.png file) = _file()
+#@gui : 1st additional palette (.gpl file) = _filein()
+#@gui : 2nd additional palette (.gpl file) = _filein()
+#@gui : Image to grab color from (.png file) = _filein()
 #@gui : sep = separator()
 #@gui : note = note{"<small><b>Description:</b>\n
 #@gui : This filter allows to quickly colorize a B&amp;W image or lineart.
@@ -29017,7 +29017,7 @@ fx_emulate_film_colorslide_preview :
 
 #@gui User-defined : fx_emulate_film_userdefined, fx_emulate_film_userdefined_preview(1)+
 #@gui : Specify HaldCLUT as = choice(2,"Top layer","Bottom layer","Filename")
-#@gui : HaldCLUT filename = file()
+#@gui : HaldCLUT filename = filein()
 #@gui : note = note("<small><b>Note:</b> Do not forget to set the <i>Input layers</i> option if you select <i>Top layer</i> or <i>Bottom layer</i>.</small>")
 #@gui : sep = separator()
 #@gui : Strength (%) = float(100,0,100)
@@ -33254,7 +33254,7 @@ fx_display_histogram :
   -endl -done
 
 #@gui Import data : fx_import_image, gui_no_preview
-#@gui : Filename = file()
+#@gui : Filename = filein()
 #@gui : Normalize = bool(1)
 #@gui : note = note{"\n<small><b>Note: </b>
 #@gui : This filter can import any image data read by the <b>G'MIC</b> language interpreter.
