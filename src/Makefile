@@ -478,14 +478,20 @@ gmic_qt: CImg.h gmic_stdlib.h gmic_qt_path
 gmic_qt_path:
 	@if [ ! -d ../gmic-qt ]; then \
 	  if [ ! -d ../../gmic-qt ]; then \
-	    echo "\n** Warning: folder 'gmic-qt' was not found !"; \
+	    echo "**"; \
+	    echo "** Warning: folder 'gmic-qt' was not found !"; \
 	    echo "** It is mandatory to compile the G'MIC plug-in for GIMP 'gmic_gimp_qt',"; \
 	    echo "** as well as the standalone Qt-based interface 'gmic_qt'."; \
-            echo "** Trying to retrieve it, with: $$ cd ../../ && git clone https://github.com/c-koi/gmic-qt.git\n"; \
+            echo "** Trying to retrieve it, with: $$ cd ../../ && git clone https://github.com/c-koi/gmic-qt.git"; \
+	    echo "**"; \
 	    if cd ../../ && git clone https://github.com/c-koi/gmic-qt.git; then \
-              echo "\n** Success !\n"; \
+	      echo "**"; \
+              echo "** Success !"; \
+	      echo "**"; \
 	    else \
-              echo "\n** Fatal error: Failed to retrieve folder 'gmic-qt', compilation will probably ends shortly !\n"; \
+	      echo "**"; \
+              echo "** Fatal error: Failed to retrieve folder 'gmic-qt', compilation will probably ends shortly !"; \
+	      echo "**"; \
 	    fi; \
 	  fi; \
 	  if [ -d ../../gmic-qt ]; then ln -fs ../gmic-qt ..; fi \
@@ -494,13 +500,19 @@ gmic_qt_path:
 gmic_community_path:
 	@if [ ! -d ../zart ]; then \
 	  if [ ! -d ../../gmic-community/zart ]; then \
-	    echo "\n** Warning: folder 'gmic-community/zart' was not found !"; \
+	    echo "**"; \
+	    echo "** Warning: folder 'gmic-community/zart' was not found !"; \
 	    echo "** It is mandatory to compile 'zart'."; \
-            echo "** Trying to retrieve it, with: $$ cd ../../ && git clone https://github.com/dtschump/gmic-community.git\n"; \
+            echo "** Trying to retrieve it, with: $$ cd ../../ && git clone https://github.com/dtschump/gmic-community.git"; \
+	    echo "**"; \
 	    if cd ../../ && git clone https://github.com/dtschump/gmic-community.git; then \
-              echo "\n** Success !\n"; \
+	      echo "**"; \
+              echo "** Success !"; \
+	      echo "**"; \
 	    else \
-              echo "\n** Fatal error: Failed to retrieve folder 'gmic-community/zart', compilation will probably ends shortly !\n"; \
+              echo "**"; \
+              echo "** Fatal error: Failed to retrieve folder 'gmic-community/zart', compilation will probably ends shortly !"; \
+              echo "**"; \
 	    fi; \
 	  fi; \
 	  if [ -d ../../gmic-community/zart ]; then ln -fs ../gmic-community/zart ..; fi \
