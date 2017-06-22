@@ -23283,8 +23283,8 @@ fx_gmicky_preview :
 #@gui : - <span foreground="purple"><b>06/22/2017</b> : version <i>2.0.2</i> (Current stable).</span>\n
 #@gui : "}
 #@gui : sep = separator()
-#@gui : link = link("View latest changelog","https://discuss.pixls.us/t/release-of-gmic-2-0-2")
-##@gui : link = link("View incoming changelog","https://discuss.pixls.us/t/on-the-road-to-2-1-0")
+#@gui : link = link("View latest minor changelog (2.0.2)","https://discuss.pixls.us/t/release-of-gmic-2-0-2")
+#@gui : link = link("View latest major changelog (2.0.0)","https://discuss.pixls.us/t/release-of-gmic-2-0-0")
 
 #@gui User satisfaction survey : gui_survey, gui_survey_preview
 #@gui : note = note{"<small>Please help us by taking a few seconds to share your feelings about the G'MIC project. Thank you for giving us the opportunity to serve you better!</small>"}
