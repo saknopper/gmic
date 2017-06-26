@@ -36,8 +36,8 @@
                 <tr>
                   <td><img alt="" src="img/download_krita.png" border="0"></img></td><td>&nbsp;&nbsp;</td>
                   <td><font size="3">G'MIC plug-in for <a href="http://www.krita.org">Krita</a> (4.0+) </font><br/>
-                    alternative 1: <a href="http://gmic.eu/files/prerelease_windows/gmic_krita_qt_linux64.zip">Linux 64 bits</a><br/>
-                    alternative 2: <a href="http://gmic.eu/files/prerelease_windows/gmic_krita_qt_linux32.zip">Linux 32 bits</a><br/>
+                    alternative 1: <a href="http://gmic.eu/files/prerelease_linux/gmic_krita_qt_linux64.zip">Linux 64 bits</a><br/>
+                    alternative 2: <a href="http://gmic.eu/files/prerelease_linux/gmic_krita_qt_linux32.zip">Linux 32 bits</a><br/>
                     alternative 3: <a href="http://gmic.eu/files/prerelease_windows/gmic_krita_qt_win64.zip">Windows 64 bits</a><br/>
                     alternative 4: <a href="http://gmic.eu/files/prerelease_windows/gmic_krita_qt_win32.zip">Windows 32 bits</a><br/>
                     <br/></td>
