@@ -4453,6 +4453,8 @@ _update_server_binaries :
   file$N=gmic_gimp_gtk_$1_linux64.zip     N+=1
   file$N=gmic_gimp_qt_$1_linux32.zip      N+=1
   file$N=gmic_gimp_qt_$1_linux64.zip      N+=1
+  file$N=gmic_krita_qt_$1_linux32.zip     N+=1
+  file$N=gmic_krita_qt_$1_linux64.zip     N+=1
   file$N=gmic_gimp_gtk_$1_yakkety64.zip   N+=1
   file$N=gmic_static_$1_linux32.zip       N+=1
   file$N=gmic_static_$1_linux64.zip       N+=1
@@ -4463,6 +4465,7 @@ _update_server_binaries :
   file$N=gmic_gimp_gtk_$1_win64.exe       N+=1
   file$N=gmic_gimp_qt_$1_win64.zip        N+=1
   file$N=gmic_gimp_qt_$1_win64.exe        N+=1
+  file$N=gmic_krita_qt_$1_win64.zip       N+=1
   file$N=gmic_zart_$1_win64.zip           N+=1
   file$N=gmic_qt_$1_win64.zip             N+=1
 
@@ -4472,6 +4475,7 @@ _update_server_binaries :
   file$N=gmic_gimp_gtk_$1_win32.exe       N+=1
   file$N=gmic_gimp_qt_$1_win32.zip        N+=1
   file$N=gmic_gimp_qt_$1_win32.exe        N+=1
+  file$N=gmic_krita_qt_$1_win32.zip       N+=1
   file$N=gmic_zart_$1_win32.zip           N+=1
   file$N=gmic_qt_$1_win32.zip             N+=1
 
