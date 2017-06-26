@@ -4369,7 +4369,7 @@ update_server :
     -replace_str "<i>David Tschumperl&#233;</i>","<i><a href=\""$url"\">David Tschumperl&#233;</a></i>"
     -o cimgz:/tmp/update$_version.gmic,uchar
 
-    (202)
+    (202,203)
     -repeat {w}
       v={i[$>]}
       -_update_server_upload[] ${_path_rc}update$_version.gmic,plain_update$v.gmic
@@ -23281,6 +23281,7 @@ fx_gmicky_preview :
 #@gui : - <b>03/25/2016</b> : version <i>1.7.0</i>.\n
 #@gui : - <b>05/29/2017</b> : version <i>2.0.0</i>.\n
 #@gui : - <span foreground="purple"><b>06/22/2017</b> : version <i>2.0.2</i> (Current stable).</span>\n
+#@gui : - <b>06/26/2017</b> : version <i>2.0.3</i> (Current development).\n
 #@gui : "}
 #@gui : sep = separator()
 #@gui : link = link{"View latest minor changelog (2.0.2)","https://discuss.pixls.us/t/release-of-gmic-2-0-2"}
