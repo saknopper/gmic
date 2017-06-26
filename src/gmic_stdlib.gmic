@@ -3696,7 +3696,7 @@ update_film_emulation_html :
 <div id=\"center\"><div id=\"text_centre_intro\">\n
 <p>Among all features available in <b><font color=\"#000066\">G\47MIC</font></b>, our <b>Film Emulation</b> filters are able to apply various pre-defined <b>color presets</b> on your images.\n
 Most of those <b>300+</b> presets have been designed by <a href=\"http://blog.patdavid.net/2013/08/film-emulation-presets-in-gmic-gimp.html\">Patrick David</a>, in order to emulate the look of\n
-analog films. They have a dedicated section in the open-source <a href=\"../gimp.shtml\"><b><font color=\"#000066\">G\47MIC</font></b> plug-in for GIMP</a>, so you can apply all these easily in GIMP.</p>\n\n
+analog films. They have a dedicated section in the open-source <b><font color=\"#000066\">G\47MIC</font></b> plug-in for GIMP and Krita, so you can apply all these easily in GIMP.</p>\n\n
 <p>Below, you can navigate through the different proposed color presets and see how they modify the colors of some sample images.\n
 You can also download each color preset separately as its corresponding <a href=\"http://www.quelsolaar.com/technology/clut.html\">HaldCLUT</a> file (in <b>.png</b> format), to use it in\n
 other softwares that support this feature.</p>\n\n
@@ -3977,10 +3977,9 @@ update_gallery_html :
   your custom <b><font color=\"#000066\">G\47MIC</font></b> <a href=\"http://gmic.eu/gmic_stdlib.gmic\">command file</a>,\n
   and eventually put them directly in <a href=\"http://www.gimp.org\">GIMP</a> afterwards.\n\n
   <ul>\n
-  <li>See also the <a href=\"gimp.shtml\">GIMP plug-in page</a> to see various screenshots of what <b><font color=\"#000066\">G\47MIC</font></b> can do.</li>\n
   <li>See also the <a href=\"reference.shtml\">G\47MIC reference page</a> to have processing examples of almost all <b><font color=\"#000066\">G\47MIC</font></b> commands\n
     (scroll down there to view example images).</li>\n
-  <li>See also the <a href=\"http://www.flickr.com/groups/gmic/pool/\">Flickr slideshow</a>, showing uses of the <a href=\"gimp.shtml\">G\47MIC plug-in</a>\n
+  <li>See also the <a href=\"http://www.flickr.com/groups/gmic/pool/\">Flickr slideshow</a>, showing uses of the G\47MIC plug-in\n
   by various artists.</li>\n
   </ul>\n
   <b>Copyrights : </b> All pictures have been shot by <a href=\"http://tschumperle.users.greyc.fr/\">David Tschumperl&eacute;</a>.<br/><br/>\n"
@@ -22664,7 +22663,7 @@ gui_error_preview :
 gui_check_version :
   -if {$_version<$1}
     -gui_error_preview "This filter requires at least version *"${"-strver $1"}"* of the G'MIC framework.\n\n"\
-                        "http://gmic.eu/gimp.shtml"
+                        "http://gmic.eu/download.shtml"
     -u 0
   -else -u 1
   -endif
