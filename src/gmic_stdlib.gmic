@@ -4478,7 +4478,7 @@ _update_server_binaries :
   file$N=gmic_zart_$1_win32.zip           N+=1
   file$N=gmic_qt_$1_win32.zip             N+=1
 
-  t0=$| n=0
+  t0=$| n=0 t=0
   -v + -e[] "- Waiting for binary files to be build." -v -
   -do
     -repeat $N
@@ -4504,7 +4504,14 @@ _update_server_binaries :
         file$>= n+=1
       -endif
     -done
-    -if {$n<$N} -wait 5000 -endif
+    -if {$n<$N}
+      -if {!($t%4)}
+        remaining= sep= t+=1
+        -repeat $N -if {narg(${file$>})} remaining.=$sep${file$>} sep=", " -endif -done
+        -v + -e[] "- Waiting for files: "$remaining"..." -v -
+      -endif
+      -wait 5000
+    -endif
   -while {$n<$N" && "$|<$t0+60*60*4}
   -v +
   -if {$n<$N} -e[] "- Partial uploads done (timeout reached)."
