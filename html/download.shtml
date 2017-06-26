@@ -36,7 +36,7 @@
                         <a href="http://gmic.eu/files/prerelease_windows/gmic_gimp_qt_win32.exe">installer</a> or
                         <a href="http://gmic.eu/files/prerelease_windows/gmic_gimp_qt_win32.zip">.zip archive</a>
                       </li>
-                      <li>Old GTK version (<i>not recommended!</i>):
+                      <li>Old <i>GTK</i> version (<i>not recommended!</i>):
                         Linux <i>64 bits</i>: <a href="http://gmic.eu/files/prerelease_linux/gmic_gimp_gtk_linux64.zip">.zip archive</a>,
                         Linux <i>32 bits</i>: <a href="http://gmic.eu/files/prerelease_linux/gmic_gimp_gtk_linux32.zip">.zip archive</a>,
                         Windows <i>64 bits</i>:
@@ -70,7 +70,7 @@
                   <td><font size="3"><b><font color="#000066">G'MIC</font></b> for Windows <i>64 bits</i> - Other interfaces</font><br/>
                     <ul>
                       <li>Command-line interface (CLI): <a href="http://gmic.eu/files/prerelease_windows/gmic_cli_win64.zip">.zip archive</a></li>
-                      <li>Stand-alone Qt interface: <a href="http://gmic.eu/files/prerelease_windows/gmic_qt_win64.zip">.zip archive</a></li>
+                      <li>Stand-alone <i>Qt</i> interface: <a href="http://gmic.eu/files/prerelease_windows/gmic_qt_win64.zip">.zip archive</a></li>
                       <li>ZArt: <a href="http://gmic.eu/files/prerelease_windows/gmic_zart_win64.zip">.zip archive</a></li>
                       <li>C/C++ library: <a href="http://gmic.eu/files/prerelease_windows/gmic_lib_win64.zip">.zip archive</a></li>
                     </ul>
@@ -83,7 +83,7 @@
                   <td><font size="3"><b><font color="#000066">G'MIC</font></b> for Windows <i>32 bits</i> - Other interfaces</font><br/>
                     <ul>
                       <li>Command-line interface (CLI): <a href="http://gmic.eu/files/prerelease_windows/gmic_cli_win32.zip">.zip archive</a></li>
-                      <li>Stand-alone Qt interface: <a href="http://gmic.eu/files/prerelease_windows/gmic_qt_win32.zip">.zip archive</a></li>
+                      <li>Stand-alone <i>Qt</i> interface: <a href="http://gmic.eu/files/prerelease_windows/gmic_qt_win32.zip">.zip archive</a></li>
                       <li>ZArt: <a href="http://gmic.eu/files/prerelease_windows/gmic_zart_win32.zip">.zip archive</a></li>
                       <li>C/C++ library: <a href="http://gmic.eu/files/prerelease_windows/gmic_lib_win32.zip">.zip archive</a></li>
                     </ul>
@@ -174,10 +174,10 @@
                   <td><font size="3"><b><font color="#000066">G'MIC</font></b> source code</font><br/>
                     <ul>
                       <li>Latest development snapshot: <a href="http://gmic.eu/files/prerelease/gmic_source.tar.gz">.tar.gz archive</a></li>
-                      <li>Latest stable: <a href="http://gmic.eu/files/source/gmic_source.tar.gz">/tar.gz archive</a></li>
-                      <li>G'MIC-core: <a href="https://github.com/dtschump/gmic">github page</a></li>
-                      <li>G'MIC-Qt: <a href="https://github.com/c-koi/gmic-qt">github page</a></li>
-                      <li>G'MIC-community: <a href="https://github.com/dtschump/gmic-community">github page</a></li>
+                      <li>Latest stable: <a href="http://gmic.eu/files/source/gmic_source.tar.gz">tar.gz archive</a></li>
+                      <li>G'MIC-core: <a href="https://github.com/dtschump/gmic">git repository</a></li>
+                      <li>G'MIC-Qt: <a href="https://github.com/c-koi/gmic-qt">git repository</a></li>
+                      <li>G'MIC-community: <a href="https://github.com/dtschump/gmic-community">git repository</a></li>
                     </ul>
                     <br/></td>
                 </tr>
