@@ -696,7 +696,7 @@ install:
 	@if [ -f ../zart/zart ]; then cp -f ../zart/zart $(DESTDIR)$(USR)/$(BIN)/; fi
 	@if [ -f ../gmic-qt/gmic_qt ]; then cp -f ../gmic-qt/gmic_qt $(DESTDIR)$(USR)/$(BIN)/; fi
 	@if [ -f ../gmic-qt/gmic_gimp_qt ]; then cp -f ../gmic-qt/gmic_gimp_qt $(DESTDIR)$(PLUGINDIR)/; fi
-	@if [ -f ../gmic-qt/gmic_krita_qt ]; then cp -f ../gmic-qt/gmic_krita_qt $(DESTDIR)$(PLUGINDIR)/; fi
+	@if [ -f ../gmic-qt/gmic_krita_qt ]; then cp -f ../gmic-qt/gmic_krita_qt $(DESTDIR)$(USR)/$(BIN)/; fi
 
 ifneq ($(OS),Darwin)
 	mkdir -p $(DESTDIR)$(USR)/share
