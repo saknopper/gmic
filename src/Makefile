@@ -395,24 +395,18 @@ GMICOL_LIBS = $(MANDATORY_LIBS) $(OPENMP_LIBS) $(PARALLEL_LIBS) $(PNG_LIBS) $(JP
 
 # Main default entries.
 all: CImg.h gmic_stdlib.h
+	@echo "**"
 ifeq ($(OS),Unix)
-	@echo "**"
 	@echo "** Start building G'MIC with default Unix configuration."
-	@echo "**"
-	$(MAKE) cli gimp lib
 else
 ifeq ($(OS),Darwin)
-	@echo "**"
 	@echo "** Start building G'MIC with default MacOSX configuration."
-	@echo "**"
-	$(MAKE) cli gimp lib
 else
-	@echo "**"
 	@echo "** Start building G'MIC with default Windows configuration."
+endif
+endif
 	@echo "**"
-	$(MAKE) cli gimp
-endif
-endif
+	$(MAKE) cli lib gimp_gtk gimp_qt krita_qt gmic_qt libc zart
 
 cli:
 	$(MAKE) "CFLAGS+=$(GMIC_CLI_CFLAGS) $(OPT_CFLAGS)" "LIBS+=$(GMIC_CLI_LIBS)" gmic
@@ -460,7 +454,7 @@ static:
 	$(MAKE) "CFLAGS+=$(GMIC_STATIC_CLI_CFLAGS) $(OPT_CFLAGS)" "LIBS+=$(GMIC_STATIC_CLI_LIBS)" gmic
 	$(STRIP) gmic$(EXE)
 
-zart: CImg.h gmic_stdlib.h gmic_community_path
+zart: gmic_community_path CImg.h gmic_stdlib.h
 	@if [ ! -d ../zart ]; then ln -fs ../gmic-community/zart ..; fi
 ifeq ($(OS),Darwin)
 	cd ../zart && qmake CONFIG+=release GMIC_PATH=$(ZART_GMIC_PATH) zart.pro && $(MAKE) && $(STRIP) zart.app/Contents/MacOS/zart
@@ -545,7 +539,7 @@ libcgmic.o: gmic.cpp gmic.h gmic_stdlib.h CImg.h
 	@if [ ! -f gmic_libc.h ]; then ln -fs ../../gmic-community/libcgmic/gmic_libc.h .; fi
 	$(CXX) -o libcgmic.o -c gmic_libc.cpp -Dgmic_gui $(PIC) $(CFLAGS)
 
-libcgmic: libgmic.o libcgmic.o
+libcgmic: gmic_community_path libgmic.o libcgmic.o
 	ar rcs libcgmic.a libcgmic.o
 ifeq ($(OS),Darwin)
 	$(CXX) -shared -o libcgmic.so libcgmic.o libgmic.o $(LIBS)
