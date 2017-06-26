@@ -411,7 +411,7 @@ cd gmic-qt
 qmake gmic_qt.pro
 make distclean
 mkdir $DIR/gmic-qt
-cp -Lrf *.qrc translations icons images include resources src ui README gmic_qt.pro gmic_qt_resource.rc pkg-config-check.sh pre_version.sh $DIR/gmic-qt
+cp -Lrf *.qrc translations icons images include resources src ui README.md gmic_qt.pro pkg-config-check.sh pre_version.sh $DIR/gmic-qt
 cd ..
 
 cd $DIR
