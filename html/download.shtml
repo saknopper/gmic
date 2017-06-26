@@ -6,12 +6,6 @@
 <div id="bloc_option"><div id="top_bleu"><div id="text_top">Download</div></div>
   <div id="center"><div id="text_centre_intro">
 
-      <p>The packages below provide both the command-line tool <a href="tutorial/basics.shtml">gmic</a> and the plug-ins for <a href="http://www.gimp.org">GIMP</a>
-        and <a href="http://www.krita.org">Krita</a> for some common architectures (also <i>ZArt</i> and the <i>libgmic</i> interfaces in the .deb packages).
-        If you are looking for the <a href="http://www.gimp.org">GIMP</a> plug-in <b>only</b>, please visit <a href="gimp.shtml">its dedicated page</a> instead.
-        It is recommended you uninstall any previous installations of <b><font color="#000066">G'MIC</font></b>, before installing a new version.
-      </p>
-
       <table><tr>
           <td width="200" valign="top">
             <div><a href="img/roddy_large.jpg" class="highslide" onclick="return hs.expand(this)"><img alt="" border="0" src="img/roddy_small.jpg"/></a>
@@ -24,111 +18,191 @@
           </td>
           <td width="700" valign="top">
 
-            <hr noshade="noshade" size="1" width="90%"></hr>
-
             <font size="-1">
               <table align="center" border="0" cellpadding="2" cellspacing="0" width="90%">
+
+                <!-- G'MIC for GIMP -->
                 <tr>
-                  <td><a href="http://gmic.eu/gimp.shtml"><img alt="" src="img/download_gimp.png" border="0"></img></a></td><td>&nbsp;&nbsp;</td>
-                  <td><a href="http://gmic.eu/gimp.shtml"><font size="3">G'MIC plug-in for GIMP only (2.8+)</font></a><br/>
-                    <b>installers/binaries for Windows/Linux</b><br/><br/></td>
+                  <td><img alt="" src="img/download_gimp.png" border="0"></img></td><td>&nbsp;&nbsp;</td>
+                  <td><font size="3"><b><font color="#000066">G'MIC</font></b> plug-in for <a href="http://www.gimp.org">GIMP</a> (2.8+)</font><br/>
+                    <ul>
+                      <li>Linux <i>64 bits</i>: <a href="http://gmic.eu/files/prerelease_linux/gmic_gimp_qt_linux64.zip">.zip archive</a></li>
+                      <li>Linux <i>32 bits</i>: <a href="http://gmic.eu/files/prerelease_linux/gmic_gimp_qt_linux32.zip">.zip archive</a></li>
+                      <li>Windows <i>64 bits</i>:
+                        <a href="http://gmic.eu/files/prerelease_windows/gmic_gimp_qt_win64.exe">installer</a> or
+                        <a href="http://gmic.eu/files/prerelease_windows/gmic_gimp_qt_win64.zip">.zip archive</a>
+                      </li>
+                      <li>Windows <i>32 bits</i>:
+                        <a href="http://gmic.eu/files/prerelease_windows/gmic_gimp_qt_win32.exe">installer</a> or
+                        <a href="http://gmic.eu/files/prerelease_windows/gmic_gimp_qt_win32.zip">.zip archive</a>
+                      </li>
+                      <li>Old GTK version (<i>not recommended!</i>):
+                        Linux <i>64 bits</i>: <a href="http://gmic.eu/files/prerelease_linux/gmic_gimp_gtk_linux64.zip">.zip archive</a>,
+                        Linux <i>32 bits</i>: <a href="http://gmic.eu/files/prerelease_linux/gmic_gimp_gtk_linux32.zip">.zip archive</a>,
+                        Windows <i>64 bits</i>:
+                          <a href="http://gmic.eu/files/prerelease_windows/gmic_gimp_gtk_win64.exe">installer</a> or
+                          <a href="http://gmic.eu/files/prerelease_windows/gmic_gimp_gtk_win64.zip">.zip archive</a>,
+                        Windows <i>32 bits</i>:
+                          <a href="http://gmic.eu/files/prerelease_windows/gmic_gimp_gtk_win32.exe">installer</a> or
+                          <a href="http://gmic.eu/files/prerelease_windows/gmic_gimp_gtk_win32.zip">.zip archive</a>,
+                      </li>
+                    </ul>
+                    <br/></td>
                 </tr>
+
+                <!-- G'MIC for Krita -->
                 <tr>
                   <td><img alt="" src="img/download_krita.png" border="0"></img></td><td>&nbsp;&nbsp;</td>
-                  <td><font size="3">G'MIC plug-in for <a href="http://www.krita.org">Krita</a> (4.0+) </font><br/>
-                    alternative 1: <a href="http://gmic.eu/files/prerelease_linux/gmic_krita_qt_linux64.zip">Linux 64 bits</a><br/>
-                    alternative 2: <a href="http://gmic.eu/files/prerelease_linux/gmic_krita_qt_linux32.zip">Linux 32 bits</a><br/>
-                    alternative 3: <a href="http://gmic.eu/files/prerelease_windows/gmic_krita_qt_win64.zip">Windows 64 bits</a><br/>
-                    alternative 4: <a href="http://gmic.eu/files/prerelease_windows/gmic_krita_qt_win32.zip">Windows 32 bits</a><br/>
+                  <td><font size="3"><b><font color="#000066">G'MIC</font></b> plug-in for <a href="http://www.krita.org">Krita</a> (4.0+) </font><br/>
+                    <ul>
+                      <li>Linux <i>64 bits</i>: <a href="http://gmic.eu/files/prerelease_linux/gmic_krita_qt_linux64.zip">.zip archive</a></li>
+                      <li>Linux <i>32 bits</i>: <a href="http://gmic.eu/files/prerelease_linux/gmic_krita_qt_linux32.zip">.zip archive</a></li>
+                      <li>Windows <i>64 bits</i>: <a href="http://gmic.eu/files/prerelease_windows/gmic_krita_qt_win64.zip">.zip archive</a></li>
+                      <li>Windows <i>32 bits</i>: <a href="http://gmic.eu/files/prerelease_windows/gmic_krita_qt_win32.zip">.zip archive</a></li>
+                    </ul>
                     <br/></td>
                 </tr>
+
+
+                <!-- G'MIC for Windows 64 bits -->
                 <tr>
-                  <td><a href="http://gmic.eu/files/prerelease_windows/gmic_gimp_qt_win64.zip"><img alt="" src="img/download_win64.png" border="0"></img></a></td><td>&nbsp;&nbsp;</td>
-                  <td><a href="http://gmic.eu/files/prerelease_windows/gmic_gimp_qt_win64.zip"><font size="3">G'MIC for Windows (64 bits) - <i>GIMP plug-in</i></font></a><br/>
-                    <b>zip file</b><br/>
-                    alternative 1: <a href="http://gmic.eu/files/prerelease_windows/gmic_cli_win64.zip">command line interface</a><br/>
-                    alternative 2: <a href="http://gmic.eu/files/prerelease_windows/gmic_qt_win64.zip">stand-alone Qt interface</a><br/>
-                    alternative 3: <a href="http://gmic.eu/files/prerelease_windows/gmic_zart_win64.zip">ZArt</a><br/>
-                    alternative 4: <a href="http://gmic.eu/files/prerelease_windows/gmic_lib_win64.zip">C/C++ library</a><br/>
+                  <td><img alt="" src="img/download_win64.png" border="0"></img></td><td>&nbsp;&nbsp;</td>
+                  <td><font size="3"><b><font color="#000066">G'MIC</font></b> for Windows <i>64 bits</i> - Other interfaces</font><br/>
+                    <ul>
+                      <li>Command-line interface (CLI): <a href="http://gmic.eu/files/prerelease_windows/gmic_cli_win64.zip">.zip archive</a></li>
+                      <li>Stand-alone Qt interface: <a href="http://gmic.eu/files/prerelease_windows/gmic_qt_win64.zip">.zip archive</a></li>
+                      <li>ZArt: <a href="http://gmic.eu/files/prerelease_windows/gmic_zart_win64.zip">.zip archive</a></li>
+                      <li>C/C++ library: <a href="http://gmic.eu/files/prerelease_windows/gmic_lib_win64.zip">.zip archive</a></li>
+                    </ul>
                     <br/></td>
                 </tr>
+
+                <!-- G'MIC for Windows 32 bits -->
                 <tr>
-                  <td><a href="http://gmic.eu/files/prerelease_windows/gmic_gimp_qt_win32.zip"><img alt="" src="img/download_win32.png" border="0"></img></a></td><td>&nbsp;&nbsp;</td>
-                  <td><a href="http://gmic.eu/files/prerelease_windows/gmic_gimp_qt_win32.zip"><font size="3">G'MIC for Windows (32 bits) - <i>GIMP plug-in</i></font></a><br/>
-                    <b>zip file</b><br/>
-                    alternative 1: <a href="http://gmic.eu/files/prerelease_windows/gmic_cli_win32.zip">command line interface</a><br/>
-                    alternative 2: <a href="http://gmic.eu/files/prerelease_windows/gmic_qt_win32.zip">stand-alone Qt interface</a><br/>
-                    alternative 3: <a href="http://gmic.eu/files/prerelease_windows/gmic_zart_win32.zip">ZArt</a><br/>
-                    alternative 4: <a href="http://gmic.eu/files/prerelease_windows/gmic_lib_win32.zip">C/C++ library</a><br/>
+                  <td><img alt="" src="img/download_win32.png" border="0"></img></td><td>&nbsp;&nbsp;</td>
+                  <td><font size="3"><b><font color="#000066">G'MIC</font></b> for Windows <i>32 bits</i> - Other interfaces</font><br/>
+                    <ul>
+                      <li>Command-line interface (CLI): <a href="http://gmic.eu/files/prerelease_windows/gmic_cli_win32.zip">.zip archive</a></li>
+                      <li>Stand-alone Qt interface: <a href="http://gmic.eu/files/prerelease_windows/gmic_qt_win32.zip">.zip archive</a></li>
+                      <li>ZArt: <a href="http://gmic.eu/files/prerelease_windows/gmic_zart_win32.zip">.zip archive</a></li>
+                      <li>C/C++ library: <a href="http://gmic.eu/files/prerelease_windows/gmic_lib_win32.zip">.zip archive</a></li>
+                    </ul>
                     <br/></td>
                 </tr>
+
+                <!-- G'MIC for Debian 64 bits -->
                 <tr>
-                  <td><a href="http://gmic.eu/files/prerelease_linux/gmic_debian_jessie_amd64.deb"><img alt="" src="img/download_debian64.png" border="0"></img></a></td><td>&nbsp;&nbsp;</td>
-                  <td><a href="http://gmic.eu/files/prerelease_linux/gmic_debian_jessie_amd64.deb"><font size="3">G'MIC for Debian 8 <i>Jessie</i> (64 bits) - <i>all interfaces</i></font></a><br/>
-                    <b>deb file</b><br/>
-                    alternative: <a href="http://gmic.eu/files/prerelease_linux/gmic_debian_wheezy_amd64.deb">for Debian 7 <i>Wheezy</i> (64 bits)</a><br/><br/></td>
+                  <td><img alt="" src="img/download_debian64.png" border="0"></img></td><td>&nbsp;&nbsp;</td>
+                  <td><font size="3"><b><font color="#000066">G'MIC</font></b> for Debian <i>64 bits</i> - All interfaces</font><br/>
+                    <ul>
+                      <li>Debian 8 <i>Jessie</i>: <a href="http://gmic.eu/files/prerelease_linux/gmic_debian_jessie_amd64.deb">.deb package</a></li>
+                      <li>Debian 7 <i>Wheezy</i>: <a href="http://gmic.eu/files/prerelease_linux/gmic_debian_wheezy_amd64.deb">.deb package</a></li>
+                    </ul>
+                    <br/></td>
                 </tr>
+
+                <!-- G'MIC for Debian 32 bits -->
                 <tr>
-                  <td><a href="http://gmic.eu/files/prerelease_linux/gmic_debian_jessie_i386.deb"><img alt="" src="img/download_debian32.png" border="0"></img></a></td><td>&nbsp;&nbsp;</td>
-                  <td><a href="http://gmic.eu/files/prerelease_linux/gmic_debian_jessie_i386.deb"><font size="3">G'MIC for Debian 8 <i>Jessie</i> (32 bits) - <i>all interfaces</i></font></a><br/>
-                    <b>deb file</b><br/>
-                    alternative: <a href="http://gmic.eu/files/prerelease_linux/gmic_debian_wheezy_i386.deb">for Debian 7 <i>Wheezy</i> (32 bits)</a><br/><br/></td>
+                  <td><img alt="" src="img/download_debian32.png" border="0"></img></td><td>&nbsp;&nbsp;</td>
+                  <td><font size="3"><b><font color="#000066">G'MIC</font></b> for Debian <i>32 bits</i> - All interfaces</font><br/>
+                    <ul>
+                      <li>Debian 8 <i>Jessie</i>: <a href="http://gmic.eu/files/prerelease_linux/gmic_debian_jessie_i386.deb">.deb package</a></li>
+                      <li>Debian 7 <i>Wheezy</i>: <a href="http://gmic.eu/files/prerelease_linux/gmic_debian_wheezy_i386.deb">.deb package</a></li>
+                    </ul>
+                    <br/></td>
                 </tr>
+
+                <!-- G'MIC for Ubuntu 64 bits -->
                 <tr>
-                  <td><a href="http://gmic.eu/files/prerelease_linux/gmic_ubuntu_vivid_amd64.deb"><img alt="" src="img/download_ubuntu64.png" border="0"></img></a></td><td>&nbsp;&nbsp;</td>
-                  <td>
-                    <a href="http://gmic.eu/files/prerelease_linux/gmic_ubuntu_xenial_amd64.deb"><font size="3">G'MIC for Ubuntu 16.04 LTS <i>Xenial</i> (64 bits) - <i>all interfaces</i></font></a><br/>
-                    <b>deb file</b><br/>
-                    alternative 1: <a href="http://gmic.eu/files/prerelease_linux/gmic_ubuntu_vivid_amd64.deb">for Ubuntu 15.04 <i>Vivid</i> (64 bits)</a><br/>
-                    alternative 2: <a href="http://gmic.eu/files/prerelease_linux/gmic_ubuntu_yakkety_amd64.deb">for Ubuntu 16.10 <i>Yakkety</i> (64 bits)</a><br/>
-                    alternative 3: <a href="http://gmic.eu/files/prerelease_linux/gmic_ubuntu_zesty_amd64.deb">for Ubuntu 17.04 <i>Zesty</i> (64 bits)</a><br/><br/></td>
+                  <td><img alt="" src="img/download_ubuntu64.png" border="0"></img></td><td>&nbsp;&nbsp;</td>
+                  <td><font size="3"><b><font color="#000066">G'MIC</font></b> for Ubuntu <i>64 bits</i> - All interfaces</font><br/>
+                    <ul>
+                      <li>Ubuntu 17.04 <i>Zesty</i>: <a href="http://gmic.eu/files/prerelease_linux/gmic_ubuntu_zesty_amd64.deb">.deb package</a></li>
+                      <li>Ubuntu 16.04 <i>Xenial</i>: <a href="http://gmic.eu/files/prerelease_linux/gmic_ubuntu_xenial_amd64.deb">.deb package</a></li>
+                      <li>Ubuntu 15.04 <i>Vivid</i>: <a href="http://gmic.eu/files/prerelease_linux/gmic_ubuntu_vivid_amd64.deb">.deb package</a></li>
+                      <li>Ubuntu 16.10 <i>Yakkety</i>: <a href="http://gmic.eu/files/prerelease_linux/gmic_ubuntu_yakkety_amd64.deb">.deb package</a></li>
+                    </ul>
+                    <br/></td>
                 </tr>
+
+                <!-- G'MIC for Ubuntu 32 bits -->
                 <tr>
-                  <td><a href="http://gmic.eu/files/prerelease_linux/gmic_ubuntu_trusty_i386.deb"><img alt="" src="img/download_ubuntu32.png" border="0"></img></a></td><td>&nbsp;&nbsp;</td>
-                  <td><a href="http://gmic.eu/files/prerelease_linux/gmic_ubuntu_trusty_i386.deb"><font size="3">G'MIC for Ubuntu 14.04 LTS <i>Trusty</i> (32 bits) - <i>all interfaces</i></font></a><br/>
-                    <b>deb file</b><br/><br/></td>
+                  <td><img alt="" src="img/download_ubuntu32.png" border="0"></img></td><td>&nbsp;&nbsp;</td>
+                  <td><font size="3"><b><font color="#000066">G'MIC</font></b> for Ubuntu <i>32 bits</i> - All interfaces</font><br/>
+                    <ul>
+                      <li>Ubuntu 14.04 <i>Trusty</i>: <a href="http://gmic.eu/files/prerelease_linux/gmic_ubuntu_trusty_i386.deb">.deb package</a></li>
+                    </ul>
+                    <br/></td>
                 </tr>
+
+                <!-- G'MIC Static 64 bits -->
                 <tr>
-                  <td><a href="http://gmic.eu/files/prerelease_linux/gmic_static_linux64.zip"><img alt="" src="img/download_linux64.png" border="0"></img></a></td><td>&nbsp;&nbsp;</td>
-                  <td><a href="http://gmic.eu/files/prerelease_linux/gmic_static_linux64.zip"><font size="3">G'MIC for Linux, static version (64 bits) - <i>command-line interface</i></font></a><br/>
-                    <b>zip file</b>, <i>beware: without display capabilities!</i><br/><br/></td>
+                  <td><img alt="" src="img/download_linux64.png" border="0"></img></td><td>&nbsp;&nbsp;</td>
+                  <td><font size="3"><b><font color="#000066">G'MIC</font></b> for Linux <i>64 bits</i> - Command-line interface</font><br/>
+                    <ul>
+                      <li>Static version: <a href="http://gmic.eu/files/prerelease_linux/gmic_static_linux64.zip">.zip archive</a>
+                        <i>(beware: without display capabilities!)</i></li>
+                    </ul>
+                    <br/></td>
                 </tr>
+
+                <!-- G'MIC Static 32 bits -->
                 <tr>
-                  <td><a href="http://gmic.eu/files/prerelease_linux/gmic_static_linux32.zip"><img alt="" src="img/download_linux32.png" border="0"></img></a></td><td>&nbsp;&nbsp;</td>
-                  <td><a href="http://gmic.eu/files/prerelease_linux/gmic_static_linux32.zip"><font size="3">G'MIC for Linux, static version (32 bits) - <i>command-line interface</i></font></a><br/>
-                    <b>zip file</b>, <i>beware: without display capabilities!</i><br/><br/></td>
+                  <td><img alt="" src="img/download_linux32.png" border="0"></img></td><td>&nbsp;&nbsp;</td>
+                  <td><font size="3"><b><font color="#000066">G'MIC</font></b> for Linux <i>32 bits</i> - Command-line interface</font><br/>
+                    <ul>
+                      <li>Static version: <a href="http://gmic.eu/files/prerelease_linux/gmic_static_linux32.zip">.zip archive</a>
+                        <i>(beware: without display capabilities!)</i></li>
+                    </ul>
+                    <br/></td>
                 </tr>
+
+                <!-- G'MIC for MacOSX -->
                 <tr>
-                  <td><a href="http://karo03.bplaced.de/gmic/release/"><img alt="" src="img/download_macosx.png" border="0"></img></a></td><td>&nbsp;&nbsp;</td>
-                  <td><a href="http://karo03.bplaced.de/gmic/release/"><font size="3">G'MIC for MacOSX (64bits, LISANET version)</font></a><br/>
-                    <b>dmg file</b><br/>
-                    alternative: <a href="http://www.partha.com/">Partha version (64 bits)</a><br/><br/></td>
+                  <td><img alt="" src="img/download_macosx.png" border="0"></img></td><td>&nbsp;&nbsp;</td>
+                  <td><font size="3"><b><font color="#000066">G'MIC</font></b> for MacOSX <i>64bits</i></font><br/>
+                    <ul>
+                      <li>LISANET version: <a href="http://karo03.bplaced.de/gmic/release/">external link</a></li>
+                      <li>Partha version: <a href="http://www.partha.com/">external link</a></li>
+                    </ul>
+                    <br/></td>
                 </tr>
+
+                <!-- G'MIC source code -->
                 <tr>
-                  <td><a href="http://gmic.eu/files/prerelease/gmic_source.tar.gz"><img alt="" src="img/download_source.png" border="0"></img></a></td><td>&nbsp;&nbsp;</td>
-                  <td><a href="http://gmic.eu/files/prerelease/gmic_source.tar.gz"><font size="3">G'MIC source</font></a><br/>
-                    <b>tar.gz file</b> (current <i>development version</i>)<br/>
-                    alternative 1: <a href="http://gmic.eu/files/source/gmic_source.tar.gz">Latest stable (.tar.gz)</a><br/>
-                    alternative 2: <a href="https://github.com/dtschump/gmic">git repository (G'MIC core)</a><br/>
-                    alternative 3: <a href="https://github.com/c-koi/gmic-qt">git repository (G'MIC-Qt)</a><br/>
-                    alternative 4: <a href="https://github.com/dtschump/gmic-community">git repository (ZArt and community files)</a><br/><br/></td>
+                  <td><img alt="" src="img/download_source.png" border="0"></img></td><td>&nbsp;&nbsp;</td>
+                  <td><font size="3"><b><font color="#000066">G'MIC</font></b> source code</font><br/>
+                    <ul>
+                      <li>Latest development snapshot: <a href="http://gmic.eu/files/prerelease/gmic_source.tar.gz">.tar.gz archive</a></li>
+                      <li>Latest stable: <a href="http://gmic.eu/files/source/gmic_source.tar.gz">/tar.gz archive</a></li>
+                      <li>G'MIC-core: <a href="https://github.com/dtschump/gmic">github page</a></li>
+                      <li>G'MIC-Qt: <a href="https://github.com/c-koi/gmic-qt">github page</a></li>
+                      <li>G'MIC-community: <a href="https://github.com/dtschump/gmic-community">github page</a></li>
+                    </ul>
+                    <br/></td>
                 </tr>
+
+                <!-- G'MIC OpenFX plug-ins -->
                 <tr>
                   <td><a href="https://github.com/NatronVFX/openfx-gmic"><img alt="" src="img/download_ofx.png" border="0"></img></a></td><td>&nbsp;&nbsp;</td>
-                  <td><a href="https://github.com/NatronVFX/openfx-gmic"><font size="3">G'MIC OpenFX plug-ins</font></a><br/>
-                    <b>installers/source for Windows/Mac/Linux</b><br/><br/></td>
+                  <td><a href="https://github.com/NatronVFX/openfx-gmic"><font size="3"><b><font color="#000066">G'MIC</font></b> OpenFX plug-ins</font></a><br/>
+                    <ul>
+                      <li>Installers/source for Windows/Mac/Linux</li>
+                    </ul>
+                    <br/></td>
                 </tr>
-                <tr>
-                  <td><a href="http://gmic.eu/files/prerelease"><img alt="" src="img/download_prerelease.png" border="0"></img></a></td><td>&nbsp;&nbsp;</td>
-                  <td><a href="http://gmic.eu/files/prerelease"><font size="3">G'MIC pre-release for testing</font></a><br/>
-                    <b>source and Windows/Linux installers/binaries</b><br/><br/></td>
-                </tr>
+
+                <!-- <tr> -->
+                <!--   <td><a href="http://gmic.eu/files/prerelease"><img alt="" src="img/download_prerelease.png" border="0"></img></a></td><td>&nbsp;&nbsp;</td> -->
+                <!--   <td><a href="http://gmic.eu/files/prerelease"><font size="3">G'MIC pre-release for testing</font></a><br/> -->
+                <!--     <b>source and Windows/Linux installers/binaries</b><br/><br/></td> -->
+                <!-- </tr> -->
+
                 <tr>
                   <td><a href="http://gmic.eu/files/"><img alt="" src="img/download_browse.png" border="0"></img></a></td><td>&nbsp;&nbsp;</td>
                   <td><a href="http://gmic.eu/files"><font size="3">Browse all files</font></a><br/></td>
                 </tr>
               </table>
-              <hr noshade="noshade" size="1" width="90%"></hr>
 
             </td>
         </tr></table>
@@ -167,7 +241,7 @@
 
 <div id="bloc_option"><div id="top_bleu"><div id="text_top"><a id="source"></a>From source</div></div>
   <div id="center"><div id="text_centre_intro">
-      The source code of <b><font color="#000066">G'MIC</font></b> is hosted on a <a href="http://git-scm.com/"><i>git</i></a> repository with public access.
+      The source code of <b><font color="#000066">G'MIC</font></b> is shared between several <a href="http://git-scm.com/"><i>git</i></a> repositories with public access.
       Accessing it via <a href="http://git-scm.com/"><i>git</i></a> ensures you get the latest code available, and will ease the
       source updates as well. Here are the instructions to compile <b><font color="#000066">G'MIC</font></b> on a fresh installation of <i>Debian (or Ubuntu)</i>.
       It should not be much harder for other distros. First you need to install all the required tools and libraries:
@@ -175,42 +249,36 @@
         $ sudo apt-get install git build-essential libgimp2.0-dev libcv-dev libopencv-dev \
                libhighgui-dev libcurl4-openssl-dev libfftw3-dev qt5-default qtbase5-dev
       </pre>
-      Then, get the <b><font color="#000066">G'MIC</font></b> source files from the different <i>git</i> repositories:
+      Then, get the <b><font color="#000066">G'MIC</font></b> source from the different repositories:
       <pre style="font-family:monospace;">
         $ git clone <a href="https://github.com/dtschump/gmic">https://github.com/dtschump/gmic.git</a>
         $ git clone <a href="https://github.com/c-koi/gmic-qt">https://github.com/c-koi/gmic-qt.git</a>
         $ git clone <a href="https://github.com/c-koi/gmic-qt">https://github.com/dtschump/gmic-community.git</a>
       </pre>
-      You are now ready to compile the following <b><font color="#000066">G'MIC</font></b> interfaces:
-      <a href="http://gmic.eu/reference.shtml"><i>gmic</i></a> (command-line tool),
-      <a href="http://gmic.eu/gimp.shtml"><i>gmic_gimp_qt</i></a> (plug-in for <a href="http://www.gimp.org">GIMP</a>),
-      <a href="http://gmic.eu/img/zart.jpg" class="highslide" onclick="return hs.expand(this)"><i>ZArt</i></a><div class="highslide-caption">Screenshot of <b>ZArt</b> in action.</div>
-      and
-      <a href="http://gmic.eu/libgmic.shtml"><i>libgmic</i></a> (<b><font color="#000066">G'MIC</font></b> C++ library). Just type:
+      You are now ready to compile all <b><font color="#000066">G'MIC</font></b> interfaces:
+      <b><i>gmic</i></b> (command-line tool),
+      <b><i>gmic_gimp_qt</i></b> and <b><i>gmic_gimp_gtk</i></b> (plug-ins for <a href="http://www.gimp.org">GIMP</a>),
+      <b><i>gmic_krita_qt</i></b> (plug-in for <a href="http://www.krita.org">Krita</a>),
+      <b><i>ZArt</i></b> and
+      <b><i>libgmic</i></b> (<b><font color="#000066">G'MIC</font></b> C++ library). Just pick your choice:
       <pre style="font-family:monospace;">
         $ cd gmic/src
-        $ make cli gimp lib
+        $ make cli         # Compile command-line interface
+        $ make gimp        # Compile plug-in for GIMP
+        $ make krita       # Compile plug-in for Krita
+        $ make gimp_gtk    # Compile obsolete plug-in for GIMP (GTK-based)
+        $ make lib         # Compile G'MIC library files
+        $ make zart        # Compile ZArt
+        $ make all         # Compile all of the G'MIC interfaces
       </pre>
-      and go out for a long drink (the compilation takes time). Alternatively, you may want to:<br/>
-      <ul>
-        <li>
-          Compile the <b><a href="gimp.shtml">GIMP plug-in</a></b> only. If so, type &nbsp;&nbsp;<tt style="font-family:monospace;">$ make gimp</tt>
-        </li>
-        <li>
-          Compile the <b><a href="libgmic.shtml">libgmic</a></b> library only. If so, type &nbsp;&nbsp;<tt style="font-family:monospace;">$ make lib</tt>
-        </li>
-      </ul>
+      and go out for a long drink (the compilation takes time).<br/><br/>
+
       Note that compiling issues (compiler segfault) may happen with older  versions of <i>g++</i> (<i>4.8.1</i> and <i>4.8.2</i>).
       If you encounter this kind of errors, you probably have to disable the support of OpenMP
       in <b><font color="#000066">G'MIC</font></b> to make it work, by compiling it with:
       <pre style="font-family:monospace;">
         $ make OPENMP_CFLAGS="" OPENMP_LIBS=""
       </pre>
-      Now, you should have the compiled files <tt style="font-family:monospace;">gmic</tt>, <tt style="font-family:monospace;">libgmic.a</tt>
-      and <tt style="font-family:monospace;">libgmic.so</tt> in your <tt style="font-family:monospace;">gmic/src/</tt> folder,
-      as well as
-      <tt style="font-family:monospace;">zart</tt> in <tt style="font-family:monospace;">gmic-community/zart/</tt> and
-      <tt style="font-family:monospace;">gmic_gimp_qt</tt> in <tt style="font-family:monospace;">gmic-qt/</tt>.<br/><br/>
 
       Also, please remember that the source code in the <i>git</i> repository
       is constantly under development and may be a bit unstable, so do not hesitate to <a href="https://github.com/dtschump/gmic-community/issues">report bugs</a> if you encounter any.
