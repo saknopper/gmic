@@ -539,7 +539,7 @@ libcgmic.o: gmic.cpp gmic.h gmic_stdlib.h CImg.h
 	@if [ ! -f gmic_libc.h ]; then ln -fs ../../gmic-community/libcgmic/gmic_libc.h .; fi
 	$(CXX) -o libcgmic.o -c gmic_libc.cpp -Dgmic_gui $(PIC) $(CFLAGS)
 
-libcgmic: gmic_community_path libgmic.o libcgmic.o
+libcgmic: libgmic.o libcgmic.o
 	ar rcs libcgmic.a libcgmic.o
 ifeq ($(OS),Darwin)
 	$(CXX) -shared -o libcgmic.so libcgmic.o libgmic.o $(LIBS)
