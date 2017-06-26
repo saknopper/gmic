@@ -229,49 +229,53 @@ if [ "$DIST" != "Ubuntu 16.04.2 LTS" ] || [ "$BITS" != "x86_64" ] ; then
     BITS=`uname -m`
     if [ "$BITS" == "x86_64" ]; then BITS=64; ARCH=amd64; PARCH=x86_64; else BITS=32; ARCH=i386; PARCH=i386; fi
     if [ "$1" == "final" ]; then SUFFIX=""; else SUFFIX=_pre; fi
+
     TARFILE=gmic_${VERSION}${SUFFIX}.tar
-    PAK=gmic_${VERSION}${SUFFIX}_${CODENAME}_${ARCH}.deb
-    PLUGTK=gmic_gimp_gtk_${VERSION}${SUFFIX}_linux${BITS}.zip
-    PLUGTK2=gmic_gimp_gtk_${VERSION}${SUFFIX}_yakkety${BITS}.zip
-    PLUGQT=gmic_gimp_qt_${VERSION}${SUFFIX}_linux${BITS}.zip
-    STA=gmic_static_${VERSION}${SUFFIX}_linux${BITS}.zip
-    DIR=gmic-${VERSION}${SUFFIX}
+    OUTDIR=gmic-${VERSION}${SUFFIX}
+    OUTPAK=gmic_${VERSION}${SUFFIX}_${CODENAME}_${ARCH}.deb
+    OUTZIP_GIMP_GTK=gmic_gimp_gtk_${VERSION}${SUFFIX}_linux${BITS}.zip
+    OUTZIP_GIMP_GTK2=gmic_gimp_gtk_${VERSION}${SUFFIX}_yakkety${BITS}.zip
+    OUTZIP_GIMP_QT=gmic_gimp_qt_${VERSION}${SUFFIX}_linux${BITS}.zip
+    OUTZIP_KRITA_QT=gmic_krita_qt_${VERSION}${SUFFIX}_linux${BITS}.zip
+    OUTZIP_STATIC=gmic_static_${VERSION}${SUFFIX}_linux${BITS}.zip
+
     while [ ! -f deb_${TARFILE}.gz ]; do sleep 10; done
     sleep 10
     cp deb_${TARFILE}.gz /tmp/ &&
         cd /tmp/ &&
-        rm -rf $PAK $PLUGTK $DIR &&
+        rm -rf $OUTDIR $OUTPAK $OUTZIP_GIMP_GTK $OUTZIP_GIMP_GTK2 $OUTZIP_GIMP_QT $OUTZIP_KRITA_QT $OUTZIP_STATIC &&
         touch deb_${TARFILE}.gz &&
         tar zxvf deb_${TARFILE}.gz &&
         find gmic-${VERSION}${SUFFIX} -exec touch {} ;
-    cd $DIR/src
+    cd $OUTDIR/src
     sed "s/\$(MAKE) cli gimp lib/\$(MAKE) cli gimp_gtk lib libc zart/g" Makefile > /tmp/Makefile && mv /tmp/Makefile Makefile
     if [ -f $HOME/is_qt5 ]; then
-        sed "s/\$(MAKE) cli gimp_gtk lib libc zart/\$(MAKE) cli lib libc zart gmic_qt gimp_qt/g" Makefile > /tmp/Makefile && mv /tmp/Makefile Makefile
+        sed "s/\$(MAKE) cli gimp_gtk lib libc zart/\$(MAKE) cli lib libc zart gmic_qt gimp_qt krita_qt/g" Makefile > /tmp/Makefile && mv /tmp/Makefile Makefile
     fi
     cd ../..
 
-    cd $DIR &&
+    cd $OUTDIR &&
         dpkg-buildpackage -d -j3 -rfakeroot;
-    mv ../gmic_${VERSION}_${ARCH}.deb ../$PAK
+    mv ../gmic_${VERSION}_${ARCH}.deb ../$OUTPAK
 
     if [ "$CODENAME" == "ubuntu_yakkety" ]; then
-        zip -j -r -9 ../$PLUGTK2 src/gmic_gimp_gtk README &&
+        zip -j -r -9 ../$OUTZIP_GIMP_GTK2 src/gmic_gimp_gtk README &&
             cd .. &&
-            cp -f $PLUGTK2 $PAK $SF_HOME/work/src/
+            cp -f $OUTZIP_GIMP_GTK2 $OUTPAK $SF_HOME/work/src/
     elif [ "$CODENAME" == "debian_wheezy" ]; then
-        zip -j -r -9 ../$PLUGTK src/gmic_gimp_gtk README &&
+        zip -j -r -9 ../$OUTZIP_GIMP_GTK src/gmic_gimp_gtk README &&
             cd src && make clean && make GMIC_STATIC_CLI_PATH=/usr/lib/${PARCH}-linux-gnu static && mv gmic ../ &&
             cd .. && rm -rf man src zart debian && cd .. &&
-            zip -r -9 $STA $DIR &&
-            cp -f $PLUGTK $PAK $STA $SF_HOME/work/src/
+            zip -r -9 $OUTZIP_STATIC $OUTDIR &&
+            cp -f $OUTPAK $OUTZIP_GIMP_GTK $OUTZIP_STATIC $SF_HOME/work/src/
     elif [ "$CODENAME" == "debian_jessie" ]; then
-        zip -j -r -9 ../$PLUGQT gmic-qt/gmic_gimp_qt README &&
+        zip -j -r -9 ../$OUTZIP_GIMP_QT gmic-qt/gmic_gimp_qt README &&
+        zip -j -r -9 ../$OUTZIP_KRITA_QT gmic-qt/gmic_krita_qt README &&
             cd .. &&
-            cp -f $PLUGQT $PAK $SF_HOME/work/src/
+            cp -f $OUTPAK $OUTZIP_GIMP_QT $OUTZIP_KRITA_QT $SF_HOME/work/src/
     else
         cd .. &&
-            cp -f $PAK $SF_HOME/work/src/
+            cp -f $OUTPAK $SF_HOME/work/src/
     fi
     echo VIRTUALBOX_DONE
     return;
@@ -476,19 +480,19 @@ echo " - Create debian packages."
 
 cp ${HOME}/work/src/deb_${TARFILE}.gz /tmp/ &&
     cd /tmp/ &&
-    PAK=gmic_${VERSION}${SUFFIX}_ubuntu_xenial_amd64.deb &&
-    DIR=gmic-${VERSION}${SUFFIX} &&
-    rm -rf $PAK &&
+    OUTPAK=gmic_${VERSION}${SUFFIX}_ubuntu_xenial_amd64.deb &&
+    OUTDIR=gmic-${VERSION}${SUFFIX} &&
+    rm -rf $OUTPAK &&
     touch deb_${TARFILE}.gz &&
     tar zxvf deb_${TARFILE}.gz &&
     find gmic-${VERSION}${SUFFIX} -exec touch {} \; &&
-    cd $DIR/src &&
+    cd $OUTDIR/src &&
     sed "s/\$(MAKE) cli gimp_gtk lib/\$(MAKE) cli lib libc zart gmic_qt gimp_qt/g" Makefile > /tmp/Makefile &&
     mv /tmp/Makefile Makefile && cd ../..
-cd $DIR &&
+cd $OUTDIR &&
     dpkg-buildpackage -d -j3 -rfakeroot;
-mv ../gmic_${VERSION}_amd64.deb ../$PAK &&
-    cp -f ../$PAK $HOME/work/src/ &&
+mv ../gmic_${VERSION}_amd64.deb ../$OUTPAK &&
+    cp -f ../$OUTPAK $HOME/work/src/ &&
     echo ELARA_DONE
 
 # Wait for packages to be generated from Virtual machines, and copy them to G'MIC server.
