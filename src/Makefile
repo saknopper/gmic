@@ -454,7 +454,7 @@ static:
 	$(MAKE) "CFLAGS+=$(GMIC_STATIC_CLI_CFLAGS) $(OPT_CFLAGS)" "LIBS+=$(GMIC_STATIC_CLI_LIBS)" gmic
 	$(STRIP) gmic$(EXE)
 
-zart: gmic_community_path CImg.h gmic_stdlib.h
+zart: zart_files CImg.h gmic_stdlib.h
 	@if [ ! -d ../zart ]; then ln -fs ../gmic-community/zart ..; fi
 ifeq ($(OS),Darwin)
 	cd ../zart && qmake CONFIG+=release GMIC_PATH=$(ZART_GMIC_PATH) zart.pro && $(MAKE) && $(STRIP) zart.app/Contents/MacOS/zart
@@ -463,19 +463,19 @@ else
 endif
 	@echo "'zart' has been compiled in '../zart'."
 
-gimp_qt: CImg.h gmic_stdlib.h gmic_qt_path
+gimp_qt: gmic_qt_files CImg.h gmic_stdlib.h
 	cd ../gmic-qt && qmake CONFIG+=release GMIC_PATH=$(QT_GMIC_PATH) PRERELEASE=$(PRERELEASE) HOST=gimp gmic_qt.pro && $(MAKE)
 	@echo "'gmic_gimp_qt' has been compiled in '../gmic-qt'."
 
-krita_qt: CImg.h gmic_stdlib.h gmic_qt_path
+krita_qt: gmic_qt_files CImg.h gmic_stdlib.h
 	cd ../gmic-qt && qmake CONFIG+=release GMIC_PATH=$(QT_GMIC_PATH) PRERELEASE=$(PRERELEASE) HOST=krita gmic_qt.pro && $(MAKE)
 	@echo "'gmic_krita_qt' has been compiled in '../gmic-qt'."
 
-gmic_qt: CImg.h gmic_stdlib.h gmic_qt_path
+gmic_qt: gmic_qt_files CImg.h gmic_stdlib.h
 	cd ../gmic-qt && qmake CONFIG+=release GMIC_PATH=$(QT_GMIC_PATH) PRERELEASE=$(PRERELEASE) HOST=none gmic_qt.pro && $(MAKE)
 	@echo "'gmic_qt' has been compiled in '../gmic-qt'."
 
-gmic_qt_path:
+gmic_qt_files:
 	@if [ ! -d ../gmic-qt ]; then \
 	  if [ ! -d ../../gmic-qt ]; then \
 	    echo "**"; \
@@ -497,7 +497,7 @@ gmic_qt_path:
 	  if [ -d ../../gmic-qt ]; then ln -fs ../gmic-qt ..; fi \
 	fi
 
-gmic_community_path:
+zart_files:
 	@if [ ! -d ../zart ]; then \
 	  if [ ! -d ../../gmic-community/zart ]; then \
 	    echo "**"; \
@@ -533,13 +533,27 @@ else
 	$(CXX) -o use_libgmic use_libgmic.cpp -L. -lgmic $(LIBS)
 endif
 
-# libgmic
+# libcgmic
+libcgmic_files:
+	@echo "> Retrieve G'MIC libcgmic files..."
+	@if [ ! -f gmic_libc.cpp ]; then \
+	  if [ -d ../../gmic-community/libcgmic ]; then \
+	    ln -fs ../../gmic-community/libcgmic/gmic_libc.cpp .; \
+	    ln -fs ../../gmic-community/libcgmic/gmic_libc.h .; \
+	    ln -fs ../../gmic-community/libcgmic/use_libcgmic.c .; \
+	  else \
+            $(WGET) gmic_libc.cpp https://raw.githubusercontent.com/dtschump/gmic-community/master/libcgmic/gmic_libc.cpp; \
+            $(WGET) gmic_libc.h https://raw.githubusercontent.com/dtschump/gmic-community/master/libcgmic/gmic_libc.h; \
+            $(WGET) use_libcgmic.c https://raw.githubusercontent.com/dtschump/gmic-community/master/libcgmic/use_libcgmic.c; \
+            touch gmic_libc.cpp gmic_libc.h use_libcgmic.c; \
+	  fi; \
+	fi
+	@echo " done!"
+
 libcgmic.o: gmic.cpp gmic.h gmic_stdlib.h CImg.h
-	@if [ ! -f gmic_libc.cpp ]; then ln -fs ../../gmic-community/libcgmic/gmic_libc.cpp .; fi
-	@if [ ! -f gmic_libc.h ]; then ln -fs ../../gmic-community/libcgmic/gmic_libc.h .; fi
 	$(CXX) -o libcgmic.o -c gmic_libc.cpp -Dgmic_gui $(PIC) $(CFLAGS)
 
-libcgmic: libgmic.o libcgmic.o
+libcgmic: libcgmic_files libgmic.o libcgmic.o
 	ar rcs libcgmic.a libcgmic.o
 ifeq ($(OS),Darwin)
 	$(CXX) -shared -o libcgmic.so libcgmic.o libgmic.o $(LIBS)
@@ -550,16 +564,13 @@ else
 	$(CXX) -shared -Wl,-soname,libcgmic.so.1 -o libcgmic$(SO) libcgmic.o libgmic.o $(LIBS)
 endif
 endif
-	@if [ ! -f use_libcgmic.c ]; then ln -fs ../../gmic-community/libcgmic/use_libcgmic.c .; fi
 	$(CC) -std=c99 -o use_libcgmic use_libcgmic.c -L. -lcgmic
 
 # libcgmicstatic
 libcgmicstatic.o: gmic.cpp gmic.h gmic_stdlib.h CImg.h
-	@if [ ! -f gmic_libc.cpp ]; then ln -fs ../../gmic-community/libcgmic/gmic_libc.cpp .; fi
-	@if [ ! -f gmic_libc.h ]; then ln -fs ../../gmic-community/libcgmic/gmic_libc.h .; fi
 	$(CXX) -o libcgmicstatic.o -c gmic_libc.cpp -Dgmic_gui $(PIC) $(CFLAGS)
 
-libcgmicstatic: libgmic.o libcgmicstatic.o
+libcgmicstatic: libcgmic_files libgmic.o libcgmicstatic.o
 	ar rcs libcgmicstatic.a libcgmicstatic.o
 ifeq ($(OS),Darwin)
 	$(CXX) -shared -static -o libcgmicstatic.so libcgmicstatic.o libgmic.o $(PIC) $(CFLAGS) $(LIBS)
@@ -570,7 +581,6 @@ else
 	$(CXX) -shared -Wl,-soname,libcgmicstatic.so.1 -o libcgmicstatic$(SO) libcgmicstatic.o libgmic.o $(PIC) $(CFLAGS) $(LIBS)
 endif
 endif
-	@if [ ! -f use_libcgmic.c ]; then ln -fs ../../gmic-community/libcgmic/use_libcgmic.c .; fi
 	$(CC) -std=c99 -o use_libcgmic_static use_libcgmic.c -L. -lcgmicstatic
 
 # gmic_gimp_gtk
@@ -595,7 +605,7 @@ gmic: gmic.cpp gmic.h gmic_stdlib.h CImg.h
 
 # header files
 gmic_stdlib.h: gmic_stdlib.gmic
-	@echo -n "> Retrieve G'MIC Standard Library..."
+	@echo "> Retrieve G'MIC Standard Library..."
 	@if [ ! -f ./gmic_stdlib.h ]; then \
 	  $(WGET) gmic_stdlib.h http://gmic.eu/gmic_stdlib.h; \
 	  touch gmic_stdlib.h; \
@@ -603,7 +613,7 @@ gmic_stdlib.h: gmic_stdlib.gmic
 	@echo " done!"
 
 CImg.h:
-	@echo -n "> Retrieve CImg Library..."
+	@echo "> Retrieve CImg Library..."
 	@if [ -f ../../CImg/CImg.h ]; then \
           if [ ! -f ./CImg.h ]; then ln -s ../../CImg/CImg.h .; fi; \
         elif [ ! -e ./CImg.h ]; then \
