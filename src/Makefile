@@ -617,7 +617,7 @@ CImg.h:
 	@if [ -f ../../CImg/CImg.h ]; then \
           if [ ! -f ./CImg.h ]; then ln -s ../../CImg/CImg.h .; fi; \
         elif [ ! -e ./CImg.h ]; then \
-          $(WGET) CImg.h https://github.com/dtschump/CImg/blob/master/CImg.h?raw=true; \
+          $(WGET) CImg.h https://github.com/dtschump/CImg/raw/master/CImg.h; \
           touch CImg.h; \
         fi
 	@echo " done!"
