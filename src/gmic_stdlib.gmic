@@ -13320,6 +13320,62 @@ superformula3d : -check "${1=1024}>1 && ${2=8}>=1" -skip ${3=1},${4=5},${5=8}
   1,{3*($res-1)},1,1,200 1,{$res-1},1,1,1 -a[-5--1] y -nm. [3d\ superformula]
   -v +
 
+#@cli tensors3d : _radius_factor>=0,_radius_min>=0
+#@cli : Generate 3d tensor fields from selected images.
+#@cli : Default values: 'radius_factor=1' and 'radius_min=0.05'.
+#@cli : $   6,6,6,9,"U = [x,y,z] - [w,h,d]/2; U/=norm(U); mul(U,U,3) + 0.3*eye(3)" -tensors3d 0.18
+tensors3d : -check "${1=1}>=0 && ${2=0.05}>=0"
+  -e[^-1] "Generate 3d tensor field(s) from image$?, with radius factor $1 and radius min $2."
+  -v - -repeat $! -l[$>]
+
+    # Check input image format.
+    -if {s==1} 100%,100%,100%,6,"[i#0,0,0,i#0,0,i#0]" -k.
+    -elif {s==3} 100%,100%,100%,6,"[R#0,G#0,0,B#0,0,0]" -k.
+    -elif {s==4} 100%,100%,100%,6,"[R#0,G#0,0,A#0,0,0]" -k.
+    -elif {s==9} 100%,100%,100%,6,"I=I#0;[I[0],I[1],I[2],I[4],I[5],I[8]]" -k.
+    -endif
+    -if {s!=6} -error[0--4] "Command '-tensors3d': Image '"{n}"' has an invalid size (spectrum="{s}")." -endif
+
+    # Estimate eigenvalues/eigenvectors.
+    100%,100%,100%,12,"
+      T = I(#0);
+      M = [ T[0], T[1], T[2], T[1], T[3], T[4], T[2], T[4], T[5] ];
+      eig = eig(M);
+      if (det(eig[3,9])<0, eig[3]*=-1; eig[4]*=-1; eig[5]*=-1);
+      eig[0] = max(0,eig[0]);
+      eig[1] = max(0,eig[1]);
+      eig[2] = max(0,eig[2]);
+      eig"
+    -k.
+
+    # Create 3d object.
+    -sphere3d 0.5,1 N,P={[i[6],i[7]]} .x{0,whd-1}
+    -f[0] "
+      const N = "$N";
+      const P = "$P";
+      eig = I;
+      L = $1*eig[0,3];
+      L[0] = max($2,L[0]);
+      L[1] = max($2,L[1]);
+      L[2] = max($2,L[2]);
+      R = eig[3,9];
+      anisotropy = sqrt(((L[0] - L[1])^2 + (L[1] - L[2])^2 + (L[2] - L[0])^2)/(2*(L[0]^2 + L[1]^2 + L[2]^2)));
+      ind = 1 + x + w*y + wh*z;
+
+      pts = crop(#ind,0,8,0,0,1,3*N,1,1);
+      pts *= resize(L,size(pts),0,2);
+      pts = mul(pts,R,3);
+      pts += resize([x,y,z],size(pts),0,2);
+      draw(#ind,pts,0,8,0,0,1,size(pts),1,1);
+
+      col0 = cut(255*anisotropy*abs([ R[0],R[1],R[2] ]) + (1-anisotropy)*200,0,255);
+      col = resize(col0,3*P,0,2);
+      const off = 8 + 3*N + 4*P;
+      draw(#ind,col,0,off,0,0,1,size(col),1,1);
+      I"
+    -rm[0] -+3d
+  -endl -done -v +
+
 #@cli text_pointcloud3d : _"text1",_"text2",_smoothness
 #@cli : Input 3d text pointcloud from the two specified strings.
 #@cli : Default values: 'text1="text1"', 'text2="text2"' and 'smoothness=1'.
