@@ -13324,7 +13324,7 @@ superformula3d : -check "${1=1024}>1 && ${2=8}>=1" -skip ${3=1},${4=5},${5=8}
 #@cli tensors3d : _radius_factor>=0,_radius_min>=0
 #@cli : Generate 3d tensor fields from selected images.
 #@cli : Default values: 'radius_factor=1' and 'radius_min=0.05'.
-#@cli : $   6,6,6,9,"U = [x,y,z] - [w,h,d]/2; U/=norm(U); mul(U,U,3) + 0.3*eye(3)" -tensors3d 0.18
+#@cli : $ 6,6,6,9,"U = [x,y,z] - [w,h,d]/2; U/=norm(U); mul(U,U,3) + 0.3*eye(3)" -tensors3d 0.8
 tensors3d : -check "${1=1}>=0 && ${2=0.05}>=0"
   -e[^-1] "Generate 3d tensor field(s) from image$?, with radius factor $1 and radius min $2."
   -v - -repeat $! -l[$>]
