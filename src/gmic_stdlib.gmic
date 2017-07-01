@@ -13350,10 +13350,14 @@ tensors3d : -check "${1=1}>=0 && ${2=0.05}>=0"
     -k.
 
     # Create 3d object.
-    -sphere3d 0.5,1 N,P={[i[6],i[7]]} .x{0,whd-1}
+#    -sphere3d 0.5,1
+#    -arrow3d -0.5,0,0,0.5,0,0
+    -box3d 1,1,1
+    N,P={[i[6],i[7]]} siz={h} .x{0,whd-1} -c3d.
     -f[0] "
       const N = "$N";
       const P = "$P";
+      const siz = "$siz";
       eig = I;
       const d = size(eig);
       ind = 1 + x + w*y + wh*z;
@@ -13377,7 +13381,7 @@ tensors3d : -check "${1=1}>=0 && ${2=0.05}>=0"
 
         col0 = cut(255*anisotropy*abs([ R[0],R[1],R[2] ]) + (1-anisotropy)*200,0,255);
         col = resize(col0,3*P,0,2);
-        const off = 8 + 3*N + 4*P;
+        const off = siz - 4*P;
         draw(#ind,col,0,off,0,0,1,size(col),1,1);
         0); I"
     -rm[0] -+3d
