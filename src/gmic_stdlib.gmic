@@ -13350,10 +13350,10 @@ tensors3d : -check "${1=1}>=0 && ${2=0.05}>=0"
     -k.
 
     # Create 3d object.
-    -sphere3d 0.5,1
+#    -sphere3d 0.5,1
 #    -arrow3d -0.5,0,0,0.5,0,0
-#    -box3d 1,1,1
-    N,P={[i[6],i[7]]} siz={h} .x{0,whd-1} -c3d.
+    -box3d 1,1,1
+    N,P={[i[6],i[7]]} siz={h} -c3d. .x{0,whd-1}
     -f[0] "
       const N = "$N";
       const P = "$P";
