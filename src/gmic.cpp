@@ -2317,8 +2317,6 @@ const char* gmic::basename(const char *const str)  {
   if (!str) return str;
   const unsigned int l = (unsigned int)std::strlen(str);
   if (*str=='[' && (str[l - 1]==']' || str[l - 1]=='.')) return str;
-  const char *const ext = cimg::split_filename(str);
-  if (std::strlen(ext)>6) return str;
   const char *p = 0, *np = str;
   while (np>=str && (p=np)) np = std::strchr(np,'/') + 1;
   np = p;
@@ -3582,7 +3580,10 @@ gmic& gmic::display_images(const CImgList<T>& images, const CImgList<char>& imag
     const CImg<T>& img = images[uind];
     if (img && is_valid[l]) visu.insert(img,~0U,true);
     else visu.insert(1);
-    const CImg<char> str = CImg<char>::string(basename(images_names[uind]),true,true);
+    const char *const ext = cimg::split_filename(images_names[uind]);
+    const CImg<char> str = CImg<char>::string(std::strlen(ext)>6?
+                                              images_names[uind].data():
+                                              basename(images_names[uind]),true,true);
     s_tmp.assign(str.width() + 16);
     cimg_snprintf(s_tmp,s_tmp.width(),"[%u] %s",uind,str.data());
     s_tmp.move_to(t_visu);
