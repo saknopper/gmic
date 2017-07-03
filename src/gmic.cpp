@@ -2317,6 +2317,8 @@ const char* gmic::basename(const char *const str)  {
   if (!str) return str;
   const unsigned int l = (unsigned int)std::strlen(str);
   if (*str=='[' && (str[l - 1]==']' || str[l - 1]=='.')) return str;
+  const char *const ext = cimg::split_filename(str);
+  if (std::strlen(ext)>6) return str;
   const char *p = 0, *np = str;
   while (np>=str && (p=np)) np = std::strchr(np,'/') + 1;
   np = p;
