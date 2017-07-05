@@ -6584,7 +6584,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
         }
 
         // Invert endianness.
-        if (!std::strcmp("-endian",item)) {
+        if (!std::strcmp("-endian",command)) {
           gmic_substitute_args(false);
           if (!std::strcmp(argument,"uchar") ||
               !std::strcmp(argument,"unsigned char") || !std::strcmp(argument,"char") ||

@@ -5470,8 +5470,6 @@ balance_gamma : -skip ${1=128}
 cast :
   -e[^-1] "Cast datatype of image buffer$? from '$1' to '$2'."
   -v -
-  ssize={s='"$1"';s=='"unsigned char"'||s=='uchar'||s=='char'?1:s=='"unsigned short"'||s=='ushort'||s=='short'?2:s=='"unsigned int"'||s=='uint'||s=='int'||s=='float'?4:8}
-  dsize={s='"$2"';s=='"unsigned char"'||s=='uchar'||s=='char'?1:s=='"unsigned short"'||s=='ushort'||s=='short'?2:s=='"unsigned int"'||s=='uint'||s=='int'||s=='float'?4:8}
   stype="$1"
   -if {s='$stype';s[0]==_'u'&&s[1]!=_'n'} stype="unsigned_"{`s='$stype';s[1,size(s)-1]`}
   -elif {s='$stype';s[0]==_'u'&&s[0,9]=='"unsigned "'} stype="unsigned_"{`s='$stype';s[9,size(s)-9]`}
@@ -5480,6 +5478,8 @@ cast :
   -if {s='$dtype';s[0]==_'u'&&s[1]!=_'n'} dtype="unsigned_"{`s='$dtype';s[1,size(s)-1]`}
   -elif {s='$dtype';s[0]==_'u'&&s[0,9]=='"unsigned "'} dtype="unsigned_"{`s='$dtype';s[9,size(s)-9]`}
   -endif
+  ssize={s='$stype';s=='"unsigned_char"'||s=='char'?1:s=='"unsigned_short"'||s=='short'?2:s=='"unsigned_int"'||s=='int'||s=='float'?4:8}
+  dsize={s='$dtype';s=='"unsigned_char"'||s=='char'?1:s=='"unsigned_short"'||s=='short'?2:s=='"unsigned_int"'||s=='int'||s=='float'?4:8}
   -repeat $! -l[$>]
     w,h,d,s={[w,h,d,s]}
     -serialize $1,0,0
@@ -5722,6 +5722,23 @@ eigen2tensor :
 #@cli endian : _datatype : (+)
 #@cli : Reverse data endianness of selected images, eventually considering the pixel being of the specified datatype.
 #@cli : 'datatype' can be { uchar | char | ushort | short | uint | int | uint64 | int64 | float | double }.
+endian2 :
+  -v - -repeat $! -l[$>]
+    w,h,d,s={[w,h,d,s]}
+    -serialize $1,0,0
+    -s +,{'\n$w\ $h\ $d\ $s\n'}
+    -l[0]
+      -s +,{'little_'}
+      -if {$!>1} -replace_str[1] "little_","big_"
+      -else -s +,{'big_'} -if {$!>1} -replace_str[1] "big_","little_" -endif
+      -endif
+      -a y
+    -endl
+    -a y
+    -o raw:toto.cimg,uchar
+    -unserialize
+  -endl -done -v +
+
 
 #@cli equalize : _nb_levels>0[%],_value_min[%],_value_max[%] : (+)
 #@cli : Equalize histograms of selected images.
