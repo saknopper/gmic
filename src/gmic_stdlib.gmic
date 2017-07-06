@@ -4156,6 +4156,7 @@ update_server :
   -load_gmic ${HOME}/work/src/gmic-community/include/martin_souphead.gmic
   -load_gmic ${HOME}/work/src/gmic-community/include/photocomix.gmic
   -load_gmic ${HOME}/work/src/gmic-community/include/joan_rake1.gmic
+  -load_gmic ${HOME}/work/src/gmic-community/include/afre.gmic
   -l[]
     -load_gmic ${HOME}/work/src/gmic-community/include/sylvie_alexandre.gmic
     -s +,{'"#@gui <b>"'} -i[1--2:2] ({'"#@gui ________<b>Testing<b>\n#@gui <i>Samj</i>\n"'}) -y -a y
