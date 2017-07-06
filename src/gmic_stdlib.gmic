@@ -886,13 +886,14 @@ _help_usage :
 \n          with '"${g}"attr"$n"' being "$g"{ 0=year | 1=month | 2=day | 3=day of week | 4=hour | 5=minute |
 \n          6=second }"$n".
 \n       . '"${c}"date(_attr)"$n" returns the specified attribute for the current (locale) date.
-\n       . '"${c}"print(expr1,expr2,...)"$n" prints the value of the specified expressions on the console
-\n          (and returns the value of the last expression).
+\n       . '"${c}"print(expr1,expr2,...)"$n" or '"${c}"print(#ind)"$n" prints the value of the specified expressions
+\n          (or image information) on the console, and returns the value of the last expression
+\n          (or "${g}"nan"$n" in case of an image).
 \n       . '"${c}"debug(expression)"$n" prints detailed debug information about the sequence of operations done
 \n          by the math parser to evaluate the expression (and returns its value).
-\n       . '"${c}"display(_X,_w,_h,_d,_s)"$n" prints and displays the contents of the specified vector '"${c}"X"$n"',
-\n          and wait for user events. if no arguments are provided, a memory snapshot of the math parser
-\n          environment is displayed instead.
+\n       . '"${c}"display(_X,_w,_h,_d,_s)"$n" or '"${c}"display(#ind)"$n" display the contents of the vector '"${c}"X"$n"'
+\n          (or specified image) and wait for user events. if no arguments are provided, a memory
+\n          snapshot of the math parser environment is displayed instead.
 \n       . '"${c}"init(expression)"$n" and '"${c}"end(expression)"$n" evaluates the specified expressions only once,
 \n          respectively at the beginning and end of the evaluation procedure, and this,
 \n          even when multiple evaluations are required (e.g. in '"${c}"-fill init(foo=0);++foo"$n"').
