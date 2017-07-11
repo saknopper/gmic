@@ -17624,6 +17624,20 @@ is_windows :
 math_lib :
   -v -
   -u "
+  dist(A,B) = ( # Distance from point A to point B
+    norm(B - A);
+  );
+
+  dist(X,A,B) = ( # Distance from point X to segment (A,B)
+    AB = B - A;
+    P = A + dot(X - A,B - A)/max(1e-8,dot(AB,AB))*AB;
+    dot(P - A,P - B)<=0?norm(P - X):min(norm(A - X),norm(B - X));
+  );
+
+  dist(A,B,C,D) = ( # Distance from segment [A,B] to segment [C,D]
+    min(dist(A,C,D),dist(B,C,D),dist(C,A,B),dist(D,A,B));
+  );
+
   draw_arrow(ind,P0,P1,angle,length,opacity,color) = ( # Draw an arrow from P0 to P1 on image #ind
     unref(_da_color);
     _opacity = opacity;
