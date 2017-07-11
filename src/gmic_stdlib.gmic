@@ -760,7 +760,8 @@ _help_usage :
 \n       . Some vector-specific functions can be used on vector values:
 \n         '"${c}"cross(X,Y)"$n"' (cross product), '"${c}"dot(X,Y)"$n"' (dot product), '"${c}"size(X)"$n"' (vector dimension),
 \n         '"${c}"sort(X,_is_increasing,_chunk_size)"$n"' (sorting values), '"${c}"reverse(A)"$n"' (reverse order of
-\n         components) and '"${c}"same(A,B,_nb_vals,_is_case_sensitive)"$n"' (vector equality test).
+\n         components), '"${c}"shift(A,_length,_boundary_conditions)"$n"' and
+\n         '"${c}"same(A,B,_nb_vals,_is_case_sensitive)"$n"' (vector equality test).
 \n       . Function '"${c}"resize(A,size,_interpolation,_boundary_conditions)"$n"' returns a resized version of
 \n          a vector '"${g}"A"$n"' with specified interpolation mode. '"${g}"interpolation'"$n" can be "$g"{ -1=none
 \n          (memory content) | 0=none | 1=nearest | 2=average | 3=linear | 4=grid | 5=bicubic |
