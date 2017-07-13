@@ -17654,27 +17654,25 @@ math_lib :
 
   draw_circle(ind,P0,radius,opacity,color) = ( # Draw a circle centered at P0 on image #ind
     unref(_dc_color);
-    _wm1 = w#ind - 1;
-    _hm1 = h#ind - 1;
     _P0 = round(P0);
     _radius = round(radius);
     _opacity = opacity;
     _dc_color = resize(color,s#ind);
     _ymin = _P0[1] - _radius;
     _ymax = _P0[1] + _radius;
-    if (_ymax>=0 && _ymin<=_wm1, # Circle is visible
+    if (_ymax>=0 && _ymin<=w#ind - 1, # Circle is visible
       _ymin = max(_ymin,0);
-      _ymax = min(_ymax,_hm1);
+      _ymax = min(_ymax,h#ind - 1);
       _radius = (_radius - 0.75)^2;
       for (_y = _ymin, _y<=_ymax, ++_y,
         _dx = _radius - (_y - _P0[1])^2;
         if (_dx>=0,
           _dx^=0.5;
           _xmin = max(_P0[0] - _dx,0);
-          _xmax = min(_P0[0] + _dx,_wm1);
-          if (_xmax>=0 && _xmin<=_wm1,
+          _xmax = min(_P0[0] + _dx,w#ind - 1);
+          if (_xmax>=0 && _xmin<=w#ind - 1,
             _xmin = max(_xmin,0);
-            _xmax = min(_xmax,_wm1);
+            _xmax = min(_xmax,w#ind - 1);
             draw_scanline(#ind,_xmin,_xmax,_y,_opacity,_dc_color);
           );
         );
@@ -17685,8 +17683,6 @@ math_lib :
 
   draw_ellipse(ind,P0,r1,r2,angle,opacity,color) = ( # Draw an ellipse at P0 on image #ind
     unref(_de_color);
-    _wm1 = w#ind - 1;
-    _hm1 = h#ind - 1;
     _P0 = round(P0);
     _r1 = abs(r1);
     _r2 = abs(r2);
@@ -17704,9 +17700,9 @@ math_lib :
     _yb = sqrt(_ta*_rmax^2/(_ta*_tc - _tb^2));
     _ymin = round(_P0[1] - _yb - 1);
     _ymax = round(_P0[1] + _yb + 1);
-    if (_ymax>=0 && _ymin<=_hm1, # Ellipse is visible
+    if (_ymax>=0 && _ymin<=h#ind - 1, # Ellipse is visible
       _ymin = max(_ymin,0);
-      _ymax = min(_ymax,_hm1);
+      _ymax = min(_ymax,h#ind - 1);
       for (_y = _ymin, _y<=_ymax, ++_y,
         _Y = _y - _P0[1] + (_y<_P0[1]?0.5:-0.5);
         _delta = _tb^2*_Y^2 - _ta*(_tc*_Y^2 - _rmax^2);
@@ -17714,9 +17710,9 @@ math_lib :
         _bY = _tb*_Y/_ta;
         _xmin = int(_P0[0] - 0.5 - _bY - _sdelta);
         _xmax = int(_P0[0] + 0.5 - _bY + _sdelta);
-        if (_xmax>=0 && _xmin<=_wm1,
+        if (_xmax>=0 && _xmin<=w#ind - 1,
           _xmin = max(_xmin,0);
-          _xmax = min(_xmax,_wm1);
+          _xmax = min(_xmax,w#ind - 1);
           draw_scanline(#ind,_xmin,_xmax,_y,_opacity,_de_color);
         );
       );
@@ -17742,8 +17738,6 @@ math_lib :
 
   draw_polygon(ind,pts,opacity,color) = ( # Draw filled polygon on image #ind
     unref(_dp_pts,_dp_color,_dp_N,_dp_Xcoords,_dp_Ycoords,_dp_Xs,_dp_Xsy);
-    _wm1 = w#ind - 1;
-    _hm1 = h#ind - 1;
     _dp_pts = round(pts);
     _opacity = opacity;
     _dp_color = resize(color,s#ind);
@@ -17757,11 +17751,11 @@ math_lib :
     if (_xmax>=0 && _xmin<w#ind && _ymax>=0 && _ymin<h#ind, # Polygon is visible
       _go_on = 1;
       _ymin = max(_ymin,0);
-      _ymax = min(_ymax,_hm1);
+      _ymax = min(_ymax,h#ind - 1);
       if (_ymin==_ymax,
         _go_on = 0;
         _xmin = max(_xmin,0);
-        _xmax = min(_xmax,_wm1);
+        _xmax = min(_xmax,w#ind - 1);
         draw_scanline(#ind,_xmin,_xmax,_ymin,_opacity,_dp_color);
       );
       _none = _xmax + 1;
@@ -17806,9 +17800,9 @@ math_lib :
           dowhile (_x0 = _dp_Xsy[_n++], _n<_dp_N && _x0==_none);
           if (_x0!=_none,
             dowhile (_x1 = _dp_Xsy[_n++], _n<_dp_N && _x1==_none);
-            if (_x1!=_none && _x1>=0 && _x0<=_wm1,
+            if (_x1!=_none && _x1>=0 && _x0<=w#ind - 1,
               _x0 = max(_x0 + (_px==_x0),0);
-              _x1 = min(_x1,_wm1);
+              _x1 = min(_x1,w#ind - 1);
               draw_scanline(#ind,_x0,_x1,_y0,_opacity,_dp_color);
               _px = _x1;
             );
@@ -17821,8 +17815,6 @@ math_lib :
 
   draw_rectangle(ind,P0,P1,opacity,color) = ( # Draw rectangle P0-P1 on image #ind
     unref(_dr_color);
-    _wm1 = w#ind - 1;
-    _hm1 = h#ind - 1;
     _P0 = round(P0);
     _P1 = round(P1);
     _opacity = opacity;
@@ -17833,11 +17825,11 @@ math_lib :
     _xmax = max(_Xcoords);
     _ymin = min(_Ycoords);
     _ymax = max(_Ycoords);
-    if (_xmax>=0 && _xmin<=_wm1 && _ymax>=0 && _ymin<=_hm1, # Rectangle is visible
+    if (_xmax>=0 && _xmin<=w#ind - 1 && _ymax>=0 && _ymin<=h#ind - 1, # Rectangle is visible
       _xmin = max(_xmin,0);
-      _xmax = min(_xmax,_wm1);
+      _xmax = min(_xmax,w#ind - 1);
       _ymin = max(_ymin,0);
-      _ymax = min(_ymax,_hm1);
+      _ymax = min(_ymax,h#ind - 1);
       for (_y = _ymin, _y<=_ymax, ++_y,
         draw_scanline(#ind,_xmin,_xmax,_y,_opacity,_dr_color);
       );
@@ -17887,8 +17879,6 @@ math_lib :
 
   draw_triangle(ind,P0,P1,P2,opacity,color) = ( # Draw triangle P0-P1-P2 on image #ind
     unref(_dt_color);
-    _wm1 = w#ind - 1;
-    _hm1 = h#ind - 1;
     _opacity = opacity;
     _dt_color = resize(color,s#ind);
     _A = round(P0);
@@ -17899,11 +17889,11 @@ math_lib :
     if (_B[1]>_C[1],swap(_B,_C));
     _xmin = min(_A[0],_B[0],_C[0]);
     _xmax = max(_A[0],_B[0],_C[0]);
-    if (_xmax>=0 && _xmin<=_wm1 && _C[1]>=0 && _A[1]<=_hm1, # Triangle is visible
+    if (_xmax>=0 && _xmin<=w#ind - 1 && _C[1]>=0 && _A[1]<=h#ind - 1, # Triangle is visible
       _xmin = max(_xmin,0);
-      _xmax = min(_xmax,_wm1);
+      _xmax = min(_xmax,w#ind - 1);
       _ymin = max(_A[1],0);
-      _ymax = min(_C[1],_hm1);
+      _ymax = min(_C[1],h#ind - 1);
       if (_ymin==_ymax,
 
         # Particular case of horizontal line.
@@ -17923,7 +17913,7 @@ math_lib :
           );
           if (_x0>_x1,swap(_x0,_x1));
           _x0 = round(max(0,_x0 - 0.25));
-          _x1 = round(min(_wm1,_x1 + 0.25));
+          _x1 = round(min(w#ind - 1,_x1 + 0.25));
           draw_scanline(#ind,_x0,_x1,_y,_opacity,_dt_color);
         );
       );
