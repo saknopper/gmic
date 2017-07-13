@@ -10860,10 +10860,9 @@ close_binary : -check "${1=85}>=0 && $1<=100 && ${2=2}>=0 && ${3=80}>=0 && ${4=2
 
     # Extract primary edgel normals.
     -i[e_normals] 100%,100%,1,4,"
-      n = vector4(-1);
       N = crop(#"$strokes",x - 1,y - 1,0,0,3,3,1,1,1);
-      if (N[4] && (!N[1] || !N[3] || !N[5] || !N[7]), n = [ N[5]?-1:0, N[7]?-1:90, N[3]?-1:180, N[1]?-1:270 ]);
-      n"
+      N[4]?[ N[5]?-1:0, N[7]?-1:90, N[3]?-1:180, N[1]?-1:270 ]:[-1,-1,-1,-1];
+    "
 
     # Define useful functions to navigate through edgels.
     edgel_lib="
