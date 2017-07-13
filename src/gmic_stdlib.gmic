@@ -17838,23 +17838,24 @@ math_lib :
   );
 
   draw_scanline(ind,x0,x1,y,opacity,color) = ( # Draw a single scanline (x0,y)->(x1,y) on image #ind
-    ++(_dx = x1 - x0);
+    _x0 = max(0,x0);
+    ++(_dx = min(w#ind - 1,x1) - _x0);
     s#ind==1?
-      copy(i(#ind,x0,y,0,0),color[0],_dx,1,0,_opacity):
+      copy(i(#ind,_x0,y,0,0),color[0],_dx,1,0,_opacity):
     s#ind==2?
-      (copy(i(#ind,x0,y,0,0),color[0],_dx,1,0,_opacity);
-       copy(i(#ind,x0,y,0,1),color[1],_dx,1,0,_opacity)):
+      (copy(i(#ind,_x0,y,0,0),color[0],_dx,1,0,_opacity);
+       copy(i(#ind,_x0,y,0,1),color[1],_dx,1,0,_opacity)):
     s#ind==3?
-      (copy(i(#ind,x0,y,0,0),color[0],_dx,1,0,_opacity);
-       copy(i(#ind,x0,y,0,1),color[1],_dx,1,0,_opacity);
-       copy(i(#ind,x0,y,0,2),color[2],_dx,1,0,_opacity)):
+      (copy(i(#ind,_x0,y,0,0),color[0],_dx,1,0,_opacity);
+       copy(i(#ind,_x0,y,0,1),color[1],_dx,1,0,_opacity);
+       copy(i(#ind,_x0,y,0,2),color[2],_dx,1,0,_opacity)):
     s#ind==4?
-      (copy(i(#ind,x0,y,0,0),color[0],_dx,1,0,_opacity);
-       copy(i(#ind,x0,y,0,1),color[1],_dx,1,0,_opacity);
-       copy(i(#ind,x0,y,0,2),color[2],_dx,1,0,_opacity);
-       copy(i(#ind,x0,y,0,3),color[3],_dx,1,0,_opacity)):
+      (copy(i(#ind,_x0,y,0,0),color[0],_dx,1,0,_opacity);
+       copy(i(#ind,_x0,y,0,1),color[1],_dx,1,0,_opacity);
+       copy(i(#ind,_x0,y,0,2),color[2],_dx,1,0,_opacity);
+       copy(i(#ind,_x0,y,0,3),color[3],_dx,1,0,_opacity)):
     # Generic cases.
-      for (_c = 0, _c<s#ind, ++_c, copy(i(#ind,x0,y,0,c),color[c],_dx,1,0,_opacity));
+      for (_c = 0, _c<s#ind, ++_c, copy(i(#ind,_x0,y,0,c),color[c],_dx,1,0,_opacity));
   );
 
   draw_spline(ind,P0,T0,P1,T1,opacity,color) = ( # Draw spline P0-P1 with tangents T0,T1 on image #ind
