@@ -17652,6 +17652,35 @@ math_lib :
    );
   );
 
+  # draw_circle(ind,P0,radius,opacity,color) = ( # Draw a circle centered at P0 on image #ind
+  #   unref(_dc_color);
+  #   _P0 = round(P0);
+  #   _radius = round(radius);
+  #   _opacity = opacity;
+  #   _dc_color = resize(color,s#ind);
+  #   _ymin = _P0[1] - _radius;
+  #   _ymax = _P0[1] + _radius;
+  #   if (_ymax>=0 && _ymin<=w#ind - 1, # Circle is visible
+  #     _ymin = max(_ymin,0);
+  #     _ymax = min(_ymax,h#ind - 1);
+  #     _radius = (_radius - 0.75)^2;
+  #     for (_y = _ymin, _y<=_ymax, ++_y,
+  #       _dx = _radius - (_y - _P0[1])^2;
+  #       if (_dx>=0,
+  #         _dx^=0.5;
+  #         _xmin = max(_P0[0] - _dx,0);
+  #         _xmax = min(_P0[0] + _dx,w#ind - 1);
+  #         if (_xmax>=0 && _xmin<=w#ind - 1,
+  #           _xmin = max(_xmin,0);
+  #           _xmax = min(_xmax,w#ind - 1);
+  #           draw_scanline(#ind,_xmin,_xmax,_y,_opacity,_dc_color);
+  #         );
+  #       );
+  #     );
+  #   );
+  #   nan;
+  # );
+
   draw_circle(ind,P0,radius,opacity,color) = ( # Draw a circle centered at P0 on image #ind
     unref(_dc_color);
     _P0 = round(P0);
@@ -17660,21 +17689,27 @@ math_lib :
     _dc_color = resize(color,s#ind);
     _ymin = _P0[1] - _radius;
     _ymax = _P0[1] + _radius;
-    if (_ymax>=0 && _ymin<=w#ind - 1, # Circle is visible
-      _ymin = max(_ymin,0);
-      _ymax = min(_ymax,h#ind - 1);
-      _radius = (_radius - 0.75)^2;
-      for (_y = _ymin, _y<=_ymax, ++_y,
-        _dx = _radius - (_y - _P0[1])^2;
-        if (_dx>=0,
-          _dx^=0.5;
-          _xmin = max(_P0[0] - _dx,0);
-          _xmax = min(_P0[0] + _dx,w#ind - 1);
-          if (_xmax>=0 && _xmin<=w#ind - 1,
-            _xmin = max(_xmin,0);
-            _xmax = min(_xmax,w#ind - 1);
-            draw_scanline(#ind,_xmin,_xmax,_y,_opacity,_dc_color);
-          );
+    if (_P0[1]>=0 && _P0[1]<h#ind, draw_scanline(#ind,_P0[0] - _radius,_P0[0] + _radius,_P0[1],_opacity,_dc_color));
+    if (_radius>=0 && _ymax>=0 && _ymin<=w#ind - 1, # Circle is visible
+      for (_f = 1 - _radius; _ddFx = 0; _ddFy = -2*_radius; _x = 0; _y = _radius, _x<_y,
+        if (_f>=0,
+          _x1 = _P0[0] - _x;
+          _x2 = _P0[0] + _x;
+          _y1 = _P0[1] - _y;
+          _y2 = _P0[1] + _y;
+          if (_y1>=0 && _y1<h#ind, draw_scanline(#ind,_x1,_x2,_y1,_opacity,_dc_color));
+          if (_y2>=0 && _y2<h#ind, draw_scanline(#ind,_x1,_x2,_y2,_opacity,_dc_color));
+          _f+=(_ddFy+=2); --_y;
+        );
+        _no_diag = _y!=(_x++);
+        ++(_f+=(_ddFx+=2));
+        _x1 = _P0[0] - _y;
+        _x2 = _P0[0] + _y;
+        _y1 = _P0[1] - _x;
+        _y2 = _P0[1] + _x;
+        if (_no_diag,
+          if (_y1>=0 && _y1<h#ind, draw_scanline(#ind,_x1,_x2,_y1,_opacity,_dc_color));
+          if (_y2>=0 && _y2<h#ind, draw_scanline(#ind,_x1,_x2,_y2,_opacity,_dc_color));
         );
       );
     );
