@@ -18476,7 +18476,7 @@ _demo_color_curves :
 ---- Keys '"${c}"ESC"$n"', '"${c}"Q"$n"' or '"${c}"ENTER"$n"' close the current window.\n
 ----\n
 ------------------------------------------------------------------------------------------------"
-    -v - __demo_color_curve=1 -sp ? -x_color_curves rgb __demo_color_curve= -v +
+    -v - __demo_color_curve=1 -l[] -do -rm -sp ? -while {s!=3} -endl -x_color_curves rgb __demo_color_curve= -v +
   -else
     -e[] "\n
 ------ "${g}"Color curves"$n" ----------------------------------------------------------------------------\n
