@@ -18805,7 +18805,7 @@ x_color_curves : -skip ${1=rgb}
     -__x_color_curves[] $1 _xcc_colorbase=$1
   -endif
 
-  -repeat $! -l[$>]
+  -to_color -repeat $! -l[$>]
 
     -if {['"$1"']!='last'} # Open interactive windows to set color curves.
       --r[0] ${-fitscreen[]\ {0,w},{0,h},1,128,70%},1,100%,3
