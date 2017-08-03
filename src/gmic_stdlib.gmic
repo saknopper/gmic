@@ -25441,7 +25441,7 @@ fx_autofill_lineart_preview :
   -endl -done
 
 #@gui Colorize lineart [smart coloring] : fx_colorize_lineart_smartcoloring, fx_colorize_lineart_smartcoloring_preview(0)
-#@gui : Colorize with = choice("Random colors","Color spots on transparent top layer")
+#@gui : Colorize mode = choice("Generate random-colors layer","Extrapolate color spots on transparent top layer","Auto-clean lower color layer")
 #@gui : sep = separator(), note = note{"<small><b>Global geometry parameters:</b></small>"}
 #@gui : Contour detection (%) = float(95,0,100)
 #@gui : Contour erosion = int(0,-1,10)
@@ -25464,23 +25464,28 @@ fx_autofill_lineart_preview :
 #@gui : Minimal region area = float(10,0,100)
 #@gui : Allow self intersections = bool(1)
 #@gui : sep = separator(), Preview type = choice(0,"Colored geometry","Colored regions","Colored lineart")
-#@gui : sep = separator(), note = note("<small>Authors: <i>David Tschumperl&#233;</i>, <i>S&#233;bastien Fourey</i> and <i>David Revoy</i>.      Latest update: <i>03/15/2017</i>.</small>")
+#@gui : sep = separator(), note = note("<small>Authors: <i>David Tschumperl&#233;</i>, <i>S&#233;bastien Fourey</i> and <i>David Revoy</i>.      Latest update: <i>08/03/2017</i>.</small>")
 fx_colorize_lineart_smartcoloring :
   -_fx_colorize_lineart_smartcoloring $*,-1 -round
 
 fx_colorize_lineart_smartcoloring_preview :
-  -if {$1" && "$!<2} -gui_warning_preview "A top layer with color spots is missing, for this colorization mode." -return -endif
+  -if {$1==1" && "$!<2} -gui_warning_preview "A top layer with color spots is missing, for this colorization mode." -return
+  -elif {$1==2" && "$!<2} -gui_warning_preview "A bottom color layer is missing, for this colorization mode." -return
+  -endif
   -_fx_colorize_lineart_smartcoloring ${1-4},0,${6--1}
 
 _fx_colorize_lineart_smartcoloring :
-  -if {$1" && "$!<2} -error "A top layer with color strokes is missing, for this colorization mode." -endif
+  -if {$1==1" && "$!<2} -error "A top layer with color strokes is missing, for this colorization mode."
+  -elif {$1==2" && "$!<2} -error "A bottom color layer is missing, for this colorization mode."
+  -endif
   min_color_area={$15^2}
 
-  -repeat {$1?1:$!} inds=${-arg\ 1+$1,$<,0--1} -l[$inds]
+  -repeat {$1?1:$!} inds=${-arg\ 1+!!$1,$<,0--1} -l[$inds]
 
-    ind_lineart={$1?1:0}
+    ind_lineart={$1==1?1:0}
     nm=${-gui_layer_name[$ind_lineart]} -nm[$ind_lineart] lineart
-    -if {$!>1} -nm[0] colors -endif
+
+    -if {$!>1} -nm[{$1==1?0:1}] colors -endif
     -if {$!>=3} -rm[2--1] -endif # Delete old color and added contour layers if any
 
     # Constrain input lineart to be a binary, single channel image.
@@ -25517,7 +25522,7 @@ _fx_colorize_lineart_smartcoloring :
     -endif
 
     # Label color regions and inpaint strokes.
-    -if {narg($colors)} # Mode: Guided colorization
+    -if {$1==1} # Mode: Color sports-guided colorization
       -to_rgba[$colors] [colors],[colors]
       -f[colors] "i(#-1) = A<255?0:norm(R,G+0.3,B+0.6);I"
       -label_fg. 0 {1+iM},1,1,{colors,s+1}
@@ -25536,6 +25541,14 @@ _fx_colorize_lineart_smartcoloring :
       -endif
       -rm[new_strokes]
       -nm. new_colors
+
+    -elif {$1==2} # Mode : Clean color layer
+      -j[strokes] [new_strokes] -distance[strokes] 0 -*[strokes] -1
+      -eq[new_strokes] 0 -label_fg[new_strokes] 0,0
+      -if $min_color_area --area_fg[new_strokes] 0,0 xy_bg={[xM,yM]} ->. $min_color_area -*[new_strokes,-1] -endif
+      -watershed[new_strokes] [strokes],0 -rm[strokes]
+      -blend[colors,new_strokes] shapemedian
+      -nm[colors] new_colors
 
     -else # Mode: Random colorization
       -j[strokes] [new_strokes] -distance[strokes] 0 -*[strokes] -1
