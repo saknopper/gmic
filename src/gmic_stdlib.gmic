@@ -25522,7 +25522,7 @@ _fx_colorize_lineart_smartcoloring :
     -endif
 
     # Label color regions and inpaint strokes.
-    -if {$1==1} # Mode: Color sports-guided colorization
+    -if {$1==1} # Mode: Color spots-guided colorization
       -to_rgba[$colors] [colors],[colors]
       -f[colors] "i(#-1) = A<255?0:norm(R,G+0.3,B+0.6);I"
       -label_fg. 0 {1+iM},1,1,{colors,s+1}
@@ -25542,7 +25542,7 @@ _fx_colorize_lineart_smartcoloring :
       -rm[new_strokes]
       -nm. new_colors
 
-    -elif {$1==2} # Mode : Clean color layer
+    -elif {$1==2} # Mode: Clean color layer
       -j[strokes] [new_strokes] -distance[strokes] 0 -*[strokes] -1
       -eq[new_strokes] 0 -label_fg[new_strokes] 0,0
       -if $min_color_area --area_fg[new_strokes] 0,0 xy_bg={[xM,yM]} ->. $min_color_area -*[new_strokes,-1] -endif
