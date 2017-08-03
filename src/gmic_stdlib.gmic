@@ -16037,21 +16037,6 @@ _blend_shapeaverage0 :
   --histogram[1] {w},0,{w-1} -/[-2,-1] -point. 0,0,0,1,0 -map[1] . -rm.
 _blend_shapemedian :
   -f[1] "init(A = resize([ 0,(s-1)/s ],s,3));I+A" -norm[1] -label[1] 0
-
-  # N={iM} 1,4,1,{0,s} -if $N .x{$N-1} -endif
-  # $N
-  # -f[1] ">
-  #   ind = i + 2;
-  #   off = i[#-1,i];
-  #   if (off>=h(#ind), resize(#ind,1,round(1.5*h(#ind)),1,s#0,0));
-  #   copy(i[#ind,off],i(#0),s#0,h#ind,whd#0);
-  #   ++i[#-1,i];
-  #   end(for (k = 0, k<w#-1, ++k, resize(#k+2,1,i[#-1,k],1,s#0,0)));
-  #   i
-  # "
-  # 100%,1,1,{0,s} -repeat {w} -point. $>,0,0,1,${-median_color[{$>+2}]} -done -map[1] .
-  # -k[0,1]
-
   {iM+1},256,1,{0,s}
   -f[0] ">++i(#2,i(#1,x,y,z,0),round(i),0,c);i"
   -cumulate. y --rows. 100% -/[-2,-1]
