@@ -25442,7 +25442,7 @@ fx_autofill_lineart_preview :
   -endl -done
 
 #@gui Colorize lineart [smart coloring] : fx_colorize_lineart_smartcoloring, fx_colorize_lineart_smartcoloring_preview(0)
-#@gui : Colorize mode = choice("Generate random-colors layer","Extrapolate color spots on transparent top layer","Auto-clean lower color layer")
+#@gui : Colorize mode = choice("Generate random-colors layer","Extrapolate color spots on transparent top layer","Auto-clean bottom color layer")
 #@gui : sep = separator(), note = note{"<small><b>Global geometry parameters:</b></small>"}
 #@gui : Contour detection (%) = float(95,0,100)
 #@gui : Contour erosion = int(0,-1,10)
