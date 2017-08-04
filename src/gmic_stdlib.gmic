@@ -11398,7 +11398,7 @@ _close_binary :
       ratio = min(ndP,ndQ)/max(ndP,ndQ);
       nb_projs = is_proj_in(P0,Q0,Q1) + is_proj_in(P1,Q0,Q1) + is_proj_in(Q0,P0,P1) + is_proj_in(Q1,P0,P1);
 
-      if (dist<48 && ang<15 && ratio>0.25 && nb_projs>0,
+      if (dist<48 && ang<17.5 && ratio>0.15 && nb_projs>0,
         if (p<0,  # Had no parents before
           i(k,0,0,2) = parent;
         _(else),  # Had a parent before
