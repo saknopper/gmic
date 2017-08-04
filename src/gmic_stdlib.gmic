@@ -10857,6 +10857,48 @@ close_binary : -check "${1=85}>=0 && $1<=100 && ${2=2}>=0 && ${3=80}>=0 && ${4=2
   area_min=$7                       # in px.
   allow_self_intersections={!!$8}   # 0 or 1.
 
+  # Define useful functions to navigate through edgels.
+  _edgel_lib="
+    init(
+      pn = [ 0,1,1,1,-1,0,-1,1,0,-1,-1,-1,1,0,1,-1 ];
+      pp = [ 0,-1,1,-1,1,0,1,1,0,1,-1,1,-1,0,-1,-1 ];
+    );
+
+    next(img,p) = ( # Used when shape is made of '!=0' (in 8-connexity)
+      p0 = p#[0,2] + pn[4*p#[2],2];
+      p1 = p#[0,2] + pn[4*p#[2] + 2,2];
+      case = !!i(#img,p0[0],p0[1],0,0) + 2*!!i(#img,p1[0],p1[1],0,0);
+      !case?[ p[0],p[1],(p[2]+1)%4 ]:case==1?[ p0[0],p0[1],p[2] ]:[ p1[0],p1[1],(p[2]-1)%4 ];
+    );
+
+    previous(img,p) = ( # Used when shape is made of '!=0' (in 8-connexity)
+      p0 = p#[0,2] + pp[4*p#[2],2];
+      p1 = p#[0,2] + pp[4*p#[2] + 2,2];
+      case = !!i(#img,p0[0],p0[1],0,0) + 2*!!i(#img,p1[0],p1[1],0,0);
+      !case?[ p[0],p[1],(p[2]-1)%4 ]:case==1?[ p0[0],p0[1],p[2] ]:[ p1[0],p1[1],(p[2]+1)%4 ];
+    );
+
+    next2(img,p) = ( # Used when shape is made of '{ 0 | 4 }' (in 4-connexity)
+      p0 = p#[0,2] + pn[4*p#[2],2];
+      p1 = p#[0,2] + pn[4*p#[2] + 2,2];
+      case = !(i(#img,p0[0],p0[1],0,0)&3) + 2*!(i(#img,p1[0],p1[1],0,0)&3);
+      case==1?[ p0[0],p0[1],p[2] ]:case==3?[ p1[0],p1[1],(p[2]-1)%4 ]:[ p[0],p[1],(p[2]+1)%4 ];
+    );
+
+    next3(img,p) = ( # Used when shape is made of '{ 1 | 2 }' (in 4-connexity)
+      p0 = p#[0,2] + pn[4*p#[2],2];
+      p1 = p#[0,2] + pn[4*p#[2] + 2,2];
+      val1 = i(#img,p0[0],p0[1],0,0);
+      val2 = i(#img,p1[0],p1[1],0,0);
+      case = (val1==1 || val1==2) + 2*(val2==1 || val2==2);
+      case==1?[ p0[0],p0[1],p[2] ]:case==3?[ p1[0],p1[1],(p[2]-1)%4 ]:[ p[0],p[1],(p[2]+1)%4 ];
+    );
+
+    vec(p) = (
+      ang = i(p[0],p[1],0,p[2])*pi/180;
+      [ cos(ang), sin(ang) ];
+    );"
+
   -repeat $! -l[$>] nm={n}
 
     # Ensure input is a 2d binary image.
@@ -10869,50 +10911,8 @@ close_binary : -check "${1=85}>=0 && $1<=100 && ${2=2}>=0 && ${3=80}>=0 && ${4=2
       N[4]?[ N[5]?-1:0, N[7]?-1:90, N[3]?-1:180, N[1]?-1:270 ]:[-1,-1,-1,-1];
     "
 
-    # Define useful functions to navigate through edgels.
-    edgel_lib="
-      init(
-        pn = [ 0,1,1,1,-1,0,-1,1,0,-1,-1,-1,1,0,1,-1 ];
-        pp = [ 0,-1,1,-1,1,0,1,1,0,1,-1,1,-1,0,-1,-1 ];
-      );
-
-      next(img,p) = ( # Used when shape is made of '!=0' (in 8-connexity)
-        p0 = p#[0,2] + pn[4*p#[2],2];
-        p1 = p#[0,2] + pn[4*p#[2] + 2,2];
-        case = !!i(#img,p0[0],p0[1],0,0) + 2*!!i(#img,p1[0],p1[1],0,0);
-        !case?[ p[0],p[1],(p[2]+1)%4 ]:case==1?[ p0[0],p0[1],p[2] ]:[ p1[0],p1[1],(p[2]-1)%4 ];
-      );
-
-      previous(img,p) = ( # Used when shape is made of '!=0' (in 8-connexity)
-        p0 = p#[0,2] + pp[4*p#[2],2];
-        p1 = p#[0,2] + pp[4*p#[2] + 2,2];
-        case = !!i(#img,p0[0],p0[1],0,0) + 2*!!i(#img,p1[0],p1[1],0,0);
-        !case?[ p[0],p[1],(p[2]-1)%4 ]:case==1?[ p0[0],p0[1],p[2] ]:[ p1[0],p1[1],(p[2]+1)%4 ];
-      );
-
-      next2(img,p) = ( # Used when shape is made of '{ 0 | 4 }' (in 4-connexity)
-        p0 = p#[0,2] + pn[4*p#[2],2];
-        p1 = p#[0,2] + pn[4*p#[2] + 2,2];
-        case = !(i(#img,p0[0],p0[1],0,0)&3) + 2*!(i(#img,p1[0],p1[1],0,0)&3);
-        case==1?[ p0[0],p0[1],p[2] ]:case==3?[ p1[0],p1[1],(p[2]-1)%4 ]:[ p[0],p[1],(p[2]+1)%4 ];
-      );
-
-      next3(img,p) = ( # Used when shape is made of '{ 1 | 2 }' (in 4-connexity)
-        p0 = p#[0,2] + pn[4*p#[2],2];
-        p1 = p#[0,2] + pn[4*p#[2] + 2,2];
-        val1 = i(#img,p0[0],p0[1],0,0);
-        val2 = i(#img,p1[0],p1[1],0,0);
-        case = (val1==1 || val1==2) + 2*(val2==1 || val2==2);
-        case==1?[ p0[0],p0[1],p[2] ]:case==3?[ p1[0],p1[1],(p[2]-1)%4 ]:[ p[0],p[1],(p[2]+1)%4 ];
-      );
-
-      vec(p) = (
-        ang = i(p[0],p[1],0,p[2])*pi/180;
-        [ cos(ang), sin(ang) ];
-      );"
-
     # Smooth edgel normals.
-    -f[e_normals] $edgel_lib"
+    -f[e_normals] $_edgel_lib"
       const boundary = 1;
       if (i<0,-1,
         ppos = npos = pos = [ x,y,c ];
@@ -10929,7 +10929,7 @@ close_binary : -check "${1=85}>=0 && $1<=100 && ${2=2}>=0 && ${3=80}>=0 && ${4=2
       )"
 
     # Estimate edgel curvature.
-    --f[e_normals] $edgel_lib"
+    --f[e_normals] $_edgel_lib"
       const boundary = 1;
       kappa = 0;
       if (i<0,-1,
@@ -10965,6 +10965,13 @@ close_binary : -check "${1=85}>=0 && $1<=100 && ${2=2}>=0 && ${3=80}>=0 && ${4=2
       -channels[keycoords] 0,3 # Channels 2, 3 = number of connexions and normal angle for each keypoint.
     -endif
     -rm[curvatures,keypoints]
+
+    # Remove hatch keypoints if requested.
+    -if {narg($keycoords)" && "narg($_anti_hatch)}
+      -_close_binary[strokes] $1
+      -f[keycoords] "init(dis = vectors(-1)); P = (I)[0,2]; i(#"$keydiscard",P)?dis:I";
+      -rm[keydiscard] -discard[keycoords] -1 -r[keycoords] {keycoords,[h/4,1,1,4]},-1
+    -endif
 
     # Estimate point normals.
     -if {!narg($keycoords)}
@@ -11019,7 +11026,7 @@ close_binary : -check "${1=85}>=0 && $1<=100 && ${2=2}>=0 && ${3=80}>=0 && ${4=2
       ind_strokes={$allow_self_intersections?$strokes:$new_strokes}
 
       -if {narg($keypairs)}
-        -f[keypairs] ">"$edgel_lib"
+        -f[keypairs] ">"$_edgel_lib"
           for_spline(code) = for (t = 0, t<=1, t+=dt,
             t3 = t*(t2 = t*t);
             P = round(mul([t3,t2,t,1],C,2));
@@ -11117,7 +11124,7 @@ close_binary : -check "${1=85}>=0 && $1<=100 && ${2=2}>=0 && ${3=80}>=0 && ${4=2
       # Find and connect segments.
       -eq[new_strokes] 0 # Negate values to consider boundary pixels (0) as strokes.
 
-      -f[keycoords] ">"$edgel_lib"
+      -f[keycoords] ">"$_edgel_lib"
         for_segment(code) = for (t = 0, t<=tmax, ++t,
           P = round(S + t*ST);
           code#;
@@ -11201,6 +11208,247 @@ close_binary : -check "${1=85}>=0 && $1<=100 && ${2=2}>=0 && ${3=80}>=0 && ${4=2
     -rm[strokes]
     -nm[new_strokes] $nm
   -endl -done -v +
+
+# Hatches detection system for the 'close_binary' algorithm.
+# Selected input image must be the binary image of strokes (named 'strokes').
+# Return binary image of keypoints to ignore.
+_close_binary :
+  endpoint_threshold={100-$1} # in [0,100]
+
+  # Extract primary edgel normals.
+  -i[e_normals] 100%,100%,1,4,"
+    N = crop(#"$strokes",x - 1,y - 1,0,0,3,3,1,1,1);
+    N[4]?[ N[5]?-1:0, N[7]?-1:90, N[3]?-1:180, N[1]?-1:270 ]:[-1,-1,-1,-1];
+  "
+  # Smooth edgel normals.
+  -f[e_normals] $_edgel_lib"
+    if (i<0,-1,
+      ppos = npos = pos = [ x,y,c ];
+      u = vec(pos);
+      for (t = 1, t<=5, ++t,
+        ppos = previous(#"$strokes",ppos);
+        npos = next(#"$strokes",npos);
+        if (ppos==npos, break());
+        w = exp(-t^2/30);
+        u+=w*vec(npos);
+        u+=w*vec(ppos);
+      );
+      ang = (atan2(u[1],u[0])*180/pi)%360;
+    )"
+
+  # Estimate edgel curvatures (both positive and negative)
+  --f[e_normals] $_edgel_lib"
+    kappa = 0;
+    if (i<0,-1,
+      pos = [ x,y,c ];
+      ppos = previous(#"$strokes",pos);
+      npos = next(#"$strokes",pos);
+      pu = vec(ppos);
+      nu = vec(npos);
+      du = (nu - pu)/2;
+      cr = cross([vec(pos),0],[du,0]);
+      kappa = sign(cr[2])*norm(du);
+    ); kappa"
+  -nm. e_curvatures
+
+  # Compute pointwise high curvature points (both positive and negative).
+  --min[e_curvatures] 0 -*. -1
+  -max[e_curvatures] 0
+  -compose_channels[-2,-1] max
+  -nms[-2,-1] pos_curvatures,neg_curvatures
+
+  # Detect positive and negative curvature keypoints.
+  -l[pos_curvatures]
+    -->= {$endpoint_threshold%} -label_fg. 0,1 iM={iM}
+    -if {$iM>0}
+      $iM,1,1,3,-1
+      -f.. "> # Keep only a single point on connected regions of high curvatures.
+        ret = 0;
+        if (i,
+          j = i - 1;
+          old_max = I[#2,j];
+          kappa = i(#0);
+          if (kappa>old_max[2],
+            I[#2,j] = [ x,y,kappa ];
+            i(#1,old_max[0],old_max[1]) = 0;
+            ret = i;
+          );
+        ); ret"
+    -endif
+    -k.
+  -endl
+
+  -l[neg_curvatures]
+    ->= {$endpoint_threshold%}
+    -f "N = crop(x-1,y-1,3,3,0); i && sum(N)==2"
+    -f "N = crop(x-1,y-1,3,3,0); (i && sum(N)==1) || (i && (N[5] || N[7] || N[8]))"
+    -label_fg 0 {iM},1,1,3
+    -f.. "init(off = 0); if(i, I[#-1,off++] = [ x,y,-1]); i"
+    -k.
+  -endl
+    -a[-2,-1] x -nm. keycoords
+    -i[keypoints] [e_normals],[e_normals]
+    -f[keycoords] "P = I; i(#-1,P[0],P[1]) = 1 + x; I"
+
+  # Display
+  # -i[visu] [strokes]
+  # vfact=5
+  # -r[visu] {$vfact*[w,h]},1,300% -n. 0,128
+  # $vfact,$vfact,1,1,x+y -n. 0.6,0.75
+  # -line. 0,0,{w-2},0,1,0.5 -line. 0,0,0,{h-1},1,0.5
+  # -line. 1,{h-1},{w-1},{h-1},1,1 -line. {w-1},0,{w-1},{h-1},1,1
+  # -r. ..,0,2 -*[-2,-1]
+  # -f[keycoords] ${-math_lib}"
+  #    _I = I;
+  #    P = int("$vfact"*(_I[0,2]+0.5));
+  #    col = _I[2]>0?[128,255,0]:[255,64,0];
+  #    draw_circle(#"$visu",P,"$vfact"/2,0.5,col);
+  #    I(#-1,P) = [ 255,255,255 ];
+  # I"
+
+  # Voting process to detect segments.
+  -channels[keycoords] 0,1
+  -i[vote] {keycoords,[w,w]},1,2
+
+  -f[e_normals] "*"$_edgel_lib${-math_lib}"
+    const ang_th = cos(25*pi/180);
+    if (i>=0,
+      pos0 = [ x,y,c ];
+      if (!i(#"$keypoints",pos0[0,2]),
+        N0 = vec(pos0);
+
+        # Forward loop.
+        pos = pos0; Lf = Vf = 0;
+        do (
+          N = vec(pos);
+          if (dot(N,N0)>ang_th, ++Vf);
+          ++Lf;
+          pos = next(#"$strokes",pos);
+          Kf = i(#"$keypoints",pos[0],pos[1]);
+          if (Lf>32 && Vf/Lf<0.75, break()); # Allow considerable speedup
+        _(while), !Kf && pos!=pos0
+        );
+
+        # Backward loop.
+        pos = pos0; Lb = Vb = 0;
+        do (
+          pos = previous(#"$strokes,"pos);
+          Kb = i(#"$keypoints",pos[0],pos[1]);
+          if (!Kb,
+            N = vec(pos);
+            if (dot(N,N0)>ang_th, ++Vb);
+            ++Lb;
+          );
+          if (Lb>32 && Vb/Lb<0.75, break()); # Allow considerable speedup
+        _(while), !Kb && pos!=pos0);
+
+        if (Kf && Kb && Kf!=Kb,
+          --Kf; --Kb;
+          single(
+            i(#"$vote",Kf,Kb,0,0)+=(Vf + Vb)/(Lf + Lb);
+            ++i(#"$vote",Kf,Kb,0,1);
+          );
+        );
+      );
+    ); i"
+  -rm[keypoints]
+
+  -l[vote] -s c -max. 1 -/ ->= 0.75 -endl
+  -i[keylines] {is},1,1,2 -f[vote] "init(off = 0); if (i,I[#-1,off++] = [x,y]); i"
+  -rm[vote]
+
+  # -f[keylines] ">"${-math_lib}" # Draw segments on visu image.
+  #   _I = I;
+  #   i0 = _I[0];
+  #   i1 = _I[1];
+  #   P0 = I[#"$keycoords",i0];
+  #   P1 = I[#"$keycoords",i1];
+  #   (P0+=0.5)*=w#"$visu"/w#"$strokes";
+  #   (P1+=0.5)*=w#"$visu"/w#"$strokes";
+  #   draw_line(#"$visu",P0,P1,0.5,[255,255,255]);
+  #   I"
+
+  # Detect groups of hatches.
+  [keylines],1,1,1,-1 -a[keylines,-1] c
+  -f[keylines] ">"${-math_lib}"
+    is_proj_in(X,A,B) = ( # Test if projected of point X on (AB) belongs to segment [A,B]
+      pX = proj(X,A,B);
+      dot(pX - A,pX - B)<=0;
+    );
+
+    _I = I;
+    i0 = _I[0];
+    i1 = _I[1];
+    parent = _I[2]<0?x:_I[2];
+
+    P0 = I[#"$keycoords",i0];
+    P1 = I[#"$keycoords",i1];
+    dP = P1 - P0;
+    ndP = norm(dP);
+
+    for (k = x + 1, k<w, ++k,
+      _J = I[k]; j0 = _J[0]; j1 = _J[1]; p = _J[2];
+      Q0 = I[#"$keycoords",j0];
+      Q1 = I[#"$keycoords",j1];
+      dQ =  Q1 - Q0;
+      ndQ = norm(dQ);
+
+      dist = dist(P0,P1,Q0,Q1);
+      ang = acos(dot(dP,dQ)/(ndP*ndQ))*180/pi;
+      ratio = min(ndP,ndQ)/max(ndP,ndQ);
+      nb_projs = is_proj_in(P0,Q0,Q1) + is_proj_in(P1,Q0,Q1) + is_proj_in(Q0,P0,P1) + is_proj_in(Q1,P0,P1);
+
+      if (dist<48 && ang<15 && ratio>0.25 && nb_projs>0,
+        if (p<0,  # Had no parents before
+          i(k,0,0,2) = parent;
+        _(else),  # Had a parent before
+          minp = min(parent,p);
+          for (l = 0, l<w, ++l, tp = i(l,0,0,2); if (tp==p || tp==parent, i(l,0,0,2) = minp)); # Reparent segments
+          parent = minp;
+        );
+      );
+    );
+    [ i0,i1,parent ]"
+
+  --channels[keylines] 100% -histogram. {w},0,{w-1} -a[keylines,-1] c
+
+  # Generate map of removed keypoints.
+  -i[keydiscard] [strokes],[strokes]
+  -f[keylines] "
+     _I = I;
+     i0 = _I[0];
+     i1 = _I[1];
+     par = _I[2];
+     occ = i(par,0,0,3);
+     if (occ>=4,
+       P0 = I[#"$keycoords",i0];
+       P1 = I[#"$keycoords",i1];
+       i(#"$keydiscard",P0) = 1;
+       i(#"$keydiscard",P1) = 1;
+     );
+     I;"
+
+  # Draw groups of detected segments on visu image.
+  # [keylines],1,1,3 -rand. 64,255 -round. -nm. colormap
+  # -f[keylines] ${-math_lib}"
+  #   _I = I;
+  #   i0 = _I[0];
+  #   i1 = _I[1];
+  #   par = _I[2];
+  #   occ = i(par,0,0,3);
+  #   if (occ>=4,
+  #     P0 = I[#"$keycoords",i0];
+  #     P1 = I[#"$keycoords",i1];
+  #     (P0+=0.5)*=w#"$visu"/w#"$strokes";
+  #     (P1+=0.5)*=w#"$visu"/w#"$strokes";
+  #     col = I(#"$colormap",par);
+  #     draw_line(#"$visu",P0,P1,1,col);
+  #     draw_line(#"$visu",P0+[1,0],P1+[1,0],1,col);
+  #     draw_line(#"$visu",P0+[0,1],P1+[0,1],1,col);
+  #     draw_line(#"$visu",P0+[1,1],P1+[1,1],1,col);
+  #   ); I"
+
+    -k[strokes,keydiscard]
 
 #@cli ellipse : x[%],y[%],R[%],r[%],_angle,_opacity,_pattern,_color1,... : (+)
 #@cli : Draw specified colored ellipse on selected images.
@@ -17646,7 +17894,7 @@ math_lib :
     norm(B - A);
   );
 
-  dist(X,A,B) = ( # Distance from point X to segment (A,B)
+  dist(X,A,B) = ( # Distance from point X to segment [A,B]
     AB = B - A;
     P = A + dot(X - A,B - A)/max(1e-8,dot(AB,AB))*AB;
     dot(P - A,P - B)<=0?norm(P - X):min(norm(A - X),norm(B - X));
@@ -17670,35 +17918,6 @@ math_lib :
       draw_line(#ind,coords[4*_k,2],coords[4*_k+2,2],_opacity,_da_color);
    );
   );
-
-  # draw_circle(ind,P0,radius,opacity,color) = ( # Draw a circle centered at P0 on image #ind
-  #   unref(_dc_color);
-  #   _P0 = round(P0);
-  #   _radius = round(radius);
-  #   _opacity = opacity;
-  #   _dc_color = resize(color,s#ind);
-  #   _ymin = _P0[1] - _radius;
-  #   _ymax = _P0[1] + _radius;
-  #   if (_ymax>=0 && _ymin<=w#ind - 1, # Circle is visible
-  #     _ymin = max(_ymin,0);
-  #     _ymax = min(_ymax,h#ind - 1);
-  #     _radius = (_radius - 0.75)^2;
-  #     for (_y = _ymin, _y<=_ymax, ++_y,
-  #       _dx = _radius - (_y - _P0[1])^2;
-  #       if (_dx>=0,
-  #         _dx^=0.5;
-  #         _xmin = max(_P0[0] - _dx,0);
-  #         _xmax = min(_P0[0] + _dx,w#ind - 1);
-  #         if (_xmax>=0 && _xmin<=w#ind - 1,
-  #           _xmin = max(_xmin,0);
-  #           _xmax = min(_xmax,w#ind - 1);
-  #           draw_scanline(#ind,_xmin,_xmax,_y,_opacity,_dc_color);
-  #         );
-  #       );
-  #     );
-  #   );
-  #   nan;
-  # );
 
   draw_circle(ind,P0,radius,opacity,color) = ( # Draw a circle centered at P0 on image #ind
     unref(_dc_color);
@@ -18027,6 +18246,11 @@ math_lib :
     unref(x#,_#x);
     for (_#x = 0, _#x<size(V#), ++_#x, x# = V#[_#x]; V#[_#x] = fnx#);
     V#;
+  );
+
+  proj(X,A,B) = ( # Projection of point X onto line (A,B)
+    _AB = B - A;
+    P = A + dot(X - A,_AB)/max(1e-8,dot(_AB,_AB))*_AB;
   );
 
   rgb() = ( # Return a random RGB color
@@ -25464,6 +25688,8 @@ fx_autofill_lineart_preview :
 #@gui : Spline roundness = float(1,0,2)
 #@gui : Minimal region area = float(10,0,100)
 #@gui : Allow self intersections = bool(1)
+#@gui : sep = separator(), note = note{"<small><b>Hatch detection:</b> <span color="red">(work-in-progress, still slow!)</span></small>"}
+#@gui : Enable hatch detection = bool(0)
 #@gui : sep = separator(), Preview type = choice(0,"Colored geometry","Colored regions","Colored lineart")
 #@gui : sep = separator(), note = note("<small>Authors: <i>David Tschumperl&#233;</i>, <i>S&#233;bastien Fourey</i> and <i>David Revoy</i>.      Latest update: <i>08/03/2017</i>.</small>")
 fx_colorize_lineart_smartcoloring :
@@ -25512,6 +25738,7 @@ _fx_colorize_lineart_smartcoloring :
 
     # Retrieve closed binary shape.
     _keep_keycoords={$-1==0}
+    -if $17 _anti_hatch=1 -else _anti_hatch= -endif
     [strokes] -close_binary. ${9-14},$min_color_area,$16 -nm. new_strokes
 
     -if {$-1==0} # Render estimated geometry
