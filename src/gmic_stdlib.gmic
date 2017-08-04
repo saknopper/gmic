@@ -25486,7 +25486,7 @@ _fx_colorize_lineart_smartcoloring :
     ind_lineart={$1==1?1:0}
     nm=${-gui_layer_name[$ind_lineart]} -nm[$ind_lineart] lineart
 
-    -if {$!>1} -nm[{$1==1?0:1}] colors -endif
+    -if {$!>1} ind_colors={$1==1?0:1} nmc={$ind_colors,n} -nm[$ind_colors] colors -endif
     -if {$!>=3} -rm[2--1] -endif # Delete old color and added contour layers if any
 
     # Constrain input lineart to be a binary, single channel image.
@@ -25573,7 +25573,7 @@ _fx_colorize_lineart_smartcoloring :
       -gui_set_layer_name. $nm" [region delimiters]"
       -mv. {$lineart+1}
     -endif
-    -gui_set_layer_name[$ind_colors] $nm" [colors]"
+    -if {!narg($nmc)} -gui_set_layer_name[$ind_colors] $nm" [colors]" -endif
     -gui_set_layer_name[$ind_lineart] $nm
 
     -if {$-1==-1} # Rendering : Lineart and color layers
