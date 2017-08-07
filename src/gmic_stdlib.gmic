@@ -11404,7 +11404,7 @@ _close_binary :
       nb_projs = is_proj_in(P0,Q0,Q1) + is_proj_in(P1,Q0,Q1) + is_proj_in(Q0,P0,P1) + is_proj_in(Q1,P0,P1);
       is_contiguous = P0==Q0 || P1==Q0 || P0==Q1 || P1==Q1;
 
-      if (dist<48 && ang<17 && ratio>0.20 && nb_projs>=2 && !is_contiguous,
+      if (dist<48 && ang<17 && ratio>0.20 && nb_projs>=1 && !is_contiguous,
         if (p<0,  # Had no parents before
           i(k,0,0,2) = parent;
         _(else),  # Had a parent before
