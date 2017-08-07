@@ -11290,21 +11290,23 @@ _close_binary :
     -i[keypoints] [e_normals],[e_normals]
     -f[keycoords] "P = I; i(#-1,P[0],P[1]) = 1 + x; I"
 
-  # Display
-  # -i[visu] [strokes]
-  # vfact=5
-  # -r[visu] {$vfact*[w,h]},1,300% -n. 0,128
-  # $vfact,$vfact,1,1,x+y -n. 0.6,0.75
-  # -line. 0,0,{w-2},0,1,0.5 -line. 0,0,0,{h-1},1,0.5
-  # -line. 1,{h-1},{w-1},{h-1},1,1 -line. {w-1},0,{w-1},{h-1},1,1
-  # -r. ..,0,2 -*[-2,-1]
-  # -f[keycoords] ${-math_lib}"
-  #    _I = I;
-  #    P = int("$vfact"*(_I[0,2]+0.5));
-  #    col = _I[2]>0?[128,255,0]:[255,64,0];
-  #    draw_circle(#"$visu",P,"$vfact"/2,0.5,col);
-  #    I(#-1,P) = [ 255,255,255 ];
-  # I"
+  # Manage visualization
+  -if {narg($_visu)}
+    -i[visu] [strokes]
+    vfact=3
+    -r[visu] {$vfact*[w,h]},1,3 -n. 0,128
+    $vfact,$vfact,1,1,x+y -n. 0.6,0.75
+    -line. 0,0,{w-2},0,1,0.5 -line. 0,0,0,{h-1},1,0.5
+    -line. 1,{h-1},{w-1},{h-1},1,1 -line. {w-1},0,{w-1},{h-1},1,1
+    -r. ..,0,2 -*[-2,-1]
+    -f[keycoords] ${-math_lib}"
+      _I = I;
+       P = int("$vfact"*(_I[0,2]+0.5));
+       col = _I[2]>0?[128,255,0]:[255,64,0];
+       draw_circle(#"$visu",P,"$vfact"/2,0.5,col);
+       I(#-1,P) = [ 255,255,255 ];
+    I"
+  -endif
 
   # Voting process to detect segments.
   -channels[keycoords] 0,1
@@ -11353,20 +11355,23 @@ _close_binary :
     ); i"
   -rm[keypoints]
 
-  -l[vote] -s c -max. 1 -/ ->= 0.75 -endl
+  -l[vote] -s c -max. 1 -/ ->= 0.35 -endl
   -i[keylines] {is},1,1,2 -f[vote] "init(off = 0); if (i,I[#-1,off++] = [x,y]); i"
   -rm[vote]
 
-  # -f[keylines] ">"${-math_lib}" # Draw segments on visu image.
-  #   _I = I;
-  #   i0 = _I[0];
-  #   i1 = _I[1];
-  #   P0 = I[#"$keycoords",i0];
-  #   P1 = I[#"$keycoords",i1];
-  #   (P0+=0.5)*=w#"$visu"/w#"$strokes";
-  #   (P1+=0.5)*=w#"$visu"/w#"$strokes";
-  #   draw_line(#"$visu",P0,P1,0.5,[255,255,255]);
-  #   I"
+  # Manage visualization (2);
+  -if {narg($_visu)}
+    -f[keylines] ">"${-math_lib}" # Draw segments on visu image.
+      _I = I;
+      i0 = _I[0];
+      i1 = _I[1];
+      P0 = I[#"$keycoords",i0];
+      P1 = I[#"$keycoords",i1];
+      (P0+=0.5)*=w#"$visu"/w#"$strokes";
+      (P1+=0.5)*=w#"$visu"/w#"$strokes";
+      draw_line(#"$visu",P0,P1,0.5,[255,255,255]);
+      I"
+  -endif
 
   # Detect groups of hatches.
   [keylines],1,1,1,-1 -a[keylines,-1] c
@@ -11397,8 +11402,9 @@ _close_binary :
       ang = acos(dot(dP,dQ)/(ndP*ndQ))*180/pi;
       ratio = min(ndP,ndQ)/max(ndP,ndQ);
       nb_projs = is_proj_in(P0,Q0,Q1) + is_proj_in(P1,Q0,Q1) + is_proj_in(Q0,P0,P1) + is_proj_in(Q1,P0,P1);
+      is_contiguous = P0==Q0 || P1==Q0 || P0==Q1 || P1==Q1;
 
-      if (dist<48 && ang<17.5 && ratio>0.15 && nb_projs>0,
+      if (dist<48 && ang<17 && ratio>0.20 && nb_projs>=2 && !is_contiguous,
         if (p<0,  # Had no parents before
           i(k,0,0,2) = parent;
         _(else),  # Had a parent before
@@ -11420,7 +11426,7 @@ _close_binary :
      i1 = _I[1];
      par = _I[2];
      occ = i(par,0,0,3);
-     if (occ>=4,
+     if (occ>=3,
        P0 = I[#"$keycoords",i0];
        P1 = I[#"$keycoords",i1];
        i(#"$keydiscard",P0) = 1;
@@ -11429,26 +11435,29 @@ _close_binary :
      I;"
 
   # Draw groups of detected segments on visu image.
-  # [keylines],1,1,3 -rand. 64,255 -round. -nm. colormap
-  # -f[keylines] ${-math_lib}"
-  #   _I = I;
-  #   i0 = _I[0];
-  #   i1 = _I[1];
-  #   par = _I[2];
-  #   occ = i(par,0,0,3);
-  #   if (occ>=4,
-  #     P0 = I[#"$keycoords",i0];
-  #     P1 = I[#"$keycoords",i1];
-  #     (P0+=0.5)*=w#"$visu"/w#"$strokes";
-  #     (P1+=0.5)*=w#"$visu"/w#"$strokes";
-  #     col = I(#"$colormap",par);
-  #     draw_line(#"$visu",P0,P1,1,col);
-  #     draw_line(#"$visu",P0+[1,0],P1+[1,0],1,col);
-  #     draw_line(#"$visu",P0+[0,1],P1+[0,1],1,col);
-  #     draw_line(#"$visu",P0+[1,1],P1+[1,1],1,col);
-  #   ); I"
+  -if {narg($_visu)}
+    [keylines],1,1,3 -rand. 64,255 -round. -nm. colormap
+    -f[keylines] ${-math_lib}"
+      _I = I;
+      i0 = _I[0];
+      i1 = _I[1];
+      par = _I[2];
+      occ = i(par,0,0,3);
+      if (occ>=3,
+        P0 = I[#"$keycoords",i0];
+        P1 = I[#"$keycoords",i1];
+        (P0+=0.5)*=w#"$visu"/w#"$strokes";
+        (P1+=0.5)*=w#"$visu"/w#"$strokes";
+        col = I(#"$colormap",par);
+        draw_line(#"$visu",P0,P1,1,col);
+        draw_line(#"$visu",P0+[1,0],P1+[1,0],1,col);
+        draw_line(#"$visu",P0+[0,1],P1+[0,1],1,col);
+        draw_line(#"$visu",P0+[1,1],P1+[1,1],1,col);
+      ); I"
+    -d
+  -endif
 
-    -k[strokes,keydiscard]
+  -k[strokes,keydiscard]
 
 #@cli ellipse : x[%],y[%],R[%],r[%],_angle,_opacity,_pattern,_color1,... : (+)
 #@cli : Draw specified colored ellipse on selected images.
