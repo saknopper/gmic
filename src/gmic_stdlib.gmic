@@ -10839,13 +10839,13 @@ circle : -skip ${4=1},${5=0},${6=0}
   -endif
   -v - -ellipse $1,$2,$3,$3,0,${4--1} -v +
 
-#@cli close_binary : 0<=_endpoint_rate<=100,_endpoint_connectivity>=0,_spline_distmax>=0,_segment_distmax>=0,0<=_spline_anglemax<=180,_spline_roundness>=0,_area_min>=0,_allow_self_intersection={ 0 | 1 },0<=_hd_angle<=180,0<=_hd_detection<=1,_hd_grouping_dist>=0,0<=_hd_grouping_angle<=180,0<=_hd_grouping_ratio<=1
+#@cli close_binary : 0<=_endpoint_rate<=100,_endpoint_connectivity>=0,_spline_distmax>=0,_segment_distmax>=0,0<=_spline_anglemax<=180,_spline_roundness>=0,_area_min>=0,_allow_self_intersection={ 0 | 1 },0<=_hd_detection_rate<=1,0<=_hd_angle<=180,_hd_grouping_dist>=0,0<=_hd_grouping_angle<=180,0<=_hd_grouping_ratio<=1
 #@cli : Automatically close open shapes in binary images (defining white strokes on black background).
-#@cli : Parameter names starting with 'hd_' are related to the hatch detection algorithm. Set 'hd_detect_angle_threshold=-1' to disable this module.
-#@cli : Default values: 'endpoint_rate=85', 'endpoint_connectivity=2', 'spline_distmax=80', 'segment_distmax=20', 'spline_anglemax=90', 'spline_roundness=1','area_min=100', 'allow_self_intersection=1', 'hd_angle=-1', 'hd_detection=0.65', 'hd_grouping_dist=64', 'hd_grouping_angle=20' and 'hd_grouping_ratio=0.2'.
+#@cli : Parameter names starting with 'hd_' are related to the hatch detection algorithm. Set 'hd_detection_rate>0' to disable this module.
+#@cli : Default values: 'endpoint_rate=85', 'endpoint_connectivity=2', 'spline_distmax=80', 'segment_distmax=20', 'spline_anglemax=90', 'spline_roundness=1','area_min=100', 'allow_self_intersection=1', 'hd_detection_rate=0', 'hd_angle=25', 'hd_grouping_dist=64', 'hd_grouping_angle=20' and 'hd_grouping_ratio=0.2'.
 close_binary :
   -check "${1=85}>=0 && $1<=100 && ${2=2}>=0 && ${3=80}>=0 && ${4=20}>=0 && ${5=90}>=0 && $5<=180 && ${6=1}>=0 && ${7=100}>=0 && isval(${8=1})"
-  -check "(${9=-1}==-1 || ($9>=0 && $9<=180)) && ${10=0.65}>=0 && $10<=1 && ${11=64}>=0 && ${12=20}>=0 && $12<=180 && ${13=0.2}>=0 && $13<=1"
+  -check "${9=0}>=0 && $9<=1 && ${10=25}>=0 && $10<=180 && ${11=64}>=0 && ${12=20}>=0 && $12<=180 && ${13=0.2}>=0 && $13<=1"
   -e[^-1] "Close open shapes in binary image$?, with endpoint rate $1, endpoint connectivity $2, spline max distance $3, segment max distance $4, spline max angle $5, "\
           "spline roundness $6, area min $7 and self intersections "${"-arg 1+!$8,allowed,\"not allowed\""}"."
 
@@ -10860,8 +10860,8 @@ close_binary :
   area_min=$7                       # in px
   allow_self_intersections={!!$8}   # 0 or 1
 
-  hd_angle=$9                       # in deg
-  hd_detection=$10                  # in [0,1]
+  hd_detection_rate=$9              # in [0,1]
+  hd_angle=$10                      # in deg
   hd_grouping_dist=$11              # in px
   hd_grouping_angle=$12             # in deg
   hd_grouping_ratio=$13             # in [0,1]
@@ -10976,8 +10976,8 @@ close_binary :
     -rm[curvatures,keypoints]
 
     # Remove hatch keypoints if requested.
-    -if {narg($keycoords)" && "$hd_angle>=0}
-      -_close_binary[strokes] $endpoint_threshold,$hd_angle,$hd_detection,$hd_grouping_dist,$hd_grouping_angle,$hd_grouping_ratio
+    -if {narg($keycoords)" && "$hd_detection_rate>0}
+      -_close_binary[strokes] $endpoint_threshold,$hd_detection_rate,$hd_angle,$hd_grouping_dist,$hd_grouping_angle,$hd_grouping_ratio
       -f[keycoords] "init(dis = vectors(-1)); P = (I)[0,2]; i(#"$keydiscard",P)?dis:I";
       -rm[keydiscard] -discard[keycoords] -1 -r[keycoords] {keycoords,[h/4,1,1,4]},-1
     -endif
@@ -11223,8 +11223,8 @@ close_binary :
 # Return binary image of keypoints to ignore.
 _close_binary :
   endpoint_threshold=$1
-  hd_angle=$2
-  hd_detection={max(0.001,1-$3)}
+  hd_detection_rate={max(0.001,1-$2)}
+  hd_angle=$3
   hd_grouping_dist=$4
   hd_grouping_angle=$5
   hd_grouping_ratio=$6
@@ -11370,8 +11370,10 @@ _close_binary :
     ); i"
   -rm[keypoints]
 
-  -l[vote] -s c -max. 1 -/ ->= $hd_detection -endl
-  -i[keylines] {is},1,1,2
+  -l[vote] -s c -max. 1 -/ ->= $hd_detection_rate -endl
+  is={is} -if {!$is} -k[strokes] -i[keydiscard] [strokes],[strokes] -return -endif
+
+  -i[keylines] $is,1,1,2
   -f[vote] "init(off = 0); if (i,I[#-1,off++] = [x,y]); i"
   -rm[vote]
 
@@ -25710,16 +25712,15 @@ fx_autofill_lineart_preview :
 #@gui : End point connectivity = int(2,1,5)
 #@gui : Spline max length (px) = float(60,0,256)
 #@gui : Segment max length (px) = float(20,0,256)
-#@gui : Spline max angle (deg.) = float(90,0,180)
+#@gui : Spline max angle (deg) = float(90,0,180)
 #@gui : Spline roundness = float(1,0,2)
 #@gui : Minimal region area = float(10,0,100)
 #@gui : Allow self intersections = bool(1)
 #@gui : sep = separator(), note = note{"<small><b>Hatch detection:</b> <span color="red">(work-in-progress, still slow!)</span></small>"}
-#@gui : Enable hatch detection = bool(0)
-#@gui : Segment curvature = float(25,0,180)
-#@gui : Detection rate = float(0.65,0,1)
-#@gui : Max grouping distance = float(64,0,1024)
-#@gui : Max grouping angle = float(20,0,180)
+#@gui : Detection rate = float(0,0,1)
+#@gui : Max segment curvature (deg) = float(25,0,180)
+#@gui : Max grouping distance (px) = float(64,0,1024)
+#@gui : Max grouping angle (deg) = float(20,0,180)
 #@gui : Max grouping ratio = float(0.2,0,1)
 #@gui : sep = separator(), Preview type = choice(0,"Colored geometry","Colored regions","Colored lineart")
 #@gui : sep = separator(), note = note("<small>Authors: <i>David Tschumperl&#233;</i>, <i>S&#233;bastien Fourey</i> and <i>David Revoy</i>.      Latest update: <i>08/03/2017</i>.</small>")
@@ -25769,7 +25770,7 @@ _fx_colorize_lineart_smartcoloring :
 
     # Retrieve closed binary shape.
     _keep_keycoords={$-1==0}
-    [strokes] -close_binary. ${9-14},$min_color_area,$16,{$17?$18:-1},$19,$20,$21,$22 -nm. new_strokes
+    [strokes] -close_binary. ${9-14},$min_color_area,$16,${17-21} -nm. new_strokes
 
     -if {$-1==0} # Render estimated geometry
       --negate[strokes] -*. 255 -to_rgb.
@@ -32808,7 +32809,7 @@ fx_heart_preview :
 #@gui : note = note{"<small><b>Initial streak:</b></small>"}
 #@gui : X-coordinate (%) = float(50,0,100)
 #@gui : Y-coordinate (%) = float(5,0,100)
-#@gui : Angle (deg.) = float(0,-180,180)
+#@gui : Angle (deg) = float(0,-180,180)
 #@gui : Thickness (px.) = int(6,1,64)
 #@gui : Blur = float(0.2,0,3)
 #@gui : sep = separator()
@@ -32817,8 +32818,8 @@ fx_heart_preview :
 #@gui : Max offset (%) = float(60,0,100)
 #@gui : Min length (%) = float(95,0,200)
 #@gui : Max length (%) = float(100,0,200)
-#@gui : Min angle deviation (deg.) = float(30,0,180)
-#@gui : Max angle deviation (deg.) = float(40,0,180)
+#@gui : Min angle deviation (deg) = float(30,0,180)
+#@gui : Max angle deviation (deg) = float(40,0,180)
 #@gui : Thickness factor = float(-0.25,-1,1)
 #@gui : Blur factor = float(-0.1,-1,1)
 #@gui : Opacity factor = float(-0.20,-1,1)
