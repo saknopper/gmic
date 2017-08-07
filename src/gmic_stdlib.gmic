@@ -10839,10 +10839,13 @@ circle : -skip ${4=1},${5=0},${6=0}
   -endif
   -v - -ellipse $1,$2,$3,$3,0,${4--1} -v +
 
-#@cli close_binary : 0<=_endpoint_rate<=100,_endpoint_connectivity>=0,_spline_distmax>=0,_segment_distmax>=0,0<=_spline_anglemax<=180,_spline_roundness>=0,_area_min>=0,_allow_self_intersection={ 0 | 1 },
+#@cli close_binary : 0<=_endpoint_rate<=100,_endpoint_connectivity>=0,_spline_distmax>=0,_segment_distmax>=0,0<=_spline_anglemax<=180,_spline_roundness>=0,_area_min>=0,_allow_self_intersection={ 0 | 1 },0<=_hd_angle<=180,0<=_hd_detection<=1,_hd_grouping_dist>=0,0<=_hd_grouping_angle<=180,0<=_hd_grouping_ratio<=1
 #@cli : Automatically close open shapes in binary images (defining white strokes on black background).
-#@cli : Default values: 'endpoint_rate=85', 'endpoint_connectivity=2', 'spline_distmax=80', 'segment_distmax=20', 'spline_anglemax=90', 'spline_roundness=1','area_min=100' and 'allow_self_intersection=1'.
-close_binary : -check "${1=85}>=0 && $1<=100 && ${2=2}>=0 && ${3=80}>=0 && ${4=20}>=0 && ${5=90}>=0 && $5<=180 && ${6=1}>=0 && ${7=100}>=0 && isval(${8=1})"
+#@cli : Parameter names starting with 'hd_' are related to the hatch detection algorithm. Set 'hd_detect_angle_threshold=-1' to disable this module.
+#@cli : Default values: 'endpoint_rate=85', 'endpoint_connectivity=2', 'spline_distmax=80', 'segment_distmax=20', 'spline_anglemax=90', 'spline_roundness=1','area_min=100', 'allow_self_intersection=1', 'hd_angle=-1', 'hd_detection=0.65', 'hd_grouping_dist=64', 'hd_grouping_angle=20' and 'hd_grouping_ratio=0.2'.
+close_binary :
+  -check "${1=85}>=0 && $1<=100 && ${2=2}>=0 && ${3=80}>=0 && ${4=20}>=0 && ${5=90}>=0 && $5<=180 && ${6=1}>=0 && ${7=100}>=0 && isval(${8=1})"
+  -check "(${9=-1}==-1 || ($9>=0 && $9<=180)) && ${10=0.65}>=0 && $10<=1 && ${11=64}>=0 && ${12=20}>=0 && $12<=180 && ${13=0.2}>=0 && $13<=1"
   -e[^-1] "Close open shapes in binary image$?, with endpoint rate $1, endpoint connectivity $2, spline max distance $3, segment max distance $4, spline max angle $5, "\
           "spline roundness $6, area min $7 and self intersections "${"-arg 1+!$8,allowed,\"not allowed\""}"."
 
@@ -10850,12 +10853,18 @@ close_binary : -check "${1=85}>=0 && $1<=100 && ${2=2}>=0 && ${3=80}>=0 && ${4=2
   -v -
   endpoint_threshold={100-$1}       # in [0,100]
   endpoint_connectivity={round($2)}
-  spline_distmax=$3                 # in px.
-  segment_distmax=$4                # in px.
-  spline_anglemax=$5                # in deg.
+  spline_distmax=$3                 # in px
+  segment_distmax=$4                # in px
+  spline_anglemax=$5                # in deg
   spline_roundness=$6
-  area_min=$7                       # in px.
-  allow_self_intersections={!!$8}   # 0 or 1.
+  area_min=$7                       # in px
+  allow_self_intersections={!!$8}   # 0 or 1
+
+  hd_angle=$9                       # in deg
+  hd_detection=$10                  # in [0,1]
+  hd_grouping_dist=$11              # in px
+  hd_grouping_angle=$12             # in deg
+  hd_grouping_ratio=$13             # in [0,1]
 
   # Define useful functions to navigate through edgels.
   _edgel_lib="
@@ -10967,8 +10976,8 @@ close_binary : -check "${1=85}>=0 && $1<=100 && ${2=2}>=0 && ${3=80}>=0 && ${4=2
     -rm[curvatures,keypoints]
 
     # Remove hatch keypoints if requested.
-    -if {narg($keycoords)" && "narg($_anti_hatch)}
-      -_close_binary[strokes] $1
+    -if {narg($keycoords)" && "$hd_angle>=0}
+      -_close_binary[strokes] $endpoint_threshold,$hd_angle,$hd_detection,$hd_grouping_dist,$hd_grouping_angle,$hd_grouping_ratio
       -f[keycoords] "init(dis = vectors(-1)); P = (I)[0,2]; i(#"$keydiscard",P)?dis:I";
       -rm[keydiscard] -discard[keycoords] -1 -r[keycoords] {keycoords,[h/4,1,1,4]},-1
     -endif
@@ -11213,7 +11222,12 @@ close_binary : -check "${1=85}>=0 && $1<=100 && ${2=2}>=0 && ${3=80}>=0 && ${4=2
 # Selected input image must be the binary image of strokes (named 'strokes').
 # Return binary image of keypoints to ignore.
 _close_binary :
-  endpoint_threshold={100-$1} # in [0,100]
+  endpoint_threshold=$1
+  hd_angle=$2
+  hd_detection={max(0.001,1-$3)}
+  hd_grouping_dist=$4
+  hd_grouping_angle=$5
+  hd_grouping_ratio=$6
 
   # Extract primary edgel normals.
   -i[e_normals] 100%,100%,1,4,"
@@ -11313,8 +11327,9 @@ _close_binary :
   -i[vote] {keycoords,[w,w]},1,2
 
   -f[e_normals] "*"$_edgel_lib${-math_lib}"
-    const ang_th = cos(25*pi/180);
+    const ang_th = cos("$hd_angle"*pi/180);
     if (i>=0,
+      breakpoint();
       pos0 = [ x,y,c ];
       if (!i(#"$keypoints",pos0[0,2]),
         N0 = vec(pos0);
@@ -11355,8 +11370,9 @@ _close_binary :
     ); i"
   -rm[keypoints]
 
-  -l[vote] -s c -max. 1 -/ ->= 0.35 -endl
-  -i[keylines] {is},1,1,2 -f[vote] "init(off = 0); if (i,I[#-1,off++] = [x,y]); i"
+  -l[vote] -s c -max. 1 -/ ->= $hd_detection -endl
+  -i[keylines] {is},1,1,2
+  -f[vote] "init(off = 0); if (i,I[#-1,off++] = [x,y]); i"
   -rm[vote]
 
   # Manage visualization (2);
@@ -11392,6 +11408,7 @@ _close_binary :
     ndP = norm(dP);
 
     for (k = x + 1, k<w, ++k,
+      breakpoint();
       _J = I[k]; j0 = _J[0]; j1 = _J[1]; p = _J[2];
       Q0 = I[#"$keycoords",j0];
       Q1 = I[#"$keycoords",j1];
@@ -11404,7 +11421,7 @@ _close_binary :
       nb_projs = is_proj_in(P0,Q0,Q1) + is_proj_in(P1,Q0,Q1) + is_proj_in(Q0,P0,P1) + is_proj_in(Q1,P0,P1);
       is_contiguous = P0==Q0 || P1==Q0 || P0==Q1 || P1==Q1;
 
-      if (dist<48 && ang<17 && ratio>0.20 && nb_projs>=1 && !is_contiguous,
+      if (dist<="$hd_grouping_dist" && ang<="$hd_grouping_angle" && ratio>="$hd_grouping_ratio" && nb_projs>=1 && !is_contiguous,
         if (p<0,  # Had no parents before
           i(k,0,0,2) = parent;
         _(else),  # Had a parent before
@@ -25699,6 +25716,11 @@ fx_autofill_lineart_preview :
 #@gui : Allow self intersections = bool(1)
 #@gui : sep = separator(), note = note{"<small><b>Hatch detection:</b> <span color="red">(work-in-progress, still slow!)</span></small>"}
 #@gui : Enable hatch detection = bool(0)
+#@gui : Segment curvature = float(25,0,180)
+#@gui : Detection rate = float(0.65,0,1)
+#@gui : Max grouping distance = float(64,0,1024)
+#@gui : Max grouping angle = float(20,0,180)
+#@gui : Max grouping ratio = float(0.2,0,1)
 #@gui : sep = separator(), Preview type = choice(0,"Colored geometry","Colored regions","Colored lineart")
 #@gui : sep = separator(), note = note("<small>Authors: <i>David Tschumperl&#233;</i>, <i>S&#233;bastien Fourey</i> and <i>David Revoy</i>.      Latest update: <i>08/03/2017</i>.</small>")
 fx_colorize_lineart_smartcoloring :
@@ -25747,8 +25769,7 @@ _fx_colorize_lineart_smartcoloring :
 
     # Retrieve closed binary shape.
     _keep_keycoords={$-1==0}
-    -if $17 _anti_hatch=1 -else _anti_hatch= -endif
-    [strokes] -close_binary. ${9-14},$min_color_area,$16 -nm. new_strokes
+    [strokes] -close_binary. ${9-14},$min_color_area,$16,{$17?$18:-1},$19,$20,$21,$22 -nm. new_strokes
 
     -if {$-1==0} # Render estimated geometry
       --negate[strokes] -*. 255 -to_rgb.
