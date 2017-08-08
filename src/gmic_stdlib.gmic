@@ -205,7 +205,7 @@ _help : -skip ${1=""}
       -if {['{0,t}']==['$command']}
         -_document_gmic_declaration_ascii
         -if $_shortcut  # Found shortcut command.
-          -v + -e[] "\n    "$_gmic_m$_gmic_b"-"$command":"$_gmic_n$_gmic_m" Equivalent to '"$_gmic_b$_shortcutlink0$_gmic_m"'."$_gmic_n -v -
+          -v + -e[] "\n    "$_gmic_m$_gmic_b"-"$command":"$_gmic_n" Shortcut for command '"$_gmic_m$_gmic_b$_shortcutlink0$_gmic_n"'." -v -
           -u $_shortcutlink0 -return
         -endif
         -else stopflag=1
@@ -226,9 +226,12 @@ _help : -skip ${1=""}
              -rm ({'$_gmic_n${_gmic_b}"Tutorial:"$_gmic_n$_gmic_r" "$tuturl'}) -y
              _is_tutorial=1
           -else # Regular example.
-            -if $_is_example -i[0] ({'"         "'})
-            -else -i[0] ({'"\n        "$gmic_n${_gmic_b}"Example: "$_gmic_n$_gmic_g'}) _is_example=1 -endif
-            -y[0] -a y
+            -if $_is_example -i[0] ({'"\n                 "'})
+            -else -i[0] ({'"\n        "$gmic_n${_gmic_b}"Example: "$_gmic_n'}) _nb_example=0
+            -endif
+            _is_example=1 _nb_example+=1
+            -i[1] ({'$_gmic_n[#$_nb_example]"  "$_gmic_g'})
+            -y -a y
           -endif
         -endif
         -_document_gmic_description_ascii
@@ -2158,14 +2161,15 @@ _document_gmic_description_ascii :
   is_default={same([{^}],"'Default value'",13)}
   -y x -if {!narg($_is_tutorial)} -_document_gmic_split_ascii 96 -endif
   -if {$!==1" && "0$_vt100>0" && "$is_equivalent}
-    -i[0] ({'$_gmic_b'}) ({'$_gmic_n\n'}) -a x
-    -s +,39 -if {$!==5} -i[2] ({'$_gmic_m$_gmic_b'}) -i[4] ({'$_gmic_n$_gmic_b'}) -y -endif -a y
+    -replace_str "eq. to","equivalent to shorcut command"
+    -s +,39 -if {$!==5} -i[2] ({'$_gmic_m$_gmic_b'}) -i[4] ({'$_gmic_n'}) -y -endif -a y
   -endif
   -repeat {$!-1} ({'${bs$_is_example}$s"  "'}) -a[$>,-1] x -done -a x
   -if {0$_vt100>0}
     -replace_str "Default values:","\n"$s$_gmic_n${_gmic_b}"Default values:"$_gmic_n
     -replace_str "Default value:","\n"$s$_gmic_n${_gmic_b}"Default value:"$_gmic_n
     -replace_str "G'MIC",${_gmic_g}"G'MIC"$_gmic_n
+    -replace_str "(no arg)",${_gmic_g}"(no arg)"$_gmic_n
 
     -if {!$_is_example" && "!$is_equivalent}
       # Colorize parameters between single quotes.
@@ -2181,7 +2185,7 @@ _document_gmic_description_ascii :
         -a y
       -endif
 
-      # Colorize parameters between braces.
+      # Colorize parameters between braces '{}'.
       -s +,{'\{'} -s +,{'\}'} -if {$!>=3}
         ind=0 closing=0
         -do
@@ -2193,6 +2197,20 @@ _document_gmic_description_ascii :
         -while {$ind<$!-3}
         -a y
       -endif
+
+      # Colorize parameters between brackets '[]'.
+      -s +,{'['} -s +,{']'} -if {$!>=3}
+        ind=0 closing=0
+        -do
+          -if {"const ind = "$ind"; h#ind==1 && i#ind==91 && h#(ind+2)==1 && i#(ind+2)==93"}
+            -l[$ind,{$ind+2}] -rm ({'$_gmic_c'},91) (93,{'$_gmic_n'}) -y -endl
+            ind+=2
+          -endif
+          ind+=1
+        -while {$ind<$!-3}
+        -a y
+      -endif
+
     -endif
   -endif
   -v + -repeat $! -e[] $s{$>,t} -v - -done
@@ -2693,7 +2711,7 @@ _document_gmic_declaration_man :
 _document_gmic_description_man :
   s="        " bs0="\n" bs1="\\\\\n         "
   -y x -if {!narg($_is_tutorial)} -_document_gmic_split_ascii 96 -endif
-  -repeat {$!-1} ({'${bs$_is_example}$s"  "'}) -a[$>,-1] x -done -a x
+  -repeat {$!-1} ({'${bs_is_example}$s"  "'}) -a[$>,-1] x -done -a x
   -replace_str "Default values:","Default values:"
   -replace_str "Default value:","Default value:"
   -replace_str "\\","\\\\"
