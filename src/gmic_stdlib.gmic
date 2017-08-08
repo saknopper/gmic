@@ -1124,7 +1124,7 @@ _help_header_ascii :
 
 __help_header_ascii :
   -if {narg($_prerelease)} strprerelease=" (pre-release ""#"$_prerelease")" -else strprerelease="" -endif
-  str="\n  "${_gmic_b}"gmic: GREYC\'s Magic for Image Computing."$_gmic_n"
+  str="  "${_gmic_b}"gmic: GREYC\'s Magic for Image Computing."$_gmic_n"
 \n
 \n        "$_gmic_g${_gmic_b}"Version "${-strver}$strprerelease$_gmic_n", Copyright (c) 2008-2017, David Tschumperle.
 \n        "$_gmic_g"(http://gmic.eu)"$_gmic_n
@@ -1397,7 +1397,6 @@ use_vt100 :
 version :
   -v -
   -m "_e : -echo_stdout[] \"$""*\""
-  -if {$^==-1} -_e[] "" -endif
   -__help_header_ascii[]
   -uncommand _e
   -v +
