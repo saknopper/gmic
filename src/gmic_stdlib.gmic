@@ -2421,6 +2421,7 @@ _document_gmic_description_html :
   is_equivalent={same([{^}],"'(eq. to '",8)}
   is_default={same([{^}],"'Default value'",13)}
 
+  -replace_str "\\n","<br/>"
   -replace_str "G'MIC","<b><font color=\"#009000\">G\47MIC</font></b>"
   -replace_str "(no arg)","<font color=\"#009000\">(no arg)</font>"
 
