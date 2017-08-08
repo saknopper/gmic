@@ -223,11 +223,11 @@ _help : -skip ${1=""}
              -if {h==1" && "i==_'$'} tuturl=http://gmic.eu/tutorial/_$command.shtml
              -else -autocrop {'$'} -autocrop {'" "'} tuturl=http://gmic.eu/tutorial/{0,t}.shtml
              -endif
-             -rm ({'$_gmic_r${_gmic_b}"Tutorial:"$_gmic_n$_gmic_r" "$tuturl'}) -y
+             -rm ({'$_gmic_n${_gmic_b}"Tutorial:"$_gmic_n$_gmic_r" "$tuturl'}) -y
              _is_tutorial=1
           -else # Regular example.
             -if $_is_example -i[0] ({'"         "'})
-            -else -i[0] ({'"\n        "$_gmic_g${_gmic_b}"Example: "$_gmic_n$_gmic_g'}) _is_example=1 -endif
+            -else -i[0] ({'"\n        "$gmic_n${_gmic_b}"Example: "$_gmic_n$_gmic_g'}) _is_example=1 -endif
             -y[0] -a y
           -endif
         -endif
@@ -2163,14 +2163,36 @@ _document_gmic_description_ascii :
   -endif
   -repeat {$!-1} ({'${bs$_is_example}$s"  "'}) -a[$>,-1] x -done -a x
   -if {0$_vt100>0}
-    -if $is_default
-      -replace_str "Default values:","\n"$s$_gmic_c${_gmic_b}"Default values:"$_gmic_n$_gmic_c
-      -replace_str "Default value:","\n"$s$_gmic_c${_gmic_b}"Default value:"$_gmic_n$_gmic_c
-    -elif {!$_is_example" && "!$is_equivalent}
-      ds0="'"$_gmic_c ds1=$_gmic_n"'" case=0
-      -s +,39 -if {$!>=3} -repeat $!
-        -if {$>,"whd==1 && i==39 && i[#"{$>-1}",-1,2]!=_'G'"} -l[$>] -rm ({'${ds{$case%2}}'}) -y case+=1 -endl -endif
-      -done -y -endif -a y
+    -replace_str "Default values:","\n"$s$_gmic_n${_gmic_b}"Default values:"$_gmic_n
+    -replace_str "Default value:","\n"$s$_gmic_n${_gmic_b}"Default value:"$_gmic_n
+    -replace_str "G'MIC",${_gmic_g}"G'MIC"$_gmic_n
+
+    -if {!$_is_example" && "!$is_equivalent}
+      # Colorize parameters between single quotes.
+      -s +,39 -if {$!>=3}
+        ind=0 closing=0
+        -do
+          -if {"const ind = "$ind"; h#ind==1 && i#ind==39 && h#(ind+2)==1 && i#(ind+2)==39 && h#(ind+1)<48"}
+            -l[$ind,{$ind+2}] -rm (39,{'$_gmic_c'}) ({'$_gmic_n'},39) -y -endl
+            ind+=2
+          -endif
+          ind+=1
+        -while {$ind<$!-3}
+        -a y
+      -endif
+
+      # Colorize parameters between braces.
+      -s +,{'\{'} -s +,{'\}'} -if {$!>=3}
+        ind=0 closing=0
+        -do
+          -if {"const ind = "$ind"; h#ind==1 && i#ind==123 && h#(ind+2)==1 && i#(ind+2)==125"}
+            -l[$ind,{$ind+2}] -rm ({'$_gmic_g'},123) (125,{'$_gmic_n'}) -y -endl
+            ind+=2
+          -endif
+          ind+=1
+        -while {$ind<$!-3}
+        -a y
+      -endif
     -endif
   -endif
   -v + -repeat $! -e[] $s{$>,t} -v - -done
@@ -14104,7 +14126,7 @@ parallel : -skip "${1=},${2=},${3=},${4=},${5=},${6=},${7=},${8=},${9=},${10=},$
 #@cli q : eq. to '-quit'. : (+)
 
 #@cli quit : (+)
-#@cli : Quit interpreter.
+#@cli : Quit G'MIC interpreter.
 #@cli : (eq. to '-q').
 
 #@cli repeat : nb_iterations,_variable_name : (+)
