@@ -1453,7 +1453,7 @@ clut : -check "isval(${2=64}) && $2>0"
 
 #@cli command : _add_debug_info={ 0 | 1 },{ filename | http[s]://URL | "string" } : (+)
 #@cli : Import G'MIC custom commands from specified file, URL or string.
-#@cli : (eq. to '-m').
+#@cli : (eq. to '-m').\n
 #@cli : Imported commands are available directly after the '-command' invocation.
 #@cli : Default value: 'add_debug_info=1'.
 #@cli : $ image.jpg -command "foo : -mirror y -deform $""1" --foo[0] 5 --foo[0] 15
@@ -1467,7 +1467,7 @@ clut : -check "isval(${2=64}) && $2>0"
 
 #@cli display : _X>=0,_Y>=0,_Z>=0,_exit_on_anykey={ 0 | 1 } : (+)
 #@cli : Display selected images in an interactive viewer (use the instant display window [0] if opened).
-#@cli : (eq. to '-d').
+#@cli : (eq. to '-d').\n
 #@cli : Arguments 'X','Y','Z' determine the initial selection view, for 3d volumetric images.
 #@cli : Default value: 'X=Y=Z=0' and 'exit_on_anykey=0'.
 #@cli : $$
@@ -2162,7 +2162,7 @@ _document_gmic_description_ascii :
   -y x -if {!narg($_is_tutorial)} -_document_gmic_split_ascii 96 -endif
   -if {$!==1" && "0$_vt100>0" && "$is_equivalent}
     -replace_str "eq. to","equivalent to shorcut command"
-    -s +,39 -if {$!==5} -i[2] ({'$_gmic_m$_gmic_b'}) -i[4] ({'$_gmic_n'}) ({'\n'}) -y -endif -a y
+    -s +,39 -if {$!==5} -i[2] ({'$_gmic_m$_gmic_b'}) -i[4] ({'$_gmic_n'}) -y -endif -a y
   -endif
   -repeat {$!-1} ({'${bs$_is_example}$s"  "'}) -a[$>,-1] x -done -a x
   -if {0$_vt100>0}
@@ -2477,7 +2477,7 @@ _document_gmic_description_html :
   -elif $is_equivalent # Reached line as '#@cli : (eq. to -shortcut)'.
     -replace_str "eq. to","equivalent to shorcut command"
     -s +,39 -if {$!==5} -i[2] ({'"<font color=\"blue\"><b>"'}) -i[4] ({'"</b></font>"'}) -y -endif -a y
-    -v + -e[] ${-don}"<i>"{t}"</i><br/>" -v -
+    -v + -e[] ${-don}"<i>"{t}"</i>" -v -
 
   -else                                    # Reached line as '#@cli : description'.
     -if {(i<_'A'" || "i>_'Z')" && "i!=40" && "i!=39} -v + -e[] ${-don}"&nbsp;"{t} -v -
@@ -2809,7 +2809,7 @@ _document_gmic :
 
 #@cli echo : message : (+)
 #@cli : Output specified message on the error output.
-#@cli : (eq. to '-e').
+#@cli : (eq. to '-e').\n
 #@cli : Command selection (if any) stands for displayed call stack subset instead of image indices.
 
 #@cli echo_file : filename,message
@@ -3516,7 +3516,7 @@ sp : -skip "${1=?}",${2=0}
 
 #@cli sample : _name1={ ? | apples | barbara | boats | bottles | butterfly | cameraman | car | cat | cliff | dog | duck | eagle | elephant | earth | flower | fruits | greece | gummy | house | inside | landscape | leaf | lena | leno | lion | mandrill | monkey | parrots | pencils | peppers | rooster | rose | square | teddy | tiger | wall | waterfall | zelda },_name2,...,_nameN,_width={ >=0 | 0 (auto) },_height = { >=0 | 0 (auto) } : (no arg)
 #@cli : Input a new sample RGB image (opt. with specified size).
-#@cli : (eq. to '-sp').
+#@cli : (eq. to '-sp').\n
 #@cli : Argument 'name' can be replaced by an integer which serves as a sample index.
 #@cli : $ -repeat 6 -sample -done
 sample : -skip "${1=?}",${2=0}
@@ -5000,7 +5000,7 @@ _update_tutorial_html :
 
 #@cli verbose : level : { + | - } : (+)
 #@cli : Set or increment/decrement the verbosity level. Default level is 0.
-#@cli : (eq. to '-v').
+#@cli : (eq. to '-v').\n
 #@cli : When 'level'>=0, G'MIC log messages are displayed on the standard error (stderr).
 #@cli : Default value: 'level=0'.
 
@@ -5022,7 +5022,7 @@ _update_tutorial_html :
 #@cli window : _width[%]>=-1,_height[%]>=-1,_normalization,_fullscreen,_pos_x[%],_pos_y[%],_title : (+)
 #@cli : Display selected images into an instant display window with specified size, normalization type,
 #@cli : fullscreen mode and title.
-#@cli : (eq. to '-w').
+#@cli : (eq. to '-w').\n
 #@cli : If 'width' or 'height' is set to -1, the corresponding dimension is adjusted to the window
 #@cli : or image size.
 #@cli : When arguments 'pos_x' and 'pos_y' are both different than -1, the window is moved to
@@ -5741,7 +5741,7 @@ compress_rle : -skip ${1=0} -check "isint(${2=0}) && $2>=0"
 
 #@cli cut : { value0[%] | [image0] },{ value1[%] | [image1] } : [image] : (no arg) : (+)
 #@cli : Cut values of selected images in specified range.
-#@cli : (eq. to '-c').
+#@cli : (eq. to '-c').\n
 #@cli : (no arg) runs interactive mode (uses the instant display window [0] if opened).
 #@cli : In this case, the chosen cut values are returned in the status.
 #@cli : $ image.jpg --add 30% -cut[-1] 0,255
@@ -6142,7 +6142,7 @@ roundify : -check $1>=0
 
 #@cli set : value,_x[%],_y[%],_z[%],_c[%] : (+)
 #@cli : Set pixel value in selected images, at specified coordinates.
-#@cli : (eq. to '-=').
+#@cli : (eq. to '-=').\n
 #@cli : If specified coordinates are outside the image bounds, no action is performed.
 #@cli : Default values: 'x=y=z=c=0'.
 #@cli : $ 2,2 -set 1,0,0 -set 2,1,0 -set 3,0,1 -set 4,1,1
@@ -6225,7 +6225,7 @@ ac :
 
 #@cli apply_channels : "command",channels,_value_action={ 0=none | 1=cut | 2=normalize }
 #@cli : Apply specified command on the chosen color channel(s) of each selected images.
-#@cli : (eq. to '-ac').
+#@cli : (eq. to '-ac').\n
 #@cli : Argument 'channels' refers to a colorspace, and can be basically one of { all | rgba | rgb | lrgb | ycbcr | lab | lch | hsv | hsi | hsl | cmy | cmyk | yiq }.
 #@cli : You can also make the processing focus on one particular channel of this colorspace, by setting 'channels' as 'colorspace_channel' (e.g. 'hsv_h' for the hue).
 #@cli : All channel values are considered to be in the [0,255] range.
@@ -7407,7 +7407,7 @@ yuv82rgb :
 
 #@cli append : [image],axis,_centering : axis,_centering : (+)
 #@cli : Append specified image to selected images, or all selected images together, along specified axis.
-#@cli : (eq. to '-a').
+#@cli : (eq. to '-a').\n
 #@cli : 'axis' can be { x | y | z | c }.
 #@cli : Usual 'centering' values are { 0=left-justified | 0.5=centered | 1=right-justified }.
 #@cli : Default value: 'centering=0'.
@@ -7549,7 +7549,7 @@ autocrop_seq : -skip ${1=auto}
 
 #@cli crop : x0[%],x1[%],_boundary_conditions : x0[%],y0[%],x1[%],y1[%],_boundary_conditions : x0[%],y0[%],z0[%],x1[%],y1[%],z1[%],_boundary_conditions : x0[%],y0[%],z0[%],c0[%],x1[%],y1[%],z1[%],c1[%],_boundary_conditions : (no arg) : (+)
 #@cli : Crop selected images with specified region coordinates.
-#@cli : (eq. to '-z').
+#@cli : (eq. to '-z').\n
 #@cli : 'boundary_conditions' can be { 0=dirichlet | 1=neumann | 2=periodic | 3=mirror }.
 #@cli : (no arg) runs interactive mode (uses the instant display window [0] if opened).
 #@cli : Default value: 'boundary_conditions=0'.
@@ -7781,7 +7781,7 @@ _montage :
 
 #@cli resize : [image],_interpolation,_boundary_conditions,_ax,_ay,_az,_ac : {[image_w] | width>0[%]},_{[image_h] | height>0[%]},_{[image_d] | depth>0[%]},_{[image_s] | spectrum>0[%]},_interpolation,_boundary_conditions,_ax,_ay,_az,_ac : (no arg) : (+)
 #@cli : Resize selected images with specified geometry.
-#@cli : (eq. to '-r').
+#@cli : (eq. to '-r').\n
 #@cli : 'interpolation' can be { -1=none (memory content) | 0=none | 1=nearest | 2=average | 3=linear | 4=grid | 5=bicubic | 6=lanczos }.
 #@cli : 'boundary_conditions' has different meanings, according to the chosen 'interpolation' mode :
 #@cli : . When 'interpolation=={ -1 | 1 | 2 | 4 }', 'boundary_conditions' is meaningless.
@@ -7874,7 +7874,7 @@ r2dx :
 
 #@cli resize2dx : width[%]>0,_interpolation,_boundary_conditions,_ax,_ay,_az,_ac
 #@cli : Resize selected images along the x-axis, preserving 2d ratio.
-#@cli : (eq. to '-r2dx').
+#@cli : (eq. to '-r2dx').\n
 #@cli : 'interpolation' can be { -1=none (memory content) | 0=none | 1=nearest | 2=average | 3=linear | 4=grid | 5=bicubic | 6=lanczos }.
 #@cli : 'boundary_conditions' has different meanings, according to the chosen 'interpolation' mode :
 #@cli : . When 'interpolation=={ -1 | 1 | 2 | 4 }', 'boundary_conditions' is meaningless.
@@ -7902,7 +7902,7 @@ r2dy :
 
 #@cli resize2dy : height[%]>=0,_interpolation,_boundary_conditions,_ax,_ay,_az,_ac
 #@cli : Resize selected images along the y-axis, preserving 2d ratio.
-#@cli : (eq. to '-r2dy').
+#@cli : (eq. to '-r2dy').\n
 #@cli : 'interpolation' can be { -1=none (memory content) | 0=none | 1=nearest | 2=average | 3=linear | 4=grid | 5=bicubic | 6=lanczos }.
 #@cli : 'boundary_conditions' has different meanings, according to the chosen 'interpolation' mode :
 #@cli : . When 'interpolation=={ -1 | 1 | 2 | 4 }', 'boundary_conditions' is meaningless.
@@ -7930,7 +7930,7 @@ r3dx :
 
 #@cli resize3dx : width[%]>0,_interpolation,_boundary_conditions,_ax,_ay,_az,_ac
 #@cli : Resize selected images along the x-axis, preserving 3d ratio.
-#@cli : (eq. to '-r3dx').
+#@cli : (eq. to '-r3dx').\n
 #@cli : 'interpolation' can be { -1=none (memory content) | 0=none | 1=nearest | 2=average | 3=linear | 4=grid | 5=bicubic | 6=lanczos }.
 #@cli : 'boundary_conditions' has different meanings, according to the chosen 'interpolation' mode :
 #@cli : . When 'interpolation=={ -1 | 1 | 2 | 4 }', 'boundary_conditions' is meaningless.
@@ -7957,7 +7957,7 @@ r3dy :
 
 #@cli resize3dy : height[%]>0,_interpolation,_boundary_conditions,_ax,_ay,_az,_ac
 #@cli : Resize selected images along the y-axis, preserving 3d ratio.
-#@cli : (eq. to '-r3dy').
+#@cli : (eq. to '-r3dy').\n
 #@cli : 'interpolation' can be { -1=none (memory content) | 0=none | 1=nearest | 2=average | 3=linear | 4=grid | 5=bicubic | 6=lanczos }.
 #@cli : 'boundary_conditions' has different meanings, according to the chosen 'interpolation' mode :
 #@cli : . When 'interpolation=={ -1 | 1 | 2 | 4 }', 'boundary_conditions' is meaningless.
@@ -7984,7 +7984,7 @@ r3dz :
 
 #@cli resize3dz : depth[%]>0,_interpolation,_boundary_conditions,_ax,_ay,_az,_ac
 #@cli : Resize selected images along the z-axis, preserving 3d ratio.
-#@cli : (eq. to '-r3dz').
+#@cli : (eq. to '-r3dz').\n
 #@cli : 'interpolation' can be { -1=none (memory content) | 0=none | 1=nearest | 2=average | 3=linear | 4=grid | 5=bicubic | 6=lanczos }.
 #@cli : 'boundary_conditions' has different meanings, according to the chosen 'interpolation' mode :
 #@cli : . When 'interpolation=={ -1 | 1 | 2 | 4 }', 'boundary_conditions' is meaningless.
@@ -8340,7 +8340,7 @@ shrink_z : -check "$1>=0"
 
 #@cli split : { x | y | z | c }...{ x | y | z | c },_split_mode : keep_splitting_values={ + | - },_{ x | y | z | c }...{ x | y | z | c },value1,_value2,... : (no arg) : (+)
 #@cli : Split selected images along specified axes, or regarding to a sequence of scalar values (optionally along specified axes too).
-#@cli : (eq. to '-s').
+#@cli : (eq. to '-s').\n
 #@cli : 'split_mode' can be { 0=split according to constant values | >0=split in N parts | <0=split in parts of size -N }.
 #@cli : Default value: 'split_mode=-1'.
 #@cli : $ image.jpg -split c
@@ -8460,7 +8460,7 @@ bandpass : -skip ${1=0},${2=20%}
 
 #@cli blur : std_variation>=0[%],_boundary_conditions,_kernel : axes,std_variation>=0[%],_boundary_conditions,_kernel : (+)
 #@cli : Blur selected images by a quasi-gaussian or gaussian filter (recursive implementation).
-#@cli : (eq. to '-b').
+#@cli : (eq. to '-b').\n
 #@cli : 'boundary_conditions' can be { 0=dirichlet | 1=neumann } and 'kernel' can be { 0=quasi-gaussian (faster) | 1=gaussian }.
 #@cli : When specified, argument 'axes' is a sequence of { x | y | z | c }.
 #@cli : Specifying one axis multiple times apply also the blur multiple times.
@@ -9061,7 +9061,7 @@ erode_threshold : -check "isint($1) && $1>=1 && isint(${2=$1}) && $2>=1 && isint
 
 #@cli gradient : { x | y | z }...{ x | y | z },_scheme : (no arg) : (+)
 #@cli : Compute the gradient components (first derivatives) of selected images.
-#@cli : (eq. to '-g').
+#@cli : (eq. to '-g').\n
 #@cli : 'scheme' can be { -1=backward | 0=centered | 1=forward | 2=sobel | 3=rotation-invariant (default) | 4=deriche | 5=vanvliet }.
 #@cli : (no arg) compute all significant 2d/3d components.
 #@cli : Default value: 'scheme=3'.
@@ -11788,7 +11788,7 @@ maze_mask : -check "isint(${1=24}) && $1>0"
 
 #@cli object3d : [object3d],_x[%],_y[%],_z,_opacity,_rendering_mode,_is_double_sided={ 0 | 1 },_is_zbuffer={ 0 | 1 },_focale,_light_x,_light_y,_light_z,_specular_lightness,_specular_shininess : (+)
 #@cli : Draw specified 3d object on selected images.
-#@cli : (eq. to '-j3d').
+#@cli : (eq. to '-j3d').\n
 #@cli : 'rendering_mode' can be { 0=dots | 1=wireframe | 2=flat | 3=flat-shaded | 4=gouraud-shaded | 5=phong-shaded }.
 #@cli : Default values: 'x=y=z=0', 'opacity=1' and 'is_zbuffer=1'. All other arguments take their default values from the 3d environment variables.
 #@cli : $ image.jpg -torus3d 100,10 -cone3d 30,-120 -add3d[-2,-1] -rotate3d. 1,1,0,60 -object3d[0] [-1],50%,50% -keep[0]
@@ -12152,7 +12152,7 @@ tetraedron_shade :
 
 #@cli text : text,_x[%],_y[%],_font_height[%]>=0,_opacity,_color1,... : (+)
 #@cli : Draw specified colored text string on selected images.
-#@cli : (eq. to '-t').
+#@cli : (eq. to '-t').\n
 #@cli : Exact pre-defined sizes are '13','23','53' and '103'. Using these sizes ensures you draw binary letters without anti-aliasing.
 #@cli : Any other font size is interpolated from an exact size (the upper when possible).
 #@cli : Specifying an empty target image resizes it to new dimensions such that the image contains
@@ -12783,7 +12783,7 @@ extrude3d : -check "${1=16}>0 && ${2=1024}>0 && ${3=0.5%}>=0"
 
 #@cli focale3d : focale : (+)
 #@cli : Set 3d focale.
-#@cli : (eq. to '-f3d').
+#@cli : (eq. to '-f3d').\n
 #@cli : Set 'focale' to 0 to enable parallel projection (instead of perspective).
 #@cli : Set negative 'focale' will disable 3d sprite zooming.
 #@cli : Default value: 'focale=700'.
@@ -13122,7 +13122,7 @@ lathe3d : -check "${1=128}>0 && ${2=0.5%}>=0 && ${3=361}>=0"
 
 #@cli light3d : position_x,position_y,position_z : [texture] : (no arg) : (+)
 #@cli : Set the light coordinates or the light texture for 3d rendering.
-#@cli : (eq. to '-l3d').
+#@cli : (eq. to '-l3d').\n
 #@cli : (no arg) resets the 3d light to default.
 #@cli : $ -torus3d 100,30 -double3d 0 -specs3d 1.2 -repeat 5 -light3d {$>*100},0,-300 --snapshot3d[0] 400 -done -remove[0]
 
@@ -13157,7 +13157,7 @@ lissajous3d : -check ${1=1024}>1 -skip ${2=2},${3=0},${4=1},${5=0},${6=0},${7=0}
 
 #@cli mode3d : _mode : (+)
 #@cli : Set static 3d rendering mode.
-#@cli : (eq. to '-m3d').
+#@cli : (eq. to '-m3d').\n
 #@cli : 'mode' can be { -1=bounding-box | 0=dots | 1=wireframe | 2=flat | 3=flat-shaded | 4=gouraud-shaded | 5=phong-shaded }.");
 #@cli : Bounding-box mode ('mode==-1') is active only for the interactive 3d viewer.
 #@cli : Default value: 'mode=4'.
@@ -13167,7 +13167,7 @@ lissajous3d : -check ${1=1024}>1 -skip ${2=2},${3=0},${4=1},${5=0},${6=0},${7=0}
 
 #@cli moded3d : _mode : (+)
 #@cli : Set dynamic 3d rendering mode for interactive 3d viewer.
-#@cli : (eq. to '-md3d').
+#@cli : (eq. to '-md3d').\n
 #@cli : 'mode' can be { -1=bounding-box | 0=dots | 1=wireframe | 2=flat | 3=flat-shaded | 4=gouraud-shaded | 5=phong-shaded }.
 #@cli : Default value: 'mode=-1'.
 
@@ -13351,7 +13351,7 @@ pose3d :
 
 #@cli primitives3d : mode : (+)
 #@cli : Convert primitives of selected 3d objects.
-#@cli : (eq. to '-p3d').
+#@cli : (eq. to '-p3d').\n
 #@cli : 'mode' can be { 0=points | 1=segments | 2=non-textured }.
 #@cli : $ -sphere3d 30 -primitives3d 1 -torus3d 50,10 -color3d[-1] ${-RGB} -add3d
 
@@ -13659,7 +13659,7 @@ spline3d : -check ${13=128}>=2
 #@cli split3d : _keep_shared_data={ 0 | 1 } : (+)
 #@cli : Split selected 3d objects into 6 feature vectors :
 #@cli : { header, sizes, vertices, primitives, colors, opacities }.
-#@cli : (eq. to '-s3d').
+#@cli : (eq. to '-s3d').\n
 #@cli : To recreate the 3d object, append these 6 images along the y-axis.
 #@cli : Default value: 'keep_shared_data=1'.
 #@cli : $ -box3d 100 --split3d
@@ -13869,7 +13869,7 @@ text3d : -skip ${2=53},${3=10},${4=1.5}
 
 #@cli texturize3d : [ind_texture],_[ind_coords] : (+)
 #@cli : Texturize selected 3d objects with specified texture and coordinates.
-#@cli : (eq. to '-t3d').
+#@cli : (eq. to '-t3d').\n
 #@cli : When '[ind_coords]' is omitted, default XY texture projection is performed.
 #@cli : Default value: 'ind_coords=(undefined)'.
 #@cli : $ image.jpg -torus3d 100,30 -texturize3d[-1] [-2] -keep[-1]
@@ -13998,7 +13998,7 @@ apo : -check "${2=0}>=0 && isint(${3=0}) && $3>=0"
 
 #@cli apply_parallel_overlap : "command",overlap[%],nb_threads={ 0=auto | 1 | 2 | 4 | 8 | 16 }
 #@cli : Apply specified command on each of the selected images, by parallelizing it on 'nb_threads' overlapped sub-images.
-#@cli : (eq. to '-apo').
+#@cli : (eq. to '-apo').\n
 #@cli : 'nb_threads' must be a power of 2.
 #@cli : Default values: 'overlap=0','nb_threads=0'.
 #@cli : $ image.jpg --apply_parallel_overlap "-smooth 500,0,1",1
