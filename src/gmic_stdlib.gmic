@@ -2176,7 +2176,7 @@ _document_gmic_description_ascii :
       -s +,39 -if {$!>=3}
         ind=0 closing=0
         -do
-          -if {"const ind = "$ind"; h#ind==1 && i#ind==39 && h#(ind+2)==1 && i#(ind+2)==39 && h#(ind+1)<48"}
+          -if {"const ind = "$ind"; h#ind==1 && i#ind==39 && h#(ind+2)==1 && i#(ind+2)==39 && h#(ind+1)<48 && (im#(ind+1)>32 || "$is_default")"}
             -l[$ind,{$ind+2}] -rm (39,{'$_gmic_c'}) ({'$_gmic_n'},39) -y -endl
             ind+=2
           -endif
@@ -2417,7 +2417,55 @@ _document_gmic_declaration_html :
   -endif
 
 _document_gmic_description_html :
-  -if {same([{^}],'"Default value"',13)}  # Reached line as '#@cli : Default value(s) : ... '.
+  is_equivalent={same([{^}],"'(eq. to '",8)}
+  is_default={same([{^}],"'Default value'",13)}
+
+  -replace_str "G'MIC","<b><font color=\"#009000\">G\47MIC</font></b>"
+  -replace_str "(no arg)","<font color=\"#009000\">(no arg)</font>"
+
+  -if {!$_is_example" && "!$is_equivalent}
+    # Colorize parameters between single quotes.
+    -s +,39 -if {$!>=3}
+      ind=0 closing=0
+      -do
+        -if {"const ind = "$ind"; h#ind==1 && i#ind==39 && h#(ind+2)==1 && i#(ind+2)==39 && h#(ind+1)<48 && (im#(ind+1)>32 || "$is_default")"}
+          -l[$ind,{$ind+2}] -rm (39,{'"<font color=\"#005090\">"'}) ({'"</font>"'},39) -y -endl
+          ind+=2
+        -endif
+        ind+=1
+      -while {$ind<$!-3}
+      -a y
+    -endif
+
+    # Colorize parameters between braces '{}'.
+    -s +,{'\{'} -s +,{'\}'} -if {$!>=3}
+      ind=0 closing=0
+      -do
+        -if {"const ind = "$ind"; h#ind==1 && i#ind==123 && h#(ind+2)==1 && i#(ind+2)==125"}
+          -l[$ind,{$ind+2}] -rm ({'"<font color=\"#009000\">"'},123) (125,{'"</font>"'}) -y -endl
+          ind+=2
+        -endif
+        ind+=1
+      -while {$ind<$!-3}
+      -a y
+    -endif
+
+    # Colorize parameters between brackets '[]'.
+    -s +,{'['} -s +,{']'} -if {$!>=3}
+      ind=0 closing=0
+      -do
+        -if {"const ind = "$ind"; h#ind==1 && i#ind==91 && h#(ind+2)==1 && i#(ind+2)==93"}
+          -l[$ind,{$ind+2}] -rm ({'"<font color=\"#005090\">"'},91) (93,{'"</font>"'}) -y -endl
+          ind+=2
+        -endif
+        ind+=1
+      -while {$ind<$!-3}
+      -a y
+    -endif
+
+  -endif
+
+  -if $is_default # Reached line as '#@cli : Default value(s) : ... '.
     -s +,{':'} -l[^0] -a y -endl -autocrop {':'} -autocrop {'" "'}
     -v +
     -if {$!>1} -e[] ${-don}"<br/><b>"{0,t}"</b>: "{t}
@@ -2425,8 +2473,10 @@ _document_gmic_description_html :
     -endif
     -v -
 
-  -elif {same([{^}],'"(eq. to "',8)}      # Reached line as '#@cli : (eq. to -shortcut)'.
-    -v + -e[] ${-don}"<i><font color=\"blue\">"{t}"</font></i>" -v -
+  -elif $is_equivalent # Reached line as '#@cli : (eq. to -shortcut)'.
+    -replace_str "eq. to","equivalent to shorcut command"
+    -s +,39 -if {$!==5} -i[2] ({'"<font color=\"blue\"><b>"'}) -i[4] ({'"</b></font>"'}) -y -endif -a y
+    -v + -e[] ${-don}"<i>"{t}"</i>" -v -
 
   -else                                    # Reached line as '#@cli : description'.
     -if {(i<_'A'" || "i>_'Z')" && "i!=40" && "i!=39} -v + -e[] ${-don}"&nbsp;"{t} -v -
@@ -2464,7 +2514,7 @@ _document_gmic_footer_html : -skip $1
     -repeat $_shortcut
       -e[] "<font color=\"green\"><b>&nbsp;&nbsp;-"${_shortcut$>}" "${_shortcutqualifier$>}"</b>:</font>"
       -v - ({'${_shortcutlink$>}'}) -z. 1,100% scl={t} -rm. -v +
-      -e[] "<font color=\"blue\"><i>eq. to '<a href=\"#"$scl"\">"${_shortcutlink$>}"</a>'</i></font><br/>"
+      -e[] "<font color=\"blue\"><i>Shortcut for command '<a href=\"#"$scl"\">"${_shortcutlink$>}"</a>'</i></font><br/>"
     -done
     -e[] "</p>" -v -
   -endif
@@ -3574,9 +3624,6 @@ up :
 
 #@cli update
 #@cli : Update commands from the latest definition file on the G'MIC server.
-#@cli : This requires an active Internet connection and an access to the external
-#@cli : tools 'curl' or 'wget'.
-#@cli : Once the update has been downloaded, running 'gmic' makes it use automatically.
 #@cli : (eq. to '-up').
 update :
   -_$0
@@ -14185,7 +14232,7 @@ _rprogress : $*
 #@cli u : eq. to '-status'. : (+)
 
 #@cli status : status_string : (+)
-#@cli : Set the current status. Used to define a returning value in a function.
+#@cli : Set the current status. Used to define a returning value from a function.
 #@cli : (eq. to '-u').
 #@cli : $ image.jpg -command "foo : u0=Dark u1=Bright -status ${u{ia>=128}}" -text_outline ${-foo},2,2,23,2,1,255
 
