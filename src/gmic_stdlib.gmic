@@ -205,7 +205,7 @@ _help : -skip ${1=""}
       -if {['{0,t}']==['$command']}
         -_document_gmic_declaration_ascii
         -if $_shortcut  # Found shortcut command.
-          -v + -e[] "\n    "$_gmic_m$_gmic_b"-"$command":"$_gmic_n$_gmic_m" Equivalent to '"$_gmic_b$_shortcutlink0$_gmic_n"'." -v -
+          -v + -e[] "\n    "$_gmic_m$_gmic_b"-"$command":"$_gmic_n$_gmic_m" Equivalent to '"$_gmic_b$_shortcutlink0$_gmic_m"'."$_gmic_n -v -
           -u $_shortcutlink0 -return
         -endif
         -else stopflag=1
@@ -2154,14 +2154,24 @@ _document_gmic_declaration_ascii :
 
 _document_gmic_description_ascii :
   s="        " bs0="\n" bs1="\\\\\n         "
+  is_equivalent={same([{^}],"'(eq. to '",8)}
+  is_default={same([{^}],"'Default value'",13)}
   -y x -if {!narg($_is_tutorial)} -_document_gmic_split_ascii 96 -endif
-  -if {$!==1" && "0$_vt100>0" && "same([{^}],["'(eq. to '"],8)}
+  -if {$!==1" && "0$_vt100>0" && "$is_equivalent}
     -i[0] ({'$_gmic_b'}) ({'$_gmic_n\n'}) -a x
+    -s +,39 -if {$!==5} -i[2] ({'$_gmic_m$_gmic_b'}) -i[4] ({'$_gmic_n$_gmic_b'}) -y -endif -a y
   -endif
   -repeat {$!-1} ({'${bs$_is_example}$s"  "'}) -a[$>,-1] x -done -a x
   -if {0$_vt100>0}
-    -replace_str "Default values:","\n"$s${_gmic_b}"Default values:"$_gmic_n
-    -replace_str "Default value:","\n"$s${_gmic_b}"Default value:"$_gmic_n
+    -if $is_default
+      -replace_str "Default values:","\n"$s$_gmic_c${_gmic_b}"Default values:"$_gmic_n$_gmic_c
+      -replace_str "Default value:","\n"$s$_gmic_c${_gmic_b}"Default value:"$_gmic_n$_gmic_c
+    -elif {!$_is_example" && "!$is_equivalent}
+      ds0="'"$_gmic_c ds1=$_gmic_n"'" case=0
+      -s +,39 -if {$!>=3} -repeat $!
+        -if {$>,"whd==1 && i==39 && i[#"{$>-1}",-1,2]!=_'G'"} -l[$>] -rm ({'${ds{$case%2}}'}) -y case+=1 -endl -endif
+      -done -y -endif -a y
+    -endif
   -endif
   -v + -repeat $! -e[] $s{$>,t} -v - -done
 
