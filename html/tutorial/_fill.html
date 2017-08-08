@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en-us"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" href="tutorial.css">
+<script type="text/javascript" src="highslide/highslide.js"></script>
+<link rel="stylesheet" type="text/css" href="highslide/highslide.css" />
+<script type="text/javascript">
+hs.graphicsDir = 'highslide/graphics/';
+hs.wrapperClassName = 'wide-border';
+</script>
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<body>
+
+
+      
+
+
+
+<div id="FigureOne" style="width: 3.5in; height: 3.5in; border: none; padding: 0in; float: left;"><a target="_parent" href="img/_fill_newraplrg_20.jpg" class="highslide" onclick="return hs.expand(this)"><img style="margin: 3px; border: 0px solid #808080;" class="img_block" src="http://www.particularart.com/static/media/uploads/command_reference/fill/newrap_01.png" title="A Newton-Raphson Fractal" width="300px" height="300px" /></a>
+<p style="font-size: 10pt; line-height: 100%;"><i>Newton-Raphson Weeds: This is why your trial root sometimes goes off into the rough.</i></p>
+</div>
+<h1 id="Fill">-fill</h1>
+<p>You have an image and wish to fill it with something. If you are new to G'MIC and coming from a paint program like GIMP, then your first thought after encountering this command might possibly be: &ldquo;Ah HA! the <i><tt>-fill</tt></i> command! At last I can fill circles and squares and things with red!&rdquo;</p>
+<p>Well yes. And no. If paint buckets come to mind, then go over to <a target="_parent" href="_fill_color.shtml" title="-fill_color" class="internal"><i>-fill_color</i></a>, next aisle down, the one labeled &ldquo;Color Manipulation.&rdquo; That&rsquo;s OK. Lots of people get lost in here first time through. G&rsquo;MIC is a big place.</p>
+<p>That isn&rsquo;t to say you can&rsquo;t use <tt>-fill</tt> to make an image red. It&rsquo;s just that you will have do it with a little finesse:</p>
+<pre>gmic -input 2,2,1,3 -fill. 220,220,220,220,20,20,20,20,60,60,60,60
+</pre>
+<p>The command&rsquo;s numeric parameters inject a carefully arranged data stream into a freshly minted 2 X 2 pixel, single slice, three channel image. The data are so arranged as to fill this tiny image with the X-11 color Crimson: <tt>0xdc143c</tt>, or decimal:&nbsp;<tt>220, 20, 60</tt>. The individual numeric elements take their seats in the target image by first filling channel zero, row zero, starting at column zero, then going to column one, then two and so on. You have to arrange your data stream in a like manner; <tt>-fill</tt> doesn&rsquo;t know about any other ordering schemes.</p>
+<p>G'MIC geeks may find this excessively verbose, preferring:</p>
+<pre>gmic '(220,220;220,220^20,20;20,20^60,60;60,60)'
+</pre>
+<p>which is terser, but dispenses with <tt>-fill</tt> entirely. Instead, the second example implicitly invokes the <a target="_parent" href="_input.shtml" class="internal"><tt>-input</tt></a> command. The input specification to which that command adheres uses commas, semicolons, carets, slashes and parentheses to describe image topology. This makes the terser example somewhat more informative at a glance.</p>
+<p>However, since <tt>-fill</tt> is the topic of this article and we maintain a sentimental attachment to our topics, we&rsquo;ll just send those interested in terse efficiency over to the aisle marked &ldquo;Input-Output&rdquo;. They&rsquo;re having a <a target="_parent" title="Input-Output" href="_input.shtml" class="internal">blue-plate special on <tt>-input</tt> streams</a> today. <tt>-fill</tt> itself does not use <tt>-input's</tt>&nbsp;file specification. Its world-view is limited to ordered, one dimensional streams.</p>
+<p>You may gather from this that <tt>-fill</tt> is a fairly low-level command. Indeed. It fills images with pels. That&rsquo;s it.</p>
+<p>&lsquo;Pel&rsquo;, you ask? It is shorthand for <em><b>P</b>icture <b>El</b>ement</em>, an indivisible quantum of an image. Could be a byte long. Could be longer. Could even be shorter. Might be a float, or an unsigned integer &ndash; or even a signed integer. The particulars of a pel&rsquo;s organization stems from the image format. But a pel is not a pixel. Pixels are vector-like; they have components. Pels are scalars, Pixels are made of pels. Pels are components of pixels. Careless scriveners may put &lsquo;pixel&rsquo; when they mean &lsquo;pel&rsquo; but we make the distinction here because the essential item that <tt>-fill</tt> manipulates are pels. An RGBA pixel has four pels, and, we should note, <tt>-fill</tt>&nbsp;could touch upon that particular kind of pixel as many as four distinct times while filling an image. At its most basic, then, <tt>-fill</tt> pours pels into images from some notional stream.&nbsp;</p>
+<p>The notional stream can be specified in three ways:</p>
+<ol>
+<li>A literal stream of numbers &ndash; <i>pels </i>&ndash; that is the form we have discussed so far.</li>
+<li>Another image already on the list &ndash; same approach, really, but the pels have been packaged as an image instead of a literal sequence.</li>
+<li>A formula. Specifically, a processor written as a G'MIC math expression &ndash; this is really quite an interesting way. Instead of draining <i>pels</i> from a notional input stream, a G'MIC math expression executes, producing the requisite pel. This processor has access to the pel&rsquo;s former value, or the pixel it inhabits, or the image containing the pixel, or the G'MIC image list holding the image, and the processor can access any of these data sources in any order &ndash; or none of it at all. With a math expression, you can do pretty much do what you want.</li>
+</ol>
+<p>Here are these choices expressed syntactically:</p>
+<p><tt><b>-fill</b></tt></p>
+<ul>
+<li>pel, pel, pel,&hellip;&nbsp;|</li>
+<li>[image selection]&nbsp;|</li>
+<li>&lsquo;math expression&rsquo;</li>
+</ul>
+<h2 id="PelStreams">Pel Streams</h2>
+<p>The easiest streaming method to grasp is probably not the most practical &ndash; though there are exceptions to this. You can just stream comma-separated pels into an image, an open-ended argument list.</p>
+<p>Notice that, in contrast to the image specification streams used by <a target="_parent" href="_input.shtml#WhiteCrossOnABlackField" title="Input Streams"><tt>-input</tt></a>, there are no structure markers &ndash; No opening or closing parentheses, commas do not denote columns &ndash; they just separate pels, the semicolons that separate successive columns into rows, the carets which separate a plane of rows into channels, the slashes which separate a series of channels into slices &ndash; none of those appear in <tt>-fill</tt> arguments. Nada. Ziltch. They aren&rsquo;t needed. Images already have a built-in structure of slices, channels, rows and columns. <tt>-fill</tt> just &ndash; well &ndash; fills them, following the topology of the target image.</p>
+<p>In light of this, order your data stream according to the <a target="_parent" class="Internal" href="images.shtml">dimensions of the target image</a>. The largest (implicit) divisions in the pel stream are image slices. The <tt>-fill</tt> command fills the first slice of a selected image entirely before starting on the second and subsequent slices, should they exist. Within a slice, <tt>-fill</tt> populates channel zero completely before beginning on channel one and subsequent channels, if they exist. Within a channel, <tt>-fill</tt> populates the top image row completely before the second and subsequent rows. Finally, <tt>-fill</tt> populates rows from column zero through to column <i>w &ndash; 1</i>, with <i>w</i>, the width of the image. So you block out your data first by slices, within slices by channels, within channels, by rows. As a consequence of this, the pels that make up a multi-channel pixel are separated by a stride. For an image in the RGB color space, the red component is in channel zero. <em>w&times;h</em> pels downstream comes the green component.&nbsp;<em>w&times;h</em> pels further downstream comes the blue component. Revisit our initial example, above, for a tiny stride example.</p>
+<p>Data streams need not be properly sized, which gives rise to a class of pattern generation. If <tt>-fill</tt> runs out of a source stream while there is still space left in the target image, it starts at the beginning of the source stream again. <tt>-fill</tt> loops over streams as many times as is necessary to fill a particular image. Once the target image is filled, the command discards the remaining excess.</p>
+<p>So to make any one of a bazillion or so herringbone patterns, have some fun with discrete math and clock arithmetic:</p>
+<table class="table-striped" style="width: 100%; border-color: #c3c2cb; border-width: 1px; border-style: solid;" border="0" align="left" cellspacing="0" cellpadding="0"><colgroup><col width="81*" /> <col width="175*" /> </colgroup>
+<tbody>
+<tr valign="top">
+<td width="35%"><img src="http://www.particularart.com/static/media/uploads/command_reference/fill/herring_02.png" alt="Basic Herringbone Image" title="Basic Herringbone Image" class="img_left_nospacetop" style="float: left; margin: 3px; border: 0px solid black;" width="300" height="300" /></td>
+<td width="65%">
+<pre>gmic                             \
+   -input 20,20,1,3              \
+   -fill. 205,127,63,91,31,16,8  \
+   -resize. 150,150,[-1],[-1],1  \
+   -output. herr_00.png
+</pre>
+</td>
+</tr>
+<tr valign="top">
+<td width="35%"><img src="http://www.particularart.com/static/media/uploads/command_reference/fill/herring_03.png" alt="Cubically Interpolated Herringbone" title="Cubically Interpolated Herringbone" class="img_left_nospacetop" style="margin: 3px; border: 0px solid #7f7f82; float: left;" width="300" height="300" /></td>
+<td width="65%">
+<pre>gmic                                           \
+   depth='{2^16-1}'                            \
+   -input 17,17,1,3                            \
+   -fill. 189,129,6,207,84,104,239,153,6,78,85 \
+   -resize. 300,300,[-1],[-1],5                \
+   -normalize 0,'{$depth}'                     \
+   -output. herr_01.png
+</pre>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Tweak the numbers following the <tt>-fill</tt> command. Add a few. Take a few away. The game is to choose pel streams with lengths that do not evenly divide the capacity of selected images, or which do not evenly divide various image dimensions. Pel streams with lengths equal to prime numbers furnish a never-ending source of delight, should it be your wont for that kind of herringbone pattern.</p>
+<p>In these examples, we use <a target="_parent" href="http://gmic.eu/reference.shtml#resize" title="Resize" class="internal"><tt>-resize</tt></a> with different interpolation schemes to upscale and filter the herringbone pattern for additional effect. In the last example, we re-normalize the image immediately before output to ensure that the pels range within the limits imposed by the 16 bit/channel Portable Network Graphics format, since the cubic interpolation scheme we specified for <tt>-resize</tt> can carry values outside this range. See <a target="_parent" href="images-as-datasets.shtml">Images As Datasets</a> elsewhere on this site for a discussion on why this step is sometimes necessary.</p>
+<h2 id="Images">Images</h2>
+<p>The <tt>-fill</tt> command can populate one image with the contents of another. Instead of a stream of pels, we pass an <a target="_parent" href="command-decorations.shtml#image_selection" title="Image Selection" class="Internal">image selection</a> parameter in square brackets. The images in the selection becomes the fill source; Targets live in the selector decorator adorning the <tt>-fill</tt> command.</p>
+<p>Beware: <tt>-fill</tt> is not a cheap version of <a target="_parent" href="http://gmic.eu/reference.shtml#array" class="internal"><tt>-array</tt></a>. The command effectively flattens the source into a one dimensional stream of pels. The very first pel in the source stream corresponds to column zero, row zero, channel 0 of slice 0 of the target image. The <tt>-fill</tt> command then increments, first by columns, then by rows, then channels, then slices, following the same hierarchy it imposes on literal pel streams. Indeed, as far as <tt>-fill</tt> is concerned, an image is just a convenient way to specify a pel stream. Unless the source and target images happen to have identical dimensions, <tt>-fill</tt> will not preserve image coherency. For that, investigate <tt>-array</tt>.</p>
+<p>This notwithstanding, we can still play herringbone games by building a herringbone pattern in stages:</p>
+<table class="table-striped" style="width: 100%; border-color: #c3c2cb; border-width: 1px; border-style: solid;" border="0" align="left" cellspacing="0" cellpadding="0"><colgroup><col width="81*" /> <col width="175*" /> </colgroup>
+<tbody>
+<tr valign="top">
+<td width="35%">
+<p><img src="http://www.particularart.com/static/media/uploads/command_reference/fill/herring_04.png" alt="Unit Herringbone" title="Unit Herringbone" class="img_left_nospacetop" style="margin: 3px; border: 0px solid #7f7f82; float: left;" width="300" height="300" /></p>
+<p>small_herringbone.png</p>
+<p><img src="http://www.particularart.com/static/media/uploads/command_reference/fill/herring_05.png" alt="Unit Herringbone Repeated" title="Unit Herringbone Repeated" class="img_left_nospacetop" style="margin: 3px; border: 0px solid #7f7f83;" width="256" height="256" /></p>
+<p>big_herringbone.png</p>
+</td>
+<td width="65%">
+<pre>gmic                                       \
+   -input 13,13,1,3                        \
+   -fill. 65,71,36,154,27,84,39,233,146,82 \
+   -input 256,256,1,3                      \
+   -fill. [-2]                             \
+   -output. big_herringbone.png            \
+   -output.. small_herringbone.png
+</pre>
+</td>
+</tr>
+</tbody>
+</table>
+<p>This example illustrates using <tt>-fill</tt> with a pel stream, making an initial small herringbone image using a hand-written pel stream, then making a large herringbone using the initial pattern as an image source.</p>
+<h3 id="FillPitfalls">Fill Pitfalls</h3>
+<p>Here is an example you <i>don&rsquo;t</i> want to do &ndash; unless you are being devious.</p>
+<table class="table-striped" style="width: 100%; border-color: #c3c2cb; border-width: 1px; border-style: solid;" border="0" align="left" cellspacing="0" cellpadding="0"><colgroup><col width="81*" /> <col width="175*" /> </colgroup>
+<tbody>
+<tr valign="top">
+<td width="35%">
+<p><img src="http://www.particularart.com/static/media/uploads/command_reference/fill/face_06.png" alt="Happy Face" title="Happy Face" class="img_left_nospacetop" width="72" height="72" /></p>
+<p>face.png</p>
+</td>
+<td width="65%">face.png is a 72 X 72 pixel image of a happy face with a nice transparent background &ndash; it has red, green, blue and alpha channels.</td>
+</tr>
+<tr valign="top">
+<td width="35%">
+<p><img src="http://www.particularart.com/static/media/uploads/command_reference/fill/face-times-four_07.png" alt="Happy Face Times Four" title="Happy Face Times Four" class="img_left_nospacetop" width="144" height="144" /></p>
+<p>face-times-four.png</p>
+</td>
+<td width="65%">
+<p align="left">When the selected target image has dimensions 144 X 144, the <tt>-fill</tt> command will <i>not</i> make a 2 X 2 array of four 72 X 72 happy faces. That is, instead of the image on the left, the commands:</p>
+<pre>gmic                  \
+   -input face.png    \
+   -input 144,144,1,4 \
+   -fill. [-2]        \
+   -output funny.png
+</pre>
+</td>
+</tr>
+<tr valign="top">
+<td width="35%">
+<p><img src="http://www.particularart.com/static/media/uploads/command_reference/fill/funny_08.png" alt="Funny Faces" title="Funny Faces" width="144" height="144" /></p>
+<p>funny_faces.png</p>
+</td>
+<td width="65%">
+<p>produces this strange image, which is probably not what we want. So how did we go off the rails?</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>We&rsquo;ve heard it said that <tt>-fill</tt> is a low-level command. It just streams pels into an image. That's <i>really</i> all it does. Essentially <tt>-fill</tt> turns source images into pel streams. Thus, the four channel, 72 X 72 happy face becomes a linear stream of 82,944 pels. Having flattened its source image, <tt>-fill</tt> then populates its selected 144 X 144 X 1 X 4 target image using the precise same hierarchy we stated before: it completely fills the first slice of the target before commencing the second, and within a slice, it completely fills channel zero before commencing on channel one, and so on.</p>
+<p>In particular, the <tt>-fill</tt> command took the first 72 pel row of channel 0 of the source image and filled just the <i>left half</i> of the first row of the target image, which is, at 144 pels, twice as long. The second 72 pel row of the source image now fills the <i>right half</i> of the first target row. And so on. That explains the pair of flattened happy faces: the left half of the target image consists of the even rows; the right half contains the odd rows of the source image.</p>
+<p>One quarter of the way toward filling the target&rsquo;s channel zero, the source channel zero taps out. No matter. The <tt>-fill</tt> command just begins streaming in the source&rsquo;s second channel, copying those second channel pels into the target&rsquo;s still not entirely filled first channel. Since the dimensions of the target image are exactly twice that of the source, with the area of each target channel exactly four times that of the source, the entire happy face source image exactly fills just channel zero of the target. The source has been entirely used up. Still no matter. The <tt>-fill</tt> command goes back to the beginning of its source and commences to fill channel one of the target image through a second pass of the source.</p>
+<p>At the end of the day, the source image is copied four times, each time filling just one channel of the target. That makes the four channels of the target image exact duplicates &ndash; hence, the target image is a study in gray of flattened happy faces. Could be they are not that happy.</p>
+<p>The <tt>-fill</tt> command is not a <i>blitter</i> &ndash; a block copier. It does not <i>think</i> in rectangles, just streams. To do what you really want to do, try <tt>-array</tt> instead:</p>
+<pre>gmic -input face.png -array. 2,2,2 -output. face-times-four.png
+</pre>
+<h2 id="MathExpressions">Math Expressions</h2>
+<p>The third way to stream pels is really quite different. The source &ndash; well, there is hardly a source in the literal sense. The source is what an algorithm encoded in a math expression produces when given a pel. The math expression is a pel processor written in G&rsquo;MIC&rsquo;s math scripting language.</p>
+<p><tt>-fill</tt>, along with its cousin <tt>-input</tt>, both furnish hooks for pel processors, enabling fine-grained computations at the pel level. When the G&rsquo;MIC command processor discovers that <tt>-fill</tt> has been given a math expression as an argument, it suspends its own processing and invokes the math expression parser. That math expression now sources a <i>virtual</i> stream of pels. It is invoked once for every pel in the target image and the expression can do whatever it wants to produce that pel - accessing in any manner the current or neighboring pels in the target image, pels in other images on the list, or none of these sources at all, as in the first example following, which simply pulls random numbers out of the ether without regard to the content of the target or any other image on the list. The final computation of the math expression, whatever that result may be, becomes the new value of the pel, an implicit assignment.</p>
+<p>Here are a few examples:</p>
+<table class="table-striped" style="width: 100%; border-color: #c3c2cb; border-width: 1px; border-style: solid;" border="0" align="left" cellspacing="0" cellpadding="0"><colgroup><col width="81*" /> <col width="175*" /> </colgroup>
+<tbody>
+<tr valign="top">
+<td width="35%">
+<p><img src="http://www.particularart.com/static/media/uploads/command_reference/fill/colornoise_13.png" alt="300 x 300 pixel excerpt from one frame" title="300 x 300 pixel excerpt from one frame" class="img_left_nospacetop" style="margin: 3px; border: 0px solid #7f7f82;" width="300" height="300" />colornoise.png (exerpt)</p>
+</td>
+<td width="65%">
+<ul>
+<li>
+<pre>gmic -input 3840,2160,298,3 -fill. <b>u</b> -normalize. 0,'{2^8-1}' -split. z -output noisy.mov</pre>
+</li>
+</ul>
+<p>The pel processor is one character, &lsquo;<b><tt>u</tt></b>&rsquo;, which is a math expression hooked into a random number generator. It&rsquo;s invoked 7,415,193,600 times, once for each pel in the image. On each invocation, it produces a random value between the limits zero and one inclusive. Since this is the last computation this processor performs (as well as its first), G&rsquo;MIC implicitly assigns the resulting random value to the pel. A one character script, and you&rsquo;ve written a generator for an Ultra High Definition video stream that, for ten seconds, emulates a 1967 color television set tuned between stations. I bet if you thought about it for any length of time, you&rsquo;d wind up writing a much more involved script for this very same FX, assuming you wanted such a thing.</p>
+</td>
+</tr>
+<tr valign="top">
+<td width="35%">
+<p><img src="http://www.particularart.com/static/media/uploads/command_reference/fill/bendexter_14.png" alt="Bend Dexter" title="Bend Dexter" class="img_left_nospacetop" style="margin: 3px; border: 0px solid #7f7f82;" width="300" height="300" /></p>
+<p>bendexter.png</p>
+</td>
+<td width="65%">
+<ul>
+<li>
+<pre>gmic -input 300,300,1,1 -fill. <b>x==y</b></pre>
+</li>
+</ul>
+<p>Draws a one pixel <em>bend dexter</em>. Pels on the diagonal have equal column and row coordinates, so, for those elements, the math expression returns 1 (True), otherwise it returns 0 (False). That is, the pel is set with the result of the comparison. Without further commands, the dynamic range of the image is from zero to one, which may not be what you want.</p>
+<p><tt><strong>x</strong></tt> and <tt><strong>y</strong></tt> are two of many predefined variables available to math expressions, these providing the current pel's column (<tt><strong>x</strong></tt>) and row (<tt><strong>y</strong></tt>) coordinates. Similarly, there are current slice (<tt><strong>z</strong></tt>) and channel (<tt><strong>c</strong></tt>) coordinates that are predefined, while <tt><strong>i</strong></tt> furnishes the value of the pel addressed by these four coordinates.</p>
+<p>There are many other such variables &ndash; too many to list here. <a target="_parent" href="http://gmic.eu/gmic_reference.pdf/#section9" title="Mathematical Expressions" class="external"><em>Mathematical Expressions</em></a> of the <a target="_parent" href="http://emic.eu/gmic_reference.pdf/" title="G'MIC Handbook" class="External">GMIC Handbook</a> furnishes a complete listing.</p>
+</td>
+</tr>
+<tr valign="top">
+<td width="35%">
+<p><img src="http://www.particularart.com/static/media/uploads/command_reference/fill/bendsinister_15.png" alt="Bend Sinister" title="Bend Sinister" class="img_left_nospacetop" style="margin: 3px; border: 0px solid #7f7f82;" width="300" height="300" /></p>
+<p>bendsinister.png</p>
+</td>
+<td width="65%">
+<ul>
+<li>
+<pre>gmic -input 300,300,1,1 -fill. <b>x==h-y</b></pre>
+</li>
+</ul>
+<p>Draws a one pixel <em>bend sinister</em> by means almost identical to the previous example, with just a variation in logic. <tt><strong>h</strong></tt> and its companion <tt><strong>w</strong></tt> are more predefined variables which tell the pel processor about the height and width of the current image.</p>
+</td>
+</tr>
+<tr valign="top">
+<td width="35%">
+<p><img src="http://www.particularart.com/static/media/uploads/command_reference/fill/bendboth_16.png" alt="Bend Both - but not really" title="Bend Both - but not really" class="img_left_nospacetop" style="margin: 3px; border: 0px solid #7f7f82;" width="300" height="300" /></p>
+<p>bendboth.png</p>
+</td>
+<td width="65%">
+<ul>
+<li>
+<pre>gmic -input 300,300,1,1 -fill. <b>x==y;x==h-y</b></pre>
+</li>
+</ul>
+<p>The expectation may be to draw <em>bend dexter</em> and <em>bend sinister</em> by combining the two previous means. To this end, the math expression has two statements, separated by a semicolon. Combining the logic statements, one may suppose, combines the image. Alas, the results do not bear this reasoning out. G'MIC implicitly assigns the results of the <em>last</em> executed statement in the script. The last executed statement is the comparison of the current column coordinate to the height of the image, less the current row coordinate. That means sinister wins over dexter every time. Better luck next season.</p>
+</td>
+</tr>
+<tr valign="top">
+<td width="35%">
+<p><img src="http://www.particularart.com/static/media/uploads/command_reference/fill/x-11-crimson_19.png" alt="X-11 Crimson" title="X-11 Crimson" class="img_left_nospacetop" style="margin: 3px; border: 0px solid #7F7F82;" width="300" height="300" />x-eleven-crimson.png</p>
+</td>
+<td width="65%">
+<ul>
+<li>
+<pre>gmic            \
+-input 300,300,1,3   \
+-fill. '[220,20,60]' \
+-output x-11-crimson.png
+</pre>
+</li>
+</ul>
+<p>Yet Another Way To Fill An Image With X-11 Crimson. With newer releases of G'MIC (2.0.x) math expressions acquired Vectors and Matrices. Math expressions that return vectors, such as the minimalist one here, set all of the pels of the pixel in one fell swoop. The number of iterations drop as well. Math expressions which return vectors equal to the channel count iterate over the entire image once &ndash; not once per channel. They are true 'pixel processors.' If the length of the return vector does not equal the channel count of the image, G'MIC will fill missing channels with '0' or ignore excess channels, as the case may be.</p>
+<p>Write vectors as comma separated items enclosed in square brackets. With vectors come a small host of vector and matix functions. G'MIC treats complex numbers as two element vectors, thus 3.5 + 1.27j looks like <tt><strong>[3.5, 1.27]</strong></tt> and <tt><strong>cabs([3.5, 1.27])</strong></tt> finds the hypotenuse (i.e., '<b>c</b>omplex <b>abs</b>olute value'): 3.7233, or there abouts, so if you have been writing <tt><strong>sqrt(a^2+b^2)</strong></tt> a lot, you may find <tt><strong>cabs([a,b])</strong></tt> a terser equivalent.</p>
+<p>Skip forward to the closing example of filling images with Newton-Raphson basins of attraction for more working examples of vectors, and vectors as complex numbers.</p>
+</td>
+</tr>
+<tr valign="top">
+<td width="35%"><img src="http://www.particularart.com/static/media/uploads/command_reference/fill/left2right_10.png" alt="Left to Right Ramp" title="Left to Right Ramp" class="img_right_nospacetop" style="margin: 3px; border: 0px solid #7f7f82;" width="256" height="125" /></td>
+<td width="65%">
+<ul>
+<li>
+<pre>gmic                  \
+   -input 256,125,1,1 \
+   -fill. <b>x</b>          \
+   -normalize. 0,255  \
+   -output left2right_ramp.png
+</pre>
+</li>
+</ul>
+<p>Obtain ramps by the simple expedient of citing a current coordinate, which G'MIC implicitly assigns to the current pel. The low column coordinates begin at zero and end with <em>w &ndash; 1</em> &ndash; dark to light. The dynamic range of the image depends on image geometry, which rarely reconciles with the dynamic range of image formats. Pel processors return values to images <em>exactly</em> as computed, no more, no less. It is on your watch to ensure that the image works within the native dynamic range of your chosen output format. In many cases, the results of simple expedients can be set to rights by the judicious application of <a target="_parent" href="_normalize.shtml" title="Normalize" class="internal"><tt>-normalize</tt></a> See also <a target="_parent" href="images-as-datasets.shtml" title="Images as Datasets" class="internal">Images as Datasets</a> for the usual cautionaries.</p>
+</td>
+</tr>
+<tr valign="top">
+<td width="35%"><img src="http://www.particularart.com/static/media/uploads/command_reference/fill/top2bottom_11.png" alt="Top to Bottom Ramp" title="Top to Bottom Ramp" class="img_left_nospacetop" style="margin: 3px; border: 0px solid #7f7f82; float: left;" width="256" height="125" /></td>
+<td width="65%">
+<ul>
+<li>
+<pre>gmic                  \
+   -input 256,125,1,1 \
+   -fill. <b>y</b>          \
+   -normalize. 0,255  \
+   -output top2bottom_ramp.png
+</pre>
+</li>
+</ul>
+<p>Obtain a top to bottom ramp by the same expedience as the prior example, just substituting the current row coordinate, <tt><strong>y</strong></tt>, for the current column coordinate, <tt><strong>x</strong></tt>.</p>
+</td>
+</tr>
+<tr valign="top">
+<td width="35%"><img src="http://www.particularart.com/static/media/uploads/command_reference/fill/anyangle_12.png" alt="Any Angle Ramp" title="Any Angle Ramp" class="img_left_nospacetop" style="margin: 3px; border: 0px solid #7f7f82;" width="256" height="256" /></td>
+<td width="65">
+<ul>
+<li>
+<pre>gmic                  \
+   ang=32.6           \
+   -input 256,256,1,1 \
+   -fill. <b>rad=2*pi*$ang/360;x*cos(rad)+y*sin(rad)</b>\
+   -normalize. 0,255  \
+   -output. anyangle_ramp.png</pre>
+</li>
+</ul>
+<p>Ramps at arbitrary angles may be obtained by utilizing other math expression features. A pel processor may have multiple statements, these separated by semi-colons. In the last example, the first statement converts its argument, the desired orientation of the ramp, from degrees to radians. The second statement references the converted argument, along with current column and row coordinates, to produce a pel value. The math parser then assigns the evaluation of this second statement to the pel addressed by the current values of <tt><strong>x</strong></tt>, <tt><strong>y</strong></tt>, <tt><strong>c</strong></tt>, and <tt><strong>z</strong></tt>.</p>
+<p>So far, we've seen just predefined variables, such as&nbsp;<tt><strong>pi</strong></tt>, the ratio of the circumference of a circle to its diameter. In this expression, we have defined our own, harnessing two species of variables, in fact.</p>
+<p>The native variant is&nbsp; <tt><strong>rad,</strong></tt> created in the math expression and then referenced in the math expression. Being native to the math expression, It does not take a <tt><strong>$</strong></tt> prefix; adding one may or may not raise a syntax error. The difficulty (see below) is with how the command processor pre-processes math expressions, substituting the contents of command level variables appearing in math expressions for the variables themselves. Since an inadvertent &nbsp;<tt><strong>$</strong></tt>&nbsp;prefix on a math expression variable most likely references a never-before seen command level variable, G'MIC completes the substitution by supplying the default values for newly-minted command level variables: empty strings, which in numerical contexts are zero. So-substituted, the resulting math expression is syntactically correct, more often than not, but likely not behaving as you want. The scope of these math expression variables is limited just to the math expression itself &ndash; they furnish a local, non-persistent scratchpad that disappears when the math expression ceases execution, and their values do not persist from one invocation of the pel processor to the next.</p>
+<p>The second variant is an import from the command environment. Command level variables like <tt><strong>ang</strong></tt>, above, can be referenced in the math expression when adorned with their <tt><strong>$</strong></tt> prefix. In fact, behind the scenes, the command processor performs a substitution pass on math expressions, looking for variables with <tt><strong>$</strong></tt> prefixes and substituting for these their current values. Consequently, command level variables turn into numeric constants before the math expression is invoked. Command level variables, then, do persist between invocations of pel processors, but pel processors have no real knowledge of their existence, because command level variables manifest themselves as numeric constants within math expressions, not in&nbsp; their original form.</p>
+</td>
+</tr>
+<tr valign="top">
+<td width="35%">
+<p><img src="http://www.particularart.com/static/media/uploads/command_reference/fill/turb_17.png" alt="Turbulent Source" title="Turbulent Source" class="img_left_nospacetop" style="margin: 3px; border: 0px solid #7f7f82;" width="256" height="256" /></p>
+<p>turb.png</p>
+<p><img src="http://www.particularart.com/static/media/uploads/command_reference/fill/turb_18.png" alt="Turbulence_xor" title="Turbulence_xor" width="256" height="256" />turb_xor.png</p>
+</td>
+<td width="65">
+<ul>
+<li>
+<pre>gmic                   \
+   -input 256,256,1,2  \
+   -turbulence 100,9,4 \
+   -input [0],[0],1,1  \
+   -fill. 'xor(i(#-2,x,y,0,0),i(#-2,x,y,0,1))' \
+   -normalize. 0,255   \
+   -output. turb_xor.png</pre>
+</li>
+</ul>
+<p>This math expression harnesses two of the many builtin functions available to such. The builtin <tt><strong>xor(a,b)</strong></tt> performs a bit-wise exclusive OR operation on its arguments, rounding them down to the nearest integer, if necessary. <tt><strong>i(x,y,z,c,interpolation_type, boundary_conditions)</strong></tt> samples the image at a specified set of coordinates, which need not be integral and need not be on the image. The coordinates may have fractional parts, implying sub-pixel sampling. In this case, the <tt><strong>interpolation_type</strong></tt> flag chooses between nearest neighbor and linear interpolation. The <tt><strong>boundary_condition</strong></tt> flag furnishes policy when the sampling coordinates are off-image. <a target="_parent" href="images-have-edges.shtml" title="Images Have Edges, Now What?" class="internal">Images Have Edges, Now What?</a> reviews the various types, but briefly: Dirichlet (0) means all off-image samples are black, by definition. Neumann (1) extends the values of the images out to infinity; off-image samples reflect the values of those pixels on the nearest edge. Cyclic (2) treat images as torii; off-image samples wrap around to the far edge. Mirror (3) furnishes off-image samples by reflecting the off-image position back into the interior of the image. For terseness, arguments may be omitted, counting from the right, so <tt><strong>i(x,y)</strong></tt> references a pel at column <tt><strong>x</strong></tt> and row <tt><strong>y</strong></tt>. Omitted, slice (<tt><strong>z</strong></tt>) and channel (<tt><strong>c</strong></tt>) default to zero, nearest neighbor interpolation and Dirichlet conventions at the boundary.</p>
+<p>Math expressions are not limited to their operand image. Any predefined variable may be adorned with a <tt><strong>#&lt;image selector&gt;</strong></tt> suffix to reference any other image on the list. The numbering conventions follow those of the command processor's selector. Positive indices count from the beginning of the list; negative indices count from the end of the list. On a list with four images, <tt><strong>iM#1</strong></tt> &nbsp; refers to the maximum intensity of the second image on the list, counting from the beginning (the image list follows the zero-indexing convention). <tt><strong>iM#-3</strong></tt> references the same image, counting from the end of the list. This convention extends to the image sampling function <tt><strong>i(...)</strong></tt> and&nbsp;<tt><strong>j(...)</strong></tt> where the initial argument can be a selector. That is the key facet of this example, which samples each pel of a two channel image other than the operand, containing synthesized turbulence, and XOR's them together, producing the corresponding pel of the operand image.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>This has been kind of a <a target="_parent" href="https://en.wikipedia.org/wiki/Whitman%27s" title="Whitman's Chocolate Candy Samplers" class="external">Whitman Sampler</a> of G'MIC math expressions. Since this article is about the <tt>-fill</tt> command, it is not a propitious place to lay out a full-blown math expression tutorial &ndash; for such would overwhelm the <tt>-fill</tt> command itself. The definitive and complete, if terse, reference to math expressions remains the <a target="_parent" href="http://gmic.eu/gmic_reference.pdf/#section9" title="Mathematical Expressions" class="external"><em>Mathematical Expressions</em></a> section in the <a target="_parent" href="http://emic.eu/gmic_reference.pdf/" title="G'MIC Handbook" class="External">GMIC Handbook</a>. Everything's there, <em>sans</em> examples and artfully illustrative errors. The key takeaway here is that the <tt>-fill</tt> command lets you hook up a pel or pixel level processor to your image, so you can operate on the raster itself.</p>
+<h3 id="NewAndImprovedProcessors">New and Improved Processors</h3>
+<p>In the run-up to G&lsquo;MIC 2.0, released last November, 2016, the features and capabilities of the math processor grew considerably. The examples presented thus far, one might say, are &lsquo;classic&rsquo; G&lsquo;MIC math expressions &ndash; capable of a series of operations but lacking looping constructs, dynamic variables, being somewhat sensitive to whitespace and limited to returning just scalars. In the first-generation math processor, an RGBA pixel could be visited by a pel processor as often as four times, since the processor could alter only one pel at a time.</p>
+<p>Most of these limitations have been lifted. Math expression can now utilize control structures, query other images in the pipeline, support vector data types as well as scalars, so that an entire pixel can be a return value, not just one pel. While it does not have a direct bearing on semantic content, math expressions can now also be written with a liberal amount of white space, so that the structure of the math expression is clear.<em><br /></em></p>
+<p>To illustrate some of the newer features, we've written a G&lsquo;MIC command that plots the basins of attraction that arise from Newton-Raphson root polishing. This computation is inherently iterative, as the only practical way to find the roots of higher degree polynomials is to start with a trial value and, exploiting certain properties of polynomials and their first derivatives, iteratively refine intermediary trials. Iteration was not something that could be built into a math expression until recently.</p>
+<p>The Newton-Raphson iteration:</p>
+<div><!--?xml version="1.0" encoding="UTF-8"?--> <math xmlns="http://www.w3.org/1998/Math/MathML" display="block"> <semantics> <mrow> <msub> <mi>z</mi> <mrow> <mi>i</mi> <mo stretchy="false">+</mo> <mn>1</mn> </mrow> </msub> <mo stretchy="false">=</mo> <mrow> <msub> <mi>z</mi> <mi>i</mi> </msub> <mo stretchy="false">&minus;</mo> <mfrac> <mrow> <mi>f</mi> <mrow> <mo fence="true" stretchy="false">(</mo> <mrow> <msub> <mi>z</mi> <mi>i</mi> </msub> </mrow> <mo fence="true" stretchy="false">)</mo> </mrow> </mrow> <mrow> <msup> <mi>f</mi> <mi>'</mi> </msup> <mrow> <mo fence="true" stretchy="false">(</mo> <mrow> <msub> <mi>z</mi> <mi>i</mi> </msub> </mrow> <mo fence="true" stretchy="false">)</mo> </mrow> </mrow> </mfrac> </mrow> </mrow> <annotation encoding="StarMath 5.0">z_{ i+1 } = z_{ i } - { f( z_{i} ) } over { f^'( z_{i} ) }</annotation> </semantics> </math></div>
+<p>says we <em>may</em> find a better trial value for a root <em>&lambda;<sub>k</sub></em> of polynomial <em>f(z)</em>, <strong><em>z<sub>i+1</sub></em></strong>, by subtracting a &ldquo;correction factor&rdquo; from a current trial value, <strong><em>z<sub>i</sub></em></strong>. We obtain the correction factor by evaluating the polynomial and its first derivative at <strong><em>z<sub>i</sub></em></strong> and taking the ratio of the evaluation and derivative. Graphically, we extend the tangent of the function at the evaluation point to the parameter axis, viz:</p>
+<div style="text-align: center;"><!--?xml version="1.0" encoding="UTF-8" standalone="no"?--> <svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" version="1.1" id="svg2" viewbox="0 0 354.33071 318.89764" height="90mm" width="100mm"> <defs id="defs4"></defs> <metadata id="metadata7"> <rdf:rdf> <cc:work rdf:about=""> <dc:format>image/svg+xml</dc:format> <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"> <dc:title></dc:title> </dc:type></cc:work> </rdf:rdf> </metadata> <g transform="translate(0,-733.46457)" id="layer1"> <g id="g4284"> <path style="fill: none; fill-rule: evenodd; stroke: #000000; stroke-width: 0.99921262; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 4; stroke-dasharray: 0.99921262, 0.99921262; stroke-dashoffset: 0; stroke-opacity: 1;" d="m 255.6178,750.03504 0,276.37796" id="path4143"></path> <path id="path4145" d="M 297.70379,750.92079 171.46339,1026.4971" style="fill: none; fill-rule: evenodd; stroke: #da2a2a; stroke-width: 0.99921262; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 4; stroke-dasharray: 0.99921262, 0.99921262; stroke-dashoffset: 0; stroke-opacity: 1;"></path> <path style="fill: none; fill-rule: evenodd; stroke: #000000; stroke-width: 1.77165353; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 4; stroke-dasharray: none; stroke-opacity: 1;" d="M 354.33071,1015.7831 0,1015.7831" id="path4136"></path> <path style="fill: none; fill-rule: evenodd; stroke: #000000; stroke-width: 1px; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1;" d="m 278.87139,765.50186 c -2.66445,23.98005 -10.77377,50.04393 -23.01987,76.37894 -43.76196,94.1093 -140.35141,191.6809 -230.073492,209.9915" id="path4138"></path> <path id="path4198" style="font-style: italic; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: medium; line-height: 125%; font-family: 'Liberation Serif'; -inkscape-font-specification: 'Liberation Serif Italic'; letter-spacing: 0px; word-spacing: 0px; fill: #000000; fill-opacity: 1; stroke: none; stroke-width: 1px; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1;" d="m 259.42773,1010.1615 0.0686,-0.3428 4.29596,-6.2078 -1.13493,0 q -0.42655,0 -0.83024,0.076 -0.4037,0.068 -0.58651,0.1904 l -0.41893,1.0283 -0.358,0 0.34276,-1.9042 4.66158,0 -0.0609,0.3732 -4.28074,6.1773 1.50055,0 q 0.42655,0 0.83025,-0.091 0.40369,-0.099 0.67029,-0.2666 l 0.57889,-1.1197 0.35799,0 -0.54842,2.0871 -5.08813,0 z"></path> <path id="path4200" style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 26px; line-height: 125%; font-family: 'Liberation Serif'; -inkscape-font-specification: 'Liberation Serif'; letter-spacing: 0px; word-spacing: 0px; baseline-shift: sub; fill: #000000; fill-opacity: 1; stroke: none; stroke-width: 1px; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1;" d="m 267.11172,1012.9348 0.77731,0.1238 -0.0396,0.2228 -1.61898,0 0.75751,-4.3074 -0.63869,-0.1238 0.0396,-0.2228 1.48036,0 -0.75751,4.3074 z m 1.06447,-5.8273 q 0,0.2178 -0.15843,0.3763 -0.15843,0.1584 -0.38123,0.1584 -0.21784,0 -0.37628,-0.1584 -0.15843,-0.1585 -0.15843,-0.3763 0,-0.2228 0.15843,-0.3813 0.15844,-0.1584 0.37628,-0.1584 0.2228,0 0.38123,0.1584 0.15843,0.1585 0.15843,0.3813 z"></path> <path id="path4189" style="font-style: italic; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: medium; line-height: 125%; font-family: 'Liberation Serif'; -inkscape-font-specification: 'Liberation Serif Italic'; letter-spacing: 0px; word-spacing: 0px; fill: #000000; fill-opacity: 1; stroke: none; stroke-width: 1px; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1;" d="m 181.20152,1010.2248 0.0707,-0.3535 4.43053,-6.4023 -1.17048,0 q -0.43991,0 -0.85625,0.079 -0.41634,0.071 -0.60488,0.1963 l -0.43205,1.0605 -0.36922,0 0.35351,-1.9638 4.8076,0 -0.0628,0.3849 -4.41482,6.3708 1.54754,0 q 0.43991,0 0.85626,-0.094 0.41634,-0.1022 0.69129,-0.275 l 0.59702,-1.1547 0.36921,0 -0.5656,2.1524 -5.24751,0 z"></path> <path id="path4191" style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 26px; line-height: 125%; font-family: 'Liberation Serif'; -inkscape-font-specification: 'Liberation Serif'; letter-spacing: 0px; word-spacing: 0px; baseline-shift: sub; fill: #000000; fill-opacity: 1; stroke: none; stroke-width: 1px; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1;" d="m 189.1262,1013.085 0.80166,0.1276 -0.0409,0.2298 -1.6697,0 0.78124,-4.4423 -0.65869,-0.1277 0.0409,-0.2297 1.52673,0 -0.78124,4.4423 z m 1.09781,-6.0099 q 0,0.2247 -0.16339,0.3881 -0.1634,0.1633 -0.39317,0.1633 -0.22467,0 -0.38806,-0.1633 -0.1634,-0.1634 -0.1634,-0.3881 0,-0.2298 0.1634,-0.3932 0.16339,-0.1634 0.38806,-0.1634 0.22977,0 0.39317,0.1634 0.16339,0.1634 0.16339,0.3932 z"></path> <path id="path4193" style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 26px; line-height: 125%; font-family: 'Liberation Serif'; -inkscape-font-specification: 'Liberation Serif'; letter-spacing: 0px; word-spacing: 0px; baseline-shift: sub; fill: #000000; fill-opacity: 1; stroke: none; stroke-width: 1px; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1;" d="m 194.41613,1010.2307 0,2.1752 -0.52593,0 0,-2.1752 -2.16499,0 0,-0.5209 2.16499,0 0,-2.1752 0.52593,0 0,2.1752 2.1752,0 0,0.5209 -2.1752,0 z"></path> <path id="path4195" style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 26px; line-height: 125%; font-family: 'Liberation Serif'; -inkscape-font-specification: 'Liberation Serif'; letter-spacing: 0px; word-spacing: 0px; baseline-shift: sub; fill: #000000; fill-opacity: 1; stroke: none; stroke-width: 1px; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1;" d="m 200.329,1013.0339 1.37865,0.1379 -0.0511,0.2706 -3.6815,0 0.0511,-0.2706 1.4246,-0.1379 0.98548,-5.5861 -1.47056,0.4953 0.0511,-0.2706 2.19563,-1.1336 0.26552,0 -1.14888,6.495 z"></path> <path id="path4184" style="font-style: italic; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: medium; line-height: 125%; font-family: 'Liberation Serif'; -inkscape-font-specification: 'Liberation Serif Italic'; letter-spacing: 0px; word-spacing: 0px; fill: #000000; fill-opacity: 1; stroke: none; stroke-width: 1px; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1;" d="m 88.940543,999.76845 q -0.268159,0 -0.505674,0.0919 l -0.367763,0.63591 -0.375425,0 0.160894,-1.28715 q 0.605278,-0.1609 1.149262,-0.1609 0.520996,0 0.842791,0.1992 0.329454,0.19921 0.528658,0.64359 0.199208,0.43676 0.344779,1.37916 l 1.202894,7.7 q 0.0996,0.5746 0.750849,0.7815 l -0.06129,0.3448 -1.501702,0 -0.743188,-5.6391 q -0.145571,0.3372 -0.444379,0.8888 -0.298808,0.544 -0.467367,0.8504 l -2.244886,3.8999 -1.325482,0 0.06129,-0.3295 4.221616,-6.9645 -0.191543,-1.3178 q -0.130249,-0.9348 -0.375424,-1.3255 -0.245176,-0.39075 -0.65891,-0.39075 z"></path> <path id="path4186" style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 26px; line-height: 125%; font-family: 'Liberation Serif'; -inkscape-font-specification: 'Liberation Serif'; letter-spacing: 0px; word-spacing: 0px; baseline-shift: sub; fill: #000000; fill-opacity: 1; stroke: none; stroke-width: 1px; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1;" d="m 94.559275,1006.5016 -0.672318,-0.1195 0.03984,-0.2241 1.518938,0 -0.856584,4.8207 2.131497,-2.0667 -0.468132,-0.1345 0.03984,-0.2241 1.454197,0 -0.03984,0.2241 -0.40339,0.1145 -1.464156,1.3995 1.21017,2.6046 0.488052,0.1145 -0.03984,0.2241 -1.175312,0 -1.085669,-2.3855 -0.737056,0.6923 -0.308768,1.6932 -0.826701,0 1.195229,-6.7331 z"></path> <path style="fill: #ffcc00; fill-opacity: 1; fill-rule: evenodd; stroke: #000000; stroke-width: 1.77165353; stroke-miterlimit: 4; stroke-dasharray: none; stroke-opacity: 1;" d="m 258.1956,842.13291 a 2.5778027,2.5778027 0 0 1 -2.5778,2.5778 2.5778027,2.5778027 0 0 1 -2.57781,-2.5778 2.5778027,2.5778027 0 0 1 2.57781,-2.5778 2.5778027,2.5778027 0 0 1 2.5778,2.5778 z" id="path4140"></path> <path id="path4202" d="m 258.1956,1015.051 a 2.5778027,2.5778027 0 0 1 -2.5778,2.5778 2.5778027,2.5778027 0 0 1 -2.57781,-2.5778 2.5778027,2.5778027 0 0 1 2.57781,-2.5778 2.5778027,2.5778027 0 0 1 2.5778,2.5778 z" style="fill: #ffcc00; fill-opacity: 1; fill-rule: evenodd; stroke: #000000; stroke-width: 1.77165353; stroke-miterlimit: 4; stroke-dasharray: none; stroke-opacity: 1;"></path> <path id="path4204" d="m 178.57866,1015.4656 a 2.5778027,2.5778027 0 0 1 -2.5778,2.5778 2.5778027,2.5778027 0 0 1 -2.57781,-2.5778 2.5778027,2.5778027 0 0 1 2.57781,-2.5778 2.5778027,2.5778027 0 0 1 2.5778,2.5778 z" style="fill: #ffcc00; fill-opacity: 1; fill-rule: evenodd; stroke: #000000; stroke-width: 1.77165353; stroke-miterlimit: 4; stroke-dasharray: none; stroke-opacity: 1;"></path> <path style="fill: #ffcc00; fill-opacity: 1; fill-rule: evenodd; stroke: #000000; stroke-width: 1.77165353; stroke-miterlimit: 4; stroke-dasharray: none; stroke-opacity: 1;" d="m 109.32851,1015.4656 a 2.5778027,2.5778027 0 0 1 -2.5778,2.5778 2.5778027,2.5778027 0 0 1 -2.57781,-2.5778 2.5778027,2.5778027 0 0 1 2.57781,-2.5778 2.5778027,2.5778027 0 0 1 2.5778,2.5778 z" id="path4206"></path> <path id="path4242" style="font-style: italic; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: medium; line-height: 125%; font-family: 'Liberation Serif'; -inkscape-font-specification: 'Liberation Serif Italic'; letter-spacing: 0px; word-spacing: 0px; fill: #000000; fill-opacity: 1; stroke: none; stroke-width: 1px; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1;" d="m 262.43915,852.85839 -1.30333,0 1.76656,-10.144 -1.27193,0 0.0628,-0.38472 1.33474,-0.3062 0.0942,-0.51819 q 0.31405,-1.75087 1.05209,-2.56741 0.74588,-0.8244 2.00995,-0.8244 0.60456,0 1.09135,0.14918 l -0.2748,1.53887 -0.38472,0 -0.14918,-0.89506 q -0.22769,-0.16488 -0.65951,-0.16488 -0.47894,0 -0.75374,0.41613 -0.27479,0.40827 -0.51034,1.67235 l -0.22769,1.22481 1.64094,0 -0.10991,0.65952 -1.64095,0 -1.76656,10.144 z"></path> <path id="path4244" style="font-style: italic; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: medium; line-height: 125%; font-family: 'Liberation Serif'; -inkscape-font-specification: 'Liberation Serif Italic'; letter-spacing: 0px; word-spacing: 0px; fill: #000000; fill-opacity: 1; stroke: none; stroke-width: 1px; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1;" d="m 267.38553,848.40666 q 0,2.66162 1.75871,3.79222 l -0.11777,0.65951 q -1.62524,-0.95001 -2.33972,-2.15913 -0.70662,-1.20911 -0.70662,-2.93642 0,-1.38185 0.35331,-2.97568 0.36116,-1.60169 1.00498,-2.77939 0.65167,-1.17771 1.6488,-2.05707 0.99712,-0.88721 2.60666,-1.67235 l -0.11777,0.65952 q -1.04424,0.5496 -1.75087,1.3897 -0.70662,0.83224 -1.16985,1.95499 -0.46324,1.12275 -0.81655,3.0542 -0.35331,1.93144 -0.35331,3.0699 z"></path> <path id="path4246" style="font-style: italic; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: medium; line-height: 125%; font-family: 'Liberation Serif'; -inkscape-font-specification: 'Liberation Serif Italic'; letter-spacing: 0px; word-spacing: 0px; fill: #000000; fill-opacity: 1; stroke: none; stroke-width: 1px; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1;" d="m 270.6046,849.43519 0.0707,-0.35332 4.42819,-6.39889 -1.16986,0 q -0.43968,0 -0.8558,0.0785 -0.41612,0.0707 -0.60456,0.19628 l -0.43182,1.05994 -0.36902,0 0.35331,-1.96285 4.80506,0 -0.0628,0.38472 -4.41249,6.36749 1.54673,0 q 0.43968,0 0.8558,-0.0942 0.41612,-0.10207 0.69092,-0.2748 l 0.59671,-1.15416 0.36902,0 -0.5653,2.15129 -5.24474,0 z"></path> <path id="path4248" style="font-style: normal; font-weight: normal; font-size: 26px; line-height: 125%; font-family: sans-serif; letter-spacing: 0px; word-spacing: 0px; baseline-shift: sub; fill: #000000; fill-opacity: 1; stroke: none; stroke-width: 1px; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1;" d="m 278.52509,852.29388 0.80124,0.12759 -0.0408,0.22965 -1.66882,0 0.78083,-4.43997 -0.65834,-0.12758 0.0408,-0.22965 1.52592,0 -0.78082,4.43996 z m 1.09723,-6.00671 q 0,0.22455 -0.16331,0.38786 -0.1633,0.16331 -0.39296,0.16331 -0.22455,0 -0.38786,-0.16331 -0.1633,-0.16331 -0.1633,-0.38786 0,-0.22965 0.1633,-0.39296 0.16331,-0.16331 0.38786,-0.16331 0.22966,0 0.39296,0.16331 0.16331,0.16331 0.16331,0.39296 z"></path> <path id="path4250" style="font-style: italic; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: medium; line-height: 125%; font-family: 'Liberation Serif'; -inkscape-font-specification: 'Liberation Serif Italic'; letter-spacing: 0px; word-spacing: 0px; fill: #000000; fill-opacity: 1; stroke: none; stroke-width: 1px; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1;" d="m 279.17205,852.85839 0.11777,-0.65951 q 1.02853,-0.54175 1.71946,-1.36615 0.69877,-0.82439 1.15415,-1.90003 0.45538,-1.07564 0.83225,-2.99924 0.37686,-1.92359 0.37686,-3.20337 0,-1.36614 -0.43967,-2.2926 -0.43183,-0.93432 -1.31904,-1.49962 l 0.11777,-0.65952 q 1.6645,0.98928 2.36327,2.18269 0.69878,1.19341 0.69878,2.91287 0,1.31118 -0.36117,2.92072 -0.35331,1.60954 -1.00498,2.8108 -0.65166,1.19341 -1.65664,2.08062 -1.00498,0.89506 -2.59881,1.67234 z"></path> </g> </g> </svg></div>
+<p>In this illustration, <em>f(z)</em> is almost linear in the neighborhood of the root and it is not hard to imagine how extending the tangent from a pretty good guess gives us a new guess even closer to the root. Clearly, evaluating again at <strong><em>z<sub>i+1</sub></em></strong>, and extending a new tangent at that point will walk us ever closer to the root <em>&lambda;<sub>k</sub></em> and it will only be a matter of taste to decide, at some point, that the trial value is close enough.</p>
+<p>But what is a pretty good guess? One way to answer that question is to draw a map: <tt>-newtonraphson</tt>, listed below, when given a set of roots, paints such a map on the complex plane, using a grid of values (say, the position of pixels) as initial trial values. It performs a series of Newton-Raphson iterations on each grid point until an intermediary is really close to one of the given roots. When an iteration finishes, <tt>-newtonraphson</tt> reports the result by plotting a two-channel pixel in a new image. Channel zero is an index uniquely identifying one of the given roots. Channel one holds the iterations it took to arrive at the root from the initial grid point. <tt>-newtonraphson</tt> plots the pixel in the same position as the grid point, essentially reporting how that point behaves under Newton-Raphson. Stand back from this image, squint, and we should see the aggregate of grid points which converge to particular roots &ndash; the <em>basins of attraction</em>.&nbsp;</p>
+<p>So a basin of attraction is a set of complex numbers which converge to a particular root under a Newton-Raphson iteration. It happens that the division of the complex plane into the various basins of attraction for a polynomial form striking fractal boundaries. In fact, the fractal boundaries separating the basins of attraction underlie why Newton-Raphson root polishing can sometimes be ill-behaved. Pick an initial trial in the midsts of the fractal territories, and convergence, at least initially, might not be that convergent in the early part. As we will see later, the initial trial may not converge at all.</p>
+<p>If you are not familiar with how these basins of attraction can be imaged, read the Wikipedia article on <a target="_parent" href="https://en.wikipedia.org/wiki/Newton_fractal" title="Newton Fractal" class="external">Newton fractals</a>, and, in particular, see Simon Tatham&rsquo; page, <a target="_parent" href="https://www.chiark.greenend.org.uk/~sgtatham/newton/" class="external"><em>Fractals derived from Newton-Raphson Iteration</em></a>. We <s>stole</s> borrowed quite a few pointers from Mr. Tatham's page.</p>
+<p>To begin, include this G&lsquo;MIC command in your Mac OSX, Linux: <tt><strong>$HOME/.gmic</strong></tt> file, or, for Microsoft Windows your <tt><strong>%APP_DATA%/<i>&lt;user&gt;</i>.gmic</strong></tt> file, where <i>&lt;user&gt;</i> stands in for your login name:</p>
+<pre>#@gmic
+#@cli newtonraphson : [roots],_center_x,center_y,_mag,_maxiter
+#@cli : Draw on the selected images the basins of attraction of the polynomial
+#@cli : roots given in the argument image using Newton-Raphson root
+#@cli : polishing. Argument image is N,1,1,2 - an N vector for N, complex,
+#@cli : number of roots.  Channel zero contains real, and channel one
+#@cli : imaginary components. Default values: 'center_x = 0', 'center_y = 0',
+#@cli : 'magnification = 1', 'maximum_iterations = 100'
+newtonraphson : -check ${-is_image_arg\ $1} -skip ${2=0},${3=0},${4=1},${5=100}<br />&nbsp;&nbsp; -verbose -<br />&nbsp;&nbsp; sig=s<br />&nbsp;&nbsp; -if {$!&lt;2}<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sig=<br />&nbsp;&nbsp; -endif<br />&nbsp;&nbsp; -verbose +<br />&nbsp;&nbsp; -echo[^-1] "Use Newton-Raphson root polishing on image"$sig$?" to paint basins of attraction associated with the roots given by $1."<br />&nbsp;&nbsp; -verbose -<br />&nbsp;&nbsp; ppu=255.5<br />&nbsp;&nbsp; ox=$2<br />&nbsp;&nbsp; oy=$3<br />&nbsp;&nbsp; mag=$4<br />&nbsp;&nbsp; lim=$5<br />&nbsp;&nbsp; cx={$ox-w/(2*$ppu*$mag)}<br />&nbsp;&nbsp; cy={$oy+h/(2*$ppu*$mag)}<br />&nbsp;&nbsp; err=1e-10<br />&nbsp;&nbsp; -pass$1 1<br />&nbsp;&nbsp; -repeat {$!-1}<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -local[$&gt;,-1]<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -fill[0] "Q&nbsp; = vectorw#-1();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ic = 0;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; zz = ["$cx"+x/("$ppu"*"$mag"),"$cy"-y/("$ppu"*"$mag)"];<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dowhile(<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; acc = [0,0];<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; for(<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; k=0, k &lt; w#-1, k++,<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Q[k] = cabs(zz-I(#-1,k,0));<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; acc += [1,0]//(zz-I(#-1,k,0))<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dif&nbsp; = [1,0]//acc;ic+=1;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; zz&nbsp;&nbsp; = zz - dif,<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cabs(dif) &gt; "$err" &amp;&amp; ic &lt; "$lim"<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if( <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ic &lt; "$lim",<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [argmin(Q),ic],<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [w# - 1,"$lim"]<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )"<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -endlocal<br />&nbsp;&nbsp; -done<br />&nbsp;&nbsp; -rm.<br />&nbsp;&nbsp; -verbose +
+</pre>
+<h3 id="ImplementationNotes">Implementation Notes</h3>
+<p>If you look at the math expression which we pass to <tt>-fill</tt>, you might wonder how it is we're doing Newton-Raphson. We're in the business of plotting basins of attraction, not finding roots &ndash; in fact, we start from known roots. Since we have the roots, we can rephrase the Newton-Raphson process to suit our convenience. And it is convenient for us to write the polynomial in factored form, each factor being a difference between the trial value, <strong><em>z<sub>i</sub></em></strong>, and a member of the set of given roots, {&lambda;<sub>n</sub>}:</p>
+<ol>
+<li>
+<p><!--?xml version="1.0" encoding="UTF-8"?--> <math xmlns="http://www.w3.org/1998/Math/MathML" display="block"> <semantics> <mrow> <mrow> <mi>f</mi> <mrow> <mo fence="true" stretchy="false">(</mo> <mrow> <msub> <mi>z</mi> <mi>i</mi> </msub> </mrow> <mo fence="true" stretchy="false">)</mo> </mrow> </mrow> <mo stretchy="false">=</mo> <mrow> <munderover> <mo stretchy="false">&prod;</mo> <mrow> <mi>k</mi> <mo stretchy="false">=</mo> <mn>0</mn> </mrow> <mrow> <mi>n</mi> <mo stretchy="false">&minus;</mo> <mn>1</mn> </mrow> </munderover> <mrow> <msub> <mi>z</mi> <mi>i</mi> </msub> <mo stretchy="false">&minus;</mo> <msub> <mi mathvariant="normal">&lambda;</mi> <mi>k</mi> </msub> </mrow> </mrow> </mrow> <annotation encoding="StarMath 5.0">{ f( z_{i} ) } = prod from{ k = 0} to{n - 1} { { z_{i} } - %lambda_{k} }</annotation> </semantics> </math></p>
+</li>
+<li>
+<p><!--?xml version="1.0" encoding="UTF-8"?--> <math xmlns="http://www.w3.org/1998/Math/MathML" display="block"> <semantics> <mrow> <msup> <mi>f</mi> <mi>'</mi> </msup> <mrow> <mrow> <mo fence="true" stretchy="false">(</mo> <mrow> <msub> <mi>z</mi> <mi>i</mi> </msub> </mrow> <mo fence="true" stretchy="false">)</mo> </mrow> <mo stretchy="false">=</mo> <mrow> <munderover> <mo stretchy="false">&sum;</mo> <mrow> <mi>j</mi> <mo stretchy="false">=</mo> <mn>0</mn> </mrow> <mrow> <mi>n</mi> <mo stretchy="false">&minus;</mo> <mn>1</mn> </mrow> </munderover> <mrow> <munderover> <mo stretchy="false">&prod;</mo> <mrow> <mi>k</mi> <mo stretchy="false">=</mo> <mn>0</mn> </mrow> <mrow> <mrow> <mi>n</mi> <mo stretchy="false">&minus;</mo> <mn>1,</mn> </mrow> <mrow> <mi>j</mi> <mo stretchy="false">&ne;</mo> <mi>k</mi> </mrow> </mrow> </munderover> <mrow> <mo fence="true" stretchy="false">(</mo> <mrow> <mrow> <msub> <mi>z</mi> <mi>i</mi> </msub> <mo stretchy="false">&minus;</mo> <msub> <mi mathvariant="normal">&lambda;</mi> <mi>k</mi> </msub> </mrow> </mrow> <mo fence="true" stretchy="false">)</mo> </mrow> </mrow> </mrow> </mrow> </mrow> <annotation encoding="StarMath 5.0">f^'( z_{i} ) = sum from{j=0} to{n-1} prod from{k=0} to{n-1, j &lt;&gt; k } ( z_{ i } - %lambda_{ k } ) </annotation> </semantics> </math></p>
+</li>
+<li>
+<p><!--?xml version="1.0" encoding="UTF-8"?--> <math xmlns="http://www.w3.org/1998/Math/MathML" display="block"> <semantics> <mrow> <mfrac> <mrow> <msup> <mi>f</mi> <mi>'</mi> </msup> <mrow> <mo fence="true" stretchy="false">(</mo> <mrow> <msub> <mi>z</mi> <mi>i</mi> </msub> </mrow> <mo fence="true" stretchy="false">)</mo> </mrow> </mrow> <mrow> <mi>f</mi> <mrow> <mo fence="true" stretchy="false">(</mo> <mrow> <msub> <mi>z</mi> <mi>i</mi> </msub> </mrow> <mo fence="true" stretchy="false">)</mo> </mrow> </mrow> </mfrac> <mo stretchy="false">=</mo> <mrow> <munderover> <mo stretchy="false">&sum;</mo> <mrow> <mi>k</mi> <mo stretchy="false">=</mo> <mn>0</mn> </mrow> <mrow> <mi>n</mi> <mo stretchy="false">&minus;</mo> <mn>1</mn> </mrow> </munderover> <mfrac> <mn>1</mn> <mrow> <mo fence="true" stretchy="false">(</mo> <mrow> <mrow> <msub> <mi>z</mi> <mi>i</mi> </msub> <mo stretchy="false">&minus;</mo> <msub> <mi mathvariant="normal">&lambda;</mi> <mi>k</mi> </msub> </mrow> </mrow> <mo fence="true" stretchy="false">)</mo> </mrow> </mfrac> </mrow> </mrow> <annotation encoding="StarMath 5.0">{ f^'(z_{i}) } over { f( z_{i} ) } = sum from{ k=0 } to{n - 1} { { 1 } over { (z_{ i} - %lambda_{k}) } }</annotation> </semantics> </math></p>
+</li>
+<li>
+<p><span><!--?xml version="1.0" encoding="UTF-8"?--> <math xmlns="http://www.w3.org/1998/Math/MathML" display="block"> <semantics> <mrow> <msub> <mi>z</mi> <mrow> <mi>i</mi> <mo stretchy="false">+</mo> <mn>1</mn> </mrow> </msub> <mo stretchy="false">=</mo> <mrow> <msub> <mi>z</mi> <mi>i</mi> </msub> <mo stretchy="false">&minus;</mo> <mfrac> <mrow> <mi>f</mi> <mrow> <mo fence="true" stretchy="false">(</mo> <mrow> <msub> <mi>z</mi> <mi>i</mi> </msub> </mrow> <mo fence="true" stretchy="false">)</mo> </mrow> </mrow> <mrow> <msup> <mi>f</mi> <mi>'</mi> </msup> <mrow> <mo fence="true" stretchy="false">(</mo> <mrow> <msub> <mi>z</mi> <mi>i</mi> </msub> </mrow> <mo fence="true" stretchy="false">)</mo> </mrow> </mrow> </mfrac> </mrow> </mrow> <annotation encoding="StarMath 5.0">{ z_{ i+1 } = z_{ i } - { f( z_{ i } ) } over { f^'( z_{ i } )} }</annotation></semantics></math></span>&rarr;<span><!--?xml version="1.0" encoding="UTF-8"?--> <math xmlns="http://www.w3.org/1998/Math/MathML" display="block"> <semantics> <mrow> <msub> <mi>z</mi> <mrow> <mi>i</mi> <mo stretchy="false">+</mo> <mn>1</mn> </mrow> </msub> <mo stretchy="false">=</mo> <mrow> <msub> <mi>z</mi> <mi>i</mi> </msub> <mo stretchy="false">&minus;</mo> <mfrac> <mn>1</mn> <mrow> <munderover> <mo stretchy="false">&sum;</mo> <mrow> <mi>k</mi> <mo stretchy="false">=</mo> <mn>0</mn> </mrow> <mrow> <mi>n</mi> <mo stretchy="false">&minus;</mo> <mn>1</mn> </mrow> </munderover> <mfrac> <mn>1</mn> <mrow> <mo fence="true" stretchy="false">(</mo> <mrow> <mrow> <msub> <mi>z</mi> <mi>i</mi> </msub> <mo stretchy="false">&minus;</mo> <msub> <mi mathvariant="normal">&lambda;</mi> <mi>k</mi> </msub> </mrow> </mrow> <mo fence="true" stretchy="false">)</mo> </mrow> </mfrac> </mrow> </mfrac> </mrow> </mrow> <annotation encoding="StarMath 5.0">z_{ i + 1 } = { z_{ i} - { 1 } over { sum from{ k = 0 } to{ n - 1 } { { 1 } over { ( z_{ i } - %lambda_{ k } ) } } } }</annotation> </semantics> </math></span></p>
+</li>
+</ol>
+<p>In this form, the denominator of the correction factor has an interesting structure. It is a sum of reciprocals. Should, at some iteration <em>i</em>, the trial value <em>z<sub>i</sub></em> approaches any one of the roots &lambda;<sub>k</sub>, the difference between the trial and that root commences to vanish. That drives the corresponding reciprocal to a very large value. The sum of reciprocal differences itself grows very large, being dominated by that one exploding term, so that the correction that is applied to the trial value for the next iteration becomes vanishingly small. On that condition, we exit the <tt>dowhile()</tt> loop &ndash; as we have found a pretty near enough approximation to a root.</p>
+<p>Upon that exit, we prudently check if the overall iteration count has exceeded the limit set in <tt>$lim</tt>. If it does, we return a failure vector. The failure vector uses the root count, <em>n</em>, as an index, which is not assigned to any root. These are indexed from <em>0</em> to <em>n &ndash; 1</em>. For an iteration count, the failure vector contains the value of <tt>$lim</tt>. Downstream rendering can mark pixels with these two special channel values however they see fit.</p>
+<p>Otherwise, we return a normal success vector. To correctly identify which root the trial value approximates, we keep off to one side a check vector, <strong><em>Q</em></strong>, with components |(z<sub>i</sub> &ndash; &lambda;<sub>k</sub> )|. Applying <tt>argmin()</tt> to this vector returns the index of the smallest component in the vector, identifying the root to which <em>z<sub>i</sub></em> converges. This index becomes the first component of the return vector. The number of iterations is recorded in the expression variable <tt>ic</tt> and becomes the second component of the return vector.</p>
+<p>Why would this expression fail to converge? Our game relies on extending tangents to the parameter axis, then walking straight up until we hit the curve, our new evaluation point. Is it possible that this new evaluation point could be the same as an earlier trial value? Oh, yes, indeed, in a significant class of polynomials, there are honey-pot traps for those taking the Newton-Raphson route: trial values <em>z<sub>i</sub></em> transform to <em>z<sub>i &ndash; k</sub></em>&nbsp;- a prior trial value tested <em>k</em> steps before the present trial. In that case, we are in a circular iteration of <em>k</em> steps &ndash; and we will never get out.</p>
+<p>This maladay is manifested by so-called <em>connected</em>&nbsp;<a target="_parent" href="https://en.wikipedia.org/wiki/Julia_set" title="Fatou/Julia Sets" class="external">Fatou sets</a>&nbsp;that can also appear in our maps. Entwined among the basins of attraction of every degree <em>n</em> polynomial, <em>f<sub>n</sub>(z)</em> is a Fatou set of one lower degree. It is typically disconnected, the set forming <a target="_parent" href="https://en.wikipedia.org/wiki/Cantor_set#Cantor_dust" title="Cantor Dust" class="external">Cantor dust</a>., but can be connected. That is, the set is bounded by a connected Julia set which cleaves the complex plane into disjoint sets. One set, the trial values that are parts of honey-pot loops, form the interiors of the Fatou sets. Trial values within these sets never converge on a root, they just boomerang around. With disconnected Fatou sets, convergence is almost always possible; it is vanishingly unlikely to choose a dust mote of Cantor dust and bounce around forever.</p>
+<p>Failure of convergence because we're gooed to a honey-pot is not catastrophic for our purposes. We are painters of basins of attraction, and, by extension, basins of non-attraction. If a trial value runs to the weeds, we just paint it another pretty color, an additional bit for the<a target="_parent" href="https://en.wikipedia.org/wiki/Rikka" title="Rikka" class="external"><em> rikka</em></a>.</p>
+<h3 id="RenderingBasins">Rendering Basins</h3>
+<p>The image that <tt>-newtonraphson</tt> produces is not strikingly beautiful. It is intended to be rendered. By design, we separate computation and presentation into distinct tasks. A basic rendering script might employ <a target="_parent" href="_map.shtml" title="Map " class="internal"><tt>-map</tt></a> to associate colors to the root-assignment channel, then alter this coloration as a function of the iteration values. Here's a use of <tt>-newtonraphson</tt> that goes along those lines:</p>
+<pre>$ gmic                   \
+   wp='{2^16-1}'         \
+   -input 300,300,1,2    \
+   -input '(1,-0.5,-0.5^0.0,0.866025403784,-0.866025403784)' \
+   -newtonraphson[-2] [-1],-0.75,0,3.5                       \
+   -rm.                  \
+   -split. c             \
+   -input '(150,250,200^30,260,150^180,7,220)' \
+   -map[-3] [-1]         \
+   -rm.                  \
+   -mul. -1              \
+   -normalize. 0,1       \
+   -pow. 0.75            \
+   -mul[-2,-1]           \
+   -normalize. 0,'{$wp}' \
+   -output. nr_00.png
+</pre>
+<p>Here, we are depicting the basins of attraction for the cubic polynomial <em>z<sup>3</sup> &ndash; 1</em> which has three roots in the complex plane at<span><!--?xml version="1.0" encoding="UTF-8"?--> <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"> <semantics> <mrow> <mrow> <mn>1</mn> <mo stretchy="false">+</mo> <mn>0</mn> </mrow> <mi>j</mi> </mrow> <annotation encoding="StarMath 5.0">1 + 0j</annotation> </semantics> </math><!--?xml version="1.0" encoding="UTF-8"?--> </span>, <span> <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"> <semantics> <mrow> <mrow> <mfrac> <mrow> <mo stretchy="false">&minus;</mo> <mn>1</mn> </mrow> <mn>2</mn> </mfrac> <mo stretchy="false">+</mo> <msqrt> <mfrac> <mn>3</mn> <mn>4</mn> </mfrac> </msqrt> </mrow> <mi>j</mi> </mrow> <annotation encoding="StarMath 5.0">- {1} over {2} + sqrt{ {3} over {4} }j</annotation> </semantics> </math></span> and<span><!--?xml version="1.0" encoding="UTF-8"?--> <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"> <semantics> <mrow> <mrow> <mfrac> <mrow> <mo stretchy="false">&minus;</mo> <mn>1</mn> </mrow> <mn>2</mn> </mfrac> <mo stretchy="false">&minus;</mo> <msqrt> <mfrac> <mn>3</mn> <mn>4</mn> </mfrac> </msqrt> </mrow> <mi>j</mi> </mrow> <annotation encoding="StarMath 5.0">- {1} over {2} - sqrt{ {3} over {4} }j</annotation> </semantics> </math></span>.</p>
+<p>And this is the result:</p>
+<div id="FigureTwo" style="width: 3.5in; height: 3.5in; border: none; padding: 0in; float: left;">
+<p><a target="_parent" href="img/_fill_newtonraphson_19.jpg" class="highslide" onclick="return hs.expand(this)" title="Newton-Raphson Fractal"><img src="http://www.particularart.com/static/media/uploads/command_reference/fill/newton_raphson_xcube_minus_one_09.png" alt="Newton-Raphson fractal" title="Newton-Raphson fractal" class="img_left_nospacetop" style="margin: 3px; border: 0px solid #7f7f82;" width="300px" height="300px" /></a></p>
+<p><em>Newton-Raphson fractal</em></p>
+</div>
+<h3 id="NewMathExpressionFeatures">New Math Expression Features</h3>
+<p>Creating a map of how a grid of values behaves under a Newton-Raphson iteration was not possible with earlier versions of G'MIC; the basic "do until these trial values converges to a root", which lies at the heart of <tt>-newtonraphson</tt>, requires a proximity test at the end of each iteration. Now the language offers <tt>dowhile(...)</tt> and <tt>for(...)</tt> for such open-ended, "until such-and-so prevails" testing. <tt>dowhile(...)</tt> executes an iteration, then tests; <tt>for(...)</tt> tests, then executes an iteration. <tt>whiledo(...)</tt> is a convenience variant of <tt>for(...)</tt> with an argument list that mirrors <tt>dowhile(...)</tt>.</p>
+<p>With these, math expressions may perform conditional iteration, giving rise to more elaborate algorithms. To accommodate longer scripts, the math expression parser is more flexible with white space, so that expressions may be formatted in a way to illuminate their structure and workflow.</p>
+<p>Expanded vector and matrix datatypes turn math expressions into true pixel processors, as math expressions which return vectors can set the entire pixel in one atomic assignment. This reduces iteration counts as it is not necessary to iterate over individual channels.</p>
+<h4 id="ControlLoops">Control Loops</h4>
+<p>The math expression control loop constructs are implemented as functions which take expressions as arguments and return the result of the last executing statement, or, in the case of <tt>for(...)</tt>, the Not_A_Number token for the possibility that an initial terminating condition is positive at the outset, so that none of the other expression arguments execute. <tt>for(...)</tt> tests and executes; <tt>dowhile(...)</tt> executes and tests. <tt>whiledo(...)</tt> is a convenience function that, like <tt>for(...)</tt>, tests and executes, but has an argument list that mirrors <tt>dowhile(...)</tt>, and, in certain circumstances, expresses logic more clearly and is easier to set up, having two arguments instead of four. Like <tt>for(...)</tt>, <tt>whiledo(...)</tt> could return <tt>NAN</tt> if its condition expression initially terminates without ever executing the procedure body.</p>
+<h4 id="Whitespace">Whitespace</h4>
+<p>If we take a deep breath and squint sideways, we see that the form of the&nbsp;<tt>-fill</tt>&nbsp;command is no difference in quality than what has gone on before:</p>
+<ul>
+<li>
+<pre>-fill[&lt;targets&gt;] &ldquo;&lt;<em>math_expression</em>&gt;&rdquo;</pre>
+</li>
+</ul>
+<p>which can be rendered at a slightly higher resolution:</p>
+<ul>
+<li>
+<pre>-fill[&lt;targets&gt;] <em>&ldquo;&lt;math_partial_expression&gt;&rdquo;</em>$<em>&lt;command_variable&gt;</em>&ldquo;<em>&lt;math_partial_expression&hellip;&gt;</em>&rdquo;</pre>
+</li>
+</ul>
+<p>Here, a double-quotation marks alert the math expression parser that white space may be used to "pretty-format" the math expression. Historically, G'MIC math expressions had all the charm of Perl Regular Expressions, which, from a casual glance, had the appearance of those final sputter of characters before communication lines drop. Double quoted math expressions may be broken into several lines, indented, and, with care, have white space inserted around operator tokens.</p>
+<p>Double-quoted math expressions require special precautions when mixing with command level variables, as the sequence $<em>&lt;variable_name&gt;</em>&nbsp; will be protected from substitution when such appears within double quotes. Mixing in command level variables entails furnishing a closing quote to the partial math expression immediately preceding the command level variable, then an opening quote immediately following the command level variable. One can easily, and mistakenly, invert this context and think of the command line variable being quoted instead. When performing its substitutions, the command parser concatenates the substituted variables and the math sub-expressions, making one complete math expression, which is then given to the math expression parser.</p>
+<h4 id="Vectors">Vectors</h4>
+<p>Lists have been with G'MIC math expressions for some time, which supported basic, vector-like operations. G'MIC supports vectors more formally with the 2.0 release.</p>
+<p>Specify vectors by bracketing lists with square brackets '<tt>[</tt>' and '<tt>]</tt>'.</p>
+<ul>
+<li>
+<pre>gmic foo='{[3,4,9,2,1]}'
+    [gmic]-0./ Start G'MIC interpreter.
+    [gmic]-0./ Set local variable foo='3,4,9,2,1'.
+    [gmic]-0./ End G'MIC interpreter.
+   </pre>
+</li>
+</ul>
+<p>Or use the <tt>vector(...)</tt> constructor:</p>
+<ul>
+<li>
+<pre>gmic foo='{vector(3,4,9,2,1)}'
+[gmic]-0./ Start G'MIC interpreter.
+[gmic]-0./ Set local variable foo='3,4,9,2,1'.
+[gmic]-0./ End G'MIC interpreter.
+</pre>
+</li>
+</ul>
+<p>Appending a number to the constructor name creates vectors of specific length:</p>
+<ul>
+<li>
+<pre>gmic foo='{vector7(3,4,9)}'
+[gmic]-0./ Start G'MIC interpreter.
+[gmic]-0./ Set local variable foo='3,4,9,3,4,9,3'.
+[gmic]-0./ End G'MIC interpreter.
+</pre>
+</li>
+</ul>
+<p>You do not have to provide an argument list equal to the specified length of the vector. The math expression parser iterates over the argument list as many times as necessary to automatically complete the vector. Here, we specified a vector length of seven elements, but provided only three. The math expression parser iterated over the argument list three times (creating nine elements), then truncating the 2 excess elements in final iteration, making a vector of the desired length of seven.</p>
+<p>The number following the constructor name can be one of the predefined positive environmental variables such as those describing image topology. Observe that in <tt>-newtonraphson:</tt> we set the check vector, <tt><strong>Q</strong></tt> to the length of the argument image:</p>
+<ul>
+<li>
+<pre>Q  = vectorw#-1()
+</pre>
+</li>
+</ul>
+<p>Note the expression <tt>w#-1</tt>, appended to the constructor name where a literal number could have been written. With this notation, the length of the check vector can be however long it needs to be to accommodate the number of roots contained in the argument image.</p>
+<p>Note too that the argument list is empty in this example. In this case, the math expression parser creates a vector with zero-valued elements.</p>
+<p>The math expression parser performs element-wise operations with vectors:</p>
+<ul>
+<li>
+<pre>gmic five_sixes='{vector(1,2,3,4,5)+vector(5,4,3,2,1)}'
+[gmic]-0./ Start G'MIC interpreter.
+[gmic]-0./ Set local variable five_sixes='6,6,6,6,6'.
+[gmic]-0./ End G'MIC interpreter.
+</pre>
+</li>
+<li>
+<pre>gmic zero_cross='{vector(1,2,3,4,5)-vector(5,4,3,2,1)}'
+[gmic]-0./ Start G'MIC interpreter.
+[gmic]-0./ Set local variable zero_cross='-4,-2,0,2,4'.
+[gmic]-0./ End G'MIC interpreter.
+</pre>
+</li>
+<li>
+<pre>gmic up_slope='{vector(1,2,3,4,5)/vector(5,4,3,2,1)}'
+[gmic]-0./ Start G'MIC interpreter.
+[gmic]-0./ Set local variable up_slope='0.20000000000000001,0.5,1,2,5'.
+[gmic]-0./ End G'MIC interpreter.
+</pre>
+</li>
+<li>
+<pre>gmic peak='{vector(1,2,3,4,5)*vector(5,4,3,2,1)}'
+[gmic]-0./ Start G'MIC interpreter.
+[gmic]-0./ Set local variable peak='5,8,9,8,5'.
+[gmic]-0./ End G'MIC interpreter.
+</pre>
+</li>
+</ul>
+<p>The math expression parser throws an exception if vectors in these kind of pairwise operations do not have equal lengths.</p>
+<p>Scalars may offset or scale vectors:</p>
+<ul>
+<li>
+<pre>gmic below_zero='{vector(1,2,3,4,5)-6}'
+[gmic]-0./ Start G'MIC interpreter.
+[gmic]-0./ Set local variable below_zero='-5,-4,-3,-2,-1'.
+[gmic]-0./ End G'MIC interpreter.
+</pre>
+</li>
+</ul>
+<ul>
+<li>
+<pre>gmic triple_thensome='{vector(1,2,3,4,5)*3.5}' 
+[gmic]-0./ Start G'MIC interpreter.
+[gmic]-0./ Set local variable triple_thensome='3.5,7,10.5,14,17.5'.
+[gmic]-0./ End G'MIC interpreter.
+</pre>
+</li>
+</ul>
+<p>You can address specific vector scalar components with square bracket operators.</p>
+<ul>
+<li>
+<pre>gmic twocube='{cubes=vector(1,2,3,4,5)^3;cubes[1]}'
+[gmic]-0./ Start G'MIC interpreter.
+[gmic]-0./ Set local variable twocube='8'.
+[gmic]-0./ End G'MIC interpreter.
+</pre>
+</li>
+</ul>
+<p>You can address a contiguous sub-vector with a comma operator inside square brackets</p>
+<ul>
+<li>
+<pre>gmic three_middle_cubes='{cubes=vector(1,2,3,4,5)^3;cubes[1,3]}'[gmic]-0./ Start G'MIC interpreter.
+[gmic]-0./ Set local variable three_middle_cubes='8,27,64'.
+[gmic]-0./ End G'MIC interpreter.</pre>
+</li>
+</ul>
+<p>Two-element vectors can be interpreted as complex numbers. <em>a + bj</em> = <tt>[a, b]</tt>. Use complex operators <tt>**</tt> (complex multiplication), <tt>^^</tt> (complex power) and <tt>//</tt> (complex division) to distinguish complex multiplication, power or division from their element-wise counterparts. element-wise addition and substraction are equivalent for both vector2 and complex objects. <tt>-newtonraphson</tt> employed <tt>cabs([a, b])</tt> to compute the complex absolute value; <tt>cconj([a, b])</tt> returns the complex conjugate <em>a &ndash; bj</em>. <tt>cexp([a, b])</tt> returns <em>&epsilon;<sup><i>a+bj</i></sup><em>. </em></em></p>
+<p>As noted above, pixels are vector-like. <tt>I(x, y, z, <tt><strong>interpolation_type</strong></tt>,&nbsp;<tt><strong>boundary_conditions</strong></tt>)</tt> samples the image at column <tt>x</tt>, row <tt>y</tt> and slice <tt>z</tt>, returning a vector with elements corresponding to the channels of the image, the first element corresponding to channel zero. Like its pel counterpart, <tt>i(x, y, z, c)</tt>, <tt>I(x, y, z)</tt> can sample between pixels and takes fractional arguments in support of this. To this end, optional fourth and fifth flag parameters set sampling behavior. The default, <tt><strong>interpolation_type</strong></tt> is <tt>nearest_neighbor</tt> and off-image pixels are black (<tt>Dirichlet</tt>), both these being requested by zero (0) flags. An &nbsp;<tt><strong>interpolation_type</strong></tt> of 1 induces linear interpolation of the sample point between neighboring pixels. A <tt><tt><strong>boundary_condition</strong></tt></tt> of 1 extends the values of edge pixels out to infinity. Under this policy, an off-image sample point is that of the nearest edge pixel (Neumann). A boundary flag of (2, Cyclic) presumes that the image has the manifold of a doughnut, or, more formally, a torus.&nbsp; An off-image sample point wraps around past the far edge and draws data from the corresponding modulo point on the other side of the image. Finally, a boundary flag of (3, Mirror) reflects an off-image sample point off the edge back into an image.</p>
+<h2>Postscript</h2>
+<p>The G'MIC commands <tt>-fill</tt> and <tt>-input</tt> both provide bridges from the command level, where commands operate on images, and the much more fine-grained level of operations on pels and pixels. Even in the earliest versions of G'MIC the math expression parser furnished a limited means of pixel- and pel-level computations, but the scope was akin to scratch-pad computations without a great deal of algorithmic elaboration possible. Perhaps you may have had an exotic convolution kernel in mind. Functions <tt>i(x, y, z, c)</tt> and <tt>j(dx, dy, dz, dc)</tt> helped with sampling around a central pixel, and a decent repertoire of mathematics functions were on hand to implement your ideas. That said, G'MIC as an exploratory tool of algorithms operating on regularly sampled pixel spaces needed to grow in at least two realms: a physical realm, to avail itself of as many core a computer might provide, and an algorithmic realm, to avail itself of the increasingly complex ideas that a graphics filter designer may commit to code. To expand in these two realms, the G'MIC math expression parser underwent about a two year evolution. Somewhere midway through that evolution, David Tschumperl&eacute; posted to his blog <a target="_parent" href="http://opensource.graphics/image-processing-made-easier-with-a-powerful-math-expression-evaluator/">Image processing made easier with a powerful math expression evaluator</a>, which relates many of the motivations he had for undertaking the evolution. Nearly two years on, it is still a good read for those new to this &ldquo;deep&rdquo; side of G'MIC.</p>
+<p>The limiting factor now is the dearth of good working examples of pel and pixel processors, presented in a nice, overarching framework. These will be forthcoming here in the sweet bye-and-bye.</p>
+<p style="text-align: right;"><em>Garry Osgood</em></p>
+
+
+
+   
+</body></html>
