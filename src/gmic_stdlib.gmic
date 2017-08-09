@@ -2649,16 +2649,18 @@ _document_gmic_declaration_latex :
   -endif
 
 _document_gmic_description_latex :
+  is_equivalent={same([{^}],"'(eq. to '",8)}
+  is_default={same([{^}],"'Default value'",13)}
   s0="" s1="~\\\\" s=${s$_is_desc}
   -_document_gmic_replace_latex
-  -if {same([{^}],'"Default value"',13)}  # Reached line as '#@cli : Default value(s) : ... '.
+  -if $is_default # Reached line as '#@cli : Default value(s) : ... '.
     -s +,{':'} -l[^0] -a y -endl -autocrop {':'} -autocrop {'" "'}
     -if {$!>1}
       -replace_str[1] " and ","} and \\\\texttt{"
       -v + -e[] ${-eoff}"\\begin{flushleft}\\Cc{\\textbf{"{0,t}"}:\\\\~\\\\\\hspace*{0.5cm}{\\small $\\bullet$~~\\texttt{"{t}"}}}\\end{flushleft}" -v -
     -else -v + -e[] ${-eoff}$s"~\\\\"{0,t} -v -
     -endif
-  -elif {same([{^}],'"(eq. to "',8)}      # Reached line as '#@cli : (eq. to '-shortcut').'.
+  -elif $is_equivalent # Reached line as '#@cli : (eq. to '-shortcut').'.
     -rows. 8,100% -autocrop. {'.'} -autocrop. {')'} -autocrop. {'" "'}
     -v + -e[] ${-eoff}$s"(\\emph{eq. to} {\\small \\texttt{"{t}"}})." -v -
   -else                                    # Reached line as '#@cli : description'.
@@ -11427,7 +11429,7 @@ _close_binary :
   -channels[keycoords] 0,1
   -i[vote] {keycoords,[w,w]},1,2
 
-  -f[e_normals] "*"$_edgel_lib${-math_lib}"
+  -f[e_normals] $_edgel_lib${-math_lib}"
     const ang_th = cos("$hd_angle"*pi/180);
     if (i>=0,
       breakpoint();
@@ -11519,7 +11521,7 @@ _close_binary :
       ndQ = norm(dQ);
 
       dist = dist(P0,P1,Q0,Q1);
-      ang = acos(dot(dP,dQ)/(ndP*ndQ))*180/pi;
+      ang = acos(abs(dot(dP,dQ))/(ndP*ndQ))*180/pi;
       ratio = min(ndP,ndQ)/max(ndP,ndQ);
       nb_projs = is_proj_in(P0,Q0,Q1) + is_proj_in(P1,Q0,Q1) + is_proj_in(Q0,P0,P1) + is_proj_in(Q1,P0,P1);
       is_contiguous = P0==Q0 || P1==Q0 || P0==Q1 || P1==Q1;
