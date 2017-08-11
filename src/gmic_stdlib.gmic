@@ -11522,7 +11522,7 @@ _close_binary :
 
       dist = dist(P0,P1,Q0,Q1);
       dot = dot(dP,dQ)/(ndP*ndQ);
-      ang = acos( dist>0?abs(dot):(P0==Q0 || P1==Q1)?dot:-dot)*180/pi; # Consider also cases with duplicate point (connected segments).
+      ang = acos(dist>0?abs(dot):(P0==Q0 || P1==Q1)?dot:-dot)*180/pi; # Manage also connected segments (duplicate point).
       ratio = min(ndP,ndQ)/max(ndP,ndQ);
       nb_projs = is_proj_in(P0,Q0,Q1) + is_proj_in(P1,Q0,Q1) + is_proj_in(Q0,P0,P1) + is_proj_in(Q1,P0,P1);
 
@@ -25821,10 +25821,10 @@ fx_autofill_lineart_preview :
 #@gui : Allow self intersections = bool(1)
 #@gui : sep = separator(), note = note{"<small><b>Hatch detection:</b> <span color="red">(work-in-progress, still slow!)</span></small>"}
 #@gui : Detection rate = float(0,0,1)
-#@gui : Max segment curvature (deg) = float(25,0,180)
+#@gui : Max segment curvature (deg) = float(20,0,180)
 #@gui : Max grouping distance (px) = float(64,0,1024)
-#@gui : Max grouping angle (deg) = float(5,0,180)
-#@gui : Max grouping ratio = float(0.2,0,1)
+#@gui : Max grouping angle (deg) = float(7.5,0,180)
+#@gui : Max grouping ratio = float(0.5,0,1)
 #@gui : sep = separator(), Preview type = choice(0,"Colored geometry","Colored regions","Colored lineart")
 #@gui : sep = separator(), note = note("<small>Authors: <i>David Tschumperl&#233;</i>, <i>S&#233;bastien Fourey</i> and <i>David Revoy</i>.      Latest update: <i>2017/03/08</i>.</small>")
 fx_colorize_lineart_smartcoloring :
