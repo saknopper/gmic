@@ -10945,10 +10945,10 @@ circle : -skip ${4=1},${5=0},${6=0}
 #@cli close_binary : 0<=_endpoint_rate<=100,_endpoint_connectivity>=0,_spline_distmax>=0,_segment_distmax>=0,0<=_spline_anglemax<=180,_spline_roundness>=0,_area_min>=0,_allow_self_intersection={ 0 | 1 },0<=_hd_detection_rate<=1,0<=_hd_angle<=180,_hd_grouping_dist>=0,0<=_hd_grouping_angle<=180,0<=_hd_grouping_ratio<=1
 #@cli : Automatically close open shapes in binary images (defining white strokes on black background).
 #@cli : Parameter names starting with 'hd_' are related to the hatch detection algorithm. Set 'hd_detection_rate>0' to disable this module.
-#@cli : Default values: 'endpoint_rate=85', 'endpoint_connectivity=2', 'spline_distmax=80', 'segment_distmax=20', 'spline_anglemax=90', 'spline_roundness=1','area_min=100', 'allow_self_intersection=1', 'hd_detection_rate=0', 'hd_angle=25', 'hd_grouping_dist=64', 'hd_grouping_angle=20' and 'hd_grouping_ratio=0.2'.
+#@cli : Default values: 'endpoint_rate=85', 'endpoint_connectivity=2', 'spline_distmax=80', 'segment_distmax=20', 'spline_anglemax=90', 'spline_roundness=1','area_min=100', 'allow_self_intersection=1', 'hd_detection_rate=0', 'hd_angle=25', 'hd_grouping_dist=64', 'hd_grouping_angle=5' and 'hd_grouping_ratio=0.2'.
 close_binary :
   -check "${1=85}>=0 && $1<=100 && ${2=2}>=0 && ${3=80}>=0 && ${4=20}>=0 && ${5=90}>=0 && $5<=180 && ${6=1}>=0 && ${7=100}>=0 && isval(${8=1})"
-  -check "${9=0}>=0 && $9<=1 && ${10=25}>=0 && $10<=180 && ${11=64}>=0 && ${12=20}>=0 && $12<=180 && ${13=0.2}>=0 && $13<=1"
+  -check "${9=0}>=0 && $9<=1 && ${10=25}>=0 && $10<=180 && ${11=64}>=0 && ${12=5}>=0 && $12<=180 && ${13=0.2}>=0 && $13<=1"
   -e[^-1] "Close open shapes in binary image$?, with endpoint rate $1, endpoint connectivity $2, spline max distance $3, segment max distance $4, spline max angle $5, "\
           "spline roundness $6, area min $7 and self intersections "${"-arg 1+!$8,allowed,\"not allowed\""}"."
 
@@ -11517,16 +11517,16 @@ _close_binary :
       _J = I[k]; j0 = _J[0]; j1 = _J[1]; p = _J[2];
       Q0 = I[#"$keycoords",j0];
       Q1 = I[#"$keycoords",j1];
-      dQ =  Q1 - Q0;
+      dQ = Q1 - Q0;
       ndQ = norm(dQ);
 
       dist = dist(P0,P1,Q0,Q1);
-      ang = acos(abs(dot(dP,dQ))/(ndP*ndQ))*180/pi;
+      dot = dot(dP,dQ)/(ndP*ndQ);
+      ang = acos( dist>0?abs(dot):(P0==Q0 || P1==Q1)?dot:-dot)*180/pi; # Consider also cases with duplicate point (connected segments).
       ratio = min(ndP,ndQ)/max(ndP,ndQ);
       nb_projs = is_proj_in(P0,Q0,Q1) + is_proj_in(P1,Q0,Q1) + is_proj_in(Q0,P0,P1) + is_proj_in(Q1,P0,P1);
-      is_contiguous = P0==Q0 || P1==Q0 || P0==Q1 || P1==Q1;
 
-      if (dist<="$hd_grouping_dist" && ang<="$hd_grouping_angle" && ratio>="$hd_grouping_ratio" && nb_projs>=1 && !is_contiguous,
+      if (dist<="$hd_grouping_dist" && ang<="$hd_grouping_angle" && ratio>="$hd_grouping_ratio" && nb_projs>=1,
         if (p<0,  # Had no parents before
           i(k,0,0,2) = parent;
         _(else),  # Had a parent before
@@ -25823,7 +25823,7 @@ fx_autofill_lineart_preview :
 #@gui : Detection rate = float(0,0,1)
 #@gui : Max segment curvature (deg) = float(25,0,180)
 #@gui : Max grouping distance (px) = float(64,0,1024)
-#@gui : Max grouping angle (deg) = float(20,0,180)
+#@gui : Max grouping angle (deg) = float(5,0,180)
 #@gui : Max grouping ratio = float(0.2,0,1)
 #@gui : sep = separator(), Preview type = choice(0,"Colored geometry","Colored regions","Colored lineart")
 #@gui : sep = separator(), note = note("<small>Authors: <i>David Tschumperl&#233;</i>, <i>S&#233;bastien Fourey</i> and <i>David Revoy</i>.      Latest update: <i>2017/03/08</i>.</small>")
