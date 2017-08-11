@@ -17,7 +17,7 @@
 AppName={#AppName}
 AppVersion=XXX
 AppPublisherURL=http://gmic.eu/
-DefaultDirName={%USERPROFILE|{userdesktop}\..}\.gimp-2.8\plug-ins\
+DefaultDirName={%USERPROFILE|{userdesktop}\..}\.gimp-2.8\plug-ins\gmic_gimp_gtk\
 DefaultGroupName={#AppName}
 UninstallDisplayIcon={app}\gmic_gimp_gtk.exe
 LicenseFile={#file AddBackslash(SourcePath) + "CeCILL.rtf"}
