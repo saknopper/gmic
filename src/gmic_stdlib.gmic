@@ -11403,9 +11403,9 @@ _close_binary :
     -f.. "init(off = 0); if(i, I[#-1,off++] = [ x,y,-1]); i"
     -k.
   -endl
-    -a[-2,-1] x -nm. keycoords
-    -i[keypoints] [e_normals],[e_normals]
-    -f[keycoords] "P = I; i(#-1,P[0],P[1]) = 1 + x; I"
+  -a[-2,-1] x -nm. keycoords
+  -i[keypoints] [e_normals],[e_normals]
+  -f[keycoords] "P = I; i(#-1,P[0],P[1]) = 1 + x; I"
 
   # Manage visualization
   -if {narg($_visu)}
