@@ -27,20 +27,20 @@
 
  These user interfaces are:
 
- 1 - A command-line interface gmic, to use the G'MIC image processing features
+ 1 - A command-line interface 'gmic', to use the G'MIC image processing features
      from a shell. In this setting, G'MIC may be seen as a friendly companion to
      the ImageMagick or GraphicsMagick software suites.
 
  2 - A small, portable, thread-safe and multi-threaded, C++ image processing
-     library libgmic, to be linked to third-party applications. Its simple API
+     library 'libgmic', to be linked to third-party applications. Its simple API
      allows programmers to add all G'MIC features in their own software without
      much efforts (a C API is provided as well).
 
- 3 - A plug-in gmic_gimp, to bring G'MIC capabilities to the image retouching
-     software GIMP. More than 450 filters are already available, sorted by
-     category (Artistic, Black & white, Colors, Contours, Deformations,
-     Degradations, Details, Film emulation, Frames, Layers, Light & shadows,
-     Patterns, Rendering, Repair, Sequences, etc.).
+ 3 - A plug-in 'gmic_gimp_qt' (or 'gmic_gimp_gtk'), to bring G'MIC capabilities
+     to the image retouching software GIMP. More than 450 filters are already
+     available, sorted by category (Artistic, Black & white, Colors, Contours,
+     Deformations, Degradations, Details, Film emulation, Frames, Layers,
+     Light & shadows, Patterns, Rendering, Repair, Sequences, etc.).
 
  4 - A web service G'MIC Online, to allow users applying image processing
      algorithms on their images, directly from a web browser.
