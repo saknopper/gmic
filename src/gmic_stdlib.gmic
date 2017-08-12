@@ -4617,11 +4617,11 @@ _update_server_binaries :
     -done
     -if {$n<$N}
       -if {!($t%4)}
-        remaining= sep= t+=1
+        remaining= sep=
         -repeat $N -if {narg(${file$>})} remaining.=$sep${file$>} sep=", " -endif -done
         -v + -e[] "- Waiting for files: "$remaining"..." -v -
       -endif
-      -wait 5000
+      -wait 5000 t+=1
     -endif
   -while {$n<$N" && "$|<$t0+60*60*4}
   -v +
