@@ -4326,7 +4326,7 @@ CImg<char> gmic::substitute_item(const char *const source,
           if (!std::strcmp(__variables_names[l],name)) {
             is_name_found = true; ind = l; break;
           }
-        if (is_name_found) {
+        if (is_name_found) { // Regular variable
           if (__variables[ind].size()>1)
             CImg<char>(__variables[ind].data(),(unsigned int)(__variables[ind].size() - 1)).
               append_string_to(substituted_items,ptr_sub);
@@ -4335,11 +4335,11 @@ CImg<char> gmic::substitute_item(const char *const source,
             if (images_names[l] && !std::strcmp(images_names[l],name)) {
               is_name_found = true; ind = l; break;
             }
-          if (is_name_found) {
+          if (is_name_found) { // Latest image indice
             cimg_snprintf(substr,substr.width(),"%d",ind);
             CImg<char>(substr.data(),(unsigned int)std::strlen(substr),1,1,1,true).
               append_string_to(substituted_items,ptr_sub);
-          } else {
+          } else { // ENvironment variable
             const char *const s_env = std::getenv(name);
             if (s_env) CImg<char>(s_env,(unsigned int)std::strlen(s_env),1,1,1,true).
                          append_string_to(substituted_items,ptr_sub);
