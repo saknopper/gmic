@@ -4239,7 +4239,7 @@ CImg<char> gmic::substitute_item(const char *const source,
         is_braces = true;
       }
 
-      // Substitute '$?' -> String that describes the current command selection.
+      // Substitute '$?' -> String to describes the current command selection.
       if (nsource[1]=='?') {
         if (command_selection) {
           const unsigned int substr_width = (unsigned int)substr.width();
@@ -4249,6 +4249,18 @@ CImg<char> gmic::substitute_item(const char *const source,
           substr.assign(substr_width);
           nsource+=2;
         } else CImg<char>::append_string_to(*(nsource++),substituted_items,ptr_sub);
+
+        // Substitute '$[' -> Command selection.
+      } else if (nsource[1]=='[') {
+        if (command_selection) {
+          cimg_forY(*command_selection,i) {
+            cimg_snprintf(substr,substr.width(),"%d,",(*command_selection)[i]);
+            CImg<char>(substr.data(),(unsigned int)std::strlen(substr),1,1,1,true).
+              append_string_to(substituted_items,ptr_sub);
+          }
+          if (command_selection->_height) --ptr_sub;
+        } else CImg<char>::append_string_to(*(nsource++),substituted_items,ptr_sub);
+        nsource+=2;
 
         // Substitute '$!' -> Number of images in the list.
       } else if (nsource[1]=='!') {
