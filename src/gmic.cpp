@@ -2589,7 +2589,7 @@ CImgList<char> gmic::commands_line_to_CImgList(const char *const commands_line) 
     } else if (is_dquoted) { // If non-escaped character inside string.
       if (c=='\"') is_dquoted = false;
       else if (c==1) while (c && c!=' ') c = *(++ptrs); // Discard debug info inside string.
-      else *(ptrd++) = (c=='$' && ptrs[1]!='?')?gmic_dollar:c=='{'?gmic_lbrace:c=='}'?gmic_rbrace:
+      else *(ptrd++) = (c=='$' && ptrs[1]!='?' && ptrs[1]!='[')?gmic_dollar:c=='{'?gmic_lbrace:c=='}'?gmic_rbrace:
              c==','?gmic_comma:c;
     } else { // Non-escaped character outside string.
       if (c=='\"') is_dquoted = true;
@@ -4240,6 +4240,9 @@ CImg<char> gmic::substitute_item(const char *const source,
       }
 
       // Substitute '$?' -> String to describes the current command selection.
+
+      std::fprintf(stderr,"\nDEBUG : char = %c = %d\n",nsource[1],nsource[1]);
+
       if (nsource[1]=='?') {
         if (command_selection) {
           const unsigned int substr_width = (unsigned int)substr.width();

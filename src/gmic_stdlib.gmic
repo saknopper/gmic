@@ -18592,6 +18592,11 @@ RGB :
 RGBA :
   -v - -u {round(u(255))},{round(u(255))},{round(u(255))},{round(u(255))} -v +
 
+#@cli std_noise
+#@cli : Return the estimated noise standard deviation of the last selected image.
+std_noise :
+  -v - -if $! --laplacian. --. {ic} -abs. -u {1.4826*ic/sqrt(d==1?20:42)} -rm. -else -u 0 -endif -v +
+
 #@cli str : string
 #@cli : Print specified string into its binary, octal, decimal and hexadecimal representations.
 str : -skip $1
@@ -18686,11 +18691,6 @@ tic :
 toc :
   -v - _ticpos={$_ticpos-1} -u {_$|-${_tic$_ticpos}} -v +
   -e[^-1] "Elapsed time: "${}" s".
-
-#@cli std_noise
-#@cli : Return the estimated noise standard deviation of the last selected image.
-std_noise :
-  -v - -if $! --laplacian. --. {ic} -abs. -u {1.4826*ic/sqrt(d==1?20:42)} -rm. -else -u 0 -endif -v +
 
 #-------------------------------------
 #
