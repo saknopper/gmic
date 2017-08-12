@@ -563,8 +563,8 @@ _help_usage :
 \n       . '"$c"$!"$n"': The current number of images in the list.
 \n       . '"$c"$>"$n"' and '"$c"$<"$n"': The increasing/decreasing indice of the latest (currently running)
 \n          '"${c}"repeat...done"$n"' loop.
-\n       . '"$c"$[]"$n"': The indices of the last image selection used to invoke the current command.
-\n       . '"$c"$""?"$n"': A displayable version of '"$c"$["$n"' to be used in command descriptions.
+\n       . '"$c"$[]"$n"': The image selection indices that have been specified for current command invokation.
+\n       . '"$c"$""?"$n"': A printable version of '"$c"$["$n"' to be used in command descriptions.
 \n       . '"$c"$/"$n"': The current call stack. Stack items are separated by slashes '"$g"/"$n"'.
 \n       . '"$c"$|"$n"': The current value (expressed in seconds) of a millisecond precision timer.
 \n       . '"$c"$^"$n"': The current verbosity level.
