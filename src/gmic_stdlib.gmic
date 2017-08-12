@@ -563,8 +563,6 @@ _help_usage :
 \n       . '"$c"$!"$n"': The current number of images in the list.
 \n       . '"$c"$>"$n"' and '"$c"$<"$n"': The increasing/decreasing indice of the latest (currently running)
 \n          '"${c}"repeat...done"$n"' loop.
-\n       . '"$c"$[]"$n"': The image selection indices that have been specified for current command invokation.
-\n       . '"$c"$""?"$n"': A printable version of '"$c"$["$n"' to be used in command descriptions.
 \n       . '"$c"$/"$n"': The current call stack. Stack items are separated by slashes '"$g"/"$n"'.
 \n       . '"$c"$|"$n"': The current value (expressed in seconds) of a millisecond precision timer.
 \n       . '"$c"$^"$n"': The current verbosity level.
@@ -1019,8 +1017,9 @@ _help_usage :
 \n       double-quoted.
 \n    . '"$c"$""#"$n"' is substituted by the maximum indice of known arguments (either specified by the user
 \n       or set to a default value in the custom command).
-\n    . '"$c"$""?"$n"' is substituted by a string telling about the command subset restriction (only useful
-\n       when custom commands need to output descriptive messages).
+\n    . '"$c"$[]"$n"' is substituted by the list of selected image indices that have been specified during the
+\n       command invokation.
+\n    . '"$c"$""?"$n"' is substituted by a printable version of '"$c"$""[]"$n"' to be used in command descriptions.
 \n    . '"$c"$i"$n"' and '"$c"${i}"$n"' are both substituted by the "${g}"i^th"$n" specified argument. Negative indices such as
 \n       '"$c"${-j}"$n"' are allowed and refer to the "${g}"j^th"$n" latest argument. '"$c"$""0"$n"' is substituted by the
 \n       custom command name.

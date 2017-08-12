@@ -4259,8 +4259,8 @@ CImg<char> gmic::substitute_item(const char *const source,
               append_string_to(substituted_items,ptr_sub);
           }
           if (command_selection->_height) --ptr_sub;
+          nsource+=3;
         } else CImg<char>::append_string_to(*(nsource++),substituted_items,ptr_sub);
-        nsource+=3;
 
         // Substitute '$!' -> Number of images in the list.
       } else if (nsource[1]=='!') {
