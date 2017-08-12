@@ -264,14 +264,14 @@ _help_usage :
 \n    It can be used to convert, manipulate, filter and visualize image datasets made of one
 \n    or several 1d/2d or 3d multi-spectral images.
 \n
-\n    This reference documentation describes all technical rules governing the "${-GMIC}" language.
-\n    As a starting point, you may be rather interested by our detailed tutorial pages, at:
+\n    This reference documentation describes all the technical rules governing the "${-GMIC}" language.
+\n    As a starting point, you may want to visit our detailed tutorial pages, at:
 \n     "${r}"http://gmic.eu/tutorial/"$n
 
   -_help_section "Overall context"
 
   -_help_paragraph "  - At any time, "${-GMIC}" manages one list of numbered (and optionally named) pixel-based images,
-\n     entirely stored (not compressed) in computer memory.
+\n     entirely stored in computer memory (uncompressed).
 \n
 \n  - The first image of the list has indice '"${g}"0"$n"' and is denoted by '"$c"[0]"$n"'. The second image of the
 \n     list is denoted by '"$c"[1]"$n"', the third by '"$c"[2]"$n"' and so on.
@@ -282,15 +282,15 @@ _help_usage :
 \n
 \n  - A named image may be also indicated by '"$c"[name]"$n"', if '"${g}"name"$n"' uses the character set "$g"[a-zA-Z0-9_]"$n"
 \n     and does not start with a number. Image names can be set or reassigned at any moment during
-\n     the processing pipeline (see commands '"$c"-name"$n"' and '"$c"-input"$n"' for this purpose).
+\n     the processing pipeline (see command '"$c"-name"$n"' for this purpose).
 \n
 \n  - "${-GMIC}" defines a set of various commands and substitution mechanisms to allow the design of
 \n     complex pipelines and operators managing this list of images, in a very flexible way:
-\n     You can insert or remove images in the list, rearrange image indices, process images
+\n     You can insert or remove images in the list, rearrange image order, process images
 \n     (individually or grouped), merge image data together, display and output image files, etc.
 \n
-\n  - Such a pipeline can be written itself as a custom "${-GMIC}" command storable in a user
-\n     command file, and can be re-used afterwards in another pipeline if necessary."
+\n  - Such a pipeline can be then added as a new custom "${-GMIC}" command (stored in a user
+\n     command file), so it can be re-used afterwards in another pipeline if necessary."
 
   -_help_section "Image definition and terminology"
 
@@ -302,11 +302,11 @@ _help_usage :
 \n    . '"${g}"width"$n"', the number of image columns (size along the "$g"'x'-axis"$n").
 \n    . '"${g}"height"$n"', the number of image rows (size along the "$g"'y'-axis"$n").
 \n    . '"${g}"depth"$n"', the number of image slices (size along the "$g"'z'-axis"$n").
-\n        (the depth is equal to 1 for usual color or grayscale 2d images).
+\n        (the depth is equal to "${g}"1"$n" for usual color or grayscale 2d images).
 \n    . '"${g}"spectrum"$n"', the number of image channels (size along the "$g"'c'-axis"$n").
 \n        (the spectrum is respectively equal to "${g}"3"$n" and "${g}"4"$n" for usual "${g}"RGB"$n" and "${g}"RGBA"$n" color images).
 \n
-\n  - There are no hard limitations on the size the image along each dimension. For instance,
+\n  - There are no hard limitations on the size of the image along each dimension. For instance,
 \n     the number of image slices or channels can be of arbitrary size within the limits of
 \n     the available memory.
 \n
@@ -318,7 +318,7 @@ _help_usage :
 \n  - "${-GMIC}" stores all the image data as buffers of '"${g}"float"$n"' values (32 bits, value range
 \n     "$g"[-3.4E38,+3.4E38]"$n"). It performs all its image processing operations with floating point
 \n     numbers. Each image pixel takes then 32bits/channel (except if double-precision buffers have
-\n     been enabled during the compilation of the software, in which case 64bits/channel is the
+\n     been enabled during the compilation of the software, in which case 64bits/channel can be the
 \n     default).
 \n
 \n  - Considering '"${g}"float"$n"'-valued pixels ensure to keep the numerical precision when executing
@@ -337,8 +337,8 @@ _help_usage :
 \n
 \n     defines a valid pipeline composed of nine "${-GMIC}" items.
 \n
-\n  - Each "${-GMIC}" item is a string that is either a command, a list of command arguments,
-\n     a filename, or a special input string.
+\n  - Each "${-GMIC}" item is a string that is either a "${g}"command"$n", a list of command "${g}"arguments"$n",
+\n     a "${g}"filename"$n", or a special "${g}"input string"$n".
 \n
 \n  - Escape characters '"$g"\\"$n"' and double quotes '"$g"\""$n"' can be used to define items containing spaces or
 \n     other special characters. For instance, the two strings '"${c}"single\\ item"$n"' and '"${c}"\"single item\""$n"'
@@ -23543,7 +23543,7 @@ _gui_download_all_data :
 #@gui : To do so, you need to create a <span foreground="purple" style="italic">.gmic</span>
 #@gui : file in your <i>$HOME/</i> folder (or <i>%APPDATA%/user.gmic</i> on Windows).
 #@gui : It will be read each time the plug-in is launched, or when the <i>Refresh</i>
-#@gui : button (under the central pane) is pressed. It must be a regular ASCII file, containing the declarations and
+#@gui : button (under the central pane) is pressed. It must be a regular ascii file, containing the declarations and
 #@gui : implementations of the filters (written in the <b>G'MIC</b> language) that will be added
 #@gui : to the list of available ones."}
 #@gui : note = note{"
