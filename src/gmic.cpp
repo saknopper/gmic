@@ -2589,7 +2589,7 @@ CImgList<char> gmic::commands_line_to_CImgList(const char *const commands_line) 
     } else if (is_dquoted) { // If non-escaped character inside string.
       if (c=='\"') is_dquoted = false;
       else if (c==1) while (c && c!=' ') c = *(++ptrs); // Discard debug info inside string.
-      else *(ptrd++) = (c=='$' && ptrs[1]!='?' && ptrs[1]!='[')?gmic_dollar:c=='{'?gmic_lbrace:c=='}'?gmic_rbrace:
+      else *(ptrd++) = (c=='$' && ptrs[1]!='?')?gmic_dollar:c=='{'?gmic_lbrace:c=='}'?gmic_rbrace:
              c==','?gmic_comma:c;
     } else { // Non-escaped character outside string.
       if (c=='\"') is_dquoted = true;
@@ -4240,6 +4240,7 @@ CImg<char> gmic::substitute_item(const char *const source,
       }
 
       // Substitute '$?' -> String to describes the current command selection.
+      // (located here to avoid substitution when verbosity<0).
       if (nsource[1]=='?') {
         if (command_selection) {
           const unsigned int substr_width = (unsigned int)substr.width();
@@ -4248,18 +4249,6 @@ CImg<char> gmic::substitute_item(const char *const source,
             append_string_to(substituted_items,ptr_sub);
           substr.assign(substr_width);
           nsource+=2;
-        } else CImg<char>::append_string_to(*(nsource++),substituted_items,ptr_sub);
-
-        // Substitute '$[]' -> Command selection.
-      } else if (nsource[1]=='[' && nsource[2]==']') {
-        if (command_selection) {
-          cimg_forY(*command_selection,i) {
-            cimg_snprintf(substr,substr.width(),"%d,",(*command_selection)[i]);
-            CImg<char>(substr.data(),(unsigned int)std::strlen(substr),1,1,1,true).
-              append_string_to(substituted_items,ptr_sub);
-          }
-          if (command_selection->_height) --ptr_sub;
-          nsource+=3;
         } else CImg<char>::append_string_to(*(nsource++),substituted_items,ptr_sub);
 
         // Substitute '$!' -> Number of images in the list.
@@ -12870,6 +12859,16 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                         if (i!=nb_arguments) CImg<char>::append_string_to(',',substituted_command,ptr_sub);
                       }
                       has_arguments = true;
+
+                      // Substitute $[] -> List of selected image indices.
+                    } else if (nsource[1]=='[' && nsource[2]==']') {
+                      nsource+=3;
+                      cimg_forY(selection,i) {
+                        cimg_snprintf(substr,substr.width(),"%u,",selection[i]);
+                        CImg<char>(substr.data(),(unsigned int)std::strlen(substr),1,1,1,true).
+                          append_string_to(substituted_command,ptr_sub);
+                      }
+                      if (selection) --ptr_sub;
 
                       // Substitute $= -> transfer (quoted) arguments to named variables.
                     } else if (nsource[1]=='=' &&
