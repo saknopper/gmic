@@ -264,8 +264,9 @@ _help_usage :
 \n    It can be used to convert, manipulate, filter and visualize image datasets made of one
 \n    or several 1d/2d or 3d multi-spectral images.
 \n
-\n    This reference documentation describes the rules and technical aspects of the "${-GMIC}" language.
-\n    You may be also interested by our detailed tutorial pages, at: "${r}"http://gmic.eu/tutorial/"$n
+\n    This reference documentation describes all technical rules governing the "${-GMIC}" language.
+\n    As a starting point, you may be rather interested by our detailed tutorial pages, at:
+\n     "${r}"http://gmic.eu/tutorial/"$n
 
   -_help_section "Overall context"
 
