@@ -36,7 +36,7 @@
                       </li>
                       <li>Linux <i>64 bits</i>: <a href="http://gmic.eu/files/prerelease_linux/gmic_gimp_qt_linux64.zip">.zip archive</a></li>
                       <li>Linux <i>32 bits</i>: <a href="http://gmic.eu/files/prerelease_linux/gmic_gimp_qt_linux32.zip">.zip archive</a></li>
-                      <li>Old <i>GTK</i> version (<i>not recommended!</i>):
+                      <li><i>GTK</i> version (<i>less features!</i>):
                         Linux <i>64 bits</i>: <a href="http://gmic.eu/files/prerelease_linux/gmic_gimp_gtk_linux64.zip">.zip archive</a>,
                         Linux <i>32 bits</i>: <a href="http://gmic.eu/files/prerelease_linux/gmic_gimp_gtk_linux32.zip">.zip archive</a>,
                         Windows <i>64 bits</i>:
