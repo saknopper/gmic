@@ -4508,7 +4508,7 @@ void gmic_run(const gchar *name, gint nparams, const GimpParam *param,
   // Create resources directory.
   if (!gmic::init_rc()) {
     std::fprintf(cimg::output(),
-                 "\n[gmic_gimp]./error/ Unable to create resources directory 'gmicrc'.\n");
+                 "\n[gmic_gimp] Unable to create resources folder. Troubles are likely to happen!\n");
     std::fflush(cimg::output());
   }
 
