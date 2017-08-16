@@ -406,7 +406,6 @@ gmicol_rotate :
 #----------------------------
 
 #@web clone("Cartesian transform")
-#@web clone("Circle to square")
 #@web clone("Circle transform")
 #@web clone("Continuous droste")
 #@web clone("Conformal maps")
@@ -448,6 +447,7 @@ gmicol_rotate :
 #@web clone("Reflection")
 #@web clone("Seamcarve")
 #@web clone("Sphere")
+#@web clone("Square to circle")
 #@web clone("Symmetrize")
 #@web clone("Textured glass")
 #@web clone("Twirl")

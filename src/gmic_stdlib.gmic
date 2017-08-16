@@ -27779,53 +27779,6 @@ fx_custom_deformation :
     -a[-2,-1] c -warp.. .,$3,$4,$5,1 -rm.
   -mv. 0 -done
 
-#@gui Circle to square : fx_circle_square, fx_circle_square
-#@gui : Mode = choice(0,"Circle to square","Square to circle")
-#@gui : Interpolation = choice(1,"Nearest neighbor","Linear")
-#@gui : Boundary = choice(0,"Transparent","Nearest","Periodic","Mirror")
-#@gui : sep = separator()
-#@gui : X-factor (%) = float(0,-100,100)
-#@gui : Y-factor (%) = float(0,-100,100)
-#@gui : X-offset (%) = float(0,-300,300)
-#@gui : Y-offset (%) = float(0,-300,300)
-#@gui : sep = separator(), note = note("<small>This filter implements the mapping functions described in this page, by <i>C. Fong</i>:</small>")
-#@gui : url = link("http://squircular.blogspot.com/2015/09/mapping-circle-to-square.html")
-#@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2017/08/16</i>.</small>")
-fx_circle_square :
-  mode,interp,boundary,factx,facty,offx,offy=$*
-  -if {!$boundary} -to_a -endif
-  base="const interpolation = "$interp";
-        const boundary = "$boundary";
-        const offx = "$offx"%;
-        const offy = "$offy"%;
-        const factx = 10^-("$factx"%);
-        const facty = 10^-("$facty"%);
-        const w2 = int(w/2);
-        const h2 = int(h/2);"
-  -if $mode # Square to circle
-    -f $base"
-        const tst = 2*sqrt(2);
-        U = (2*x/(w-1) - 1)*factx + offx;
-        V = (2*y/(h-1) - 1)*facty + offy;
-        U2 = U^2;
-        V2 = V^2;
-        U2mV2 = U2 - V2;
-        X = 0.5*(sqrt(max(0,2 + tst*U + U2mV2)) - sqrt(max(0,2 - tst*U + U2mV2)));
-        Y = 0.5*(sqrt(max(0,2 + tst*V - U2mV2)) - sqrt(max(0,2 - tst*V - U2mV2)));
-        (X+=1)*=w2 - 0.5;
-        (Y+=1)*=h2 - 0.5;
-        I(X,Y)"
-  -else # Circle to square
-    -f $base"
-        X = (2*x/(w-1) - 1)*factx + offx;
-        Y = (2*y/(h-1) - 1)*facty + offy;
-        U = X*sqrt(abs(1 - 0.5*Y^2));
-        V = Y*sqrt(abs(1 - 0.5*X^2));
-        (U+=1)*=w2 - 0.5;
-        (V+=1)*=h2 - 0.5;
-        I(U,V)"
-  -endif
-
 #@gui Circle transform : fx_circle_transform, fx_circle_transform_preview(1)
 #@gui : X-center (%) = float(50,0,100)
 #@gui : Y-center (%) = float(50,0,100)
@@ -28289,6 +28242,53 @@ fx_map_sphere :
 
 fx_map_sphere_preview :
   -fx_map_sphere {w},{h},${3--1}
+
+#@gui Square to circle : fx_square_circle, fx_square_circle
+#@gui : Mode = choice(0,"Square to circle","Circle to square")
+#@gui : Interpolation = choice(1,"Nearest neighbor","Linear")
+#@gui : Boundary = choice(0,"Transparent","Nearest","Periodic","Mirror")
+#@gui : sep = separator()
+#@gui : X-factor (%) = float(0,-100,100)
+#@gui : Y-factor (%) = float(0,-100,100)
+#@gui : X-offset (%) = float(0,-300,300)
+#@gui : Y-offset (%) = float(0,-300,300)
+#@gui : sep = separator(), note = note("<small>This filter implements the mapping functions described in this page, by <i>C. Fong</i>:</small>")
+#@gui : url = link("http://squircular.blogspot.com/2015/09/mapping-circle-to-square.html")
+#@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2017/08/16</i>.</small>")
+fx_square_circle :
+  mode,interp,boundary,factx,facty,offx,offy=$*
+  -if {!$boundary} -to_a -endif
+  base="const interpolation = "$interp";
+        const boundary = "$boundary";
+        const offx = "$offx"%;
+        const offy = "$offy"%;
+        const factx = 10^-("$factx"%);
+        const facty = 10^-("$facty"%);
+        const w2 = int(w/2);
+        const h2 = int(h/2);"
+  -if {!$mode} # Square to circle
+    -f $base"
+        const tst = 2*sqrt(2);
+        U = (2*x/(w-1) - 1)*factx + offx;
+        V = (2*y/(h-1) - 1)*facty + offy;
+        U2 = U^2;
+        V2 = V^2;
+        U2mV2 = U2 - V2;
+        X = 0.5*(sqrt(max(0,2 + tst*U + U2mV2)) - sqrt(max(0,2 - tst*U + U2mV2)));
+        Y = 0.5*(sqrt(max(0,2 + tst*V - U2mV2)) - sqrt(max(0,2 - tst*V - U2mV2)));
+        (X+=1)*=w2 - 0.5;
+        (Y+=1)*=h2 - 0.5;
+        I(X,Y)"
+  -else # Circle to square
+    -f $base"
+        X = (2*x/(w-1) - 1)*factx + offx;
+        Y = (2*y/(h-1) - 1)*facty + offy;
+        U = X*sqrt(abs(1 - 0.5*Y^2));
+        V = Y*sqrt(abs(1 - 0.5*X^2));
+        (U+=1)*=w2 - 0.5;
+        (V+=1)*=h2 - 0.5;
+        I(U,V)"
+  -endif
 
 #@gui Symmetrize : fx_symmetrize, fx_symmetrize_preview(1)
 #@gui : X-center = float(50,0,100)
