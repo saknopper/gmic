@@ -14276,7 +14276,7 @@ int main(int argc, char **argv) {
   // Create resources directory.
   if (!gmic::init_rc()) {
     std::fprintf(cimg::output(),
-                 "\n[gmic] Unable to create resources folder. Troubles are likely to happen!\n");
+                 "\n[gmic] Unable to create resources folder.\n");
     std::fflush(cimg::output());
   }
 
