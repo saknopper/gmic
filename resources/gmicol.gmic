@@ -406,6 +406,7 @@ gmicol_rotate :
 #----------------------------
 
 #@web clone("Cartesian transform")
+#@web clone("Circle to square")
 #@web clone("Circle transform")
 #@web clone("Continuous droste")
 #@web clone("Conformal maps")
