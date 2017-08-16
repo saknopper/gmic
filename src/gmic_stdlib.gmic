@@ -4257,6 +4257,9 @@ update_server :
      "-replace_str \" y-\",\" Y-\" "\
      "-replace_str xy-,XY- "\
      "-f 'y==0&&i>=_'a'&&i<=_'z'?i-_'a'+_'A':i' "\
+     "-replace_str Note,note "\
+     "-replace_str Url,url "\
+     "-replace_str Sep,sep "\
      "out={t} -if {['$in']!=['$out']} -v + -e[] ${_gmic_c}\"       Warning: String '\"$in\"' could be substituted by '\"$out\"'\"${_gmic_n} -v - -endif -rm -endl"
 
   # Copy latest command definitions on G'MIC server if necessary.
@@ -23284,15 +23287,15 @@ gui_autocrop_layers :
 #@gui_en About G'MIC : _none_, fx_logo_en
 #@gui_en : note = note{"
 #@gui_en : <span foreground="purple">( <b>G</b>REYC's <b>M</b>agic for <b>I</b>mage <b>C</b>omputing )</span>\n\nis proposed to you by"}
-#@gui_en : Note = link("David Tschumperl&#233;","http://tschumperle.users.greyc.fr/")
-#@gui_en : Note = link("S&#233;bastien Fourey","https://foureys.users.greyc.fr/")
-#@gui_en : Note = link{"( IMAGE Team / GREYC Laboratory - CNRS UMR 6072 )","http://www.greyc.fr/node/36"}
+#@gui_en : url = link("David Tschumperl&#233;","http://tschumperle.users.greyc.fr/")
+#@gui_en : url = link("S&#233;bastien Fourey","https://foureys.users.greyc.fr/")
+#@gui_en : url = link{"( IMAGE Team / GREYC Laboratory - CNRS UMR 6072 )","http://www.greyc.fr/node/36"}
 #@gui_en : note = note{"
 #@gui_en : This plug-in is based on our open-source libraries <b>G'MIC</b> and <b>CImg</b> (C++ Template Image Processing Library),
 #@gui_en : available at:"}
-#@gui_en : Note = link("http://gmic.eu/")
+#@gui_en : url = link("http://gmic.eu/")
 #@gui_en : note = note{"and"}
-#@gui_en : Note = link("http://cimg.eu/")
+#@gui_en : url = link("http://cimg.eu/")
 #@gui_en : note = note{"\n
 #@gui_en : If you appreciate <b>G'MIC</b>, you are welcome to send us a nice postcard from your place, at:\n\n
 #@gui_en : <small><tt>David Tschumperl&#233;,\n Laboratoire GREYC (CNRS UMR 6072), Equipe Image,\n
@@ -23369,15 +23372,15 @@ fx_logo_en :
 #@gui_fr A propos de G'MIC : _none_, fx_logo_fr
 #@gui_fr : note = note{"
 #@gui_fr : <span foreground="purple">( <b>G</b>REYC's <b>M</b>agic for <b>I</b>mage <b>C</b>omputing )</span>\n\nvous est propos&#233; par"}
-#@gui_fr : Note = link("David Tschumperl&#233;","http://tschumperle.users.greyc.fr/")
-#@gui_fr : Note = link("S&#233;bastien Fourey","https://foureys.users.greyc.fr/")
-#@gui_fr : Note = link{"( Equipe IMAGE / Laboratoire GREYC - CNRS UMR 6072 )","http://www.greyc.fr/image"}
+#@gui_fr : url = link("David Tschumperl&#233;","http://tschumperle.users.greyc.fr/")
+#@gui_fr : url = link("S&#233;bastien Fourey","https://foureys.users.greyc.fr/")
+#@gui_fr : url = link{"( Equipe IMAGE / Laboratoire GREYC - CNRS UMR 6072 )","http://www.greyc.fr/image"}
 #@gui_fr : note = note{"
 #@gui_fr : Ce greffon est bas&#233; sur nos biblioth&#232;ques libres <b>G'MIC</b> et <b>CImg</b> (C++ Template Image Processing Library),
 #@gui_fr : disponibles aux adresses :"}
-#@gui_fr : Note = link("http://gmic.eu/")
+#@gui_fr : url = link("http://gmic.eu/")
 #@gui_fr : note = note{"et"}
-#@gui_fr : Note = link("http://cimg.eu/")
+#@gui_fr : url = link("http://cimg.eu/")
 #@gui_fr : note = note{"\n
 #@gui_fr : Si vous appr&#233;ciez <b>G'MIC</b>, vous pouvez nous le faire savoir en nous envoyant une jolie carte
 #@gui_fr : postale de votre ville ou r&#233;gion, &#224; l'adresse :\n\n
@@ -23399,15 +23402,15 @@ fx_logo_fr :
 #@gui_ca G'MIC per al GIMP : _none_, fx_logo_ca
 #@gui_ca : note = note{"
 #@gui_ca : <span foreground="purple">( <b>G</b>REYC's <b>M</b>agic for <b>I</b>mage <b>C</b>omputing )</span>\n\n &#233;s una gentilesa de"}
-#@gui_ca : Note = link("David Tschumperl&#233;","http://tschumperle.users.greyc.fr/")
-#@gui_ca : Note = link("S&#233;bastien Fourey","https://foureys.users.greyc.fr/")
-#@gui_ca : Note = link{"( IMAGE Team / GREYC Laboratory - CNRS UMR 6072 )","http://www.greyc.fr/node/36"}
+#@gui_ca : url = link("David Tschumperl&#233;","http://tschumperle.users.greyc.fr/")
+#@gui_ca : url = link("S&#233;bastien Fourey","https://foureys.users.greyc.fr/")
+#@gui_ca : url = link{"( IMAGE Team / GREYC Laboratory - CNRS UMR 6072 )","http://www.greyc.fr/node/36"}
 #@gui_ca : note = note{"
 #@gui_ca : Aquest connector est&#224; basat en les biblioteques de codi obert <b>G'MIC</b> i <b>CImg</b> (C++ Template Image Processing Library),
 #@gui_ca : disponibles a :"}
-#@gui_ca : Note = link("http://gmic.eu/")
+#@gui_ca : url = link("http://gmic.eu/")
 #@gui_ca : note = note{"i"}
-#@gui_ca : Note = link("http://cimg.eu/")
+#@gui_ca : url = link("http://cimg.eu/")
 #@gui_ca : note = note{"\n
 #@gui_ca : Si t'agrada el <b>G'MIC</b>, pots enviar-nos una postal del lloc on vius, a :\n\n
 #@gui_ca : <small><tt>David Tschumperl&#233;,\n Laboratoire GREYC (CNRS UMR 6072), Equipe Image,\n
@@ -23428,15 +23431,15 @@ fx_logo_ca :
 #@gui_ja About G'MIC : _none_, fx_logo_en
 #@gui_ja : note = note{"
 #@gui_ja : <span foreground="purple">( <b>G</b>REYC's <b>M</b>agic for <b>I</b>mage <b>C</b>omputing )</span>\n\nis proposed to you by"}
-#@gui_ja : Note = link("David Tschumperl&#233;","http://tschumperle.users.greyc.fr/")
-#@gui_ja : Note = link("S&#233;bastien Fourey","https://foureys.users.greyc.fr/")
-#@gui_ja : Note = link{"( IMAGE Team / GREYC Laboratory - CNRS UMR 6072 )","http://www.greyc.fr/node/36"}
+#@gui_ja : url = link("David Tschumperl&#233;","http://tschumperle.users.greyc.fr/")
+#@gui_ja : url = link("S&#233;bastien Fourey","https://foureys.users.greyc.fr/")
+#@gui_ja : url = link{"( IMAGE Team / GREYC Laboratory - CNRS UMR 6072 )","http://www.greyc.fr/node/36"}
 #@gui_ja : note = note{"
 #@gui_ja : This plug-in is based on our open-source libraries <b>G'MIC</b> and <b>CImg</b> (C++ Template Image Processing Library),
 #@gui_ja : available at:"}
-#@gui_ja : Note = link("http://gmic.eu/")
+#@gui_ja : url = link("http://gmic.eu/")
 #@gui_ja : note = note{"and"}
-#@gui_ja : Note = link("http://cimg.eu/")
+#@gui_ja : url = link("http://cimg.eu/")
 #@gui_ja : note = note{"\n
 #@gui_ja : If you appreciate <b>G'MIC</b>, you are welcome to send us a nice postcard from your place, at:\n\n
 #@gui_ja : <small><tt>David Tschumperl&#233;,\n Laboratoire GREYC (CNRS UMR 6072), Equipe Image,\n
@@ -23583,9 +23586,9 @@ _gui_download_all_data :
 #@gui : for inclusion into next releases of <b>G'MIC</b>.
 #@gui : "}
 #@gui : sep = separator()
-#@gui : Note = link(0,"[1] G'MIC reference documentation","http://gmic.eu/reference.shtml")
-#@gui : Note = link(0,"[2] G'MIC scripting tutorial","http://gmic.eu/tutorial/index.shtml")
-#@gui : Note = link(0,"[3] G'MIC filter template","http://gmic.eu/template.gmic")
+#@gui : url = link(0,"[1] G'MIC reference documentation","http://gmic.eu/reference.shtml")
+#@gui : url = link(0,"[2] G'MIC scripting tutorial","http://gmic.eu/tutorial/index.shtml")
+#@gui : url = link(0,"[3] G'MIC filter template","http://gmic.eu/template.gmic")
 
 #@gui Friends hall of fame : _none_, fx_friends
 #@gui : note = note{"\n<span foreground="purple" underline="single">Supporters:</span>"}
@@ -24277,7 +24280,7 @@ _dice5 : -_dice3 -ellipse. 25%,50%,5.2%,5.2%,0,1,255 -ellipse. 75%,50%,5.2%,5.2%
 #@gui : sep = separator()
 #@gui : Preview guides = bool(1)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2015/23/02</i>.</small>")
-#@gui : Note = link("Filter explained here","http://gimpchat.com/viewtopic.php?f=28&t=7905")
+#@gui : url = link("Filter explained here","http://gimpchat.com/viewtopic.php?f=28&t=7905")
 fx_extract_objects :
   -if $6 min_area=$6% -else min_area=6 -endif
   -repeat $! -l[$<] -to_rgba
@@ -25064,7 +25067,7 @@ fx_kuwahara_preview :
 #@gui : Canvas = float(10,0,100)
 #@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
 #@gui : sep = separator(), note = note("<small>Authors: <i>Lyle Kroll</i> and <i>David Tschumperl&#233;</i>.      Latest update: <i>2015/23/02</i>.</small>")
-#@gui : Note = link("Filter Explained here","http://www.gimpchat.com/viewtopic.php?f=10&t=2624")
+#@gui : url = link("Filter Explained here","http://www.gimpchat.com/viewtopic.php?f=10&t=2624")
 fx_lylejk_painting :
   -repeat $! -l[$>]
     nm={0,n}
@@ -26270,7 +26273,7 @@ fx_houghsketchbw_preview :
 #@gui : LN neightborhood-smoothness = float(5,0,40)
 #@gui : LN average-smoothness = float(20,0,40)
 #@gui : sep = separator(), note = note("<small>Author: <i>PhotoComiX</i>.      Latest update: <i>2011/05/04</i>.</small>")
-#@gui : Note = link(0,"Forum thread about the filter discussion","http://gimpchat.com/viewtopic.php?f=10&t=914")
+#@gui : url = link(0,"Forum thread about the filter discussion","http://gimpchat.com/viewtopic.php?f=10&t=914")
 fx_ink_wash :
   -repeat $! -l[$>] -split_opacity -l[0]
     -fx_pencilbw. $1,$2,0,0,0
@@ -26953,7 +26956,7 @@ fx_detect_skin_preview :
 #@gui : Value correction = float(0,-0.99,0.99)
 #@gui : sep = separator()
 #@gui : note = note("<small>Author: <i>J&#233;rome Ferrari</i>.      Latest update: <i>01/14/2011</i>.</small>")
-#@gui : Note = link("Filter explained here","http://www.flickr.com/groups/gmic/discuss/72157625798533482")
+#@gui : url = link("Filter explained here","http://www.flickr.com/groups/gmic/discuss/72157625798533482")
 fx_hsv_equalizer :
   -repeat $! -l[$>]
   -to_rgb -rgb2hsv -s c
@@ -30750,7 +30753,7 @@ fx_burn_preview :
 #@gui : note = note("Merge the Mask")
 #@gui : Intensity = float(1,0,1)
 #@gui : sep = separator(), note = note("<small>Author: <i>PhotoComiX</i>.      Latest update: <i>2011/01/01</i>.</small>")
-#@gui : Note = link("Filter explained here","http://www.gimpchat.com/viewtopic.php?f=9&t=864")
+#@gui : url = link("Filter explained here","http://www.gimpchat.com/viewtopic.php?f=9&t=864")
 fx_contrast_swm :
   -repeat $! -l[$>] -split_opacity -l[0]
    --luminance -to_rgb
@@ -32179,7 +32182,7 @@ fx_upscale_smart_preview :
 #@gui : note = note{"\n<small><b>Note: </b>
 #@gui : This filter re-implements the scaling algorithm described at :
 #@gui : </small>"}
-#@gui : Note = link("http://scale2x.sourceforge.net")
+#@gui : url = link("http://scale2x.sourceforge.net")
 #@gui : note = note{"<small>
 #@gui : This filter is useful for resizing images that have very few colors
 #@gui : (e.g. indexed images). It is generally useless for true colors images.
@@ -32219,7 +32222,7 @@ fx_scalenx_preview :
 #@gui : note = note{"\n<small><b>Note: </b>
 #@gui : This filter re-implements the scaling algorithm described at :
 #@gui : </small>"}
-#@gui : Note = link("wikipedia.org","https://en.wikipedia.org/wiki/Directional_Cubic_Convolution_Interpolation")
+#@gui : url = link("wikipedia.org","https://en.wikipedia.org/wiki/Directional_Cubic_Convolution_Interpolation")
 #@gui : note = note("<small>The algorithm is intended for enlarging images while avoiding</small>")
 #@gui : note = note("<small>artifacts, e.g. staircase artifacts.</small>")
 #@gui : note = note("\n<small>Threshold controls edge[lower] to texture[higher] balance.</small>")
@@ -33840,7 +33843,7 @@ fx_spatial_transition_preview :
 #@gui : This filter can execute any set of instructions understood by the <b>G'MIC</b> language interpreter.
 #@gui : Here, you can then test some commands before creating your own G'MIC custom commands and plug-in menu entries.\n\n
 #@gui : Please look at the documentation reference web page :</small>"}
-#@gui : Note = link("http://gmic.eu/reference.shtml")
+#@gui : url = link("http://gmic.eu/reference.shtml")
 #@gui : note = note{"<small>
 #@gui : to learn more about available <b>G'MIC</b> commands.
 #@gui : </small>"}
@@ -33857,7 +33860,7 @@ fx_spatial_transition_preview :
 #@gui : This filter can execute any set of instructions understood by the <b>G'MIC</b> language interpreter.
 #@gui : Here, you can then test some commands before creating your own G'MIC custom commands and plug-in menu entries.\n\n
 #@gui : Please look at the documentation reference web page :</small>"}
-#@gui : Note = link("http://gmic.eu/reference.shtml")
+#@gui : url = link("http://gmic.eu/reference.shtml")
 #@gui : note = note{"<small>
 #@gui : to learn more about available <b>G'MIC</b> commands.
 #@gui : </small>"}
