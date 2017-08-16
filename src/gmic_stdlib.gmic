@@ -4219,7 +4219,7 @@ update_server :
      "  -onfail -v + -e[] \"      [error, not reachable!]\n\" -v -"\
      "  -endl -endl"
   -m "calibrate_name : "\
-     "--l -replace {'_'},32 -autocrop 32 "\
+     "-replace {'_'},32 -autocrop 32 "\
      "in={t} "\
      "-f 'i>=_'A'&&i<=_'Z'?i-_'A'+_'a':i' "\
      "-replace_str <i>color,<i>Color "\
@@ -4257,10 +4257,10 @@ update_server :
      "-replace_str \" y-\",\" Y-\" "\
      "-replace_str xy-,XY- "\
      "-f 'y==0&&i>=_'a'&&i<=_'z'?i-_'a'+_'A':i' "\
-     "-replace_str Note,note "\
-     "-replace_str Url,url "\
-     "-replace_str Sep,sep "\
-     "out={t} -if {['$in']!=['$out']} -v + -e[] ${_gmic_c}\"       Warning: String '\"$in\"' could be substituted by '\"$out\"'\"${_gmic_n} -v - -endif -rm -endl"
+     "-if {['{t}']=='Sep'} -replace_str Sep,sep -endif "\
+     "-if {['{t}']=='Note'} -replace_str Note,note -endif "\
+     "-if {['{t}']=='Url'} -replace_str Url,url -endif "\
+     "out={t} -if {['$in']!=['$out']} -v + -e[] ${_gmic_c}\"       Warning: String '\"$in\"' substituted by '\"$out\"'\"${_gmic_n} -v - -endif"
 
   # Copy latest command definitions on G'MIC server if necessary.
   -v + -e[] "> Upload latest version ("${-strver}") of commands on G'MIC server.\n" -v -
