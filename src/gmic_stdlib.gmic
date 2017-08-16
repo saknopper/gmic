@@ -945,7 +945,7 @@ _help_usage :
 \n          '"${c}"i(), i[], j()"$n"' and '"${c}"j[]"$n"' return values of the image being currently modified,
 \n          in forward ('"$c">"$n"') or backward ('"$c"<"$n"') order. The multi-threading evaluation of the
 \n          expression is also disabled in this case.
-\n       . Function '"$c"single(operands)"$n"' forces the execution of the given operands in a single thread at a
+\n       . Function '"${c}"single(operands)"$n"' forces the execution of the given operands in a single thread at a
 \n          time.
 \n
 \n    _ Expressions '"${c}"i(_#ind,x,_y,_z,_c)=value"$n"', '"${c}"j(_#ind,x,_y,_z,_c)=value"$n"', '"${c}"i[_#ind,offset]=value"$n"'
