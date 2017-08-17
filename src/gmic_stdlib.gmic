@@ -28245,7 +28245,7 @@ fx_map_sphere :
 fx_map_sphere_preview :
   -fx_map_sphere {w},{h},${3--1}
 
-#@gui Square to circle : fx_square_circle, fx_square_circle
+#@gui Square to circle : fx_square_circle, fx_square_circle_preview
 #@gui : Mode = choice(0,"Square to circle","Circle to square")
 #@gui : Interpolation = choice(1,"Nearest neighbor","Linear")
 #@gui : Boundary = choice(0,"Transparent","Nearest","Periodic","Mirror")
@@ -28254,11 +28254,12 @@ fx_map_sphere_preview :
 #@gui : Y-factor (%) = float(0,-100,100)
 #@gui : X-offset (%) = float(0,-300,300)
 #@gui : Y-offset (%) = float(0,-300,300)
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
 #@gui : sep = separator(), note = note("<small>This filter implements the mapping functions described in this page, by <i>C. Fong</i>:</small>")
 #@gui : url = link("http://squircular.blogspot.com/2015/09/mapping-circle-to-square.html")
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2017/08/16</i>.</small>")
 fx_square_circle :
-  mode,interp,boundary,factx,facty,offx,offy=$*
+  mode,interp,boundary,factx,facty,offx,offy,pmode=$*
   -if {!$boundary} -to_a -endif
   base="const interpolation = "$interp";
         const boundary = "$boundary";
@@ -28291,6 +28292,9 @@ fx_square_circle :
         (V+=1)*=h2 - 0.5;
         I(U,V)"
   -endif
+
+fx_square_circle_preview :
+  -gui_split_preview "-fx_square_circle $*",$-1,0,1
 
 #@gui Symmetrize : fx_symmetrize, fx_symmetrize_preview(1)
 #@gui : X-center = float(50,0,100)
