@@ -13514,7 +13514,6 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
           *const ext = cimg::split_filename(filename);
         const bool is_stdin = *filename=='-' && (!filename[1] || filename[1]=='.');
 
-
         const char *file_type = 0;
         std::FILE *const file = is_stdin?0:std::fopen(filename,"rb");
         longT siz = 0;
