@@ -427,7 +427,7 @@ krita : krita_qt
 
 gimp_gtk:
 	@echo "**"
-	@echo "** Warning: The GTK-based interface of the G'MIC plug-in for GIMP is now obsolete, please compile the Qt-based interface instead!"
+	@echo "** Warning: The GTK-based interface of the G'MIC plug-in for GIMP is outdated, please consider compiling the Qt-based interface instead!"
 	@echo "** For this purpose, type: $$ make gimp"
 	@echo "**"
 	$(MAKE) "CFLAGS+=$(GMIC_GIMP_GTK_CFLAGS) $(OPT_CFLAGS)" "LIBS+=$(GMIC_GIMP_GTK_LIBS)" gmic_gimp_gtk
