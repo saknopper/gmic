@@ -3145,9 +3145,7 @@ void process_image(const char *const command_line, const bool is_apply) {
           }
 
           for (unsigned int p = spt.images._width; p<layers._height; ++p) gimp_image_remove_layer(image_id,layers[p]);
-          if (image_nb_layers==layers.height()) gimp_image_resize(image_id,max_width,max_height,0,0);
-          else gimp_image_resize(image_id,std::max(image_width,max_width),std::max(image_height,max_height),0,0);
-
+          gimp_image_resize(image_id,max_width,max_height,0,0);
       }
       gimp_image_undo_group_end(image_id);
     } break;
