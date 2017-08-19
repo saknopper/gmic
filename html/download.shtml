@@ -55,10 +55,10 @@
                   <td><img alt="" src="img/download_krita.png" border="0"></img></td><td>&nbsp;&nbsp;</td>
                   <td><font size="3"><b><font color="#000066">G'MIC</font></b> plug-in for <a href="http://www.krita.org">Krita</a> (3.2+) </font><br/>
                     <ul>
-                      <li>Windows <i>64 bits</i>: <a href="http://gmic.eu/files/windows/gmic_krita_qt_win64.zip">.zip archive</a></li>
-                      <li>Windows <i>32 bits</i>: <a href="http://gmic.eu/files/windows/gmic_krita_qt_win32.zip">.zip archive</a></li>
-                      <li>Debian 8 <i>Jessie</i> <i>64 bits</i>: <a href="http://gmic.eu/files/linux/gmic_krita_qt_linux64.zip">.zip archive</a></li>
-                      <li>Debian 8 <i>Jessie</i> <i>32 bits</i>: <a href="http://gmic.eu/files/linux/gmic_krita_qt_linux32.zip">.zip archive</a></li>
+                      <li>Windows <i>64 bits</i>: <a href="http://gmic.eu/files/prerelease_windows/gmic_krita_qt_win64.zip">.zip archive</a></li>
+                      <li>Windows <i>32 bits</i>: <a href="http://gmic.eu/files/prerelease_windows/gmic_krita_qt_win32.zip">.zip archive</a></li>
+                      <li>Debian 8 <i>Jessie</i> <i>64 bits</i>: <a href="http://gmic.eu/files/prerelease_linux/gmic_krita_qt_linux64.zip">.zip archive</a></li>
+                      <li>Debian 8 <i>Jessie</i> <i>32 bits</i>: <a href="http://gmic.eu/files/prerelease_linux/gmic_krita_qt_linux32.zip">.zip archive</a></li>
                     </ul>
                     <br/></td>
                 </tr>
