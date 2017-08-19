@@ -3409,10 +3409,10 @@ void gmic::_gmic(const char *const commands_line,
                  float *const p_progress, bool *const p_is_abort) {
 
   // Initialize class variables and default G'MIC environment.
+  static const unsigned int seed = cimg::srand();
   setlocale(LC_NUMERIC,"C");
   cimg_exception_mode = cimg::exception_mode();
   cimg::exception_mode(0);
-  cimg::srand();
   is_debug = false;
   is_double3d = true;
   nb_carriages = 0;
