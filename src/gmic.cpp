@@ -3410,6 +3410,7 @@ void gmic::_gmic(const char *const commands_line,
 
   // Initialize class variables and default G'MIC environment.
   static const unsigned int seed = cimg::srand();
+  cimg::unused(seed);
   setlocale(LC_NUMERIC,"C");
   cimg_exception_mode = cimg::exception_mode();
   cimg::exception_mode(0);
