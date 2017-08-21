@@ -23859,17 +23859,17 @@ fx_gmicky_preview :
 
 #@gui Release notes : _none_, _none_
 #@gui : note = note{"
-#@gui : - <b>01/13/2009</b> : version <i>1.3.0</i> (initial plug-in release).\n
-#@gui : - <b>09/03/2010</b> : version <i>1.4.0</i>.\n
-#@gui : - <b>07/07/2011</b> : version <i>1.5.0</i>.\n
-#@gui : - <b>08/20/2014</b> : version <i>1.6.0</i>.\n
-#@gui : - <b>03/25/2016</b> : version <i>1.7.0</i>.\n
-#@gui : - <b>05/29/2017</b> : version <i>2.0.0</i>.\n
-#@gui : - <span foreground="purple"><b>06/22/2017</b> : version <i>2.0.2</i> (Current stable).</span>\n
-#@gui : - <b>06/26/2017</b> : version <i>2.0.3</i> (Current development).\n
+#@gui : - <b>2009/01/13</b> : version <i>1.3.0</i> (initial plug-in release).\n
+#@gui : - <b>2010/09/03</b> : version <i>1.4.0</i>.\n
+#@gui : - <b>2011/07/07</b> : version <i>1.5.0</i>.\n
+#@gui : - <b>2014/08/20</b> : version <i>1.6.0</i>.\n
+#@gui : - <b>2016/03/25</b> : version <i>1.7.0</i>.\n
+#@gui : - <b>2017/05/29</b> : version <i>2.0.0</i>.\n
+#@gui : - <span foreground="purple"><b>2017/08/21</b> : version <i>2.0.3</i> (Current stable).</span>\n
+##@gui : - <b>06/26/2017</b> : version <i>2.0.3</i> (Current development).\n
 #@gui : "}
 #@gui : sep = separator()
-#@gui : url = link{"View latest minor changelog (2.0.2)","https://discuss.pixls.us/t/release-of-gmic-2-0-2"}
+#@gui : url = link{"View latest minor changelog (2.0.3)","https://discuss.pixls.us/t/release-of-gmic-2-0-3"}
 #@gui : url = link{"View latest major changelog (2.0.0)","https://discuss.pixls.us/t/release-of-gmic-2-0-0"}
 
 #@gui User satisfaction survey : gui_survey, gui_survey_preview
