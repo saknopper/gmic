@@ -6139,11 +6139,11 @@ replace_nan :
 #@cli : $ (1;2;3;4;5) --replace_seq "2,3,4","7,8"
 replace_seq : -skip "${2=}"
   -e[^-1] "Replace value sequence '$1' by value sequence '${2--1}' in image$?."
-  -v - ns={narg($1)} nd={narg(${2--1})} ratio={$nd*100/$ns}
-  -repeat $! -l[$>] -if {w}
-    -s +,$1 --rows[0] 0,{$ns-1} ($1) --[-2,-1] -abs. ind={iM!=0} -rm.
-    -if {$ind<$!} -if $nd -r[$ind--1:2] 1,$ratio%,1,1,0 -f[$ind--1:2] ${2--1} -else -rm[$ind--1:2] -endif -a y -endif
-  -endif -endl -done -v +
+  -v - ls,ld={[narg($1),narg($2)]}
+  -repeat $! -l[$>]
+    -s +,$1 ind={"w#0 && crop(#0,0,0,0,0,1,min("$ls",h),1,1)!=[$1]"}
+    -if {$ind<$!} -if $ld -rows[$ind--1:2] 1,$ld -f[$ind--2:2] ${2--1} -else -rm[$ind--1:2] -endif -a y -endif
+  -endl -done -v +
 
 #@cli replace_str : "search_str","replace_str"
 #@cli : Search and replace a string in selected images (viewed as strings, i.e. sequences of ascii codes).
