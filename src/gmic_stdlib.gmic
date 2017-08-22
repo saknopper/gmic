@@ -23083,7 +23083,7 @@ gui_set_layer_opacity :
 gui_set_layer_pos :
   -repeat $! -l[$>]
     name=${-gui_layer_name} mode=${-gui_layer_mode} opacity=${-gui_layer_opacity}
-    -nm "name("$name"),mode("$mode"),opacity("$opacity"),pos("{round($1)},{round($2)}")"
+    -nm "name("$name"),mode("$mode"),opacity("$opacity"),pos("{round("$1")},{round("$2")}")"
   -endl -done
 
 # Flatten list of input layers according to their blending modes, opacities and positions,
@@ -23597,6 +23597,7 @@ _gui_download_all_data :
 #@gui : note = note{"\n<span foreground="purple" underline="single">Supporters:</span>"}
 #@gui : note = note{" <b>-</b> A big hug goes to these friends who supported the project:"}
 #@gui : note = note{"<i>
+#@gui : Volkmar Geske,
 #@gui : Menno Tjoelker,
 #@gui : <a href="https://borkarabhijeet05.blogspot.com/p/about-me.html">Abhijeet Borkar</a>,
 #@gui : <a href="https://www.behance.net/kontaktarl1e0a">Arleta Lesniewska</a>,
