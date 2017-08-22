@@ -6144,7 +6144,7 @@ replace_seq : -skip "${2=}"
     -s +,$1 ind={"w#0 && crop(#0,0,0,0,0,1,min("$ns",h),1,1)!=[$1]"}
     -if {$ind<$!}
       -if $nd
-        -skip {"for (t = "$ind", t<l, t+=2, resize(#t,1,h#t*"$nd/$ns",1,1,0))"}
+        -skip {"for (t = "$ind", t<l, t+=2, resize(#t,1,round(h#t*"$nd/$ns"),1,1,0))"}
         -f[$ind--1:2] ${2--1}
       -else
         -rm[$ind--1:2]
