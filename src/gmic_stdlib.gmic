@@ -6142,7 +6142,7 @@ replace_seq : -skip "${2=}"
   -v - ls,ld={[narg($1),narg($2)]}
   -repeat $! -l[$>]
     -s +,$1 ind={"w#0 && crop(#0,0,0,0,0,1,min("$ls",h),1,1)!=[$1]"}
-    -if {$ind<$!} -if $ld -rows[$ind--1:2] 1,$ld -f[$ind--2:2] ${2--1} -else -rm[$ind--1:2] -endif -a y -endif
+    -if {$ind<$!} -if $ld -rows[$ind--1:2] 1,$ld -f[$ind--1:2] ${2--1} -else -rm[$ind--1:2] -endif -a y -endif
   -endl -done -v +
 
 #@cli replace_str : "search_str","replace_str"
