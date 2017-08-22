@@ -5252,7 +5252,7 @@ sort_str :
 #@cli : $ image.jpg -and {128+64}
 #@cli : $ image.jpg --mirror x -and
 
-#@cli argmax :
+#@cli argmax
 #@cli : Compute the argmax of selected images. Returns a single image
 #@cli : with each pixel value being the indice of the input image with maximal value.
 #@cli : $ image.jpg -sample lena,lion,square --argmax
@@ -5261,7 +5261,7 @@ argmax :
   -v - $!,1,1,1,x ({'{^}'}) -l. -s +,{','} -i[0--1:2] ({'i#'}) -y -a y str={t} -endl -rm[-2,-1]
   ${-max_whds},"argmax("$str")" -k. -nm [argmax] -v +
 
-#@cli argmin :
+#@cli argmin
 #@cli : Compute the argmin of selected images. Returns a single image
 #@cli : with each pixel value being the indice of the input image with minimal value.
 #@cli : $ image.jpg -sample lena,lion,square --argmin
