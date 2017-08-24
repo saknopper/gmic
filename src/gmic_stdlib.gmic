@@ -4399,7 +4399,7 @@ update_server :
   # Force filters to move if necessary.
   -v + -e[] "\n> Force filters to move, if necessary." -v -
   -repeat $!,ind -repeat $_nbm -if {['{$ind,n}']==['${_to_move$>}']}
-    -v + -e[] $_gmic_c"  "$ind$_gmic_n". Move '"{$ind,n}"' to '"$_gmic_g${_move_to$>}$_gmic_n"'." -v -
+    -v + -e[] $_gmic_c"  "$ind$_gmic_n". Move '"${_gmic_g}{$ind,n}$_gmic_n"' to '"$_gmic_g${_move_to$>}$_gmic_n"'." -v -
     -nm[$ind] ${_move_to$>}/{$ind,b}
   -endif -done -done
 
