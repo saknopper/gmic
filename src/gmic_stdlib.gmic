@@ -6141,7 +6141,7 @@ replace_seq : -skip "${2=}"
   -e[^-1] "Replace value sequence '$1' by value sequence '${2--1}' in image$?."
   -v - ns,nd={[narg($1),narg(${2--1})]}
   -repeat $! -l[$>]
-    -s +,$1 ind={"w#0 && crop(#0,0,0,0,0,1,min("$ns",h),1,1)!=[$1]"}
+    -s +,$1 ind={"w#0 && crop(#0,0,0,0,0,1,min("$ns",h#0),1,1)!=[$1]"}
     -if {$ind<$!}
       -if $nd
         -skip {"for (t = "$ind", t<l, t+=2, resize(#t,1,round(h#t*"$nd/$ns"),1,1,0))"}
