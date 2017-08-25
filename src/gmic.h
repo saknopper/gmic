@@ -167,6 +167,9 @@ static struct cimg_is_abort {
   cimg_is_abort():value(false),ptr(&value) {}
 } _cimg_is_abort;
 #define cimg_abort_test() if (*_cimg_is_abort.ptr) throw CImgAbortException()
+
+// #define cimg_mp_extern_function std::fprintf(stderr,"\nPOUET POUET = '%s'\n",str._data); return 12345
+
 #endif // #ifdef cimg_use_abort
 #ifndef cimg_display
 #define cimg_display 0
