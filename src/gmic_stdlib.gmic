@@ -807,8 +807,10 @@ _help_usage :
 \n       . Function '"${c}"stod(str,is_strict)"$n"' parses specified string '"${c}"str"$n"' and returns the value
 \n          contained in it.
 \n       . Function '"${c}"dtos(expr,siz,_nb_digits)"$n"' returns a vector of size '"${c}"siz"$n"' which contains
-\n          the ascii representation of values specified by expression '"${c}"expr"$n"'.
+\n          the ascii representation of values described by expression '"${c}"expr"$n"'.
 \n          '"${c}"nb_digits"$n"' can be "${g}"{ -1=auto-reduced | 0=all | >0=max number of digits }"$n".
+\n       . Function '"${c}"echo(str1,str2,...,strN)"$n"' prints the concatenation of specified string arguments
+\n          on the console.
 \n
 \n    _ "${g}"Special operators"$n" can be used:
 \n
