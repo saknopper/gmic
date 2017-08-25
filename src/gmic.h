@@ -168,10 +168,10 @@ static struct cimg_is_abort {
 } _cimg_is_abort;
 #define cimg_abort_test() if (*_cimg_is_abort.ptr) throw CImgAbortException()
 
-struct _gmic_extern {
+struct _gmic_mp_extern {
   static double mp_extern(const char *const str, void *plist);
 };
-#define cimg_mp_extern_function _gmic_extern::mp_extern(str._data,&mp.listout)
+#define cimg_mp_extern_function _gmic_mp_extern::mp_extern(str._data,&mp.listout)
 
 #endif // #ifdef cimg_use_abort
 #ifndef cimg_display

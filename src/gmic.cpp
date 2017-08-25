@@ -2159,7 +2159,7 @@ inline char *_gmic_argument_text(const char *const argument, CImg<char>& argumen
    }
 
 // Manage 'extern()' calls in CImg math parser.
-double _gmic_extern::mp_extern(const char *const str, void *plist) {
+double _gmic_mp_extern::mp_extern(const char *const str, void *plist) {
   CImgList<gmic_pixel_type>& images = *(CImgList<gmic_pixel_type>*)plist;
   CImgList<char> images_names;
   try {
