@@ -2158,6 +2158,18 @@ inline char *_gmic_argument_text(const char *const argument, CImg<char>& argumen
        }}} is_released = false; continue; \
    }
 
+// Manage 'extern()' calls in CImg math parser.
+double _gmic_extern::mp_extern(const char *const str, void *plist) {
+  CImgList<gmic_pixel_type>& images = *(CImgList<gmic_pixel_type>*)plist;
+  CImgList<char> images_names;
+  try {
+    gmic(str,images,images_names);
+  } catch (...) {
+    return -1;
+  }
+  return 0;
+}
+
 // Manage mutexes.
 struct _gmic_mutex {
 #if cimg_OS==2
@@ -2237,18 +2249,6 @@ static DWORD WINAPI gmic_parallel(void *arg)
 #if defined(gmic_is_parallel) && cimg_OS!=2
   pthread_exit(0);
 #endif // #if defined(gmic_is_parallel) && cimg_OS!=2
-  return 0;
-}
-
-// Implementation of the 'extern()' function for CImg math parser.
-double mp_extern(const char *const str, void *plist) {
-  CImgList<gmic_pixel_type>& images = *(CImgList<gmic_pixel_type>*)plist;
-  CImgList<char> images_names;
-  try {
-    gmic(str,images,images_names);
-  } catch (gmic_exception&) {
-    return -1;
-  }
   return 0;
 }
 
