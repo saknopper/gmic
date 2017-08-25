@@ -2240,6 +2240,18 @@ static DWORD WINAPI gmic_parallel(void *arg)
   return 0;
 }
 
+// Implementation of the 'extern()' function for CImg math parser.
+double mp_extern(const char *const str, void *plist) {
+  CImgList<gmic_pixel_type>& images = *(CImgList<gmic_pixel_type>*)plist;
+  CImgList<char> images_names;
+  try {
+    gmic(str,images,images_names);
+  } catch (gmic_exception&) {
+    return -1;
+  }
+  return 0;
+}
+
 // Return Levenshtein distance between two strings.
 // (adapted from http://rosettacode.org/wiki/Levenshtein_distance#C)
 int gmic::_levenshtein(const char *const s, const char *const t,
