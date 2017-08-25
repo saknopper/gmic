@@ -2159,11 +2159,16 @@ inline char *_gmic_argument_text(const char *const argument, CImg<char>& argumen
    }
 
 // Manage 'extern()' calls in CImg math parser.
-double _gmic_mp_extern::mp_extern(const char *const str, void *plist) {
+double _gmic_mp_extern::run(const char *const str, void *plist) {
   CImgList<gmic_pixel_type>& images = *(CImgList<gmic_pixel_type>*)plist;
   CImgList<char> images_names;
   try {
-    gmic(str,images,images_names);
+    CImg<char> _str;
+    CImg<char>::string(str,false).move_to(_str);
+    _str.append(CImg<char>::string(" -q"));
+    gmic gmic_instance(0,custom_commands,include_stdlib,p_progress,p_is_abort);
+    gmic_instance.verbosity = -1;
+    gmic_instance.run(_str,images,images_names);
   } catch (...) {
     return -1;
   }
@@ -2192,9 +2197,9 @@ inline _gmic_mutex& gmic_mutex() { static _gmic_mutex val; return val; }
 
 // Thread structure and routine for command '-parallel'.
 template<typename T>
-struct st_gmic_parallel {
+struct _gmic_parallel {
   CImgList<char> *images_names, *parent_images_names, commands_line;
-  CImgList<st_gmic_parallel<T> > *threads_data;
+  CImgList<_gmic_parallel<T> > *threads_data;
   CImgList<T> *images, *parent_images;
   CImg<unsigned int> variables_sizes;
   const CImg<unsigned int> *command_selection;
@@ -2208,7 +2213,7 @@ struct st_gmic_parallel {
   HANDLE thread_id;
 #endif // #if cimg_OS!=2
 #endif // #ifdef gmic_is_parallel
-  st_gmic_parallel() { variables_sizes.assign(512); }
+  _gmic_parallel() { variables_sizes.assign(512); }
 };
 
 template<typename T>
@@ -2218,7 +2223,7 @@ static void *gmic_parallel(void *arg)
 static DWORD WINAPI gmic_parallel(void *arg)
 #endif // #if cimg_OS!=2
 {
-  st_gmic_parallel<T> &st = *(st_gmic_parallel<T>*)arg;
+  _gmic_parallel<T> &st = *(_gmic_parallel<T>*)arg;
   try {
     unsigned int pos = 0;
     st.gmic_instance.is_debug_info = false;
@@ -2229,7 +2234,7 @@ static DWORD WINAPI gmic_parallel(void *arg)
 
     // Send all remaining running threads the 'abort' signal.
 #ifdef gmic_is_parallel
-    CImgList<st_gmic_parallel<T> > &threads_data = *st.threads_data;
+    CImgList<_gmic_parallel<T> > &threads_data = *st.threads_data;
     cimglist_for(threads_data,i) cimg_forY(threads_data[i],l)
       if (&threads_data(i,l)!=&st && threads_data(i,l).is_thread_running) {
         threads_data(i,l).gmic_instance.is_abort_thread = true;
@@ -3452,6 +3457,11 @@ void gmic::_gmic(const char *const commands_line,
   if (include_stdlib) add_commands(gmic::decompress_stdlib().data());
   add_commands(custom_commands);
 
+  gmic_mp_extern().custom_commands = custom_commands;
+  gmic_mp_extern().include_stdlib = include_stdlib;
+  gmic_mp_extern().p_progress = p_progress;
+  gmic_mp_extern().p_is_abort = p_is_abort;
+
   // Set pre-defined global variables.
   CImg<char> str(8);
   cimg_snprintf(str,str.width(),"%u",cimg::nb_cpus());
@@ -4469,7 +4479,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
   typedef typename cimg::last<T,cimg_int64>::type int64T;
   const unsigned int initial_callstack_size = callstack.size(), initial_debug_line = debug_line;
 
-  CImgList<st_gmic_parallel<T> > threads_data;
+  CImgList<_gmic_parallel<T> > threads_data;
   CImgList<unsigned int> primitives;
   CImgList<unsigned char> g_list_uc;
   CImgList<float> g_list_f;
@@ -9417,8 +9427,8 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             wait_mode = (bool)(*_arg - '0'); _arg+=2; _arg_text+=2;
           }
           CImgList<char> arguments = CImg<char>::string(_arg).get_split(CImg<char>::vector(','),0,false);
-          CImg<st_gmic_parallel<T> >(1,arguments.width()).move_to(threads_data);
-          CImg<st_gmic_parallel<T> > &_threads_data = threads_data.back();
+          CImg<_gmic_parallel<T> >(1,arguments.width()).move_to(threads_data);
+          CImg<_gmic_parallel<T> > &_threads_data = threads_data.back();
 
 #ifdef gmic_is_parallel
           print(images,0,"Execute %d command%s '%s' in parallel%s.",
@@ -14330,8 +14340,8 @@ int main(int argc, char **argv) {
   const char *const filename_user = gmic::path_user();
   try {
     commands_user.load_raw(filename_user).append(CImg<char>::vector(0),'y');
-    try { gmic_instance.add_commands(commands_user,filename_user);
-    } catch (...) { is_invalid_user = true; throw; }
+    try { gmic_instance.add_commands(commands_user,filename_user); }
+    catch (...) { is_invalid_user = true; throw; }
   } catch (...) { commands_user.assign(); }
 
   // When help has been requested.
