@@ -2159,27 +2159,25 @@ inline char *_gmic_argument_text(const char *const argument, CImg<char>& argumen
    }
 
 // Manage list of all gmic runs (for CImg math parser 'extern()').
-struct _gmic_runs {
-  gmic *gmic_instance;
-  CImgList<gmic_pixel_type> *images;
-  CImgList<char> *images_names;
-};
-inline CImgList<_gmic_runs>& gmic_runs() { static CImgList<_gmic_runs> val; return val; }
+inline gmic_list<cimg_ulong>& gmic_runs() { static gmic_list<cimg_ulong> val; return val; }
 
-// Manage 'extern()' calls in CImg math parser.
-double _gmic_mp_extern::run(const char *const str, void *plist) {
-  CImgList<gmic_pixel_type>& images = *(CImgList<gmic_pixel_type>*)plist;
-  CImgList<char> images_names;
-  try {
-    CImg<char> _str;
-    CImg<char>::string(str,false).move_to(_str);
-    _str.append(CImg<char>::string(" -q"));
-    gmic gmic_instance(0,custom_commands,include_stdlib,p_progress,p_is_abort);
-    gmic_instance.verbosity = -1;
-    gmic_instance.run(_str,images,images_names);
-  } catch (...) {
-    return -1;
-  }
+inline double gmic_mp_extern(const char *const str) {
+  std::fprintf(stderr,"\nDEBUG : extern('%s')\n",str);
+  gmic_runs().print("DEBUG : RUNS");
+
+  /*  CImgList<gmic_pixel_type>& images = *(CImgList<gmic_pixel_type>*)plist;
+      CImgList<char> images_names;
+      try {
+      CImg<char> _str;
+      CImg<char>::string(str,false).move_to(_str);
+      _str.append(CImg<char>::string(" -q"));
+      gmic gmic_instance(0,custom_commands,include_stdlib,p_progress,p_is_abort);
+      gmic_instance.verbosity = -1;
+      gmic_instance.run(_str,images,images_names);
+      } catch (...) {
+      return -1;
+      }
+  */
   return 0;
 }
 
@@ -3465,11 +3463,6 @@ void gmic::_gmic(const char *const commands_line,
   if (include_stdlib) add_commands(gmic::decompress_stdlib().data());
   add_commands(custom_commands);
 
-  gmic_mp_extern().custom_commands = custom_commands;
-  gmic_mp_extern().include_stdlib = include_stdlib;
-  gmic_mp_extern().p_progress = p_progress;
-  gmic_mp_extern().p_is_abort = p_is_abort;
-
   // Set pre-defined global variables.
   CImg<char> str(8);
   cimg_snprintf(str,str.width(),"%u",cimg::nb_cpus());
@@ -4483,12 +4476,12 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
 
   // Add current run to managed list of gmic runs.
   cimg::mutex(24);
-  CImgList<_gmic_runs> &grl = gmic_runs();
-  CImg<_gmic_runs>(1).move_to(grl);
-  _gmic_runs &gr = grl(0,0);
-  gr.gmic_instance = this;
-  gr.images = &images;
-  gr.images_names = &images_names;
+  CImgList<cimg_ulong> &grl = gmic_runs();
+  CImg<cimg_ulong> gr(3);
+  gr[0] = (cimg_ulong)this;
+  gr[1] = (cimg_ulong)&images;
+  gr[2] = (cimg_ulong)&images_names;
+  gr.move_to(grl);
   cimg::mutex(24,0);
 
   typedef typename cimg::superset<T,float>::type Tfloat;
@@ -14273,8 +14266,8 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
   // Remove current run from managed list of gmic runs.
   cimg::mutex(24);
   for (int k = grl.width() - 1; k>=0; --k) {
-    _gmic_runs &gr = grl(k,0);
-    if (gr.gmic_instance==this && gr.images==&images && gr.images_names==&images_names) {
+    CImg<cimg_ulong> &gr = grl[k];
+    if (gr[0]==(cimg_ulong)this && gr[1]==(cimg_ulong)&images && gr[2]==(cimg_ulong)&images_names) {
       grl.remove(k); break;
     }
   }
