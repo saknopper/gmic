@@ -2181,8 +2181,8 @@ inline double gmic_mp_extern(const char *const str, void *const plist) {
   // Clone gmic instance and run given command line.
   if (p_gmic_instance) {
     gmic &gi0 = *p_gmic_instance;
-    CImgList<gmic_pixel_type> images = *p_images;
-    CImgList<char> images_names = *p_images_names;
+    CImgList<gmic_pixel_type> &images = *p_images;
+    CImgList<char> &images_names = *p_images_names;
     try {
       CImg<char> title(256);
       gmic gi;
