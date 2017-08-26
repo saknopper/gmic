@@ -2161,12 +2161,31 @@ inline char *_gmic_argument_text(const char *const argument, CImg<char>& argumen
 // Manage list of all gmic runs (for CImg math parser 'extern()').
 inline gmic_list<cimg_ulong>& gmic_runs() { static gmic_list<cimg_ulong> val; return val; }
 
-inline double gmic_mp_extern(const char *const str) {
+inline double gmic_mp_extern(const char *const str, void *const plist) {
   std::fprintf(stderr,"\nDEBUG : extern('%s')\n",str);
   gmic_runs().print("DEBUG : RUNS");
 
-  /*  CImgList<gmic_pixel_type>& images = *(CImgList<gmic_pixel_type>*)plist;
-      CImgList<char> images_names;
+  // Retrieve current gmic instance.
+  CImgList<cimg_ulong> &grl = gmic_runs();
+  gmic *p_gmic_instance = 0;
+  CImgList<char> *p_images_names = 0;
+  CImgList<gmic_pixel_type> *p_images = 0;
+  for (int k = grl.width() - 1; k>=0; --k) {
+    CImg<cimg_ulong> &gr = grl[k];
+    if (gr[1]==(cimg_ulong)plist) {
+      p_gmic_instance = (gmic*)gr[0];
+      p_images = (CImgList<gmic_pixel_type>*)gr[1];
+      p_images_names = (CImgList<char>*)gr[2];
+      break;
+    }
+  }
+  if (p_gmic_instance) {
+    std::fprintf(stderr,"\nDEBUG : Success!!\n");
+    p_images->display();
+  }
+
+
+/*      CImgList<char> images_names;
       try {
       CImg<char> _str;
       CImg<char>::string(str,false).move_to(_str);
