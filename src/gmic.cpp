@@ -2158,6 +2158,14 @@ inline char *_gmic_argument_text(const char *const argument, CImg<char>& argumen
        }}} is_released = false; continue; \
    }
 
+// Manage list of all gmic runs (for CImg math parser 'extern()').
+struct _gmic_runs {
+  gmic *gmic_instance;
+  CImgList<gmic_pixel_type> *images;
+  CImgList<char> *images_names;
+};
+inline CImgList<_gmic_runs>& gmic_runs() { static CImgList<_gmic_runs> val; return val; }
+
 // Manage 'extern()' calls in CImg math parser.
 double _gmic_mp_extern::run(const char *const str, void *plist) {
   CImgList<gmic_pixel_type>& images = *(CImgList<gmic_pixel_type>*)plist;
@@ -4472,6 +4480,17 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                         callstack.back().data());
     return *this;
   }
+
+  // Add current run to managed list of gmic runs.
+  cimg::mutex(24);
+  CImgList<_gmic_runs> &grl = gmic_runs();
+  CImg<_gmic_runs>(1).move_to(grl);
+  _gmic_runs &gr = grl(0,0);
+  gr.gmic_instance = this;
+  gr.images = &images;
+  gr.images_names = &images_names;
+  cimg::mutex(24,0);
+
   typedef typename cimg::superset<T,float>::type Tfloat;
   typedef typename cimg::superset<T,cimg_long>::type Tlong;
   typedef typename cimg::last<T,cimg_long>::type longT;
@@ -14251,6 +14270,15 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
     if (next_debug_filename!=~0U) { debug_filename = next_debug_filename; next_debug_filename = ~0U; }
   }
 
+  // Remove current run from managed list of gmic runs.
+  cimg::mutex(24);
+  for (int k = grl.width() - 1; k>=0; --k) {
+    _gmic_runs &gr = grl(k,0);
+    if (gr.gmic_instance==this && gr.images==&images && gr.images_names==&images_names) {
+      grl.remove(k); break;
+    }
+  }
+  cimg::mutex(24,0);
   return *this;
 }
 
