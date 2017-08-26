@@ -2180,24 +2180,15 @@ inline double gmic_mp_extern(const char *const str, void *const plist) {
     }
   }
   if (p_gmic_instance) {
-    std::fprintf(stderr,"\nDEBUG : Success!!\n");
-    p_images->display();
-  }
-
-
-/*      CImgList<char> images_names;
-      try {
-      CImg<char> _str;
-      CImg<char>::string(str,false).move_to(_str);
-      _str.append(CImg<char>::string(" -q"));
-      gmic gmic_instance(0,custom_commands,include_stdlib,p_progress,p_is_abort);
-      gmic_instance.verbosity = -1;
-      gmic_instance.run(_str,images,images_names);
-      } catch (...) {
+    try {
+      p_gmic_instance->is_running = false; // Has to clone current gmic instance instead.
+      p_gmic_instance->run(str,*p_images,*p_images_names,p_gmic_instance->progress,p_gmic_instance->is_abort);
+      p_gmic_instance->is_running = true;
+      return 0;
+    } catch (...) {
       return -1;
-      }
-  */
-  return 0;
+    }
+  } else return -1;
 }
 
 // Manage mutexes.
