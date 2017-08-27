@@ -2181,11 +2181,17 @@ inline double gmic_mp_extern(char *const str, void *const plist) {
     const unsigned int *const variables_sizes = (const unsigned int*)gr[5];
     const CImg<unsigned int> *const command_selection = (const CImg<unsigned int>*)gr[6];
 
+    if (gi.is_debug_info && gi.debug_line!=~0U) {
+      CImg<char> title(32);
+      cimg_snprintf(title,title.width(),"*extern#%u",gi.debug_line);
+      CImg<char>::string(title).move_to(gi.callstack);
+    } else CImg<char>::string("*extern").move_to(gi.callstack);
     unsigned int pos = 0;
     gi._run(gi.commands_line_to_CImgList(gmic::strreplace_fw(str)),pos,images,images_names,
             parent_images,parent_images_names,variables_sizes,0,0,command_selection);
+    gi.callstack.remove();
   }
-  return 0;
+  return cimg::type<double>::nan();
 }
 
 // Manage mutexes.
