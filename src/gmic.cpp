@@ -2160,29 +2160,27 @@ inline char *_gmic_argument_text(const char *const argument, CImg<char>& argumen
 
 // Manage list of all gmic runs (for CImg math parser 'extern()').
 inline gmic_list<cimg_ulong>& gmic_runs() { static gmic_list<cimg_ulong> val; return val; }
-
 inline double gmic_mp_extern(const char *const str, void *const plist) {
 
   // Retrieve current gmic instance.
   CImgList<cimg_ulong> &grl = gmic_runs();
-  gmic *p_gmic_instance = 0;
-  CImgList<gmic_pixel_type> *p_images = 0;
-  CImgList<char> *p_images_names = 0;
-  for (int k = grl.width() - 1; k>=0; --k) {
-    CImg<cimg_ulong> &gr = grl[k];
-    if (gr[1]==(cimg_ulong)plist) {
-      p_gmic_instance = (gmic*)gr[0];
-      p_images = (CImgList<gmic_pixel_type>*)gr[1];
-      p_images_names = (CImgList<char>*)gr[2];
-      break;
-    }
+  int ind;
+  for (ind = grl.width() - 1; ind>=0; --ind) {
+    CImg<cimg_ulong> &gr = grl[ind];
+    if (gr[1]==(cimg_ulong)plist) break;
   }
 
   // Clone gmic instance and run given command line.
-  if (p_gmic_instance) {
-    gmic &gi0 = *p_gmic_instance;
-    CImgList<gmic_pixel_type> &images = *p_images;
-    CImgList<char> &images_names = *p_images_names;
+  if (ind>=0) {
+    CImg<cimg_ulong> &gr = grl[ind];
+    gmic &gi0 = *(gmic*)gr[0];
+    CImgList<gmic_pixel_type> &images = *(CImgList<gmic_pixel_type>*)gr[1];
+    CImgList<char> &images_names = *(CImgList<char>*)gr[2];
+    CImgList<gmic_pixel_type> &parent_images = *(CImgList<gmic_pixel_type>*)gr[3];
+    CImgList<char> &parent_images_names = *(CImgList<char>*)gr[4];
+    const unsigned int *const variables_sizes = (const unsigned int*)gr[5];
+    const CImg<unsigned int> *const command_selection = (const CImg<unsigned int>*)gr[6];
+
     try {
       CImg<char> title(256);
       gmic gi;
@@ -2202,8 +2200,8 @@ inline double gmic_mp_extern(const char *const str, void *const plist) {
           gi.variables_names[i] = &gi._variables_names[i];
         }
       }
-      gi.callstack.assign(gi0.callstack);
       gi.commands_files.assign(gi0.commands_files,true);
+      gi.callstack.assign(gi0.callstack);
       cimg_snprintf(title,title.width(),"*extern");
       CImg<char>::string(title).move_to(gi.callstack);
       gi.light3d.assign(gi0.light3d);
@@ -2244,7 +2242,9 @@ inline double gmic_mp_extern(const char *const str, void *const plist) {
                                      c==gmic_comma?',':c==gmic_dquote?'\"':c):c;
       }
 
-      gi.run(commands_line,images,images_names,gi0.progress,gi0.is_abort);
+      unsigned int pos = 0;
+      gi._run(gi.commands_line_to_CImgList(commands_line),pos,images,images_names,parent_images,parent_images_names,
+              variables_sizes,0,0,command_selection);
       return 0;
     } catch (...) {
       return -1;
@@ -4548,10 +4548,14 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
   // Add current run to managed list of gmic runs.
   cimg::mutex(24);
   CImgList<cimg_ulong> &grl = gmic_runs();
-  CImg<cimg_ulong> gr(3);
+  CImg<cimg_ulong> gr(7);
   gr[0] = (cimg_ulong)this;
   gr[1] = (cimg_ulong)&images;
   gr[2] = (cimg_ulong)&images_names;
+  gr[3] = (cimg_ulong)&parent_images;
+  gr[4] = (cimg_ulong)&parent_images_names;
+  gr[5] = (cimg_ulong)variables_sizes;
+  gr[6] = (cimg_ulong)command_selection;
   gr.move_to(grl);
   cimg::mutex(24,0);
 
