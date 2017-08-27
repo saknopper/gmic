@@ -700,6 +700,7 @@ _help_usage :
 \n
 \n    _ "${g}"Variable names"$n" below are pre-defined. They can be overrided.
 \n
+\n       . '"${c}"l"$n"': length of the associated list of images, if any ("${g}"0"$n" otherwise).
 \n       . '"${c}"w"$n"': width of the associated image, if any ("${g}"0"$n" otherwise).
 \n       . '"${c}"h"$n"': height of the associated image, if any ("${g}"0"$n" otherwise).
 \n       . '"${c}"d"$n"': depth of the associated image, if any ("${g}"0"$n" otherwise).
@@ -717,8 +718,8 @@ _help_usage :
 \n       . All these variables are considered as "${g}"constant values"$n" by the math parser (for optimization
 \n          purposes) which is indeed the case most of the time. Anyway, this might not be the case,
 \n          if function '"${c}"resize(#ind,..)"$n"' is used in the math expression.
-\n          If so, it is safer to invoke functions '"${c}"w(_#ind)"$n"', '"${c}"h(_#ind)"$n"', ... '"${c}"cm(_#ind)"$n"', '"${c}"cM(_#ind)"$n"'
-\n          instead of the corresponding named variables.
+\n          If so, it is safer to invoke functions '"${c}"l()"$n"', '"${c}"w(_#ind)"$n"', '"${c}"h(_#ind)"$n"', ... '"${c}"cm(_#ind)"$n"'
+\n          and '"${c}"cM(_#ind)"$n"' instead of the corresponding named variables.
 \n       . '"${c}"i"$n"': current processed pixel value (i.e. value located at "$g"(x,y,z,c)"$n") in the associated
 \n          image, if any ("${g}"0"$n" otherwise).
 \n       . '"${c}"iN"$n"': Nth channel value of current processed pixel (i.e. value located at "$g"(x,y,z,N)"$n") in
@@ -730,7 +731,6 @@ _help_usage :
 \n       . You may add '"${c}"#ind"$n"' to any of the variable name above to retrieve the information for any
 \n          numbered image "${g}"[ind]"$n" of the list (when this makes sense). For instance '"${c}"ia#0"$n"' denotes the
 \n          average value of the first image of the list).
-\n       . '"${c}"l"$n"': length of the associated list of images, if any ("${g}"0"$n" otherwise).
 \n       . '"${c}"x"$n"': current processed column of the associated image, if any ("${g}"0"$n" otherwise).
 \n       . '"${c}"y"$n"': current processed row of the associated image, if any ("${g}"0"$n" otherwise).
 \n       . '"${c}"z"$n"': current processed slice of the associated image, if any ("${g}"0"$n" otherwise).
