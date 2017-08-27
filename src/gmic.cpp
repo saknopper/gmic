@@ -2170,10 +2170,10 @@ inline double gmic_mp_extern(char *const str, void *const plist) {
     if (gr[1]==(cimg_ulong)plist) break;
   }
 
-  // Clone gmic instance and run given command line.
+  // Run given command line.
   if (ind>=0) {
     CImg<cimg_ulong> &gr = grl[ind];
-    gmic &gi0 = *(gmic*)gr[0];
+    gmic &gi = *(gmic*)gr[0];
     CImgList<gmic_pixel_type> &images = *(CImgList<gmic_pixel_type>*)gr[1];
     CImgList<char> &images_names = *(CImgList<char>*)gr[2];
     CImgList<gmic_pixel_type> &parent_images = *(CImgList<gmic_pixel_type>*)gr[3];
@@ -2181,65 +2181,11 @@ inline double gmic_mp_extern(char *const str, void *const plist) {
     const unsigned int *const variables_sizes = (const unsigned int*)gr[5];
     const CImg<unsigned int> *const command_selection = (const CImg<unsigned int>*)gr[6];
 
-    try {
-      CImg<char> title(256);
-      gmic gi;
-      for (unsigned int i = 0; i<512; ++i) {
-        gi.commands[i].assign(gi0.commands[i],true);
-        gi.commands_names[i].assign(gi0.commands_names[i],true);
-        gi.commands_has_arguments[i].assign(gi0.commands_has_arguments[i],true);
-        if (i==511) { // Share inter-thread global variables.
-          gi.variables[i] = gi0.variables[i];
-          gi.variables_names[i] = gi0.variables_names[i];
-        } else {
-          if (i==510) { // Make a copy of single-thread global variables.
-            gi._variables[i].assign(gi0._variables[i]);
-            gi._variables_names[i].assign(gi0._variables_names[i]);
-          }
-          gi.variables[i] = &gi._variables[i];
-          gi.variables_names[i] = &gi._variables_names[i];
-        }
-      }
-      gi.commands_files.assign(gi0.commands_files,true);
-      gi.callstack.assign(gi0.callstack);
-      cimg_snprintf(title,title.width(),"*extern");
-      CImg<char>::string(title).move_to(gi.callstack);
-      gi.light3d.assign(gi0.light3d);
-      gi.status.assign(gi0.status);
-      gi.debug_filename = gi0.debug_filename;
-      gi.debug_line = gi0.debug_line;
-      gi.focale3d = gi0.focale3d;
-      gi.light3d_x = gi0.light3d_x;
-      gi.light3d_y = gi0.light3d_y;
-      gi.light3d_z = gi0.light3d_z;
-      gi.specular_lightness3d = gi0.specular_lightness3d;
-      gi.specular_shininess3d = gi0.specular_shininess3d;
-      gi._progress = 0;
-      gi.progress = &gi._progress;
-      gi.is_released = gi0.is_released;
-      gi.is_debug = gi0.is_debug;
-      gi.is_start = false;
-      gi.is_quit = false;
-      gi.is_return = false;
-      gi.is_double3d = gi0.is_double3d;
-      gi.check_elif = false;
-      gi.verbosity = gi0.verbosity;
-      gi.render3d = gi0.render3d;
-      gi.renderd3d = gi0.renderd3d;
-      gi._is_abort = gi0._is_abort;
-      gi.is_abort = gi0.is_abort;
-      gi.is_abort_thread = false;
-      gi.nb_carriages = gi0.nb_carriages;
-      gi.reference_time = gi0.reference_time;
-
-      unsigned int pos = 0;
-      gi._run(gi.commands_line_to_CImgList(gmic::strreplace_fw(str)),pos,images,images_names,
-              parent_images,parent_images_names,variables_sizes,0,0,command_selection);
-      return 0;
-    } catch (...) {
-      return -1;
-    }
-  } else return -1;
+    unsigned int pos = 0;
+    gi._run(gi.commands_line_to_CImgList(gmic::strreplace_fw(str)),pos,images,images_names,
+            parent_images,parent_images_names,variables_sizes,0,0,command_selection);
+  }
+  return 0;
 }
 
 // Manage mutexes.
