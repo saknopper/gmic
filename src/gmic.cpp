@@ -2160,7 +2160,7 @@ inline char *_gmic_argument_text(const char *const argument, CImg<char>& argumen
 
 // Manage list of all gmic runs (for CImg math parser 'extern()').
 inline gmic_list<cimg_ulong>& gmic_runs() { static gmic_list<cimg_ulong> val; return val; }
-inline double gmic_mp_extern(const char *const str, void *const plist) {
+inline double gmic_mp_extern(char *const str, void *const plist) {
 
   // Retrieve current gmic instance.
   CImgList<cimg_ulong> &grl = gmic_runs();
@@ -2232,19 +2232,9 @@ inline double gmic_mp_extern(const char *const str, void *const plist) {
       gi.nb_carriages = gi0.nb_carriages;
       gi.reference_time = gi0.reference_time;
 
-      // Substitute special characters codes appearing outside strings.
-      CImg<char> commands_line = CImg<char>::string(str);
-      bool is_dquoted = false;
-      for (char *s = commands_line.data(); *s; ++s) {
-        const char c = *s;
-        if (c=='\"') is_dquoted = !is_dquoted;
-        if (!is_dquoted) *s = c<' '?(c==gmic_dollar?'$':c==gmic_lbrace?'{':c==gmic_rbrace?'}':
-                                     c==gmic_comma?',':c==gmic_dquote?'\"':c):c;
-      }
-
       unsigned int pos = 0;
-      gi._run(gi.commands_line_to_CImgList(commands_line),pos,images,images_names,parent_images,parent_images_names,
-              variables_sizes,0,0,command_selection);
+      gi._run(gi.commands_line_to_CImgList(gmic::strreplace_fw(str)),pos,images,images_names,
+              parent_images,parent_images_names,variables_sizes,0,0,command_selection);
       return 0;
     } catch (...) {
       return -1;
