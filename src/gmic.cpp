@@ -4693,7 +4693,9 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
         *command=='-' && command[1]=='i' && (!command[2] || !std::strcmp(command,"-input")),
         is_check_command = is_verbose_command || is_echo_command || is_input_command?false:!std::strcmp(item,"-check"),
         is_skip_command = is_verbose_command || is_echo_command || is_input_command || is_check_command?false:
-        !std::strcmp(item,"-skip");
+        !std::strcmp(item,"-skip"),
+        is_eval_command = is_verbose_command || is_echo_command || is_input_command || is_check_command ||
+        is_skip_command?false:!std::strcmp(item,"-eval");
 
       // Check for verbosity command, prior to the first output of a log message.
       bool is_verbose = verbosity>=0 || is_debug, is_verbose_argument = false;
@@ -4722,7 +4724,8 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
       // Generate strings for displaying image selections when verbosity>=0.
       CImg<char> gmic_selection;
       if (is_debug ||
-          (verbosity>=0 && !is_check_command && !is_skip_command && !is_echo_command && !is_verbose_command))
+          (verbosity>=0 && !is_eval_command && !is_check_command && !is_skip_command &&
+           !is_echo_command && !is_verbose_command))
         selection2string(selection,images_names,1,gmic_selection);
 
       if (is_debug) {
@@ -6590,6 +6593,16 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
           if (is_very_verbose) print(images,0,"End 'local...endlocal' block.");
           is_endlocal = true;
           break;
+        }
+
+        // Check expression or filename.
+        if (is_eval_command) {
+          gmic_substitute_args(false);
+          name.assign(argument,(unsigned int)std::strlen(argument) + 1);
+          strreplace_fw(name);
+          const CImg<T> &img = images.size()?images.back():CImg<T>::empty();
+          img.eval(name,0,0,0,0,&images,&images);
+          ++position; continue;
         }
 
         // Echo.
