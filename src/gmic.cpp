@@ -2160,14 +2160,14 @@ inline char *_gmic_argument_text(const char *const argument, CImg<char>& argumen
 
 // Manage list of all gmic runs (for CImg math parser 'extern()').
 inline gmic_list<cimg_ulong>& gmic_runs() { static gmic_list<cimg_ulong> val; return val; }
-inline double gmic_mp_extern(char *const str, void *const plist) {
+double gmic::mp_extern(char *const str, void *const p_list) {
 
   // Retrieve current gmic instance.
   CImgList<cimg_ulong> &grl = gmic_runs();
   int ind;
   for (ind = grl.width() - 1; ind>=0; --ind) {
     CImg<cimg_ulong> &gr = grl[ind];
-    if (gr[1]==(cimg_ulong)plist) break;
+    if (gr[1]==(cimg_ulong)p_list) break;
   }
 
   // Run given command line.

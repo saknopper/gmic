@@ -168,7 +168,7 @@ static struct cimg_is_abort {
 } _cimg_is_abort;
 #define cimg_abort_test() if (*_cimg_is_abort.ptr) throw CImgAbortException()
 
-inline double gmic_mp_extern(char *const str, void *const plist);
+inline double gmic_mp_extern(char *const str, void *const p_list);
 #define cimg_mp_extern_function(str) return ::gmic_mp_extern(str._data,&mp.listout)
 
 #endif // #ifdef cimg_use_abort
@@ -246,6 +246,7 @@ struct gmic {
   static char *strreplace_bw(char *const str);
   static unsigned int strescape(const char *const str, char *const res);
   static const gmic_image<char>& decompress_stdlib();
+  static double mp_extern(char *const str, void *const p_list);
 
   template<typename T>
   void _gmic(const char *const commands_line,
@@ -404,6 +405,8 @@ struct gmic_exception {
     return _command_help._data?_command_help._data:"";
   }
 };
+
+inline double gmic_mp_extern(char *const str, void *const p_list) { return gmic::mp_extern(str,p_list); }
 
 #endif // #ifndef gmic_version
 
