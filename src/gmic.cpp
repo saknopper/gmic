@@ -2159,20 +2159,20 @@ inline char *_gmic_argument_text(const char *const argument, CImg<char>& argumen
    }
 
 // Manage list of all gmic runs (for CImg math parser 'extern()').
-inline gmic_list<cimg_ulong>& gmic_runs() { static gmic_list<cimg_ulong> val; return val; }
+inline gmic_list<void*>& gmic_runs() { static gmic_list<void*> val; return val; }
 double gmic::mp_extern(char *const str, void *const p_list) {
 
   // Retrieve current gmic instance.
-  CImgList<cimg_ulong> &grl = gmic_runs();
+  CImgList<void*> &grl = gmic_runs();
   int ind;
   for (ind = grl.width() - 1; ind>=0; --ind) {
-    CImg<cimg_ulong> &gr = grl[ind];
-    if (gr[1]==(cimg_ulong)p_list) break;
+    CImg<void*> &gr = grl[ind];
+    if (gr[1]==(void*)p_list) break;
   }
 
   // Run given command line.
   if (ind>=0) {
-    CImg<cimg_ulong> &gr = grl[ind];
+    CImg<void*> &gr = grl[ind];
     gmic &gi = *(gmic*)gr[0];
     CImgList<gmic_pixel_type> &images = *(CImgList<gmic_pixel_type>*)gr[1];
     CImgList<char> &images_names = *(CImgList<char>*)gr[2];
@@ -4489,15 +4489,15 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
 
   // Add current run to managed list of gmic runs.
   cimg::mutex(24);
-  CImgList<cimg_ulong> &grl = gmic_runs();
-  CImg<cimg_ulong> gr(7);
-  gr[0] = (cimg_ulong)this;
-  gr[1] = (cimg_ulong)&images;
-  gr[2] = (cimg_ulong)&images_names;
-  gr[3] = (cimg_ulong)&parent_images;
-  gr[4] = (cimg_ulong)&parent_images_names;
-  gr[5] = (cimg_ulong)variables_sizes;
-  gr[6] = (cimg_ulong)command_selection;
+  CImgList<void*> &grl = gmic_runs();
+  CImg<void*> gr(7);
+  gr[0] = (void*)this;
+  gr[1] = (void*)&images;
+  gr[2] = (void*)&images_names;
+  gr[3] = (void*)&parent_images;
+  gr[4] = (void*)&parent_images_names;
+  gr[5] = (void*)variables_sizes;
+  gr[6] = (void*)command_selection;
   gr.move_to(grl);
   cimg::mutex(24,0);
 
@@ -14301,8 +14301,14 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
   // Remove current run from managed list of gmic runs.
   cimg::mutex(24);
   for (int k = grl.width() - 1; k>=0; --k) {
-    CImg<cimg_ulong> &gr = grl[k];
-    if (gr[0]==(cimg_ulong)this && gr[1]==(cimg_ulong)&images && gr[2]==(cimg_ulong)&images_names) {
+    CImg<void*> &gr = grl[k];
+    if (gr[0]==(void*)this &&
+        gr[1]==(void*)&images &&
+        gr[2]==(void*)&images_names &&
+        gr[3]==(void*)&parent_images &&
+        gr[4]==(void*)&parent_images_names &&
+        gr[5]==(void*)variables_sizes &&
+        gr[6]==(void*)command_selection) {
       grl.remove(k); break;
     }
   }
