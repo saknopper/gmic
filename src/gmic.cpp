@@ -6595,13 +6595,18 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
           break;
         }
 
-        // Check expression or filename.
+        // Evaluate expression.
         if (is_eval_command) {
           gmic_substitute_args(false);
           name.assign(argument,(unsigned int)std::strlen(argument) + 1);
           strreplace_fw(name);
           const CImg<T> &img = images.size()?images.back():CImg<T>::empty();
-          img.eval(name,0,0,0,0,&images,&images);
+          try { img.eval(name,0,0,0,0,&images,&images); }
+          catch (CImgException &e) {
+            const char *err = std::strstr(e.what(),"eval(): ");
+            if (!err) err = e.what(); else err+=8;
+            error(images,0,0,"Command '-eval': %s",err);
+          }
           ++position; continue;
         }
 
@@ -14273,7 +14278,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
     position = commands_line.size();
     is_released = is_quit = true;
   } catch (CImgException &e) {
-    const char *const e_ptr = e.what() + (!std::strncmp(e.what(),"[_cimg_math_parser] ",20)?20:0);
+    const char *const e_ptr = e.what() + (!std::strncmp(e.what(),"[gmic_math_parser] ",19)?19:0);
     CImg<char> error_message(e_ptr,(unsigned int)std::strlen(e_ptr) + 1);
     for (char *str = std::strstr(error_message,"CImg<"); str; str = std::strstr(str,"CImg<")) {
       str[0] = 'g'; str[1] = 'm'; str[2] = 'i'; str[3] = 'c';
