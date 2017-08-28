@@ -195,14 +195,14 @@ OPENMP_LIBS = -lgomp
 # (keep /usr/ dirname here since X11 is located in /usr/ on Mac too).
 # This requires the presence of the X11 include and library files.
 ifneq ($(OS),Darwin)
-X11_CFLAGS = -Dcimg_display=1 -Dcimg_appname=\\\"gmic\\\" `pkg-config --cflags x11 || echo -I/usr/X11R6/include` #-Dcimg_use_xrandr
+X11_CFLAGS = -Dcimg_display=1 `pkg-config --cflags x11 || echo -I/usr/X11R6/include` #-Dcimg_use_xrandr
 X11_LIBS = `pkg-config --libs x11 || echo -L/usr/X11R6/lib -lX11` -lpthread #`pkg-config --libs xrandr || echo -lXrandr`
 else
 ifeq (,$(wildcard /usr/X11R6))
-X11_CFLAGS = -Dcimg_display=0 -Dcimg_appname=\\\"gmic\\\" #-Dcimg_use_xrandr
+X11_CFLAGS = -Dcimg_display=0 #-Dcimg_use_xrandr
 X11_LIBS = -lpthread #`pkg-config --libs xrandr || echo -lXrandr`
 else
-X11_CFLAGS = -Dcimg_display=1 -Dcimg_appname=\\\"gmic\\\" `pkg-config --cflags x11 || echo -I/usr/X11R6/include` #-Dcimg_use_xrandr
+X11_CFLAGS = -Dcimg_display=1 `pkg-config --cflags x11 || echo -I/usr/X11R6/include` #-Dcimg_use_xrandr
 X11_LIBS = -L/usr/X11R6/lib -lX11 -lpthread #`pkg-config --libs xrandr || echo -lXrandr`
 endif
 endif
@@ -213,7 +213,7 @@ XSHM_LIBS = `pkg-config --libs xcb-shm || echo -L$(USR)/X11R6/lib -lXext`
 
 # Flags to enable image display, using GDI32.
 # This requires the presence of the GDI32 include and library files (Windows only).
-GDI32_CFLAGS = -Dcimg_display=2 -Dcimg_appname=\\\"gmic\\\"
+GDI32_CFLAGS = -Dcimg_display=2
 GDI32_LIBS = -lgdi32
 
 # Flags to enable native support for PNG image files, using the PNG library.
@@ -414,7 +414,7 @@ cli:
 
 cli_s:
 ifeq ($(OS),Darwin)
-	c++ -o gmic gmic.cpp -Dgmic_main -Dgmic_build -Dcimg_use_zlib -I/opt/local/include  -Dgmic_prerelease=\"$(PRERELEASE_CFLAGS)\" -std=c++11 -stdlib=libc++ -Dcimg_use_abort -Dcimg_use_png -Dcimg_use_jpeg -Dcimg_use_tiff -I/opt/local/include  -Dcimg_use_curl -I/opt/local/include  -Dcimg_use_fftw3 -I/opt/local/include  -Dgmic_is_parallel -Dcimg_display=1 -Dcimg_appname=\"gmic\" -I/opt/local/include -O2 -mmacosx-version-min=10.7 -L/tmp/skl/Gimp.app/Contents/Resources/lib -lpng -lz -ljpeg  -ltiff -lcurl -lfftw3  -lfftw3_threads -lpthread -lHalf -L/usr/X11R6/lib -lX11 -lpthread
+	c++ -o gmic gmic.cpp -Dgmic_main -Dgmic_build -Dcimg_use_zlib -I/opt/local/include  -Dgmic_prerelease=\"$(PRERELEASE_CFLAGS)\" -std=c++11 -stdlib=libc++ -Dcimg_use_abort -Dcimg_use_png -Dcimg_use_jpeg -Dcimg_use_tiff -I/opt/local/include  -Dcimg_use_curl -I/opt/local/include  -Dcimg_use_fftw3 -I/opt/local/include  -Dgmic_is_parallel -Dcimg_display=1 -I/opt/local/include -O2 -mmacosx-version-min=10.7 -L/tmp/skl/Gimp.app/Contents/Resources/lib -lpng -lz -ljpeg  -ltiff -lcurl -lfftw3  -lfftw3_threads -lpthread -lHalf -L/usr/X11R6/lib -lX11 -lpthread
 	$(STRIP) gmic
 endif
 

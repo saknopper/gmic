@@ -175,6 +175,9 @@ inline double gmic_mp_extern(char *const str, void *const plist);
 #ifndef cimg_display
 #define cimg_display 0
 #endif // #ifndef cimg_display
+#ifndef cimg_appname
+#define cimg_appname "gmic"
+#endif // #ifndef cimg_appname
 #include "./CImg.h"
 
 #if cimg_OS==2
