@@ -14132,7 +14132,7 @@ apply_timeout :
 
 #@cli check : expression : (+)
 #@cli : Evaluate specified expression and display an error message if evaluated to false.
-#@cli : If 'expression' is not evaluable, it is regarded as a filename and checked if it exists.
+#@cli : If 'expression' is not a math expression, it is regarded as a filename and checked if it exists.
 
 #@cli check3d : _is_full_check={ 0 | 1 } : (+)
 #@cli : Check validity of selected 3d vector objects, and display an error message
@@ -14178,7 +14178,7 @@ apply_timeout :
 #@cli : Command selection (if any) stands for displayed call stack subset instead of image indices.
 
 #@cli eval : expression : (+)
-#@cli : Do nothing but evaluate specified expression.
+#@cli : Do nothing but try to evaluate specified math expression.
 eval :
   -skip {"$*"}
 
