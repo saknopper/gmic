@@ -5291,7 +5291,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
           name.assign(argument,(unsigned int)std::strlen(argument) + 1);
           strreplace_fw(name);
           bool is_cond = false, is_filename = false;
-          const CImg<T> &img = images.size()?images.back():CImg<T>::empty();
+          CImg<T> &img = images.size()?images.back():CImg<T>::empty();
           try { if (img.eval(name,0,0,0,0,&images,&images)) is_cond = true; }
           catch (CImgException&) {
             is_filename = true;
@@ -6602,7 +6602,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                 gmic_argument_text_printed());
           name.assign(argument,(unsigned int)std::strlen(argument) + 1);
           strreplace_fw(name);
-          const CImg<T> &img = images.size()?images.back():CImg<T>::empty();
+          CImg<T> &img = images.size()?images.back():CImg<T>::empty();
           try {
             CImg<double> output;
             img.eval(output,name,0,0,0,0,&images,&images);
