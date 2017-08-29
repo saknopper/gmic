@@ -14181,7 +14181,7 @@ apply_timeout :
 #@cli : Evaluate specified math expression and return its result.
 eval :
   -e[^-1] "Evaluate math expression '$1'."
-  -u {"$*"}
+  -v - -u {"$*"} -v +
 
 #@cli x : eq. to '-exec'. : (+)
 
