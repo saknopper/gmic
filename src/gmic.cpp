@@ -6598,11 +6598,21 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
         // Evaluate expression.
         if (is_eval_command) {
           gmic_substitute_args(false);
+          print(images,0,"Evaluate math expression '%s'.",
+                gmic_argument_text_printed());
           name.assign(argument,(unsigned int)std::strlen(argument) + 1);
           strreplace_fw(name);
           const CImg<T> &img = images.size()?images.back():CImg<T>::empty();
-          try { img.eval(name,0,0,0,0,&images,&images); }
-          catch (CImgException &e) {
+          try {
+            CImg<double> output;
+            img.eval(output,name,0,0,0,0,&images,&images);
+            if (output.height()>1) // Vector-valued result
+              output.value_string().move_to(status);
+            else { // Scalar result
+              cimg_snprintf(formula,_formula.width(),"%.17g",*output);
+              CImg<char>::string(formula).move_to(status);
+            }
+          } catch (CImgException &e) {
             const char *err = std::strstr(e.what(),"eval(): ");
             if (!err) err = e.what(); else err+=8;
             error(images,0,0,"Command '-eval': %s",err);
@@ -6629,7 +6639,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
           print(images,0,"Execute external command '%s' (skipped, no exec allowed).",
                 gmic_argument_text_printed());
 #else // #ifdef gmic_noexec
-          print(images,0,"Execute external command '%s'\n",
+          print(images,0,"Execute external command '%s'.\n",
                 gmic_argument_text_printed());
           name.assign(argument,(unsigned int)std::strlen(argument) + 1);
           cimg::strunescape(name);

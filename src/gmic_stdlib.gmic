@@ -14178,9 +14178,10 @@ apply_timeout :
 #@cli : Command selection (if any) stands for displayed call stack subset instead of image indices.
 
 #@cli eval : expression : (+)
-#@cli : Do nothing but try to evaluate specified math expression.
+#@cli : Evaluate specified math expression and return its result.
 eval :
-  -skip {"$*"}
+  -e[^-1] "Evaluate math expression '$1'."
+  -u {"$*"}
 
 #@cli x : eq. to '-exec'. : (+)
 
