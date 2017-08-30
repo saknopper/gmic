@@ -657,8 +657,8 @@ _help_usage :
 
   -_help_section "Mathematical expressions"
 
-  -_help_paragraph "  - "${-GMIC}" has an embedded "${g}"mathematical parser"$n". It is used to evaluate expressions inside braces
-\n     '"$g"{}"$n"', or formulas in commands that may take one as an argument (e.g. '"$c"-fill"$n"').
+  -_help_paragraph "  - "${-GMIC}" has an embedded "${g}"mathematical parser"$n". It is used to evaluate (possibly complex) expressions
+\n     inside braces '"$g"{}"$n"', or formulas in commands that may take one as an argument (e.g. '"$c"-fill"$n"').
 \n
 \n  - When the context allows it, a formula is evaluated "${g}"for each pixel"$n" of the selected images
 \n     (e.g. '"$c"-fill"$n"').
@@ -700,7 +700,7 @@ _help_usage :
 \n
 \n    _ "${g}"Variable names"$n" below are pre-defined. They can be overrided.
 \n
-\n       . '"${c}"l"$n"': length of the associated list of images, if any ("${g}"0"$n" otherwise).
+\n       . '"${c}"l"$n"': length of the associated list of images.
 \n       . '"${c}"w"$n"': width of the associated image, if any ("${g}"0"$n" otherwise).
 \n       . '"${c}"h"$n"': height of the associated image, if any ("${g}"0"$n" otherwise).
 \n       . '"${c}"d"$n"': depth of the associated image, if any ("${g}"0"$n" otherwise).
@@ -708,7 +708,7 @@ _help_usage :
 \n       . '"${c}"r"$n"': shared state of the associated image, if any ("${g}"0"$n" otherwise).
 \n       . '"${c}"wh"$n"': shortcut for width x height.
 \n       . '"${c}"whd"$n"': shortcut for width x height x depth.
-\n       . '"${c}"whds"$n"': shortcut for width x height x depth x spectrum (i.e. number of values).
+\n       . '"${c}"whds"$n"': shortcut for width x height x depth x spectrum (i.e. number of image values).
 \n       . '"${c}"im"$n"','"${c}"iM"$n"','"${c}"ia"$n"','"${c}"iv"$n"','"${c}"is"$n"','"${c}"ip"$n"','"${c}"ic"$n"': Respectively the minimum, maximum, average,
 \n          variance, sum, product and median value of the associated image, if any ("${g}"0"$n" otherwise).
 \n       . '"${c}"xm"$n"','"${c}"ym"$n"','"${c}"zm"$n"','"${c}"cm"$n"': The pixel coordinates of the minimum value in the associated
@@ -766,6 +766,8 @@ _help_usage :
 \n         '"${c}"sort(X,_is_increasing,_chunk_size)"$n"' (sorting values), '"${c}"reverse(A)"$n"' (reverse order of
 \n         components), '"${c}"shift(A,_length,_boundary_conditions)"$n"' and
 \n         '"${c}"same(A,B,_nb_vals,_is_case_sensitive)"$n"' (vector equality test).
+\n       . Function '"${c}"normP(u1,...,un)"$n"' computes the LP-norm of the specified vector
+\n          ("${c}"P"$n" being an "${g}"unsigned integer"$n" constant or '"${g}"inf"$n"'). If "${c}"P"$n" is omitted, the L2 norm is used.
 \n       . Function '"${c}"resize(A,size,_interpolation,_boundary_conditions)"$n"' returns a resized version of
 \n          a vector '"${g}"A"$n"' with specified interpolation mode. '"${g}"interpolation'"$n" can be "$g"{ -1=none
 \n          (memory content) | 0=none | 1=nearest | 2=average | 3=linear | 4=grid | 5=bicubic |
@@ -831,8 +833,6 @@ _help_usage :
 \n
 \n    _ The following "${g}"specific functions"$n" are also defined:
 \n
-\n       . '"${c}"normP(u1,...,un)"$n"' computes the LP-norm of the specified vector
-\n          ("${c}"P"$n" being an "${g}"unsigned integer"$n" constant or '"${g}"inf"$n"'). If "${c}"P"$n" is omitted, the L2 norm is used.
 \n       . '"${c}"u(max)"$n"' or '"${c}"u(min,max)"$n"': return a random value between "$g"[0,max]"$n" or "$g"[min,max]"$n", following
 \n          a uniform distribution.
 \n       . '"${c}"i(_a,_b,_c,_d,_interpolation_type,_boundary_conditions)"$n"': return the value of the pixel
@@ -918,6 +918,8 @@ _help_usage :
 \n       . '"${c}"unref(a,b,...)"$n" destroys references to the named variable given as arguments.
 \n       . '"${c}"breakpoint()"$n" inserts a possible computation breakpoint (not supported by the cli interface).
 \n       . '"${c}"_(expr)"$n" just ignores its arguments (mainly useful for debugging).
+\n       . '"${c}"extern('pipeline')"$n" executes the specified "${-GMIC}" pipeline as if it was called outside
+\n          the currently evaluated expression.
 \n
 \n    - "${g}"User-defined macros:"$n"
 \n
