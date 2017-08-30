@@ -57,8 +57,8 @@
                     <ul>
                       <li>Windows <i>64 bits</i>: <a href="http://gmic.eu/files/windows/gmic_krita_qt_win64.zip">.zip archive</a></li>
                       <li>Windows <i>32 bits</i>: <a href="http://gmic.eu/files/windows/gmic_krita_qt_win32.zip">.zip archive</a></li>
-                      <li>Debian 8 <i>Jessie</i> <i>64 bits</i>: <a href="http://gmic.eu/files/linux/gmic_krita_qt_linux64.zip">.zip archive</a></li>
-                      <li>Debian 8 <i>Jessie</i> <i>32 bits</i>: <a href="http://gmic.eu/files/linux/gmic_krita_qt_linux32.zip">.zip archive</a></li>
+                      <!-- <li>Debian 8 <i>Jessie</i> <i>64 bits</i>: <a href="http://gmic.eu/files/linux/gmic_krita_qt_linux64.zip">.zip archive</a></li> -->
+                      <!-- <li>Debian 8 <i>Jessie</i> <i>32 bits</i>: <a href="http://gmic.eu/files/linux/gmic_krita_qt_linux32.zip">.zip archive</a></li> -->
                     </ul>
                     <br/></td>
                 </tr>
