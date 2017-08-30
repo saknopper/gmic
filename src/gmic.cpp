@@ -2190,9 +2190,9 @@ double gmic::mp_extern(char *const str, void *const p_list) {
     gi._run(gi.commands_line_to_CImgList(gmic::strreplace_fw(str)),pos,images,images_names,
             parent_images,parent_images_names,variables_sizes,0,0,command_selection);
     gi.callstack.remove();
-    double res = cimg::type<double>::nan();
-    if (gi.status) std::sscanf(gi.status,"%lf",&res);
-    return res;
+    double res;
+    char sep;
+    if (gi.status && *gi.status && std::sscanf(gi.status,"%lf%c",&res,&sep)==1) return res;
   }
   return cimg::type<double>::nan();
 }
