@@ -918,7 +918,7 @@ _help_usage :
 \n       . '"${c}"unref(a,b,...)"$n" destroys references to the named variable given as arguments.
 \n       . '"${c}"breakpoint()"$n" inserts a possible computation breakpoint (not supported by the cli interface).
 \n       . '"${c}"_(expr)"$n" just ignores its arguments (mainly useful for debugging).
-\n       . '"${c}"extern('pipeline')"$n" executes the specified "${-GMIC}" pipeline as if it was called outside
+\n       . '"${c}"ext('pipeline')"$n" executes the specified "${-GMIC}" pipeline as if it was called outside
 \n          the currently evaluated expression.
 \n
 \n    - "${g}"User-defined macros:"$n"
