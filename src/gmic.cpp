@@ -2158,9 +2158,9 @@ inline char *_gmic_argument_text(const char *const argument, CImg<char>& argumen
        }}} is_released = false; continue; \
    }
 
-// Manage list of all gmic runs (for CImg math parser 'extern()').
+// Manage list of all gmic runs (for CImg math parser 'ext()').
 inline gmic_list<void*>& gmic_runs() { static gmic_list<void*> val; return val; }
-double gmic::mp_extern(char *const str, void *const p_list) {
+double gmic::mp_ext(char *const str, void *const p_list) {
 
   // Retrieve current gmic instance.
   CImgList<void*> &grl = gmic_runs();
@@ -2183,9 +2183,9 @@ double gmic::mp_extern(char *const str, void *const p_list) {
 
     if (gi.is_debug_info && gi.debug_line!=~0U) {
       CImg<char> title(32);
-      cimg_snprintf(title,title.width(),"*extern#%u",gi.debug_line);
+      cimg_snprintf(title,title.width(),"*ext#%u",gi.debug_line);
       CImg<char>::string(title).move_to(gi.callstack);
-    } else CImg<char>::string("*extern").move_to(gi.callstack);
+    } else CImg<char>::string("*ext").move_to(gi.callstack);
     unsigned int pos = 0;
     gi._run(gi.commands_line_to_CImgList(gmic::strreplace_fw(str)),pos,images,images_names,
             parent_images,parent_images_names,variables_sizes,0,0,command_selection);
