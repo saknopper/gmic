@@ -3622,7 +3622,7 @@ testimage2d : -check "${1=512}>0 && ${2=$1}>0 && ${3=3}>0"
 #@cli : Set argument to '*' for discarding all existing custom commands.
 
 #@cli uniform_distribution : nb_levels>=1,spectrum>=1
-#@cli : Input set of uniformly distributed N-d points in [0,1]^N.
+#@cli : Input set of uniformly distributed spectrum-d points in [0,1]^spectrum.
 #@cli : $ -uniform_distribution 64,3 -* 255 --distribution3d -circles3d[-1] 10
 uniform_distribution : -check "isint($1) && $1>0 && isint($2) && $2>0"
   -e[^1] "Input set of $1 uniformly distributed $2-d points in [0,1]^$2."
