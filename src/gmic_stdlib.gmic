@@ -673,8 +673,8 @@ _help_usage :
 \n       %"$n" (modulo), "$c"^"$n" (power), "$c"!"$n" (logical not), "$c"~"$n" (bitwise not),
 \n       "$c"++"$n", "$c"--"$n", "$c"+="$n", "$c"-="$n", "$c"*="$n", "$c"/="$n", "$c"%="$n", "$c"&="$n", "$c"|="$n", "$c"^="$n", "$c">>="$n", "$c"<<="$n" (in-place operators).
 \n
-\n    _ "${g}"Usual math functions:"$n" "${c}"abs(), acos(), arg(), argmax(), argmin(), asin(), atan(), atan2(),
-\n       bool(), cbrt(), ceil(), cos(), cosh(), cut(), exp(), fact(), fibo(), floor(), gauss(), int(), isval(),
+\n    _ "${g}"Usual math functions:"$n" "${c}"abs(), acos(), arg(), argkth(), argmax(), argmin(), asin(), atan(),
+\n       atan2(), bool(), cbrt(), ceil(), cos(), cosh(), cut(), exp(), fact(), fibo(), floor(), gauss(), int(), isval(),
 \n       isnan(), isinf(), isint(), isbool(), isfile(), isdir(), isin(), kth(), log(), log2(), log10(),
 \n       max(), mean(), med(), min(), narg(), prod(), rol()"$n" (left bit rotation),
 \n       "${c}"ror()"$n" (right bit rotation)"${c}", round(), sign(), sin(), sinc(), sinh(), sqrt(), std(),
