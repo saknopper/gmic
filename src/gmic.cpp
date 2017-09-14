@@ -14335,7 +14335,7 @@ void gmic_segfault_sigaction(int signal, siginfo_t *si, void *arg) {
   cimg::unused(signal,si,arg);
   cimg::mutex(29);
   std::fprintf(cimg::output(),
-               "\n\n%s[gmic] G'MIC encountered a %sfatal error%s%s (Segmentation fault). "
+               "\n\n%s[gmic] G'MIC encountered a %sfatal error%s%s. "
                "Please submit a bug report, at: %shttps://github.com/dtschump/gmic-community/issues%s\n\n",
                cimg::t_red,cimg::t_bold,cimg::t_normal,cimg::t_red,
                cimg::t_bold,cimg::t_normal);
