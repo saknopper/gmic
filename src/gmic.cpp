@@ -2413,13 +2413,13 @@ unsigned int gmic::strescape(const char *const str, char *const res) {
     commands_has_arguments(new CImgList<char>[512]), \
     _variables(new CImgList<char>[512]), _variables_names(new CImgList<char>[512]), \
     variables(new CImgList<char>*[512]), variables_names(new CImgList<char>*[512]), \
-    display_window(new CImgDisplay[10]), is_running(false)
+    display_windows(new CImgDisplay[10]), is_running(false)
 #else
 #define gmic_new_attr commands(new CImgList<char>[512]), commands_names(new CImgList<char>[512]), \
     commands_has_arguments(new CImgList<char>[512]), \
     _variables(new CImgList<char>[512]), _variables_names(new CImgList<char>[512]), \
     variables(new CImgList<char>*[512]), variables_names(new CImgList<char>*[512]), \
-    display_window(0), is_running(false)
+    display_windows(0), is_running(false)
 #endif // #if cimg_display!=0
 
 CImg<char> gmic::stdlib = CImg<char>::empty();
@@ -2445,8 +2445,8 @@ gmic::gmic(const char *const commands_line, const char *const custom_commands,
 gmic::~gmic() {
   cimg::exception_mode(cimg_exception_mode);
 #if cimg_display!=0
-  CImgDisplay *const _display_window = (CImgDisplay*)display_window;
-  delete[] _display_window;
+  CImgDisplay *const _display_windows = (CImgDisplay*)display_windows;
+  delete[] _display_windows;
 #endif
   delete[] commands;
   delete[] commands_names;
@@ -3566,7 +3566,7 @@ gmic& gmic::display_images(const CImgList<T>& images, const CImgList<char>& imag
                            const CImg<unsigned int>& selection, unsigned int *const XYZ,
                            const bool exit_on_anykey) {
 #if cimg_display!=0
-  CImgDisplay *const _display_window = (CImgDisplay*)display_window;
+  CImgDisplay *const _display_windows = (CImgDisplay*)display_windows;
 #endif
   if (!images || !images_names || !selection) { print(images,0,"Display image []."); return *this; }
   const bool is_verbose = verbosity>=0 || is_debug;
@@ -3643,7 +3643,7 @@ gmic& gmic::display_images(const CImgList<T>& images, const CImgList<char>& imag
     cimg::mutex(29,0);
   }
   if (visu) {
-    CImgDisplay _disp, &disp = _display_window[0]?_display_window[0]:_disp;
+    CImgDisplay _disp, &disp = _display_windows[0]?_display_windows[0]:_disp;
     CImg<char> title(256);
     if (visu.size()==1)
       cimg_snprintf(title,title.width(),"%s (%dx%dx%dx%d)",
@@ -3678,7 +3678,7 @@ gmic& gmic::display_plots(const CImgList<T>& images, const CImgList<char>& image
                           const double ymin, const double ymax,
                           const bool exit_on_anykey) {
 #if cimg_display!=0
-  CImgDisplay *const _display_window = (CImgDisplay*)display_window;
+  CImgDisplay *const _display_windows = (CImgDisplay*)display_windows;
 #endif
   if (!images || !images_names || !selection) { print(images,0,"Plot image []."); return *this; }
   const bool is_verbose = verbosity>=0 || is_debug;
@@ -3715,7 +3715,7 @@ gmic& gmic::display_plots(const CImgList<T>& images, const CImgList<char>& image
   print(images,0,"Plot image%s = '%s'.",
         gmic_selection.data(),gmic_names.data());
 
-  CImgDisplay _disp, &disp = _display_window[0]?_display_window[0]:_disp;
+  CImgDisplay _disp, &disp = _display_windows[0]?_display_windows[0]:_disp;
   bool is_first_line = false;
   cimg_forY(selection,l) {
     const unsigned int uind = selection[l];
@@ -3749,7 +3749,7 @@ gmic& gmic::display_objects3d(const CImgList<T>& images, const CImgList<char>& i
                               const CImg<unsigned char>& background3d,
                               const bool exit_on_anykey) {
 #if cimg_display!=0
-  CImgDisplay *const _display_window = (CImgDisplay*)display_window;
+  CImgDisplay *const _display_windows = (CImgDisplay*)display_windows;
 #endif
   if (!images || !images_names || !selection) {
     print(images,0,"Display 3d object [].");
@@ -3777,7 +3777,7 @@ gmic& gmic::display_objects3d(const CImgList<T>& images, const CImgList<char>& i
   }
   if (!is_available_display) return *this;
 
-  CImgDisplay _disp, &disp = _display_window[0]?_display_window[0]:_disp;
+  CImgDisplay _disp, &disp = _display_windows[0]?_display_windows[0]:_disp;
   cimg_forY(selection,l) {
     const unsigned int uind = selection[l];
     const CImg<T>& img = images[uind];
@@ -3831,7 +3831,7 @@ CImg<char> gmic::substitute_item(const char *const source,
                                  const CImg<unsigned int> *const command_selection,
                                  const bool is_image_expr) {
 #if cimg_display!=0
-  CImgDisplay *const _display_window = (CImgDisplay*)display_window;
+  CImgDisplay *const _display_windows = (CImgDisplay*)display_windows;
 #endif
   if (!source) return CImg<char>();
   CImg<char> substituted_items(64), inbraces, substr(40), vs;
@@ -3913,7 +3913,7 @@ CImg<char> gmic::substitute_item(const char *const source,
           unsigned int wind = 0;
           const char *feature = inbraces.data() + 1;
           if (*feature>='0' && *feature<='9') wind = (unsigned int)(*(feature++) - '0');
-          CImgDisplay &disp = _display_window[wind];
+          CImgDisplay &disp = _display_windows[wind];
 
           if (!*feature) {
             cimg_snprintf(substr,substr.width(),"%d",disp?(disp.is_closed()?0:1):0);
@@ -4482,7 +4482,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                  const CImg<unsigned int> *const command_selection) {
 
 #if cimg_display!=0
-  CImgDisplay *const _display_window = (CImgDisplay*)display_window;
+  CImgDisplay *const _display_windows = (CImgDisplay*)display_windows;
 #endif
   if (!commands_line || position>=commands_line._width) {
     if (is_debug) debug(images,"Return from empty function '%s/'.",
@@ -5499,7 +5499,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             if (is_available_display) {
               print(images,0,"Crop image%s in interactive mode.",
                     gmic_selection.data());
-              CImgDisplay _disp, &disp = _display_window[0]?_display_window[0]:_disp;
+              CImgDisplay _disp, &disp = _display_windows[0]?_display_windows[0]:_disp;
               cimg_forY(selection,l) {
                 CImg<T>& img = gmic_check(images[selection[l]]);
                 if (disp) disp.resize(cimg_fitscreen(img.width(),img.height(),1),false);
@@ -5580,7 +5580,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             if (is_available_display) {
               print(images,0,"Cut image%s in interactive mode.",
                     gmic_selection.data());
-              CImgDisplay _disp, &disp = _display_window[0]?_display_window[0]:_disp;
+              CImgDisplay _disp, &disp = _display_windows[0]?_display_windows[0]:_disp;
               cimg_forY(selection,l) {
                 CImg<T> &img = gmic_check(images[selection[l]]);
                 value0 = value1 = 0;
@@ -6064,10 +6064,10 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
 #else // #if cimg_display==0
           try {
             if (state) cimg_forY(selection,l) {
-                if (!_display_window[l].is_closed()) _display_window[selection[l]].show_mouse();
+                if (!_display_windows[l].is_closed()) _display_windows[selection[l]].show_mouse();
               }
             else cimg_forY(selection,l) {
-                if (!_display_window[l].is_closed()) _display_window[selection[l]].hide_mouse();
+                if (!_display_windows[l].is_closed()) _display_windows[selection[l]].hide_mouse();
               }
             print(images,0,"%s mouse cursor for display window%s.",
                   state?"Show":"Hide",
@@ -10219,7 +10219,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             if (is_available_display) {
               print(images,0,"Resize image%s in interactive mode.",
                     gmic_selection.data());
-              CImgDisplay _disp, &disp = _display_window[0]?_display_window[0]:_disp;
+              CImgDisplay _disp, &disp = _display_windows[0]?_display_windows[0]:_disp;
               cimg_forY(selection,l) {
                 CImg<T>& img = gmic_check(images[selection[l]]);
                 if (img) {
@@ -11644,9 +11644,9 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
               }
               unsigned int XYZ[3];
               XYZ[0] = X; XYZ[1] = Y; XYZ[2] = Z;
-              if (_display_window[0]) {
+              if (_display_windows[0]) {
                 cimg_forY(selection,l)
-                  gmic_apply(select(_display_window[0],feature_type,is_xyz?XYZ:0,
+                  gmic_apply(select(_display_windows[0],feature_type,is_xyz?XYZ:0,
                                     (bool)exit_on_anykey));
               }
               else {
@@ -11799,7 +11799,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             if (is_available_display) {
               print(images,0,"Threshold image%s in interactive mode.",
                     gmic_selection.data());
-              CImgDisplay _disp, &disp = _display_window[0]?_display_window[0]:_disp;
+              CImgDisplay _disp, &disp = _display_windows[0]?_display_windows[0]:_disp;
               cimg_forY(selection,l) {
                 CImg<T>& img = gmic_check(images[selection[l]]);
                 value = 0;
@@ -12297,7 +12297,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                   wind);
           }
           if (is_available_display) {
-            CImgDisplay &disp = _display_window[wind];
+            CImgDisplay &disp = _display_windows[wind];
 
             if (!dimw || !dimh) { // Close.
               print(images,0,"Close display window [%d].",
@@ -12476,7 +12476,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
           if (!delay) {
             print(images,0,"Wait for user events on display window%s.",
                   gmic_selection.data());
-            CImgDisplay *const iw = _display_window;
+            CImgDisplay *const iw = _display_windows;
             switch (selection.height()) {
             case 1 : CImgDisplay::wait(iw[selection[0]]); break;
             case 2 : CImgDisplay::wait(iw[selection[0]],iw[selection[1]]); break;
@@ -12514,17 +12514,17 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             print(images,0,
                   "Flush display events of display window%s and wait for %g milliseconds.",
                   gmic_selection.data(),delay);
-            cimg_forY(selection,l) _display_window[selection[l]].flush();
-            if (selection && _display_window[selection[0]])
-              _display_window[selection[0]].wait((unsigned int)delay);
+            cimg_forY(selection,l) _display_windows[selection[l]].flush();
+            if (selection && _display_windows[selection[0]])
+              _display_windows[selection[0]].wait((unsigned int)delay);
             else cimg::wait((unsigned int)delay);
           } else {
             delay = cimg::round(delay);
             print(images,0,"Wait for %g milliseconds according to display window%s.",
                   delay,
                   gmic_selection.data());
-            if (selection && _display_window[selection[0]])
-              _display_window[selection[0]].wait((unsigned int)delay);
+            if (selection && _display_windows[selection[0]])
+              _display_windows[selection[0]].wait((unsigned int)delay);
             else cimg::sleep((unsigned int)delay);
           }
 #endif // #if cimg_display==0
@@ -14245,7 +14245,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
 #if cimg_display!=0
       CImgList<unsigned int> lselection, lselection3d;
       bool is_first3d = false;
-      _display_window[0].assign();
+      _display_windows[0].assign();
       cimglist_for(images,l) {
         const bool is_3d = images[l].is_CImg3d(false);
         if (!l) is_first3d = is_3d;
