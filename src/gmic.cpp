@@ -2162,48 +2162,52 @@ inline char *_gmic_argument_text(const char *const argument, CImg<char>& argumen
 inline gmic_list<void*>& gmic_runs() { static gmic_list<void*> val; return val; }
 
 double gmic::mp_ext(char *const str, void *const p_list) {
-
-  // Retrieve current gmic instance.
-  cimg::mutex(24);
-  CImgList<void*> &grl = gmic_runs();
-  int ind;
-  for (ind = grl.width() - 1; ind>=0; --ind) {
-    CImg<void*> &gr = grl[ind];
-    if (gr[1]==(void*)p_list) break;
-  }
-  if (ind<0) { cimg::mutex(24,0); return cimg::type<double>::nan(); } // Instance not found
-  CImg<void*> &gr = grl[ind];
-  gmic &gi = *(gmic*)gr[0];
-  cimg::mutex(24,0);
-
-  // Run given command line.
-  CImgList<gmic_pixel_type> &images = *(CImgList<gmic_pixel_type>*)gr[1];
-  CImgList<char> &images_names = *(CImgList<char>*)gr[2];
-  CImgList<gmic_pixel_type> &parent_images = *(CImgList<gmic_pixel_type>*)gr[3];
-  CImgList<char> &parent_images_names = *(CImgList<char>*)gr[4];
-  const unsigned int *const variables_sizes = (const unsigned int*)gr[5];
-  const CImg<unsigned int> *const command_selection = (const CImg<unsigned int>*)gr[6];
-
-  if (gi.is_debug_info && gi.debug_line!=~0U) {
-    CImg<char> title(32);
-    cimg_snprintf(title,title.width(),"*ext#%u",gi.debug_line);
-    CImg<char>::string(title).move_to(gi.callstack);
-  } else CImg<char>::string("*ext").move_to(gi.callstack);
-  unsigned int pos = 0;
-
-  try {
-    CImgList<gmic_pixel_type> nimages = images.get_shared();
-    gi._run(gi.commands_line_to_CImgList(gmic::strreplace_fw(str)),pos,nimages,images_names,
-            parent_images,parent_images_names,variables_sizes,0,0,command_selection);
-  } catch (gmic_exception&) {
-    gi.callstack.remove();
-    return cimg::type<double>::nan();
-  }
-  gi.callstack.remove();
-  double res;
+  double res = cimg::type<double>::nan();
   char sep;
-  if (gi.status && *gi.status && std::sscanf(gi.status,"%lf%c",&res,&sep)==1) return res;
-  return cimg::type<double>::nan();
+  cimg_pragma_openmp(critical)
+  {
+    // Retrieve current gmic instance.
+    cimg::mutex(24);
+    CImgList<void*> &grl = gmic_runs();
+    int ind;
+    for (ind = grl.width() - 1; ind>=0; --ind) {
+      CImg<void*> &gr = grl[ind];
+      if (gr[1]==(void*)p_list) break;
+    }
+    if (ind<0) { cimg::mutex(24,0); res = cimg::type<double>::nan(); } // Instance not found
+    else {
+      CImg<void*> &gr = grl[ind];
+      gmic &gi = *(gmic*)gr[0];
+      cimg::mutex(24,0);
+
+      // Run given command line.
+      CImgList<gmic_pixel_type> &images = *(CImgList<gmic_pixel_type>*)gr[1];
+      CImgList<char> &images_names = *(CImgList<char>*)gr[2];
+      CImgList<gmic_pixel_type> &parent_images = *(CImgList<gmic_pixel_type>*)gr[3];
+      CImgList<char> &parent_images_names = *(CImgList<char>*)gr[4];
+      const unsigned int *const variables_sizes = (const unsigned int*)gr[5];
+      const CImg<unsigned int> *const command_selection = (const CImg<unsigned int>*)gr[6];
+
+      if (gi.is_debug_info && gi.debug_line!=~0U) {
+        CImg<char> title(32);
+        cimg_snprintf(title,title.width(),"*ext#%u",gi.debug_line);
+        CImg<char>::string(title).move_to(gi.callstack);
+      } else CImg<char>::string("*ext").move_to(gi.callstack);
+      unsigned int pos = 0;
+
+      try {
+        CImgList<gmic_pixel_type> nimages = images.get_shared();
+        gi._run(gi.commands_line_to_CImgList(gmic::strreplace_fw(str)),pos,nimages,images_names,
+                parent_images,parent_images_names,variables_sizes,0,0,command_selection);
+      } catch (gmic_exception&) {
+        gi.callstack.remove();
+        res = cimg::type<double>::nan();
+      }
+      gi.callstack.remove();
+      if (!gi.status || !*gi.status || std::sscanf(gi.status,"%lf%c",&res,&sep)!=1) res = cimg::type<double>::nan();
+    }
+  }
+  return res;
 }
 
 // Manage mutexes.
