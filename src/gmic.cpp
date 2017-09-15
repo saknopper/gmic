@@ -2174,55 +2174,6 @@ double gmic::mp_ext(char *const str, void *const p_list) {
   if (ind<0) { cimg::mutex(24,0); return cimg::type<double>::nan(); } // Instance not found
   CImg<void*> &gr = grl[ind];
   gmic &gi = *(gmic*)gr[0];
-
-  // Clone gmic instance, if necessary.
-  gmic gi_clone;
-  for (unsigned int i = 0; i<512; ++i) {
-    gi_clone.commands[i].assign(gi.commands[i],true);
-    gi_clone.commands_names[i].assign(gi.commands_names[i],true);
-    gi_clone.commands_has_arguments[i].assign(gi.commands_has_arguments[i],true);
-    if (i==511) { // Share inter-thread global variables.
-      gi_clone.variables[i] = gi.variables[i];
-      gi_clone.variables_names[i] = gi.variables_names[i];
-    } else {
-      if (i==510) { // Make a copy of single-thread global variables.
-        gi_clone._variables[i].assign(gi._variables[i]);
-        gi_clone._variables_names[i].assign(gi._variables_names[i]);
-      }
-      gi_clone.variables[i] = &gi_clone._variables[i];
-      gi_clone.variables_names[i] = &gi_clone._variables_names[i];
-    }
-  }
-  gi_clone.callstack.assign(gi.callstack);
-  gi_clone.commands_files.assign(gi.commands_files,true);
-  gi_clone.light3d.assign(gi.light3d);
-  gi_clone.status.assign(gi.status);
-  gi_clone.debug_filename = gi.debug_filename;
-  gi_clone.debug_line = gi.debug_line;
-  gi_clone.focale3d = gi.focale3d;
-  gi_clone.light3d_x = gi.light3d_x;
-  gi_clone.light3d_y = gi.light3d_y;
-  gi_clone.light3d_z = gi.light3d_z;
-  gi_clone.specular_lightness3d = gi.specular_lightness3d;
-  gi_clone.specular_shininess3d = gi.specular_shininess3d;
-  gi_clone._progress = 0;
-  gi_clone.progress = &gi_clone._progress;
-  gi_clone.is_released = gi.is_released;
-  gi_clone.is_debug = gi.is_debug;
-  gi_clone.is_start = false;
-  gi_clone.is_quit = false;
-  gi_clone.is_return = false;
-  gi_clone.is_double3d = gi.is_double3d;
-  gi_clone.check_elif = false;
-  gi_clone.verbosity = gi.verbosity;
-  gi_clone.render3d = gi.render3d;
-  gi_clone.renderd3d = gi.renderd3d;
-  gi_clone._is_abort = gi._is_abort;
-  gi_clone.is_abort = gi.is_abort;
-  gi_clone.is_abort_thread = false;
-  gi_clone.nb_carriages = gi.nb_carriages;
-  gi_clone.reference_time = gi.reference_time;
-  gmic &gmic_instance = gi_clone;
   cimg::mutex(24,0);
 
   // Run given command line.
@@ -2233,24 +2184,25 @@ double gmic::mp_ext(char *const str, void *const p_list) {
   const unsigned int *const variables_sizes = (const unsigned int*)gr[5];
   const CImg<unsigned int> *const command_selection = (const CImg<unsigned int>*)gr[6];
 
-  if (gmic_instance.is_debug_info && gmic_instance.debug_line!=~0U) {
+  if (gi.is_debug_info && gi.debug_line!=~0U) {
     CImg<char> title(32);
-    cimg_snprintf(title,title.width(),"*ext#%u",gmic_instance.debug_line);
-    CImg<char>::string(title).move_to(gmic_instance.callstack);
-  } else CImg<char>::string("*ext").move_to(gmic_instance.callstack);
+    cimg_snprintf(title,title.width(),"*ext#%u",gi.debug_line);
+    CImg<char>::string(title).move_to(gi.callstack);
+  } else CImg<char>::string("*ext").move_to(gi.callstack);
   unsigned int pos = 0;
 
   try {
-    gmic_instance._run(gmic_instance.commands_line_to_CImgList(gmic::strreplace_fw(str)),pos,images,images_names,
-                       parent_images,parent_images_names,variables_sizes,0,0,command_selection);
+    CImgList<gmic_pixel_type> nimages = images.get_shared();
+    gi._run(gi.commands_line_to_CImgList(gmic::strreplace_fw(str)),pos,nimages,images_names,
+            parent_images,parent_images_names,variables_sizes,0,0,command_selection);
   } catch (gmic_exception&) {
-    gmic_instance.callstack.remove();
+    gi.callstack.remove();
     return cimg::type<double>::nan();
   }
-  gmic_instance.callstack.remove();
+  gi.callstack.remove();
   double res;
   char sep;
-  if (gmic_instance.status && *gmic_instance.status && std::sscanf(gmic_instance.status,"%lf%c",&res,&sep)==1) return res;
+  if (gi.status && *gi.status && std::sscanf(gi.status,"%lf%c",&res,&sep)==1) return res;
   return cimg::type<double>::nan();
 }
 
