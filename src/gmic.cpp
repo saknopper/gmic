@@ -722,7 +722,7 @@ const CImg<T>& gmic_print(const char *const title, const bool is_debug,
                           const bool is_valid) const {
   cimg::mutex(29);
   CImg<doubleT> st;
-  if (is_valid && !is_empty()) st = get_stats();
+  if (is_valid && !is_empty()) get_stats().move_to(st);
   const ulongT siz = size(), msiz = siz*sizeof(T), siz1 = siz - 1,
     mdisp = msiz<8*1024?0U:msiz<8*1024*1024?1U:2U,
     wh = _width*_height, whd = _width*_height*_depth,
@@ -738,7 +738,6 @@ const CImg<T>& gmic_print(const char *const title, const bool is_debug,
                cimg::t_bold,cimg::t_normal,
                is_debug?"":"(");
   if (is_debug) std::fprintf(cimg::output(),"%p = (",(void*)_data);
-
   if (is_valid) {
     if (is_empty()) std::fprintf(cimg::output(),") [%s].\n",
                                  pixel_type());
@@ -2164,7 +2163,7 @@ inline gmic_list<void*>& gmic_runs() { static gmic_list<void*> val; return val; 
 double gmic::mp_ext(char *const str, void *const p_list) {
   double res = cimg::type<double>::nan();
   char sep;
-  cimg_pragma_openmp(critical)
+  cimg_pragma_openmp(critical(mp_ext))
   {
     // Retrieve current gmic instance.
     cimg::mutex(24);
@@ -3539,7 +3538,6 @@ gmic& gmic::print_images(const CImgList<T>& images, const CImgList<char>& images
     return *this;
   }
   const bool is_verbose = verbosity>=0 || is_debug;
-
   CImg<char> title(256);
   if (is_header) {
     CImg<char> gmic_selection, gmic_names;
@@ -3551,6 +3549,7 @@ gmic& gmic::print_images(const CImgList<T>& images, const CImgList<char>& images
     print(images,0,"Print image%s = '%s'.\n",
           gmic_selection.data(),gmic_names.data());
   }
+
   if (is_verbose) {
     cimg_forY(selection,l) {
       const unsigned int uind = selection[l];
@@ -3559,6 +3558,7 @@ gmic& gmic::print_images(const CImgList<T>& images, const CImgList<char>& images
       int _verbosity = verbosity;
       bool _is_debug = is_debug;
       verbosity = -1; is_debug = false;
+
       try { gmic_check(img); } catch (gmic_exception&) { is_valid = false; }
       verbosity = _verbosity; is_debug = _is_debug;
       cimg_snprintf(title,title.width(),"[%u] = '%s'",
@@ -3654,6 +3654,7 @@ gmic& gmic::display_images(const CImgList<T>& images, const CImgList<char>& imag
     nb_carriages = 0;
     cimg::mutex(29,0);
   }
+
   if (visu) {
     CImgDisplay _disp, &disp = _display_windows[0]?_display_windows[0]:_disp;
     CImg<char> title(256);
@@ -3671,9 +3672,9 @@ gmic& gmic::display_images(const CImgList<T>& images, const CImgList<char>& imag
       visu[l]._is_shared = images[selection[l]].is_shared();
     }
     print_images(images,images_names,selection,false);
-
     bool is_exit = false;
     visu._display(disp,0,&t_visu,false,'x',0.5f,XYZ,exit_on_anykey,0,true,is_exit);
+
     cimglist_for(visu,l) visu[l]._is_shared = is_shared(l);
   }
 #endif // #if cimg_display==0
