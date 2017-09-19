@@ -2196,8 +2196,7 @@ double gmic::mp_ext(char *const str, void *const p_list) {
       unsigned int pos = 0;
 
       try {
-        CImgList<gmic_pixel_type> nimages = images.get_shared();
-        gi._run(gi.commands_line_to_CImgList(gmic::strreplace_fw(str)),pos,nimages,images_names,
+        gi._run(gi.commands_line_to_CImgList(gmic::strreplace_fw(str)),pos,images,images_names,
                 parent_images,parent_images_names,variables_sizes,0,0,command_selection);
       } catch (gmic_exception&) {
         gi.callstack.remove();
