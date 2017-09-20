@@ -27,24 +27,24 @@
                   <td><font size="3"><b><font color="#000066">G'MIC</font></b> plug-in for <a href="http://www.gimp.org">GIMP</a> (2.8+)</font><br/>
                     <ul>
                       <li>Windows <i>64 bits</i>:
-                        <a href="http://gmic.eu/files/windows/gmic_gimp_qt_win64.exe">installer</a> or
-                        <a href="http://gmic.eu/files/windows/gmic_gimp_qt_win64.zip">.zip archive</a>
+                        <a href="http://gmic.eu/files/prerelease_windows/gmic_gimp_qt_win64.exe">installer</a> or
+                        <a href="http://gmic.eu/files/prerelease_windows/gmic_gimp_qt_win64.zip">.zip archive</a>
                       </li>
                       <li>Windows <i>32 bits</i>:
-                        <a href="http://gmic.eu/files/windows/gmic_gimp_qt_win32.exe">installer</a> or
-                        <a href="http://gmic.eu/files/windows/gmic_gimp_qt_win32.zip">.zip archive</a>
+                        <a href="http://gmic.eu/files/prerelease_windows/gmic_gimp_qt_win32.exe">installer</a> or
+                        <a href="http://gmic.eu/files/prerelease_windows/gmic_gimp_qt_win32.zip">.zip archive</a>
                       </li>
-                      <li>Linux <i>64 bits</i>: <a href="http://gmic.eu/files/linux/gmic_gimp_qt_linux64.zip">.zip archive</a></li>
-                      <li>Linux <i>32 bits</i>: <a href="http://gmic.eu/files/linux/gmic_gimp_qt_linux32.zip">.zip archive</a></li>
+                      <li>Linux <i>64 bits</i>: <a href="http://gmic.eu/files/prerelease_linux/gmic_gimp_qt_linux64.zip">.zip archive</a></li>
+                      <li>Linux <i>32 bits</i>: <a href="http://gmic.eu/files/prerelease_linux/gmic_gimp_qt_linux32.zip">.zip archive</a></li>
                       <li><i>GTK</i> version (<i>less features!</i>):
-                        Linux <i>64 bits</i>: <a href="http://gmic.eu/files/linux/gmic_gimp_gtk_linux64.zip">.zip archive</a>,
-                        Linux <i>32 bits</i>: <a href="http://gmic.eu/files/linux/gmic_gimp_gtk_linux32.zip">.zip archive</a>,
+                        Linux <i>64 bits</i>: <a href="http://gmic.eu/files/prerelease_linux/gmic_gimp_gtk_linux64.zip">.zip archive</a>,
+                        Linux <i>32 bits</i>: <a href="http://gmic.eu/files/prerelease_linux/gmic_gimp_gtk_linux32.zip">.zip archive</a>,
                         Windows <i>64 bits</i>:
-                          <a href="http://gmic.eu/files/windows/gmic_gimp_gtk_win64.exe">installer</a> or
-                          <a href="http://gmic.eu/files/windows/gmic_gimp_gtk_win64.zip">.zip archive</a>,
+                          <a href="http://gmic.eu/files/prerelease_windows/gmic_gimp_gtk_win64.exe">installer</a> or
+                          <a href="http://gmic.eu/files/prerelease_windows/gmic_gimp_gtk_win64.zip">.zip archive</a>,
                         Windows <i>32 bits</i>:
-                          <a href="http://gmic.eu/files/windows/gmic_gimp_gtk_win32.exe">installer</a> or
-                          <a href="http://gmic.eu/files/windows/gmic_gimp_gtk_win32.zip">.zip archive</a>,
+                          <a href="http://gmic.eu/files/prerelease_windows/gmic_gimp_gtk_win32.exe">installer</a> or
+                          <a href="http://gmic.eu/files/prerelease_windows/gmic_gimp_gtk_win32.zip">.zip archive</a>,
                       </li>
                     </ul>
                     <br/></td>
@@ -55,10 +55,10 @@
                   <td><img alt="" src="img/download_krita.png" border="0"></img></td><td>&nbsp;&nbsp;</td>
                   <td><font size="3"><b><font color="#000066">G'MIC</font></b> plug-in for <a href="http://www.krita.org">Krita</a> (3.2+) </font><br/>
                     <ul>
-                      <li>Windows <i>64 bits</i>: <a href="http://gmic.eu/files/windows/gmic_krita_qt_win64.zip">.zip archive</a></li>
-                      <li>Windows <i>32 bits</i>: <a href="http://gmic.eu/files/windows/gmic_krita_qt_win32.zip">.zip archive</a></li>
-                      <!-- <li>Debian 8 <i>Jessie</i> <i>64 bits</i>: <a href="http://gmic.eu/files/linux/gmic_krita_qt_linux64.zip">.zip archive</a></li> -->
-                      <!-- <li>Debian 8 <i>Jessie</i> <i>32 bits</i>: <a href="http://gmic.eu/files/linux/gmic_krita_qt_linux32.zip">.zip archive</a></li> -->
+                      <li>Windows <i>64 bits</i>: <a href="http://gmic.eu/files/prerelease_windows/gmic_krita_qt_win64.zip">.zip archive</a></li>
+                      <li>Windows <i>32 bits</i>: <a href="http://gmic.eu/files/prerelease_windows/gmic_krita_qt_win32.zip">.zip archive</a></li>
+                      <!-- <li>Debian 8 <i>Jessie</i> <i>64 bits</i>: <a href="http://gmic.eu/files/prerelease_linux/gmic_krita_qt_linux64.zip">.zip archive</a></li> -->
+                      <!-- <li>Debian 8 <i>Jessie</i> <i>32 bits</i>: <a href="http://gmic.eu/files/prerelease_linux/gmic_krita_qt_linux32.zip">.zip archive</a></li> -->
                     </ul>
                     <br/></td>
                 </tr>
@@ -69,10 +69,10 @@
                   <td><img alt="" src="img/download_win64.png" border="0"></img></td><td>&nbsp;&nbsp;</td>
                   <td><font size="3"><b><font color="#000066">G'MIC</font></b> for Windows <i>64 bits</i> - Other interfaces</font><br/>
                     <ul>
-                      <li>Command-line interface (CLI): <a href="http://gmic.eu/files/windows/gmic_cli_win64.zip">.zip archive</a></li>
-                      <li>Stand-alone <i>Qt</i> interface: <a href="http://gmic.eu/files/windows/gmic_qt_win64.zip">.zip archive</a></li>
-                      <li>ZArt: <a href="http://gmic.eu/files/windows/gmic_zart_win64.zip">.zip archive</a></li>
-                      <li>C/C++ library: <a href="http://gmic.eu/files/windows/gmic_lib_win64.zip">.zip archive</a></li>
+                      <li>Command-line interface (CLI): <a href="http://gmic.eu/files/prerelease_windows/gmic_cli_win64.zip">.zip archive</a></li>
+                      <li>Stand-alone <i>Qt</i> interface: <a href="http://gmic.eu/files/prerelease_windows/gmic_qt_win64.zip">.zip archive</a></li>
+                      <li>ZArt: <a href="http://gmic.eu/files/prerelease_windows/gmic_zart_win64.zip">.zip archive</a></li>
+                      <li>C/C++ library: <a href="http://gmic.eu/files/prerelease_windows/gmic_lib_win64.zip">.zip archive</a></li>
                     </ul>
                     <br/></td>
                 </tr>
@@ -82,10 +82,10 @@
                   <td><img alt="" src="img/download_win32.png" border="0"></img></td><td>&nbsp;&nbsp;</td>
                   <td><font size="3"><b><font color="#000066">G'MIC</font></b> for Windows <i>32 bits</i> - Other interfaces</font><br/>
                     <ul>
-                      <li>Command-line interface (CLI): <a href="http://gmic.eu/files/windows/gmic_cli_win32.zip">.zip archive</a></li>
-                      <li>Stand-alone <i>Qt</i> interface: <a href="http://gmic.eu/files/windows/gmic_qt_win32.zip">.zip archive</a></li>
-                      <li>ZArt: <a href="http://gmic.eu/files/windows/gmic_zart_win32.zip">.zip archive</a></li>
-                      <li>C/C++ library: <a href="http://gmic.eu/files/windows/gmic_lib_win32.zip">.zip archive</a></li>
+                      <li>Command-line interface (CLI): <a href="http://gmic.eu/files/prerelease_windows/gmic_cli_win32.zip">.zip archive</a></li>
+                      <li>Stand-alone <i>Qt</i> interface: <a href="http://gmic.eu/files/prerelease_windows/gmic_qt_win32.zip">.zip archive</a></li>
+                      <li>ZArt: <a href="http://gmic.eu/files/prerelease_windows/gmic_zart_win32.zip">.zip archive</a></li>
+                      <li>C/C++ library: <a href="http://gmic.eu/files/prerelease_windows/gmic_lib_win32.zip">.zip archive</a></li>
                     </ul>
                     <br/></td>
                 </tr>
@@ -95,8 +95,8 @@
                   <td><img alt="" src="img/download_debian64.png" border="0"></img></td><td>&nbsp;&nbsp;</td>
                   <td><font size="3"><b><font color="#000066">G'MIC</font></b> for Debian <i>64 bits</i> - All interfaces</font><br/>
                     <ul>
-                      <li>Debian 8 <i>Jessie</i>: <a href="http://gmic.eu/files/linux/gmic_debian_jessie_amd64.deb">.deb package</a></li>
-                      <li>Debian 7 <i>Wheezy</i>: <a href="http://gmic.eu/files/linux/gmic_debian_wheezy_amd64.deb">.deb package</a></li>
+                      <li>Debian 8 <i>Jessie</i>: <a href="http://gmic.eu/files/prerelease_linux/gmic_debian_jessie_amd64.deb">.deb package</a></li>
+                      <li>Debian 7 <i>Wheezy</i>: <a href="http://gmic.eu/files/prerelease_linux/gmic_debian_wheezy_amd64.deb">.deb package</a></li>
                     </ul>
                     <br/></td>
                 </tr>
@@ -106,8 +106,8 @@
                   <td><img alt="" src="img/download_debian32.png" border="0"></img></td><td>&nbsp;&nbsp;</td>
                   <td><font size="3"><b><font color="#000066">G'MIC</font></b> for Debian <i>32 bits</i> - All interfaces</font><br/>
                     <ul>
-                      <li>Debian 8 <i>Jessie</i>: <a href="http://gmic.eu/files/linux/gmic_debian_jessie_i386.deb">.deb package</a></li>
-                      <li>Debian 7 <i>Wheezy</i>: <a href="http://gmic.eu/files/linux/gmic_debian_wheezy_i386.deb">.deb package</a></li>
+                      <li>Debian 8 <i>Jessie</i>: <a href="http://gmic.eu/files/prerelease_linux/gmic_debian_jessie_i386.deb">.deb package</a></li>
+                      <li>Debian 7 <i>Wheezy</i>: <a href="http://gmic.eu/files/prerelease_linux/gmic_debian_wheezy_i386.deb">.deb package</a></li>
                     </ul>
                     <br/></td>
                 </tr>
@@ -117,10 +117,10 @@
                   <td><img alt="" src="img/download_ubuntu64.png" border="0"></img></td><td>&nbsp;&nbsp;</td>
                   <td><font size="3"><b><font color="#000066">G'MIC</font></b> for Ubuntu <i>64 bits</i> - All interfaces</font><br/>
                     <ul>
-                      <li>Ubuntu 17.04 <i>Zesty</i>: <a href="http://gmic.eu/files/linux/gmic_ubuntu_zesty_amd64.deb">.deb package</a></li>
-                      <li>Ubuntu 16.04 <i>Xenial</i>: <a href="http://gmic.eu/files/linux/gmic_ubuntu_xenial_amd64.deb">.deb package</a></li>
-                      <li>Ubuntu 15.04 <i>Vivid</i>: <a href="http://gmic.eu/files/linux/gmic_ubuntu_vivid_amd64.deb">.deb package</a></li>
-                      <li>Ubuntu 16.10 <i>Yakkety</i>: <a href="http://gmic.eu/files/linux/gmic_ubuntu_yakkety_amd64.deb">.deb package</a></li>
+                      <li>Ubuntu 17.04 <i>Zesty</i>: <a href="http://gmic.eu/files/prerelease_linux/gmic_ubuntu_zesty_amd64.deb">.deb package</a></li>
+                      <li>Ubuntu 16.04 <i>Xenial</i>: <a href="http://gmic.eu/files/prerelease_linux/gmic_ubuntu_xenial_amd64.deb">.deb package</a></li>
+                      <li>Ubuntu 15.04 <i>Vivid</i>: <a href="http://gmic.eu/files/prerelease_linux/gmic_ubuntu_vivid_amd64.deb">.deb package</a></li>
+                      <li>Ubuntu 16.10 <i>Yakkety</i>: <a href="http://gmic.eu/files/prerelease_linux/gmic_ubuntu_yakkety_amd64.deb">.deb package</a></li>
                     </ul>
                     <br/></td>
                 </tr>
@@ -130,7 +130,7 @@
                   <td><img alt="" src="img/download_ubuntu32.png" border="0"></img></td><td>&nbsp;&nbsp;</td>
                   <td><font size="3"><b><font color="#000066">G'MIC</font></b> for Ubuntu <i>32 bits</i> - All interfaces</font><br/>
                     <ul>
-                      <li>Ubuntu 14.04 <i>Trusty</i>: <a href="http://gmic.eu/files/linux/gmic_ubuntu_trusty_i386.deb">.deb package</a></li>
+                      <li>Ubuntu 14.04 <i>Trusty</i>: <a href="http://gmic.eu/files/prerelease_linux/gmic_ubuntu_trusty_i386.deb">.deb package</a></li>
                     </ul>
                     <br/></td>
                 </tr>
@@ -140,7 +140,7 @@
                   <td><img alt="" src="img/download_linux64.png" border="0"></img></td><td>&nbsp;&nbsp;</td>
                   <td><font size="3"><b><font color="#000066">G'MIC</font></b> for Linux <i>64 bits</i> - Command-line interface</font><br/>
                     <ul>
-                      <li>Static version: <a href="http://gmic.eu/files/linux/gmic_static_linux64.zip">.zip archive</a>
+                      <li>Static version: <a href="http://gmic.eu/files/prerelease_linux/gmic_static_linux64.zip">.zip archive</a>
                         <i>(beware: without display capabilities!)</i></li>
                     </ul>
                     <br/></td>
@@ -151,7 +151,7 @@
                   <td><img alt="" src="img/download_linux32.png" border="0"></img></td><td>&nbsp;&nbsp;</td>
                   <td><font size="3"><b><font color="#000066">G'MIC</font></b> for Linux <i>32 bits</i> - Command-line interface</font><br/>
                     <ul>
-                      <li>Static version: <a href="http://gmic.eu/files/linux/gmic_static_linux32.zip">.zip archive</a>
+                      <li>Static version: <a href="http://gmic.eu/files/prerelease_linux/gmic_static_linux32.zip">.zip archive</a>
                         <i>(beware: without display capabilities!)</i></li>
                     </ul>
                     <br/></td>
@@ -173,7 +173,7 @@
                   <td><img alt="" src="img/download_source.png" border="0"></img></td><td>&nbsp;&nbsp;</td>
                   <td><font size="3"><b><font color="#000066">G'MIC</font></b> source code</font><br/>
                     <ul>
-                      <li>Latest development snapshot: <a href="http://gmic.eu/files/source/gmic_source.tar.gz">.tar.gz archive</a></li>
+                      <li>Latest development snapshot: <a href="http://gmic.eu/files/prerelease/gmic_source.tar.gz">.tar.gz archive</a></li>
                       <li>Latest stable: <a href="http://gmic.eu/files/source/gmic_source.tar.gz">tar.gz archive</a></li>
                       <li>G'MIC-core: <a href="https://github.com/dtschump/gmic">git repository</a></li>
                       <li>G'MIC-Qt: <a href="https://github.com/c-koi/gmic-qt">git repository</a></li>
