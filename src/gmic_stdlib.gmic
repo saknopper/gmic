@@ -4517,7 +4517,7 @@ update_server :
     -replace_str "<i>David Tschumperl&#233;</i>","<i><a href=\""$url"\">David Tschumperl&#233;</a></i>"
     -o cimgz:/tmp/update$_version.gmic,uchar
 
-    (205)
+    (202,203,204,205)
     -repeat {w}
       v={i[$>]}
       -_update_server_upload[] ${_path_rc}update$_version.gmic,plain_update$v.gmic
@@ -11479,6 +11479,7 @@ _close_binary :
   -channels[keycoords] 0,1
   -i[vote] {keycoords,[w,w]},1,2
 
+  critical=critical -if {$_version<205} critical=single -endif
   -f[e_normals] $_edgel_lib${-math_lib}"
     const ang_th = cos("$hd_angle"*pi/180);
     if (i>=0,
@@ -11514,7 +11515,7 @@ _close_binary :
 
         if (Kf && Kb && Kf!=Kb,
           --Kf; --Kb;
-          critical(
+          "$critical"(
             i(#"$vote",Kf,Kb,0,0)+=(Vf + Vb)/(Lf + Lb);
             ++i(#"$vote",Kf,Kb,0,1);
           );
