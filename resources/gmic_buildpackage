@@ -321,7 +321,7 @@ if [ "$1" == "final" ]; then
     git tag v.$SVERSION
     gmic_commit "Final release "${VERSION}
     git push --tags
-    COMMIT=$(git -C /ton/chemin/vers/gmic-qt log -1 | head -1 | cut -d' ' -f 2)  # Get the SHA1 of the latest commit
+    COMMIT=$(git -C $HOME/work/src/gmic-qt log -1 | head -1 | cut -d' ' -f 2)  # Get the SHA1 of the latest commit
     wget -O /dev/null --timeout=10 "${GMIC_FOUREY_URL}?version=v.${SVERSION}&commit=${COMMIT}"
 else
     gmic_commit "Auto-commit for release "${VERSION}${SUFFIX}
