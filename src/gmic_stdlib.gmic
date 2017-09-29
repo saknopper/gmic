@@ -23387,10 +23387,7 @@ fx_logo_version1 : -skip "${1=Universal plug-in}"
   -blur_radial.. 20 -sharpen.. 300
   -r. ..,..,1,4,0,0,0.5,0.5 -blend alpha
 
-fx_logo : -skip "${1=Universal plug-in\n    [ "${-strver}" ]}"
-    -fx_logo_version{round(u(0.5,3.49))} "$1"
-
-fx_logo_en :
+fx_logo : -skip "${1=Universal plug-in\n    [ "${-strver}" ]}","${2=$1}"
   file=$_path_rc/gmicky_logo.png
   is_file=1
   -if $file $file
@@ -23401,13 +23398,15 @@ fx_logo_en :
     -if {narg($_prerelease)} strprerelease="pre" -else strprerelease="" -endif
     0 -t. "version "${-strver}$strprerelease,0,0,{round(h#0/12)},1,1 -r2dx. 50% 100%,100%,1,3,0 -j[0] .,{w#0-w-5},0,0,0,1,.. -rm[-2,-1]
   -else
-    -srand 5
     -if {narg($_prerelease)}
-      -fx_logo_version{round(u(0.5,3.49))} "       Universal plug-in\n"[" "${-strver}" pre-release ""#"$_prerelease]
+      -fx_logo_version{round(u(0.5,3.49))} "$2"
     -else
-      -fx_logo_version{round(u(0.5,3.49))} "Universal plug-in\n     "[" "${-strver}" "]
+      -fx_logo_version{round(u(0.5,3.49))} "$1"
     -endif
   -endif
+
+fx_logo_en :
+  -fx_logo "Universal plug-in\n     [ "${-strver}" ]","       Universal plug-in\n[ "${-strver}" pre-release ""#"$_prerelease"]"
 
 #---------------------
 # French translations
@@ -23433,11 +23432,7 @@ fx_logo_en :
 #@gui_fr : Envoyer une carte postale vous fera rentrer <i>de facto</i> dans le <i>Friends Hall of Fame</i> :) !
 #@gui_fr : "}
 fx_logo_fr :
-  -if {narg($_prerelease)}
-    -fx_logo_version{round(u(0.5,3.49))} "     Greffon GUI\n"[" "${-strver}" pre-release ""#"$_prerelease]
-  -else
-    -fx_logo_version{round(u(0.5,3.49))} "Greffon GUI\n    "[" "${-strver}" "]
-  -endif
+  -fx_logo "Greffon GUI\n    [ "${-strver}" ]","     Greffon GUI\n[ "${-strver}" pre-release ""#"$_prerelease"]"
 
 #----------------------
 # Catalan translations
@@ -23462,11 +23457,7 @@ fx_logo_fr :
 #@gui_ca : Tot aquell que envi&#239; una postal apareixer&#224; al <i>Friends Hall of Fame</i> :) !
 #@gui_ca : "}
 fx_logo_ca :
-  -if {narg($_prerelease)}
-    -fx_logo_version{round(u(0.5,3.49))} "         per al GIMP\n"[" "${-strver}" pre-release ""#"$_prerelease]
-  -else
-    -fx_logo_version{round(u(0.5,3.49))} "per al GIMP\n  "[" "${-strver}" "]
-  -endif
+  -fx_logo "per al GIMP\n  [ "${-strver}" ]","         per al GIMP\n[ "${-strver}" pre-release ""#"$_prerelease"]"
 
 #----------------------
 # Japanese translations
