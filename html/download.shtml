@@ -70,8 +70,8 @@
                   <td><font size="3"><b><font color="#000066">G'MIC</font></b> for Windows <i>64 bits</i> - Other interfaces</font><br/>
                     <ul>
                       <li>Command-line interface (CLI): <a href="http://gmic.eu/files/prerelease_windows/gmic_cli_win64.zip">.zip archive</a></li>
-                      <li>Stand-alone <i>Qt</i> interface: <a href="http://gmic.eu/files/prerelease_windows/gmic_qt_win64.zip">.zip archive</a></li>
-                      <li>ZArt: <a href="http://gmic.eu/files/prerelease_windows/gmic_zart_win64.zip">.zip archive</a></li>
+                      <!-- <li>Stand-alone <i>Qt</i> interface: <a href="http://gmic.eu/files/prerelease_windows/gmic_qt_win64.zip">.zip archive</a></li> -->
+                      <!-- <li>ZArt: <a href="http://gmic.eu/files/prerelease_windows/gmic_zart_win64.zip">.zip archive</a></li> -->
                       <li>C/C++ library: <a href="http://gmic.eu/files/prerelease_windows/gmic_lib_win64.zip">.zip archive</a></li>
                     </ul>
                     <br/></td>
@@ -83,8 +83,8 @@
                   <td><font size="3"><b><font color="#000066">G'MIC</font></b> for Windows <i>32 bits</i> - Other interfaces</font><br/>
                     <ul>
                       <li>Command-line interface (CLI): <a href="http://gmic.eu/files/prerelease_windows/gmic_cli_win32.zip">.zip archive</a></li>
-                      <li>Stand-alone <i>Qt</i> interface: <a href="http://gmic.eu/files/prerelease_windows/gmic_qt_win32.zip">.zip archive</a></li>
-                      <li>ZArt: <a href="http://gmic.eu/files/prerelease_windows/gmic_zart_win32.zip">.zip archive</a></li>
+                      <!-- <li>Stand-alone <i>Qt</i> interface: <a href="http://gmic.eu/files/prerelease_windows/gmic_qt_win32.zip">.zip archive</a></li> -->
+                      <!-- <li>ZArt: <a href="http://gmic.eu/files/prerelease_windows/gmic_zart_win32.zip">.zip archive</a></li> -->
                       <li>C/C++ library: <a href="http://gmic.eu/files/prerelease_windows/gmic_lib_win32.zip">.zip archive</a></li>
                     </ul>
                     <br/></td>
