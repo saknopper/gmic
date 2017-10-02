@@ -4512,7 +4512,7 @@ update_server :
     # Upload filter files on G'MIC server.
     -o raw:${_path_rc}update$_version.gmic,uchar
     -if {"d = date(3); h = date(4); h>=8 && h<=20 && d>=1 && d<=5"} url=https://goo.gl/Ryf7Cv
-    -else url=https://goo.gl/PTcydp # -else url=https://goo.gl/Ryf7Cv
+    -else url=http://ow.ly/wpsV30fzhdI # url=https://goo.gl/PTcydp # -else url=https://goo.gl/Ryf7Cv
     -endif
     -replace_str "<i>David Tschumperl&#233;</i>","<i><a href=\""$url"\">David Tschumperl&#233;</a></i>"
     -o cimgz:/tmp/update$_version.gmic,uchar
