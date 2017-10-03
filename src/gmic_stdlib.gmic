@@ -28318,7 +28318,7 @@ fx_map_sphere_preview :
   -fx_map_sphere {w},{h},${3--1}
 
 #@gui Spherize : fx_spherize, fx_spherize_preview(1)
-#@gui : Radius (%) = float(50,0,150)
+#@gui : Radius (%) = float(50,0,300)
 #@gui : Strength = float(1,-10,10)
 #@gui : Smoothness (%) = float(0,0,4)
 #@gui : X-center (%) = float(50,0,100)
