@@ -447,6 +447,7 @@ gmicol_rotate :
 #@web clone("Reflection")
 #@web clone("Seamcarve")
 #@web clone("Sphere")
+#@web clone("Spherize")
 #@web clone("Square to circle")
 #@web clone("Symmetrize")
 #@web clone("Textured glass")
