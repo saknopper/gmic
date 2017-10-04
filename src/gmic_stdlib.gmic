@@ -433,7 +433,7 @@ _help_usage :
 \n  - Indices in selections are always sorted in increasing order, and duplicate indices are
 \n     discarded. For instance, selections '"$c"[3-1,1-3]"$n"' and '"$c"[1,1,1,3,2]"$n"' are both equivalent to
 \n     '"$c"[1-3]"$n"'. If you want to repeat a single command multiple times on an image, use a
-\n     '"$c"-repeat..done"$n"' loop instead. Inverting the order of images for a command is achieved by
+\n     '"$c"-repeat..-done"$n"' loop instead. Inverting the order of images for a command is achieved by
 \n     explicitly inverting  the order of the images in the list, with command '"$c"-reverse[selection]"$n"'.
 \n
 \n  - Command selections '"$c"[-1]"$n"','"$c"[-2]"$n"' and '"$c"[-3]"$n"' are so often used that they have their own
@@ -567,7 +567,7 @@ _help_usage :
 \n
 \n       . '"$c"$!"$n"': The current number of images in the list.
 \n       . '"$c"$>"$n"' and '"$c"$<"$n"': The increasing/decreasing indice of the latest (currently running)
-\n          '"${c}"repeat...done"$n"' loop.
+\n          '"${c}"-repeat...-done"$n"' loop.
 \n       . '"$c"$/"$n"': The current call stack. Stack items are separated by slashes '"$g"/"$n"'.
 \n       . '"$c"$|"$n"': The current value (expressed in seconds) of a millisecond precision timer.
 \n       . '"$c"$^"$n"': The current verbosity level.
@@ -1116,9 +1116,9 @@ _help_examples :
 \n      -blur 1 -elevation3d -0.1 -md3d 4"$n"
 \n
 \n  - Generate a 3d ring of torii:
-\n     "${c}"gmic repeat 20 -torus3d 15,2 -color3d[-1] \"{u(60,255)},{u(60,255)},{u(60,255)}\" \\\
-\n      -*3d[-1] 0.5,1 if \"{$>%2}\" -rotate3d[-1] 0,1,0,90 endif -add3d[-1] 70 -add3d \\\
-\n      -rotate3d 0,0,1,18 done -moded3d 3 -mode3d 5 -db3d 0"$n"
+\n     "${c}"gmic repeat 20 torus3d 15,2 color3d. \"{u(60,255)},{u(60,255)},{u(60,255)}\" \\\
+\n      *3d. 0.5,1 if \"{$>%2}\" rotate3d[-1] 0,1,0,90 endif add3d. 70 add3d \\\
+\n      rotate3d 0,0,1,18 done moded3d 3 mode3d 5 db3d 0"$n"
 \n
 \n  - Create a vase from a 3d isosurface:
 \n     "${c}"gmic -md3d 4 -isosurface3d \"'x^2+2*abs(y/2)*sin(2*y)^2+z^2-3',0\" -sphere3d 1.5 \\\
@@ -1462,7 +1462,7 @@ clut : check "isval(${2=64}) && $2>0"
       -decompress_clut $2,$2,$2 -round
       -o. ${_path_rc}clut_$1.cimgz,uchar
     endif
-    -nm "[CLUT: $1]"
+    nm "[CLUT: $1]"
   endl v +
 
 #@cli m : eq. to '-command'. : (+)
@@ -1540,9 +1540,9 @@ _display_array : check ${1=13}>0" && "${2=$1}>0
     wmax={0.9*{*,u}} hmax={0.9*{*,v}}
     -do
       if {w>=$wmax||h>=$hmax}
-        n={n} -nm. "Image "'{b}.{x}'" is too large, please select a sub-image."
+        n={n} nm. "Image "'{b}.{x}'" is too large, please select a sub-image."
         --select. 2 x0={i[0]} y0={i[1]} w={1+i[3]-i[0]} h={1+i[4]-i[1]}
-        -rm. -nm. $n
+        -rm. nm. $n
       endif
       --z. $x0,$y0,0,{$x0+$w-1},{$y0+$h-1},0 -round. 1 -n. 0,255
     -while {w>=$wmax||h>=$hmax}
@@ -1706,7 +1706,7 @@ _display_graph : check "${1=640}>32 && ${2=480}>32" skip ${3=1},${4=0},${5=0},${
     0 -t. "$9",0,0,14,1,-220,-220,-220 -j.. .,{({-2,w}-w)/2},{{-2,h}-16},0,0,-1 -rm.
     0 -t. "$10",0,0,14,1,-220,-220,-220 -rotate. -90 -j.. .,2,{({-2,h}-h)/2},0,0,-1 -rm.
 
-  -nm $nm endl done -c 0,255 v +
+  nm $nm endl done -c 0,255 v +
 
 #@cli dh : eq. to '-display_histogram'.
 dh :
@@ -1744,7 +1744,7 @@ _display_histogram : check "${1=512}>0 && ${2=300}>0 && ${3=256}>0" skip ${4=0%}
         --dilate. 3 -r.. ... -j... ..,0,0,0,0,1,.,255 -rm[-2,-1]
       endif
     endl done
-    -a z -nm $nm
+    -a z nm $nm
   endl done v +
 
 #@cli display_parametric : _width>0,_height>0,_outline_opacity,_vertex_radius>=0,_is_antialiased={ 0 | 1 },_is_decorated={ 0 | 1 },_xlabel,_ylabel
@@ -1810,7 +1810,7 @@ display_parametric : check "${1=512}>0 && ${2=$1}>0 && ${4=0}>=0" skip ${3=3},${
       0 -t. "$7",0,0,14,1,-220,-220,-220 -j.. .,{({-2,w}-w)/2},{{-2,h}-16},0,0,-1 -rm.
       0 -t. "$8",0,0,14,1,-220,-220,-220 -rotate. -90 -j.. .,2,{({-2,h}-h)/2},0,0,-1 -rm.
     endif
-    -nm. $nm
+    nm. $nm
   endl done v +
 
 #@cli dp : eq. to '-display_parallel'.
@@ -1886,7 +1886,7 @@ display_polar : check "${1=500}>32 && ${2=$1}>32" skip ${3=1},${4=200},${5=$4},$
     -y ({$7*pi/180};{-$8*pi/180}) -r. 1,..,1,1,3
     --sin. -cos.. -*. ... -*[-3,-2]
     -a[-2,-1] x N={h}
-    -nm. coords
+    nm. coords
 
     # Generate 3d object for curve outline.
     if $3
@@ -1894,7 +1894,7 @@ display_polar : check "${1=500}>32 && ${2=$1}>32" skip ${3=1},${4=200},${5=$4},$
       --z[coords] 0,2
       1,$N,1,1,2 1,$N,1,1,'y' --+. 1 -a[-3--1] x -=. 0,2,100%
       3,$N,1,1,0 1,$N,1,1,1 -y[-6--1] -a[-6--1] y
-      -nm. _plot_polar_outline
+      nm. _plot_polar_outline
     endif
 
     # Generate 3d object for filling.
@@ -1904,7 +1904,7 @@ display_polar : check "${1=500}>32 && ${2=$1}>32" skip ${3=1},${4=200},${5=$4},$
       1,$N,1,1,3 1,$N 1,$N,1,1,'1+y' --+. 1 -a[-4--1] x -=. 1,3,100%
       3,$N,1,1,$4,$5,$6 1,$N,1,1,1
       -y[-6--1] -a[-6--1] y
-      -nm. _plot_polar_fill
+      nm. _plot_polar_fill
     endif
     -rm[coords]  # Remove original curve coordinates.
 
@@ -1934,7 +1934,7 @@ display_polar : check "${1=500}>32 && ${2=$1}>32" skip ${3=1},${4=200},${5=$4},$
     0 -t. "$9",0,0,13,1,-220,-220,-220 -j.. .,{({-2,w}-w)/2},{{-2,h}-16},0,0,-1 -rm.
     0 -t. "$10",0,0,13,1,-220,-220,-220 -rotate. -90 -j.. .,2,{({-2,h}-h)/2},0,0,-1 -rm.
 
-  -nm $nm endl done v +
+  nm $nm endl done v +
 
 #@cli dq : eq. to '-display_quiver'.
 dq :
@@ -2893,7 +2893,7 @@ function1d : check "${1=1}>=0 && $1<=1" skip ${2=0},${3=0}
 #@cli gmicky
 #@cli :  Insert new image of the G'MIC mascot 'Gmicky'.
 gmicky :
-  -gmicky_deevad -nm. [gmicky]
+  -gmicky_deevad nm. [gmicky]
 
 #@cli gmicky_deevad
 #@cli : Insert new image of the G'MIC mascot 'Gmicky', by David Revoy.
@@ -2905,7 +2905,7 @@ gmicky_deevad :
   if $filename $filename
   else http://gmic.eu/img/gmicky_large_deevad.cimgz -o. $filename -+. 0
   endif
-  -nm. [gmicky_deevad]
+  nm. [gmicky_deevad]
   v +
 
 #@cli gmicky_mahvin
@@ -2918,7 +2918,7 @@ gmicky_mahvin :
   if $filename $filename
   else http://gmic.eu/img/gmicky_large_mahvin.cimgz -o. $filename -+. 0
   endif
-  -nm. [gmicky_mahvin]
+  nm. [gmicky_mahvin]
   v +
 
 #@cli gmicky_wilber
@@ -2931,7 +2931,7 @@ gmicky_wilber :
   if $filename $filename
   else http://gmic.eu/img/gmicky_wilber_large.cimgz -o. $filename -+. 0
   endif
-  -nm. [gmicky_wilber] v +
+  nm. [gmicky_wilber] v +
 
 #@cli i : eq. to '-input'. : (+)
 
@@ -3023,7 +3023,7 @@ input_cube : skip ${2=1}
     else -* 255
     endif
     if {"w>1 && h==1 && d==1 && $2"} size={w} -s c -y.. y -y. z -r $size,$size,$size -a c endif
-    -nm "$1"
+    nm "$1"
   endl v +
 
 #@cli ig : eq. to '-input_glob'.
@@ -3057,7 +3057,7 @@ input_gpl :
       if {$!>=3" && "isint({0,t})" && "isint({1,t})" && "isint({2,t})} colors=$colors;{0,t},{1,t},{2,t} endif
       rm 0
     -onfail rm 0 endl done
-    rm ($colors) -rows 1,100% -nm "$1" -permute yzcx
+    rm ($colors) -rows 1,100% nm "$1" -permute yzcx
   endl v +
 
 #@cli o : eq. to '-output'. : (+)
@@ -3077,7 +3077,7 @@ output_cube :
    -r $l,$l,$l,3,-1 -permute cxyz -/ 255
    if {$N>1} fn=${"-filename \"$1\",$>"} else fn="$1" endif
    -o dlm:$fn rm -i raw:$fn,uchar -replace {','},32
-   0 -nm. $fn basename={b} -rm.
+   0 nm. $fn basename={b} -rm.
    header="\# Created by: G'MIC (http://gmic.eu)\n"\
           "TITLE \""$basename"\"\n\n"\
           "# LUT size\n"\
@@ -3098,7 +3098,7 @@ output_ggr : skip "${2=}"
  v - N=$!
   repeat $N --l[$>] -r 1,{w*h*d},1,100%,-1 to_rgba -/ 255
     if {narg("$2")} name="$2"
-    else l[] 1 -nm. "$1" ({'{b}'}) -f "if(x==0 && i>=_'a' && i<=_'z',i-_'a'+_'A',i)" name={t} rm endl
+    else l[] 1 nm. "$1" ({'{b}'}) -f "if(x==0 && i>=_'a' && i<=_'z',i-_'a'+_'A',i)" name={t} rm endl
     endif
     ({'"GIMP Gradient\nName: "$name\n{0,h}\n'})
     repeat {0,h}
@@ -3259,7 +3259,7 @@ rainbow_lut :
    31,32,32,33,33,34,34,35,36,36,37,38,39,42,44,45,46,46,47,48,49,48,48,48,48,48,48,48,48,48,48,47,47,47,47,46,\
    45,45,43,43,42,41,40,39,38,37,38,38,37,37,38,38,38,38,39,40,39,40,39,40,40,39,39,38,38,37,35,34,32,30,28,26,\
    23,20,16,14,12,16,16,18,18,17,16,14,13,9,2)
-  -nm. [rainbow\ lut]
+  nm. [rainbow\ lut]
   v +
 
 #@cli roddy
@@ -3272,7 +3272,7 @@ roddy :
   if $filename $filename
   else http://gmic.eu/img/roddy_large.cimgz -o. $filename -+. 0
   endif
-  -nm. [roddy] v +
+  nm. [roddy] v +
 
 #@cli screen : _x0[%],_y0[%],_x1[%],_y1[%] : (+)
 #@cli : Take screenshot, optionally grabbed with specified coordinates, and insert it
@@ -3313,7 +3313,7 @@ shape_heart : check "${1=512}>=0"
       -flood 50%,50%,0,0,0,1,0 -==. 0
     endl
   endif
-  -nm "[2d heart shape]"
+  nm "[2d heart shape]"
   v +
 
 #@cli shape_circle : _size>=0
@@ -3335,7 +3335,7 @@ shape_circle : check "${1=512}>=0"
     if {$ir>1&&($ir%2)} -r. 100%,{h-1},1,1,0,0,0,1 endif
     -a[-2,-1] y
   endif
-  -nm. "[2d circle shape]"
+  nm. "[2d circle shape]"
   v +
 
 #@cli shape_cupid : _size>=0
@@ -3383,7 +3383,7 @@ shape_cupid : check "${1=512}>=0"
       --. {47+32} -a x -y -decompress_rle -r $ir,$ir,1,1,5 if {$ir>480} -b. 0.2% endif ->= 40%
     endl
   endif
-  -nm "[2d cupid shape]"
+  nm "[2d cupid shape]"
   v +
 
 #@cli shape_diamond : _size>=0
@@ -3405,7 +3405,7 @@ shape_diamond : check "${1=512}>=0"
     if {$ir>1&&($ir%2)} -r. 100%,{h-1},1,1,0,0,0,1 endif
     -a[-2,-1] y
   endif
-  -nm. "[2d diamond shape]"
+  nm. "[2d diamond shape]"
   v +
 
 #@cli shape_fern : _size>=0,_density[%]>=0,_angle,0<=_opacity<=1,_type={ 0=Asplenium adiantum-nigrum | 1=Thelypteridaceae }
@@ -3447,7 +3447,7 @@ shape_fern : check "${1=512}>=0 && ${2=50%}>=0 && isval(${3=30}) && ${4=0.3}>=0 
     repeat 2 -sh. $>,$>,0,0 --. {im} -rm. done -n 0,{$ir-1}
     -pointcloud -$4 -r $ir,$ir,1,1,0,0,0.5,0.5
   endl endif
-  -nm "[2d Barnsley fern]"
+  nm "[2d Barnsley fern]"
   v +
 
 #@cli shape_polygon : _size>=0,_nb_vertices>=3,_angle
@@ -3467,7 +3467,7 @@ shape_polygon : check "${1=512}>=0 && isint(${2=5}) && $2>=3" skip ${3=0}
       $ir,$ir -polygon. $2,{-2,^},1,1 -rm..
     endl
   endif
-  -nm "[2d $2-polygon shape]"
+  nm "[2d $2-polygon shape]"
   v +
 
 #@cli shape_snowflake : size>=0,0<=_nb_recursions<=6
@@ -3498,7 +3498,7 @@ shape_snowflake : check "${1=512}>=0 && isint(${2=5}) && $2>=0 && $2<=6"
     done
     -*. {0.5*$1} -+. {$1/2} -permute. cyzx -polygon.. {h},{^},1,1 -rm.
   endl endif
-  -nm "[2d snowflake shape]"
+  nm "[2d snowflake shape]"
   v +
 
 #@cli shape_star : _size>=0,_nb_branches>0,0<=_thickness<=1
@@ -3515,7 +3515,7 @@ shape_star : check "${1=512}>=0 && ${2=5}>0 && ${3=0.5}>=0 && $3<=1"
       $1,$1 -j3d. ..,50%,50%,0,1,2 -rm..
     endl
   endif
-  -nm "[2d star shape]"
+  nm "[2d star shape]"
   v +
 
 #@cli sh : eq. to '-shared'. : (+)
@@ -3590,7 +3590,7 @@ _sample :
       if {w/$W>h/$H} -r2dy. $H else -r2dx. $W endif
       -r. $W,$H,1,100%,0,0,0.5,0.5 -round.
     endif
-    -nm. $name
+    nm. $name
     v + e[0--4] "Input sample image '"{n}"' (1 image "{w}x{h}x{d}x{s}")." v -
   done
   -+. 0 -u $is_arg
@@ -3604,7 +3604,7 @@ _sample :
 #@cli : $ -string "foo bar"
 string :
   e[^-1] "Input new image from string '$1'."
-  v - ({'"$1"'}) -nm. "$1" v +
+  v - ({'"$1"'}) nm. "$1" v +
 
 #@cli testimage2d : _width>0,_height>0,_spectrum>0
 #@cli : Input a 2d synthetic image.
@@ -3618,7 +3618,7 @@ testimage2d : check "${1=512}>0 && ${2=$1}>0 && ${3=3}>0"
   -polygon. 4,20%,20%,60%,20%,70%,70%,35%,45%,0.9,0,255,0
   -torus3d {$1/7},{$1/20} -r3d. 0,1,1,-80 -col3d. 128,200,255
   -j3d.. .,30%,70%,0,1,5,0,0 -rm. -round. 1
-  -nm. "[2d test image]"
+  nm. "[2d test image]"
   v +
 
 #@cli uncommand : command_name[,_command_name2,...] : * : (+)
@@ -3633,7 +3633,7 @@ uniform_distribution : check "isint($1) && $1>0 && isint($2) && $2>0"
   v - n={round($1^(1/$2),1,1)}
   (0,1) -r. $n,1,1,1,3
   repeat {$2-1} --channels. 100% -r. {$n*w},1,1,1,1 -r.. .,1,1,100%,0,2 -a[-2,-1] c done
-  -r. $1,1,1,$2,1 -nm. "[uniform $2d distribution]" v +
+  -r. $1,1,1,$2,1 nm. "[uniform $2d distribution]" v +
 
 #@cli unserialize : : (+)
 #@cli : Recreate lists of images from serialized image buffers, obtained with command '-serialize'.
@@ -3987,7 +3987,7 @@ update_gallery_html :
   -_update_gallery_html "-blur_angular 10"
   -_update_gallery_html "-blur_radial 10"
 
-  -_update_gallery_html "-repeat 3 --deform[0] 10 done -+ -n 0,255"
+  -_update_gallery_html "repeat 3 --deform[0] 10 done -+ -n 0,255"
   -_update_gallery_html "-flood 50%,50%,0,50,0,0.7,155,100,255"
   -_update_gallery_html "--mirror x --mirror y -* -equalize 255 -n 0,255"
   -_update_gallery_html "-kaleidoscope 0.5,0.5,50,20"
@@ -4220,7 +4220,7 @@ update_server :
      "_nb_sources+=1 filename=${\"-basename $""1\"} "\
      "v + e[] $_gmic_c\"  \"$_nb_sources\". \"$_gmic_n$filename\"  \" v - "\
      "l[] "\
-     "  -i raw:$""1,char -nm {0,b} v + e[] $_gmic_g\"      [retrieved from source '$""1']\"$_gmic_n v - "\
+     "  -i raw:$""1,char nm {0,b} v + e[] $_gmic_g\"      [retrieved from source '$""1']\"$_gmic_n v - "\
      "  -l "\
      "    -o raw:/tmp/$filename,char "\
      "    -_update_server_upload /tmp/$filename,include/$filename "\
@@ -4459,7 +4459,7 @@ update_server :
           balise="i"
         done -rm
       endl endif
-      if {narg(['$command'])} nm={0,n} -i[0] ({'$command'}) -y[0] -a y -nm $nm
+      if {narg(['$command'])} nm={0,n} -i[0] ({'$command'}) -y[0] -a y nm $nm
       endif
 
       path=$npath
@@ -4957,10 +4957,10 @@ _update_tutorial_html :
           -rm.
         endif
        else -l # External link.
-         0 -nm. $link ext={x} -rm.
+         0 nm. $link ext={x} -rm.
          if {narg($ext)} ext=${-strlowercase\ $ext} endif
          if {s=['$ext'];s=='png'||s=='jpg'||s=='jpeg'}  # Check for an image link.
-           -basename $link relink=img/$5_${} 0 -nm. $relink relink={f}{b}.jpg -rm.
+           -basename $link relink=img/$5_${} 0 nm. $relink relink={f}{b}.jpg -rm.
            if $relink v + e[] "    > External image link '"$link"' relinked to '"$relink"'." v -
            else
              l[] -i $link -k[0] is_opaque=0
@@ -4991,7 +4991,7 @@ _update_tutorial_html :
       -s +,{'"src=\""'}
       l[2]
         -s +,{'\"'} link={0,t}
-        relink=img/$5_${-basename\ $link} 0 -nm. $relink relink={f}{b}.jpg -rm.
+        relink=img/$5_${-basename\ $link} 0 nm. $relink relink={f}{b}.jpg -rm.
         if $relink v + e[] "    > Image '"$link"' relinked to '"$relink"'." v -
         else
           l[] -i $link -k[0] is_opaque=0
@@ -5273,7 +5273,7 @@ sort_str :
 argmax :
   e[^-1] "Compute argmax of image$?."
   v - $!,1,1,1,x ({'{^}'}) -l. -s +,{','} -i[0--1:2] ({'i#'}) -y -a y str={t} endl -rm[-2,-1]
-  ${-max_whds},"argmax("$str")" -k. -nm [argmax] v +
+  ${-max_whds},"argmax("$str")" -k. nm [argmax] v +
 
 #@cli argmin
 #@cli : Compute the argmin of selected images. Returns a single image
@@ -5283,7 +5283,7 @@ argmin :
   e[^-1] "Compute argmin of image$?."
   if {!$!} -return endif
   v - $!,1,1,1,x ({'{^}'}) -l. -s +,{','} -i[0--1:2] ({'i#'}) -y -a y str={t} endl -rm[-2,-1]
-  ${-max_whds},"argmin("$str")" -k. -nm [argmin] v +
+  ${-max_whds},"argmin("$str")" -k. nm [argmin] v +
 
 #@cli asin : (+)
 #@cli : Compute the pointwise arc-sine of selected images.
@@ -5650,7 +5650,7 @@ cast :
 complex2polar :
   e[^-1] "Compute complex to polar transforms of image$?."
   v - repeat {int($!/2)} l[{2*$>},{2*$>+1}]
-    -r[1] [0],3 --atan2[1] [0] -nm. {1,n} -sqr[-3,-2] -+[-3,-2] -sqrt..
+    -r[1] [0],3 --atan2[1] [0] nm. {1,n} -sqr[-3,-2] -+[-3,-2] -sqrt..
   endl done v +
 
 #@cli compress_clut : _max_nbpoints>=1,_max_error>=0,_avg_error>=0
@@ -5664,12 +5664,12 @@ compress_clut : check "isint(${1=2048}) && $1>=1 && ${2=17.5}>=0 && ${3=1.75}>=0
     if {d==1} S={cbrt(wh)} -r $S,$S,$S,3,-1 -r3dx 32 -round endif # Input is a 2d haldclut image
     w={w} h={h} d={d} w_size=${-fitscreen" "$w,$h,$d,256,50%}
     v + e[] "  > Process clut '"$nm"' ("${w}"x"${h}"x"${d}")." v -
-    -nm clut
-    100%,100%,100% -nm. keypoints
-    --laplacian[0] -norm. -^. 0.5 -nm. potential
+    nm clut
+    100%,100%,100% nm. keypoints
+    --laplacian[0] -norm. -^. 0.5 nm. potential
 
     # Insert initialization keypoints.
-    0 -nm. keycoords
+    0 nm. keycoords
     _w1={max(1,$w-1)} _h1={max(1,$h-1)} _d1={max(1,$d-1)}
     -m "add_keypoint : \
           x={round($""1)} y={round($""2)} z={round($""3)} \
@@ -5681,7 +5681,7 @@ compress_clut : check "isint(${1=2048}) && $1>=1 && ${2=17.5}>=0 && ${3=1.75}>=0
     -add_keypoint 0,0,$_d1 -add_keypoint $_w1,0,$_d1 -add_keypoint $_w1,$_h1,$_d1
     -add_keypoint {potential,xM},{potential,yM},{potential,zM}
 
-    0 -nm. error
+    0 nm. error
     max_error=inf avg_error=inf
     target_max_error=$2 target_avg_error=$3
     best_max_error=inf best_avg_error=inf best_nbpts=0
@@ -5729,7 +5729,7 @@ compress_clut : check "isint(${1=2048}) && $1>=1 && ${2=17.5}>=0 && ${3=1.75}>=0
     -do
       nb_max_attempts={keycoords,round(h*75%)}
       v + e[] "\r    - Remove attempt \#"$nb_attempts/$nb_max_attempts" : Keypoints "{keycoords,h}", Max error = "{_$max_error}" ( avg = "{_$avg_error}" )        " v -
-      k={keycoords,round(u(h-1))} --l[keycoords] -s y -rm[$k] -a y -nm new_keycoords endl  # Remove random keypoint
+      k={keycoords,round(u(h-1))} --l[keycoords] -s y -rm[$k] -a y nm new_keycoords endl  # Remove random keypoint
       --decompress_clut[new_keycoords] $w,$h,$d
       if {*0} -w. 400,400,0,"Reconstructed CLUT (step 2)" endif
       --. [clut] -abs. new_max_error={iM} new_avg_error={ia} -rm.
@@ -5744,7 +5744,7 @@ compress_clut : check "isint(${1=2048}) && $1>=1 && ${2=17.5}>=0 && ${3=1.75}>=0
     -while {$nb_attempts<=$nb_max_attempts}
     v + e[] "" v -
 
-    -k[keycoords] -nm $nm
+    -k[keycoords] nm $nm
     -o ${_path_rc}comp_$nm.gmz,uchar
   endl done v +
 
@@ -5778,7 +5778,7 @@ compress_rle : skip ${1=0} check "isint(${2=0}) && $2>=0"
     else # Encode for arbitrary data.
       -*. -1 -rv -a x -y -discard -1 -f '>if(i(0,y-1)<0&&i==0&&i(0,y+1)<0,-1,i)' -discard -1
     endif
-    -i[0] ($header) -a y -nm $nm
+    -i[0] ($header) -a y nm $nm
   endl done v +
 
 #@cli cumulate : { x | y | z | c }...{ x | y | z | c } : (no arg) : (+)
@@ -5872,7 +5872,7 @@ eigen2tensor :
       (1^0^0^1^0^1) -r. ... -*. [-4] -rm[-6--4] -+[-3--1]
     else v + error[0--3] "Command '-eigen2tensor': Invalid image ["{$!-$>-1}"] : Dimensions "{w}","{h}","{d}","{s}" does not represent a field of 2d or 3d eigenvectors."
     endif
-  -nm $nm endl done v +
+  nm $nm endl done v +
 
 #@cli endian : _datatype : (+)
 #@cli : Reverse data endianness of selected images, eventually considering the pixel being of the specified datatype.
@@ -5984,7 +5984,7 @@ mix_channels :
   e[^-1] "Apply matrix $1 to channels of image$?."
   v - repeat $! l[$>] nm={0,n}
     whd={w},{h},{d} -r {w*h*d},{s},1,1,-1 -i[0] ${^0} -m* -r $whd,{h},-1
-  -nm $nm endl done v +
+  nm $nm endl done v +
 
 #@cli negate : base_value : (no arg)
 #@cli : Negate image values.
@@ -6222,7 +6222,7 @@ unrepeat :
     -y x ({{0,@-1}+1}) -a x -r 100%,2
     -f. '>if(y==0,i,if(i(x,0)==i(x+1,0),-1,x))'
     -z 0,{w-2} -s y,2 -discard[1] -1 -map[1] [0]
-    -rm[0] -nm $nm
+    -rm[0] nm $nm
   endl done v +
 
 #@cli vector2tensor
@@ -6521,7 +6521,7 @@ colormap : check "isint($1) && $1>=0" skip ${2=1},${3=1}
 
     endif
     if $3 --norm -rv -a c -sort +,x -channels 1,100% endif # Sort colors by increasing norm.
-    -nm "[colormap of "$nm"]"
+    nm "[colormap of "$nm"]"
   endl done v +
 
 _colormap : # Implementation of the median-cut algorithm.
@@ -6559,7 +6559,7 @@ direction2rgb :
     -*. {180/pi} -%. 360 100%,100%,1,1,1 -mv... $!
     if {im!=iM} -n. 0,1 else -f. 1 endif
     -a c -hsv2rgb
-  -nm $nm endl done v +
+  nm $nm endl done v +
 
 #@cli ditheredbw
 #@cli : Create dithered B&W version of selected images.
@@ -6588,7 +6588,7 @@ _fill_color :
   e[0--3] "Fill image"$_gmic_s" with color (${^0})."
   v - repeat $! l[$>]
     repeat {s} -sh[0] $> -f. {arg(1+$>,${^0})} done -k[0]
-  -nm {n} endl done v +
+  nm {n} endl done v +
 
 #@cli gradient2rgb : _is_orientation={ 0 | 1 }
 #@cli : Compute RGB representation of 2d gradient of selected images.
@@ -7041,7 +7041,7 @@ remove_opacity :
     if {s==2} -channels 0
     elif {s==4} -channels 0,2
     endif
-  -nm {n} endl done v +
+  nm {n} endl done v +
 
 #@cli select_color : tolerance[%]>=0,col1,...,colN
 #@cli : Select pixels with specified color in selected images.
@@ -7251,7 +7251,7 @@ transfer_rgb : check "${2=0.3}>=0 && ${3=8}>=0 && ${4=0.15}>=0 && ${5=64}>=0 && 
 
     # Generate matching functions from 3d RGB features.
     --_transfer_rgb[source,target] $2,$sigma,$5
-    -nm.. fsource -nm. ftarget
+    nm.. fsource nm. ftarget
     -n[fsource,ftarget] 0,255
 
     # Manage color constraints.
@@ -7265,7 +7265,7 @@ transfer_rgb : check "${2=0.3}>=0 && ${3=8}>=0 && ${4=0.15}>=0 && ${5=64}>=0 && 
       endif
       if {w>$w1} -r2dx[-2,-1] $w1 endif
       if {h>$h0} -r2dy[-2,-1] $h0 endif
-      -nm.. visu -nm. both
+      nm.. visu nm. both
 
       -w[visu] -1,-1
       N=0 -do
@@ -7281,7 +7281,7 @@ transfer_rgb : check "${2=0.3}>=0 && ${3=8}>=0 && ${4=0.15}>=0 && ${5=64}>=0 && 
         --. .. -*. -1 -a[-2,-1] c
         N+=1
       -while {*}
-      if $N -a[-$N--1] x -permute. xczy -nm. constraints endif
+      if $N -a[-$N--1] x -permute. xczy nm. constraints endif
       -rm[$visu,$both] -w 0
     endif
 
@@ -7320,15 +7320,15 @@ transfer_rgb : check "${2=0.3}>=0 && ${3=8}>=0 && ${4=0.15}>=0 && ${5=64}>=0 && 
 
     # Estimate confidence of the color mapping.
     --_transfer_rgb[target] 0,$sigma,{displacement,w}
-    -warp. [displacement],1,1,1 -c. 0,100% -nm. fconfidence
-    --map_clut[source] . -nm. confidence
+    -warp. [displacement],1,1,1 -c. 0,100% nm. fconfidence
+    --map_clut[source] . nm. confidence
 
     # Generate transfer CLUT.
     [displacement],[displacement],[displacement],1,x --f. y --f. z -a[-3--1] c -*. {255/(w-1)} -+. 1
     --_transfer_rgb[target] 0,0,{w} -*.. .
     -warp[-2,-1] [displacement],1,0,1
     -distance. 1 -*. -1 -watershed.. . -rm. --. 1
-    -nm. clut
+    nm. clut
     -b[clut] $sigma%
 
     # Enforce luminosity constraint for non-confident colors.
@@ -7341,7 +7341,7 @@ transfer_rgb : check "${2=0.3}>=0 && ${3=8}>=0 && ${4=0.15}>=0 && ${5=64}>=0 && 
     endif
 
     # Map CLUT to get result.
-    --map_clut[source] [clut] -nm. res_noregul
+    --map_clut[source] [clut] nm. res_noregul
 
     # Apply guided smoothing to remove quantization artefacts.
     if {!$3}
@@ -7352,7 +7352,7 @@ transfer_rgb : check "${2=0.3}>=0 && ${3=8}>=0 && ${4=0.15}>=0 && ${5=64}>=0 && 
         ---[1] [0] repeat $3 -guided. [0],5,5 done -+. [0] -c. 0,255
         -ycbcr2rgb
       endl
-      -nm. res
+      nm. res
       -j[res] [res_noregul],0,0,0,0,1,[confidence]
       -rm[res_noregul]
     endif
@@ -7535,7 +7535,7 @@ apply_scales : skip "${1=}" check "isint($2) && $2>0 && ${3=25%}>=0 && ${4=100%}
       --r[0] $w,$h,$d,100%,$6
       if {narg("$1")} -l. $1 endl endif
     done
-    -rm[0] -nm $nm
+    -rm[0] nm $nm
   endl done v +
 
 #@cli autocrop : value1,value2,... : (no arg) : (+)
@@ -7635,7 +7635,7 @@ elevate : check "${1=64}>0" skip ${2=1},${3=1}
       -r. 100%,100%,1,.. if $3 -*. [0] endif
       -j.. .,0,0,$> -rm.
     done
-  -rm[0,1] -nm $nm endl done v +
+  -rm[0,1] nm $nm endl done v +
 
 #@cli expand_x : size_x>=0,_boundary_conditions={ 0=dirichlet | 1=neumann | 2=periodic | 3=mirror }
 #@cli : Expand selected images along the x-axis.
@@ -7783,7 +7783,7 @@ montage : check "isval(${2=2}) && $2>=0 && $2<=3" skip "${1=X}",${3=0},"${4=}"
     -rm[0-{$N-1},-1]
 
   endif
-  -nm "[Montage '$1']"
+  nm "[Montage '$1']"
   v +
 
 _montage :
@@ -7880,7 +7880,7 @@ resize_mn : check "${2=100%}>=0 && ${3=100%}>=0" skip "${4=0.333},${5=0.333}"
       elif {$nd!=d} 100%,100%,$nd,100%,${lib}"Z = z*(d#-1-1)/(d-1); d = Z - int(Z); P0 = I(#-1,x,y,Z-1); P1 = I(#-1,x,y,Z); P2 = I(#-1,x,y,Z+1); P3 = I(#-1,x,y,Z+2); mn(P0,P1,P2,P3,d);" -k.
       endif
     endif
-    -nm $nm
+    nm $nm
   endl done v +
 
 #@cli resize_pow2 : _interpolation,_boundary_conditions,_ax,_ay,_az,_ac
@@ -8555,7 +8555,7 @@ blur_bloom : check "${1=1}>=0 && ${2=2}>=0 && isint(${3=5}) && $3>=0 && isint(${
     if $6 -n. $mM endif
     -$4[1,-1]
     done
-    -n. $mM -k. -nm $nm
+    -n. $mM -k. nm $nm
   endl done
   -uncommand _bloom0,_bloom1,_bloom2,_bloom3,_bloom4
   v +
@@ -8597,7 +8597,7 @@ blur_selective : check "${1=5}>=0 && ${2=0.5}>=0 && isint(${3=5}) && $3>0"
   v - repeat $! l[$>] nm={0,n}
     --gradient_norm -+. 1 -^. {-max(0.01,$2)} -quantize. {$3+1},0,1 -min. {$3-1} -r. ..
     repeat $3 --==. $> -*. ... -+[-2,-1] -b.. {$1/($3+1)} done
-  -rm.. -nm $nm endl done v +
+  -rm.. nm $nm endl done v +
 
 #@cli blur_x : amplitude[%]>=0,_boundary_conditions={ 0=dirichlet | 1=neumann }
 #@cli : Blur selected images along the x-axis.
@@ -8779,7 +8779,7 @@ deblur : check "${2=10}>=0 && ${3=20}>=0 && ${4=0.7}>=0" skip ${5=1}
       -+[-2,-1]                                        # Update image.
       done
     -rm..
-  -nm $nm endl done v +
+  nm $nm endl done v +
 
 #@cli deblur_goldmeinel : sigma>=0, _nb_iter>=0, _acceleration>=0, _kernel_type={ 0=quasi-gaussian (faster) | 1=gaussian }.
 #@cli : Deblur selected images using Gold-Meinel algorithm
@@ -8871,7 +8871,7 @@ denoise_haar : check "${1=1.4}>=0 && isint(${2=0}) && $2>=0 && isint(${3=10}) &&
       -+[-2,-1]
     done
     -rm[0] -/ $3 -r $w,$h,$d,100%,0
-  -nm $nm endl done v +
+  nm $nm endl done v +
 
 #@cli denoise_patchpca : _strength>=0,_patch_size>0,_lookup_size>0,_spatial_sampling>0
 #@cli : Denoise selected images using the patch-pca algorithm.
@@ -8881,8 +8881,8 @@ denoise_patchpca : check "${1=1.8} && $1>=0 && isint(${2=7}) && $2>0 && isint(${
   e[^-1] "Denoise image$? using patch-pca, with strength $1, patch size $2, lookup size $3 and spatial sampling $4."
   v - repeat $! l[$>] nm={n}
     N2={$2*$2} M2={$3*$3} stdnoise=${-std_noise}
-    100%,100%,1,100% -nm. aggreg
-    100%,100% -nm. weights
+    100%,100%,1,100% nm. aggreg
+    100%,100% nm. weights
     -f[0] "*
     init(
       n1 = int($2/2); n2 = $2 - n1 - 1;
@@ -8926,7 +8926,7 @@ denoise_patchpca : check "${1=1.8} && $1>=0 && isint(${2=7}) && $2>0 && isint(${
         )
       );
     0);0"
-    -max[weights] 0.01 -/[aggreg,weights] -k[aggreg] -nm $nm
+    -max[weights] 0.01 -/[aggreg,weights] -k[aggreg] nm $nm
   endl done v +
 
 #@cli deriche : std_variation>=0[%],order={ 0 | 1 | 2 },axis={ x | y | z | c },_boundary_conditions : (+)
@@ -9383,7 +9383,7 @@ inpaint_morpho : check ${-is_image_arg\ $1}
       -+[-2,-1] -/. 2
       -j. ...,0,0,0,0,1,..
     -while {im==$im1}
-    -k. -nm $nm
+    -k. nm $nm
   endl done v +
 
 #@cli inpaint_patchmatch : [mask],_nb_scales={ 0=auto | >0 },_patch_size>0,_nb_iterations_per_scale>0,_blend_size>=0,_allow_outer_blending={ 0 | 1 },_is_already_initialized={ 0 | 1 }
@@ -9396,7 +9396,7 @@ inpaint_patchmatch : check ${-is_image_arg\ $1}"&& ${2=0}>=0 && isint(${3=9}) &&
   v - repeat $! -pass$1 0 l[$>,-1]
 
     # Init variables and images.
-    nm={0,n} -nms img,mask
+    nm={0,n} nms img,mask
     nb_scales={max(1,round(if($2,$2,log2(min(w,h)/16)),1,1))}
     visu_size=${-fitscreen[]" "{0,w},{0,h},1,25%,50%}
     -slices[img] 0 -r[mask] [img],[img],1,1,0 -!=[mask] 0
@@ -9410,10 +9410,10 @@ inpaint_patchmatch : check ${-is_image_arg\ $1}"&& ${2=0}>=0 && isint(${3=9}) &&
       -progress {100*$>/max(1,$nb_scales-1)}
 
       # Compute image and mask at current scales.
-      --r[img,mask] $scale%,$scale%,1,100%,2 -nms[-2,-1] scaled_img,scaled_mask
+      --r[img,mask] $scale%,$scale%,1,100%,2 nms[-2,-1] scaled_img,scaled_mask
       ->=[scaled_mask] 0.95
       if {scaled_mask,!iM} -rm[scaled_img,scaled_mask] -continue endif # Skip scale (if too low).
-      --f[scaled_img] -4096 --j[scaled_img] .,0,0,0,0,1,[scaled_mask] -rm.. -nm. scaled_reference
+      --f[scaled_img] -4096 --j[scaled_img] .,0,0,0,0,1,[scaled_mask] -rm.. nm. scaled_reference
 
       coef={0.5^($nb_scales-$iter)}
       patch_size={v=round(max(min($3,5),$3*$coef));v+(1-(v%2))}
@@ -9428,7 +9428,7 @@ inpaint_patchmatch : check ${-is_image_arg\ $1}"&& ${2=0}>=0 && isint(${3=9}) &&
         100%,100%,1,1,x --f. y -mv[scaled_mask] $! -a[-3--1] c
         -patchmatch[scaled_img] [scaled_reference],$patch_size,$patch_size,1,4,4,0,.
         -rm[scaled_reference,-1]
-        -nm. correspondence
+        nm. correspondence
         first_iter=0
 
       else # Standard iteration.
@@ -9443,7 +9443,7 @@ inpaint_patchmatch : check ${-is_image_arg\ $1}"&& ${2=0}>=0 && isint(${3=9}) &&
                             i(#-1,x,y,0,0) = (ucc==upc && vcc==vpc)?upc + 1:ucc;
                             i(#-1,x,y,0,1) = (ucc==ucp && vcc==vcp)?vcp + 1:vcc;
                             0)"
-        -rm[correspondence] -nm. correspondence
+        -rm[correspondence] nm. correspondence
         -a[correspondence] [scaled_mask],c
 
         # Refine correspondence map iteratively with patchmatch.
@@ -9582,7 +9582,7 @@ inpaint_diffusion : check ${-is_image_arg\ $1}" && ${2=75%}>=0 && isint(${3=1}) 
       endif
       -rm[-2,-1]
     done
-    -nm. $nm -rv[0,-1] -rm.
+    nm. $nm -rv[0,-1] -rm.
   endl -rm. done v +
 
 #@cli kuwahara : size>0
@@ -9630,7 +9630,7 @@ lic : skip ${1=30},${2=1}
      -channels 0,1 -/ {max(abs(im),abs(iM))} -vector2tensor
      100%,100%,100%,$2 -rand. 0,255 -smooth. ..,$1 -rm..
      -equalize
-  -nm $nm endl done v +
+  nm $nm endl done v +
 
 #@cli map_tones : _threshold>=0,_gamma>=0,_smoothness>=0,nb_iter>=0
 #@cli : Apply tone mapping operator on selected images, based on Poisson equation.
@@ -9810,7 +9810,7 @@ phase_correlation : check ${-is_image_arg\ $1}
       if {{-2,^}>{-4,h}} --.. {-4,h} --.. {-4,h} endif
       if {{^}>{-4,d}} --. {-4,d} --. {-4,d} endif
       -a[-3--1] c -rm.. -/ 2 -* -1
-      -nm [phase\ correlation]
+      nm [phase\ correlation]
   endl done v +
 
 #@cli pde_flow : _nb_iter>=0,_dt,_velocity_command,_keep_sequence={ 0 | 1 }
@@ -10210,7 +10210,7 @@ unsharp_octave : check "${1=4}>0 && ${3=2}>=0" skip ${2=1},${4=0}
       -+[1,-1]
     done
     -rm[0] -/ $weight
-  -nm $nm endl done v +
+  nm $nm endl done v +
 
 #@cli vanvliet : std_variation>=0[%],order={ 0 | 1 | 2 | 3 },axis={ x | y | z | c },_boundary_conditions : (+)
 #@cli : Apply Vanvliet recursive filter on selected images, along specified axis and with
@@ -10309,7 +10309,7 @@ barycenter :
       ({$x/$sum};{$y/$sum};{$z/$sum})
     else ({w/2},{h/2},{d/2}) -rm..
     endif
-  -nm "[barycenter of '"$nm"']" endl done v +
+  nm "[barycenter of '"$nm"']" endl done v +
 
 #@cli detect_skin : 0<=tolerance<=1,_skin_x,_skin_y,_skin_radius>=0
 #@cli : Detect skin in selected color images and output an appartenance probability map.
@@ -10456,7 +10456,7 @@ histogram_pointwise : skip ${2=0%},${3=100%}
     3,100%,1,1,1 1,100%,1,1,-1 -y[-5,-3,-2] -a[-5--1] y
     {$w*$h*$d},$nb_levels -j3d. ..,0,0,0,1,0,0,0 -rm..
     -r $w,$h,$d,$nb_levels,-1
-  -nm $nm endl done v +
+  nm $nm endl done v +
 
 #@cli hough : _width>0,_height>0,gradient_norm_voting={ 0 | 1 }
 #@cli : Compute hough transform (theta,rho) of selected images.
@@ -10472,7 +10472,7 @@ hough : check "${1=512}>0 && ${2=$1}>0" skip ${3=1}
     -*. {$2/$rhomax} -*.. {0.5*$1/pi}
     -y[-3--1] x {w} -mv[-4] $! if {!$3} -f. 1 endif
     -a y -pointcloud 1 -r $1,$2,1,1,0
-  -nm $nm endl done v +
+  nm $nm endl done v +
 
 #@cli ifftpolar
 #@cli : Compute inverse fourier transform of selected images, from centered magnitude/phase images.
@@ -10557,7 +10557,7 @@ minimal_path : check "$1>=0 && $2>=0 && $3>=0" skip ${7=0}
       ($x;$y;$z)
     -while $p
     -rm[0,-1] -a x
-  -nm $nm endl done v +
+  nm $nm endl done v +
 
 #@cli mse : : (+)
 #@cli : Compute MSE (Mean-Squared Error) matrix between selected images.
@@ -10638,7 +10638,7 @@ pointcloud : check "${1=0}<=2" skip ${2=0},${3=0},${4=0}
       -f.. ">init(l = 0); V = I; P = V[0,3]; C = V[3,size(V) - 3]; I(#-1,P) = ++l; V"
     endif
 
-  -k. -nm $nm endl done v +
+  -k. nm $nm endl done v +
 
 #@cli psnr : _max_value
 #@cli : Compute PSNR (Peak Signal-to-Noise Ratio) matrix between selected images.
@@ -10656,7 +10656,7 @@ psnr : skip "${1=}"
       -mse[^-1] -sqr. -log10 --.. 'max(i[#-1,x],i[#-1,y])' -rm.
     endif
   endif
-  -* -10 -nm [PSNR] v +
+  -* -10 nm [PSNR] v +
 
 #@cli segment_watershed : _threshold>=0
 #@cli : Apply watershed segmentation on selected images.
@@ -11068,7 +11068,7 @@ close_binary :
 
     # Ensure input is a 2d binary image.
     -slices 50% -channels 0 -> 0
-    -nm. strokes
+    nm. strokes
 
     # Extract primary edgel normals.
     -i[e_normals] 100%,100%,1,4,"
@@ -11107,14 +11107,14 @@ close_binary :
         cr = cross([vec(pos),0],[du,0]);
         if (cr[2]>=0, kappa = norm(du));
       ); kappa"
-    -nm. e_curvatures
+    nm. e_curvatures
 
     # Detect end points.
-    --compose_channels[e_curvatures] max -nm. curvatures
+    --compose_channels[e_curvatures] max nm. curvatures
     -->=[curvatures] {$endpoint_threshold%}
-    -label_fg. 0,1 -nm. keypoints
+    -label_fg. 0,1 nm. keypoints
     if {iM>0}
-      {iM},1,1,3,-1 -nm. keycoords
+      {iM},1,1,3,-1 nm. keycoords
       -f[keypoints] "> # Keep only a single point on connected regions of high curvatures.
         ret = 0;
         if (i,
@@ -11419,13 +11419,13 @@ _close_binary :
       cr = cross([vec(pos),0],[du,0]);
       kappa = sign(cr[2])*norm(du);
     ); kappa"
-  -nm. e_curvatures
+  nm. e_curvatures
 
   # Compute pointwise high curvature points (both positive and negative).
   --min[e_curvatures] 0 -*. -1
   -max[e_curvatures] 0
   -compose_channels[-2,-1] max
-  -nms[-2,-1] pos_curvatures,neg_curvatures
+  nms[-2,-1] pos_curvatures,neg_curvatures
 
   # Detect positive and negative curvature keypoints.
   l[pos_curvatures]
@@ -11456,7 +11456,7 @@ _close_binary :
     -f.. "init(off = 0); if(i, I[#-1,off++] = [ x,y,-1]); i"
     -k.
   endl
-  -a[-2,-1] x -nm. keycoords
+  -a[-2,-1] x nm. keycoords
   -i[keypoints] [e_normals],[e_normals]
   -f[keycoords] "P = I; i(#-1,P[0],P[1]) = 1 + x; I"
 
@@ -11611,7 +11611,7 @@ _close_binary :
 
   # Draw groups of detected segments on visu image.
   if {narg($_visu)}
-    [keylines],1,1,3 -rand. 64,255 -round. -nm. colormap
+    [keylines],1,1,3 -rand. 64,255 -round. nm. colormap
     -f[keylines] ${-math_lib}"
       _I = I;
       i0 = _I[0];
@@ -11670,7 +11670,7 @@ gaussian : skip ${1=3},${2=$1},${3=0}
     w={w} h={h} ds={d},{s} -rm
     $w,$h,1,1,'X=x-{($w-1)/2};Y=y-{($h-1)/2};$A*X*X+2*$B*X*Y+$C*Y*Y'
     -* -1 -exp -r $w,$h,$ds
-  -nm $nm endl done v +
+  nm $nm endl done v +
 
 #@cli graph : [function_image],_plot_type,_vertex_type,_ymin,_ymax,_opacity,_pattern,_color1,... : 'formula',_resolution>=0,_plot_type,_vertex_type,_xmin,xmax,_ymin,_ymax,_opacity,_pattern,_color1,... : (+)
 #@cli : Draw specified function graph on selected images.
@@ -11777,7 +11777,7 @@ maze : check "isint(${1=15}) && $1>0 && isint(${2=$1}) && $2>0 && isint(${3=24})
   ({round(u($1-1))},{round(u($2-1))})  # Starting cell.
   $1,$2,1,1,15 --f. 0 -a[-2,-1] c   # Starting maze data.
   -_generate_maze $1,$2
-  -_render_maze. $3 -nm. [maze]
+  -_render_maze. $3 nm. [maze]
   v +
 
 _generate_maze :
@@ -11837,7 +11837,7 @@ maze_mask : check "isint(${1=24}) && $1>0"
       -flood[0] {-2,^},0,0,0,1,0
       -_generate_maze {w},{h}
     -while {0,iM}
-    -rm[0] -+ -_render_maze. $1 -nm. [maze]
+    -rm[0] -+ -_render_maze. $1 nm. [maze]
   endl done v +
 
 #@cli j3d : eq. to '-object3d'. : (+)
@@ -12277,7 +12277,7 @@ truchet : check "isint(${1=32}) && $1>0 && ${2=3}>=0" skip ${3=1}
     {round($w/$1,1,1)},{round($h/$1,1,1)} -rand. 0,1 ->=. 50% -r. {w*$1},{h*$1} -*. $1
     -channels. 0,1 (0,{$1-1}) -r. $1,$1,1,1,3 --transpose. -a[-2,-1] c -r. ..,0,2 -+[-2,-1]
     -warp.. . -rm. ->= 50% -r $w,$h,1,1,0 -r 100%,100%,1,$s
-  -nm $nm endl done v +
+  nm $nm endl done v +
 
 #@cli turbulence : _radius>0,_octaves={1,2,3...,12},_alpha>0,_difference={-10,10},_mode={0,1,2,3}
 #@cli : Render fractal noise or turbulence on selected images.
@@ -12304,7 +12304,7 @@ turbulence : check "${1=32}>0 && ${2=6}>0" skip ${3=3},${4=0},${5=0}
     -n. 0,255
     -rm..
     if {$4} -*. $4 -mv.. 2 -- -n. 0,255 endif
-  -nm $nm endl done v +
+  nm $nm endl done v +
 
 #@cli yinyang
 #@cli : Draw a yin-yang symbol on selected images.
@@ -12522,7 +12522,7 @@ axes3d : check ${4=23}>0 skip ${1=1},${2=$1},${3=$2},"${5=X},${6=Y},${7=Z}"
     -cone3d $m,{2*$m},16 -+3d. 0,0,{$3-$m2}
     -_axes3d "$7",$4 -+3d. 0,0,{$3+$m3}
   endif
-  -+3d -nm [3d\ axes]
+  -+3d nm [3d\ axes]
   endl v +
 
 _axes3d :
@@ -12544,7 +12544,7 @@ box3d : skip ${1=1},${2=$1},${3=$2}
   4,0,3,2,1,4,4,5,6,7,4,0,1,5,4,4,3,7,6,2,4,0,4,7,3,4,1,2,6,5,\
   200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,\
   1,1,1,1,1,1
-  -nm. [3d\ box]
+  nm. [3d\ box]
   v +
 
 #@cli c3d : eq. to '-center3d'.
@@ -12581,7 +12581,7 @@ circle3d : skip ${1=0},${2=0},${3=0},${4=1}
   {$1-$r},{$2-$r},{$3-$r},\
   {$1+$r},{$2+$r},{$3+$r},\
   5,0,1,0,0,0,200,200,200,1
-  -nm. [3d\ circle]
+  nm. [3d\ circle]
   v +
 
 #@cli circles3d : _radius>=0,_is_filled={ 0 | 1 }
@@ -12639,7 +12639,7 @@ colorcube3d :
   (0,255;0,255^255,255;255,255^0,0;255,255)
   -r[-6--1] 64,64,1,3,3 -y[-6--1] -i[-7--2] (-128;64;64;3)
   (1;1;1;1;1;1)
-  -a[-16--1] y -nm. [3d\ colorcube]
+  -a[-16--1] y nm. [3d\ colorcube]
   v +
 
 #@cli cone3d : _radius,_height,_nb_subdivisions>0
@@ -12666,7 +12666,7 @@ cone3d : check ${3=24}>0 skip ${1=1},${2=1}
   # Colors / opacities.
   3,{h},1,1,200
   1,{h},1,1,1
-  -y[-4--2] -a[-6--1] y -nm. [3d\ cone]
+  -y[-4--2] -a[-6--1] y nm. [3d\ cone]
   v +
 
 #@cli cubes3d : _size>=0
@@ -12706,7 +12706,7 @@ cup3d : check ${1=128}>0
   -ellipse. 0,0,35%,35%,0,1,0
   -polygon. 4,0,45%,8%,45%,20%,90%,0,90%,1,1
   -ellipse. 0%,100%,30%,10%,0,1,1 -b. 0.1%
-  -lathe3d. $1,2 -nm. [3d\ cup]
+  -lathe3d. $1,2 nm. [3d\ cup]
   v +
 
 #@cli cylinder3d : _radius,_height,_nb_subdivisions>0
@@ -12735,7 +12735,7 @@ cylinder3d : check ${3=24}>0 skip ${1=1},${2=1}
   # Colors / opacities.
   3,{3*$3},1,1,200
   1,{h},1,1,1
-  -y[-6--2] -a[-8--1] y -nm. [3d\ cylinder]
+  -y[-6--2] -a[-8--1] y nm. [3d\ cylinder]
   v +
 
 #@cli delaunay3d
@@ -12787,7 +12787,7 @@ distribution3d :
     1,$nbp,1,1,1 --f. y -a[-2,-1] x -y.                # Primitives.
     ..                                               # Colors.
     1,$nbp,1,1,1                                       # Opacities.
-    -a y -nm. [3d\ distribution]                       # Build 3d object.
+    -a y nm. [3d\ distribution]                       # Build 3d object.
   endl done v +
 
 #@cli /3d : eq. to '-div3d'. : (+)
@@ -12819,7 +12819,7 @@ distribution3d :
 #@cli : $ -empty3d
 empty3d :
   e[^-1] "Input empty 3d object."
-  v - (67.5;73.5;109.5;103.5;51.5;100.5;0;0) -nm. [3d\ empty] v +
+  v - (67.5;73.5;109.5;103.5;51.5;100.5;0;0) nm. [3d\ empty] v +
 
 #@cli extrude3d : _depth>0,_resolution>0,_smoothness[%]>=0
 #@cli : Generate extruded 3d object from selected binary XY-profiles.
@@ -12833,7 +12833,7 @@ extrude3d : check "${1=16}>0 && ${2=1024}>0 && ${3=0.5%}>=0"
     fact={$1/max(w/$wr,h/$hr)}
     -b $3,0 -r $wr,$hr,1,1,2 -expand_xyz 1,0
     -isosurface3d 50% -*3d 1,1,$fact -rv3d
-  -nm $nm endl done v +
+  nm $nm endl done v +
 
 #@cli f3d : eq. to '-focale3d'. : (+)
 
@@ -12855,7 +12855,7 @@ gaussians3d : check "${1=32}>0" skip ${2=0.3}
     $1,$1 -gaussian. 35%,35%,0 -c. 30%,100% -n. 0,$2 -y. -a[-2,-1] y      # First opacity is generated.
     if {$nbv>1} 4,{$nbv-1},1,1,-128,0,0,0 -y[-2,-1] -a[-2,-1] y endif   # Other ones are shared copies of the first one.
     -a y
-  -nm $nm endl done v +
+  nm $nm endl done v +
 
 #@cli gmic3d
 #@cli : Input a 3d G'MIC logo.
@@ -12875,7 +12875,7 @@ gmic3d :
     -r3d. 1,1,1,{$>*12}
     -+3d. {80*cos(0.5+1.02*$>*12*pi/180)},{30*sin(0.8+$>*12*pi/180)},{2*$>-60}
   done
-  -+3d[-30--1] -+3d. 0,5,30 -+3d[-2--1] -nm. [3d\ gmic]
+  -+3d[-30--1] -+3d. 0,5,30 -+3d[-2--1] nm. [3d\ gmic]
   v +
 
 #@cli gyroid3d : _resolution>0,_zoom
@@ -12906,7 +12906,7 @@ gyroid3d : check ${1=32}>0 skip ${2=5}
     + cos(- 2*z + 2*x - pi) + cos( 2*z - 2*x - pi)\
     + cos( 2*z + 2*x - pi) + cos(- 2*z - 2*x - pi)\
     ) - 0.69'",0,{-$2},{-$2},{-$2},$2,$2,$2,$1,$1,$1
-  -c3d. -n3d. -nm. [3d\ gyroid]
+  -c3d. -n3d. nm. [3d\ gyroid]
   v +
 
 #@cli histogram3d
@@ -12915,7 +12915,7 @@ gyroid3d : check ${1=32}>0 skip ${2=5}
 histogram3d :
   e[^-1] "Get 3d color histogram of image$?."
   v - to_rgb repeat $! l[$>]
-    -r {w*h},3,1,1,-1 -pointcloud 1 -n 0,255 -map 3 -pointcloud3d -nm "[3d histogram]"
+    -r {w*h},3,1,1,-1 -pointcloud 1 -n 0,255 -map 3 -pointcloud3d nm "[3d histogram]"
   endl done v +
 
 #@cli image6cube3d
@@ -12931,7 +12931,7 @@ image6cube3d :
     -r3d[3] 0,1,0,270 -+3d[3] 0.5,0,0
     -r3d[4] 1,0,0,90 -+3d[4] 0,0.5,0
     -r3d[5] 1,0,0,270 -+3d[5] 0,-0.5,0
-    -+3d -nm "[3d image cube]"
+    -+3d nm "[3d image cube]"
   endl done v +
 
 #@cli imageblocks3d : _maximum_elevation,_smoothness[%]>=0
@@ -12996,7 +12996,7 @@ imagecube3d :
     -y.
     (-128;0;0;0;-128;0;0;0;-128;0;0;0;-128;0;0;0;-128;0;0;0;1;1;1;1;1;1)  # Other faces and opacities.
     -a y
-  -nm $nm endl done v +
+  nm $nm endl done v +
 
 #@cli imageplane3d
 #@cli : Generate 3d mapped planes from selected images.
@@ -13015,7 +13015,7 @@ imageplane3d :
     -y.
     (1)  # Opacity.
     -a y
-  -nm $nm endl done v +
+  nm $nm endl done v +
 
 #@cli imagepyramid3d
 #@cli : Generate 3d mapped pyramides from selected images.
@@ -13040,7 +13040,7 @@ imagepyramid3d :
     -y.
     (-128;0;0;0;-128;0;0;0;-128;0;0;0;-128;0;0;0;1;1;1;1;1)  # Other faces and opacities.
     -a y
-  -nm $nm endl done v +
+  nm $nm endl done v +
 
 #@cli imagerubik3d : _xy_tiles>=1,0<=xy_shift<=100,0<=z_shift<=100
 #@cli : Generate 3d mapped rubik's cubes from selected images.
@@ -13075,7 +13075,7 @@ imagerubik3d : check "${1=3}>=1 && ${2=5}>=0 && $2<=100 && ${3=5}>=0 && $3<=100"
     --r3d. 0,1,0,-90 --r3d. 0,1,0,-90 --r3d. 0,1,0,-90  # Generate the 5 other sides.
     --r3d. 0,0,1,-90 --r3d. 0,0,1,180
     -+3d
-  -nm $nm endl done v +
+  nm $nm endl done v +
 
 #@cli imagesphere3d : _resolution1>=3,_resolution2>=3
 #@cli : Generate 3d mapped sphere from selected images.
@@ -13112,7 +13112,7 @@ imagesphere3d : check "${1=32}>=3 && ${2=16}>=3"
 
     # Define sphere textures, opacities and generate object.
     -mv[-4] $! -i.. (-128;{w};{h};3) -y. 1,{4*($nbp-1)},1,1,-128,0,0,0 1,$nbp,1,1,1 -a y
-  -nm $nm endl done v +
+  nm $nm endl done v +
 
 #@cli isoline3d : isovalue[%] : 'formula',value,_x0,_y0,_x1,_y1,_size_x>0[%],_size_y>0[%] : (+)
 #@cli : Extract 3d isolines with specified value from selected images or from specified formula.
@@ -13187,7 +13187,7 @@ lathe3d : check "${1=128}>0 && ${2=0.5%}>=0 && ${3=361}>=0"
 #@cli : $ repeat 100 a={$>*pi/50} -line3d 0,0,0,{cos(3*$a)},{sin(2*$a)},0 -color3d. ${-RGB} done -add3d
 line3d :
   e[^-1] "Input 3d line (${1-3})-(${4-6})."
-  v - 1,21,1,1,67.5,73.5,109.5,103.5,51.5,100.5,2,1,${1-6},2,0,1,200,200,200,1 -nm. [3d\ line] v +
+  v - 1,21,1,1,67.5,73.5,109.5,103.5,51.5,100.5,2,1,${1-6},2,0,1,200,200,200,1 nm. [3d\ line] v +
 
 #@cli lissajous3d : resolution>1,a,A,b,B,c,C
 #@cli : Input 3d lissajous curves (x(t)=sin(a*t+A*2*pi),y(t)=sin(b*t+B*2*pi),z(t)=sin(c*t+C*2*pi)).
@@ -13206,7 +13206,7 @@ lissajous3d : check ${1=1024}>1 skip ${2=2},${3=0},${4=1},${5=0},${6=0},${7=0}
 
   # Define object primitives, colors and opacities.
   1,{$res-1},1,1,2 (0;{$res-2}) -r. 1,{$res-1},1,1,3 --+. 1 -a[-3--1] x -round. 1 -r. 1,{w*h},1,1,-1
-  1,{3*($res-1)},1,1,200 1,{$res-1},1,1,1 -a[-5--1] y -nm. [3d\ lissajou]
+  1,{3*($res-1)},1,1,200 1,{$res-1},1,1,1 -a[-5--1] y nm. [3d\ lissajou]
   v +
 
 #@cli m3d : eq. to '-mode3d'. : (+)
@@ -13286,7 +13286,7 @@ parametric3d : skip "${1=(2+cos(b))*sin(a)}","${2=(2+cos(b))*cos(a)}","${3=sin(b
   # Extract 3d surface.
   -pointcloud. 1 -r. $10,$11,$12,1,0 -b. $13,0
   -isosurface3d. $14
-  -c3d. -n3d. -*3d. {$xmax-$xmin},{$ymax-$ymin},{$zmax-$zmin} -nm. [3d\ parametric]
+  -c3d. -n3d. -*3d. {$xmax-$xmin},{$ymax-$ymin},{$zmax-$zmin} nm. [3d\ parametric]
   v +
 
 #@cli pca_patch3d : _patch_size>0,_M>0,_N>0,_normalize_input={ 0 | 1 },_normalize_output={ 0 | 1 },_lambda_xy
@@ -13346,7 +13346,7 @@ pca_patch3d : check "isint(${1=7}) && $1>0 && isint(${2=1000}) && $2>0 && isint(
     1,$3,1,1,1                                             # Opacities.
     -y -a[-6--1] y                                         # Merge as a 3d object.
 
-  -nm $nm endl done v +
+  nm $nm endl done v +
 
 #@cli plane3d : _size_x,_size_y,_nb_subdivisions_x>0,_nb_subdisivions_y>0
 #@cli : Input 3d plane at (0,0,0), with specified geometry.
@@ -13354,14 +13354,14 @@ pca_patch3d : check "isint(${1=7}) && $1>0 && isint(${2=1000}) && $2>0 && isint(
 #@cli : $ -plane3d 50,30 --primitives3d 1 -color3d[-2] ${-RGB}
 plane3d : check "${3=24}>0 && ${4=24}>0" skip ${1=1},${2=$1}
   e[^-1] "Input 3d plane, with size (${1,2}) and subdivisions (${3,4})."
-  v - {$3+1},{$4+1} -elevation3d. 0 -*3d. {$1/$3},{$2/$4} -col3d. 200 -nm. [3d\ plane] v +
+  v - {$3+1},{$4+1} -elevation3d. 0 -*3d. {$1/$3},{$2/$4} -col3d. 200 nm. [3d\ plane] v +
 
 #@cli point3d : x0,y0,z0
 #@cli : Input 3d point at specified coordinates.
 #@cli : $ repeat 1000 a={$>*pi/500} -point3d {cos(3*$a)},{sin(2*$a)},0 -color3d[-1] ${-RGB} done -add3d
 point3d :
   e[^-1] "Input 3d point ($1,$2,$3)."
-  v - 1,17,1,1,67.5,73.5,109.5,103.5,51.5,100.5,1,1,${1-3},1,0,200,200,200,1 -nm. [3d\ point] v +
+  v - 1,17,1,1,67.5,73.5,109.5,103.5,51.5,100.5,1,1,${1-3},1,0,200,200,200,1 nm. [3d\ point] v +
 
 #@cli pointcloud3d
 #@cli : Convert selected planar or volumetric images to 3d point clouds.
@@ -13389,7 +13389,7 @@ pointcloud3d :
       endif
       endl done
     -+3d
-  -nm $nm endl done v +
+  nm $nm endl done v +
 
 #@cli pose3d : p1,...,p12
 #@cli : Apply 3d pose matrix to selected 3d objects.
@@ -13448,7 +13448,7 @@ pyramid3d :
    3;1;4;0;\
    3;2;4;1;\
    3;3;4;2)
-  1,15,1,1,200 1,5,1,1,1 -a[-3--1] y -nm. [3d\ pyramid]
+  1,15,1,1,200 1,5,1,1,1 -a[-3--1] y nm. [3d\ pyramid]
   v +
 
 #@cli quadrangle3d : x0,y0,z0,x1,y1,z1,x2,y2,z2,x3,y3,z3
@@ -13456,7 +13456,7 @@ pyramid3d :
 #@cli : $ -quadrangle3d -10,-10,10,10,-10,10,10,10,10,-10,10,10 repeat 10 --rotate3d[-1] 0,1,0,30 -color3d[-1] ${-RGB},0.6 done -add3d -mode3d 2
 quadrangle3d :
   e[^-1] "Input 3d quadrangle ($1,$2,$3)-($4,$5,$6)-($7,$8,$9)-($10,$11,$12)."
-  v - 1,29,1,1,67.5,73.5,109.5,103.5,51.5,100.5,4,1,${1-12},4,0,1,2,3,200,200,200,1 -nm. [3d\ quadrangle] v +
+  v - 1,29,1,1,67.5,73.5,109.5,103.5,51.5,100.5,4,1,${1-12},4,0,1,2,3,200,200,200,1 nm. [3d\ quadrangle] v +
 
 #@cli random3d : nb_points>=0
 #@cli : Input random 3d point cloud in [0,1]^3.
@@ -13473,7 +13473,7 @@ random3d : check "$1>=0"
     3,$N,1,1,200 1,$N,1,1,1
     -y -a y
   endl endif
-  -nm. [3d\ random\ pointcloud]
+  nm. [3d\ random\ pointcloud]
   v +
 
 #@cli rv3d : eq. to '-reverse3d'. : (+)
@@ -13495,7 +13495,7 @@ random3d : check "$1>=0"
 #@cli : $ -rotation3d 1,0,0,0 -rotation3d 1,0,0,90 -rotation3d 1,0,0,180
 rotation3d :
   e[^-1] "Input 3d rotation matrix around axis ($1,$2,$3) with angle $4 deg."
-  v - 3,3,1,1,{"rot(${1-4})"} -nm. [3d\ rotation] v +
+  v - 3,3,1,1,{"rot(${1-4})"} nm. [3d\ rotation] v +
 
 #@cli sierpinski3d : _recursion_level>=0,_width,_height
 #@cli : Input 3d Sierpinski pyramid.
@@ -13503,7 +13503,7 @@ rotation3d :
 sierpinski3d : check ${1=4}>=0 skip ${2=1},${3=1}
 -e[^-1] "Input 3d Sierpinski pyramid of degree $1, with width $2 and height $3."
   v - l[] -_sierpinski3d {-$2/2},{-$2/2},{-$3/2},{$2/2},{-$2/2},{-$3/2},{$2/2},{$2/2},{-$3/2},{-$2/2},{$2/2},{-$3/2},0,0,{$3/2},$1 -+3d endl
-  -nm. [3d\ sierpinski] v +
+  nm. [3d\ sierpinski] v +
 
 _sierpinski3d :
   if {$16<=0}
@@ -13687,7 +13687,7 @@ spherical3d : check "${1=64}>=3 && ${2=$1}>=3" skip "${3=abs(1+0.5*cos(3*phi)*si
   1,{3*$nbp},1,1,200 1,$nbp,1,1,1 -a[-2,-1] y
 
   # Append as a 3d object.
-  -a[-5--1] y -nm. "[3d spherical surface '$3']"
+  -a[-5--1] y nm. "[3d spherical surface '$3']"
   v +
 
 #@cli spline3d : x0[%],y0[%],z0[%],u0[%],v0[%],w0[%],x1[%],y1[%],z1[%],u1[%],v1[%],w1[%],_nb_vertices>=2
@@ -13733,7 +13733,7 @@ sprite3d :
     else -/. 255 -i.. (-128;{w};{h};{s}) -y.
     endif
     -a y
-  -nm $nm endl done v +
+  nm $nm endl done v +
 
 #@cli sprites3d : [sprite],_sprite_has_alpha_channel={ 0 | 1 }
 #@cli : Convert selected 3d objects as a sprite cloud.
@@ -13780,7 +13780,7 @@ star3d : check "${1=5}>0 && ${2=0.38}>=0 && $2<=1"
   ({-pi/2};{3*pi/2}) -r. 1,{$N+1},1,1,3 -rows. 0,{h-2} --sin. -cos.. -a[-2,-1] x
   (1,1;$2,$2) -*[-2,-1] -z. 0,2 -r. 3,{h+1},1,1,0
   (3,$N,1,0;3,$N,$N,{$N-1}) -r. 4,$N,1,1,3 -round. -=. 0,2,100%
-  3,$N,1,1,200 1,$N,1,1,1 -y[-6,-4--2] -a[-6--1] y -nm. [3d\ star]
+  3,$N,1,1,200 1,$N,1,1,1 -y[-6,-4--2] -a[-6--1] y nm. [3d\ star]
   v +
 
 #@cli streamline3d : x[%],y[%],z[%],_L>=0,_dl>0,_interpolation,_is_backward={ 0 | 1 },_is_oriented={ 0 | 1 } : 'formula',x,y,z,_L>=0,_dl>0,_interpolation,_is_backward={ 0 | 1 },_is_oriented={ 0 | 1 } : (+)
@@ -13817,7 +13817,7 @@ superformula3d : check "${1=1024}>1 && ${2=8}>=1" skip ${3=1},${4=5},${5=8}
 
   # Define object primitives, colors and opacities.
   1,{$res-1},1,1,2 (0;{$res-2}) -r. 1,{$res-1},1,1,3 --+. 1 -a[-3--1] x -round. 1 -r. 1,{w*h},1,1,-1
-  1,{3*($res-1)},1,1,200 1,{$res-1},1,1,1 -a[-5--1] y -nm. [3d\ superformula]
+  1,{3*($res-1)},1,1,200 1,{$res-1},1,1,1 -a[-5--1] y nm. [3d\ superformula]
   v +
 
 #@cli tensors3d : _radius_factor>=0,_shape={ 0=box | >=N=ellipsoid },_radius_min>=0
@@ -13910,7 +13910,7 @@ text_pointcloud3d : skip ${1="text1"},${2="text2"},${3=1}
   -|[-2,-1]
 
   -b. $3 -isosurface3d. 25%
-  -c3d. -n3d. -nm. "[3d text pointcloud]" v +
+  -c3d. -n3d. nm. "[3d text pointcloud]" v +
 
 #@cli text3d : text,_font_height>0,_depth>0,_smoothness
 #@cli : Input a 3d text object from specified text.
@@ -13919,7 +13919,7 @@ text_pointcloud3d : skip ${1="text1"},${2="text2"},${3=1}
 text3d : skip ${2=53},${3=10},${4=1.5}
   e[^-1] "Input 3d text object '$1' with size $2, depth $3 and smoothness $4."
   v - 0 -t. "$1",0,0,$2,1,1 -autocrop. 0 -r. 100%,100%,$3 -expand_xyz. 10,0
-  -b. $4 -isosurface3d. 40% -rv3d. -nm. "[3d text '$1']" v +
+  -b. $4 -isosurface3d. 40% -rv3d. nm. "[3d text '$1']" v +
 
 #@cli t3d : eq. to '-texturize3d'. : (+)
 
@@ -13955,7 +13955,7 @@ torus3d : check "${3=24}>2 && ${4=12}>2" skip ${1=1},${2=0.3}
 
   # Colors / opacities.
   3,{h},1,1,200 1,{h},1,1,1 -y[-4--2] -a[-5--1] y
-  -nm. [3d\ torus]
+  nm. [3d\ torus]
   v +
 
 #@cli triangle3d : x0,y0,z0,x1,y1,z1,x2,y2,z2
@@ -13963,7 +13963,7 @@ torus3d : check "${3=24}>2 && ${4=12}>2" skip ${1=1},${2=0.3}
 #@cli : $ repeat 100 a={$>*pi/50} -triangle3d 0,0,0,0,0,3,{cos(3*$a)},{sin(2*$a)},0 -color3d[-1] ${-RGB} done -add3d
 triangle3d :
   e[^-1] "Input 3d triangle ($1,$2,$3)-($4,$5,$6)-($7,$8,$9)."
-  v - 1,25,1,1,67.5,73.5,109.5,103.5,51.5,100.5,3,1,${1-9},3,0,1,2,200,200,200,1 -nm. [3d\ triangle] v +
+  v - 1,25,1,1,67.5,73.5,109.5,103.5,51.5,100.5,3,1,${1-9},3,0,1,2,200,200,200,1 nm. [3d\ triangle] v +
 
 #@cli volume3d
 #@cli : Transform selected 3d volumetric images as 3d parallelepipedic objects.
@@ -13989,7 +13989,7 @@ weird3d : skip ${1=32}
     T = 1.61803399;\
     2 - (cos(x + T*y) + cos(x - T*y) + cos(y + T*z) + cos(y - T*z) + cos(z - T*x) + cos(z + T*x))\
     '",0,-4.7,-4.7,-4.7,4.7,4.7,4.7,$1,$1,$1
-  -c3d. -n3d. -nm. [3d\ weird]
+  -c3d. -n3d. nm. [3d\ weird]
   v +
 
 #-------------------------------
@@ -14359,7 +14359,7 @@ array_random : skip ${2=$1},${3=$1},${4=$2}
     -split_tiles $1,$2
     repeat $3 repeat $4 [{u($1*$2-1)}] done done
     -rm[0-{$1*$2-1}] -append_tiles $3,$4
-  -nm $nm endl done v +
+  nm $nm endl done v +
 
 #@cli frame : eq. to '-frame_xy'.
 frame : skip ${2=$1}>=0,${3=255},${4=$3},${5=$4},${6=255}
@@ -14376,7 +14376,7 @@ frame_blur : skip ${1=10},${2=30},${3=0},${4=1},${5=3%}
     100%,100%,1,1,"-(abs(x/w-0.5)^$1 + abs(y/h-0.5)^$1)^(1/$1)" ->=. $2%
     if $4 -distance. 1 -n. 0,1 -*. -1 -+. 1 -^. {1/$4} endif
     -b. $3 --b.. $5 -mv. -3 -blend_fade[0,1] . -rm.
-  -nm $nm endl done v +
+  nm $nm endl done v +
 
 #@cli frame_cube : _depth>=0,_centering_x,_centering_y,_left_side={0=normal | 1=mirror-x | 2=mirror-y | 3=mirror-xy},_right_side,_lower_side,_upper_side
 #@cli : Insert 3d frames in selected images.
@@ -14404,7 +14404,7 @@ frame_cube : check "${1=1}>=0" skip ${2=0},${3=0},${4=0},${5=0},${6=0},${7=0}
       -j3d. ..,50%,50%,0,1,2,0,0 -rm..
       -r $w,$h,1,100%,2
     endif
-  -nm $nm endl done
+  nm $nm endl done
   v +
 
 _frame_cube :
@@ -14508,7 +14508,7 @@ frame_round : skip ${1=10},${2=10},${3=0},${4=0},${5=255},${6=$5},${7=$6},${8=25
     100%,100%,1,1,"-(abs(x/w-0.5)^$1 + abs(y/h-0.5)^$1)^(1/$1)" ->=. $2%
     if $4 -distance. 1 -n. 0,1 -*. -1 -+. 1 -^. {1/$4} endif
     -b. $3 -i... 100%,100%,1,4 -fc... $5,$6,$7,$8 -blend_fade[0,1] . -rm.
-  -nm $nm endl done v +
+  nm $nm endl done v +
 
 #@cli frame_seamless : frame_size>=0,_patch_size>0,_blend_size>=0,_frame_direction={ 0=inner (preserve image size) | 1=outer }
 #@cli : Insert frame in selected images, so that tiling the resulting image makes less visible seams.
@@ -14574,7 +14574,7 @@ _frame :
     h={round($2*if(${-is_percent\ $2},h,1))}
     d={round($3*if(${-is_percent\ $3},d,1))}
     {w+2*$w},{h+2*$h},{d+2*$d},100% -fc[1] ${4--1}
-    -j[1] [0],$w,$h,$d -rm[0] -nm $nm
+    -j[1] [0],$w,$h,$d -rm[0] nm $nm
   endl done v +
 
 #@cli img2ascii : _charset,_analysis_scale>0,_analysis_smoothness[%]>=0,_synthesis_scale>0,_output_ascii_filename
@@ -14744,7 +14744,7 @@ linearize_tiles : check "$1>0 && ${2=$1}>0"
       $wh,1,1,{@0}"*x + "{@1}"*y + "{@2} -rm..
     endl done
     repeat {int($!/$s)} -a[-$s--1] c -mv. 0 done -append_tiles $1,$2
-  -nm $nm endl done v +
+  nm $nm endl done v +
 
 #@cli map_sprites : _nb_sprites>=1,_allow_rotation={ 0=none | 1=90 deg. | 2=180 deg. }
 #@cli : Map set of sprites (defined as the 'nb_sprites' latest images of the selection) to other selected images,
@@ -14851,7 +14851,7 @@ pack : skip ${1=0},${2=max(w,h)}
   # Return offsets.
   status=
   repeat $N if {narg($status)} status=$status,${offsets$>} else status=${offsets$>} endif done
-  -nm $nm -u $status
+  nm $nm -u $status
   v +
 
 #@cli puzzle : _width>0,_height>0,_M>=1,_N>=1,_curvature,_centering,_connectors_variability,_resolution>=1
@@ -14906,7 +14906,7 @@ quadratize_tiles : check "$1>0 && ${2=$1}>0"
       $wh,1,1,{@0}"*x^2 + "{@1}"*y^2 + "{@2}"*x*y +"{@3}"*x + "{@4}"*y + "{@5} -rm..
     endl done
     repeat {int($!/$s)} -a[-$s--1] c -mv. 0 done -append_tiles $1,$2
-  -nm $nm endl done v +
+  nm $nm endl done v +
 
 #@cli rotate_tiles : angle,_M>0,N>0
 #@cli : Apply MxN tiled-rotation effect on selected images.
@@ -14944,7 +14944,7 @@ taquin : check "isint($1) && $1>0 & isint(${2=$1}) && $2>0" skip ${3=0},${4=50},
    repeat $! -mv[$>] {u($!)} done
    if {$3==1} -f[0] 0 elif {$3==2} -f. 0 endif
    -append_tiles $1,$2
- -nm $nm endl done v +
+ nm $nm endl done v +
 
 #@cli tunnel : _level>=0,_factor>0,_centering_x,_centering_y,_opacity,_angle
 #@cli : Apply tunnel effect on selected images.
@@ -15032,7 +15032,7 @@ brushify : check ${"-is_image_arg $1"}" &&"\         # $1: [brush]
     -slices 0 -norm -n 0,1 -threshold 0.1,1 -autocrop.
     repeat $4 --rotate[0] {360*$>/$4} done
     -rm[0] -n 0,1 -threshold 0.1,1 -autocrop -r ${-max_wh},1,1,0,0,0.5,0.5
-    -a z -nm brush
+    -a z nm brush
     wb={w} hb={h} whb={wh} ls={255*$6}
     if {$5==0} --f. 0
     elif {$5==1} --n. -$ls,0
@@ -15040,7 +15040,7 @@ brushify : check ${"-is_image_arg $1"}" &&"\         # $1: [brush]
     elif {$5==3} --g xy -+[-2,-1] -max. 0 -n. 0,$ls
     else --g xy -+[-2,-1] -n. -$ls,$ls
     endif
-    -nm. brushlight
+    nm. brushlight
 
     repeat {$2-1}
       ratio={v=(1+$>)/max(1,$2-1);100*((1-v)+$3*v)}%
@@ -15055,10 +15055,10 @@ brushify : check ${"-is_image_arg $1"}" &&"\         # $1: [brush]
     s={0,s} nm={0,n} to_rgb[0] nm[0] img
 
     # Generate set of random points with orientations.
-    --diffusiontensors[img] $9,$10,$11,$12 -nm. geometry
-    --channels[geometry] 0 -sh[geometry] 2 -+[-2,-1] -^. 0.3 -quantize. $2,0 -*. -1 -+. $2 --. 1 -nm. contours
-    1,{img,max(1,${"-is_percent $8"}?wh*$8:$8)} -rand. 0,{img,w-1} --rand. 0,{img,h-1} -a[-2,-1] c -nm. pts
-    to_rgba[img] -nm. res
+    --diffusiontensors[img] $9,$10,$11,$12 nm. geometry
+    --channels[geometry] 0 -sh[geometry] 2 -+[-2,-1] -^. 0.3 -quantize. $2,0 -*. -1 -+. $2 --. 1 nm. contours
+    1,{img,max(1,${"-is_percent $8"}?wh*$8:$8)} -rand. 0,{img,w-1} --rand. 0,{img,h-1} -a[-2,-1] c nm. pts
+    to_rgba[img] nm. res
 
     # Render filter.
     -f[pts] "*
@@ -15196,7 +15196,7 @@ drop_shadow : check "${3=5}>=0 && ${4=0}>=0 && $4<=1" skip ${1=20},${2=$1},${5=1
     -r. 100%,100%,1,2,0,0,0,0,0,1 -mv. 0 -blend alpha
     --channels. 100% ->=. 1 -* -autocrop 0
     if {!$5} $w,$h,1,$s -j. ..,{arg(1,$coords)},{arg(2,$coords)} -rm.. endif
-    -nm $nm
+    nm $nm
   endl done v +
 
 #@cli ellipsionism : _R>0[%],_r>0[%],_smoothness>=0[%],_opacity,_outline>0,_density>0
@@ -15244,7 +15244,7 @@ fire_edges : check "${1=0.7}>=0 && ${2=0.25}>=0 && $2<=1 && ${3=0.5}>=0 && ${4=2
       -correlate[0] [2]
       if {$>>=$6" && "($>-$6)%($7+1)==0} [0] endif
     done -rm[0-2]
-  -nm $nm endl done
+  nm $nm endl done
   (0,255,255,255,255^0,0,255,255,255^0,0,0,128,255) -r. 256,1,1,3,3
   -map[^-1] . -rm. v +
 
@@ -15277,7 +15277,7 @@ fractalize : check "${1=0.8}>=0 && $1<=1"
     -i[2,3] [0]
     s={0.1*(1-$1)}
     -parallel "-register_nonrigid[1] [0],"$s",5","-register_nonrigid[3] [2],"$s",5","-register_nonrigid[5] [4],"$s",5"
-    -rm[0,2,4] -a c -nm $nm
+    -rm[0,2,4] -a c nm $nm
   endl done v +
 
 #@cli glow : _amplitude>=0
@@ -15321,7 +15321,7 @@ hardsketchbw : skip ${1=300},${2=50},${3=0.1},${4=20},${5=0}
       -g xy -rv -*.. -1 -a c
       if $4 --norm ->=. $4% -* endif
       100%,100%,1,1,255 -quiver. ..,{max(1,10-$2/6)},$1,0,$3 -rm..
-    -nm $nm endl done
+    nm $nm endl done
 
   else # Slower version.
     repeat $! l[$>] nm={0,n}
@@ -15340,7 +15340,7 @@ hardsketchbw : skip ${1=300},${2=50},${3=0.1},${4=20},${5=0}
       1,{h},1,1,2 1,{h},1,1,2*y --+. 1 -a[-3--1] x
       3,{h} 1,{h},1,1,$3 -y[-6--1] -a[-6--1] y
       $w,$h,1,1,255 -j3d. ..,0,0,0,1,1,0,0 -rm..
-    -nm $nm endl done
+    nm $nm endl done
   endif v +
 
 #@cli hearts : _density>=0
@@ -15398,7 +15398,7 @@ houghsketchbw : check "${1=8}>=0 && ${2=5}>=0 && ${3=80}>=0 && $3<=100 && ${4=0.
 
     # Render on a white image.
     $w,$h,1,1,255 -j3d. ..,0,0,0,1,1,0,0 -rm..
-  -nm $nm endl done v +
+  nm $nm endl done v +
 
 #@cli lightrays : 100<=_density<=0,_center_x[%],_center_y[%],_ray_length>=0,_ray_attenuation>=0
 #@cli : Generate ray lights from the edges of selected images.
@@ -15494,7 +15494,7 @@ pixelsort : check "(str1='${1=+}'; str1=='+' || str1=='-') && "\
       elif {'$2'=='yx';}
         -permute yxzc -_pixelsort $order -permute yxzc -_pixelsort $order -channels 1,{s-2}
       endif
-      -nm $nm
+      nm $nm
     endl
   done v +
 
@@ -15599,7 +15599,7 @@ rodilius : check "${1=10}>=0 && $1<=200 && ${2=10}>=0 && $2<=100 && ${3=400}>=0 
     ${-arg\ 1+!$6,brighter,darker}" color mode."
   v - repeat $! l[$>] -split_opacity -rv
     if {!$6} -negate. endif
-    --f. 0 -nm. {-2,n}
+    --f. 0 nm. {-2,n}
     repeat {round($4)}
       angle={$5+$>*180/round($4)}
       --blur_linear.. $1%,{$1*$2/100}%,$angle,1 -b. 0.7 -sharpen. $3 -max[-2,-1]
@@ -15663,7 +15663,7 @@ sketchbw :
   -m3d 0
   repeat $! l[$>]
     -/. {max(iM,im)} -s. c          # Normalize and split tensor coefficients.
-    100%,100%,1,1,255 -nm. {-4,n}   # Create rendering B&W image.
+    100%,100%,1,1,255 nm. {-4,n}   # Create rendering B&W image.
     {$8*w*h/($1*sqrt($4))}          # Create set of random coordinates.
     --rand. 0,{{-2,h}-1} -rand.. 0,{{-3,w}-1} -a[-2,-1] y -mv. 0
     if {0,w>=$_cpus} -s[0] x,$_cpus endif
@@ -17046,7 +17046,7 @@ _median_stream :
       N=0
       -i[hist] {w},$drows,256,{s}
       -do
-        l[] $1 -nm. img -onfail go_on=0 endl
+        l[] $1 nm. img -onfail go_on=0 endl
         if $img
           v + e[] "\r    > Frame ""#"$frame$_N"        " v -
           if {{*}" && "!$>}
@@ -17079,7 +17079,7 @@ _median_stream :
       # Slow method : compute median frame using temporal quicksort.
       l[]
         -do
-          l[] $1 -nm. img -onfail go_on=0 endl
+          l[] $1 nm. img -onfail go_on=0 endl
           if $go_on
             v + e[] "\r    > Frame ""#"$frame$_N"        " v -
             if {{*}" && "!$>}
@@ -17151,7 +17151,7 @@ morph : check "$1>=0 && ${2=0.1}>=0 && ${3=4}>=0"
       --*[3] {1-$t} --warp[1] .,1,1,1 -rm.. -*. $t
       -+[-2,-1]
     endif done
-    -rm[2,3] -mv[2--1] 1 -nm $nm
+    -rm[2,3] -mv[2--1] 1 nm $nm
   endl done v +
 
 #@cli morph_files : "filename_pattern",_nb_inner_frames>0,_smoothness>=0,_precision>=0,_first_frame>=0,_last_frame={ >=0 | -1=last },_frame_step>=1,_output_filename
@@ -17258,11 +17258,11 @@ transition : check ${-is_image_arg\ $1}" && $2>=0 && ${3=0}>=0 && $3<=100" skip 
       val1={($>+0.5)/$2+$3%}
       --f[0] '(i-$val0)/($val1-$val0)' -c. 0,1
       --j[2] [1],0,0,0,0,1,. -rm..
-      -nm. $nm0\ ""#{1+$>}
+      nm. $nm0\ ""#{1+$>}
     endif done else repeat $2 if {$4<0" || "$>==$frame}
       -->=[0] {($>+0.5)/$2}
       --j[2] [1],0,0,0,0,1,. -rm..
-      -nm. $nm0\ ""#{1+$>}
+      nm. $nm0\ ""#{1+$>}
     endif done endif
     -mv[2] $!
   endl done -rm[0] v +
@@ -17371,7 +17371,7 @@ _xpink :
   status=${}
   -file_rm ${x_filename}.pnk
   if {$status!=0" && "['"$1"']!='seuilauto'} v + error "Exec status is "${status}"."
-  elif ${filename}_o.pnk -i ${filename}_o.pnk -file_rm ${x_filename}_o.pnk -k. -nm. $na
+  elif ${filename}_o.pnk -i ${filename}_o.pnk -file_rm ${x_filename}_o.pnk -k. nm. $na
   else v + error "Exec error!!"
   endif
 
@@ -17883,7 +17883,7 @@ file_rm :
   e[^-1] "Remove file '$1'."
   v -
   if ${-is_windows}
-    1 -nm. "$1" dir={/{f}} base={/{b}} ext={/{x}} -rm. com=""
+    1 nm. "$1" dir={/{f}} base={/{b}} ext={/{x}} -rm. com=""
     if {narg($dir)} com="cd \""$dir"\\\" && " endif
     if {narg($ext)} com=${com}"del \""$base.$ext"\"" else com=${com}"del \""$base"\"" endif
     -x $com
@@ -17898,7 +17898,7 @@ filename : skip "${1=default}"
   v -
   if {$#==1} -u "$1"
   else
-  (${2--1}) -nm. "$1" -u {f}{b}
+  (${2--1}) nm. "$1" -u {f}{b}
   repeat {w}
     -u ${}_{int(i/100000)%10}{int(i/10000)%10}{int(i/1000)%10}{int(i/100)%10}{int(i/10)%10}{i%10}
     -shift. -1
@@ -18072,7 +18072,7 @@ _is_3d :
 #@cli is_ext : filename,_extension
 #@cli : Return 1 if specified filename has a given extensioin.
 is_ext : skip "${1=}"
-  v - 0 -nm. "_$1" -u {"lowercase(['"{x}"'])==lowercase(['$2'])"} -rm. v +
+  v - 0 nm. "_$1" -u {"lowercase(['"{x}"'])==lowercase(['$2'])"} -rm. v +
 
 #@cli is_image_arg : string
 #@cli : Return 1 if specified string looks like '[ind]'.
@@ -18096,7 +18096,7 @@ is_percent :
 #@cli is_videofilename
 #@cli : Return 1 if extension of specified filename is typical from video files.
 is_videofilename : skip "${1=}"
-  v - 0 -nm. "_$1" -u {"
+  v - 0 nm. "_$1" -u {"
     ext = lowercase(['"{x}"']);
     ext=='avi' || ext=='mov' || ext=='asf' || ext=='divx' || ext=='flv' || ext=='mpg' ||
     ext=='m1v' || ext=='m2v' || ext=='m4v' || ext=='mjp' || ext=='mp4' || ext=='mkv' ||
@@ -19496,7 +19496,7 @@ _x_colorize :
     endif
   endif
 
-  -nm. img
+  nm. img
 
   fdim=${-fitscreen[]\ $w,$h} ww={arg(1,$fdim)} wh={arg(2,$fdim)} x0=0 y0=0 x1={w-1} y1={h-1}
   selection=-1 view_markers=2 contrast=9 xpan=-1 ypan=-1 replace_color= current_replace_color=
@@ -19504,7 +19504,7 @@ _x_colorize :
   if {narg($_gui_control_points)>=6}  ($_gui_control_points) -r. {w/6},6,1,1,-1 # Import list of control points from plug-in GUI.
   else 0 # Empty list of control points.
   endif
-  -nm. points
+  nm. points
 
   # Compute potential map.
   if {$2>0} if {$w>$h} --r2dx[img] {min($2,$w)},2 else --r2dy[img] {min($2,$h)},2 endif else [img] endif
@@ -19630,7 +19630,7 @@ _x_colorize :
         -watershed.. . -rm. --. 1
       else [potential],[potential],1,3,255
       endif
-      -nm. colors
+      nm. colors
       if {narg($baseview)} -rm[baseview] endif
     endif
 
@@ -19647,8 +19647,8 @@ _x_colorize :
         -+. 1 -permute. xcyz --j[points] .,0,3 -rm..
       else 0 0
       endif
-      -nm.. colors_replaced
-      -nm. points_replaced
+      nm.. colors_replaced
+      nm. points_replaced
       if {narg($baseview)} -rm[baseview] endif
     endif
 
@@ -19664,7 +19664,7 @@ _x_colorize :
       if $1 -*.. -1 -+.. 255 -channels.. -3,0 -blend. ..,alpha -rm..
       else -rgb2ycbcr. -j. ..,0,0,0,0 -rm.. -ycbcr2rgb.
       endif
-      -nm. baseview
+      nm. baseview
       if {narg($view)} -rm[view] endif
     endif
 
@@ -19687,7 +19687,7 @@ _x_colorize :
         -rectangle. 150,8,181,25,1,0 -rectangle. 152,10,179,23,1,$current_replace_color
       endif
 
-      -nm. view
+      nm. view
       -w[view] $ww,$wh,0,$title
     endif
 
@@ -19704,7 +19704,7 @@ _x_colorize :
     --compose_channels[points] max -!=. 0 -distance. 1 -*. 0.02 -+. 1 -^. -1 -+[potential,-1]
     if {!$1} zfact={{img,max(w,h)}/{potential,max(w,h)}} -dilate[points] {int(3*$zfact)} endif
     -watershed[points] [potential] --[points] 1 nm[points] colors
-  else [img],[img],1,3,255 -nm. colors
+  else [img],[img],1,3,255 nm. colors
   endif
 
   if $3 # Multichannels output.
@@ -19715,7 +19715,7 @@ _x_colorize :
     else -rgb2ycbcr[colors] -j[colors] [img],0,0,0,0 -rm[0,img] -ycbcr2rgb[colors]
     endif
   endif
-  -a c -nm $name
+  -a c nm $name
 
   __color=-1   # Force color selectors to close.
   -u $status   # Return control points.
@@ -19730,7 +19730,7 @@ __x_colorize :
     -gradient_norm. -n. 0,255 -normalize_local. 3,3 -*. -1 -n. 0,255
     -b. 0.05% -n. 0,1 -sqr. --b. 0.5% -n[-2,-1] 0,1 -min[-2,-1]
   endif
-  -nm. potential
+  nm. potential
 
 #@cli x_connect4
 #@cli : Launch the Connect Four game.
@@ -19753,7 +19753,7 @@ x_connect4 :
   v - l[]
 
   # Create sprite graphics.
-  7,6 -nm. board
+  7,6 nm. board
   R={board,u={*,u};v={*,v};int(0.5*min(u/w,v/h))}
 
   {2*$R},{2*$R} -circle. 50%,50%,32%,1,1 -b. 2% -g. xy -+[-2,-1] -n. 0,1
@@ -19766,7 +19766,7 @@ x_connect4 :
   100%,100% -circle. 50%,50%,30%,1,255 -a[-3,-2] .,c -rm.
 
   -r2dx[-3--1] $R -s[-3--1] c,-3 -rm...
-  -n[^0] 0,255 -round[^0] -nms[^0] cache,cachem,token0,token1,tokenm
+  -n[^0] 0,255 -round[^0] nms[^0] cache,cachem,token0,token1,tokenm
   --b[cachem] 2% -shift. 1%,1%,0,0,2 -max[cachem,-1]
   -r[cache,cachem] 100%,{board,h*100}%,1,100%,0,2
 
@@ -19799,7 +19799,7 @@ x_connect4 :
         val={board,i($x,$y)} if $val -j. [token{$val-1}],{$x*$R},{$y*$R},0,0,1,[tokenm],255 endif
       done done
       --r[cache,cachem] {board,[w,h]*$R},1,100%,0,2 -a[-2,-1] c -blend[-2,-1] alpha
-      -nm. visu -w[visu] 100%,100%,0,"[G'MIC] Connect Four"
+      nm. visu -w[visu] 100%,100%,0,"[G'MIC] Connect Four"
       turn=0 is_falling=0 x=-1 yv=0 dyv=0 winner=
       autoplayer0=0 autoplayer1=0
     endif
@@ -19816,7 +19816,7 @@ x_connect4 :
       if {$x<0} # Draw game
         if {!narg($text)}
           0 -t. "Draw game",0,0,57,1,1 -r2dx. {tmpvisu,w/2} -expand_xy. 3,0 --dilate. 5 -n.. 0,255 to_rgb..
-          -nms[-2,-1] text,textm
+          nms[-2,-1] text,textm
         endif
         -j[tmpvisu] [text],{tmpvisu,([w,h]-[w#$text,h#$text])/2},0,0,{0.7+0.3*sin(5*$|)},[textm]
       else
@@ -19855,7 +19855,7 @@ x_connect4 :
         repeat {board,w},move1
           yM1={i("#"$ymax,$move1)}
           if {$yM1>=0}
-            --=[board] {1+$turn},$move1,$yM1 -nm. board1
+            --=[board] {1+$turn},$move1,$yM1 nm. board1
             -i[ymax1] {board,w},1,1,1,"y=-1; for (k = 0, k<h#"$board1", ++k, if(!i(#"$board1",x,k),y = k)); y"
             opp_max_score=-inf opp_max_board={board,^}
             opp_turn={($turn+1)%2}
@@ -19882,7 +19882,7 @@ x_connect4 :
       if {!narg($column)}
         $R,{board,h*$R},1,3,64
         repeat {board,h} v={board,i($x,$>)} if $v -j. [token{$v-1}],0,{$>*$R},0,0,1,[tokenm],255 endif done
-        -nm. column
+        nm. column
       endif
 
       yM={i("#"$ymax,$x)}
@@ -20086,14 +20086,14 @@ x_fourier :
     if {h>3*{*,v}/5} -r2dy. {3*{*,v}/5} endif
 
     # Compute fourier transform.
-    --fft. -nm.. real -nm. imag
+    --fft. nm.. real nm. imag
 
     # Generate log-magnitude image.
     --sqr[real,imag] -+[-2,-1] -sqrt. -+. 1 -log.
     -n. 0,255 -shift. {round(w/2)},{round(h/2)},0,0,2 -to_colormode. {-2,s}
-    -nm. logmag
+    nm. logmag
 
-    --r2dy. 128 -frame. 1,1,0 -nm. thumb
+    --r2dy. 128 -frame. 1,1,0 nm. thumb
     -w[0,-2] -1,-1,0,"[G"{`39`}"MIC] Fourier filtering"
 
     -l
@@ -20169,19 +20169,19 @@ x_fourier :
 x_grab_color : skip ${1=xgc_variable}
   if {!{*,u}} error[0--3] "Command '-$0': No display available." -return endif
   if {!$!} error[0--3] "Command '-x_grab_color': Missing specified input image." endif
-  v - l[0] nm={n} -nm. img v +
+  v - l[0] nm={n} nm. img v +
   e[^-1] "Open "${-arg\ {0,s},GRAY,GRAYA,RGB,RGBA}" color grabber widget for image$?, with variable name '$1'."
   v -
 
   if {!{*}} -w[] ${-fitscreen[]\ {w},{h},1,128,50%},0,0,-1,-1,"Grab a color" endif
-  -_x_grab_color --dilate. 3 -nm. icon_mask -*.. 255 to_rgb.. -nm.. icon_sprite
+  -_x_grab_color --dilate. 3 nm. icon_mask -*.. 255 to_rgb.. nm.. icon_sprite
 
   xc=5 yc=5 o$1=$$1
 
   -cursor[0] 0
   -do
     if {!narg($visu0)}
-      --r[img] {*,w},{*,h},1,100%,2 -drgba. -w. -nm. visu0
+      --r[img] {*,w},{*,h},1,100%,2 -drgba. -w. nm. visu0
     endif
 
     x={*,x} y={*,y} b={*,b} mouse_over={$x>=0" && "$y>=0}
@@ -20221,7 +20221,7 @@ x_grab_color : skip ${1=xgc_variable}
     if {['$$1']=='-1'} -break endif # Close request
 
   -while {{*}" && "!{*,ESC}" && "!{*,Q}}
-  -w 0 -k[img] -nm $nm endl
+  -w 0 -k[img] nm $nm endl
   -u $color
   v +
 
@@ -20563,7 +20563,7 @@ x_jawbreaker : check "${1=12}>0 && $1<20 && ${2=13}>0 && $2<20 && ${3=5}>0 && $3
   if {{*}" && "!{*,ESC}}
     -w[] {visu,w},{visu,h},0,"[G"{`39`}"MIC] Jawbreaker (final score : "$score")"
     -i[gameover] 260,85 -t. "Game Over!",3,0,53,1,1 -t. "Score : "$score,23,53,32,1,1
-    --dilate. 5 -nm. "mgameover" -*.. 255 -r.. 100%,100%,1,3
+    --dilate. 5 nm. "mgameover" -*.. 255 -r.. 100%,100%,1,3
     repeat 25
       --r[gameover,mgameover] {400-12*($>+1)}%,{400-12*($>+1)}%
       --j[visu] ..,{({visu,w}-w)/2},{({visu,h}-h)/2},0,0,{$>/25},.
@@ -20607,27 +20607,27 @@ x_landscape :
   W=150 H=350
 
   # Generate global map + colors.
-  900,900 -plasma. 1,1,6 -b. 0.07% -n. 0,255 -nm. map
+  900,900 -plasma. 1,1,6 -b. 0.07% -n. 0,255 nm. map
   --g. -*. 0.5 -+[-2,-1] -n. 0,1 -^. 2 -n. -150,330
   -equalize[map] 256 -n[map] -400,160 -c[map] 0,100% # Add water.
   (0,102,51;149,175,124;102,42,0;255,255,255) -permute. yzcx -srgb2rgb. -r. 256,1,1,3,3 -rgb2srgb. --n[map] 0,255 -map. .. -rm..
-  -+. .. -rm.. -c. 0,255 -nm. colors # Colors.
+  -+. .. -rm.. -c. 0,255 nm. colors # Colors.
 
   # Pre-compute some images used on each frame.
-  $W,$H,1,1,'x' -y. x -nm. x # Increasing x.
-  $W,$H,1,1,'1+x+y*w' -y. x -nm. offsets # Offsets (+1).
-  $W,$H,1,1,'0.5*y' -nm. gmap Mgmap={iM} # Z-increment for altitude map.
-  $W,$H,1,3 -fc. 60,80,135 -nm. ccolors # Color for the horizon.
-  $W,$H,1,1,'(y/$H)^2' -nm. mcolors # Mask for the horizon.
+  $W,$H,1,1,'x' -y. x nm. x # Increasing x.
+  $W,$H,1,1,'1+x+y*w' -y. x nm. offsets # Offsets (+1).
+  $W,$H,1,1,'0.5*y' nm. gmap Mgmap={iM} # Z-increment for altitude map.
+  $W,$H,1,3 -fc. 60,80,135 nm. ccolors # Color for the horizon.
+  $W,$H,1,1,'(y/$H)^2' nm. mcolors # Mask for the horizon.
   $W,400,1,1,'b=h-1-$Mgmap;if(y>=b,256+(y-b)*255/(h-1-b),y*255/b)' -round. # Background.
 
   (96^16^128) (0^200^255) -a[-2,-1] x -r. 256,1,1,3,3
   (0^32^0) (0^64^128) -a[-2,-1] x -r. 256,1,1,3,3
   -a[-2,-1] x -map.. . -rm.
 
-  -nm. background
-  -quadrangle3d[] -0.45,0,0,0.45,0,0,0.55,1,0,-0.55,1,0 -*3d. {$W/2},{$H/2} -nm. viewrange3d # View range.
-  (64^16^0) -r. $W -nm. groundcolor # Ground color.
+  nm. background
+  -quadrangle3d[] -0.45,0,0,0.45,0,0,0.55,1,0,-0.55,1,0 -*3d. {$W/2},{$H/2} nm. viewrange3d # View range.
+  (64^16^0) -r. $W nm. groundcolor # Ground color.
 
   # Start animation.
   -w[] 600,400,0,"[G"{`39`}"MIC] Virtual landscape"
@@ -20643,22 +20643,22 @@ x_landscape :
     --r3d[viewrange3d] 0,0,1,$a -y. x
     ({$xm+i[8]},{$xm+i[11]};{$xm+i[17]},{$xm+i[14]}^{$ym+i[9]},{$ym+i[12]};{$ym+i[18]},{$ym+i[15]}) -rm..
     -r. $W,$H,1,2,3 --warp[map,colors] .,0,1,0 -rm...
-    -nm.. lmap -nm. lcolors
+    nm.. lmap nm. lcolors
 
     # Add color shading and altitude to local maps.
-    --!=[lmap] 0 -nm. ground
+    --!=[lmap] 0 nm. ground
     -+[lmap] [gmap]
     -j[lcolors] [ccolors],0,0,0,0,1,[mcolors]
     -j[lcolors] [groundcolor]
-    --round[lmap] -f. '>m=abs(j(0,-1));i>m?i:-m' -nm. y0  # Compute visible top points.
-    --shift. 0,1 -abs. -+. 1 -nm. y1 # Compute visible bottom points.
+    --round[lmap] -f. '>m=abs(j(0,-1));i>m?i:-m' nm. y0  # Compute visible top points.
+    --shift. 0,1 -abs. -+. 1 nm. y1 # Compute visible bottom points.
     -*[y0,y1] [ground] -rm[ground]
     -r[lcolors,y0,y1] {$W*$H},1,1,100%,-1
 
     # Keep only visible primitives.
     -->[y0] 0 -*. [offsets] -discard. 0
     if {h} # There is something to display (ground).
-      --. 1 --warp[x] .,0,0,0 -nm. lx
+      --. 1 --warp[x] .,0,0,0 nm. lx
       -warp[lcolors,y0,y1] ..,0,0,0 -rm..
 
       # Generate 3d object.
@@ -21090,9 +21090,9 @@ x_minesweeper : check "${1=20}>=8 && $1<=30 && ${2=$1}>=8 && $2<=30"
   v -
   # Generate random mine field and player board.
   # Labels : 0=mine, 1=empty, 2='1-near', 3='2-near', ..., 9='8-near', 10=still unknown.
-  $1,$2 -noise. 30,2 nb_mines={is} (1,1,1;1,0,1;1,1,1) --convolve.. .,0 -rm.. -+. 1 -==.. 0 -*[-2,-1] -nm. field
+  $1,$2 -noise. 30,2 nb_mines={is} (1,1,1;1,0,1;1,1,1) --convolve.. .,0 -rm.. -+. 1 -==.. 0 -*[-2,-1] nm. field
   -do x={round(u(w-1))} y={round(u(h-1))} -while {i($x,$y)!=1} # Find a good starting point.
-  --f[field] 11 -=. 12,$x,$y -nm. board
+  --f[field] 11 -=. 12,$x,$y nm. board
 
   # Generate sprite graphics.
   24,24,1,3,200 -fc. 255,180,130
@@ -21107,13 +21107,13 @@ x_minesweeper : check "${1=20}>=8 && $1<=30 && ${2=$1}>=8 && $2<=30"
   -rv[-2,-1]
   . 100%,100%,1,3 -line. 6,14,10,18,1,0,200,0 -line. 10,18,16,6,1,0,200,0 -dilate. 2
   --channels. 1 -n. 0,0.7 -dilate. 3 -j... ..,0,0,0,0,1,. -rm[-2,-1]
-  -a[-13--1] x -nm. sprites
+  -a[-13--1] x nm. sprites
 
   # Pre-calculate offsets and canvas for faster board rendering.
-  (0,23;0,23^0,0;23,23) -r. 24,24,1,2,3 -r. {board,w*24},{board,h*24},1,2,0,2 -nm. offsets
+  (0,23;0,23^0,0;23,23) -r. 24,24,1,2,3 -r. {board,w*24},{board,h*24},1,2,0,2 nm. offsets
   .,.,1,3,255 -frame. 1,1,0 -frame. 23,23,255
   0 -t. "Number of mines : "$nb_mines,0,0,18,1,100,200,255 -negate. -j.. .,{({-2,w}-w)/2},{{-2,h}-h-2} -rm.
-  -nm. canvas
+  nm. canvas
 
   # Start user interaction loop.
   failed=0 succeeded=0 nb_flags=0 started=0
@@ -21261,31 +21261,31 @@ x_pacman :
   # Initialize characters gfx.
   -m "_pacman_ghost_base_gfx : 31,19 -circle. 15,15,15,1,1 31,12,1,1,'y<4+8*abs(cos(x*0.3+0.25*pi*$""1))' -a[-2,-1] y"
   repeat 4
-    -_pacman_ghost_standard_gfx 255,0,0,$> -nm. ghost0_$>
-    -_pacman_ghost_standard_gfx 0,255,222,$> -nm. ghost1_$>
-    -_pacman_ghost_standard_gfx 255,184,222,$> -nm. ghost2_$>
-    -_pacman_ghost_standard_gfx 255,184,71,$> -nm. ghost3_$>
-    -_pacman_ghost_afraid_gfx $> -nm. ghosta_$>
-    -_pacman_ghost_base_gfx $> -r. 16,16,1,1,2 -nm. ghostm_$>
-    -_pacman_ghost_standard_gfx 0,0,0,$> -nm. ghostd_$>
-    -_pacman_pacman_gfx $> -nm.. pacman_$> -nm. pacmanm_$>
+    -_pacman_ghost_standard_gfx 255,0,0,$> nm. ghost0_$>
+    -_pacman_ghost_standard_gfx 0,255,222,$> nm. ghost1_$>
+    -_pacman_ghost_standard_gfx 255,184,222,$> nm. ghost2_$>
+    -_pacman_ghost_standard_gfx 255,184,71,$> nm. ghost3_$>
+    -_pacman_ghost_afraid_gfx $> nm. ghosta_$>
+    -_pacman_ghost_base_gfx $> -r. 16,16,1,1,2 nm. ghostm_$>
+    -_pacman_ghost_standard_gfx 0,0,0,$> nm. ghostd_$>
+    -_pacman_pacman_gfx $> nm.. pacman_$> nm. pacmanm_$>
   done
-  --channels[ghostd_0] 0 -!=. 0 -nm. ghostdm
-  -_pacman_cherry_gfx -nm. fruit0 -_pacman_strawberry_gfx -nm. fruit1
-  -_pacman_orange_gfx -nm. fruit2 -_pacman_banana_gfx -nm. fruit3
-  20,2,1,3,200 -nm. gate
+  --channels[ghostd_0] 0 -!=. 0 nm. ghostdm
+  -_pacman_cherry_gfx nm. fruit0 -_pacman_strawberry_gfx nm. fruit1
+  -_pacman_orange_gfx nm. fruit2 -_pacman_banana_gfx nm. fruit3
+  20,2,1,3,200 nm. gate
   score0,score1,score2,score3,score4=10,100,1000,5000,"Argh!"
 
   repeat 5
     0 -t. ${score$>},0,0,13,1,255,255,255 -autocrop. 0 -expand_xy. 1,0 --dilate. 3
-    -nm. scorem$> -nm.. score$>
+    nm. scorem$> nm.. score$>
   done
   time4=255,255,255 time3=255,255,32 time2=255,128,32 time1=255,32,32
-  repeat 11 0 -t. $<" s",0,0,23,1,${time{min(4,round(($<+1)/2))}} -nm. time$< done
+  repeat 11 0 -t. $<" s",0,0,23,1,${time{min(4,round(($<+1)/2))}} nm. time$< done
   0 -t. "Get Ready!",0,0,32,1,255 -autocrop. 0 -expand_xy. 4,0 --dilate. 8 -r.. 100%,100%,1,3
-  -nm.. get_ready -nm. get_readym
+  nm.. get_ready nm. get_readym
   0 -t. "Game\nOver!",0,0,53,1,255 -autocrop. 0 -expand_xy. 4,0 --dilate. 8 -r.. 100%,100%,1,3
-  -nm.. game_over -nm. game_overm
+  nm.. game_over nm. game_overm
 
   # Start game.
   score=0 level=-1 lives=3 is_quit=0
@@ -21296,12 +21296,12 @@ x_pacman :
       _rlevel=33 _glevel=33 _blevel=255
       -_pacman_map_level{((-$level-1)%6)+1} mw={w} mh={h} mw2={int(w/2)} mh2={int(h/2)}
       if {$level<-6} -replace. 3,2 endif
-      -nm. map0 -i[map] .
+      nm. map0 -i[map] .
 
       # Precompute valid directions on each map point, and shortest path to the ghost's home.
-      --shift[map] -1,0 --shift[map] 0,-1 --shift[map] 1,0 --shift[map] 0,1 -a[-4--1] z -!=. 1 -nm. can_go
+      --shift[map] -1,0 --shift[map] 0,-1 --shift[map] 1,0 --shift[map] 0,1 -a[-4--1] z -!=. 1 nm. can_go
       --==[map] 1 100%,100% -=. 1,$mw2,$mh2 -distance. 1,..,3 -rm..
-      -f. 'if(i==2,0,if(i==8,1,if(i==1,2,if(i==4,3,i))))' -nm. path
+      -f. 'if(i==2,0,if(i==8,1,if(i==1,2,if(i==4,3,i))))' nm. path
       --==[map] 2 pacdots={is} -rm.
       level={-$level}
     endif
@@ -21316,10 +21316,10 @@ x_pacman :
     -warp. ..,0,0 -rm.. -|[-2,-1] -r. 100%,{h+24},1,3,0,0,0,1
     -t. "Lives :",10,0,24,1,255 -t. "Score :",{w-140},0,24,1,255
     if $lives --r[pacman_2] 12,12,1,4,2 -r. {100*$lives}%,100%,1,4,0,2 -j.. .,90,7 -rm. endif
-    -nm. visu
+    nm. visu
     -w[visu] -1,-1,0,"[G"{`39`}"MIC] Pacman" -cursor[0] 0
     0 -t. "Level "$level,0,0,53,1,1 -autocrop. 0 -expand_xy. 4,0 (0,255^0,255^0,0) --map.. . -rm.. -dilate.. 8
-    -nm. level_N -nm.. levelm_N
+    nm. level_N nm.. levelm_N
 
     repeat 4 xg$>={16*$mw2} yg$>={16*$mh2+4*$>} dg$>=3 mg$>=0 done
     xp={16*10} yp={16*21} dp=-1 pacgum_timer=-1 fruit_timer=$| dying_pacman=0 is_get_ready=1
@@ -21567,7 +21567,7 @@ x_paint :
 _x_paint :
 
   # Init variables.
-  -pass[-2,-1] 1 ({'{-2,n}'}) -discard. {'~'} -nm... {t} -rm.
+  -pass[-2,-1] 1 ({'{-2,n}'}) -discard. {'~'} nm... {t} -rm.
   __color={0,if(ia<128,vector3(255),vector3(0))}
   brushsize=1
   brushopacity=0
@@ -21761,10 +21761,10 @@ x_quantize_rgb : check "isint(${1=16}) && $1>1"
 --------------------------------------------------------------"
   v -
   if {!$!} -sp ? endif
-  -k[0] to_rgb if {h>300} -r2dy 300 -round 1 endif -nm. img  # Resize input image if necessary.
-  --r {w*h},1,1,3,-1 -r. {min(w,8192)},1,1,3 -nm. colors     # Get reduced set of image colors.
-  $1,1,1,3 -rand. 0,255 -round. 1 -nm. centroids          # Initialize random centroids.
-  -_x_quantize_rgb_3d (1,0,0,0;0,1,0,0;0,0,1,0) -nm. pose3d     # Init 3d object.
+  -k[0] to_rgb if {h>300} -r2dy 300 -round 1 endif nm. img  # Resize input image if necessary.
+  --r {w*h},1,1,3,-1 -r. {min(w,8192)},1,1,3 nm. colors     # Get reduced set of image colors.
+  $1,1,1,3 -rand. 0,255 -round. 1 nm. centroids          # Initialize random centroids.
+  -_x_quantize_rgb_3d (1,0,0,0;0,1,0,0;0,0,1,0) nm. pose3d     # Init 3d object.
   -_x_quantize_rgb_text "Colors",clustering0
   -_x_quantize_rgb_text "Clusters",clustering1
   -_x_quantize_rgb_text "Dithering: off",dithering0
@@ -21778,7 +21778,7 @@ x_quantize_rgb : check "isint(${1=16}) && $1>1"
   -rectangle. 310,5,{w-6},305,1,1
   -rectangle. 5,310,{w-6},360,1,2
   300,300,1,1,'(y<<11)+(x<<2)+3' -j.. .,5,5 -rm.
-  -a[-2,-1] c -nm. visu
+  -a[-2,-1] c nm. visu
 
   # Start k-means iterations.
   dithering=0 clustering=0 pause=1 s0=off s1=on
@@ -21796,19 +21796,19 @@ x_quantize_rgb : check "isint(${1=16}) && $1>1"
 
       -pose3d. {pose3d,^} 300,300,1,3 -j3d. ..,50%,50%,100,1,2,0,0,300 -rm..
       -j. [clustering$clustering],2,0,0,0,1,[mclustering$clustering],255
-      -nm. visu_3d -j[visu] [visu_3d],5,5
+      nm. visu_3d -j[visu] [visu_3d],5,5
     endif
 
     if {!narg($visu_img)} # Update indexed image.
       --index[img] [centroids],{0.7*$dithering},1 if {h<300} -r2dy. 300,1 endif
       -j. [dithering$dithering],2,0,0,0,1,[mdithering$dithering],255
-      -nm. visu_img -j[visu] [visu_img],310,5
+      nm. visu_img -j[visu] [visu_img],310,5
     endif
 
     if {!narg($visu_centroids)} # Update colormap.
       --luminance[centroids] -a. [centroids],y -sort. +,x -rows. 1 -r. {visu,w-10},50,1,3
       0 -t. "Colors: "{centroids,w},2,0,16,1,255,255,255 --dilate. 3 -j... ..,2,2,0,0,1,.,255
-      -rm[-2,-1] -nm. visu_centroids -j[visu] [visu_centroids],5,310
+      -rm[-2,-1] nm. visu_centroids -j[visu] [visu_centroids],5,310
     endif
     l[visu]
     -w -1,-1,0,"[G"{`39`}"MIC] RGB quantization"
@@ -21829,13 +21829,13 @@ x_quantize_rgb : check "isint(${1=16}) && $1>1"
     elif {$b&2" && "$i>=3} # Toggle clusters/colors mode.
       clustering={!$clustering} -rm[visu_3d] -wait -1
     elif {*,M} # Init colormap with median-cut.
-      --&[colors] 255 -colormap. {centroids,w},0,0 -rm[centroids] -nm. centroids
+      --&[colors] 255 -colormap. {centroids,w},0,0 -rm[centroids] nm. centroids
       -_x_quantize_rgb_3d -rm[visu_3d,visu_img,visu_centroids] -&[colors] 255 pause=1 -wait -1
     elif {*,R} # Init colormap with random values.
       -rand[centroids] 0,255 -round[centroids] 1
       -_x_quantize_rgb_3d -rm[visu_3d,visu_img,visu_centroids] -&[colors] 255 pause=1 -wait -1
     elif {*,U} # Init colormap with uniform sampling.
-      -uniform_distribution {centroids,w},3 -*. 255 -rm[centroids] -nm. centroids
+      -uniform_distribution {centroids,w},3 -*. 255 -rm[centroids] nm. centroids
       -_x_quantize_rgb_3d -rm[visu_3d,visu_img,visu_centroids] -&[colors] 255 pause=1 -wait -1
     elif {*,ENTER} # Start k-means iterations.
       pause=0
@@ -21848,7 +21848,7 @@ x_quantize_rgb : check "isint(${1=16}) && $1>1"
         n1={sqrt(($u1)^2+($v1)^2)}
         nu1={if($n1>135,$u1*135/$n1,$u1)} nv1={if($n1>135,$v1*135/$n1,$v1)} nw1={sqrt(max(0,18225-($nu1)^2-($nv1)^2))}
         u={$nv0*$nw1-$nw0*$nv1} v={$nw0*$nu1-$nu0*$nw1} w={$nv0*$nu1-$nu0*$nv1} n={sqrt(($u)^2+($v)^2+($w)^2)}
-        -rotation3d[] $u,$v,$w,{-asin($n/18225)*180/pi} -mv[pose3d] $! -m*[-2,-1] -nm. pose3d
+        -rotation3d[] $u,$v,$w,{-asin($n/18225)*180/pi} -mv[pose3d] $! -m*[-2,-1] nm. pose3d
         u0=$u1 v0=$v1 -rm[visu_3d]
       endif
     elif {!($b&1)} u0=
@@ -21863,7 +21863,7 @@ x_quantize_rgb : check "isint(${1=16}) && $1>1"
         -sh[colors] $> --histogram. {centroids,w*256},0,{centroids,w*256-1} -rm..
         -i.. 256,1,1,1,'x' -r.. {w},1,1,1,0,2 -*.. . -r[-2,-1] {centroids,w},1,1,1,2 -max. 0.01 -/[-2,-1]
       done -a[-{colors,s}--1] c
-      -rm[centroids] -nm. centroids
+      -rm[centroids] nm. centroids
 
       # Reassign ununsed centroids.
       -->>[colors] 8 -channels. 0 -histogram. {centroids,w},0,{centroids,w-1}
@@ -21887,11 +21887,11 @@ x_quantize_rgb : check "isint(${1=16}) && $1>1"
   --distribution3d[centroids] -circles3d. 5 -col3d. 255      # Pre-compute 3d object.
   -colorcube3d -p3d. 1
   --&[colors] 255 -distribution3d. -o3d. 0.8 -+3d[-3--1]
-  --3d. 128,128,128 -nm. obj3d _N={i[7]}
+  --3d. 128,128,128 nm. obj3d _N={i[7]}
 
 _x_quantize_rgb_text :
   0 -t. "$1",0,0,16,1,255 -r. {w+2},15,1,1,0,0,0.5,0.5 --dilate. 3 to_rgb..
-  -nm.. $2 -nm. m$2
+  nm.. $2 nm. m$2
 
 #@cli x_reflection3d
 #@cli : Launch the 3d reflection demo.
@@ -22027,12 +22027,12 @@ x_segment : check "${1=1024}==0 || $1>=128"
     name={0,n} title={0,b} if {narg({0,x})} title=$title.{0,x} endif
     w={w} h={h} fdim=${-fitscreen[]\ $w,$h} ww={arg(1,$fdim)} wh={arg(2,$fdim)} x0=0 y0=0 x1={w-1} y1={h-1}
     selection=-1 marker_mode=2 xpan=-1 ypan=-1 bg_mode=0 opacity=64
-    to_rgb -nm img
+    to_rgb nm img
 
     if {narg($_gui_control_points)>=4}  ($_gui_control_points) -r. {w/4},4,1,1,-1 # Import list of control points from plug-in GUI.
     else 0 # Empty list of control points.
     endif
-    -nm. points
+    nm. points
 
     # Compute potential map.
     if {$1>0} if {$w>$h} --r2dx[img] {min($1,$w)},2 else --r2dy[img] {min($1,$h)},2 endif else [img] endif
@@ -22148,7 +22148,7 @@ x_segment : check "${1=1024}==0 || $1>=128"
           -watershed. [potential] --. 1
         else [potential],[potential],1,1,1
         endif
-        -nm. labels
+        nm. labels
         if {narg($baseview)} -rm[baseview] endif
       endif
 
@@ -22165,7 +22165,7 @@ x_segment : check "${1=1024}==0 || $1>=128"
         if {$bg_mode%3>=1} -i.. 100%,100%,1,3,{(($bg_mode-1)%3)*255} -blend[-2,-1] alpha
         else -drgba.
         endif
-        -nm. baseview
+        nm. baseview
         if {narg($view)} -rm[view] endif
       endif
 
@@ -22181,7 +22181,7 @@ x_segment : check "${1=1024}==0 || $1>=128"
           done
         endif
 
-        -nm. view
+        nm. view
         -w[view] $ww,$wh,0,$title
       endif
 
@@ -22199,7 +22199,7 @@ x_segment : check "${1=1024}==0 || $1>=128"
       -*. 255
     else -k[img] [img],[img],1,1,255
     endif
-    -a c -nm $name
+    -a c nm $name
 
   endl done
   -u $status   # Return control points of last image.
@@ -22208,7 +22208,7 @@ x_segment : check "${1=1024}==0 || $1>=128"
 # Compute potential function.
 _x_segment :
   -b. 0.2% -gradient_norm. -f. '1/(1+i^2)'
-  -nm. potential
+  nm. potential
 
 #@cli x_select_color : _variable_name
 #@cli : Display a RGB or RGBA color selector.
@@ -22391,7 +22391,7 @@ x_select_function1d : skip ${1=xsf_variable},${2=220},${3=$2},${4=$2}
         -r. {-2,w-48},3,1,1,3 -permute. xzcy -r. 100%,8 -frame. 1,1,0
         -j.. .,23,{-2,h-19} -rotate. -90 -j.. .,{-2,w-19},23 -rm.
       endif
-      -nm. baseview
+      nm. baseview
       -l -rm[view] -onfail endl
     endif
 
@@ -22425,7 +22425,7 @@ x_select_function1d : skip ${1=xsf_variable},${2=220},${3=$2},${4=$2}
 
       # Draw current coordinates.
       if {$X>=0" && "$Y>=0} -t. "X: "{min(255,round(255*$X/100))}" Y: "{min(255,round(255*$Y/100))},24,6,12,1 endif
-      -nm. view
+      nm. view
       -w[view]
     endif
 
@@ -22486,7 +22486,7 @@ x_select_function1d : skip ${1=xsf_variable},${2=220},${3=$2},${4=$2}
 x_select_palette : skip ${1=xsp_variable},${2=0}
   if {!{*,u}} error[0--3] "Command '-$0': No display available." -return endif
   if {!$!} error[0--3] "Command '-x_select_palette': Missing specified palette image." endif
-  v - -k[0] --r {w*h*d},1,1,{s},-1 -to_color. rgba_mode={s==4} to_rgba. -nm. palette v +
+  v - -k[0] --r {w*h*d},1,1,{s},-1 -to_color. rgba_mode={s==4} to_rgba. nm. palette v +
   e[^-1] "Open "${-arg\ 1+$rgba_mode,RGB,RGBA}" color selector widget for palette$?, with variable name '$1'."
   v -
   if {w>1024} v + error[0--3] "Command 'x_select_color': Too much colors ("{w}") in selected palette." endif
@@ -22522,7 +22522,7 @@ x_select_palette : skip ${1=xsp_variable},${2=0}
       -rv[-2,-1] -*[-2,-1]
       --!=.. -1 -dilate. 3
       -mv... $! -+. 1 -a[-3--1] c
-      -nm. baseview
+      nm. baseview
     endl
     if {narg($view)} -rm[view] endif
     endif
@@ -22546,7 +22546,7 @@ x_select_palette : skip ${1=xsp_variable},${2=0}
         -t... "HTML ""#"{t},8,{$wh-17},14,1,0 -rm.
       endif
       -sh[baseview] 3 -j... ..,8,8,0,0,1,. -rm[-2,-1]
-      -nm. view -w[view]
+      nm. view -w[view]
     endif
 
     if {arg(1,{'$1'})==_'_'" && "arg(2,{'$1'})==_'_'} -wait 50 else -wait endif
@@ -22602,11 +22602,11 @@ x_shadebobs :
       rx={u(-1,1)} ry={u(-1,1)} rz={u(-1,1)} rt={u(-1,1)} rcx={u(-0.6*0.6)} t=0
       N={20+round(u(80))} R={(2+round(u(40)))*min({*,w},{*,h})/300}
       if $obj3d -rm[colormap,img,obj3d] endif
-      {4+round(u(12))},1,1,3 -noise[0] 255,2 -r[0] 256,1,1,3,3 -*[0] 255 -shift[0] 1 -nm. colormap
+      {4+round(u(12))},1,1,3 -noise[0] 255,2 -r[0] 256,1,1,3,3 -*[0] 255 -shift[0] 1 nm. colormap
       (67.5;73.5;109.5;103.5;51.5;100.5;{2*$N};$N) 3,{2*$N},1,1,0
       1,$N,1,1,5 2,$N,1,1,'y+x*$N' -a[-2--1] x -z. 0,5
-      4,$N,1,1,1 -y[-3--1] -a[-4--1] y -nm. obj3d
-      {*,w},{*,h} -nm. img
+      4,$N,1,1,1 -y[-3--1] -a[-4--1] y nm. obj3d
+      {*,w},{*,h} nm. img
       -wait -1
     endif
 
@@ -22648,7 +22648,7 @@ x_spline :
 
   # Init display and variables.
   v -
-  if $! -a x -n 0,255 to_rgb else (0;0^0;128^0;0) -r. 512,512,1,3,3 -nm. "[G"{`39`}"MIC] Spline Editor" endif
+  if $! -a x -n 0,255 to_rgb else (0;0^0;128^0;0) -r. 512,512,1,3,3 nm. "[G"{`39`}"MIC] Spline Editor" endif
   -w[0] {0,w},{0,h},0,0,-1,-1,{n} -r[0] {*,w},{*,h},1,3,1
   -i[1] 1        # Point coordinates
   roundness=0.5  # Curve roundness
@@ -22777,7 +22777,7 @@ x_tetris :
     -i[m44] 3,2,1,1,1,1,1,1,0,1
     -i[m48] 3,3,1,1,1,1,1,1,0,1,1,1,1
   endif
-  repeat $! i={4*$>} l[m$i] repeat 3 --rotate[0] {90*($>+1)} -nm. m{$i+$>+1} done endl done
+  repeat $! i={4*$>} l[m$i] repeat 3 --rotate[0] {90*($>+1)} nm. m{$i+$>+1} done endl done
   N=$!
 
   # Render triomino colored sprites.
@@ -22785,7 +22785,7 @@ x_tetris :
   repeat $N
     --r[m$>] 500%,500%,1,3 --correlate. [mask],0 -r. 200%,200%,1,1,3 -r.. . -*[-2,-1] -c. 30%,100%
     --r[m$>] .,.,1,3 --replace_color. 0,0,1,1,1,{colors,@{3*$>}-{3*$>+2}} -rv[-3,-1] -+[-3,-1] -c.. 0,255
-    -channels. 0 -*. 255 -a[-2,-1] c -nm. s$>
+    -channels. 0 -*. 255 -a[-2,-1] c nm. s$>
   done
   -rm[colors,mask]
   fact={{s0,w}/{m0,w}}
@@ -22793,9 +22793,9 @@ x_tetris :
   # Generate board and background.
   W=12 H=20
   -i[board] $W,$H -i[curr_board] [board]
-  -i[render] {$fact*$W},{$fact*$H},1,3 -i[curr_render] [render] --channels. 0 -nm. curr_render_mask
+  -i[render] {$fact*$W},{$fact*$H},1,3 -i[curr_render] [render] --channels. 0 nm. curr_render_mask
   --rows[render] 0,50% -plasma. 1,2 -noise. 20 -blur_y. 40%,1 --mirror. y -a[-2,-1] y -r. [render]
-  -n. 0,64 -blur_x. 1 100%,100% -noise. 0.5,2 -b. 1 -*. 300 -+[-2,-1] -c. 0,255 -nm. background
+  -n. 0,64 -blur_x. 1 100%,100% -noise. 0.5,2 -b. 1 -*. 300 -+[-2,-1] -c. 0,255 nm. background
 
   # Start game.
   time=$| score=0 fall_mode=0 gameover=0 n=-1 nn={round(u(0,$N-1))}
@@ -22812,8 +22812,8 @@ x_tetris :
     # Check for completed lines and select new random triomino.
     if {$n<0}
       l[board] -s y i=-1 repeat $! if {$<,im} i=$<,$i endif done
-      0 -rm[$i] -a y score+={2^(narg($i)-1)-1} -r $W,$H,1,1,0,0,0,1 -nm board endl
-      if {narg($i)>1} l[render] -s y,$H 0 -rm[$i] -a y -r {$fact*$W},{$fact*$H},1,3,0,0,0,1 -nm render endl endif
+      0 -rm[$i] -a y score+={2^(narg($i)-1)-1} -r $W,$H,1,1,0,0,0,1 nm board endl
+      if {narg($i)>1} l[render] -s y,$H 0 -rm[$i] -a y -r {$fact*$W},{$fact*$H},1,3,0,0,0,1 nm render endl endif
       n=$nn nn={round(u(0,$N-1))} x={$W/2} y=0 do_render=1 fall_mode=0
     endif
 
@@ -22822,7 +22822,7 @@ x_tetris :
       -rm[curr_board,curr_render,curr_render_mask]
       -i[curr_board] [board] -j[curr_board] [m$n],{$x-int({m$n,w}/2)},$y,0,0,1,[m$n]
       -i[curr_render] [render] -sh[s$n] 3 -j[curr_render] [s$n],{$fact*($x-int({m$n,w}/2))},{$fact*$y},0,0,1,.,255 -rm.
-      --*[curr_board] 255 -r. [curr_render],[curr_render] -nm. curr_render_mask
+      --*[curr_board] 255 -r. [curr_render],[curr_render] nm. curr_render_mask
       0 -t. "Score : "$score"    Next :",4,0,32,1,164 -r. 40%,40%,1,3,2 --!=. 0 -*. 255
       -j[curr_render] ..,0,0,0,0,1,.,255 -j[curr_render_mask] .,0,0,0,0,1,.,255 -rm[-2,-1]
       --*[m$nn] 196 -r. 300%,300%,1,3 -j[curr_render,curr_render_mask] .,{{curr_render,w}-w-4},3,0,0,1,.,196 -rm.
@@ -23122,28 +23122,28 @@ gui_layer_pos :
 gui_set_layer_name :
   repeat $! l[$>]
     opacity=${-gui_layer_opacity} mode=${-gui_layer_mode} pos=${-gui_layer_pos}
-    -nm "name($1),mode("$mode"),opacity("$opacity"),pos("$pos")"
+    nm "name($1),mode("$mode"),opacity("$opacity"),pos("$pos")"
   endl done
 
 # Set blending mode of a layer.
 gui_set_layer_mode :
   repeat $! l[$>]
     name=${-gui_layer_name} opacity=${-gui_layer_opacity} pos=${-gui_layer_pos}
-    -nm "name("$name"),mode($1),opacity("$opacity"),pos("$pos")"
+    nm "name("$name"),mode($1),opacity("$opacity"),pos("$pos")"
   endl done
 
 # Set opacity of a layer.
 gui_set_layer_opacity :
   repeat $! l[$>]
     name=${-gui_layer_name} mode=${-gui_layer_mode} pos=${-gui_layer_pos}
-    -nm "name("$name"),mode("$mode"),opacity($1),pos("$pos")"
+    nm "name("$name"),mode("$mode"),opacity($1),pos("$pos")"
   endl done
 
 # Set position of a layer.
 gui_set_layer_pos :
   repeat $! l[$>]
     name=${-gui_layer_name} mode=${-gui_layer_mode} opacity=${-gui_layer_opacity}
-    -nm "name("$name"),mode("$mode"),opacity("$opacity"),pos("{round("$1")},{round("$2")}")"
+    nm "name("$name"),mode("$mode"),opacity("$opacity"),pos("{round("$1")},{round("$2")}")"
   endl done
 
 # Flatten list of input layers according to their blending modes, opacities and positions,
@@ -23317,7 +23317,7 @@ gui_autocrop_layers :
     opacity=${-gui_layer_opacity}
     coords=${-autocrop_coords\ auto}
     -z $coords
-    -nm mode($mode),opacity($opacity),pos({arg(1,$coords)},{arg(2,$coords)}),name($nm)
+    nm mode($mode),opacity($opacity),pos({arg(1,$coords)},{arg(2,$coords)}),name($nm)
   endl done
 
 # Do not forget to ucomment this entry for a deprecated version of the G'MIC plug-in!
@@ -23900,10 +23900,10 @@ _heart80x73 :
 #@gui : url = link{"David Revoy (Deevad)","http://www.davidrevoy.com/"}
 fx_gmicky :
 -rm
-  if {$1==0} -gmicky_deevad -nm "name(Gmicky)"
-  elif {$1==1} -gmicky_mahvin -nm "name(Gmicky)"
-  elif {$1==2} -gmicky_wilber -nm "name(Gmicky & Wilber)"
-  else -roddy -nm "name(Roddy)"
+  if {$1==0} -gmicky_deevad nm "name(Gmicky)"
+  elif {$1==1} -gmicky_mahvin nm "name(Gmicky)"
+  elif {$1==2} -gmicky_wilber nm "name(Gmicky & Wilber)"
+  else -roddy nm "name(Roddy)"
   endif
 
 fx_gmicky_preview :
@@ -24363,7 +24363,7 @@ fx_extract_objects :
       --replace_color $4,0,$color,0,0,0,0 -autocrop_components. $5%,$min_area,$7,2
       repeat {w}
         --z[0] {1,i($>,0)},{1,i($>,1)},{1,i($>,3)},{1,i($>,4)}
-        -nm. pos({1,i($>,0)},{1,i($>,1)}),name($nm" "[$>])
+        nm. pos({1,i($>,0)},{1,i($>,1)}),name($nm" "[$>])
       done -rm[0,1]
     elif {$8==1} # Output: Segmentation.
       -replace_color $4,0,$color,0,0,0,0
@@ -24371,7 +24371,7 @@ fx_extract_objects :
       -autocrop_components[0] $5%,$min_area,$7,1
       repeat {w} nm[$>] pos({i($>,0)},{i($>,1)}),name($nm" "[$>]) done -rm.
     endif
-    $w,$h,1,4 -fc. $color -nm. name($nm" [background]")
+    $w,$h,1,4 -fc. $color nm. name($nm" [background]")
   endl done
 
 fx_extract_objects_preview :
@@ -24554,7 +24554,7 @@ fx_montage : skip "${2=A}"
     "-r {w+2*$5},{h+2*$5},1,100%,0,0,0.5,0.5 "\
     "else -r $""4,$""5,1,100%,2 endif "
   if $15 -gui_autocrop_layers endif
-  -nm pos(0,0),name(Montage)
+  nm pos(0,0),name(Montage)
 
 fx_montage_preview : skip "${2=A}"
   if {!$!} -return endif
@@ -24787,7 +24787,7 @@ fx_bokeh :
     repeat $1
       --rows. $> -_fx_bokeh... {^} -rm.
     done
-    -rm. -nm. name($nm),opacity(100),mode(screen),pos($pos)
+    -rm. nm. name($nm),opacity(100),mode(screen),pos($pos)
     -rv
     if {0$_output_mode==0} -gui_merge_layers
     elif {0$_output_mode<2} -rm.
@@ -25094,16 +25094,16 @@ fx_highlight_bloom_preview :
 #@gui : sep = separator(), note = note("<small>Authors: <i>S&#233;bastien Guyader</i> and <i>David Tschumperl&#233;</i>.      Latest update: <i>2017/05/01</i>.</small>")
 fx_illustration_look :
   repeat $! l[$>] nm=${-gui_layer_name}
-    to_rgb -nm. base_layer
+    to_rgb nm. base_layer
 
     # Create processed layers.
-    --fx_smooth_anisotropic[base_layer] 20,0.16,0.63,0.6,2.35,0.8,30,2,0,1,1,0,1,24 -nm. blur_layer
-    --blend[base_layer,blur_layer] grainextract -nm. detail_layer
+    --fx_smooth_anisotropic[base_layer] 20,0.16,0.63,0.6,2.35,0.8,30,2,0,1,1,0,1,24 nm. blur_layer
+    --blend[base_layer,blur_layer] grainextract nm. detail_layer
     if $2 -rgb2hsv[blur_layer] -sh[blur_layer] 1 --. {$2%} -c. 0,1 -rm. -hsv2rgb[blur_layer] endif
     if $3 --fx_mix_rgb[blur_layer] 1,10,0,1,0,0,0.7,-10,0,0,10,0 -j[blur_layer] .,0,0,0,0,{$3%} -rm. endif
     if $1 --fx_map_tones_fast[blur_layer] 20,0.2,11,0 -j[blur_layer] .,0,0,0,0,{$1%} -rm. endif
     -simplelocalcontrast_p[blur_layer] 25,1,50,1,1,1,1,1,1,1,1,1
-    --fx_graphic_novelfxl[blur_layer] 1,2,6,5,20,0,1.02857,200,0,1,0.0761905,0.0857143,0,0,0,2,1,1,1,1.25714,0.371429,1.04762 -nm. graphicnovel_layer
+    --fx_graphic_novelfxl[blur_layer] 1,2,6,5,20,0,1.02857,200,0,1,0.0761905,0.0857143,0,0,0,2,1,1,1,1.25714,0.371429,1.04762 nm. graphicnovel_layer
 
     # Order and set layer properties.
     -mv[detail_layer] 0 nm[detail_layer] "name("$nm" [Detail]),mode(grainmerge),opacity(100)"
@@ -25111,7 +25111,7 @@ fx_illustration_look :
     -mv[blur_layer] 2 nm[blur_layer] "name("$nm" [Base]),mode(normal),opacity(100)"
     -rm[base_layer]
 
-    if {!$4} -gui_merge_layers -nm "name("$nm"),mode(normal),opacity(100)" endif
+    if {!$4} -gui_merge_layers nm "name("$nm"),mode(normal),opacity(100)" endif
   endl done
 
 fx_illustration_look_preview :
@@ -25148,7 +25148,7 @@ fx_lylejk_painting :
     -blend[-2,-1] grainmerge,1
     -fx_kuwahara. $2,$3,0,0
     -texturize_canvas. $4,4
-    -nm $nm
+    nm $nm
   endl done
 
 fx_lylejk_painting_preview :
@@ -25726,13 +25726,13 @@ fx_charcoal_preview :
 fx_colorize_interactive : skip "${4=},${5=},${6=}"
   N=$! nm={n}
   resolution={arg(1+$3,512,1024,2048,0)}
-  -nm "[G"{`39`}"MIC] Colorize"
+  nm "[G"{`39`}"MIC] Colorize"
   if {$9==-1" || "$8!=w" || "$9!=h} _gui_control_points= else _gui_control_points=${10--1} endif
   N=$!
 
-  arg_palette1=0 l[] 0 -nm. "$4" ext={x} rm if {same(['$ext'],'gpl',-1,0)} -input_gpl "$4" arg_palette1=1 endif -onfail rm endl if $arg_palette1 arg_palette1=[{$!-1}] endif
-  arg_palette2=0 l[] 0 -nm. "$5" ext={x} rm if {same(['$ext'],'gpl',-1,0)} -input_gpl "$5" arg_palette2=1 endif -onfail rm endl if $arg_palette2 arg_palette2=[{$!-1}] endif
-  arg_grabber=0 l[] 0 -nm. "$6" ext={x} rm -input "$6" to_rgb arg_grabber=1 -onfail rm endl if $arg_grabber arg_grabber=[{$!-1}] endif
+  arg_palette1=0 l[] 0 nm. "$4" ext={x} rm if {same(['$ext'],'gpl',-1,0)} -input_gpl "$4" arg_palette1=1 endif -onfail rm endl if $arg_palette1 arg_palette1=[{$!-1}] endif
+  arg_palette2=0 l[] 0 nm. "$5" ext={x} rm if {same(['$ext'],'gpl',-1,0)} -input_gpl "$5" arg_palette2=1 endif -onfail rm endl if $arg_palette2 arg_palette2=[{$!-1}] endif
+  arg_grabber=0 l[] 0 nm. "$6" ext={x} rm -input "$6" to_rgb arg_grabber=1 -onfail rm endl if $arg_grabber arg_grabber=[{$!-1}] endif
 
   repeat $N
     status=${-x_colorize[$>]\ $1,$resolution,$2,$arg_palette1,$arg_palette2,$arg_grabber}
@@ -25747,7 +25747,7 @@ fx_colorize_interactive : skip "${4=},${5=},${6=}"
     endl done
     if {$2>=3} -split_colors[1] 0,256,8 endif # Split colors into layers.
   endif
-  -nm $nm
+  nm $nm
   if {!narg($status)} status=-1 endif
   -u \{$1\}\{$2\}\{$3\}\{"$4"\}\{"$5"\}\{"$6"\}\{0\}\{{w},{h}\}\{$status\}
 
@@ -25860,7 +25860,7 @@ fx_autofill_lineart :
           -scale2x[colors] -r[colors] .,1 -*[colors,-1] -rv[-2,-1]
         endif
 
-        -label_fg. 0,1 -b.. 0.8 -watershed. .. -rm.. -nm. colors
+        -label_fg. 0,1 -b.. 0.8 -watershed. .. -rm.. nm. colors
       done
 
       # Inpaint regions that are too small.
@@ -25955,7 +25955,7 @@ _fx_colorize_lineart_smartcoloring :
     if $is_alpha -channels. 100%
     else -luminance. -negate. endif
     ->. {255*(1-$2%)}
-    -nm. strokes
+    nm. strokes
 
     # Erode strokes (estimate stroke thickness if needed).
     erode_size=$3
@@ -25971,14 +25971,14 @@ _fx_colorize_lineart_smartcoloring :
 
     # Retrieve closed binary shape.
     _keep_keycoords={$-1==0}
-    [strokes] -close_binary. ${9-14},$min_color_area,$16,${17-21} -nm. new_strokes
+    [strokes] -close_binary. ${9-14},$min_color_area,$16,${17-21} nm. new_strokes
 
     if {$-1==0} # Render estimated geometry
       --negate[strokes] -*. 255 to_rgb.
       ---[new_strokes] [strokes] -dilate. 2
       100%,100%,1,3,[0,128,255] -j... .,0,0,0,0,1,.. -rm[-2,-1]
       if {narg($keycoords)} -f[keycoords] ${-math_lib}"draw_circle(#-1,(I)[0,2],3,1,[255,0,0]);I" -rm[keycoords] endif
-      -nm. geometry
+      nm. geometry
     endif
 
     # Label color regions and inpaint strokes.
@@ -26000,7 +26000,7 @@ _fx_colorize_lineart_smartcoloring :
         -srgb2rgb. -guided. [new_strokes],{1+$8/5},0 -rgb2srgb.
       endif
       -rm[new_strokes]
-      -nm. new_colors
+      nm. new_colors
 
     elif {$1==2} # Mode: Clean color layer
       -j[strokes] [new_strokes] -distance[strokes] 0 -*[strokes] -1
@@ -26117,12 +26117,12 @@ fx_colorize_lineart :
         if {$iM>=0}
           --==[1] $iM area={is} -replace[1] $iM,-1
           --r. 100%,100%,1,3 -*. [0]
-          -rv[-2,-1] -*. 255 -a[-2,-1] c -nm. $area
+          -rv[-2,-1] -*. 255 -a[-2,-1] c nm. $area
         endif
       -while {$iM>=0} else  # Split by disconnected regions.
         -label.
         if {$3<10} -%. {$3+1} endif
-        repeat {iM+1} --==[1] $< area={is} --r. 100%,100%,1,[0] -*. [0] -rv[-2,-1] -*. 255 -a[-2,-1] c -nm. $area done
+        repeat {iM+1} --==[1] $< area={is} --r. 100%,100%,1,[0] -*. [0] -rv[-2,-1] -*. 255 -a[-2,-1] c nm. $area done
       endif
       -rm[0,1]
       -sort_list +,n
@@ -26677,10 +26677,10 @@ fx_colormap_preview :
 fx_mask_color :
   cs=rgb,rgb_r,rgb_g,rgb_b,lrgb,lrgb_r,lrgb_g,lrgb_b,ycbcr_y,ycbcr_cbcr,ycbcr_cb,ycbcr_cr,ycbcr_cg,lab,lab_l,lab_ab,lab_a,lab_b,lch,lch_c,lch_h,\
      hsv,hsv_h,hsv_s,hsv_v,hsi,hsi_i,hsl,hsl_l,cmyk_c,cmyk_m,cmyk_y,cmyk_k,yiq_y,yiq_iq
-  repeat $! l[$<] to_rgb nm={n} -nm ${-gui_layer_name}
+  repeat $! l[$<] to_rgb nm={n} nm ${-gui_layer_name}
     --x_mask_color ${-arg\ 1+$1,$cs},$2,$3
     if {$4==1} -channels. 100% endif
-    -nm $nm -rv
+    nm $nm -rv
   endl done
 
 #@gui Curves : fx_curves_interactive, fx_curves_interactive_preview
@@ -26712,7 +26712,7 @@ fx_mask_color :
 #@gui : </small>"}
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>09/28/2014</i>.</small>")
 fx_curves_interactive :
-  -nm "Color curves"
+  nm "Color curves"
   repeat 4 __xcc_C$>=0,0,100,100 done
   if {$4==$1} l[] (${5--1}) -s -,-1 repeat $! __xcc_C$>={$>,^} done rm endl endif
   if $3 _xcc_colorbase=${-arg\ {$4+1},rgb,cmy,cmyk,hsi,hsl,hsv,lab,lch,ycbcr} -x_color_curves last # Apply transformation from previously defined curves.
@@ -26823,7 +26823,7 @@ fx_customize_clut :
   if {$1<100} # Need to compute a weighting map.
     --distance. 1
     if $1 -^. {1/(0.05+4*$1%)} else -f. 0 endif
-    -n. 0,1 -nm. influence -mv. -3
+    -n. 0,1 nm. influence -mv. -3
   endif
   -eq. 0 -inpaint_diffusion.. .,100%,1,20 -rm. -c. 0,255
 
@@ -26910,7 +26910,7 @@ fx_decompose_channels :
       _s3=A _s4=A
       -_fx_decompose_channels$1[0]
       -s[0] c
-      if {!$3} -a x -nm $nm
+      if {!$3} -a x nm $nm
       else nm=${-gui_layer_name} repeat $! -gui_set_layer_name[$>] {``$nm}" ["${_s$>}"]" done
       endif
     endl done
@@ -27615,7 +27615,7 @@ fx_extract_foreground :
   resolution={arg(1+$3,512,1024,2048,0)}
   repeat $! l[$<]
     nm=${-gui_layer_name}
-    -nm "[G"{`39`}"MIC] Interactive foreground extraction"
+    nm "[G"{`39`}"MIC] Interactive foreground extraction"
     if {$7==-1||$5!=w||$6!=h} _gui_control_points= else _gui_control_points=${7--1} endif
     status=${-x_segment\ $resolution}
     -sh 3 -b. $1% if {$2>0} -dilate. {1+2*$2} elif {$2<0} -erode. {1-2*$2} endif
@@ -27994,7 +27994,7 @@ fx_drop_water :
   if {$N<=0} error "At least two layers are required in this mode." endif
 
   repeat $N l[{$!-$>-1}] nm0={n} nm=${-gui_layer_name}
-    -nm img
+    nm img
 
     # Create binary shapes (i.e. opacity map).
     -srand $5
@@ -28013,22 +28013,22 @@ fx_drop_water :
       done
       ->=. 10%
     endif
-    -nm. shape
+    nm. shape
 
     # Create elevation map.
     --b[shape] 1% -n. 0,30
-    -nm. elevation
+    nm. elevation
 
     # Warp image.
-    -g[elevation] xy -a[-2,-1] c -nm. grad
+    -g[elevation] xy -a[-2,-1] c nm. grad
     --*[grad] {grad,$6*max(w,h)/100} -*. [shape] -b. $15%
-    --warp[img] .,1,1,1 -rm.. -nm. refraction
+    --warp[img] .,1,1,1 -rm.. nm. refraction
 
     # Compute specular spots.
     --*[grad] -1 100%,100%,1,1,1 -a[-2,-1] c -orientation.  # 3d normal map.
     a={$7*pi/180} ca={-cos($a)} sa={-sin($a)}
     -mix_channels. ({(1-$10)*$ca},{(1-$10)*$sa},1) -c. {100-$8}%,100% -n. 0,1
-    -*. [shape] -nm. spots
+    -*. [shape] nm. spots
 
     # Compute ambiant light (gradient).
     -mix_channels[grad] ($ca,$sa)
@@ -28037,7 +28037,7 @@ fx_drop_water :
     # Drop shadow.
     --shift[shape] {-$11*$ca}%,{-$11*$sa}%,0,0,1
     --. [shape] ->=. 1 -b. $13% -n. 0,1
-    -nm. shadow
+    nm. shadow
     -b[shape] $14% -n. 0,1  # Add diffuse shadow around each drop.
 
     # Prepare layers for output.
@@ -28057,7 +28057,7 @@ fx_drop_water :
     nm[grad] name($nm" [gradient]"),mode(grainmerge)
 
     -rv
-    if {!$16} -gui_merge_layers -nm $nm0 endif
+    if {!$16} -gui_merge_layers nm $nm0 endif
   endl done
   if $1 -rm[0] endif
 
@@ -28778,7 +28778,7 @@ fx_flip_blocs_preview :
 fx_jpeg_artefacts :
 
   # Input all 8x8 DCT and iDCT kernels.
-  # (Generated with: l[] 8,8,64,1,"y*w+x==z" -s z --ap -idct -a[-64--1] z -ap[^-1] -dct -a[0--2] z -nms idct,dct endl)
+  # (Generated with: l[] 8,8,64,1,"y*w+x==z" -s z --ap -idct -a[-64--1] z -ap[^-1] -dct -a[0--2] z nms idct,dct endl)
   -i[dct] (49,32,102,108,111,97,116,32,108,105,116,116,108,101,95,101,110,100,105,97,110,10,56,32,56,32,54,52,32,49,32,35,50,50,50,50,10,120,156,229,91,61,171,157,69,16,46,180,144,171,86,49,138,90,10,42,216,40,42,8,239,174,226,71,165,40,73,169,224,181,211,63,16,3,54,22,6,155,216,88,90,89,216,8,81,115,170,84,239,44,92,65,193,84,49,98,107,169,32,8,22,130,65,44,174,251,156,60,115,121,239,230,158,121,6,15,183,185,41,134,179,95,103,63,102,118,102,222,249,216,253,253,253,178,127,27,195,199,23,159,170,15,92,184,191,190,254,200,213,178,122,233,94,128,245,178,245,182,214,251,218,73,239,63,87,31,171,63,127,114,177,116,176,94,70,189,161,140,54,244,157,244,126,224,230,114,199,9,112,241,70,199,75,135,245,157,232,109,5,56,58,233,253,228,3,35,148,219,173,78,124,52,226,3,247,161,17,95,117,129,175,19,219,79,62,112,57,96,228,147,74,62,41,39,189,31,50,145,242,176,46,228,101,163,188,180,147,222,143,122,4,188,51,27,1,243,68,64,157,19,129,69,128,189,71,64,25,183,17,120,230,141,112,249,197,243,245,241,239,206,212,231,63,188,187,158,254,243,229,210,193,122,185,245,54,244,225,183,126,255,239,147,245,237,11,127,148,235,15,61,10,176,94,182,222,182,30,131,255,161,239,220,93,159,151,111,254,249,101,234,48,247,242,122,12,230,193,156,248,223,215,189,239,158,95,31,6,204,189,60,99,30,172,5,64,25,109,232,195,24,140,197,127,240,95,204,129,185,48,39,230,198,26,88,11,107,98,109,236,1,123,193,24,204,131,255,161,15,123,198,222,121,134,198,189,24,231,244,190,122,227,198,123,245,213,39,246,74,7,235,229,6,64,25,109,232,123,237,203,87,234,183,191,127,81,58,88,47,55,0,202,104,67,223,153,119,239,168,87,175,188,89,58,88,47,55,0,202,104,67,223,79,159,62,87,158,253,237,179,169,195,220,203,6,64,25,109,232,59,162,126,104,252,56,223,184,222,184,159,113,191,227,121,198,243,2,15,247,117,188,0,79,47,116,28,117,88,227,165,183,21,226,182,254,216,241,138,242,59,29,199,29,208,142,182,66,188,151,175,58,93,128,223,247,59,141,58,172,241,219,219,38,210,164,128,174,192,253,229,62,174,195,4,26,128,206,164,151,161,140,54,244,97,12,198,226,63,164,165,97,46,204,137,185,177,6,214,194,154,164,115,195,94,176,39,236,13,123,196,94,177,103,222,129,134,179,224,76,56,27,206,136,179,226,204,248,15,249,252,224,91,113,172,187,206,240,111,137,177,78,62,119,126,44,99,125,224,241,163,234,155,218,203,130,255,111,153,215,235,155,246,229,245,77,231,242,58,233,221,72,111,199,151,17,95,141,244,110,164,119,37,190,141,248,118,122,55,210,219,233,53,147,94,70,122,27,233,93,72,239,153,244,158,73,239,66,122,251,125,153,120,95,38,210,187,146,222,198,251,54,241,190,57,189,43,233,237,247,181,240,190,22,210,187,146,222,126,223,11,239,123,37,95,52,242,133,145,47,42,249,166,144,175,26,249,202,200,87,149,124,87,200,151,141,124,105,228,203,74,190,45,228,107,35,95,207,228,107,231,251,233,136,250,161,241,227,124,227,122,227,126,198,253,142,231,25,207,235,50,214,101,37,245,65,163,62,112,121,122,192,75,212,7,141,250,192,40,143,141,242,216,245,129,81,31,184,60,159,41,207,141,250,192,168,15,102,234,131,137,250,160,248,154,212,7,174,79,10,245,73,165,62,40,212,7,19,245,81,161,62,114,125,80,93,246,80,159,85,234,51,215,7,213,117,147,219,72,155,192,191,161,2,176,8,220,230,250,191,160,230,87,251,83,231,115,29,231,186,202,117,206,66,119,148,189,126,167,126,224,93,198,157,236,101,219,227,221,2,160,140,54,215,99,24,139,255,248,93,195,92,152,211,239,53,214,194,154,126,47,163,126,53,191,218,159,58,223,7,31,189,85,255,186,243,74,233,96,189,140,122,67,25,109,222,247,224,223,167,1,198,118,67,25,109,254,191,161,126,104,252,56,159,90,111,236,87,243,171,253,169,245,128,155,235,29,39,192,197,217,142,151,14,107,188,247,182,181,28,1,110,159,233,56,5,46,253,59,4,56,239,109,19,112,12,64,25,109,254,93,130,177,248,207,30,101,17,230,194,156,152,27,107,96,45,172,233,114,43,234,87,243,171,253,169,243,185,45,228,54,210,88,31,120,124,228,249,18,180,47,125,46,183,204,155,173,171,249,213,254,212,58,196,71,35,62,156,30,70,122,52,226,211,136,207,66,122,204,164,135,145,30,133,244,48,210,99,34,61,10,233,89,73,207,70,122,20,210,163,170,126,53,191,218,159,58,31,249,192,229,128,243,108,37,159,20,242,145,243,153,145,207,156,239,203,17,245,67,227,199,249,212,122,99,191,154,95,237,79,173,71,121,219,40,111,27,229,101,163,188,52,202,91,163,188,53,202,91,163,188,157,41,111,11,229,109,161,188,46,148,215,19,229,109,165,188,117,121,95,41,239,139,234,87,243,171,253,169,243,41,251,30,190,162,8,148,125,77,31,84,4,37,2,229,159,128,95,43,2,229,31,80,246,253,41,218,231,151,250,119,216,78,255,86,235,48,93,162,125,222,251,202,42,176,175,87,180,33,118,111,218,9,7,246,31,190,219,119,111,126,155,175,109,50,148,209,230,246,31,198,226,63,248,239,42,240,79,96,237,83,244,47,96,79,216,27,246,120,137,254,133,83,252,230,143,252,3,212,49,101,111,97,223,187,156,65,223,181,126,71,158,238,247,168,195,212,203,5,128,50,218,174,81,175,68,246,245,217,133,253,78,121,119,96,191,187,62,26,234,135,198,43,255,196,184,159,113,191,227,121,198,243,46,237,123,224,124,119,176,239,129,51,224,21,120,6,142,129,91,224,117,135,246,185,219,215,171,133,125,189,90,216,215,152,19,223,247,232,59,223,105,220,97,77,87,124,223,99,45,0,202,104,67,31,198,96,44,254,179,75,219,14,115,173,22,254,137,213,194,63,129,61,96,47,216,19,246,134,61,98,175,59,244,47,44,253,3,92,239,144,127,64,217,247,228,115,231,39,27,235,202,190,30,120,124,228,121,11,218,109,193,255,27,237,248,77,251,242,186,242,15,236,6,246,61,112,69,122,151,157,133,125,206,251,128,190,201,121,116,180,175,73,175,74,122,87,210,219,72,239,137,244,46,164,119,35,189,11,239,203,188,252,239,234,8,255,132,203,22,210,219,118,22,254,5,222,7,220,215,121,55,240,15,96,189,189,133,189,236,223,179,254,157,128,62,242,85,33,95,77,228,43,35,223,205,202,190,246,111,144,179,11,251,125,193,247,118,68,253,208,120,229,159,24,247,51,238,119,60,207,120,94,101,223,83,158,78,148,167,133,250,160,80,31,76,75,251,26,52,89,13,246,53,229,121,161,60,119,125,80,220,55,228,62,30,234,131,70,125,96,212,7,243,210,63,129,185,87,131,127,130,250,104,166,62,50,234,3,163,62,152,149,127,32,17,35,183,45,97,219,24,253,177,174,159,136,159,55,198,75,14,124,147,24,203,120,74,77,244,111,27,191,63,214,245,19,241,243,109,227,237,219,198,239,143,117,253,68,252,124,29,59,101,188,116,173,155,24,79,245,111,103,213,191,109,252,254,88,215,79,196,203,183,141,179,111,27,175,63,214,245,19,241,115,35,190,108,65,175,66,124,150,68,255,182,241,251,99,93,63,17,63,223,54,222,190,109,252,254,88,215,79,196,207,141,242,212,191,63,61,238,101,11,121,26,245,111,27,191,63,214,245,19,246,119,28,63,215,246,183,202,33,8,237,243,132,255,33,244,15,40,255,67,194,254,14,237,251,132,253,29,250,23,148,125,158,240,63,132,254,1,229,127,72,216,223,161,125,159,176,191,67,255,130,178,207,19,254,135,208,63,160,252,15,9,251,59,180,239,19,246,119,232,95,80,246,121,194,255,16,250,7,148,255,33,97,127,135,246,125,194,254,14,253,11,202,62,79,248,31,66,255,128,242,63,36,236,239,208,190,79,216,223,161,127,65,217,231,9,255,67,232,31,80,254,135,132,253,29,218,247,9,251,59,244,47,40,251,60,225,127,8,253,3,202,255,144,176,191,67,251,62,97,127,135,254,5,101,159,39,252,15,161,127,64,249,31,18,241,115,21,163,87,249,3,42,126,175,242,7,194,249,213,254,212,249,18,241,115,21,191,87,249,3,42,126,175,242,7,194,249,19,249,3,225,249,18,241,115,21,191,87,249,3,42,126,175,242,7,84,190,128,202,31,8,215,75,196,207,85,252,94,229,15,168,248,189,202,31,8,231,79,228,15,132,231,75,196,207,85,188,94,229,15,168,248,189,202,31,80,121,2,42,127,32,92,39,17,63,87,241,123,149,63,160,226,247,42,127,32,156,63,145,63,16,158,47,17,63,87,241,123,149,63,160,226,247,42,127,64,229,11,168,252,129,112,189,68,252,92,197,239,85,254,128,138,223,171,252,129,112,254,68,254,64,120,62,149,159,159,200,191,15,237,123,229,63,80,246,187,242,15,36,222,31,132,239,11,84,126,126,34,255,62,180,239,85,254,125,226,253,65,232,31,72,188,63,8,223,23,168,252,252,68,254,125,248,62,64,249,15,18,239,15,194,252,254,196,251,131,240,125,129,202,207,79,228,223,135,239,3,84,254,125,226,253,65,152,223,159,120,127,16,190,47,80,249,249,137,252,251,208,190,87,254,3,101,191,43,255,64,226,253,65,248,190,64,229,231,39,242,239,195,247,1,42,255,62,241,254,32,204,239,79,188,63,8,223,23,168,252,252,68,254,125,248,62,64,249,15,18,239,15,194,252,254,196,251,131,240,125,129,202,207,79,228,223,135,246,189,202,191,79,188,63,8,253,3,137,247,7,225,251,130,255,0,98,26,54,226)
 
   -i[idct] (49,32,102,108,111,97,116,32,108,105,116,116,108,101,95,101,110,100,105,97,110,10,56,32,56,32,54,52,32,49,32,35,50,57,49,55,10,120,156,141,91,49,143,38,197,17,93,9,7,136,131,200,119,88,134,16,9,35,57,193,2,36,146,233,150,193,145,189,216,75,136,37,28,226,63,224,67,114,66,224,211,58,192,9,33,17,129,19,35,251,118,47,186,112,170,57,201,150,56,39,222,67,155,18,130,132,132,68,96,201,103,228,224,232,215,243,170,93,223,74,83,85,217,205,125,251,77,207,171,170,169,87,245,170,190,163,163,163,122,250,254,79,234,239,150,31,213,31,220,122,186,30,245,235,95,61,119,191,92,254,233,253,114,231,181,167,10,62,59,255,233,187,245,225,195,223,214,23,254,126,50,254,182,190,119,173,254,252,199,159,148,27,223,188,94,240,61,124,246,251,63,252,186,254,226,47,63,27,247,121,243,157,199,234,191,191,119,183,124,246,193,171,5,247,196,247,240,217,63,254,247,226,56,227,55,183,190,46,159,124,245,231,242,224,153,231,203,163,71,143,138,61,31,215,191,52,231,227,223,56,15,247,196,247,112,253,238,227,31,149,251,119,223,42,231,223,126,190,224,239,240,44,56,15,247,196,53,62,251,225,127,110,148,87,190,252,112,193,61,240,156,120,22,156,135,107,124,15,159,61,249,197,179,11,240,226,92,124,239,252,181,167,164,95,183,254,60,173,63,79,123,227,185,251,130,103,195,243,227,140,239,127,243,58,174,91,183,71,235,152,91,121,239,26,254,110,96,195,249,15,62,120,85,240,61,124,214,237,209,78,222,121,172,225,222,192,141,103,251,215,51,207,75,191,110,253,126,173,127,167,189,125,235,107,1,94,61,255,172,159,223,175,197,158,15,188,192,13,76,127,251,246,243,181,95,75,183,71,235,246,104,55,31,255,72,240,61,220,27,120,95,250,242,195,181,95,75,127,86,233,207,35,159,222,125,75,128,23,184,129,247,218,23,207,174,253,90,186,61,164,219,67,110,247,251,1,255,27,155,189,199,185,192,223,237,80,212,31,192,95,54,127,11,112,227,111,186,29,138,198,3,254,238,100,243,183,0,55,158,187,219,161,104,60,224,30,111,111,254,22,224,6,254,110,135,162,241,0,252,246,124,224,63,51,231,3,255,205,205,223,3,55,240,119,59,44,26,15,192,255,233,230,239,129,27,247,233,118,88,52,30,128,255,246,230,239,21,184,129,191,219,97,209,120,0,254,59,219,121,173,199,189,152,120,24,207,3,252,55,54,188,13,231,155,120,24,246,192,115,126,182,225,29,62,49,241,48,236,129,123,61,216,240,182,254,188,98,226,97,216,3,248,245,124,96,51,241,48,206,7,254,243,13,111,235,113,111,227,97,216,3,248,95,217,240,10,254,207,196,195,176,7,238,253,228,134,87,250,125,86,19,15,195,30,196,47,196,95,136,191,241,252,74,252,66,252,149,248,27,241,87,226,23,226,175,196,223,136,191,18,191,16,127,33,254,70,252,149,248,133,248,11,241,207,243,137,127,37,254,66,252,66,252,149,248,87,226,47,196,47,196,95,136,127,37,254,133,248,133,248,11,227,95,244,60,198,191,48,254,26,227,127,226,101,252,11,227,191,49,254,39,94,198,191,48,254,27,227,95,20,47,227,95,24,255,141,241,63,207,103,252,207,243,25,255,19,47,227,127,101,252,11,227,127,226,101,252,175,140,127,97,252,175,138,151,241,191,50,254,197,248,27,249,175,48,255,85,230,159,98,252,141,252,87,152,255,42,243,159,245,55,242,95,97,254,171,204,127,213,248,27,249,175,48,255,85,230,63,235,111,228,191,194,252,55,207,55,254,70,254,91,152,255,42,243,159,245,55,242,223,194,252,87,152,255,138,241,55,242,223,194,252,87,152,255,70,254,103,190,29,118,32,255,9,249,71,200,127,77,253,77,254,107,228,63,33,255,53,245,55,249,175,145,255,132,252,215,212,223,228,63,33,255,9,249,111,158,79,254,155,231,147,255,154,250,155,252,39,228,191,149,252,39,234,111,242,159,144,255,86,242,159,168,191,201,127,43,249,111,61,10,248,95,249,251,248,10,127,223,35,127,71,252,139,119,233,58,249,230,162,159,143,235,191,246,243,95,238,207,134,243,45,223,17,191,16,255,200,213,127,236,159,221,233,246,255,111,183,49,236,136,107,218,95,104,255,201,183,180,127,163,253,199,153,184,23,222,95,188,163,180,159,192,126,255,236,54,58,35,255,121,252,175,249,26,120,47,12,127,31,147,191,35,254,197,61,241,61,224,125,162,199,31,222,177,235,172,71,62,238,241,7,188,154,239,24,255,179,30,66,252,3,175,230,91,124,175,95,215,110,143,218,237,81,249,254,53,205,183,124,255,102,61,134,247,15,120,129,27,120,111,111,239,79,193,247,240,25,222,159,136,255,149,191,239,25,254,238,120,138,198,67,196,191,192,255,241,230,239,5,207,143,123,63,193,124,124,177,197,191,48,255,21,230,191,194,252,55,206,2,126,230,223,2,220,192,143,120,210,120,192,223,49,255,22,230,223,202,252,59,236,2,252,55,55,127,15,220,192,143,124,168,241,16,241,191,242,247,241,21,254,86,123,68,252,11,252,228,159,210,227,126,49,241,48,236,1,252,228,191,74,254,211,120,24,246,0,254,27,27,222,81,119,155,120,24,246,192,115,147,127,43,249,87,227,97,216,3,248,207,54,188,149,252,169,241,48,236,17,241,191,242,247,241,21,254,38,254,144,127,137,127,33,254,149,248,11,241,11,241,23,226,23,226,175,196,223,136,191,16,127,35,254,74,252,141,248,11,241,55,226,175,196,223,136,127,33,126,33,254,66,252,45,226,127,229,239,123,134,191,47,54,123,12,59,68,252,203,248,95,20,47,227,127,97,252,23,198,127,81,188,140,255,194,248,175,140,255,137,151,241,95,24,255,149,241,63,241,50,254,11,227,191,50,254,39,94,198,255,194,248,47,17,255,27,127,35,255,77,254,102,254,11,249,215,248,27,249,111,101,254,19,230,191,213,248,91,216,255,76,62,132,95,140,191,7,143,48,255,53,230,63,235,111,97,255,53,249,24,24,141,191,71,191,195,252,215,152,255,36,226,127,229,239,227,43,252,77,254,147,136,127,201,127,69,253,77,254,91,200,127,139,173,119,216,255,10,251,223,241,94,144,255,170,250,155,252,87,201,127,7,245,22,251,239,198,254,123,216,152,252,87,213,223,228,191,66,254,91,34,254,183,124,97,251,111,196,211,217,214,127,79,190,35,126,33,254,81,99,71,252,29,241,191,229,75,218,175,208,126,163,127,207,234,15,123,245,75,196,255,218,111,1,47,227,103,214,19,236,191,69,243,29,227,127,214,67,136,255,136,191,35,254,7,94,205,151,124,127,102,61,133,247,39,171,63,236,213,47,17,255,107,255,141,120,97,254,16,230,15,237,191,133,249,175,48,255,21,230,191,97,151,136,191,35,254,199,179,48,127,174,204,159,194,252,57,236,146,213,31,246,234,151,136,255,129,159,252,113,208,127,171,61,240,119,228,191,66,254,211,120,24,246,136,248,59,226,255,115,211,191,147,63,53,30,134,61,178,250,195,94,253,18,241,63,241,175,39,87,250,111,226,175,196,191,16,191,190,15,133,248,37,226,239,136,255,207,77,255,206,250,169,104,61,125,157,250,99,70,127,216,171,95,34,254,215,254,91,241,50,254,215,147,255,247,223,194,250,183,176,254,45,172,127,135,29,34,254,142,248,159,241,191,42,94,198,255,202,248,151,172,254,176,87,191,68,252,111,252,93,216,63,76,62,97,255,173,254,22,246,63,147,15,145,23,34,254,142,248,223,248,123,97,255,52,249,20,121,33,171,63,236,213,47,17,255,219,122,193,246,223,228,63,237,247,138,250,155,252,87,200,127,75,196,223,17,255,219,122,137,253,115,97,255,60,250,247,172,254,176,87,191,68,252,31,233,231,153,254,91,245,106,219,127,35,87,156,111,245,159,171,255,71,243,131,168,254,176,122,61,245,155,131,250,35,226,255,72,63,207,246,223,120,38,234,87,115,158,129,247,39,210,255,163,249,65,84,127,156,154,250,131,250,221,156,231,104,255,231,241,127,164,159,103,251,111,188,19,212,47,11,245,203,17,15,145,254,31,205,15,162,250,227,212,212,31,212,111,43,245,219,102,248,111,151,255,35,253,60,211,127,83,191,62,232,191,213,30,145,254,31,205,15,162,250,227,148,245,199,67,214,31,38,30,134,61,34,254,143,244,243,76,255,205,249,197,65,255,77,252,58,255,216,213,255,163,249,65,84,127,16,127,33,254,118,106,234,15,228,133,136,255,35,253,60,219,127,43,94,198,255,194,248,47,145,254,31,205,15,162,250,227,212,212,31,156,223,85,206,239,154,214,63,30,255,71,250,121,182,255,102,254,91,173,158,141,188,16,233,255,209,252,32,170,63,140,191,133,243,219,169,231,171,254,227,241,127,164,159,103,250,111,157,87,216,254,155,252,183,68,250,127,52,63,136,234,15,59,175,225,252,254,160,254,72,240,255,228,59,226,23,226,95,13,126,143,255,221,249,125,130,255,39,223,17,127,35,126,49,248,61,254,119,247,23,18,252,47,154,239,24,255,179,30,50,241,239,241,191,59,191,79,240,127,211,124,199,248,159,245,144,137,127,143,255,221,253,133,4,255,11,243,223,194,252,87,152,255,196,228,63,143,255,221,249,125,130,255,27,243,95,97,254,171,204,127,205,228,63,143,255,221,253,133,4,255,79,253,158,252,167,241,176,24,254,243,248,223,157,223,39,248,191,145,255,42,249,79,227,161,24,254,243,248,223,221,95,72,240,255,212,239,89,255,136,214,195,166,254,241,248,223,157,223,39,248,191,177,254,169,172,127,154,214,195,166,254,241,248,223,221,95,72,240,191,176,254,93,88,255,22,214,191,98,234,95,143,255,221,249,125,130,255,27,235,223,194,250,183,178,254,109,166,254,245,248,223,221,95,72,240,191,250,123,101,255,51,249,208,244,63,30,255,187,243,251,4,255,171,191,133,253,207,228,67,211,255,120,252,239,238,47,36,248,127,214,59,236,127,133,253,239,106,250,95,143,255,221,249,125,130,255,103,189,195,254,183,177,255,21,211,255,122,252,239,238,47,36,244,127,119,126,158,208,255,167,222,77,253,227,128,127,19,250,191,187,63,144,208,255,167,222,109,235,135,123,172,31,18,250,191,59,63,79,232,255,147,127,169,127,205,121,136,209,191,60,253,223,221,31,72,232,255,77,245,206,11,83,63,28,179,126,72,232,255,238,252,60,161,255,79,254,165,254,217,168,127,86,163,127,122,250,191,187,63,144,208,255,27,245,207,89,63,80,255,108,170,127,6,250,191,59,63,79,232,255,149,250,119,163,254,61,249,215,232,223,158,254,239,238,15,36,244,255,70,253,251,160,126,80,123,36,244,127,119,126,158,208,255,43,231,31,141,243,143,201,191,102,254,225,233,255,238,254,64,66,255,111,156,127,28,212,15,196,31,246,255,209,252,60,161,255,79,254,229,252,171,113,254,85,205,252,203,211,255,221,253,129,132,254,223,56,255,154,245,3,231,95,77,231,95,129,254,239,206,207,19,250,255,228,95,206,63,167,30,110,230,159,158,254,239,238,15,36,244,127,245,183,92,152,250,129,249,47,156,255,71,243,243,132,254,63,231,29,156,127,31,240,111,66,255,119,247,7,18,250,255,156,119,216,250,129,252,23,246,255,17,127,90,190,219,217,255,115,231,247,137,253,63,183,126,200,232,15,222,254,66,98,255,207,229,207,203,120,255,207,157,223,39,246,255,220,250,33,171,63,236,237,47,36,246,255,92,254,188,140,247,255,220,249,125,98,255,207,173,31,178,250,195,222,254,66,98,255,207,229,207,203,120,255,207,157,223,39,246,255,220,250,33,163,63,120,251,11,137,253,63,151,63,47,227,253,63,119,126,159,216,255,115,235,135,140,254,224,237,47,36,246,255,92,254,188,140,247,255,220,249,125,98,255,207,173,31,178,250,195,222,254,66,98,255,207,229,79,227,239,189,253,63,119,126,159,216,255,115,235,135,172,254,176,183,191,144,216,255,115,249,211,214,59,59,251,127,238,252,62,177,255,231,214,15,25,253,193,219,95,136,248,63,154,159,103,251,239,61,253,62,210,255,163,253,129,168,254,136,230,23,137,223,255,185,243,243,108,255,189,167,223,71,250,127,180,63,16,213,31,209,252,34,241,251,63,119,126,158,237,191,247,244,251,72,255,143,246,7,162,250,35,154,95,36,126,255,231,206,207,179,253,247,158,126,31,233,255,209,254,64,84,127,68,243,139,196,239,255,220,249,121,182,255,222,211,239,35,253,63,218,31,136,234,143,104,126,145,248,253,159,59,63,207,246,223,123,250,125,164,255,71,251,3,81,253,17,205,47,18,191,255,115,231,231,217,254,123,79,191,143,244,255,104,127,32,170,63,162,249,69,226,247,127,238,252,60,219,127,239,233,247,145,254,31,237,15,68,245,71,52,191,248,14,4,221,218,4)
@@ -28969,7 +28969,7 @@ fx_rain :
       -->= 40% -blend shapeaverage0
       -blur_linear $2,$4,$1
       -max -n 0,255 -apply_gamma $5
-      -nm name($nm),mode(screen),opacity({$6*100})
+      nm name($nm),mode(screen),opacity({$6*100})
     endl
     -rv
   endl done
@@ -29390,7 +29390,7 @@ fx_split_details_wavelets :
     -split_details $1,0,0 -rv -+[^-1] 128 -c[^-1] 0,255 -round
     if $2 -to_a[^-1] endif
     repeat {$!-1} nm[$>] "mode(grainmerge), name"($nm" [scale ""#"{1+$>}"]), pos("$pos")" done
-    -nm. "name"($nm" [residual]), pos("$pos")"
+    nm. "name"($nm" [residual]), pos("$pos")"
   endl done
 
 fx_split_details_wavelets_preview :
@@ -29835,7 +29835,7 @@ fx_emulate_film_userdefined : skip "${2=}"
     ind={if($1,-1,0)} -map_clut[^$ind] [$ind] -rm[$ind]
   else
     -l
-      0 -nm. "$2" ext={x} -rm.
+      0 nm. "$2" ext={x} -rm.
       if {['$ext']=='cube'} -input_cube "$2"
       else -input "$2"
       endif
@@ -30580,7 +30580,7 @@ fx_split_colors : skip ${2=0}
     nm=${-gui_layer_name}
     min_area={max(1,w*h*$3%)}
     -split_colors $1,$2,$min_area
-    -nm name($nm)
+    nm name($nm)
     if $4 -gui_autocrop_layers endif
   endl done
 
@@ -30708,7 +30708,7 @@ fx_pack : skip "${5=}"
       ({'"Image ""#"{1+$>}" ("${nm$>}"): "$x,$y\n'})
     done -a x -o raw:$filename,uchar rm endl
   endif
-  -nm "name(G'MIC packing),pos(0,0),mode(normal)"
+  nm "name(G'MIC packing),pos(0,0),mode(normal)"
 
 fx_pack_preview :
   if {!$!} -return endif
@@ -30757,7 +30757,7 @@ fx_stroke :
       if {$1>1} ($13^$14^$15^$16) -a[-2,-1] x -r. $1,1,1,4,3 -c. 0,255 endif
       -i.. ($21^$22^$23^$24) ($17^$18^$19^$20) if $5 -rv[-3,-1] endif
       -a[-3--1] x -map.. .,1 -rm.
-      -nm $nm
+      nm $nm
     endl
     -a[0,1] c
     if $is_frame1 -shrink_xy 1 endif
@@ -30767,7 +30767,7 @@ fx_stroke :
 fx_stroke_preview :
   repeat $! l[$>]
     -fx_stroke $*
-    -nm foo
+    nm foo
     -gui_merge_layers
   endl done
 
@@ -30959,7 +30959,7 @@ fx_light_leaks :
     if $5 -rgb2hsv. -sh. 0 -+. $5 -rm. -hsv2rgb. endif
     if $8
       nm=${-gui_layer_name[1]}
-      -nm. name($nm),opacity({$6*100}),mode($mode) -rv[-2,-1]
+      nm. name($nm),opacity({$6*100}),mode($mode) -rv[-2,-1]
     else -blend[1,-1] $mode,$6 endif
   endl done
   -rm[0]
@@ -32416,7 +32416,7 @@ fx_blocks3d :
 
     -replace_color 0,0,-1,-1,-1,0,0,0,0,0
     if $16 -r 50%,50%,1,4,2 endif
-    -c 0,255 -nm name($nm)
+    -c 0,255 nm name($nm)
   endl done
 
 #@gui 3d colored object : fx_coloredobject3d, fx_coloredobject3d_preview(1)
@@ -32621,7 +32621,7 @@ _fx_lathing3d :
 
 fx_lathing3d :
   -_fx_lathing3d ${1-3} -fx_render3d ${4--1}
-  -nm name("[3d lathing]"),pos(0,0),mode(alpha)
+  nm name("[3d lathing]"),pos(0,0),mode(alpha)
 
 fx_lathing3d_preview :
   -fx_lathing3d ${1-3},{w},{h},${6--1}
@@ -32690,7 +32690,7 @@ fx_barnsley_fern :
     100%,100%,1,3,[${5-7}]
     -rv[-2,-1] -a[-2,-1] c
     if {!$9} -blend alpha,{$8/255}
-    else -nm. "name(Barnsley Fern),opacity("{round($8*100/255)})")" -rv[-2,-1]
+    else nm. "name(Barnsley Fern),opacity("{round($8*100/255)})")" -rv[-2,-1]
     endif
   endl done
 
@@ -32876,7 +32876,7 @@ fx_custom_gradient : skip "${15=}"
   -_fx_custom_gradient0 ${1-14},"$15",${16--1}
   if {$-1>=0&&narg("$15")}
     dir_ggr=${-path_gimp}gradients
-    0 -nm. ${"-normalize_filename \"$15\""} name_ggr={b} -rm. -output_ggr. $dir_ggr/$name_ggr.ggr,"$15"
+    0 nm. ${"-normalize_filename \"$15\""} name_ggr={b} -rm. -output_ggr. $dir_ggr/$name_ggr.ggr,"$15"
   endif
   -i.. (0^0^0^0) -a[-2,-1] x
   repeat {$!-1} l[$>,-1]
@@ -32952,7 +32952,7 @@ fx_line_gradient : skip "${10=}"
   -_fx_line_gradient $*
   if {narg("$10")}
     dir_ggr=${-path_gimp}gradients
-    0 -nm. ${"-normalize_filename \"$10\""} name_ggr={b} -rm. -output_ggr. $dir_ggr/$name_ggr.ggr,"$10"
+    0 nm. ${"-normalize_filename \"$10\""} name_ggr={b} -rm. -output_ggr. $dir_ggr/$name_ggr.ggr,"$10"
   endif
   repeat $! -r[$>] 100%,64,1,100% done
 
@@ -33914,7 +33914,7 @@ fx_spatial_transition :
     -transition[^$shape] [$shape],$1,$2
     -rm.
   endif
-  -nm name(transition),pos(0,0)
+  nm name(transition),pos(0,0)
   if {narg($formula)} -u "{$1}{$2}{$3}{\""$formula"\"}{$5}{$6}{$7}{0}" endif
 
 fx_spatial_transition_preview :
@@ -34092,7 +34092,7 @@ fx_intarsia :
     -round[1] -index[0] [1]
 
     # Output header and title.
-    0 -nm. $nm ({'{b}'}) -f. 'if(x,i,if(i>=97&&i<=122,i-32,i))' image_basename={t} -rm[-2,-1]
+    0 nm. $nm ({'{b}'}) -f. 'if(x,i,if(i>=97&&i<=122,i-32,i))' image_basename={t} -rm[-2,-1]
     ({'"<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"\n\
         \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n\
         <html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">\n\
@@ -34102,7 +34102,7 @@ fx_intarsia :
         <table border=\"0\" cellpadding=\"4\">\n"'})
 
     # Render image of colors.
-    0 -nm. "$2" image_name={b} -rm.
+    0 nm. "$2" image_name={b} -rm.
     nb_cols={1,w}
     repeat $nb_cols
       color={1,I($>)}
