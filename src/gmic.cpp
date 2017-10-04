@@ -4639,6 +4639,15 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
       char *item = _item;
       const char *argument = initial_argument;
 
+      // Auto-preprend minus sign to recognized command.
+      if (*item!='-' && *item!='(' && *item!='[' && (*item<'0' || *item>'9')) {
+        *command = sep0 = 0;
+        err = cimg_sscanf(item,"%255[a-zA-Z_0-9]%c",command,&sep0);
+        if (err==1 || (err==2 && sep0=='[')) {
+          //          std::fprintf(stderr,"\nDEBUG : Item = '%s', pourquoi pas ?\n",item);
+        }
+      }
+
       // Split command/restriction, if necessary.
       *command = *restriction = 0;
 
