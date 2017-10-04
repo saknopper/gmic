@@ -2290,7 +2290,7 @@ static DWORD WINAPI gmic_parallel(void *arg)
   return 0;
 }
 
-// Array of recognized native commands.
+// Array of recognized native commands (must be sorted in lexicographic order!).
 const char *gmic::native_commands_names[] = {
   "!=","%","&","*","*3d","+","+3d","-","-3d","/","/3d","<","<<","<=","=","==",">",">=",">>","a","abs",
   "acos","add","add3d","and","append","asin","atan","atan2","autocrop","axes","b","bilateral","blur",
