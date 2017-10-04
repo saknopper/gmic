@@ -4684,13 +4684,18 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
           *command = sep0 = sep1 = 0;
           err = cimg_sscanf(item,"%255[a-zA-Z_0-9]%c%c",command,&sep0,&sep1);
           is_command = err==1 || (err==2 && sep0=='.') || (err==3 && (sep0=='[' || (sep0=='.' && sep1=='.')));
-          if (is_command) {
-            // Look for a native command.
-            unsigned int pos;
-            for (pos = 0; native_commands_names[pos]; ++pos)
-              if (!std::strcmp(command,native_commands_names[pos])) break;
-            if (!native_commands_names[pos]) {
-              // Look for a custom command.
+          if (is_command) { // Look for a native command
+            unsigned int
+              posm = 0,
+              posM = sizeof(native_commands_names)/sizeof(char*) - 1,
+              pos = (posm + posM)/2;
+            err = std::strcmp(native_commands_names[pos],command);
+            while (err && posm<posM) { // Dichotomic search
+              if (err>0) posM = pos - 1; else posm = pos + 1;
+              pos = (posm + posM)/2;
+              err = std::strcmp(native_commands_names[pos],command);
+            };
+            if (err) { // Look for a custom command
               pos = ~0U;
               const int ind = (int)hashcode(command,false);
               cimglist_for(commands_names[ind],l)
