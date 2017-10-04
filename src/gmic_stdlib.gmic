@@ -447,6 +447,10 @@ _help_usage :
 \n     act 'in-place' but inserts its result as one or several new images at the end of the image
 \n     list.
 \n
+\n  - When there is no ambiguity, the first (single) hyphen character can be omitted when invoking
+\n     a command, e.g. "${c}"filename.jpg blur 3,0 sharpen 10 resize 200%,200% output output.jpg"$n"
+\n     is correct.
+\n
 \n  - There are two different types of commands that can be run by the "${-GMIC}" interpreter:
 \n
 \n    . "${g}"Native commands"$n", are the hard-coded functionalities in the interpreter core. They are thus
@@ -2951,7 +2955,6 @@ input_cube : -skip ${2=1}
     -i raw:"$1",uchar
     -f "i<_' ' && i!=10?_' ':i"
     -i[0] 0
-    stov=stov -if {$_version<204} stov=stod -endif
     range={"
       line = vector512();
       dmin = [ 0,0,0 ];
@@ -2968,39 +2971,39 @@ input_cube : -skip ${2=1}
         line[l] = 0;
         if (same(line,'LUT_1D_SIZE ',12),
           copy(line[0],line[12],size(line) - 12);
-          size = "$stov"(line);
+          size = stov(line);
           dim = 1;
           resize(#0,3,size,1,1,0);
         ,_(else); if (same(line,'LUT_3D_SIZE ',12),
           copy(line[0],line[12],size(line) - 12);
-          size = "$stov"(line);
+          size = stov(line);
           dim = 3;
           resize(#0,3,size,size,size,0);
         ,_(else); if (same(line,'DOMAIN_MIN ',11),
           copy(line[0],line[11],size(line) - 11);
-          dmin[0] = "$stov"(line);
+          dmin[0] = stov(line);
           ind = find(line,_' ');
           copy(line[0],line[ind + 1],size(line) - ind);
-          dmin[1] = "$stov"(line);
+          dmin[1] = stov(line);
           ind = find(line,_' ');
           copy(line[0],line[ind + 1],size(line) - ind);
-          dmin[2] = "$stov"(line);
+          dmin[2] = stov(line);
         ,_(else); if (same(line,'DOMAIN_MAX ',11),
           copy(line[0],line[11],size(line) - 11);
-          dmax[0] = "$stov"(line);
+          dmax[0] = stov(line);
           ind = find(line,_' ');
           copy(line[0],line[ind + 1],size(line) - ind);
-          dmax[1] = "$stov"(line);
+          dmax[1] = stov(line);
           ind = find(line,_' ');
           copy(line[0],line[ind + 1],size(line) - ind);
-          dmax[2] = "$stov"(line);
-        ,_(else); val = "$stov"(line); if (val>=0,
+          dmax[2] = stov(line);
+        ,_(else); val = stov(line); if (val>=0,
           do (
             i[#0,target++] = val;
             ind = find(line,_' ');
             if (ind<0, break());
             copy(line[0],line[ind + 1],size(line) - ind);
-            val = "$stov"(line);
+            val = stov(line);
           ,_(while); val>=0);
         )))));
         pos = ++npos;
@@ -5816,7 +5819,7 @@ decompress_rle :
       -->= 0 -abs[0] -a x
     -else # Decode for arbitrary data
       --<. 0
-      -if {$_version<179} (1;1;0) -else (0;1;1) -endif
+      (0;1;1)
       -erode.. .,0 -rm. --. 1 -a x -discard -1  # Get back compressed '0' (minimum) values.
       --< 0 (0;1;1) -dilate.. . -rm. -*. -2 -+. 1 # Get back singletons.
       -rv -abs. -a x -discard -1
@@ -11479,7 +11482,6 @@ _close_binary :
   -channels[keycoords] 0,1
   -i[vote] {keycoords,[w,w]},1,2
 
-  critical=critical -if {$_version<205} critical=single -endif
   -f[e_normals] $_edgel_lib${-math_lib}"
     const ang_th = cos("$hd_angle"*pi/180);
     if (i>=0,
@@ -11515,7 +11517,7 @@ _close_binary :
 
         if (Kf && Kb && Kf!=Kb,
           --Kf; --Kb;
-          "$critical"(
+          critical(
             i(#"$vote",Kf,Kb,0,0)+=(Vf + Vb)/(Lf + Lb);
             ++i(#"$vote",Kf,Kb,0,1);
           );
@@ -23084,13 +23086,6 @@ gui_filter_sources : -skip ${1=0},${2=1}
     local=${_path_rc}update$_version.gmic
     -if $local -m $local -gui_filter_sources $1,0 -return -endif
   -endif
-
-  # Import faves from previous version 1.7.x.
-  -if {isfile($_path_rc/gimp_faves)" && "!isfile($_path_rc/gui_faves)} -l[]
-    -i raw:$_path_rc/gimp_faves,uchar -replace_str "gimp_","fx_"
-    -o raw:$_path_rc/gui_faves,uchar
-    -rm
-  -onfail -rm -endl -endif
 
   # Build list of filter sources.
   ({'{/$_path_user}'}) # Include local '.gmic' (or 'user.gmic') file.
