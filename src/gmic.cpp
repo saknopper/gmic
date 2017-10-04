@@ -4639,13 +4639,14 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
       char *item = _item;
       const char *argument = initial_argument;
 
-      // Auto-preprend minus sign to recognized command.
+      // Auto-preprend minus sign to item recognized as a command.
       if (*item!='-' && *item!='(' && *item!='[' && (*item<'0' || *item>'9')) {
-        bool is_command = *item>='a' && *item<='z' && (!item[1] || item[1]=='['); // Shortcut command
+        bool is_command = *item>='a' && *item<='z' &&
+          (!item[1] || item[1]=='[' || (item[1]=='.' && (!item[2] || item[2]=='.'))); // Shortcut command
         if (!is_command) {
-          *command = sep0 = 0;
-          err = cimg_sscanf(item,"%255[a-zA-Z_0-9]%c",command,&sep0);
-          is_command = err==1 || (err==2 && sep0=='[');
+          *command = sep0 = sep1 = 0;
+          err = cimg_sscanf(item,"%255[a-zA-Z_0-9]%c%c",command,&sep0,&sep1);
+          is_command = err==1 || (err==2 && sep0=='.') || (err==3 && (sep0=='[' || (sep0=='.' && sep1=='.')));
           if (is_command) {
 
           }
