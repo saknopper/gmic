@@ -2290,6 +2290,32 @@ static DWORD WINAPI gmic_parallel(void *arg)
   return 0;
 }
 
+// Array of recognized native commands.
+const char *gmic::native_command_names[] = {
+  "!=","%","&","*","*3d","+","+3d","-","-3d","/","/3d","<","<<","<=","=","==",">",">=",">>","a","abs",
+  "acos","add","add3d","and","append","asin","atan","atan2","autocrop","axes","b","bilateral","blur",
+  "boxfilter","break","bsl","bsr","c","camera","channels","check","check3d","col3d","color3d",
+  "columns","command","continue","convolve","correlate","cos","cosh","crop","cumulate","cursor","cut",
+  "d","d3d","db3d","debug","denoise","deriche","dijkstra","dilate","discard","displacement","display",
+  "display3d","distance","div3d","divide","do","done","double3d","e","echo","eigen","eikonal",
+  "elevation3d","elif","ellipse","else","endian","endif","endl","endlocal","eq","equalize","erode",
+  "error","exec","exp","f","f3d","fft","files","fill","flood","focale3d","for","g","ge","gradient",
+  "graph","gt","guided","h","hessian","histogram","hsi2rgb","hsl2rgb","hsv2rgb","i","if","ifft",
+  "image","index","inpaint","input","invert","isoline3d","isosurface3d","j","j3d","k","keep","l",
+  "l3d","lab2rgb","label","le","light3d","line","local","log","log10","log2","lt","m","m*","m/","m3d",
+  "mandelbrot","map","max","md3d","mdiv","median","min","mirror","mmul","mod","mode3d","moded3d",
+  "move","mse","mul","mul3d","mutex","mv","n","name","neq","noarg","noise","normalize","o","o3d",
+  "object3d","onfail","opacity3d","or","output","p","p3d","parallel","pass","patchmatch","permute",
+  "plasma","plot","point","polygon","pow","primitives3d","print","progress","q","quit","r","r3d",
+  "rand","remove","repeat","resize","return","reverse","reverse3d","rgb2hsi","rgb2hsl","rgb2hsv",
+  "rgb2lab","rgb2srgb","rm","rol","ror","rotate","rotate3d","round","rows","rv","rv3d","s","s3d",
+  "screen","select","serialize","set","sh","shared","sharpen","shift","sign","sin","sinc","sinh",
+  "skip","sl3d","slices","smooth","solve","sort","specl3d","specs3d","sphere3d","split","split3d",
+  "sqr","sqrt","srand","srgb2rgb","ss3d","status","streamline3d","structuretensors","sub","sub3d",
+  "svd","t","t3d","tan","tanh","text","texturize3d","threshold","trisolve","u","uncommand","unroll",
+  "unserialize","v","vanvliet","verbose","w","wait","warn","warp","watershed","while","window","x",
+  "xor","y","z","\\","^","|",0 };
+
 // Return Levenshtein distance between two strings.
 // (adapted from http://rosettacode.org/wiki/Levenshtein_distance#C)
 int gmic::_levenshtein(const char *const s, const char *const t,
@@ -14109,31 +14135,6 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                   CImg<char>::string(filename).move_to(name);
                   char *const posb = std::strchr(name,'[');
                   if (posb) *posb = 0;  // Discard selection from the command name.
-                  static const char *native_command_names[] = {
-                    "!=","%","&","*","*3d","+","+3d","-","-3d","/","/3d","<","<<","<=","=","==",">",">=",">>","a","abs",
-                    "acos","add","add3d","and","append","asin","atan","atan2","autocrop","axes","b","bilateral","blur",
-                    "boxfilter","break","bsl","bsr","c","camera","channels","check","check3d","col3d","color3d",
-                    "columns","command","continue","convolve","correlate","cos","cosh","crop","cumulate","cursor","cut",
-                    "d","d3d","db3d","debug","denoise","deriche","dijkstra","dilate","discard","displacement","display",
-                    "display3d","distance","div3d","divide","do","done","double3d","e","echo","eigen","eikonal",
-                    "elevation3d","elif","ellipse","else","endian","endif","endl","endlocal","eq","equalize","erode",
-                    "error","exec","exp","f","f3d","fft","files","fill","flood","focale3d","for","g","ge","gradient",
-                    "graph","gt","guided","h","hessian","histogram","hsi2rgb","hsl2rgb","hsv2rgb","i","if","ifft",
-                    "image","index","inpaint","input","invert","isoline3d","isosurface3d","j","j3d","k","keep","l",
-                    "l3d","lab2rgb","label","le","light3d","line","local","log","log10","log2","lt","m","m*","m/","m3d",
-                    "mandelbrot","map","max","md3d","mdiv","median","min","mirror","mmul","mod","mode3d","moded3d",
-                    "move","mse","mul","mul3d","mutex","mv","n","name","neq","noarg","noise","normalize","o","o3d",
-                    "object3d","onfail","opacity3d","or","output","p","p3d","parallel","pass","patchmatch","permute",
-                    "plasma","plot","point","polygon","pow","primitives3d","print","progress","q","quit","r","r3d",
-                    "rand","remove","repeat","resize","return","reverse","reverse3d","rgb2hsi","rgb2hsl","rgb2hsv",
-                    "rgb2lab","rgb2srgb","rm","rol","ror","rotate","rotate3d","round","rows","rv","rv3d","s","s3d",
-                    "screen","select","serialize","set","sh","shared","sharpen","shift","sign","sin","sinc","sinh",
-                    "skip","sl3d","slices","smooth","solve","sort","specl3d","specs3d","sphere3d","split","split3d",
-                    "sqr","sqrt","srand","srgb2rgb","ss3d","status","streamline3d","structuretensors","sub","sub3d",
-                    "svd","t","t3d","tan","tanh","text","texturize3d","threshold","trisolve","u","uncommand","unroll",
-                    "unserialize","v","vanvliet","verbose","w","wait","warn","warp","watershed","while","window","x",
-                    "xor","y","z","\\","^","|",0 };
-
                   const char *misspelled = 0;
                   const unsigned int foff = name[1]=='-'?2U:1U;
                   int dmin = 4;

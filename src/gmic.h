@@ -358,6 +358,7 @@ struct gmic {
              const gmic_image<unsigned int> *const command_selection);
 
   // Class variables.
+  static const char *native_command_names[];
   static gmic_image<char> stdlib;
 
   gmic_list<char> *const commands, *const commands_names, *const commands_has_arguments,
