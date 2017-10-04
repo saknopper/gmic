@@ -2290,7 +2290,7 @@ static DWORD WINAPI gmic_parallel(void *arg)
   return 0;
 }
 
-// Array of recognized native commands (must be sorted in lexicographic order!).
+// Array of G'MIC native commands (must be sorted in lexicographic order!).
 const char *gmic::native_commands_names[] = {
   "!=","%","&","*","*3d","+","+3d","-","-3d","/","/3d","<","<<","<=","=","==",">",">=",">>",
   "a","abs","acos","add","add3d","and","append","asin","atan","atan2","autocrop","axes",
@@ -2310,7 +2310,7 @@ const char *gmic::native_commands_names[] = {
   "l","l3d","lab2rgb","label","le","light3d","line","local","log","log10","log2","lt",
   "m","m*","m/","m3d","mandelbrot","map","max","md3d","mdiv","median","min","mirror","mmul","mod","mode3d","moded3d",
     "move","mse","mul","mul3d","mutex","mv",
-  "n","name","neq","noarg","noise","normalize",
+  "n","name","neq","nm","noarg","noise","normalize",
   "o","o3d","object3d","onfail","opacity3d","or","output",
   "p","p3d","parallel","pass","patchmatch","permute","plasma","plot","point","polygon","pow","primitives3d","print",
     "progress",
@@ -4678,29 +4678,40 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
 
       // Auto-preprend minus sign to item recognized as a command.
       if (*item!='-' && *item!='(' && *item!='[' && (*item<'0' || *item>'9')) {
-        bool is_command = *item>='a' && *item<='z' &&
-          (!item[1] || item[1]=='[' || (item[1]=='.' && (!item[2] || item[2]=='.'))); // Shortcut command
+#define _gmic_eok(i) (!item[i] || item[i]=='[' || (item[i]=='.' && (!item[i+1] || item[i+1]=='.')))
+        bool is_command = *item>='a' && *item<='z' && _gmic_eok(1); // Alphabetical shortcut commands
         if (!is_command) {
           *command = sep0 = sep1 = 0;
-          err = cimg_sscanf(item,"%255[a-zA-Z_0-9]%c%c",command,&sep0,&sep1);
-          is_command = err==1 || (err==2 && sep0=='.') || (err==3 && (sep0=='[' || (sep0=='.' && sep1=='.')));
-          if (is_command) { // Look for a native command
-            unsigned int
-              posm = 0,
-              posM = sizeof(native_commands_names)/sizeof(char*) - 1,
-              pos = (posm + posM)/2;
-            err = std::strcmp(native_commands_names[pos],command);
-            while (err && posm<posM) { // Dichotomic search
-              if (err>0) posM = pos - 1; else posm = pos + 1;
-              pos = (posm + posM)/2;
+          switch (*item) {
+          case '!' : is_command = item[1]=='=' && _gmic_eok(2); break;
+          case '&' : is_command = _gmic_eok(1); break;
+          case '*' : case '+' : case '-' : case '/' :
+            is_command = _gmic_eok(1) || (item[1]=='3' && item[2]=='d' && _gmic_eok(3)); break;
+          case '<' : case '=' : case '>' :
+            is_command = _gmic_eok(1) || ((item[1]==*item || item[1]=='=') && _gmic_eok(2)); break;
+          case '^' : is_command = _gmic_eok(1); break;
+          case '|' : is_command = _gmic_eok(1); break;
+          default :
+            err = cimg_sscanf(item,"%255[a-zA-Z_0-9]%c%c",command,&sep0,&sep1);
+            is_command = err==1 || (err==2 && sep0=='.') || (err==3 && (sep0=='[' || (sep0=='.' && sep1=='.')));
+            if (is_command) { // Look for a native command
+              unsigned int
+                posm = 0,
+                posM = sizeof(native_commands_names)/sizeof(char*) - 1,
+                pos = (posm + posM)/2;
               err = std::strcmp(native_commands_names[pos],command);
-            };
-            if (err) { // Look for a custom command
-              pos = ~0U;
-              const int ind = (int)hashcode(command,false);
-              cimglist_for(commands_names[ind],l)
-                if (!std::strcmp(commands_names[ind][l],command)) { pos = l; break; }
-              is_command = (pos!=~0U);
+              while (err && posm<posM) { // Dichotomic search
+                if (err>0) posM = pos - 1; else posm = pos + 1;
+                pos = (posm + posM)/2;
+                err = std::strcmp(native_commands_names[pos],command);
+              };
+              if (err) { // Look for a custom command
+                pos = ~0U;
+                const int ind = (int)hashcode(command,false);
+                cimglist_for(commands_names[ind],l)
+                  if (!std::strcmp(commands_names[ind][l],command)) { pos = l; break; }
+                is_command = (pos!=~0U);
+              }
             }
           }
         }
@@ -6664,8 +6675,8 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             if (*it==1 &&
                 cimg_sscanf(commands_line[position].data() + 1,"%x,%x",&_debug_line,&(_debug_filename=0))>0) {
               is_debug_info = true; next_debug_line = _debug_line; next_debug_filename = _debug_filename;
-            } else if (!std::strcmp("-if",it)) ++nb_ifs;
-            else if (!std::strcmp("-endif",it)) { if (!--nb_ifs) --position; }
+            } else if (!std::strcmp("-if",it) || !std::strcmp("if",it)) ++nb_ifs;
+            else if (!std::strcmp("-endif",it) || !std::strcmp("endif",it)) { if (!--nb_ifs) --position; }
           }
           continue;
         }
@@ -7097,8 +7108,9 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             int nb_repeat_fors = 0;
             for (nb_repeat_fors = 1; nb_repeat_fors && position<commands_line.size(); ++position) {
               const char *it = commands_line[position].data();
-              if (!std::strcmp("-repeat",it) || !std::strcmp("-for",it)) ++nb_repeat_fors;
-              else if (!std::strcmp("-done",it)) --nb_repeat_fors;
+              if (!std::strcmp("-repeat",it) || !std::strcmp("repeat",it) ||
+                  !std::strcmp("-for",it) || !std::strcmp("for",it)) ++nb_repeat_fors;
+              else if (!std::strcmp("-done",it) || !std::strcmp("done",it)) --nb_repeat_fors;
             }
             if (nb_repeat_fors && position>=commands_line.size())
               error(images,0,0,
@@ -8104,12 +8116,15 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
               if (*it==1 &&
                   cimg_sscanf(commands_line[position].data() + 1,"%x,%x",&_debug_line,&(_debug_filename=0))>0) {
                 is_debug_info = true; next_debug_line = _debug_line; next_debug_filename = _debug_filename;
-              } else if (!std::strcmp("-local",it) || !std::strcmp("-l",it) ||
-                         !std::strcmp("--local",it) || !std::strcmp("--l",it) ||
-                         !std::strncmp("-local[",it,7) || !std::strncmp("-l[",it,3) ||
-                         !std::strncmp("--local[",it,8) || !std::strncmp("--l[",it,4)) ++nb_locals;
-              else if (!std::strcmp("-endlocal",it) || !std::strcmp("-endl",it)) --nb_locals;
-              else if (nb_locals==1 && !std::strcmp("-onfail",it)) break;
+              } else if (!std::strcmp("--local",it) || !std::strcmp("-local",it) || !std::strcmp("local",it) ||
+                         !std::strcmp("--l",it) || !std::strcmp("-l",it) || !std::strcmp("l",it) ||
+                         !std::strncmp("--local[",it,8) || !std::strncmp("-local[",it,7) ||
+                         !std::strncmp("local[",it,6) ||
+                         !std::strncmp("--l[",it,4) || !std::strncmp("-l[",it,3) ||
+                         !std::strncmp("l[",it,2)) ++nb_locals;
+              else if (!std::strcmp("-endlocal",it) || !std::strcmp("endlocal",it) ||
+                       !std::strcmp("-endl",it) || !std::strcmp("endl",it)) --nb_locals;
+              else if (nb_locals==1 && (!std::strcmp("-onfail",it) || !std::strcmp("onfail",it))) break;
             }
             if (callstack.size()>local_callstack_size) callstack.remove(local_callstack_size,callstack.size() - 1);
             if (nb_locals==1 && position<commands_line.size()) { // Onfail block found.
@@ -8761,11 +8776,14 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             if (*it==1 &&
                 cimg_sscanf(commands_line[position].data() + 1,"%x,%x",&_debug_line,&(_debug_filename=0))>0) {
               is_debug_info = true; next_debug_line = _debug_line; next_debug_filename = _debug_filename;
-            } else if (!std::strcmp("-local",it) || !std::strcmp("-l",it) ||
-                       !std::strcmp("--local",it) || !std::strcmp("--l",it) ||
-                       !std::strncmp("-local[",it,7) || !std::strncmp("-l[",it,3) ||
-                       !std::strncmp("--local[",it,8) || !std::strncmp("--l[",it,4)) ++nb_locals;
-            else if (!std::strcmp("-endlocal",it) || !std::strcmp("-endl",it)) {
+            } else if (!std::strcmp("--local",it) || !std::strcmp("-local",it) || !std::strcmp("local",it) ||
+                       !std::strcmp("--l",it) || !std::strcmp("-l",it) || !std::strcmp("l",it) ||
+                       !std::strncmp("--local[",it,8) || !std::strncmp("-local[",it,7) ||
+                       !std::strncmp("local[",it,6) ||
+                       !std::strncmp("--l[",it,4) || !std::strncmp("-l[",it,3) ||
+                       !std::strncmp("l[",it,2)) ++nb_locals;
+            else if (!std::strcmp("-endlocal",it) || !std::strcmp("endlocal",it) ||
+                     !std::strcmp("-endl",it) || !std::strcmp("endl",it)) {
               --nb_locals; if (!nb_locals) --position;
             }
           }
@@ -10138,8 +10156,9 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
               int nb_repeat_fors = 0;
               for (nb_repeat_fors = 1; nb_repeat_fors && position<commands_line.size(); ++position) {
                 const char *it = commands_line[position].data();
-                if (!std::strcmp("-repeat",it) || !std::strcmp("-for",it)) ++nb_repeat_fors;
-                else if (!std::strcmp("-done",it)) --nb_repeat_fors;
+                if (!std::strcmp("-repeat",it) || !std::strcmp("repeat",it) ||
+                    !std::strcmp("-for",it) || !std::strcmp("for",it)) ++nb_repeat_fors;
+                else if (!std::strcmp("-done",it) || !std::strcmp("done",it)) --nb_repeat_fors;
               }
               if (nb_repeat_fors && position>=commands_line.size())
                 error(images,0,0,
@@ -12677,11 +12696,14 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
               if (*it==1 &&
                   cimg_sscanf(commands_line[position].data() + 1,"%x,%x",&_debug_line,&(_debug_filename=0))>0) {
                 is_debug_info = true; next_debug_line = _debug_line; next_debug_filename = _debug_filename;
-              } else if (!std::strcmp("-if",it)) ++nb_ifs;
-              else if (!std::strcmp("-endif",it)) { --nb_ifs; if (!nb_ifs) --position; }
-              else if (nb_ifs==1) {
-                if (!std::strcmp("-else",it)) --nb_ifs;
-                else if (!std::strcmp("-elif",it)) { --nb_ifs; check_elif = true; --position;}
+              } else if (!std::strcmp("-if",it) || !std::strcmp("if",it)) ++nb_ifs;
+              else if (!std::strcmp("-endif",it) || !std::strcmp("endif",it)) {
+                --nb_ifs; if (!nb_ifs) --position;
+              } else if (nb_ifs==1) {
+                if (!std::strcmp("-else",it) || !std::strcmp("else",it)) --nb_ifs;
+                else if (!std::strcmp("-elif",it) || !std::strcmp("elif",it)) {
+                  --nb_ifs; check_elif = true; --position;
+                }
               }
             }
             continue;
@@ -12713,8 +12735,9 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                   Com,is_continue?"to next iteration of ":"");
             for (level = 1; level && position<commands_line.size(); ++position) {
               const char *it = commands_line[position].data();
-              if (!std::strcmp("-repeat",it) || !std::strcmp("-for",it)) ++level;
-              else if (!std::strcmp("-done",it)) --level;
+              if (!std::strcmp("-repeat",it) || !std::strcmp("repeat",it) ||
+                  !std::strcmp("-for",it) || !std::strcmp("for",it)) ++level;
+              else if (!std::strcmp("-done",it) || !std::strcmp("done",it)) --level;
             }
             callstack_ind = callstack_repeat;
             stb = "repeat"; ste = "done";
@@ -12723,8 +12746,8 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                   Com,is_continue?"to next iteration of ":"");
             for (level = 1; level && position<commands_line.size(); ++position) {
               const char *it = commands_line[position].data();
-              if (!std::strcmp("-do",it)) ++level;
-              else if (!std::strcmp("-while",it)) --level;
+              if (!std::strcmp("-do",it) || !std::strcmp("do",it)) ++level;
+              else if (!std::strcmp("-while",it) || !std::strcmp("while",it)) --level;
             }
             callstack_ind = callstack_do;
             stb = "do"; ste = "while";
@@ -12733,8 +12756,9 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                   Com,is_continue?"to next iteration of ":"");
             for (level = 1; level && position<commands_line.size(); ++position) {
               const char *it = commands_line[position].data();
-              if (!std::strcmp("-repeat",it) || !std::strcmp("-for",it)) ++level;
-              else if (!std::strcmp("-done",it)) --level;
+              if (!std::strcmp("-repeat",it) || !std::strcmp("repeat",it) ||
+                  !std::strcmp("-for",it) || !std::strcmp("for",it)) ++level;
+              else if (!std::strcmp("-done",it) || !std::strcmp("done",it)) --level;
             }
             callstack_ind = callstack_for;
             stb = "for"; ste = "done";
@@ -12743,11 +12767,12 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                   Com,is_continue?"to end of ":"");
             for (level = 1; level && position<commands_line.size(); ++position) {
               const char *it = commands_line[position].data();
-              if (!std::strcmp("-local",it) || !std::strcmp("-l",it) ||
-                  !std::strcmp("--local",it) || !std::strcmp("--l",it) ||
-                  !std::strncmp("-local[",it,7) || !std::strncmp("-l[",it,3) ||
-                  !std::strncmp("--local[",it,8) || !std::strncmp("--l[",it,4)) ++level;
-              else if (!std::strcmp("-endlocal",it) || !std::strcmp("-endl",it)) --level;
+              if (!std::strcmp("--local",it) || !std::strcmp("-local",it) || !std::strcmp("local",it) ||
+                  !std::strcmp("--l",it) || !std::strcmp("-l",it) || !std::strcmp("l",it) ||
+                  !std::strncmp("--local[",it,8) || !std::strncmp("-local[",it,7) || !std::strncmp("-local[",it,6) ||
+                  !std::strncmp("--l[",it,4) || !std::strncmp("-l[",it,3) || !std::strncmp("l[",it,2)) ++level;
+              else if (!std::strcmp("-endlocal",it) || !std::strcmp("endlocal",it) ||
+                       !std::strcmp("-endl",it) || !std::strcmp("endl",it)) --level;
             }
             callstack_ind = callstack_local;
             stb = "local"; ste = "endlocal";
@@ -14480,14 +14505,17 @@ int main(int argc, char **argv) {
 
   // When help has been requested.
   const char
-    *const is_help1 = cimg_option("-h",(char*)0,0),
-    *const is_help2 = cimg_option("--h",(char*)0,0),
-    *const is_help3 = cimg_option("-help",(char*)0,0),
+    *const is_help1 = cimg_option("--h",(char*)0,0),
+    *const is_help2 = cimg_option("-h",(char*)0,0),
+    *const is_help3 = cimg_option("h",(char*)0,0),
     *const is_help4 = cimg_option("--help",(char*)0,0),
-    *const help_command = is_help1?"-h":is_help2?"--h":is_help3?"-help":"--help",
-    *const help_argument = is_help1?is_help1:is_help2?is_help2:is_help3?is_help3:is_help4;
+    *const is_help5 = cimg_option("-help",(char*)0,0),
+    *const is_help6 = cimg_option("help",(char*)0,0),
+    *const help_command = is_help1?"--h":is_help2?"-h":is_help3?"h":is_help4?"--help":is_help5?"-help":"help",
+    *const help_argument = is_help1?is_help1:is_help2?is_help2:is_help3?is_help3:
+    is_help4?is_help4:is_help5?is_help5:is_help6;
   const bool
-    is_help = is_help1 || is_help2 || is_help3 || is_help4,
+    is_help = is_help1 || is_help2 || is_help3 || is_help4 || is_help5 || is_help6,
     is_global_help = is_help && !std::strcmp(help_command,help_argument);
 
   if (is_help) {
@@ -14503,7 +14531,8 @@ int main(int argc, char **argv) {
     for (int i = 1; i<argc; ++i) {
       std::FILE *file = 0;
       CImg<char> filename_tmp(256); *filename_tmp = 0;
-      if ((!std::strcmp("-m",argv[i]) || !std::strcmp("-command",argv[i])) && i<argc - 1) {
+      if ((!std::strcmp("-m",argv[i]) || !std::strcmp("m",argv[i]) ||
+           !std::strcmp("-command",argv[i]) || !std::strcmp("command",argv[i])) && i<argc - 1) {
         const char *const filename = argv[++i];
         if (!cimg::strncasecmp(filename,"http://",7) || !cimg::strncasecmp(filename,"https://",8))
           try {
@@ -14535,21 +14564,21 @@ int main(int argc, char **argv) {
     if (is_global_help) { // Global help.
       try {
         gmic_instance.verbosity = -1;
-        gmic_instance.run("-v - -l -help \"\" -onfail -endl -q",images,images_names);
+        gmic_instance.run("v - l help \"\" onfail endl q",images,images_names);
       } catch (...) { // Fallback in case default version of '-help' has been overloaded.
         images.assign();
         images_names.assign();
         images.insert(gmic::stdlib);
-        gmic("-v - _host=cli -l -help \"\" -onfail -endl -q",images,images_names);
+        gmic("v - _host=cli l help \"\" onfail endl q",images,images_names);
       }
     } else { // Help for a specified command.
       CImg<char> tmp_line(1024);
       try {
-        cimg_snprintf(tmp_line,tmp_line.width(),"-v - -l -help \"%s\",1 -onfail -endl -q",help_argument);
+        cimg_snprintf(tmp_line,tmp_line.width(),"v - l help \"%s\",1 onfail endl q",help_argument);
         gmic_instance.verbosity = -1;
         gmic_instance.run(tmp_line,images,images_names);
       } catch (...) { // Fallback in case default version of '-help' has been overloaded.
-        cimg_snprintf(tmp_line,tmp_line.width(),"-v - -l -help \"%s\",1 -onfail -endl -q",help_argument);
+        cimg_snprintf(tmp_line,tmp_line.width(),"v - l help \"%s\",1 onfail endl q",help_argument);
         images.assign();
         images_names.assign();
         images.insert(gmic::stdlib);
@@ -14566,7 +14595,7 @@ int main(int argc, char **argv) {
   CImgList<char> items;
   if (argc==1) { // When no args have been specified.
     gmic_instance.verbosity = -1;
-    CImg<char>::string("-l[] -cli_noarg -onfail -endl").move_to(items);
+    CImg<char>::string("l[] cli_noarg onfail endl").move_to(items);
   } else {
     gmic_instance.verbosity = 0;
     for (int l = 1; l<argc; ++l) { // Split argv as items.
@@ -14581,18 +14610,19 @@ int main(int argc, char **argv) {
 
   // Insert startup command.
   const bool is_first_item_verbose = items.width()>1 &&
-    (!std::strncmp("-v ",items[0],3) || !std::strncmp("-verbose ",items[0],9));
-  items.insert(CImg<char>::string("-cli_start ",false),is_first_item_verbose?2:0);
+    (!std::strncmp("-v ",items[0],3) || !std::strncmp("v ",items[0],2) ||
+     !std::strncmp("-verbose ",items[0],9) || !std::strncmp("verbose ",items[0],8));
+  items.insert(CImg<char>::string("cli_start ",false),is_first_item_verbose?2:0);
 
   if (is_invalid_user) { // Display warning message in case of invalid user command file.
     CImg<char> tmpstr(1024);
-    cimg_snprintf(tmpstr,tmpstr.width(),"-warn \"File '%s' is not a valid G'MIC command file.\" ",
+    cimg_snprintf(tmpstr,tmpstr.width(),"warn \"File '%s' is not a valid G'MIC command file.\" ",
                   filename_user);
     items.insert(CImg<char>::string(tmpstr.data(),false),is_first_item_verbose?2:0);
   }
   if (is_invalid_update) { // Display warning message in case of invalid user command file.
     CImg<char> tmpstr(1024);
-    cimg_snprintf(tmpstr,tmpstr.width(),"-warn \"File '%s' is not a valid G'MIC command file.\" ",
+    cimg_snprintf(tmpstr,tmpstr.width(),"warn \"File '%s' is not a valid G'MIC command file.\" ",
                   filename_update.data());
     items.insert(CImg<char>::string(tmpstr.data(),false),is_first_item_verbose?2:0);
   }
@@ -14623,17 +14653,17 @@ int main(int argc, char **argv) {
       images.insert(gmic::stdlib);
       CImg<char> tmp_line(1024);
       cimg_snprintf(tmp_line,tmp_line.width(),
-                    "-v - "
-                    "-l[] -i raw:\"%s\",char -m \"%s\" -onfail -rm -endl "
-                    "-l[] -i raw:\"%s\",char -m \"%s\" -onfail -rm -endl "
-                    "-rv -help \"%s\",0 -q",
+                    "v - "
+                    "l[] i raw:\"%s\",char m \"%s\" onfail rm endl "
+                    "l[] i raw:\"%s\",char m \"%s\" onfail rm endl "
+                    "rv help \"%s\",0 q",
                     filename_update.data(),filename_update.data(),
                     filename_user,filename_user,
                     e.command_help());
       try {
         gmic(tmp_line,images,images_names);
       } catch (...) {
-        cimg_snprintf(tmp_line,tmp_line.width(),"-v - -help \"%s\",1 -q",e.command_help());
+        cimg_snprintf(tmp_line,tmp_line.width(),"v - help \"%s\",1 q",e.command_help());
         images.assign();
         images_names.assign();
         images.insert(gmic::stdlib);
