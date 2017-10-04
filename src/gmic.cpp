@@ -2291,7 +2291,7 @@ static DWORD WINAPI gmic_parallel(void *arg)
 }
 
 // Array of recognized native commands.
-const char *gmic::native_command_names[] = {
+const char *gmic::native_commands_names[] = {
   "!=","%","&","*","*3d","+","+3d","-","-3d","/","/3d","<","<<","<=","=","==",">",">=",">>","a","abs",
   "acos","add","add3d","and","append","asin","atan","atan2","autocrop","axes","b","bilateral","blur",
   "boxfilter","break","bsl","bsr","c","camera","channels","check","check3d","col3d","color3d",
@@ -2357,7 +2357,7 @@ bool gmic::check_filename(const char *const filename) {
   return res;
 }
 
-// Return a 8-bits hashcode from a string.
+// Return a hashcode from a string.
 unsigned int gmic::hashcode(const char *const str, const bool is_variable) {
   if (!str) return 0U;
   unsigned int hash = 0U;
@@ -4674,11 +4674,24 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
           err = cimg_sscanf(item,"%255[a-zA-Z_0-9]%c%c",command,&sep0,&sep1);
           is_command = err==1 || (err==2 && sep0=='.') || (err==3 && (sep0=='[' || (sep0=='.' && sep1=='.')));
           if (is_command) {
-
+            // Look for a native command.
+            unsigned int pos;
+            for (pos = 0; native_commands_names[pos]; ++pos)
+              if (!std::strcmp(command,native_commands_names[pos])) break;
+            if (!native_commands_names[pos]) {
+              // Look for a custom command.
+              pos = ~0U;
+              const int ind = (int)hashcode(command,false);
+              cimglist_for(commands_names[ind],l)
+                if (!std::strcmp(commands_names[ind][l],command)) { pos = l; break; }
+              is_command = (pos!=~0U);
+            }
           }
         }
-        //if (is_command)
-        //          std::fprintf(stderr,"\nDEBUG : Item = '%s', pourquoi pas ?\n",item);
+        if (is_command) {
+          _item.resize(_item.width() + 1,1,1,1,0,0,1);
+          *(item = _item) = '-';
+        }
       }
 
       // Split command/restriction, if necessary.
@@ -14138,14 +14151,14 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                   const char *misspelled = 0;
                   const unsigned int foff = name[1]=='-'?2U:1U;
                   int dmin = 4;
-                  for (unsigned int l = 0; native_command_names[l]; ++l) {
-                    // Look in native commands.
-                    const char *const c = native_command_names[l];
+                  for (unsigned int l = 0; native_commands_names[l]; ++l) {
+                    // Look for a native command.
+                    const char *const c = native_commands_names[l];
                     const int d = levenshtein(c,name.data() + foff);
-                    if (d<dmin) { dmin = d; misspelled = native_command_names[l]; }
+                    if (d<dmin) { dmin = d; misspelled = native_commands_names[l]; }
                   }
                   for (unsigned int i = 0; i<512; ++i)
-                    // Look in custom commands.
+                    // Look for a custom command.
                     cimglist_for(commands_names[i],l) {
                       const char *const c = commands_names[i][l].data();
                       const int d = levenshtein(c,name.data() + foff);
