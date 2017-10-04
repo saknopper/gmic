@@ -4023,11 +4023,11 @@ update_gallery_html :
   -_update_gallery_html "-cartoon ,"
   -_update_gallery_html "-cartoon ,"
 
-  -_update_gallery_html "-resize2dx 300 -m3d 2 -elevation3d 0.3 -f3d 200 -snapshot3d 400,1.5"
-  -_update_gallery_html "-resize2dx 300 -m3d 2 -elevation3d 0.3 -f3d 200 -snapshot3d 400,1.5"
-  -_update_gallery_html "-resize2dx 300 -m3d 2 -elevation3d 0.3 -f3d 200 -snapshot3d 400,1.5"
-  -_update_gallery_html "-resize2dx 300 -m3d 2 -elevation3d 0.3 -f3d 200 -snapshot3d 400,1.5"
-  -_update_gallery_html "-resize2dx 300 -m3d 2 -elevation3d 0.3 -f3d 200 -snapshot3d 400,1.5"
+  -_update_gallery_html "-resize2dx 300 -m3d 2 -elevation3d 0.3 f3d 200 -snapshot3d 400,1.5"
+  -_update_gallery_html "-resize2dx 300 -m3d 2 -elevation3d 0.3 f3d 200 -snapshot3d 400,1.5"
+  -_update_gallery_html "-resize2dx 300 -m3d 2 -elevation3d 0.3 f3d 200 -snapshot3d 400,1.5"
+  -_update_gallery_html "-resize2dx 300 -m3d 2 -elevation3d 0.3 f3d 200 -snapshot3d 400,1.5"
+  -_update_gallery_html "-resize2dx 300 -m3d 2 -elevation3d 0.3 f3d 200 -snapshot3d 400,1.5"
 
   -_update_gallery_html "-topographic_map 16,2"
   -_update_gallery_html "-topographic_map 16,2"
@@ -7307,7 +7307,7 @@ transfer_rgb : check "${2=0.3}>=0 && ${3=8}>=0 && ${4=0.15}>=0 && ${5=64}>=0 && 
     #   -warp. [displacement],1,1,1,48
 
     #   l[$N--1]
-    #     -f3d 1200
+    #     f3d 1200
     #     -ap "-s. c,-3 -view_func. 6,.. rm.."
     #     -ap "-makefig"
     #     -append[^0] [0],x rm[0]
@@ -14400,7 +14400,7 @@ frame_cube : check "${1=1}>=0" skip ${2=0},${3=0},${4=0},${5=0},${6=0},${7=0}
       -s3d -r[2] 3,{{2,h}/3},1,1,-1
       -f[2] "if(i(2,y)<0.5,i,i+if(x==0,"$cx",if(x==1,"$cy",($1-1)*"$m")))"
       -y[2] a y
-      -*3d 2 {2*$w},{2*$h},1,$s -f3d {2*$f}
+      -*3d 2 {2*$w},{2*$h},1,$s f3d {2*$f}
       -j3d. ..,50%,50%,0,1,2,0,0 rm..
       r $w,$h,1,100%,2
     endif
@@ -18672,7 +18672,7 @@ path_tmp :
 #@cli : Reset global parameters of the interpreter environment.
 reset :
   e[^-1] "Reset global parameters of the interpreter environment."
-  v -1 -db3d -m3d -md3d -f3d -l3d -sl3d -ss3d v +
+  v -1 -db3d -m3d -md3d f3d -l3d -sl3d -ss3d v +
 
 #@cli RGB
 #@cli : Return a random int-valued RGB color.
@@ -18888,7 +18888,7 @@ demo : check "isint(${1=2}) && $1>=0 && $1<=2"
   endl
 
   # Start main loop.
-  cfx={0} cfy={0} cfz={0} nfx={g} nfy={g} nfz={g} alpha=0 time0={$|-4} selected=-1 -f3d 400
+  cfx={0} cfy={0} cfz={0} nfx={g} nfy={g} nfz={g} alpha=0 time0={$|-4} selected=-1 f3d 400
   -w[0] {f=h#0<0.5*{*,v}?1.5:1;[w#0,h#0]*=f},0,0,50%,50%,"[G'MIC - "$strver"]"
   do
 
@@ -18973,7 +18973,7 @@ x_2048 :
 ----\n
 --------------------------------------------------------------"
   v - l[]
-  score=0 -f3d 50 -m3d 0
+  score=0 f3d 50 -m3d 0
   -m "_x_2048_setrandom : --==[0] 0 -f. 'if(i,4*y+x,-1)' -discard. -1
       off={i[round(u(h-1))]} rm. x={$off&3} y={$off>>2} n={if(u<0.75,1,2)}
       -=[0] $n,$x,$y [{2+$n}] -c3d.
@@ -19937,7 +19937,7 @@ x_fire : skip "${1=G\47MIC}"
   i[1] (0,255,255,255,255^0,0,255,255,255^0,0,0,128,255) -r[1] 256,1,1,3,3
   i[2] (0,0,0;0,0,0;1,1,1;0,1,0) -*[2] 0.21
   -text3d "$1",33,3,1
-  mv. 3 -c3d[3] -n3d[3] -*3d[3] 320 col3d[3] 255,205,130 -db3d 0 -f3d 300
+  mv. 3 -c3d[3] -n3d[3] -*3d[3] 320 col3d[3] 255,205,130 -db3d 0 f3d 300
   100,100 -rand. 0,255 ellipse. 50%,50%,5,5,0,1,300 -b. 10
   sharpen. 1000 shrink_xy. 1 -n. 0,255 to_rgb. -light3d . rm.
 
@@ -23005,7 +23005,7 @@ x_waves :
   (0,1,0;1,0,1;0,1,0) -/. 2
   -ball[] 20,200,255,128,1,0.7,3.5
   0 $w,$w .
-  -l3d {$w/2},-200,-1000 -sl3d 0.4 -ss3d 0.8 -f3d 500 time0=$|
+  -l3d {$w/2},-200,-1000 -sl3d 0.4 -ss3d 0.8 f3d 500 time0=$|
   do
     --convolve. [3],1 --. ... rm... -b. 0.8 --. {ia} # Update height map.
     r. 1,{$w*$w},1,1,-1 -j[2] .,2,0 r. $w,$w,1,1,-1 # Set 3d object coordinates.
@@ -23408,7 +23408,7 @@ fx_logo_version1 : skip "${1=Universal plug-in}"
   -isosurface3d 50%
   col3d {u(150,255)},{u(150,255)},{u(150,255)}
   sphere3d 8 col3d. {u(150,255)},{u(150,255)},{u(150,255)} -+3d. 77,-6 -+3d -c3d. rv3d
-  -db3d 0 -sl3d 0.2 -ss3d 1.3 -r3d. 1,0,0,-30 -f3d 120 -*3d. 1.5
+  -db3d 0 -sl3d 0.2 -ss3d 1.3 -r3d. 1,0,0,-30 f3d 120 -*3d. 1.5
   230,120,1,3 -j3d. ..,50%,30%,0,1,4 rm..
   0 t. "$1",0,0,13,1,255,255,255 j.. .,{({-2,w}-w)/2},75% rm.
   to_rgba replace_color 0,0,0,0,0,255,0,0,0,0 -drop_shadow 6,6,2
@@ -32351,7 +32351,7 @@ fx_scale_dcci2x_preview :
 fx_render3d : skip ${14=1}
   width={(1+$14)*$1} height={(1+$14)*$2}
   -n3d -c3d -m3d {round($13)} f3d={0.5*max($width,$height)/tan($7*pi/360)}
-  -f3d $f3d -l3d {$8*$f3d},{$9*$f3d},{$10*$f3d} -sl3d $11 -ss3d $12
+  f3d $f3d -l3d {$8*$f3d},{$9*$f3d},{$10*$f3d} -sl3d $11 -ss3d $12
   repeat $! l[$>]
     -*3d {$3*max($width,$height)} -r3d 0,0,1,{-$6} -r3d 0,1,0,{-$5} -r3d 1,0,0,{-$4}
     $width,$height,1,3,-1
@@ -32396,7 +32396,7 @@ fx_blocks3d :
 
     # Render object.
     if $16 {2*$M},{2*$M},1,4,-1 else $M,$M,1,4,-1 endif
-    f3d={0.5*w/tan($7*pi/360)} -f3d $f3d
+    f3d={0.5*w/tan($7*pi/360)} f3d $f3d
     -l3d {$10*$f3d},{$11*$f3d},{$12*$f3d} -sl3d $13 -ss3d $14
     -j3d. [0],$8%,$9%,0,1,{if($15,3,2)},0,1
     sh. 100% -+. 1 -*. 255 rm.
@@ -32642,7 +32642,7 @@ fx_lathing3d_preview :
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2010/29/12</i>.</small>")
 fx_random3d :
   repeat $! l[$>]
-    f3d={0.5*max(w,h)/tan($5*pi/360)} -f3d $f3d -l3d {$6*$f3d},{$7*$f3d},{$8*$f3d} -sl3d $9 -ss3d $10
+    f3d={0.5*max(w,h)/tan($5*pi/360)} f3d $f3d -l3d {$6*$f3d},{$7*$f3d},{$8*$f3d} -sl3d $9 -ss3d $10
     to_rgb ({w},{h},{d},{s}) -/. 2 repeat $2
     ({1,@0}) -+. {1,@1} -*. $3 -/. 100 -_fx_random3d$1 {^} rm..
     -r3d. 1,1,0,{u(0,360)}
@@ -33177,7 +33177,7 @@ _fx_lightning :
 fx_lissajous :
   repeat $! l[$>] to_rgba
     {w},{h}
-    -f3d {0.5*max(w,h)/tan($4*pi/360)}
+    f3d {0.5*max(w,h)/tan($4*pi/360)}
     -lissajous3d $1,$5,$8,$6,$9,$7,$10
     -r3d. 0,0,1,$13 -r3d. 0,1,0,$12 -r3d. 1,0,0,$11
     -*3d. {0.5*$2*{-2,w}},{0.5*$3*{-2,h}},{0.5*$4*max({-2,w},{-2,h})}
@@ -33394,7 +33394,7 @@ fx_snowflake :
 fx_superformula :
   repeat $! l[$>] to_rgba
     {w},{h}
-    -f3d {0.5*max(w,h)/tan($4*pi/360)}
+    f3d {0.5*max(w,h)/tan($4*pi/360)}
     -superformula3d $1,${4-7}
     -r3d. 0,0,1,$10 -r3d. 0,1,0,$9 -r3d. 1,0,0,$8
     -*3d. {0.5*$2*{-2,w}},{0.5*$3*{-2,h}}
@@ -33592,7 +33592,7 @@ fx_text_pointcloud3d :
   W={w} H={h} M={round(1.5*max(w,h))} rm
   -text_pointcloud3d "$2","$3",$4
   col3d. ${5-7} -*3d. {0.7*$M}
-  -f3d 4000 -db3d 0 -m3d
+  f3d 4000 -db3d 0 -m3d
   repeat $1
     -rprogress {60*$>/$1}
     angle={$>*360/$1}
@@ -33628,12 +33628,12 @@ fx_text_pointcloud3d_preview :
 #@gui : </small>"}
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2012/13/08</i>.</small>")
 fx_transition3d :
-  -f3d $7
+  f3d $7
   -transition3d $1,$2,$3,"$4","$5","$6",$8
 
 fx_transition3d_preview :
   if {$!==1} -gui_warning_preview "Missing input layer" -return endif
-  -f3d $7
+  f3d $7
   k[0,1] -transition3d 4,$2,$3,"$4","$5","$6",$8
   k[1,2]
   -r[0] 50%,100%,1,100%,0
