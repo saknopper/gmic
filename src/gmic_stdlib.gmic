@@ -16004,6 +16004,41 @@ rotoidoscope : -skip ${1=50%},${2=50%},${5=1} -check "${3=10}>0 && ${4=3}>=0"
     -repeat $3 --rotate[0] {360/$3},1,$5,$1,$2 -blend_edges $4 -done
   -endl -done -v +
 
+#@cli spherize : _radius[%]>=0,_strength,_smoothness[%]>=0,_center_x[%],_center_y[%],_ratio_x/y>0,_angle,_interpolation
+#@cli : Apply spherize effect on selected images.
+#@cli : Default values: 'radius=50%', 'strength=1', 'smoothness=0', 'center_x=center_y=50%', 'ratio_x/y=1', 'angle=0' and 'interpolation=1'.
+#@cli : $ image.jpg -grid 5%,5%,0,0,0.6,255 --spherize ,
+spherize : -check "${1=50%}>=0 && ${3=0}>=0 && ${6=1}>0 && isint(${8=1}) && $8>=0 && $8<=2" -skip "${2=1},${4=50%},${5=50%},${7=0}"
+  -e[^-1] "Apply spherize effect on image$?, with radius $1, strength $2, smoothness $3, center ($4,$5), x/y-ratio $6, angle $7 and "${"-arg 1+$8,nearest-neighbor,linear,cubic"}" interpolation."
+  -if {!$1||!$2} -return -endif
+  -v - -repeat $! -l[$>]
+    rmax={${"-is_percent $1"}?0.5*sqrt((w-1)^2+(h-1)^2)*$1:$1}
+    centerx={${"-is_percent $4"}?(w-1)*$4:$4}
+    centery={${"-is_percent $5"}?(h-1)*$5:$5}
+    strength={$2>0?$2:1-exp($2/5)}
+    100%,100%,1,2,"
+      init(
+        center = [ "$centerx","$centery" ];
+        wh1 = [ w,h ] - 1;
+        m2wh1 = 0.5*max(wh1);
+        rmax = "$rmax"/m2wh1;
+        const f = 1/"$strength";
+        const ratio = $6;
+        rotf = rot($7);
+        rotb = rot(-$7);
+      );
+      xy = ([x,y] - center)/m2wh1;
+      xy = rotf*xy;
+      ratio>=1?(xy[1]*=ratio):(xy[0]/=ratio);
+      r = norm2(xy);
+      z = r<rmax?sign($2)*sqrt(rmax^2 - r^2):0;
+      ratio>=1?(xy[1]/=ratio):(xy[0]*=ratio);
+      xy = rotb*xy;
+      xy = center + f*xy/(f + z)*m2wh1"
+    -b. $3
+    -warp.. .,0,$8,1 -rm.
+  -endl -done -v +
+
 #@cli symmetrize : _x[%],_y[%],_angle,_boundary_conditions={ 0=dirichlet | 1=neumann | 2=periodic | 3=mirror },_is_antisymmetry={ 0 | 1 },_swap_sides={ 0 | 1 }
 #@cli : Symmetrize selected image regarding specified axis.
 #@cli : Default values: 'x=y=50%', 'angle=90', 'boundary_conditions=3', 'is_antisymmetry=0' and 'swap_sides=0'.
@@ -28281,6 +28316,26 @@ fx_map_sphere :
 
 fx_map_sphere_preview :
   -fx_map_sphere {w},{h},${3--1}
+
+#@gui Spherize : fx_spherize, fx_spherize_preview(1)
+#@gui : Radius (%) = float(50,0,300)
+#@gui : Strength = float(1,-10,10)
+#@gui : Smoothness (%) = float(0,0,4)
+#@gui : X-center (%) = float(50,0,100)
+#@gui : Y-center (%) = float(50,0,100)
+#@gui : Ratio = float(0,-2,2)
+#@gui : Angle = float(0,-90,90)
+#@gui : Interpolation = choice(2,"Nearest neighbor","Linear","Cubic")
+#@gui : Preview grid = bool(0)
+#@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2017/10/03</i>.</small>")
+fx_spherize :
+  ratio={10^$6}
+  -spherize $1%,$2,$3%,$4%,$5%,$ratio,$7,$8
+  -cut 0,255
+
+fx_spherize_preview :
+  -if $9 -grid 5%,5%,50%,50%,0.6,255 -endif
+  -fx_spherize $*
 
 #@gui Square to circle : fx_square_circle, fx_square_circle_preview
 #@gui : Mode = choice(0,"Square to circle","Circle to square")
