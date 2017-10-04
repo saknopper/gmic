@@ -4641,11 +4641,17 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
 
       // Auto-preprend minus sign to recognized command.
       if (*item!='-' && *item!='(' && *item!='[' && (*item<'0' || *item>'9')) {
-        *command = sep0 = 0;
-        err = cimg_sscanf(item,"%255[a-zA-Z_0-9]%c",command,&sep0);
-        if (err==1 || (err==2 && sep0=='[')) {
-          //          std::fprintf(stderr,"\nDEBUG : Item = '%s', pourquoi pas ?\n",item);
+        bool is_command = *item>='a' && *item<='z' && (!item[1] || item[1]=='['); // Shortcut command
+        if (!is_command) {
+          *command = sep0 = 0;
+          err = cimg_sscanf(item,"%255[a-zA-Z_0-9]%c",command,&sep0);
+          is_command = err==1 || (err==2 && sep0=='[');
+          if (is_command) {
+
+          }
         }
+        //if (is_command)
+        //          std::fprintf(stderr,"\nDEBUG : Item = '%s', pourquoi pas ?\n",item);
       }
 
       // Split command/restriction, if necessary.
