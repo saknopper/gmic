@@ -4708,6 +4708,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
         default :
           err = cimg_sscanf(item,"%255[a-zA-Z_0-9]%c%c",command,&sep0,&sep1);
           is_command = err==1 || (err==2 && sep0=='.') || (err==3 && (sep0=='[' || (sep0=='.' && sep1=='.')));
+          is_command&=*item<'0' || *item>'9';
           if (is_command) { // Look for a native command
             unsigned int
               posm = 0,
@@ -12929,412 +12930,400 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
         }
 
         // Check for a custom command, and execute it, if found.
-        if (!is_input_command) {
-          const char *custom_command = 0, cc = *command;
-          bool custom_command_found = false, has_arguments = false, _is_noarg = false;
+        if (!is_input_command && is_command) {
+          bool has_arguments = false, _is_noarg = false;
           CImg<char> substituted_command(1024);
           char *ptr_sub = substituted_command.data();
-          if ((cc>='a' && cc<='z') || (cc>='A' && cc<='Z') || cc=='_') {
-            const int ind = (int)hashcode(command,false);
-            cimglist_for(commands_names[ind],l) {
-              custom_command = commands_names[ind][l].data();
-              const char
-                *const command_code = commands[ind][l].data(),
-                *const command_code_back = &commands[ind][l].back();
+          const char
+            *const command_code = commands[hash_custom_command][ind_custom_command].data(),
+            *const command_code_back = &commands[hash_custom_command][ind_custom_command].back();
 
-              if (!std::strcmp(command,custom_command)) {
-                custom_command_found = true;
-                if (is_debug) {
-                  CImg<char> command_code_text(264);
-                  const unsigned int ls = (unsigned int)std::strlen(command_code);
-                  if (ls>=264) {
-                    std::memcpy(command_code_text.data(),command_code,128);
-                    std::memcpy(command_code_text.data() + 128,"(...)",5);
-                    std::memcpy(command_code_text.data() + 133,command_code + ls - 130,131);
-                  } else std::strcpy(command_code_text.data(),command_code);
-                  for (char *ptrs = command_code_text, *ptrd = ptrs; *ptrs || (bool)(*ptrd=0);
-                       ++ptrs)
-                    if (*ptrs==1) while (*ptrs!=' ') ++ptrs; else *(ptrd++) = *ptrs;
-                  debug(images,"Found custom command '%s: %s' (%s).",
-                        custom_command,command_code_text.data(),
-                        commands_has_arguments[ind](l,0)?"takes arguments":"takes no arguments");
+          if (is_debug) {
+            CImg<char> command_code_text(264);
+            const unsigned int ls = (unsigned int)std::strlen(command_code);
+            if (ls>=264) {
+              std::memcpy(command_code_text.data(),command_code,128);
+              std::memcpy(command_code_text.data() + 128,"(...)",5);
+              std::memcpy(command_code_text.data() + 133,command_code + ls - 130,131);
+            } else std::strcpy(command_code_text.data(),command_code);
+            for (char *ptrs = command_code_text, *ptrd = ptrs; *ptrs || (bool)(*ptrd=0);
+                 ++ptrs)
+              if (*ptrs==1) while (*ptrs!=' ') ++ptrs; else *(ptrd++) = *ptrs;
+            debug(images,"Found custom command '%s: %s' (%s).",
+                  command,command_code_text.data(),
+                  commands_has_arguments[hash_custom_command](ind_custom_command,0)?"takes arguments":
+                  "takes no arguments");
+          }
+
+          CImgList<char> arguments(32);
+          // Set $0 to be the command name.
+          CImg<char>::string(command).move_to(arguments[0]);
+          unsigned int nb_arguments = 0;
+
+          if (commands_has_arguments[hash_custom_command](ind_custom_command,0)) { // Command takes arguments.
+            gmic_substitute_args(false);
+
+            // Extract possible command arguments.
+            for (const char *ss = argument, *_ss = ss; _ss; ss =_ss + 1)
+              if ((_ss=std::strchr(ss,','))!=0) {
+                if (ss==_ss) ++nb_arguments;
+                else {
+                  if (++nb_arguments>=arguments.size())
+                    arguments.insert(2 + 2*nb_arguments - arguments.size());
+                  CImg<char> arg_item(ss,(unsigned int)(_ss - ss + 1));
+                  arg_item.back() = 0;
+                  arg_item.move_to(arguments[nb_arguments]);
                 }
-
-                CImgList<char> arguments(32);
-                // Set $0 to be the command name.
-                CImg<char>::string(custom_command).move_to(arguments[0]);
-                unsigned int nb_arguments = 0;
-
-                if (commands_has_arguments[ind](l,0)) { // Command takes arguments.
-                  gmic_substitute_args(false);
-
-                  // Extract possible command arguments.
-                  for (const char *ss = argument, *_ss = ss; _ss; ss =_ss + 1)
-                    if ((_ss=std::strchr(ss,','))!=0) {
-                      if (ss==_ss) ++nb_arguments;
-                      else {
-                        if (++nb_arguments>=arguments.size())
-                          arguments.insert(2 + 2*nb_arguments - arguments.size());
-                        CImg<char> arg_item(ss,(unsigned int)(_ss - ss + 1));
-                        arg_item.back() = 0;
-                        arg_item.move_to(arguments[nb_arguments]);
-                      }
-                    } else {
-                      if (*ss) {
-                        if (++nb_arguments>=arguments.size())
-                          arguments.insert(1 + nb_arguments - arguments.size());
-                        if (*ss!=',') CImg<char>::string(ss).move_to(arguments[nb_arguments]);
-                      }
-                      break;
-                    }
-
-                  if (is_debug) {
-                    debug(images,"Found %d given argument%s for command '%s'%s",
-                          nb_arguments,nb_arguments!=1?"s":"",
-                          custom_command,nb_arguments>0?":":".");
-                    for (unsigned int i = 1; i<=nb_arguments; ++i)
-                      if (arguments[i]) debug(images,"  $%d = '%s'",i,arguments[i].data());
-                      else debug(images,"  $%d = (undefined)",i);
-                  }
-                }
-
-                // Substitute arguments in custom command expression.
-                CImg<char> inbraces;
-
-                for (const char *nsource = command_code; *nsource;)
-                  if (*nsource!='$') {
-
-                    // If not starting with '$'.
-                    const char *const nsource0 = nsource;
-                    nsource = std::strchr(nsource0,'$');
-                    if (!nsource) nsource = command_code_back;
-                    CImg<char>(nsource0,(unsigned int)(nsource - nsource0),1,1,1,true).
-                      append_string_to(substituted_command,ptr_sub);
-                  } else { // '$' expression found.
-                    CImg<char> substr(324);
-                    inbraces.assign(1,1,1,1,0);
-                    int ind = 0, ind1 = 0, l_inbraces = 0;
-                    bool is_braces = false;
-                    sep = 0;
-
-                    if (nsource[1]=='{') {
-                      const char *const ptr_beg = nsource + 2, *ptr_end = ptr_beg;
-                      unsigned int p = 0;
-                      for (p = 1; p>0 && *ptr_end; ++ptr_end) {
-                        if (*ptr_end=='{') ++p;
-                        if (*ptr_end=='}') --p;
-                      }
-                      if (p) { CImg<char>::append_string_to(*(nsource++),substituted_command,ptr_sub); continue; }
-                      l_inbraces = (int)(ptr_end - ptr_beg - 1);
-                      if (l_inbraces>0) inbraces.assign(ptr_beg,l_inbraces + 1).back() = 0;
-                      is_braces = true;
-                    }
-
-                    // Substitute $# -> maximum indice of known arguments.
-                    if (nsource[1]=='#') {
-                      nsource+=2;
-                      cimg_snprintf(substr,substr.width(),"%u",nb_arguments);
-                      CImg<char>(substr.data(),(unsigned int)std::strlen(substr),1,1,1,true).
-                        append_string_to(substituted_command,ptr_sub);
-                      has_arguments = true;
-
-                      // Substitute $* -> copy of the specified arguments string.
-                    } else if (nsource[1]=='*') {
-                      nsource+=2;
-                      CImg<char>(argument,(unsigned int)std::strlen(argument),1,1,1,true).
-                        append_string_to(substituted_command,ptr_sub);
-                      has_arguments = true;
-
-                      // Substitute $"*" -> copy of the specified "quoted" arguments string.
-                    } else if (nsource[1]=='\"' && nsource[2]=='*' && nsource[3]=='\"') {
-                      nsource+=4;
-                      for (unsigned int i = 1; i<=nb_arguments; ++i) {
-                        CImg<char>::append_string_to('\"',substituted_command,ptr_sub);
-                        CImg<char>(arguments[i].data(),arguments[i].width() - 1,1,1,1,true).
-                          append_string_to(substituted_command,ptr_sub);
-                        CImg<char>::append_string_to('\"',substituted_command,ptr_sub);
-                        if (i!=nb_arguments) CImg<char>::append_string_to(',',substituted_command,ptr_sub);
-                      }
-                      has_arguments = true;
-
-                      // Substitute $[] -> List of selected image indices.
-                    } else if (nsource[1]=='[' && nsource[2]==']') {
-                      nsource+=3;
-                      cimg_forY(selection,i) {
-                        cimg_snprintf(substr,substr.width(),"%u,",selection[i]);
-                        CImg<char>(substr.data(),(unsigned int)std::strlen(substr),1,1,1,true).
-                          append_string_to(substituted_command,ptr_sub);
-                      }
-                      if (selection) --ptr_sub;
-
-                      // Substitute $= -> transfer (quoted) arguments to named variables.
-                    } else if (nsource[1]=='=' &&
-                               cimg_sscanf(nsource + 2,"%255[a-zA-Z0-9_]",title)==1 &&
-                               (*title<'0' || *title>'9')) {
-                      nsource+=2 + std::strlen(title);
-                      for (unsigned int i = 0; i<=nb_arguments; ++i) {
-                        cimg_snprintf(substr,substr.width()," %s%u=\"",title,i);
-                        CImg<char>(substr.data(),(unsigned int)std::strlen(substr),1,1,1,true).
-                          append_string_to(substituted_command,ptr_sub);
-                        CImg<char>(arguments[i].data(),arguments[i].width() - 1,1,1,1,true).
-                          append_string_to(substituted_command,ptr_sub);
-                        CImg<char>::append_string_to('\"',substituted_command,ptr_sub);
-                        CImg<char>::append_string_to(' ',substituted_command,ptr_sub);
-                      }
-                      has_arguments = true;
-
-                      // Substitute $i and ${i} -> value of the i^th argument.
-                    } else if ((cimg_sscanf(nsource,"$%d",&ind)==1 ||
-                                (cimg_sscanf(nsource,"${%d%c",&ind,&sep)==2 && sep=='}'))) {
-                      const int nind = ind + (ind<0?(int)nb_arguments + 1:0);
-                      if ((nind<=0 && ind) || nind>=arguments.width() || !arguments[nind]) {
-                        error(images,0,custom_command,
-                              "Command '%s': Undefined argument '$%d', in expression '$%s%d%s' "
-                              "(for %u argument%s specified).",
-                              custom_command,ind,sep=='}'?"{":"",ind,sep=='}'?"}":"",
-                              nb_arguments,nb_arguments!=1?"s":"");
-                      }
-                      nsource+=cimg_snprintf(substr,substr.width(),"$%d",ind) + (sep=='}'?2:0);
-                      if (arguments[nind].width()>1)
-                        CImg<char>(arguments[nind].data(),arguments[nind].width() - 1,1,1,1,true).
-                          append_string_to(substituted_command,ptr_sub);
-                      if (nind!=0) has_arguments = true;
-
-                      // Substitute ${i=$j} -> value of the i^th argument, or the default value,
-                      // i.e. the value of another argument.
-                    } else if (cimg_sscanf(nsource,"${%d=$%d%c",&ind,&ind1,&sep)==3 && sep=='}' &&
-                               ind>0) {
-                      const int nind1 = ind1 + (ind1<0?(int)nb_arguments + 1:0);
-                      if (nind1<=0 || nind1>=arguments.width() || !arguments[nind1])
-                        error(images,0,custom_command,
-                              "Command '%s': Undefined argument '$%d', in expression '${%d=$%d}' "
-                              "(for %u argument%s specified).",
-                              custom_command,ind1,ind,ind1,
-                              nb_arguments,nb_arguments!=1?"s":"");
-                      nsource+=cimg_snprintf(substr,substr.width(),"${%d=$%d}",ind,ind1);
-                      if (ind>=arguments.width()) arguments.insert(2 + 2*ind - arguments.size());
-                      if (!arguments[ind]) {
-                        arguments[ind] = arguments[nind1];
-                        if (ind>(int)nb_arguments) nb_arguments = (unsigned int)ind;
-                      }
-                      if (arguments[ind].width()>1)
-                        CImg<char>(arguments[ind].data(),arguments[ind].width() - 1,1,1,1,true).
-                          append_string_to(substituted_command,ptr_sub);
-                      has_arguments = true;
-
-                      // Substitute ${i=$#} -> value of the i^th argument, or the default value,
-                      // i.e. the maximum indice of known arguments.
-                    } else if (cimg_sscanf(nsource,"${%d=$#%c",&ind,&sep)==2 && sep=='}' &&
-                               ind>0) {
-                      if (ind>=arguments.width()) arguments.insert(2 + 2*ind - arguments.size());
-                      if (!arguments[ind]) {
-                        cimg_snprintf(substr,substr.width(),"%u",nb_arguments);
-                        CImg<char>::string(substr).move_to(arguments[ind]);
-                        if (ind>(int)nb_arguments) nb_arguments = (unsigned int)ind;
-                      }
-                      nsource+=cimg_snprintf(substr,substr.width(),"${%d=$#}",ind);
-                      if (arguments[ind].width()>1)
-                        CImg<char>(arguments[ind].data(),arguments[ind].width() - 1,1,1,1,true).
-                          append_string_to(substituted_command,ptr_sub);
-                      has_arguments = true;
-
-                      // Substitute ${i=default} -> value of the i^th argument,
-                      // or the specified default value.
-                    } else if (cimg_sscanf(inbraces,"%d%c",&ind,&sep)==2 && sep=='=' &&
-                               ind>0) {
-                      nsource+=l_inbraces + 3;
-                      if (ind>=arguments.width()) arguments.insert(2 + 2*ind - arguments.size());
-                      if (!arguments[ind]) {
-                        CImg<char>::string(inbraces.data() +
-                                           cimg_snprintf(substr,substr.width(),"%d=",ind)).
-                          move_to(arguments[ind]);
-                        if (ind>(int)nb_arguments) nb_arguments = (unsigned int)ind;
-                      }
-                      if (arguments[ind].width()>1)
-                        CImg<char>(arguments[ind].data(),arguments[ind].width() - 1,1,1,1,true).
-                          append_string_to(substituted_command,ptr_sub);
-                      has_arguments = true;
-
-                      // Substitute any other expression starting by '$'.
-                    } else {
-
-                      // Substitute ${subset} -> values of the selected subset of arguments,
-                      // separated by ','.
-                      bool is_valid_subset = false;
-                      if (is_braces) {
-                        const char c = *inbraces, nc = c?inbraces[1]:0;
-                        if (c=='^' || c==':' || c=='.' || (c>='0' && c<='9') ||
-                            (c=='-' && !((nc>='a' && nc<='z') ||
-                                         (nc>='A' && nc<='Z') ||
-                                         nc=='_'))) {
-
-                          CImg<unsigned int> inds;
-                          CImg<char> _status;
-                          const int _verbosity = verbosity;
-                          const bool _is_debug = is_debug;
-                          verbosity = -16384; is_debug = false;
-                          status.move_to(_status); // Save status because 'selection2cimg' can change it.
-                          try {
-                            inds = selection2cimg(inbraces,nb_arguments + 1,
-                                                  CImgList<char>::empty(),"",false);
-                            is_valid_subset = true;
-                          } catch (...) { inds.assign(); is_valid_subset = false; }
-                          _status.move_to(status);
-                          verbosity = _verbosity; is_debug = _is_debug;
-
-                          if (is_valid_subset) {
-                            nsource+=l_inbraces + 3;
-                            if (inds) {
-                              cimg_forY(inds,j) {
-                                const unsigned int uind = inds[j];
-                                if (uind) has_arguments = true;
-                                if (!arguments[uind])
-                                  error(images,0,custom_command,
-                                        "Command '%s': Undefined argument '$%d', "
-                                        "in expression '${%s}'.",
-                                        custom_command,uind,inbraces.data());
-                                CImg<char>(arguments[uind],true).append_string_to(substituted_command,ptr_sub);
-                                *(ptr_sub - 1) = ',';
-                              }
-                              --ptr_sub;
-                              has_arguments = true;
-                            }
-                          }
-                        }
-                      }
-                      if (!is_valid_subset) CImg<char>::append_string_to(*(nsource++),substituted_command,ptr_sub);
-                    }
-                  }
-                *ptr_sub = 0;
-
-                // Substitute special character codes appearing outside strings.
-                bool is_dquoted = false, is_escaped = false;
-                for (char *s = substituted_command.data(); *s; ++s) {
-                  const char c = *s;
-                  if (is_escaped) is_escaped = false;
-                  else if (c=='\\') is_escaped = true;
-                  else if (c=='\"') is_dquoted = !is_dquoted;
-                  if (!is_dquoted) *s = c<' '?(c==gmic_dollar?'$':c==gmic_lbrace?'{':c==gmic_rbrace?'}':
-                                               c==gmic_comma?',':c==gmic_dquote?'\"':c):c;
-                }
-
-                if (is_debug) {
-                  CImg<char> command_code_text(264);
-                  const unsigned int l = (unsigned int)std::strlen(substituted_command.data());
-                  if (l>=264) {
-                    std::memcpy(command_code_text.data(),substituted_command.data(),128);
-                    std::memcpy(command_code_text.data() + 128,"(...)",5);
-                    std::memcpy(command_code_text.data() + 133,substituted_command.data() + l - 130,131);
-                  } else std::strcpy(command_code_text.data(),substituted_command.data());
-                  for (char *ptrs = command_code_text, *ptrd = ptrs; *ptrs || (bool)(*ptrd=0);
-                       ++ptrs)
-                    if (*ptrs==1) while (*ptrs!=' ') ++ptrs; else *(ptrd++) = *ptrs;
-                  debug(images,"Expand command line for command '%s' to: '%s'.",
-                        custom_command,command_code_text.data());
+              } else {
+                if (*ss) {
+                  if (++nb_arguments>=arguments.size())
+                    arguments.insert(1 + nb_arguments - arguments.size());
+                  if (*ss!=',') CImg<char>::string(ss).move_to(arguments[nb_arguments]);
                 }
                 break;
               }
+
+            if (is_debug) {
+              debug(images,"Found %d given argument%s for command '%s'%s",
+                    nb_arguments,nb_arguments!=1?"s":"",
+                    command,nb_arguments>0?":":".");
+              for (unsigned int i = 1; i<=nb_arguments; ++i)
+                if (arguments[i]) debug(images,"  $%d = '%s'",i,arguments[i].data());
+                else debug(images,"  $%d = (undefined)",i);
             }
           }
 
-          if (custom_command_found) {
-            const CImgList<char>
-	      ncommands_line = commands_line_to_CImgList(substituted_command.data());
-            CImg<unsigned int> nvariables_sizes(512);
-	    cimg_forX(nvariables_sizes,l) nvariables_sizes[l] = variables[l]->size();
-            g_list.assign(selection.height());
-            g_list_c.assign(selection.height());
+          // Substitute arguments in custom command expression.
+          CImg<char> inbraces;
 
-            unsigned int nposition = 0;
-            gmic_exception exception;
-            const unsigned int
-              previous_debug_filename = debug_filename,
-              previous_debug_line = debug_line;
-            CImg<char>::string(custom_command).move_to(callstack);
-            if (is_double_hyphen) {
-              cimg_forY(selection,l) {
-                const unsigned int uind = selection[l];
-                g_list[l] = images[uind];
-                g_list_c[l] = images_names[uind];
-              }
-              try {
-                is_debug_info = false;
-                _run(ncommands_line,nposition,g_list,g_list_c,images,images_names,nvariables_sizes,&_is_noarg,
-                     argument,&selection);
-              } catch (gmic_exception &e) {
-                cimg::swap(exception._command_help,e._command_help);
-                cimg::swap(exception._message,e._message);
-              }
-              g_list.move_to(images,~0U);
-              cimglist_for(g_list_c,l) g_list_c[l].copymark();
-              g_list_c.move_to(images_names,~0U);
-            } else {
-              cimg::mutex(27);
-              cimg_forY(selection,l) {
-                const unsigned int uind = selection[l];
-                if ((images[uind].width() || images[uind].height()) && !images[uind].spectrum()) {
-                  selection2string(selection,images_names,1,name);
-                  error(images,0,0,
-                        "Command '%s': Invalid selection%s "
-                        "(image [%u] is already used in another thread).",
-                        custom_command,name.data() + (*name=='s'?1:0),uind);
-                }
-                if (images[uind].is_shared())
-                  g_list[l].assign(images[uind],false);
-                else {
-                  g_list[l].swap(images[uind]);
-                  // Small hack to be able to track images of the selection passed to the new environment.
-                  std::memcpy(&images[uind]._width,&g_list[l]._data,sizeof(void*));
-                  images[uind]._spectrum = 0;
-                }
-                g_list_c[l] = images_names[uind]; // Make a copy to be still able to recognize 'pass[label]'.
-              }
-              cimg::mutex(27,0);
+          for (const char *nsource = command_code; *nsource;)
+            if (*nsource!='$') {
 
-              try {
-                is_debug_info = false;
-                _run(ncommands_line,nposition,g_list,g_list_c,images,images_names,nvariables_sizes,&_is_noarg,
-                     argument,&selection);
-              } catch (gmic_exception &e) {
-                cimg::swap(exception._command_help,e._command_help);
-                cimg::swap(exception._message,e._message);
+              // If not starting with '$'.
+              const char *const nsource0 = nsource;
+              nsource = std::strchr(nsource0,'$');
+              if (!nsource) nsource = command_code_back;
+              CImg<char>(nsource0,(unsigned int)(nsource - nsource0),1,1,1,true).
+                append_string_to(substituted_command,ptr_sub);
+            } else { // '$' expression found.
+              CImg<char> substr(324);
+              inbraces.assign(1,1,1,1,0);
+              int ind = 0, ind1 = 0, l_inbraces = 0;
+              bool is_braces = false;
+              sep = 0;
+
+              if (nsource[1]=='{') {
+                const char *const ptr_beg = nsource + 2, *ptr_end = ptr_beg;
+                unsigned int p = 0;
+                for (p = 1; p>0 && *ptr_end; ++ptr_end) {
+                  if (*ptr_end=='{') ++p;
+                  if (*ptr_end=='}') --p;
+                }
+                if (p) { CImg<char>::append_string_to(*(nsource++),substituted_command,ptr_sub); continue; }
+                l_inbraces = (int)(ptr_end - ptr_beg - 1);
+                if (l_inbraces>0) inbraces.assign(ptr_beg,l_inbraces + 1).back() = 0;
+                is_braces = true;
               }
 
-              const unsigned int nb = std::min((unsigned int)selection.height(),g_list.size());
-              if (nb>0) {
-                for (unsigned int i = 0; i<nb; ++i) {
-                  const unsigned int uind = selection[i];
-                  if (images[uind].is_shared()) {
-                    images[uind] = g_list[i];
-                    g_list[i].assign();
-                  } else images[uind].swap(g_list[i]);
-                  images_names[uind].swap(g_list_c[i]);
+              // Substitute $# -> maximum indice of known arguments.
+              if (nsource[1]=='#') {
+                nsource+=2;
+                cimg_snprintf(substr,substr.width(),"%u",nb_arguments);
+                CImg<char>(substr.data(),(unsigned int)std::strlen(substr),1,1,1,true).
+                  append_string_to(substituted_command,ptr_sub);
+                has_arguments = true;
+
+                // Substitute $* -> copy of the specified arguments string.
+              } else if (nsource[1]=='*') {
+                nsource+=2;
+                CImg<char>(argument,(unsigned int)std::strlen(argument),1,1,1,true).
+                  append_string_to(substituted_command,ptr_sub);
+                has_arguments = true;
+
+                // Substitute $"*" -> copy of the specified "quoted" arguments string.
+              } else if (nsource[1]=='\"' && nsource[2]=='*' && nsource[3]=='\"') {
+                nsource+=4;
+                for (unsigned int i = 1; i<=nb_arguments; ++i) {
+                  CImg<char>::append_string_to('\"',substituted_command,ptr_sub);
+                  CImg<char>(arguments[i].data(),arguments[i].width() - 1,1,1,1,true).
+                    append_string_to(substituted_command,ptr_sub);
+                  CImg<char>::append_string_to('\"',substituted_command,ptr_sub);
+                  if (i!=nb_arguments) CImg<char>::append_string_to(',',substituted_command,ptr_sub);
                 }
-                g_list.remove(0,nb - 1);
-                g_list_c.remove(0,nb - 1);
-              }
-              if (nb<(unsigned int)selection.height())
-                remove_images(images,images_names,selection,nb,selection.height() - 1);
-              else if (g_list) {
-                const unsigned int uind0 = selection?selection.back() + 1:images.size();
-                g_list_c.move_to(images_names,uind0);
-                g_list.move_to(images,uind0);
+                has_arguments = true;
+
+                // Substitute $[] -> List of selected image indices.
+              } else if (nsource[1]=='[' && nsource[2]==']') {
+                nsource+=3;
+                cimg_forY(selection,i) {
+                  cimg_snprintf(substr,substr.width(),"%u,",selection[i]);
+                  CImg<char>(substr.data(),(unsigned int)std::strlen(substr),1,1,1,true).
+                    append_string_to(substituted_command,ptr_sub);
+                }
+                if (selection) --ptr_sub;
+
+                // Substitute $= -> transfer (quoted) arguments to named variables.
+              } else if (nsource[1]=='=' &&
+                         cimg_sscanf(nsource + 2,"%255[a-zA-Z0-9_]",title)==1 &&
+                         (*title<'0' || *title>'9')) {
+                nsource+=2 + std::strlen(title);
+                for (unsigned int i = 0; i<=nb_arguments; ++i) {
+                  cimg_snprintf(substr,substr.width()," %s%u=\"",title,i);
+                  CImg<char>(substr.data(),(unsigned int)std::strlen(substr),1,1,1,true).
+                    append_string_to(substituted_command,ptr_sub);
+                  CImg<char>(arguments[i].data(),arguments[i].width() - 1,1,1,1,true).
+                    append_string_to(substituted_command,ptr_sub);
+                  CImg<char>::append_string_to('\"',substituted_command,ptr_sub);
+                  CImg<char>::append_string_to(' ',substituted_command,ptr_sub);
+                }
+                has_arguments = true;
+
+                // Substitute $i and ${i} -> value of the i^th argument.
+              } else if ((cimg_sscanf(nsource,"$%d",&ind)==1 ||
+                          (cimg_sscanf(nsource,"${%d%c",&ind,&sep)==2 && sep=='}'))) {
+                const int nind = ind + (ind<0?(int)nb_arguments + 1:0);
+                if ((nind<=0 && ind) || nind>=arguments.width() || !arguments[nind]) {
+                  error(images,0,command,
+                        "Command '%s': Undefined argument '$%d', in expression '$%s%d%s' "
+                        "(for %u argument%s specified).",
+                        command,ind,sep=='}'?"{":"",ind,sep=='}'?"}":"",
+                        nb_arguments,nb_arguments!=1?"s":"");
+                }
+                nsource+=cimg_snprintf(substr,substr.width(),"$%d",ind) + (sep=='}'?2:0);
+                if (arguments[nind].width()>1)
+                  CImg<char>(arguments[nind].data(),arguments[nind].width() - 1,1,1,1,true).
+                    append_string_to(substituted_command,ptr_sub);
+                if (nind!=0) has_arguments = true;
+
+                // Substitute ${i=$j} -> value of the i^th argument, or the default value,
+                // i.e. the value of another argument.
+              } else if (cimg_sscanf(nsource,"${%d=$%d%c",&ind,&ind1,&sep)==3 && sep=='}' &&
+                         ind>0) {
+                const int nind1 = ind1 + (ind1<0?(int)nb_arguments + 1:0);
+                if (nind1<=0 || nind1>=arguments.width() || !arguments[nind1])
+                  error(images,0,command,
+                        "Command '%s': Undefined argument '$%d', in expression '${%d=$%d}' "
+                        "(for %u argument%s specified).",
+                        command,ind1,ind,ind1,
+                        nb_arguments,nb_arguments!=1?"s":"");
+                nsource+=cimg_snprintf(substr,substr.width(),"${%d=$%d}",ind,ind1);
+                if (ind>=arguments.width()) arguments.insert(2 + 2*ind - arguments.size());
+                if (!arguments[ind]) {
+                  arguments[ind] = arguments[nind1];
+                  if (ind>(int)nb_arguments) nb_arguments = (unsigned int)ind;
+                }
+                if (arguments[ind].width()>1)
+                  CImg<char>(arguments[ind].data(),arguments[ind].width() - 1,1,1,1,true).
+                    append_string_to(substituted_command,ptr_sub);
+                has_arguments = true;
+
+                // Substitute ${i=$#} -> value of the i^th argument, or the default value,
+                // i.e. the maximum indice of known arguments.
+              } else if (cimg_sscanf(nsource,"${%d=$#%c",&ind,&sep)==2 && sep=='}' &&
+                         ind>0) {
+                if (ind>=arguments.width()) arguments.insert(2 + 2*ind - arguments.size());
+                if (!arguments[ind]) {
+                  cimg_snprintf(substr,substr.width(),"%u",nb_arguments);
+                  CImg<char>::string(substr).move_to(arguments[ind]);
+                  if (ind>(int)nb_arguments) nb_arguments = (unsigned int)ind;
+                }
+                nsource+=cimg_snprintf(substr,substr.width(),"${%d=$#}",ind);
+                if (arguments[ind].width()>1)
+                  CImg<char>(arguments[ind].data(),arguments[ind].width() - 1,1,1,1,true).
+                    append_string_to(substituted_command,ptr_sub);
+                has_arguments = true;
+
+                // Substitute ${i=default} -> value of the i^th argument,
+                // or the specified default value.
+              } else if (cimg_sscanf(inbraces,"%d%c",&ind,&sep)==2 && sep=='=' &&
+                         ind>0) {
+                nsource+=l_inbraces + 3;
+                if (ind>=arguments.width()) arguments.insert(2 + 2*ind - arguments.size());
+                if (!arguments[ind]) {
+                  CImg<char>::string(inbraces.data() +
+                                     cimg_snprintf(substr,substr.width(),"%d=",ind)).
+                    move_to(arguments[ind]);
+                  if (ind>(int)nb_arguments) nb_arguments = (unsigned int)ind;
+                }
+                if (arguments[ind].width()>1)
+                  CImg<char>(arguments[ind].data(),arguments[ind].width() - 1,1,1,1,true).
+                    append_string_to(substituted_command,ptr_sub);
+                has_arguments = true;
+
+                // Substitute any other expression starting by '$'.
+              } else {
+
+                // Substitute ${subset} -> values of the selected subset of arguments,
+                // separated by ','.
+                bool is_valid_subset = false;
+                if (is_braces) {
+                  const char c = *inbraces, nc = c?inbraces[1]:0;
+                  if (c=='^' || c==':' || c=='.' || (c>='0' && c<='9') ||
+                      (c=='-' && !((nc>='a' && nc<='z') ||
+                                   (nc>='A' && nc<='Z') ||
+                                   nc=='_'))) {
+
+                    CImg<unsigned int> inds;
+                    CImg<char> _status;
+                    const int _verbosity = verbosity;
+                    const bool _is_debug = is_debug;
+                    verbosity = -16384; is_debug = false;
+                    status.move_to(_status); // Save status because 'selection2cimg' can change it.
+                    try {
+                      inds = selection2cimg(inbraces,nb_arguments + 1,
+                                            CImgList<char>::empty(),"",false);
+                      is_valid_subset = true;
+                    } catch (...) { inds.assign(); is_valid_subset = false; }
+                    _status.move_to(status);
+                    verbosity = _verbosity; is_debug = _is_debug;
+
+                    if (is_valid_subset) {
+                      nsource+=l_inbraces + 3;
+                      if (inds) {
+                        cimg_forY(inds,j) {
+                          const unsigned int uind = inds[j];
+                          if (uind) has_arguments = true;
+                          if (!arguments[uind])
+                            error(images,0,command,
+                                  "Command '%s': Undefined argument '$%d', "
+                                  "in expression '${%s}'.",
+                                  command,uind,inbraces.data());
+                          CImg<char>(arguments[uind],true).append_string_to(substituted_command,ptr_sub);
+                          *(ptr_sub - 1) = ',';
+                        }
+                        --ptr_sub;
+                        has_arguments = true;
+                      }
+                    }
+                  }
+                }
+                if (!is_valid_subset) CImg<char>::append_string_to(*(nsource++),substituted_command,ptr_sub);
               }
             }
-	    for (unsigned int l = 0; l<nvariables_sizes._width - 2; ++l) if (variables[l]->size()>nvariables_sizes[l]) {
-		variables_names[l]->remove(nvariables_sizes[l],variables[l]->size() - 1);
-		variables[l]->remove(nvariables_sizes[l],variables[l]->size() - 1);
-	      }
-            callstack.remove();
-            debug_filename = previous_debug_filename;
-            debug_line = previous_debug_line;
-            is_return = false;
-            g_list.assign();
-            g_list_c.assign();
-            if (has_arguments && !_is_noarg) ++position;
-            if (exception._message) throw exception;
-            continue;
+          *ptr_sub = 0;
+
+          // Substitute special character codes appearing outside strings.
+          bool is_dquoted = false, is_escaped = false;
+          for (char *s = substituted_command.data(); *s; ++s) {
+            const char c = *s;
+            if (is_escaped) is_escaped = false;
+            else if (c=='\\') is_escaped = true;
+            else if (c=='\"') is_dquoted = !is_dquoted;
+            if (!is_dquoted) *s = c<' '?(c==gmic_dollar?'$':c==gmic_lbrace?'{':c==gmic_rbrace?'}':
+                                         c==gmic_comma?',':c==gmic_dquote?'\"':c):c;
           }
+
+          if (is_debug) {
+            CImg<char> command_code_text(264);
+            const unsigned int l = (unsigned int)std::strlen(substituted_command.data());
+            if (l>=264) {
+              std::memcpy(command_code_text.data(),substituted_command.data(),128);
+              std::memcpy(command_code_text.data() + 128,"(...)",5);
+              std::memcpy(command_code_text.data() + 133,substituted_command.data() + l - 130,131);
+            } else std::strcpy(command_code_text.data(),substituted_command.data());
+            for (char *ptrs = command_code_text, *ptrd = ptrs; *ptrs || (bool)(*ptrd=0);
+                 ++ptrs)
+              if (*ptrs==1) while (*ptrs!=' ') ++ptrs; else *(ptrd++) = *ptrs;
+            debug(images,"Expand command line for command '%s' to: '%s'.",
+                  command,command_code_text.data());
+          }
+
+          const CImgList<char>
+            ncommands_line = commands_line_to_CImgList(substituted_command.data());
+          CImg<unsigned int> nvariables_sizes(512);
+          cimg_forX(nvariables_sizes,l) nvariables_sizes[l] = variables[l]->size();
+          g_list.assign(selection.height());
+          g_list_c.assign(selection.height());
+
+          unsigned int nposition = 0;
+          gmic_exception exception;
+          const unsigned int
+            previous_debug_filename = debug_filename,
+            previous_debug_line = debug_line;
+          CImg<char>::string(command).move_to(callstack);
+          if (is_double_hyphen) {
+            cimg_forY(selection,l) {
+              const unsigned int uind = selection[l];
+              g_list[l] = images[uind];
+              g_list_c[l] = images_names[uind];
+            }
+            try {
+              is_debug_info = false;
+              _run(ncommands_line,nposition,g_list,g_list_c,images,images_names,nvariables_sizes,&_is_noarg,
+                   argument,&selection);
+            } catch (gmic_exception &e) {
+              cimg::swap(exception._command_help,e._command_help);
+              cimg::swap(exception._message,e._message);
+            }
+            g_list.move_to(images,~0U);
+            cimglist_for(g_list_c,l) g_list_c[l].copymark();
+            g_list_c.move_to(images_names,~0U);
+          } else {
+            cimg::mutex(27);
+            cimg_forY(selection,l) {
+              const unsigned int uind = selection[l];
+              if ((images[uind].width() || images[uind].height()) && !images[uind].spectrum()) {
+                selection2string(selection,images_names,1,name);
+                error(images,0,0,
+                      "Command '%s': Invalid selection%s "
+                      "(image [%u] is already used in another thread).",
+                      command,name.data() + (*name=='s'?1:0),uind);
+              }
+              if (images[uind].is_shared())
+                g_list[l].assign(images[uind],false);
+              else {
+                g_list[l].swap(images[uind]);
+                // Small hack to be able to track images of the selection passed to the new environment.
+                std::memcpy(&images[uind]._width,&g_list[l]._data,sizeof(void*));
+                images[uind]._spectrum = 0;
+              }
+              g_list_c[l] = images_names[uind]; // Make a copy to be still able to recognize 'pass[label]'.
+            }
+            cimg::mutex(27,0);
+
+            try {
+              is_debug_info = false;
+              _run(ncommands_line,nposition,g_list,g_list_c,images,images_names,nvariables_sizes,&_is_noarg,
+                   argument,&selection);
+            } catch (gmic_exception &e) {
+              cimg::swap(exception._command_help,e._command_help);
+              cimg::swap(exception._message,e._message);
+            }
+
+            const unsigned int nb = std::min((unsigned int)selection.height(),g_list.size());
+            if (nb>0) {
+              for (unsigned int i = 0; i<nb; ++i) {
+                const unsigned int uind = selection[i];
+                if (images[uind].is_shared()) {
+                  images[uind] = g_list[i];
+                  g_list[i].assign();
+                } else images[uind].swap(g_list[i]);
+                images_names[uind].swap(g_list_c[i]);
+              }
+              g_list.remove(0,nb - 1);
+              g_list_c.remove(0,nb - 1);
+            }
+            if (nb<(unsigned int)selection.height())
+              remove_images(images,images_names,selection,nb,selection.height() - 1);
+            else if (g_list) {
+              const unsigned int uind0 = selection?selection.back() + 1:images.size();
+              g_list_c.move_to(images_names,uind0);
+              g_list.move_to(images,uind0);
+            }
+          }
+          for (unsigned int l = 0; l<nvariables_sizes._width - 2; ++l) if (variables[l]->size()>nvariables_sizes[l]) {
+              variables_names[l]->remove(nvariables_sizes[l],variables[l]->size() - 1);
+              variables[l]->remove(nvariables_sizes[l],variables[l]->size() - 1);
+            }
+          callstack.remove();
+          debug_filename = previous_debug_filename;
+          debug_line = previous_debug_line;
+          is_return = false;
+          g_list.assign();
+          g_list_c.assign();
+          if (has_arguments && !_is_noarg) ++position;
+          if (exception._message) throw exception;
+          continue;
         }
       }  // if (is_command) {
 
@@ -14446,10 +14435,10 @@ int _CRT_glob = 0; // Disable globbing for msys.
 int main(int argc, char **argv) {
 
   // Set default output messages stream.
-  const char *const
-    is_debug1 = cimg_option("-debug",(char*)0,0),
-    is_debug2 = cimg_option("debug",(char*)0,0);
-  cimg::output(is_debug1?stdout:stderr);
+  const char
+    *const is_debug1 = cimg_option("-debug",(char*)0,0),
+    *const is_debug2 = cimg_option("debug",(char*)0,0);
+  cimg::output(is_debug1 || is_debug2?stdout:stderr);
 
   // Set fallback for segfault signals.
 #if cimg_OS==1
