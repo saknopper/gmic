@@ -4860,7 +4860,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
       // Begin command interpretation.
       if (is_command) {
 
-        // Manage command shortcuts.
+        // Convert command shortcuts to full names.
         char command0 = *command;
         const char
           command1 = command0?command[1]:0, command2 = command1?command[2]:0,
@@ -12929,7 +12929,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
           is_released = false; ++position; continue;
         }
 
-        // Check for a custom command, and execute it, if found.
+        // Execute custom command.
         if (!is_input_command && is_command) {
           bool has_arguments = false, _is_noarg = false;
           CImg<char> substituted_command(1024);
@@ -13325,7 +13325,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
           if (exception._message) throw exception;
           continue;
         }
-      }  // if (is_command) {
+      } // if (is_command) {
 
       // Variable assignment.
       if (!is_input_command && (*item=='_' || (*item>='a' && *item<='z') || (*item>='A' && *item<='Z'))) {

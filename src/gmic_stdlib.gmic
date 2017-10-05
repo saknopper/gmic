@@ -1501,9 +1501,9 @@ _display0 :
   v -
   w=0 h=0 d=0 s=0
   repeat $! l[$>] w+={w} h={max($h,h)} d={max($d,d)} s={max($s,s)} endl done
-  if {$!==1} -w -1,-1,0,0,-1,-1,{0,n}\ ($wx$hx$dx$s)
-  elif {$!==2} -w -1,-1,0,0,-1,-1,{0,n},{n}\ ($wx$hx$dx$s)
-  else -w -1,-1,0,0,-1,-1,{0,n},...,{n}\ ($wx$hx$dx$s)
+  if {$!==1} w -1,-1,0,0,-1,-1,{0,n}\ ($wx$hx$dx$s)
+  elif {$!==2} w -1,-1,0,0,-1,-1,{0,n},{n}\ ($wx$hx$dx$s)
+  else w -1,-1,0,0,-1,-1,{0,n},...,{n}\ ($wx$hx$dx$s)
   endif
   v + d v - w[] 0 v +
 
@@ -1616,7 +1616,7 @@ _display_array : check ${1=13}>0" && "${2=$1}>0
             !{*1,ESC}" && "!{*1,Q}" && "\
             !{*2,ESC}" && "!{*2,Q}" && "\
             !{*3,ESC}" && "!{*3,Q}}
-    k[0] -w 0 w1 0 w2 0 w3 0
+    k[0] w 0 w1 0 w2 0 w3 0
   endl done v +
 
 __display_array :
@@ -7276,7 +7276,7 @@ transfer_rgb : check "${2=0.3}>=0 && ${3=8}>=0 && ${4=0.15}>=0 && ${5=64}>=0 && 
         N+=1
       while {*}
       if $N a[-$N--1] x permute. xczy nm. constraints endif
-      rm[$visu,$both] -w 0
+      rm[$visu,$both] w 0
     endif
 
     # Estimate warping field.
@@ -12403,7 +12403,7 @@ animate3d : skip ${1=640},${2=480},${3=0},${4=1},${5=0},"${7=""}" check ${6=1}>=
        if {({*,CTRLLEFT}" || "{*,CTRLRIGHT})" && "{*,-D}} vfact=1.5 endif # Increase window size.
        if {({*,CTRLLEFT}" || "{*,CTRLRIGHT})" && "{*,-C}} vfact={1/1.5} endif # Decrease window size.
        if {({*,CTRLLEFT}" || "{*,CTRLRIGHT})" && "{*,-R}} vfact=1 endif # Decrease window size.
-    while {{*}" && "!{*,ESC}" && "!{*,Q}} rm -w 0
+    while {{*}" && "!{*,ESC}" && "!{*,Q}} rm w 0
   endl done v +
 
 #@cli apply_camera3d : pos_x,pos_y,pos_z,target_x,target_y,target_z,up_x,up_y,up_z
@@ -16775,7 +16775,7 @@ animate : skip ${1=30},${2=0},${3=""},${4=10},${5=1},"${6=}"
         wait -1
       endif
 
-    while {{*}" && "!{*,Q}" && "!{*,ESC}} -w 0 v +
+    while {{*}" && "!{*,Q}" && "!{*,ESC}} w 0 v +
   else
     e[0--3] "Compute animated version of filter '$1', from parameters $2 to $3 with $4 frames."
     if {!($5||narg("$6"))} return endif
@@ -18919,7 +18919,7 @@ demo : check "isint(${1=2}) && $1>=0 && $1<=2"
     if {$|-$time0>5} alpha+=0.02 endif
     if {$alpha>1} alpha-=1 cfx=$nfx cfy=$nfy cfz=$nfz nfx={g} nfy={g} nfz={g} time0={$|-u*3} endif
   while {{*}" && "!{*,ESC}" && "!{*,Q}}
-  rm -w 0 endl -v 0 e[] ""
+  rm w 0 endl -v 0 e[] ""
 
 _demo_color_curves :
   v - use_vt100 g=$_gmic_g c=$_gmic_c n=$_gmic_n r=$_gmic_r v +
@@ -19101,7 +19101,7 @@ x_2048 :
     endif
 
   while {{*}" && "!{*,ESC}" && "!{*,Q}}
-  rm -w 0 endl uncommand _x_2048_setrandom,_x_2048_object3d v +
+  rm w 0 endl uncommand _x_2048_setrandom,_x_2048_object3d v +
 
 #@cli x_blobs
 #@cli : Launch the blobs editor.
@@ -19121,7 +19121,7 @@ x_blobs :
 
   # Create background image [0].
   l[] (0;0^0;128^0;255) r. 450,450,1,3,3 -flower. 30,8,0,0,50%,50%,1 water. 20
-  -w {f=h<0.5*{*,v}?1.5:1;[w,h]*=f},0,0,"[G"{`39`}"MIC] Blobs editor"
+  w {f=h<0.5*{*,v}?1.5:1;[w,h]*=f},0,0,"[G"{`39`}"MIC] Blobs editor"
 
   # Start event loop.
   moving=-1
@@ -19180,7 +19180,7 @@ x_blobs :
     endif
 
   while {{*}" && "!{*,ESC}" && "!{*,Q}}
-  rm -w 0 endl v +
+  rm w 0 endl v +
 
 #@cli x_bouncing
 #@cli : Launch the bouncing balls demo.
@@ -19235,7 +19235,7 @@ x_bouncing :
     if {{*,CTRLLEFT}&&{*,D}} w[] {1.5*w},{1.5*h} elif {{*,CTRLLEFT}&&{*,C}} w[] {w},{h} endif
     rm. wait 20
   while {{*}" && "!{*,ESC}" && "!{*,Q}}
-  -w 0 rm endl v +
+  w 0 rm endl v +
 
 #@cli x_color_curves : _colorspace={ rgb | cmy | cmyk | hsi | hsl | hsv | lab | lch | ycbcr | last }
 #@cli : Apply color curves on selected RGB[A] images, using an interactive window.
@@ -19355,7 +19355,7 @@ _x_color_curves :
     endif
 
   while {{*}" && "!{*,ESC}" && "!{*,Q}" && "!{*,SPACE}" && "!{*,ENTER}}
-  -w 0
+  w 0
   repeat 4 if {narg(${__C$>})} __xcc_C$>=${__C$>} __C$>=-1 endif done  # Transfer curves to output variable and request curve widgets to close;
 
 # Define colorspace conversion functions.
@@ -19714,7 +19714,7 @@ _x_colorize :
 
   __color=-1   # Force color selectors to close.
   u $status   # Return control points.
-  -w 0
+  w 0
 
 # Compute potential function.
 __x_colorize :
@@ -19908,7 +19908,7 @@ x_connect4 :
     endif
 
   while {{*}" && "!{*,ESC}" && "!{*,Q}}
-  rm -w 0 endl v +
+  rm w 0 endl v +
 
 #@cli x_fire
 #@cli : Launch the fire effect demo.
@@ -19952,7 +19952,7 @@ x_fire : skip "${1=G\47MIC}"
   while {{*}" && "!{*,ESC}" && "!{*,Q}}
 
   # Exit properly.
-  rm[0-3] -w 0
+  rm[0-3] w 0
   v +
 
 #@cli x_fireworks
@@ -20010,7 +20010,7 @@ x_fireworks :
     w. wait 20  # Display rendered frame.
     if {{*,CTRLLEFT}&&{*,D}} w[] {3*w},{3*h} elif {{*,CTRLLEFT}&&{*,C}} w[] {1.5*w},{1.5*h} endif
   while {{*}" && "!{*,ESC}" && "!{*,Q}}
-  rm -w 0 endl v +
+  rm w 0 endl v +
 
 #@cli x_fisheye
 #@cli : Launch the fish-eye effect demo.
@@ -20048,7 +20048,7 @@ x_fisheye :
     w.
     if {{*,CTRLLEFT}&&{*,D}} w[] {3*w},{3*h} elif {{*,CTRLLEFT}&&{*,C}} w[] {1.5*w},{1.5*h} endif
     rm.
-    if {{*}==0" || "{*,ESC}" || "{*,Q}} rm[-2,-1] -w 0 v + return endif
+    if {{*}==0" || "{*,ESC}" || "{*,Q}} rm[-2,-1] w 0 v + return endif
   while 1
 
 #@cli x_fourier
@@ -20150,7 +20150,7 @@ x_fourier :
       if {({*,CTRLLEFT}" || "{*,CTRLRIGHT})" && "{*,R}} w[] {2*{0,w}},{0,h} need_update=1 endif         # Reset window size.
 
     while {{*}" && "!{*,ESC}" && "!{*,Q}}
-    -w 0
+    w 0
     endl
     rm[^0] # Clean images and window.
   endl done rm v +
@@ -20215,7 +20215,7 @@ x_grab_color : skip ${1=xgc_variable}
     if {['$$1']=='-1'} break endif # Close request
 
   while {{*}" && "!{*,ESC}" && "!{*,Q}}
-  -w 0 k[img] nm $nm endl
+  w 0 k[img] nm $nm endl
   u $color
   v +
 
@@ -20342,7 +20342,7 @@ x_histogram :
     endif
     if {{*,b}&2\ ||\ {*,SPACE}} clusters=64 sharpness=0 smoothness=0 contrast=1 brightness=0 gamma=1 endif
   while {{*}" && "!{*,ESC}" && "!{*,Q}}
-  -w 0 rm v +
+  w 0 rm v +
 
 _x_histogram :
   val={max(0,min(100,$1))}
@@ -20432,7 +20432,7 @@ x_hough :
       endif
 
     while {{*}" && "{*1}" && "!{*,ESC}" && "!{*,Q}" && "!{*1,ESC}" && "!{*1,Q}}
-    -w 0 w1 0
+    w 0 w1 0
     rm. endl
     if {!{*}" || "!{*1}} break endif
   done rm v +
@@ -20571,7 +20571,7 @@ x_jawbreaker : check "${1=12}>0 && $1<20 && ${2=13}>0 && $2<20 && ${3=5}>0 && $3
 
   # End properly.
   rm[board,undo,balls,back,visu]
-  -w 0 v +
+  w 0 v +
 
 _x_jawbreaker_ball :
   mwh={min(w,h)}
@@ -20674,7 +20674,7 @@ x_landscape :
     if {{*,CTRLLEFT}&&{*,D}} w[] 900,600 elif {{*,CTRLLEFT}&&{*,C}} w[] 600,400 endif
     wait 20
   while {{*}" && "!{*,ESC}" && "!{*,Q}}
-  rm -w 0 endl v +
+  rm w 0 endl v +
 
 #@cli x_life
 #@cli : Launch the game of life.
@@ -20762,7 +20762,7 @@ x_life :
   while {{*}" && "!{*,ESC}" && "!{*,Q}}
 
   # End game and quit properly.
-  rm[0-3] -w 0 v +
+  rm[0-3] w 0 v +
 
 #@cli x_light
 #@cli : Launch the light effect demo.
@@ -20841,7 +20841,7 @@ x_mandelbrot : skip ${1=0},${2=0.317},${3=0.03}
 
   # Init variables and display.
   v -
-  rm -w 512,512,0 _x_mandelbrot_coords $1 _x_mandelbrot_palette
+  rm w 512,512,0 _x_mandelbrot_coords $1 _x_mandelbrot_palette
 
   # Start event loop.
   do
@@ -20867,7 +20867,7 @@ x_mandelbrot : skip ${1=0},${2=0.317},${3=0.03}
       else v + e[0--4] "Mandelbrot set, at c = ("{0,@0-1}")-("{0,@2-3}")." v -
       endif
     endif
-    if {!{*}" || "{*,ESC}" || "{*,Q}} rm -w 0 v + return endif
+    if {!{*}" || "{*,ESC}" || "{*,Q}} rm w 0 v + return endif
     wait -1
   while 1
 
@@ -21062,7 +21062,7 @@ x_metaballs3d :
     rm[-3--1] wait 20
     if {{*,b}||{*,SPACE}} mode={($mode+if({*,b}&2,-1,1))%6} wait -1 rm[1] i[1] 0 endif
   while {{*}" && "!{*,ESC}" && "!{*,Q}}
-  rm -w 0 endl v +
+  rm w 0 endl v +
 
 #@cli x_minesweeper : 8<=_width=<20,8<=_height<=20
 #@cli : Launch the Minesweeper game.
@@ -21158,7 +21158,7 @@ x_minesweeper : check "${1=20}>=8 && $1<=30 && ${2=$1}>=8 && $2<=30"
 
     if {$nb_mines==$nb_flags\ &&\ {board,iM}!=11} succeeded=1 endif  # Check if board is cleared.
   while {{*}" && "!{*,ESC}" && "!{*,Q}}
-  -w 0 v +
+  w 0 v +
 
 #@cli x_minimal_path
 #@cli : Launch the minimal path demo.
@@ -21222,7 +21222,7 @@ x_minimal_path :
         endif
       while {{*}" && "!{*,ESC}" && "!{*,Q}}
     endif
-    rm[1] -w 0
+    rm[1] w 0
   endl done v +
 
 #@cli x_pacman
@@ -21442,7 +21442,7 @@ x_pacman :
     endif
     rm[visu,level_N,levelm_N]
   while $lives
-  rm -w 0 endl v +
+  rm w 0 endl v +
 
 # The functions below create the various sprite gfx.
 _pacman_ghost_standard_gfx :
@@ -21805,7 +21805,7 @@ x_quantize_rgb : check "isint(${1=16}) && $1>1"
       rm[-2,-1] nm. visu_centroids j[visu] [visu_centroids],5,310
     endif
     l[visu]
-    -w -1,-1,0,"[G"{`39`}"MIC] RGB quantization"
+    w -1,-1,0,"[G"{`39`}"MIC] RGB quantization"
     if {{*,CTRLLEFT}&&{*,D}} w[] {2*w},{2*h} elif {{*,CTRLLEFT}&&{*,C}} w[] {w},{h} endif
     endl
 
@@ -21874,7 +21874,7 @@ x_quantize_rgb : check "isint(${1=16}) && $1>1"
     endif
 
   while {{*}" && "!{*,Q}" && "!{*,ESC}}
-  rm -w 0 v +
+  rm w 0 v +
 
  _x_quantize_rgb_3d :
   if $obj3d rm[obj3d] endif
@@ -21986,7 +21986,7 @@ x_rubber3d :
     sh[2] 2 -. 1 &. {{1,d}-1} rm.
     frame={($frame-1)%{1,d}}
   while {{*}" && "!{*,ESC}" && "!{*,Q}}
-  rm -w 0 v +
+  rm w 0 v +
 
 #@cli x_segment : _max_resolution={ 0 | >=128 }
 #@cli : Segment foreground from background in selected opaque RGB images, interactively.
@@ -22197,7 +22197,7 @@ x_segment : check "${1=1024}==0 || $1>=128"
 
   endl done
   u $status   # Return control points of last image.
-  -w 0 v +
+  w 0 v +
 
 # Compute potential function.
 _x_segment :
@@ -22343,7 +22343,7 @@ x_select_color : skip ${1=xsc_variable}
     endif
 
   while {{*}" && "!{*,ESC}" && "!{*,Q}}
-  rm -w 0
+  rm w 0
   if $rgba_mode u $R,$G,$B,$A else u $R,$G,$B endif
   _xsc_old=${}
   v +
@@ -22570,7 +22570,7 @@ x_select_palette : skip ${1=xsp_variable},${2=0}
     endif
 
   while {{*}" && "!{*,ESC}" && "!{*,Q}}
-  -w 0 k[0]
+  w 0 k[0]
   if {$selected>=0} if $rgba_mode u $R,$G,$B,$A else u $R,$G,$B endif else u -1 endif
   v +
 
@@ -22587,7 +22587,7 @@ x_shadebobs :
 ---- Keys '"${c}"ESC"$n"' or '"${c}"Q"$n"' to exit.\n
 ----\n
 -------------------------------------------------"
-  v - rm t=100 -w 512,512,0,"[G"{`39`}"MIC] Shade bobs"
+  v - rm t=100 w 512,512,0,"[G"{`39`}"MIC] Shade bobs"
 
   # Start animation loop.
   do
@@ -22617,7 +22617,7 @@ x_shadebobs :
     &[img] 255 --map[img] [colormap] w. rm. wait 20
     if {{*,CTRLLEFT}&&{*,D}} w[] 1024,1024 elif {{*,CTRLLEFT}&&{*,C}} w[] 512,512 endif
   while {{*}" && "!{*,ESC}" && "!{*,Q}}
-  rm -w 0 v +
+  rm w 0 v +
 
 #@cli x_spline
 #@cli : Launch spline curve editor.
@@ -22736,7 +22736,7 @@ x_spline :
   flood. 0,0,0,0,0,1,0
 
   # Exit properly.
-  rm[0,1] -w 0 v +
+  rm[0,1] w 0 v +
 
 #@cli x_tetris
 #@cli : Launch tetris game.
@@ -22850,7 +22850,7 @@ x_tetris :
     endif
 
   while {{*}" && "!{*,ESC}" && "!{*,Q}}
-  rm -w 0 v +
+  rm w 0 v +
 
 #@cli x_tictactoe
 #@cli : Launch tic-tac-toe game.
@@ -23031,7 +23031,7 @@ x_waves :
       endl
     endif
   while {{*}" && "!{*,ESC}" && "!{*,Q}}
-  rm -w 0 v +
+  rm w 0 v +
 
 #@cli x_whirl : _opacity>=0
 #@cli : Launch the fractal whirls demo.
