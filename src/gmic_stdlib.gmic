@@ -1731,7 +1731,7 @@ _display_histogram : check "${1=512}>0 && ${2=300}>0 && ${3=256}>0" skip ${4=0%}
     repeat $! l[$>]
       $1,$2,1,{s},-255
       repeat {s} sh[-2,-1] $> graph. ..,3,0,$vM,0,1,0 rm[-2,-1] done
-      rm.. -+ 255
+      rm.. + 255
       if $6
         100%,100%
         axes. $m,$M,$vM,0,14,1,255
@@ -1878,7 +1878,7 @@ display_polar : check "${1=500}>32 && ${2=$1}>32" skip ${3=1},${4=200},${5=$4},$
 
     # Compute (x,y) coordinates of the polar curve points.
     M={max(abs(iM),abs(im))}
-    -* {0.48*min($1,$2)/$M}
+    * {0.48*min($1,$2)/$M}
     y ({$7*pi/180};{-$8*pi/180}) r. 1,..,1,1,3
     --sin. cos.. *. ... *[-3,-2]
     a[-2,-1] x N={h}
@@ -2024,7 +2024,7 @@ display_tensors :
 _display_tensors : check "${1=16}>0 && ${2=1.5}>=0 && isint(${3=2}) && $3>=0 && $3<=2 && ${4=2}>=0"
   e[0--3] "Render field of 2x2 tensors from image"$_gmic_s", with size factor $1, ellipse size $2 in "${-arg\ 1+$3,monochrome,grayscale,color}" mode and outline $4."
   v - repeat $! l[$>]
-    -* {($2*$1/2)/max(abs(im),abs(iM))} # Normalize tensor values.
+    * {($2*$1/2)/max(abs(im),abs(iM))} # Normalize tensor values.
     {$1*w},{$1*h},1,{"1<<cut($3,0,2)"}
     f.. "
       init(C = resize([255],s#1,1); Co = resize([0],s#1,1); Co[s#1 - 1] = $3?255:0);
@@ -2069,7 +2069,7 @@ _display_warp : check "${1=15}>0"
     endif
     i[0] 100%,100%,1,1,1 grid[0] $1,$1 nm[0] {1,n}
     warp[0] [1],1,1,0 rm[1]
-  endl done -* 255 v +
+  endl done * 255 v +
 
 #@cli document_gmic : _format={ ascii | bash | html | images | latex },_image_path,_write_wrapper={ 0 | 1 }
 #@cli : Create documentation of .gmic command files (loaded as raw 'uchar' images), in specified format.
@@ -2816,9 +2816,9 @@ _document_gmic :
     else t. [$>]:,3,3,15 endif
     rv[-2,-1] a[-2,-1] y
   endl done
-  -- 255 append_tiles , -+ 255
-  if {w<256} -- 255 r 256,100%,1,3,0,0,0.5,0.5 -+ 255 endif
-  if {h<256} -- 255 r 100%,256,1,3,0,0,0.5,0.5 -+ 255 endif
+  - 255 append_tiles , + 255
+  if {w<256} - 255 r 256,100%,1,3,0,0,0.5,0.5 + 255 endif
+  if {h<256} - 255 r 100%,256,1,3,0,0,0.5,0.5 + 255 endif
 
 #@cli e : eq. to '-echo'. : (+)
 
@@ -3017,7 +3017,7 @@ input_cube : skip ${2=1}
             delta = dmax - dmin;
           );
           (I - dmin)*255/delta"
-    else -* 255
+    else * 255
     endif
     if {"w>1 && h==1 && d==1 && $2"} size={w} s c y.. y y. z r $size,$size,$size a c endif
     -nm "$1"
@@ -3071,7 +3071,7 @@ output_cube :
  v - N=$! repeat $N --l[$>] to_rgb
    l={round((w*h*d)^(1/3))}
    if {w*h*d!=$l^3} v + error "Command '-output_cube': CLUT '"{n}"' has invalid dimensions "({w},{h},{d},{s}). endif
-   r $l,$l,$l,3,-1 permute cxyz -/ 255
+   r $l,$l,$l,3,-1 permute cxyz / 255
    if {$N>1} fn=${"-filename \"$1\",$>"} else fn="$1" endif
    o dlm:$fn rm i raw:$fn,uchar -replace {','},32
    0 nm. $fn basename={b} rm.
@@ -3093,7 +3093,7 @@ output_cube :
 output_ggr : skip "${2=}"
  e[^-1] "Output image$? as .ggr gradient file '$1'."
  v - N=$!
-  repeat $N --l[$>] r 1,{w*h*d},1,100%,-1 to_rgba -/ 255
+  repeat $N --l[$>] r 1,{w*h*d},1,100%,-1 to_rgba / 255
     if {narg("$2")} name="$2"
     else l[] 1 nm. "$1" ({'{b}'}) -f "if(x==0 && i>=_'a' && i<=_'z',i-_'a'+_'A',i)" name={t} rm endl
     endif
@@ -3377,7 +3377,7 @@ shape_cupid : check "${1=512}>=0"
          "     ;r         9p         7p         6n         5n         4n         5n         4m         3l         2k         1j         0i         .g         -f         -f         ,e         ,e         ,f      "\
          "   -f         ,e         ,f         -g         .g         .h         .g         .h         -f         -f         +c         \47`         \#Y                                                               "\
          "                                            2"'})
-      --. {47+32} a x y decompress_rle r $ir,$ir,1,1,5 if {$ir>480} b. 0.2% endif ->= 40%
+      -. {47+32} a x y decompress_rle r $ir,$ir,1,1,5 if {$ir>480} b. 0.2% endif ->= 40%
     endl
   endif
   -nm "[2d cupid shape]"
@@ -3441,7 +3441,7 @@ shape_fern : check "${1=512}>=0 && ${2=50%}>=0 && isval(${3=30}) && ${4=0.3}>=0 
     )"
     permute xczy
     -i.. 2,2,1,1,{"R=rot(-$3); R[2] = -R[2]; R[3] = -R[3]; R"} -m*
-    repeat 2 sh. $>,$>,0,0 --. {im} rm. done n 0,{$ir-1}
+    repeat 2 sh. $>,$>,0,0 -. {im} rm. done n 0,{$ir-1}
     pointcloud -$4 r $ir,$ir,1,1,0,0,0.5,0.5
   endl endif
   -nm "[2d Barnsley fern]"
@@ -3457,7 +3457,7 @@ shape_polygon : check "${1=512}>=0 && isint(${2=5}) && $2>=3" skip ${3=0}
   ir={round($1)}
   if {!$ir} 0
   else l[]
-      (0;{2*pi}) -+ {($3-90)*pi/180} r. 1,{$2+1},1,1,3 rows. 0,{h-2}
+      (0;{2*pi}) + {($3-90)*pi/180} r. 1,{$2+1},1,1,3 rows. 0,{h-2}
       ir2={round($ir/2)}
       --sin. cos..
       a x n 0,{$ir-1} s x +.. {-2,0.5*($ir-im-iM)} +. {-1,0.5*($ir-im-iM)} a x
@@ -3624,7 +3624,7 @@ testimage2d : check "${1=512}>0 && ${2=$1}>0 && ${3=3}>0"
 
 #@cli uniform_distribution : nb_levels>=1,spectrum>=1
 #@cli : Input set of uniformly distributed spectrum-d points in [0,1]^spectrum.
-#@cli : $ -uniform_distribution 64,3 -* 255 --distribution3d circles3d[-1] 10
+#@cli : $ -uniform_distribution 64,3 * 255 --distribution3d circles3d[-1] 10
 uniform_distribution : check "isint($1) && $1>0 && isint($2) && $2>0"
   e[^1] "Input set of $1 uniformly distributed $2-d points in [0,1]^$2."
   v - n={round($1^(1/$2),1,1)}
@@ -4050,11 +4050,11 @@ update_gallery_html :
   _update_gallery_html "old_photo drop_shadow 3,3 rotate -20,1 display_rgba"
   _update_gallery_html "old_photo drop_shadow 3,3 rotate -25,1 display_rgba"
 
-  _update_gallery_html "erode 10 --erode 3 -- equalize 255 smooth 40,0,1,1,3 normalize 0,255 negate"
-  _update_gallery_html "erode 10 --erode 3 -- equalize 255 smooth 60,0,1,1,3 normalize 0,255 negate"
-  _update_gallery_html "erode 10 --erode 3 -- equalize 255 smooth 80,0,1,1,3 normalize 0,255 negate"
-  _update_gallery_html "erode 10 --erode 3 -- equalize 255 smooth 100,0,1,1,3 normalize 0,255 negate"
-  _update_gallery_html "erode 10 --erode 3 -- equalize 255 smooth 120,0,1,1,3 normalize 0,255 negate"
+  _update_gallery_html "erode 10 --erode 3 - equalize 255 smooth 40,0,1,1,3 normalize 0,255 negate"
+  _update_gallery_html "erode 10 --erode 3 - equalize 255 smooth 60,0,1,1,3 normalize 0,255 negate"
+  _update_gallery_html "erode 10 --erode 3 - equalize 255 smooth 80,0,1,1,3 normalize 0,255 negate"
+  _update_gallery_html "erode 10 --erode 3 - equalize 255 smooth 100,0,1,1,3 normalize 0,255 negate"
+  _update_gallery_html "erode 10 --erode 3 - equalize 255 smooth 120,0,1,1,3 normalize 0,255 negate"
 
   _update_gallery_html "light_relief ,"
   _update_gallery_html "light_relief ,"
@@ -5218,8 +5218,8 @@ sort_str :
   v - y a x
   repeat {round(h/4,1,1)} y={4*$>}
     repeat $! l[$<]
-      --rows $y,{$y+3} f[1] 'if(i>=97&&i<=122,i-32,i)' --. 32 c. 0,63 s. y *.. 64 *... 4096 *[-4] 262144 +[-4--1]
-      rv a y sort +,x --rows 0 rows[0] 1,100% label[1] -%[1] 2
+      --rows $y,{$y+3} f[1] 'if(i>=97&&i<=122,i-32,i)' -. 32 c. 0,63 s. y *.. 64 *... 4096 *[-4] 262144 +[-4--1]
+      rv a y sort +,x --rows 0 rows[0] 1,100% label[1] %[1] 2
       s[1] +,0 N={$!-1}
       x0=0 repeat {$!-1} x1={$x0+{{1+$>},h}} --z[0] $x0,{$x1-1} x0=$x1 done
       rm[0-$N]
@@ -5346,7 +5346,7 @@ argmin :
 div_complex : check ${3=1e-8}>=0
   e[^-1] "Divide complex pair$? by complex pair $1,$2 (with epsilon $3)."
   v - repeat {int($!/2)} -pass${1,2} 0 l[$>,{$>+1},-2,-1]
-    --*[1,2] --*[0,3] --[-2,-1] # bc-ad
+    --*[1,2] --*[0,3] -[-2,-1] # bc-ad
     *[0] [2] *[1] [3] +[0,1] # ac+bd
     sqr[1,2] +[1,2] +[1] $3  # c^2+d^2
     /[2] [1] /[0,1]
@@ -5481,7 +5481,7 @@ mul_complex :
   e[^-1] "Multiply complex pair$? by complex pair $1,$2."
   v - repeat {int($!/2)} -pass${1,2} 0 l[$>,{$>+1},-2,-1]
     --*[0,3] --*[1,2] +[-2,-1] # ad+bc
-    *[0,2] *[1,2] --[0,1] # ac-bd
+    *[0,2] *[1,2] -[0,1] # ac-bd
   endl done v +
 
 #@cli != : eq. to '-neq'. : (+)
@@ -5602,7 +5602,7 @@ apply_curve : check "${1=1}>=0 && $1<=1" skip ${2=0},${3=100}
 apply_gamma : check $1>=0
   e[^-1] "Apply Gamma-correction to image$?, with gamma $1."
   if {$1==1} return endif
-  v - repeat $! l[$>] mM={[im,iM]} n 0,1 -^ {1/$1} n $mM endl done v +
+  v - repeat $! l[$>] mM={[im,iM]} n 0,1 ^ {1/$1} n $mM endl done v +
 
 #@cli balance_gamma : _ref_color1,...
 #@cli : Compute gamma-corrected color balance of selected image, with respect to specified reference color.
@@ -5612,7 +5612,7 @@ balance_gamma : skip ${1=128}
   e[^-1] "Apply gamma-corrected color balance of image$?, with reference color ("${^0}")."
   v - repeat $! l[$>]
     (${^0}) r. {-2,s},1,1,1,0,1 s.. c /. 255
-    repeat {$!-1} /[$>] 255 -^[$>] {log({@$>})/log({$>,ia})} *[$>] 255 done
+    repeat {$!-1} /[$>] 255 ^[$>] {log({@$>})/log({$>,ia})} *[$>] 255 done
     rm. a c c 0,255
   endl done v +
 
@@ -5657,13 +5657,13 @@ compress_clut : check "isint(${1=2048}) && $1>=1 && ${2=17.5}>=0 && ${3=1.75}>=0
   e[^-1] "Compress color LUT$? as a set of colored keypoints, with $1 max points, maximum error $2 and average error $3."
   v -
   repeat $! l[$>] strvar {b} nm=${}
-    if {iM>255} -/ 257 endif # Input is probably 16bits
+    if {iM>255} / 257 endif # Input is probably 16bits
     if {d==1} S={cbrt(wh)} r $S,$S,$S,3,-1 r3dx 32 -round endif # Input is a 2d haldclut image
     w={w} h={h} d={d} w_size=${fitscreen" "$w,$h,$d,256,50%}
     v + e[] "  > Process clut '"$nm"' ("${w}"x"${h}"x"${d}")." v -
     -nm clut
     100%,100%,100% nm. keypoints
-    --laplacian[0] norm. -^. 0.5 nm. potential
+    --laplacian[0] norm. ^. 0.5 nm. potential
 
     # Insert initialization keypoints.
     0 nm. keycoords
@@ -5696,7 +5696,7 @@ compress_clut : check "isint(${1=2048}) && $1>=1 && ${2=17.5}>=0 && ${3=1.75}>=0
       else # Using location of maximal reconstruction error
         --decompress_clut[keycoords] $w,$h,$d
         if {*0} w. $w_size,0,"Reconstructed CLUT (step 1)" endif
-        --. [clut] abs. max_error={iM} avg_error={ia} X={xM} Y={yM} Z={zM} rm.
+        -. [clut] abs. max_error={iM} avg_error={ia} X={xM} Y={yM} Z={zM} rm.
         if {$max_error<=$target_max_error" && "$avg_error<=$target_avg_error} break endif # Found a good-enough solution
         ($max_error^{10*$avg_error}) a[error,-1] x _compress_clut_draw_error
         if {$max_error<$best_max_error}
@@ -5729,7 +5729,7 @@ compress_clut : check "isint(${1=2048}) && $1>=1 && ${2=17.5}>=0 && ${3=1.75}>=0
       k={keycoords,round(u(h-1))} --l[keycoords] s y rm[$k] a y -nm new_keycoords endl  # Remove random keypoint
       --decompress_clut[new_keycoords] $w,$h,$d
       if {*0} w. 400,400,0,"Reconstructed CLUT (step 2)" endif
-      --. [clut] abs. new_max_error={iM} new_avg_error={ia} rm.
+      -. [clut] abs. new_max_error={iM} new_avg_error={ia} rm.
       if {$new_max_error<=$target_max_error" && "$new_avg_error<=$target_avg_error}
         max_error=$new_max_error
         avg_error=$new_avg_error
@@ -5762,7 +5762,7 @@ compress_rle : skip ${1=0} check "isint(${2=0}) && $2>=0"
   if $2 s=", with maximal sequence length "$2 else s="" endif
   v + e[^-1] "Compress image$? using RLE algorithm"${s{!$1}}$s"." v -
   repeat $! l[$>] nm={0,n} im={im} header={w};{h};{d};{s};$im;{$1!=0}
-    -- $im y x ({{0,@-1}+1}) a x r 100%,3
+    - $im y x ({{0,@-1}+1}) a x r 100%,3
     -f '>if(y==0,i,if(y==1,if(i(x,0)==i(x+1,0),-1,x),if(i(x-1,1)==-1,i(x-1,2)+1,1)))'
     if $2 # Constrain maximum sequence length.
       transpose mirror x
@@ -5771,7 +5771,7 @@ compress_rle : skip ${1=0} check "isint(${2=0}) && $2>=0"
     endif
     z 0,{w-2} s y,3 discard[1] -1 warp[0,2] [1],0,0 rm[1]
     if $1 # Encode for binary data.
-      -!=[0] 0 *[0] 2 --[0] 1 -*
+      -!=[0] 0 *[0] 2 -[0] 1 -*
     else # Encode for arbitrary data.
       *. -1 rv a x y discard -1 -f '>if(i(0,y-1)<0&&i==0&&i(0,y+1)<0,-1,i)' discard -1
     endif
@@ -5817,7 +5817,7 @@ decompress_rle :
     else # Decode for arbitrary data
       --<. 0
       if {$_version<179} (1;1;0) else (0;1;1) endif
-      erode.. .,0 rm. --. 1 a x discard -1  # Get back compressed '0' (minimum) values.
+      erode.. .,0 rm. -. 1 a x discard -1  # Get back compressed '0' (minimum) values.
       --< 0 (0;1;1) dilate.. . rm. *. -2 +. 1 # Get back singletons.
       rv abs. a x discard -1
       r 2,{h/2},1,1,-1
@@ -5829,12 +5829,12 @@ decompress_rle :
       i[0] ({'CImg3d'}) +[0] 0.5
       i[1] ({2*h};{h})
       s. x,2 cumulate.. siz={-2,@-1}
-      --shift.. 0,1 --... 1 rv[-3,-1] z[-3,-1] 0,2 a[-3,-1] x
+      --shift.. 0,1 -... 1 rv[-3,-1] z[-3,-1] 0,2 a[-3,-1] x
       i[3] (2,0,1;2,{2*h-2},{2*h-1}) r[3] 3,{h},1,1,3 round[3]
       r[4] 3 1,100%,1,1,1 y a y
       $siz j3d. ..,0,0,0,1,2,0,0 rm..
     endl done
-    a x r $whds,-1 -+ $im
+    a x r $whds,-1 + $im
   endl done v +
 
 #@cli discard : _value1,_value2,... : { x | y | z | c}...{ x | y | z | c},_value1,_value2,... : (no arg) : (+)
@@ -5865,7 +5865,7 @@ eigen2tensor :
       l[-6--4] --sqr.. --*[-2,-3] --sqr... *[-5] [-6] *[-4] [-6] sqr[-6] a c endl
       l[-3--1] --sqr.. --*[-2,-3] --sqr... *[-5] [-6] *[-4] [-6] sqr[-6] a c endl
       s... c
-      --[-5] ... --[-4] ... *.. [-5] *. [-4]
+      -[-5] ... -[-4] ... *.. [-5] *. [-4]
       (1^0^0^1^0^1) r. ... *. [-4] rm[-6--4] +[-3--1]
     else v + error[0--3] "Command '-eigen2tensor': Invalid image ["{$!-$>-1}"] : Dimensions "{w}","{h}","{d}","{s}" does not represent a field of 2d or 3d eigenvectors."
     endif
@@ -5901,7 +5901,7 @@ float2int8 :
   v - repeat $! l[$>]
     s c repeat $! l[$>]
       m={im} M={iM} -quantize 16777216,0,1
-      -->> 8 -&. 255 --&.. 255 ->>... 16
+      -->> 8 &. 255 --&.. 255 ->>... 16
       ({'$m,$M'}) a y
     endl done a c
   endl done v +
@@ -5945,7 +5945,7 @@ _inrange :
     m=$1 M=$2
     if ${is_percent\ $1} m={im+(iM-im)*$1} endif
     if ${is_percent\ $2} M={im+(iM-im)*$2} endif
-    -- {0.5*($m+$M)} abs -<= {0.5*abs($M-$m)}
+    - {0.5*($m+$M)} abs -<= {0.5*abs($M-$m)}
   endl done v +
 
 #@cli map : [palette],_boundary_conditions : predefined_palette,_boundary_conditions : (+)
@@ -5990,10 +5990,10 @@ mix_channels :
 negate : skip "${1=,}"
   if {isval("$*")}
     e[0--3] "Negate values of image$?, according to base value $*."
-    v - -- {"$*"} -* -1 v +
+    v - - {"$*"} * -1 v +
   else
     e[0--3] "Negate values of image$?."
-    v - repeat $! --[$>] {$>,iM} done -* -1
+    v - repeat $! -[$>] {$>,iM} done * -1
     if {;['"$1"']!=','} -noarg endif
     v +
   endif
@@ -6016,7 +6016,7 @@ normlp : check "isval(${1==2}) && $1>=0"
   elif {$1==1} abs compose_channels +
   elif {$1==2} norm
   elif {$1==inf} abs compose_channels max
-  else -^ $1 compose_channels + -^ {1/$1}
+  else ^ $1 compose_channels + ^ {1/$1}
   endif
   v +
 
@@ -6063,7 +6063,7 @@ orientation :
 #@cli : $ image.jpg normalize 0,1 --oneminus
 oneminus :
   e[^-1] "Compute one minus selected images$?."
-  v + -* -1 -+ 1 v -
+  v + * -1 + 1 v -
 
 #@cli otsu : _nb_levels>0
 #@cli : Hard-threshold selected images using Otsu's method.
@@ -6188,7 +6188,7 @@ roundify : check $1>=0
   e[^-1] "Roundify image$?, with gamma $1."
   if {$1==1} return endif
   v - repeat $! l[$>]
-    --round 1 --.. . --*.. 2 abs. -^. $1 sign... *[-3,-1] *.. 0.5 -+
+    --round 1 -.. . --*.. 2 abs. ^. $1 sign... *[-3,-1] *.. 0.5 -+
   endl done v +
 
 #@cli = : eq. to '-set'. : (+)
@@ -6253,7 +6253,7 @@ adjust_colors : check "${1=0}>=-100 && $1<=100 && ${2=0}>=-100 && $2<=100 && ${3
   v - repeat $! l[$>] split_opacity
     range={"$6==$7 && $6==0?[im,iM]:[min($6,$7),max($6,$7)]"}
     m={arg(1,$range)} M={arg(2,$range)} fact={255/max(1e-5,$M-$m)}
-    -- $m -* $fact
+    - $m * $fact
     if {$4" || "$5} # Adjust Hue/Saturation
       to_rgb[0] rgb2hsv[0]
       sh[0] 0 +. {$4*1.8} rm.
@@ -6261,10 +6261,10 @@ adjust_colors : check "${1=0}>=-100 && $1<=100 && ${2=0}>=-100 && $2<=100 && ${3
       hsv2rgb[0]
     endif
     if $3 # Adjust Gamma
-      /[0] 255 -^[0] {10^-($3%)} *[0] 255
+      /[0] 255 ^[0] {10^-($3%)} *[0] 255
     endif
     if $2 # Adjust Contrast
-      --[0] 128 *[0] {exp($2/64)} +[0] 128
+      -[0] 128 *[0] {exp($2/64)} +[0] 128
     endif
     +[0] {$1*2} # Adjust Brightness
     /[0] $fact +[0] $m -c[0] $range # Renormalize values.
@@ -6421,7 +6421,7 @@ bayer2rgb : skip ${1=1},${2=1},${3=0.5}
     b. $1
 
     *.. .
-    --[-3,-2]
+    -[-3,-2]
 
     # Compute red-blue chromaticity.
     (1,-1) r. ..,..,1,1,0,2  # Horizontal estimate
@@ -6439,7 +6439,7 @@ bayer2rgb : skip ${1=1},${2=1},${3=0.5}
     # Luminance reconstruction.
     (2,0;0,-2) r. ..,..,1,1,0,2
     *. ..
-    --[-4,-1]
+    -[-4,-1]
 
     # RGB reconstruction.
     a[-3--1] c
@@ -6553,7 +6553,7 @@ direction2rgb :
   e[^-1] "Compute RGB representation of 2d direction field$?."
   v - channels 0,1 repeat $! l[$>] nm={0,n}
     s c complex2polar round.. 0.001
-    *. {180/pi} -%. 360 100%,100%,1,1,1 mv... $!
+    *. {180/pi} %. 360 100%,100%,1,1,1 mv... $!
     if {im!=iM} n. 0,1 else f. 1 endif
     a c hsv2rgb
   -nm $nm endl done v +
@@ -6638,7 +6638,7 @@ _hsx82rgb :
 int2rgb :
   e[^-1] "Convert image$? from INT24 scalars to RGB."
   v - -round repeat $! l[$>]
-    -->> 8 -&[1] 255 --&[0] 255 ->>[0] 16 a c
+    -->> 8 &[1] 255 --&[0] 255 ->>[0] 16 a c
   endl done v +
 
 #@cli lab2lch
@@ -6660,8 +6660,8 @@ lab82rgb : skip "${1=,}"
   e[^-1] "Convert image$? from Lab8 to RGB color bases."
   v - repeat $!
     sh[$>] 0 /. 2.55 rm.
-    sh[$>] 1 /. 1.275 --. 100 rm.
-    sh[$>] 2 /. 1.15909 --. 110 rm.
+    sh[$>] 1 /. 1.275 -. 100 rm.
+    sh[$>] 2 /. 1.15909 -. 110 rm.
   done lab2rgb $wp v +
 
 #@cli lch2lab
@@ -6685,7 +6685,7 @@ lch82rgb :
   v - repeat $!
     sh[$>] 0 /. 2.55 rm.
     sh[$>] 1 /. 1.88889 rm.
-    sh[$>] 2 /. 40.5845 --. 3.14159 rm.
+    sh[$>] 2 /. 40.5845 -. 3.14159 rm.
   done -lch2rgb v +
 
 #@cli luminance
@@ -6733,15 +6733,15 @@ pseudogray : check "isint(${1=5}) && $1>=0 && ${2=2.3}>=0 && isint(${3=8}) && $3
   else # Add perceptual constraint if requested.
 
     # Constraint 1 : keep colors close enough to equivalent 'pure' grays.
-    s. y rv[-2,-1] . sh. 1,2 f. 0 rm. --[-2,-1] norm.
-    -<=. $2 *. 'x+1' discard. 0 --. 1 map. .. rm..
+    s. y rv[-2,-1] . sh. 1,2 f. 0 rm. -[-2,-1] norm.
+    -<=. $2 *. 'x+1' discard. 0 -. 1 map. .. rm..
 
     # Constraint 2 : remove neighboring colors that are above the JND.
     repeat 10000
-      --srgb2rgb. rgb2lab. --shift. 0,{1-2*($>%2)},0,0,1 --[-2,-1] norm.
+      --srgb2rgb. rgb2lab. --shift. 0,{1-2*($>%2)},0,0,1 -[-2,-1] norm.
       -<=. $2
       if {im} rm. break endif
-      *. 'y+1' discard. 0 --. 1 map. .. rm..
+      *. 'y+1' discard. 0 -. 1 map. .. rm..
     done
     transpose.
 
@@ -6756,7 +6756,7 @@ replace_color : check "$1>=0 && $2>=0"
   e[^-1] "Replace color ("$col1") by color ("$col2") in image$?, with tolerance $1 and smoothness $2."
   v - repeat $! l[$>]
     1,1,1,100%,$col1 r[1] [0]
-    if $1 --[1] [0] norm[1] -<=[1] $1 else -==[1] [0] l[1] s c -& endl endif
+    if $1 -[1] [0] norm[1] -<=[1] $1 else -==[1] [0] l[1] s c & endl endif
     b[1] $2
     1,1,1,{0,s},$col2 r[2] [0] j[0] [2],0,0,0,0,1,[1] k[0]
   endl done v +
@@ -6780,7 +6780,7 @@ retinex : check "${1=5}>0 && ${3=1}>=0 && $3<=100 && ${4=1}>=0 && $4<=100 && ${5
   v +
 
 _retinex :
-  -- {im-$1} {[w,h,d,s]},1
+  - {im-$1} {[w,h,d,s]},1
   repeat 3 --b[0] {arg(1+$>,${4-6})} --/[0,-1] rm.. *[1,-1] done
   rm[0] log c $2%,{100-$3}% n 0,255
 
@@ -6791,7 +6791,7 @@ _retinex :
 rgb2bayer : skip ${1=0},${2=0}
   e[^-1] "Transform image$? to a RGB-Bayer "${-arg\ 1+!$2,color,monochrome}" grid, starting from pattern '$1'."
   v - to_rgb repeat $! l[$>]
-    _rgb2bayer$1 r[1] [0],0,2 -* if {!$2} s c -+ endif
+    _rgb2bayer$1 r[1] [0],0,2 * if {!$2} s c + endif
   endl done v +
 
 _rgb2bayer0 : (1,0;0,0^0,1;1,0^0,0;0,1)
@@ -6804,7 +6804,7 @@ _rgb2bayer3 : (0,0;1,0^1,0;0,1^0,1;0,0)
 #@cli : $ image.jpg rgb2cmy split c
 rgb2cmy :
   e[^-1] "Convert image$? from RGB to CMY color bases."
-  v - to_rgb -* -1 -+ 255 c 0,255 v +
+  v - to_rgb * -1 + 255 c 0,255 v +
 
 #@cli rgb2cmyk
 #@cli : Convert selected images from RGB to CMYK colorbases.
@@ -6813,7 +6813,7 @@ rgb2cmy :
 rgb2cmyk :
   e[^-1] "Convert image$? from RGB to CMYK color bases."
   v - rgb2cmy repeat $! l[$>]
-    s c --min --[0-2] . --/. 255 --. 1 *. -1 --==. 0 +[-2,-1]
+    s c --min -[0-2] . --/. 255 -. 1 *. -1 --==. 0 +[-2,-1]
     /[0-2] . rm. a c
   endl done v +
 
@@ -6840,7 +6840,7 @@ hcy2rgb :
     X = G*(1 - abs(H%2 - 1));
     RGB1 = arg(1 + int(H),[G,X,0],[X,G,0],[0,G,X],[0,X,G],[X,0,G],[G,0,X]);
     m = B - 0.3*RGB1[0] - 0.59*RGB1[1] - 0.11*RGB1[2];
-    RGB1 + m" -* 255
+    RGB1 + m" * 255
   v +
 
 #@cli rgb2hsi : (+)
@@ -6928,7 +6928,7 @@ rgb2luv :
     --rgb2xyz rgb2lab.. channels.. 0 s. c
     *. 3 --*.. 15 +[-2,-1] +. ... +. 1e-8  # Z <- X+15Y+3Z
     *... 4 *.. 9 /[-3,-2] . rm.
-    --.. 0.2009 --. 0.4610
+    -.. 0.2009 -. 0.4610
     --*... 13 *... . *[-2,-1] a c
   endl done v +
 
@@ -6952,7 +6952,7 @@ rgb2xyz : skip "${1=,}"
   v - if {isval("$1")} wp={"$1?1:0"} else if {["'$1'"]!=','} -noarg endif wp=1 endif v +
   e[^-1] "Convert image$? from RGB to XYZ color bases, with D"{arg(1+$wp,50,65)}" illuminant."
   v -
-  -/ 255
+  / 255
   if $wp # D65
     -mix_rgb 0.4124564,0.3575761,0.1804375,\
              0.2126729,0.7151522,0.0721750,\
@@ -7002,7 +7002,7 @@ rgb2yiq8 :
 #@cli : $ image.jpg rgb2ycbcr split c
 rgb2ycbcr :
   e[^-1] "Convert image$? from RGB to YCbCr color bases."
-  v - -mix_rgb 66,129,25,-38,-74,112,112,-94,-18 -+ 128 -/ 256
+  v - -mix_rgb 66,129,25,-38,-74,112,112,-94,-18 + 128 / 256
   repeat $!
     sh[$>] 0 +. 16 rm.
     sh[$>] 1,2 +. 128 rm.
@@ -7013,7 +7013,7 @@ rgb2ycbcr :
 #@cli : $ image.jpg rgb2yuv split c
 rgb2yuv :
   e[^-1] "Convert image$? from RGB to YUV color bases."
-  v - -/ 255
+  v - / 255
   -mix_rgb 0.299,0.587,0.114,\
            -0.14713,-0.28886,0.436,\
            0.615,-0.51498,-0.10001
@@ -7047,7 +7047,7 @@ remove_opacity :
 select_color : skip ${1=0}
   e[^-1] "Select color (${2--1}) in image$?, with tolerance $1."
   v - repeat $! l[$>]
-    --fc ${2--1} -- norm -<= $1
+    --fc ${2--1} - norm -<= $1
   endl done v +
 
 #@cli sepia
@@ -7179,7 +7179,7 @@ to_pseudogray : check "isint(${1=5}) && $1>=0 && isint(${3=8}) && $3>0" skip ${2
   # Compute colormap with 65336 entries, to have match corresponding lightness.
   --srgb2rgb. rgb2lab. channels. 0 *. {65535/100} round. rows. 0,2
   rv[-2,-1] permute. xcyz +. 1 a[-2,-1] y pointcloud. 0
-  --norm. -!=. 0 distance. 1 *. -1 -watershed.. . rm. --. 1
+  --norm. -!=. 0 distance. 1 *. -1 -watershed.. . rm. -. 1
 
   # Map colormap to images, with lightness preservation.
   repeat {$!-1}
@@ -7219,7 +7219,7 @@ transfer_colors : skip ${1=0}
   e[^-1] "Transfer colors of image $1 to image$?."
   v - -pass$1 0 mv. 0 to_rgb[0] to_colormode[^0] {max(3,${-max_s})} c 0,255   # Convert all images to RGB[A]
   repeat $! l[$>] split_opacity rgb2ycbcr[0] a c endl done                  # Perform RGB[A] to YCbCr[A] conversion.
-  l[0] s c histogram_cumul 256,1,0,255 a c -* 255 endl                        # Compute channel-by-channel cumulative histogram of target image.
+  l[0] s c histogram_cumul 256,1,0,255 a c * 255 endl                        # Compute channel-by-channel cumulative histogram of target image.
   repeat {$!-1} l[0,{$<+1}]
     if $1 repeat 3 sh[0,1] $> equalize. 256,0,255 index. ..,0,0 rm[-2,-1] done     # Transfer brightness + colors.
     else repeat 2 sh[0,1] {$>+1} equalize. 256,0,255 index. ..,0,0 rm[-2,-1] done  # Transfer colors only.
@@ -7275,7 +7275,7 @@ transfer_rgb : check "${2=0.3}>=0 && ${3=8}>=0 && ${4=0.15}>=0 && ${5=64}>=0 && 
         s. y,2 rows[-2,-1] 0,1 a[-2,-1] x permute. xczy
         --warp[$both] .,0,0 rm..
         *. {($5-1)/255} s. x,2
-        --. .. *. -1 a[-2,-1] c
+        -. .. *. -1 a[-2,-1] c
         N+=1
       while {*}
       if $N a[-$N--1] x permute. xczy nm. constraints endif
@@ -7324,13 +7324,13 @@ transfer_rgb : check "${2=0.3}>=0 && ${3=8}>=0 && ${4=0.15}>=0 && ${5=64}>=0 && 
     [displacement],[displacement],[displacement],1,x --f. y --f. z a[-3--1] c *. {255/(w-1)} +. 1
     --_transfer_rgb[target] 0,0,{w} *.. .
     warp[-2,-1] [displacement],1,0,1
-    distance. 1 *. -1 -watershed.. . rm. --. 1
+    distance. 1 *. -1 -watershed.. . rm. -. 1
     nm. clut
     b[clut] $sigma%
 
     # Enforce luminosity constraint for non-confident colors.
     if {$4>0}
-      -^[fconfidence] {$4/10} *[fconfidence] -1 +[fconfidence] 1
+      ^[fconfidence] {$4/10} *[fconfidence] -1 +[fconfidence] 1
       --f[fconfidence] x --f. y --f. z a[-3--1] c *. {255/(w-1)}
       rgb2hsv[clut,-1] channels. 100%
       j[clut] .,0,0,0,2,1,[fconfidence] rm.
@@ -7363,7 +7363,7 @@ _transfer_rgb : v - l[] check "${1=0}>=0 && ${2=1.5}>=0 && ${3=128}>0" gamma=$1 
   e[^-1] "Convert image$? as 3d volumetric scalar functions for color matching, with gamma "$gamma", smoothness "$smoothness" and resolution "$res"."
   v - to_rgb repeat $! l[$>]
     b 0.3%
-    r {w*h},3,1,1,-1 -* {($res-1)/255}
+    r {w*h},3,1,1,-1 * {($res-1)/255}
     pointcloud 1,$res,$res,$res -f 'if(i,i^$gamma,0)' b $smoothness% n 0,1
   endl done v +
 
@@ -7383,7 +7383,7 @@ xyz2rgb : skip "${1=,}"
              -0.978795575994,1.916161689117,0.033453331711,\
              0.071976988401,-0.228984974402,1.405718224383
   endif
-  -* 255 c 0,255 v +
+  * 255 c 0,255 v +
 
 #@cli xyz82rgb : illuminant={ 0=D50 | 1=D65 } : (no arg)
 #@cli : Convert selected images from XYZ8 to RGB color bases.
@@ -7400,11 +7400,11 @@ xyz82rgb : skip "${1=,}"
 #@cli : Convert selected images from YCbCr to RGB colorbases.
 ycbcr2rgb :
   e[^-1] "Convert image$? from YCbCr to RGB color bases."
-  v - repeat $! l[$>] sh 0 --. 16 rm. sh 1,2 --. 128 rm. endl done
+  v - repeat $! l[$>] sh 0 -. 16 rm. sh 1,2 -. 128 rm. endl done
   -mix_rgb 298,0,409,\
            298,-100,-208,\
            298,516,0
-  -+ 128 -/ 256 c 0,255
+  + 128 / 256 c 0,255
   v +
 
 #@cli yiq2rgb
@@ -7422,8 +7422,8 @@ yiq2rgb :
 yiq82rgb :
   e[^-1] "Convert image$? from YIQ8 to RGB color bases."
   v - repeat $!
-    sh[$>] 1 /. 0.8393238012481239 --. 151.908 rm.
-    sh[$>] 2 /. 0.9567690472081104 --. 133.261 rm.
+    sh[$>] 1 /. 0.8393238012481239 -. 151.908 rm.
+    sh[$>] 2 /. 0.9567690472081104 -. 133.261 rm.
   done
   -mix_rgb 1,0.9563,0.6210,\
            1,-0.2721,-0.6474,\
@@ -7438,7 +7438,7 @@ yuv2rgb :
   -mix_rgb 1,0,1.13983,\
            1,-0.39465,-0.5806,\
            1,2.03211,0
-  -* 255 c 0,255 v +
+  * 255 c 0,255 v +
 
 #@cli yuv82rgb
 #@cli : Convert selected images from YUV8 to RGB color bases.
@@ -7446,8 +7446,8 @@ yuv82rgb :
   e[^-1] "Convert image$? from YUV8 to RGB color bases."
   v - repeat $!
     sh[$>] 0 /. 255 rm.
-    sh[$>] 1 /. 289.773 --. 0.44 rm.
-    sh[$>] 2 /. 205.645 --. 0.62 rm.
+    sh[$>] 1 /. 289.773 -. 0.44 rm.
+    sh[$>] 2 /. 205.645 -. 0.62 rm.
   done -yuv2rgb v +
 
 #---------------------------------
@@ -8242,7 +8242,7 @@ scale_dcci2x_old : check "${1=1.15}>=0 && ${2=5}>=0" skip ${3=0}
 
 _scale_dcci2x_smooth : skip ${3=5}
   # calculate interpolated output for smooth areas
-  -^[0,1] $3 +[0,1] 1 --+[0,1] /[0,1] . rm. # weights
+  ^[0,1] $3 +[0,1] 1 --+[0,1] /[0,1] . rm. # weights
   -pass$1 -pass$2 *[0,-2] *[1,-1] +[0,1] # smooth
 
 _scale_dcci2x_mask : skip ${1=1.15}
@@ -8320,9 +8320,9 @@ _seamcarve :
     f. "<if(c,i,j(j(0,0,0,1),1,0,0,0,1))" channels. 0
     +[0] 0.1 -!=. $max
     w={w} h={h} s={0,s}
-    if {$ssms<0} -* discard 0 r {$w-$sms},$h,1,$s,-1  # Remove seams.
+    if {$ssms<0} * discard 0 r {$w-$sms},$h,1,$s,-1  # Remove seams.
     elif {$ssms>0}              # Add seams.
-      --. 2 s[0] c
+      -. 2 s[0] c
       repeat $s if {$><($s-1)} . endif a[$>,-1] c done
       permute cxyz a c discard -1 -f "if(i<0,j(0,-1),i)"
       r {$w+$sms},$h,1,$s,-1
@@ -8592,7 +8592,7 @@ blur_radial : skip ${2=50%},${3=50%}
 blur_selective : check "${1=5}>=0 && ${2=0.5}>=0 && isint(${3=5}) && $3>0"
   e[^-1] "Blur image$? using $3 selective gaussian scales, with sigma $1 and edges $2."
   v - repeat $! l[$>] nm={0,n}
-    --gradient_norm +. 1 -^. {-max(0.01,$2)} -quantize. {$3+1},0,1 min. {$3-1} r. ..
+    --gradient_norm +. 1 ^. {-max(0.01,$2)} -quantize. {$3+1},0,1 min. {$3-1} r. ..
     repeat $3 --==. $> *. ... +[-2,-1] b.. {$1/($3+1)} done
   rm.. -nm $nm endl done v +
 
@@ -8674,7 +8674,7 @@ convolve_fft : check ${-is_image_arg\ $1}
     r[1] [0],[0],[0],1,0,0,0.5,0.5,0.5,0.5 shift[1] -$w2,-$h2,-$d2,0,2
     -fft[0] -fft[2]
     --*[-4] . --*[-4] ... +[-2,-1]
-    *[-5,-3] *[-3,-2] --[-3,-2]
+    *[-5,-3] *[-3,-2] -[-3,-2]
     -ifft rm.
   endl done v +
 
@@ -8692,7 +8692,7 @@ cross_correlation : check ${-is_image_arg\ $1}
   e[^-1] "Compute cross-correlation of image$? with mask $1."
   v - repeat $! -pass$1 0 l[$>,-1]
     norm -fft.. -fft. [-2,-1] *.. [-5] *. [-6]
-    --[-2,-1] *[-5,-3] *[-3,-2] +[-3,-2] -ifft rm.
+    -[-2,-1] *[-5,-3] *[-3,-2] +[-3,-2] -ifft rm.
   endl done v +
 
 #@cli curvature
@@ -8706,11 +8706,11 @@ curvature :
       *... .. *[-4] . *[-4] -2                             # ixx -2iyixy ixiyy ix iy
       +[-4,-3] *... ..                                      # ixx -2ixiyixy+ix^2iyy ix iy
       sqr[-2,-1] *[-4] . +[-4,-3]                          # iy^2ixx-2ixiyixy+ix^2iyy ix^2 iy^2
-      +[-2,-1] +. 0.1 -^. 1.5 -/                            # (iy^2ixx+2ixiyixy+ix^2iyy)/(ix^2+iy^2)
+      +[-2,-1] +. 0.1 ^. 1.5 /                            # (iy^2ixx+2ixiyixy+ix^2iyy)/(ix^2+iy^2)
     else
       --inn --gradient_norm.. -laplacian...                   # inn+iee inn in
-      --[-3,-2] +. 0.1 /[-2,-1]                             # iee in
-      --inn. -laplacian.. --                                  # iee/in
+      -[-3,-2] +. 0.1 /[-2,-1]                             # iee in
+      --inn. -laplacian.. -                                  # iee/in
     endif
   endl done v +
 
@@ -8754,7 +8754,7 @@ _dct :
   100%,1,1,1,2*sin(-x*pi/(2*w)) *[1,2]
   --
   if $is_odd r {w-1},100%,100%,100%,0 endif
-  --z[0] 0,0 /. {sqrt(2)} j.. .,0,0,0 rm. -* {sqrt(2/w)}  # Make the transform orthogonal.
+  --z[0] 0,0 /. {sqrt(2)} j.. .,0,0,0 rm. * {sqrt(2/w)}  # Make the transform orthogonal.
 
 #@cli deblur : amplitude[%]>=0,_nb_iter>=0,_dt>=0,_regul>=0,_regul_type={ 0=Tikhonov | 1=meancurv. | 2=TV }
 #@cli : Deblur image using a regularized Jansson-Van Cittert algorithm.
@@ -8770,8 +8770,8 @@ deblur : check "${2=10}>=0 && ${3=20}>=0 && ${4=0.7}>=0" skip ${5=1}
       else --laplacian.                               # Tikhonov regularization.
       endif
       *. $4
-      --b.. $1 --. [-4]                              # Data fidelity term.
-      --[-2,-1]
+      --b.. $1 -. [-4]                              # Data fidelity term.
+      -[-2,-1]
       *. {$3/(0.0001+max(abs(im),abs(iM)))}           # Adaptive time step.
       +[-2,-1]                                        # Update image.
       done
@@ -8787,7 +8787,7 @@ deblur_goldmeinel : check "$1>=0 && ${2=8}>=0 && ${3=1}>=0" skip ${4=1}
   e[^-1] "Deblur image$? using Gold-Meinel algorithm, with sigma $1, $2 iterations, acceleration $3 and "${-arg\ 1+!$4,"",quasi-}"gaussian kernel."
   v - repeat $! l[$>]
     [0] repeat $2
-      --b. $1,1,$4 --/[0,-1] rm.. -^. $3 *[-1,-2] # u *= f / Hu
+      --b. $1,1,$4 --/[0,-1] rm.. ^. $3 *[-1,-2] # u *= f / Hu
     done rm[0]
   endl done v +
 
@@ -8814,10 +8814,10 @@ deconvolve_fft : check ${-is_image_arg\ $1}" && ${2=.001}>=0"
     w2={0,int(w/2)} h2={0,int(h/2)} d2={0,int(d/2)}
     r[1] [0],[0],[0],1,0,0,0.5,0.5,0.5,0.5 shift[1] -$w2,-$h2,-$d2,0,2
     -fft[0] -fft[2]                        # a b a' b'
-    --l[-1,-2] sqr -+ -+ $2 endl          # a b a' b' (a'^2+b'^2+eps)
+    --l[-1,-2] sqr + -+ $2 endl          # a b a' b' (a'^2+b'^2+eps)
     --*[-4] ...                            # a b a' b' (a'^2+b'^2) ba'
     --*[-6] ...                            # a b a' b' (a'^2+b'^2) ba' ab'
-    --[-2,-1]                              # a b a' b' (a'^2+b'^2) ba'-ab'
+    -[-2,-1]                              # a b a' b' (a'^2+b'^2) ba'-ab'
     *[-6,-4]                              # aa' b b' (a'^2+b'^2) ba'-ab'
     *[-4,-3]                              # aa' bb' (a'^2+b'^2) ba'-ab'
     +[-4,-3]                              # aa'+bb' (a'^2+b'^2) ba'-ab'
@@ -8835,7 +8835,7 @@ deinterlace : skip ${1=0}
     wh={w},{h}
     s y a[0--1:2] y a[^0] y r.. .,0 r 100%,200%,1,100%,5
     if {$1!=0} --displacement. ..,0.05 warp... .,1,1,1 rm. endif
-    -+ -/ 2 c 0,255 r $wh
+    + / 2 c 0,255 r $wh
   endl done v +
 
 #@cli denoise : std_variation_s>=0,_std_variation_p>=0,_patch_size>0,_lookup_size>0,_smoothness,_fast_approx={ 0 | 1 } : (+)
@@ -8867,7 +8867,7 @@ denoise_haar : check "${1=1.4}>=0 && isint(${2=0}) && $2>=0 && isint(${3=10}) &&
       shift. {-$dx},{-$dy},{-$dz},0,2
       +[-2,-1]
     done
-    rm[0] -/ $3 r $w,$h,$d,100%,0
+    rm[0] / $3 r $w,$h,$d,100%,0
   -nm $nm endl done v +
 
 #@cli denoise_patchpca : _strength>=0,_patch_size>0,_lookup_size>0,_spatial_sampling>0
@@ -9023,7 +9023,7 @@ divergence :
 dog : check "${1=2%}>=0 && ${2=3%}>=0"
   e[^-1] "Compute difference of gaussian on image$?, with standard deviations $1 and $2."
   v - repeat $! l[$>]
-    [0] parallel "b[0] $1","b[1] $2" -- abs
+    [0] parallel "b[0] $1","b[1] $2" - abs
   endl done v +
 
 #@cli diffusiontensors : _sharpness>=0,0<=_anisotropy<=1,_alpha[%],_sigma[%],is_sqrt={ 0 | 1 }
@@ -9039,8 +9039,8 @@ diffusiontensors : check "${1=0.7}>=0 && ${2=0.3}>=0 && $2<=1" skip ${3=0.6},${4
   b $3 n 0,255 structuretensors 0 b $4
   repeat $! l[$>]
     -eigen max.. 0
-    if {s==2} s.. c +[-3,-2] +.. 1 --^.. -$p1 -^... -$p2 a[-3,-1] c                  # 2d
-    else s.. c +[-4--2] +.. 1 --^.. -$p1 r. 100%,100%,100%,2 -^... -$p2 a[-3,-1] c  # 3d
+    if {s==2} s.. c +[-3,-2] +.. 1 --^.. -$p1 ^... -$p2 a[-3,-1] c                  # 2d
+    else s.. c +[-4--2] +.. 1 --^.. -$p1 r. 100%,100%,100%,2 ^... -$p2 a[-3,-1] c  # 3d
     endif
     -eigen2tensor
   endl done v +
@@ -9177,17 +9177,17 @@ _haar : # Mono-scale direct haar transform.
 _haar_x : # Direct haar transform along the x-axis.
   if {w<=1} return endif
   if {w%2} v + error[0--6] "Command '-haar': Invalid image width="{w}" (is not even)." endif
-  --shift -1 r 50% ---[1] [0] +[0,1] -/ {sqrt(2)} a x
+  --shift -1 r 50% ---[1] [0] +[0,1] / {sqrt(2)} a x
 
 _haar_y : # Direct haar transform along the y-axis.
   if {h<=1} return endif
   if {h%2} v + error[0--6] "Command '-haar': Invalid image height="{h}" (is not even)." endif
-  --shift 0,-1 r 100%,50% ---[1] [0] +[0,1] -/ {sqrt(2)} a y
+  --shift 0,-1 r 100%,50% ---[1] [0] +[0,1] / {sqrt(2)} a y
 
 _haar_z : # Direct haar transform along the z-axis.
   if {d<=1} return endif
   if {d%2} v + error[0--6] "Command '-haar': Invalid image depth="{h}" (is not even)." endif
-  --shift 0,0,-1 r 100%,100%,50% ---[1] [0] +[0,1] -/ {sqrt(2)} a z
+  --shift 0,0,-1 r 100%,100%,50% ---[1] [0] +[0,1] / {sqrt(2)} a z
 
 #@cli heat_flow : _nb_iter>=0,_dt,_keep_sequence={ 0 | 1 }
 #@cli : Apply iterations of the heat flow on selected images.
@@ -9234,14 +9234,14 @@ idct : skip ${1=0}
 # 1d inverse transform (DCT-III) for a single image.
 _idct :
   is_odd={w%2}
-  -/ {sqrt(2/w)} --z[0] 0,0 *. {sqrt(2)} j.. .,0,0,0 rm. # Make the transform orthogonal.
+  / {sqrt(2/w)} --z[0] 0,0 *. {sqrt(2)} j.. .,0,0,0 rm. # Make the transform orthogonal.
   if $is_odd r {w+1},100%,100%,100%,0,0 endif
   --mirror x shift. 1 *. -1
   100%,1,1,1,cos(x*pi/(2*w))
   100%,1,1,1,sin(x*pi/(2*w))
   --*[0,3] --*[1,2] +[-2,-1]
-  *[0,2] *[1,2] --[0,1]
-  -ifft x k[0] -/ 2
+  *[0,2] *[1,2] -[0,1]
+  -ifft x k[0] / 2
   s x,2 mirror. x
   r[0] 200%,100%,1,100%,4,0,0
   r[1] 200%,100%,1,100%,4,0,1
@@ -9259,7 +9259,7 @@ iee :
       *... .. *[-4] . *[-4] -2       # ixx -2iyixy ixiyy ix iy
       +[-4,-3] *... ..                # ixx -2ixiyixy+ix^2iyy ix iy
       sqr[-2,-1] *[-4] . +[-4,-3]    # iy^2ixx-2ixiyixy+ix^2iyy ix^2 iy^2
-      +[-2,-1] +. 1e-8 -/             # (iy^2ixx+2ixiyixy+ix^2iyy)/(ix^2+iy^2)
+      +[-2,-1] +. 1e-8 /             # (iy^2ixx+2ixiyixy+ix^2iyy)/(ix^2+iy^2)
     else
       --inn -laplacian.. --
     endif
@@ -9290,17 +9290,17 @@ _ihaar : # Mono-scale inverse haar transform.
 _ihaar_x : # Inverse haar transform along the x-axis.
   if {w<=1} return endif
   if {w%2} v + error[0--6] "Command '-ihaar': Invalid image width="{w}" (is not even)." endif
-  s x,2 r 200% (-1,1) *[-2,-1] -+ -/ {sqrt(2)}
+  s x,2 r 200% (-1,1) *[-2,-1] + / {sqrt(2)}
 
 _ihaar_y : # Inverse haar transform along the y-axis.
   if {h<=1} return endif
   if {h%2} v + error "Command '-ihaar': Invalid image height="{h}" (is not even)." endif
-  s y,2 r 100%,200% (-1;1) r. {-2,w} *[-2,-1] -+ -/ {sqrt(2)}
+  s y,2 r 100%,200% (-1;1) r. {-2,w} *[-2,-1] + / {sqrt(2)}
 
 _ihaar_z : # Inverse haar transform along the z-axis.
   if {d<=1} return endif
   if {d%2} v + error "Command '-ihaar': Invalid image depth="{h}" (is not even)." endif
-  s z,2 r 100%,100%,200% (-1/1) r. {-2,w},{-2,h} *[-2,-1] -+ -/ {sqrt(2)}
+  s z,2 r 100%,100%,200% (-1/1) r. {-2,w},{-2,h} *[-2,-1] + / {sqrt(2)}
 
 #@cli inn
 #@cli : Compute gradient-directed 2nd derivative of image(s).
@@ -9313,7 +9313,7 @@ inn :
       *[-5] .. *[-4] . *[-4] 2       # ixixx 2iyixy iyy ix iy
       +[-5,-4] *[-4] ..               # ix^2ixx+2ixiyixy iyy ix iy
       sqr[-2,-1] *... . +[-4,-3]     # ix^2ixx+2ixiyixy+iy^2iyy ix^2 iy^2
-      +[-2,-1] +. 1e-8 -/             # (ix^2ixx+2ixiyixy+iy^2iyy)/(ix^2+iy^2)
+      +[-2,-1] +. 1e-8 /             # (ix^2ixx+2ixiyixy+iy^2iyy)/(ix^2+iy^2)
     else
       --g xyz,0 -hessian[-4] xxxyxzyyyzzz                  # ixx ixy ixz iyy iyz izz ix iy iz
       *[-9] ... *[-8] .. *[-8] 2 *[-7] . *[-7] 2      # ixixx 2iyixy 2izixz iyy iyz izz ix iy iz
@@ -9321,7 +9321,7 @@ inn :
       *[-6] .. *[-5] . *[-5] 2                          # ix^2ixx+2ixiyixy+2ixizixy iyiyy 2iziyz izz ix iy iz
       +[-6,-5] *[-5] .. +[-6,-5]                        # ix^2ixx+2ixiyixy+2ixizixy+iy^2iyy+2iyiziyz izz ix iy iz
       sqr[-3--1] *[-4] . +[-5,-4]                       # ix^2ixx+2ixiyixy+2ixizixy+iy^2iyy+2iyiziyz+iz^2izz ix^2 iy^2 iz^2
-      +[-3--1] +. 1e-8 -/                                # (ix^2ixx+2ixiyixy+2ixizixy+iy^2iyy+2iyiziyz+iz^2izz)/(ix^2+iy^2+iz^2)
+      +[-3--1] +. 1e-8 /                                # (ix^2ixx+2ixiyixy+2ixizixy+iy^2iyy+2iyiziyz+iz^2izz)/(ix^2+iy^2+iz^2)
     endif
   endl done v +
 
@@ -9398,7 +9398,7 @@ inpaint_patchmatch : check ${-is_image_arg\ $1}"&& ${2=0}>=0 && isint(${3=9}) &&
     visu_size=${fitscreen[]" "{0,w},{0,h},1,25%,50%}
     -slices[img] 0 r[mask] [img],[img],1,1,0 -!=[mask] 0
     if {!$7} -inpaint_diffusion[img] [mask],75% endif # Quick first estimate.
-    im={img,im} --[img] $im
+    im={img,im} -[img] $im
 
     first_iter=1 iter=0
     repeat $nb_scales
@@ -9591,7 +9591,7 @@ kuwahara : check $1>0
     s={s}
     --dilate $1 compose_channels. min
     --erode[0] $1 compose_channels. max
-    --[-2,-1]
+    -[-2,-1]
     $1,1,1,1,{1/$1} convolve[0] . transpose. convolve[0] . rm.
     p={int($1/2)}
     a[-2,-1] c
@@ -9624,7 +9624,7 @@ laplacian :
 lic : skip ${1=30},${2=1}
   e[^-1] "Render LIC representation of 2d vector field$?, with amplitude $1 and $2 channel(s)."
   v - repeat $! l[$>] nm={0,n}
-     channels 0,1 -/ {max(abs(im),abs(iM))} -vector2tensor
+     channels 0,1 / {max(abs(im),abs(iM))} -vector2tensor
      100%,100%,100%,$2 rand. 0,255 smooth. ..,$1 rm..
      equalize
   -nm $nm endl done v +
@@ -9642,11 +9642,11 @@ map_tones : skip ${1=0.1},${2=0.8},${3=0.5},${4=30}
       g xy,1 a c --norm -orientation..
       m={im} M={iM} b. $3 n. $m,$M
       *. 'alpha=$1*iM;(alpha/(1e-10+i))*(i/(1e-10+alpha))^$2'
-      -* s c g.. x,-1 g. y,-1 -+
-    endl done a c -* 0.25 endl
+      * s c g.. x,-1 g. y,-1 -+
+    endl done a c * 0.25 endl
 
    # Start Poisson-PDE iterations
-    repeat $4 --laplacian.. *. 0.25 +. ... --. .. *. 800 +[-3,-1] /.. 801 c.. 0,255 done rm.
+    repeat $4 --laplacian.. *. 0.25 +. ... -. .. *. 800 +[-3,-1] /.. 801 c.. 0,255 done rm.
 
   endl done  v +
 
@@ -9658,10 +9658,10 @@ map_tones_fast : check "${1=3%}>=0 && ${2=0.3}>=0"
   e[^-1] "Apply fast tone mapping operator on image$?, with radius $1 and power $2."
   v - repeat $! l[$>]
     --luminance b. $1 n 0,1
-    --*. 2 --. 1 abs. *. {$2*log(10)} exp.
+    --*. 2 -. 1 abs. *. {$2*log(10)} exp.
     -<=.. 0.5 r. ...
-    --*... -1 +. 1 -^. .. *. -1 +. 1 *. ...
-    -^[-4,-2] -==.. 0 *[-3,-2] -+
+    --*... -1 +. 1 ^. .. *. -1 +. 1 *. ...
+    ^[-4,-2] -==.. 0 *[-3,-2] -+
   endl done n 0,255 v +
 
 #@cli meancurvature_flow : _nb_iter>=0,_dt,_keep_sequence={ 0 | 1 }
@@ -9723,7 +9723,7 @@ nlmeans_core : check ${-is_image_arg\ $1}" && "${-is_image_arg\ $2}" && $3>0 && 
       repeat {2*$4+1} j={$>-$4} repeat {2*$4+1} i={$>-$4}
         if {$i!=0||$j!=0}
           # Compute shifted images [6] and weight [7]
-          --shift[0,1] $i,$j,0,0,2 --[7] [1]
+          --shift[0,1] $i,$j,0,0,2 -[7] [1]
           sqr[7] b[7] $3 *[7] [2] exp[7]
           # Accumulate weights
           *[6] [7] max[5] [7] +[4,7] +[3,6]
@@ -9733,7 +9733,7 @@ nlmeans_core : check ${-is_image_arg\ $1}" && "${-is_image_arg\ $2}" && $3>0 && 
       repeat {2*$4+1} k={$>-$4} repeat {2*$4+1} j={$>-$4} repeat {2*$4+1} i={$>-$4}
         if {$i!=0||$j!=0||$k!=0}
           # Compute shifted images [6] and weight [7]
-          --shift[0,1] $i,$j,0,0,2 --[7] [1]
+          --shift[0,1] $i,$j,0,0,2 -[7] [1]
           sqr[7] b[7] $3 *[7] [2] exp[7]
           # Accumulate weights
           *[6] [7] max[5] [7] +[4,7] +[3,6]
@@ -9742,7 +9742,7 @@ nlmeans_core : check ${-is_image_arg\ $1}" && "${-is_image_arg\ $2}" && $3>0 && 
     endif
     max[5] 1e-6 rm[1,2]
     *[0] [3] +[1,0] +[1,2] # Add central patch.
-    -/ # Normalize.
+    / # Normalize.
   endl done v +
 
 #@cli normalize_local : _amplitude>=0,_radius>0,_n_smooth>=0[%],_a_smooth>=0[%],_is_cut={ 0 | 1 },_min=0,_max=255
@@ -9756,10 +9756,10 @@ normalize_local :
     --l erode {2*$2+1} s c min endl
     --l.. dilate {2*$2+1} s c max endl
     --b... $4 b[-3,-2] $3
-    ---.. ... +. 0.01 --[-5] [-4] /[-5,-1]
+    ---.. ... +. 0.01 -[-5] [-4] /[-5,-1]
     *[-3,-2] {$1+1} *. -$1 +... . +[-2,-1]
     if $5 max.. $6 min. $7 endif
-    --. .. *[-3,-1] -+
+    -. .. *[-3,-1] -+
     if $5 c $6,$7 endif
   endl done v +
 
@@ -9770,7 +9770,7 @@ normalized_cross_correlation : check ${-is_image_arg\ $1}
   e[^-1] "Compute normalized cross-correlation of image$? with mask $1."
   v - -pass$1 0 norm repeat {$!-1} . l[$>,-1]
     -fft.. -fft. [-2,-1] *.. [-5] *. [-6]
-    --[-2,-1] *[-5,-3] *[-3,-2] +[-3,-2] [-2,-1] a[-2,-1] c norm.
+    -[-2,-1] *[-5,-3] *[-3,-2] +[-3,-2] [-2,-1] a[-2,-1] c norm.
     /... . /[-2,-1] -ifft rm.
   endl done rm. v +
 
@@ -9803,10 +9803,10 @@ phase_correlation : check ${-is_image_arg\ $1}
     normalized_cross_correlation[$>] . rm.
     l[$>]
       ({[xM,yM,zM,cM]}) *. 2 s. x rm.
-      if {{-3,^}>{-4,w}} --... {-4,w} --... {-4,w} endif
-      if {{-2,^}>{-4,h}} --.. {-4,h} --.. {-4,h} endif
-      if {{^}>{-4,d}} --. {-4,d} --. {-4,d} endif
-      a[-3--1] c rm.. -/ 2 -* -1
+      if {{-3,^}>{-4,w}} -... {-4,w} -... {-4,w} endif
+      if {{-2,^}>{-4,h}} -.. {-4,h} -.. {-4,h} endif
+      if {{^}>{-4,d}} -. {-4,d} -. {-4,d} endif
+      a[-3--1] c rm.. / 2 * -1
       -nm [phase\ correlation]
   endl done v +
 
@@ -9850,7 +9850,7 @@ periodize_poisson :
 red_eye : skip ${1=75},${2=3.5},${3=0.1}
   e[^-1] "Attenuate red-eye effect in image$?, with threshold $1, smoothness $2 and attenuation $3."
   v - to_rgb rgb2ycbcr repeat $! l[$>]
-    s c --. 128 -->=. $1% b. $2 sqrt. *. -1 +. 1
+    s c -. 128 -->=. $1% b. $2 sqrt. *. -1 +. 1
     n. $3,1 *[-2,-1] +. 128 a c ycbcr2rgb
   endl done v +
 
@@ -9895,7 +9895,7 @@ remove_pixels : check "$1>=0"
       # Generate a 1xn vector of coordinates to 'remove'.
       r. 2 *[-2,-1] discard. y,0
       -i.. 1,100% rand.. 0,1 a[-2,-1] x sort. +,y
-      rows. 0,{$n-1} --. 1 z. 1,3
+      rows. 0,{$n-1} -. 1 z. 1,3
 
       # Set those pixels to 0 using a 3d object.
       -i.. ({'CImg3d'},{h},{h})
@@ -9925,7 +9925,7 @@ rolling_guidance : check "${1=4}>=0 && ${2=10}>=0 && ${3=0.5}>=0"
       if {c>1} --norm. --bilateral... .,$1,$2 rm..
       else --bilateral.. .,$1,$2
       endif
-      --.. . std={-2,sqrt(iv)} rm..
+      -.. . std={-2,sqrt(iv)} rm..
       if {$std<$precision} break endif
     done
     k.
@@ -9953,7 +9953,7 @@ rolling_guidance : check "${1=4}>=0 && ${2=10}>=0 && ${3=0.5}>=0"
 #@cli : $ image.jpg split_freq 2%
 split_freq :
   e[^-1] "Split image$? into low and high frequency parts, with smoothness $1."
-  v - repeat $! l[$>] --b $1 --[0] [1] rv endl done v +
+  v - repeat $! l[$>] --b $1 -[0] [1] rv endl done v +
 
 #@cli solve_poisson : "laplacian_command",_nb_iterations>=0,_time_step>0,_nb_scales>=0
 #@cli : Solve Poisson equation so that applying '-laplacian[n]' is close to the result of '-laplacian_command[n]'.
@@ -9969,7 +9969,7 @@ solve_poisson : check "${2=60}>=0 && ${3=5}>0 && ${4=0}>=0"
       f={2^$<}
       r[1] {0,max(1,w/$f)},{0,max(1,h/$f)},1,100%,3
       --r[0] [1],2 l. -$1 k[0] endl
-      repeat $2 --laplacian.. --. .. *. {$3/max(1e-8,abs(im),abs(iM))} +[-3,-1] done
+      repeat $2 --laplacian.. -. .. *. {$3/max(1e-8,abs(im),abs(iM))} +[-3,-1] done
       rm.
     done
     rm[0]
@@ -9999,7 +9999,7 @@ split_details : check "isint(${1=4}) && $1>0 && ${2=0}>=0 && ${3=0}>=0"
                i(x,y,z - d2) + i(x,y,z + d2) + 4*i(x,y,z - d) + 4*i(x,y,z + d) + 6*i;"
           /. 16
         endif
-        --.. .
+        -.. .
       done -rv
     endl done v +
   else
@@ -10008,7 +10008,7 @@ split_details : check "isint(${1=4}) && $1>0 && ${2=0}>=0 && ${3=0}>=0"
       ss={max(0.3,if(${is_percent\ $2},$2*max(w,h),$2))}
       se={max(0.3,if(${is_percent\ $3},$3*max(w,h),$3))}
       ds={$se-$ss}
-      repeat {$1-1} --b. {$ss+$>*$ds/max(1,$1-2)} --.. . rv[-2,-1] done
+      repeat {$1-1} --b. {$ss+$>*$ds/max(1,$1-2)} -.. . rv[-2,-1] done
     endl done v +
   endif
 
@@ -10067,12 +10067,12 @@ syntexturize : check "${1=100%}>0 && ${2=$1}>0"
     # Add random phase to fft of input image.
     --sin. cos..
     --*[-4,-1] --*[-4,-3] +[-2,-1]
-    *[-5,-3] *[-3,-2] --[-3,-2]
+    *[-5,-3] *[-3,-2] -[-3,-2]
 
     # Get synthetized result and normalize it.
     repeat {s} -=.. ${sum$>},0,0,0,$> -=. 0,0,0,0,$> done
     -ifft rm.
-    repeat {s} sh. $> avg={ia} --. $avg *. {sqrt(${var$>}/if(iv,iv,1))} +. $avg rm. done
+    repeat {s} sh. $> avg={ia} -. $avg *. {sqrt(${var$>}/if(iv,iv,1))} +. $avg rm. done
     c $mM
 
   endl done v +
@@ -10102,12 +10102,12 @@ syntexturize_patchmatch : check "${1=100%}>0 && ${2=$1}>0 && isint(${3=0}) && $3
         label_fg.. 0 -watershed.. . rm.
 
         100%,100%,1,1,x --f. y a[-2,-1] c channels. 0,2
-        --blend. ..,shapeaverage --.. . rm.
+        --blend. ..,shapeaverage -.. . rm.
         channels. 0,1
 
         {-2,iM+1} rand. 0,{-4,w} --rand. 0,{-4,h} a[-2,-1] c
         map... . rm. +[-2,-1] round.
-        s. c -%.. {-3,w} -%. {-3,h} a[-2,-1] c
+        s. c %.. {-3,w} %. {-3,h} a[-2,-1] c
 
       else
 
@@ -10188,9 +10188,9 @@ tv_flow : skip ${1=10},${2=30},${3=0}
 unsharp : check "${2=2}>=0" skip ${3=0}
   e[^-1] "Apply unsharp mask on image$?, with radius $1, amount $2 and threshold $3."
   v - repeat $!
-    --b[$>] $1 --. [$>]
+    --b[$>] $1 -. [$>]
     if $3 --norm. ->=. $3 *[-2,-1] endif
-    *. $2 --[$>,-1]
+    *. $2 -[$>,-1]
   done v +
 
 #@cli unsharp_octave : _nb_scales>0,_radius[%]>=0,_amount>=0,threshold[%]>=0
@@ -10206,7 +10206,7 @@ unsharp_octave : check "${1=4}>0 && ${3=2}>=0" skip ${2=1},${4=0}
       weight+={2^-$>}
       +[1,-1]
     done
-    rm[0] -/ $weight
+    rm[0] / $weight
   -nm $nm endl done v +
 
 #@cli vanvliet : std_variation>=0[%],order={ 0 | 1 | 2 | 3 },axis={ x | y | z | c },_boundary_conditions : (+)
@@ -10302,7 +10302,7 @@ barycenter :
     if {$sum>0}
       if {d>1} --* 'z' z={is} rm. else z=0 endif
       if {h>1} --* 'y' y={is} rm. else y=0 endif
-      -* 'x' x={is} rm.
+      * 'x' x={is} rm.
       ({$x/$sum};{$y/$sum};{$z/$sum})
     else ({w/2},{h/2},{d/2}) rm..
     endif
@@ -10326,9 +10326,9 @@ detect_skin : check "${1=0.5}>=0 && $1<=1" skip ${2=-1},${3=-1},${4=-1}
     to_rgb srgb2rgb rgb2ycbcr channels 1,2
     repeat $! l[$>]
       whd={w},{h},{d} r {w*h*d},2,1,1,-1
-      s y --[0] $m0 --[1] $m1 a y
+      s y -[0] $m0 -[1] $m1 a y
       i[0] ($A,$B;$B,$C) --m* rm[0]
-      -* s y -+ *. {$1-1} exp.
+      * s y + *. {$1-1} exp.
       r $whd,1,-1
     endl done
   else
@@ -10339,12 +10339,12 @@ detect_skin : check "${1=0.5}>=0 && $1<=1" skip ${2=-1},${3=-1},${4=-1}
       100%,100% circle[1] $2,$3,$4,1,1 --f[1] 'if(i,y,-1)' f[1] 'if(i,x,-1)' discard[1,2] -1 a[1,2] c
       --warp[0] [1],0,0 rm[1]
       s[1] c
-      m0={1,ia} --[1] $m0
-      m1={2,ia} --[2] $m1
+      m0={1,ia} -[1] $m0
+      m1={2,ia} -[2] $m1
       M={h} a[1,2] x --transpose[1] rv[1,2] -m*[1,2] /[1] $M -invert[1]
       rv whd={w},{h},{d} r[1] {w*h*d},2,1,1,-1
-      s[1] y --[1] $m0 --[2] $m1 a[1,2] y --m* rm[0]
-      -* s y -+ *. {$1-1} exp.
+      s[1] y -[1] $m0 -[2] $m1 a[1,2] y --m* rm[0]
+      * s y + *. {$1-1} exp.
       r $whd,1,-1
     endl done
   endif
@@ -10379,7 +10379,7 @@ float2fft8 :
 fft82float :
   e[^-1] "Convert float-valued image$? to 8bits fourier representations."
   v - repeat $! l[$>]
-    s y,2 -int82float exp.. --.. 1 -ifftpolar
+    s y,2 -int82float exp.. -.. 1 -ifftpolar
   endl done v +
 
 #@cli fftpolar
@@ -10444,7 +10444,7 @@ histogram_pointwise : skip ${2=0%},${3=100%}
     nb_levels={round(if(${is_percent\ $1},(iM-im)*$1,$1))}
     value0={if(${is_percent\ $2},im+(iM-im)*$2,$2)}
     value1={if(${is_percent\ $3},im+(iM-im)*$3,$3)}
-    -- $value0 -* {$nb_levels/max(1,abs($value1-$value0))} c 0,{$nb_levels-1} -round
+    - $value0 * {$nb_levels/max(1,abs($value1-$value0))} c 0,{$nb_levels-1} -round
     w={w} h={h} d={d} r {w*h*d},{s},1,1,-1
     -i.. (0,{w-1}) r.. .,.,1,1,3 round..
     r[-2,-1] 300%,100%,1,1,4 shift. 1 +[-2,-1] y.
@@ -10463,9 +10463,9 @@ hough : check "${1=512}>0 && ${2=$1}>0" skip ${3=1}
   e[^-1] "Compute $1x$2 hough transform of image$?, "${-arg\ 1+!$3,with,without}" gradient norm voting."
   v - -slices 50% luminance repeat $! l[$>] nm={0,n}
     rhomax={sqrt(w^2+h^2)/2}
-    g (0,{w-1}) (0;{{-2,h}-1}) r[-2,-1] {-3,w},{-3,h},1,1,3 --.. {w/2} --. {h/2}
-    complex2polar[-4--1] --. ... polar2complex[-2,-1] rm.
-    --<. 0 *. {pi} +[-3,-1] abs. -%.. {2*pi}
+    g (0,{w-1}) (0;{{-2,h}-1}) r[-2,-1] {-3,w},{-3,h},1,1,3 -.. {w/2} -. {h/2}
+    complex2polar[-4--1] -. ... polar2complex[-2,-1] rm.
+    --<. 0 *. {pi} +[-3,-1] abs. %.. {2*pi}
     *. {$2/$rhomax} *.. {0.5*$1/pi}
     y[-3--1] x {w} mv[-4] $! if {!$3} f. 1 endif
     a y pointcloud 1 r $1,$2,1,1,0
@@ -10507,7 +10507,7 @@ label_fg : check "$1>=0" skip ${2=0}
     if {d>1} --z -1,-1,-1,{w-1},{h-1},{d-1} label. $1,$2 z. 1,1,1,{w-1},{h-1},{d-1}
     else --z -1,-1,{w-1},{h-1} label. $1,$2 z. 1,1,{w-1},{h-1}
     endif
-    -!=.. 0 -* --histogram {1+iM} -=. 0
+    -!=.. 0 * --histogram {1+iM} -=. 0
     ->. 0 cumulate. map.. . rm.
   endl done v +
 
@@ -10534,7 +10534,7 @@ min_patch : check "isint(${1=16}) && $1>=1"
 minimal_path : check "$1>=0 && $2>=0 && $3>=0" skip ${7=0}
   e[^-1] "Compute minimal path between points ($1,$2,$3) and ($4,$5,$6) for potential map$?, with "${-arg\ 1+$7,low,high}" connectivity."
   v - repeat $! l[$>] nm={0,n}
-    -- {im} -+ {iM/100}
+    - {im} + {iM/100}
     100%,100% -= 1,${4-6} distance. 1,[0],{if($7,4,3)} k.
     x={round(if(${is_percent\ $1},$1*(w-1),$1))}
     y={round(if(${is_percent\ $2},$2*(h-1),$2))}
@@ -10592,7 +10592,7 @@ plot2value :
   e[^-1] "Retrieve values from 2d graph plot$?."
   v - repeat $! l[$>]
     s c ->= 50%
-    repeat $! l[$>] (1,{w}) r[1] [0],3 -* histogram {w},1,{w} endl done
+    repeat $! l[$>] (1,{w}) r[1] [0],3 * histogram {w},1,{w} endl done
     a c
   endl done v +
 
@@ -10644,16 +10644,16 @@ pointcloud : check "${1=0}<=2" skip ${2=0},${3=0},${4=0}
 psnr : skip "${1=}"
   if {isval("$1")}
     e[0--3] "Compute the "$!x$!" matrix of PSNR values, from image$? with maximum value $1."
-    v - -mse log10 -- {log10(($1)^2)}
+    v - -mse log10 - {log10(($1)^2)}
   else
     e[0--3] "Compute the "$!x$!" matrix of PSNR values, from image$?."
     v - -noarg
     if {$!}
       $! repeat {$!-1} -=. {$>,iM},$> done
-      -mse[^-1] sqr. log10 --.. 'max(i[#-1,x],i[#-1,y])' rm.
+      -mse[^-1] sqr. log10 -.. 'max(i[#-1,x],i[#-1,y])' rm.
     endif
   endif
-  -* -10 -nm [PSNR] v +
+  * -10 -nm [PSNR] v +
 
 #@cli segment_watershed : _threshold>=0
 #@cli : Apply watershed segmentation on selected images.
@@ -10663,12 +10663,12 @@ segment_watershed : check "${1=2}>=0"
   e[^-1] "Apply watershed segmentation on image$?, with edge threshold $1."
   v - repeat $! l[$>]
     min={im}
-    -+ {1+$min} --gradient_norm
+    + {1+$min} --gradient_norm
     if {d>1} --f. "if(i<$1 && i<j(1) && i<j(-1) && i<j(0,1) && i<j(0,-1) && i<j(0,0,1) && i<j(0,0,-1),1,0)"
     else --f. "if(i<$1 && i<j(1) && i<j(-1) && i<j(0,1) && i<j(0,-1),1,0)"
     endif
     *[-3,-1] *. -1 -watershed.. . rm.
-    -- {1+$min}
+    - {1+$min}
   endl done v +
 
 #@cli skeleton : _smoothness[%]>=0
@@ -10678,7 +10678,7 @@ segment_watershed : check "${1=2}>=0"
 skeleton : check ${1=0}>=0
   e[^-1] "Compute skeleton of binary image$?."
   v - distance 0 b $1 sharpen 1e10 ->= 100%
-  repeat $! --erode[$>] 2 --[$>,-1] done v +
+  repeat $! --erode[$>] 2 -[$>,-1] done v +
 
 #@cli ssd_patch : [patch],_use_fourier={ 0 | 1 },_boundary_conditions={ 0=dirichlet | 1=neumann }
 #@cli : Compute fields of SSD between selected images and specified patch.
@@ -10699,7 +10699,7 @@ ssd_patch : check ${-is_image_arg\ $1} skip ${2=0},${3=0}
         correlate.. .,$3 rm. # Sum I(x+p,y+q)^2
         correlate[0] [1],$3 rm[1] # Sum I(x+p,y+q).J(p,q)
       endif
-      *[0] -2 +[0,1] -+ $val
+      *[0] -2 +[0,1] + $val
     endl done -+
   endl done v +
 
@@ -10767,7 +10767,7 @@ variance_patch : check "isint(${1=16}) && $1>=1"
   $1,$1,1,1,1 normalize_sum.
   repeat {$!-1} l[$>,-1]
     --sqr[0] convolve[0,2] [1]
-    sqr[0] rv[0,2] --[0,2] max[0] 0
+    sqr[0] rv[0,2] -[0,2] max[0] 0
   endl done rm. v +
 
 #---------------------------------
@@ -10911,9 +10911,9 @@ _axes :
 ball : check "${1=64}>0 && ${5=0.8}>=0 && $5<=8 && ${6=1}>=0 && $6<=8 && ${7=1.5}>=0" skip ${2=255},${3=$2},${4=$3}
   e[^-1] "Input $1x$1 ball with color (${2-4}), specular light $5, specular size $6 and shadow factor $7."
   v - l[]
-  {2*$1},{2*$1} -= 1,65%,30% distance 1 -* -1
-  --n 0,1 -^[1] $7 *[1] 1.4 --*[1] $3 --*[1] $4 *[1] $2 a[^0] c
-  ->=[0] {100-10*$6}% b[0] {3*$6}% n[0] 0,{$5*255} rv -+ c 0,255
+  {2*$1},{2*$1} -= 1,65%,30% distance 1 * -1
+  --n 0,1 ^[1] $7 *[1] 1.4 --*[1] $3 --*[1] $4 *[1] $2 a[^0] c
+  ->=[0] {100-10*$6}% b[0] {3*$6}% n[0] 0,{$5*255} rv + c 0,255
   100%,100% circle[1] 50%,50%,34%,1,1 *[0] [1] *. 255 a c
   r $1,$1,1,4,2
   endl v +
@@ -10931,7 +10931,7 @@ chessboard : check "$1>0 && ${2=$1}>0" skip ${3=0},${4=0},${5=0},${6=1},${7=0},$
     r. {$w*$h},2,1,1,-1
     -i.. ({cos($theta)},{-sin($theta)};{sin($theta)},{cos($theta)}) -m*[-2,-1]
     r. $w,$h,1,2,-1
-    -%. {$1+$2} ->=. $1 s. c -xor[-2,-1] map. [0] r. 100%,100%,1,..
+    %. {$1+$2} ->=. $1 s. c -xor[-2,-1] map. [0] r. 100%,100%,1,..
     j.. .,0,0,0,0,$6 rm.
   mv. 1 done rm[0] v +
 
@@ -10949,7 +10949,7 @@ cie1931 :
   71,0,0;92,1,0;111,7,0;151,28,0;189,52,0;226,79,0;262,109,0;298,141,0;334,175,0;370,209,0;405,244,0;\
   441,279,0;475,313,0;509,347,0;731,568,0)
   xM=731 yM=829
-  2,{h-1},1,1,3,0 1,{h},1,1,'y' --+. 1 -%. {h} +[-2,-1] 1 a[-3--1] x  # Primitives.
+  2,{h-1},1,1,3,0 1,{h},1,1,'y' --+. 1 %. {h} +[-2,-1] 1 a[-3--1] x  # Primitives.
   3,{h},1,1,160 1,{h},1,1,1  # Colors + opacities.
   y[-4--2] a[-5--1] y mv. 0
 
@@ -10970,7 +10970,7 @@ cie1931 :
     j3d... .,2,30,0,1,2
     -p3d. 1 -p3d. 2 col3d. 128 j3d... .,2,30,0,1,1 rm.
     {-2,w},{-2,h} j3d. ..,2,30,0,1,2 rm..
-    --erode. 4 --. .. -==. 0 *[-3,-1]
+    --erode. 4 -. .. -==. 0 *[-3,-1]
     a[-2,-1] c blend[-2,-1] alpha
     100%,100%,1,1,255 axes. 0,0.75,0.85,0,14,1 --erode. 3 negate. to_rgb..
     j... ..,0,0,0,0,1,.,400 rm[-2,-1]
@@ -11524,7 +11524,7 @@ _close_binary :
     ); i"
   rm[keypoints]
 
-  l[vote] s c max. 1 -/ ->= $hd_detection_rate endl
+  l[vote] s c max. 1 / ->= $hd_detection_rate endl
   is={is} if {!$is} k[strokes] i[keydiscard] [strokes],[strokes] return endif
 
   i[keylines] $is,1,1,2
@@ -11667,7 +11667,7 @@ gaussian : skip ${1=3},${2=$1},${3=0}
   repeat $! l[$>] nm={0,n}
     w={w} h={h} ds={d},{s} rm
     $w,$h,1,1,'X=x-{($w-1)/2};Y=y-{($h-1)/2};$A*X*X+2*$B*X*Y+$C*Y*Y'
-    -* -1 exp r $w,$h,$ds
+    * -1 exp r $w,$h,$ds
   -nm $nm endl done v +
 
 #@cli graph : [function_image],_plot_type,_vertex_type,_ymin,_ymax,_opacity,_pattern,_color1,... : 'formula',_resolution>=0,_plot_type,_vertex_type,_xmin,xmax,_ymin,_ymax,_opacity,_pattern,_color1,... : (+)
@@ -11835,7 +11835,7 @@ maze_mask : check "isint(${1=24}) && $1>0"
       flood[0] {-2,^},0,0,0,1,0
       _generate_maze {w},{h}
     while {0,iM}
-    rm[0] -+ _render_maze. $1 nm. [maze]
+    rm[0] + _render_maze. $1 nm. [maze]
   endl done v +
 
 #@cli j3d : eq. to '-object3d'. : (+)
@@ -11946,7 +11946,7 @@ pack_sprites : check "isint(${1=5}) && $1>=0 && ${2=25}>=0 && $2<=100 && isint($
       rm... # Delete reference sprite.
 
       # Draw cloud and detect non-intersecting sprites.
-      [0] sh. 100% f. 1 --. [-4]
+      [0] sh. 100% f. 1 -. [-4]
       j3d.. ...,0,0,0,1,2,0,0 rm[-3,-1]
       sh. 100% -area_fg. 0,1 -==. $area
       *. ... rm... sh.. 0,{-2,s-2} *. .. rm.
@@ -12287,21 +12287,21 @@ turbulence : check "${1=32}>0 && ${2=6}>0" skip ${3=3},${4=0},${5=0}
   v - repeat $! l[$>] nm={0,n}
     if {$4} . endif
     f. 0 --noise. 10,0 b. $1,0
-    if {$5==0||$5==1} --. {ia} abs.
-    elif {$5==3||$5==4} -^. 2
-    elif {$5==5} -^. 3
+    if {$5==0||$5==1} -. {ia} abs.
+    elif {$5==3||$5==4} ^. 2
+    elif {$5==5} ^. 3
     endif
     repeat {$2-1}
       --noise.. 10,0 b. {$1/2^$>},0
-      if {$5==0} --. {ia} abs.
-      elif {$5==4} -^. 2
-      elif {$5==5} -^. 3
+      if {$5==0} -. {ia} abs.
+      elif {$5==4} ^. 2
+      elif {$5==5} ^. 3
       endif
       *.. $3 +[-2--1]
     done
     n. 0,255
     rm..
-    if {$4} *. $4 mv.. 2 -- n. 0,255 endif
+    if {$4} *. $4 mv.. 2 - n. 0,255 endif
   -nm $nm endl done v +
 
 #@cli yinyang
@@ -12422,7 +12422,7 @@ apply_camera3d : skip ${4=0},${5=0},${6=0},${7=0},${8=-1},${9=0}
   _cross3d {^},{-3,^}     # u = s x f
   rm... y[-3--1] x mv[-2,-1] -3
   a[-3--1] y z. 0,3  # Rotation matrix R.
-  --3d[^-1] $1,$2,$3 pose3d[^-1] {^} rm. --3d 0,0,800
+  -3d[^-1] $1,$2,$3 pose3d[^-1] {^} rm. -3d 0,0,800
   v +
 
 _cross3d :
@@ -12504,7 +12504,7 @@ axes3d : check ${4=23}>0 skip ${1=1},${2=$1},${3=$2},"${5=X},${6=Y},${7=Z}"
   e[^-1] "Input 3d axes with sizes ($1,$2,$3)."
   v - l[]
   m={max(abs($1),abs($2),abs($3))/40} m2={2*$m} m3={1.2*$m2}
-  _axes3d "O",$4 --3d. $m3,$m3,$m3
+  _axes3d "O",$4 -3d. $m3,$m3,$m3
   if $1
     line3d 0,0,0,$1,0,0
     cone3d $m,{2*$m},16 r3d. 0,1,0,90 +3d. {$1-$m2},0,0
@@ -12561,7 +12561,7 @@ _center3d :
   v - -check3d 0 repeat $! l[$>]
     if {i[6]}
       -s3d r[2] 3,{2,h/3},1,1,-1 s[2] x
-      --[2] {2,(iM+im)/2} --[3] {3,(iM+im)/2} --[4] {4,(iM+im)/2}
+      -[2] {2,(iM+im)/2} -[3] {3,(iM+im)/2} -[4] {4,(iM+im)/2}
       a[2-4] x y[2] a y
     endif
   endl done v +
@@ -12585,13 +12585,13 @@ circle3d : skip ${1=0},${2=0},${3=0},${4=1}
 #@cli circles3d : _radius>=0,_is_filled={ 0 | 1 }
 #@cli : Convert specified 3d objects to sets of 3d circles with specified radius.
 #@cli : Default values: 'radius=1' and 'is_filled=1'.
-#@cli : $ image.jpg luminance -resize2dy 40 threshold 50% -* 255 pointcloud3d color3d[-1] 255,255,255 circles3d 0.7
+#@cli : $ image.jpg luminance -resize2dy 40 threshold 50% * 255 pointcloud3d color3d[-1] 255,255,255 circles3d 0.7
 circles3d : check ${1=1}>=0 skip ${2=1}
   e[^-1] "Convert 3d object$? to sets of 3d "${-arg\ 1+$2,wireframe,filled}" circles with radius $1."
   v - -p3d 0 repeat $! l[$>]
     nbv={@6} nbp={@7}
     if {$nbv&&$nbp}
-      --3d {$1/2},0,0 --+3d $1,0,0 +3d nbp2={@7}
+      -3d {$1/2},0,0 --+3d $1,0,0 +3d nbp2={@7}
       -s3d -=[1] $nbp,0,1
       r[3] 2,$nbp2,1,1,-1 columns[3] 1,1 s[3] y,2 i[3] 1,$nbp,1,1,5
       i[6] 1,$nbp,1,1,{!$2} a[3-6] x columns[3] 0,5
@@ -12670,7 +12670,7 @@ cone3d : check ${3=24}>0 skip ${1=1},${2=1}
 #@cli cubes3d : _size>=0
 #@cli : Convert specified 3d objects to sets of 3d cubes with specified size.
 #@cli : Default value: 'size=1'.
-#@cli : $ image.jpg luminance -resize2dy 40 threshold 50% -* 255 pointcloud3d color3d[-1] 255,255,255 cubes3d 1
+#@cli : $ image.jpg luminance -resize2dy 40 threshold 50% * 255 pointcloud3d color3d[-1] 255,255,255 cubes3d 1
 cubes3d : check ${1=1}>=0
   e[^-1] "Convert 3d object$? to sets of 3d cubes with size $1."
   v - -p3d 0 repeat $! l[$>]
@@ -12680,13 +12680,13 @@ cubes3d : check ${1=1}>=0
       l[1] -= {8*i[0]} -= {6*i[1]},0,1 endl  # Header.
       l[2] r 3,{h/3},1,1,-1                  # Vertices.
       half={$1/2}
-      -- '$half,0,0' --+ '$1,0,0' a x
-      -- '0,$half,0' --+ '0,$1,0' a x
-      -- '0,0,$half' --+ '0,0,$1' a x
+      - '$half,0,0' --+ '$1,0,0' a x
+      - '0,$half,0' --+ '0,$1,0' a x
+      - '0,0,$half' --+ '0,0,$1' a x
       endl
       l[3] r 2,{h/2},1,1,-1                  # Primitives.
-      z 1,1 -* 8 r 4,100% i[0] 1,100%,1,1,4 a x [-1]x5 a x
-      -+ '"0,0,2,3,1, 0,4,5,7,6, 0,0,1,5,4, 0,2,6,7,3, 0,0,4,6,2, 0,1,3,7,5"'
+      z 1,1 * 8 r 4,100% i[0] 1,100%,1,1,4 a x [-1]x5 a x
+      + '"0,0,2,3,1, 0,4,5,7,6, 0,0,1,5,4, 0,2,6,7,3, 0,0,4,6,2, 0,1,3,7,5"'
       endl
       l[4] r 3,{h/3},1,1,-1 r 18,100%,1,1,0,2 endl r[5] 6,100% # Colors & opacities.
       y a y
@@ -12740,7 +12740,7 @@ cylinder3d : check ${3=24}>0 skip ${1=1},${2=1}
 #@cli : Generate 3d delaunay triangulations from selected images.
 #@cli : One assumes that the selected input images are binary images containing the set of points to mesh.
 #@cli : The output 3d object is a mesh composed of non-oriented triangles.
-#@cli : $ 500,500 noise 0.05,2 -* 255 --delaunay3d color3d[1] 255,128,0 dilate_circ[0] 5 to_rgb[0] --object3d[0] [1],0,0,0,1,1 max[-1] [0]
+#@cli : $ 500,500 noise 0.05,2 * 255 --delaunay3d color3d[1] 255,128,0 dilate_circ[0] 5 to_rgb[0] --object3d[0] [1],0,0,0,1,1 max[-1] [0]
 delaunay3d :
   e[^-1] "Generate 3d delaunay triangulation from image$?."
   v - repeat $! l[$>]
@@ -12759,7 +12759,7 @@ delaunay3d :
       --_delaunay3d[1] 0,1,0,0,0,1 --_delaunay3d[1] 0,-1,0,0,0,-1
     endif
     --_delaunay3d[1] 1,0,0,0,1,0 _delaunay3d[1] -1,0,0,0,-1,0 # 2d detection.
-    a[^0] x transpose. --. 1
+    a[^0] x transpose. -. 1
 
     # Build 3d mesh.
     pointcloud3d[0]
@@ -13069,7 +13069,7 @@ imagerubik3d : check "${1=3}>=1 && ${2=5}>=0 && $2<=100 && ${3=5}>=0 && $3<=100"
     repeat {$1-1} --+3d. 100 done +3d[-$1--1]   # Duplicate along X
     repeat {$1-1} --+3d. 0,100 done +3d[-$1--1] # Duplicate along Y
     -t3d. .. rm..
-    /3d. $1 --3d. 50,50,50
+    /3d. $1 -3d. 50,50,50
     --r3d. 0,1,0,-90 --r3d. 0,1,0,-90 --r3d. 0,1,0,-90  # Generate the 5 other sides.
     --r3d. 0,0,1,-90 --r3d. 0,0,1,180
     +3d
@@ -13309,9 +13309,9 @@ pca_patch3d : check "isint(${1=7}) && $1>0 && isint(${2=1000}) && $2>0 && isint(
     z[1] 0,1 transpose[1] *[1] $6 a[1,2] y s[^0] x
 
     # Normalize patch coordinates by using average and standard deviation.
-    --+[^0] /. $2 --[1--2] . rm.
+    --+[^0] /. $2 -[1--2] . rm.
     a[^0] x
-    if $4 l. s y -/ 'sqrt(1e-8+iv)' a y endl endif
+    if $4 l. s y / 'sqrt(1e-8+iv)' a y endl endif
 
     # Do PCA for dimension reduction.
     --transpose. -m*[-2,-1]
@@ -13372,7 +13372,7 @@ pointcloud3d :
       -i.. (1,{w};1,{w}^1,1;{h},{h}) r.. .,.,1,2,3 *[-2,-1] round. permute. cxyz
       l. s -,0 a y is_points=$! endl
       if $is_points
-        --. 1 r. 2,{h/2},1,1,-1 permute. cyzx --warp.. .,0,0 rm...
+        -. 1 r. 2,{h/2},1,1,-1 permute. cyzx --warp.. .,0,0 rm...
         permute.. cyzx -i.. 1,{h},1,1,$> a[-3,-2] x    # Coordinates.
         -i... ({'CImg3d'}) -i... ({h},{h})               # Header and size.
         -i.. 1,{h},1,1,1 -i.. 1,{h},1,1,y a[-3,-2] x    # Primitives.
@@ -13581,19 +13581,19 @@ skeleton3d : check "isint(${1=2}) && $1>=0 && $1<=2 && isint(${2=3}) && $2>=0 &&
 
         if {$2==0" || "($2==3" && "$1==0)} # Frame with squares.
           -=[1] {4*$n}
-          i[3] [2]x3 --z.. 0,1 z. 0,2 --[2] . +[4] .
-          s. x *.. -1 a[-3--1] x +[3] . --[5,-1] a[2-5] x
+          i[3] [2]x3 --z.. 0,1 z. 0,2 -[2] . +[4] .
+          s. x *.. -1 a[-3--1] x +[3] . -[5,-1] a[2-5] x
           rm[3] 1,$n,1,1,4 --f. 4*y --+. 1 --+. 1 --+. 1 rv[-3,-1] a[-5--1] x mv. 3
 
         elif {$2==1" || "($2==3" && "$1==1)} # Frame with diamonds.
           -=[1] {4*$n}
-          i[3] [2]x3 --z.. 0,0 z. 0,2 --[2] . +[4] .
-          shift. 1,0 --[3] . +[5,-1] a[2-5] x
+          i[3] [2]x3 --z.. 0,0 z. 0,2 -[2] . +[4] .
+          shift. 1,0 -[3] . +[5,-1] a[2-5] x
           rm[3] 1,$n,1,1,4 --f. 4*y --+. 1 --+. 1 --+. 1 rv[-3,-1] a[-5--1] x mv. 3
 
         elif {$2==2" || "($2==3" && "$1==2)} # Frame with circles.
           -=[1] {2*$n}
-          --z[4] 0,0 z. 0,2 --+[2,-1] --[2,-2] a[2,-1] x
+          --z[4] 0,0 z. 0,2 --+[2,-1] -[2,-2] a[2,-1] x
           rm[3] 1,$n,1,1,5 --f. 2*y --+. 1 3,100% a[-4--1] x mv. 3
         endif
         y a y -o3d $4 if $5 -p3d 1 endif col3d 200
@@ -13675,7 +13675,7 @@ spherical3d : check "${1=64}>=3 && ${2=$1}>=3" skip "${3=abs(1+0.5*cos(3*phi)*si
   # Define 3d primitives.
   $n1,{$n2-2},1,4,"nx=(x+1)%w;ny=(y+1);2+if(c==0,x+y*"$n1",if(c==1,nx+y*"$n1",if(c==2,nx+ny*"$n1",x+ny*"$n1")))"
   r. {w*h},4,1,1,-1 permute. yxzc -i.. 1,{h},1,1,4 a[-2,-1] x
-  2,$n1,1,1,3,0 1,$n1,1,1,'y' --+. 1 -%. {h} 2,$n1,1,1,3,1 [-3,-2]  # Connect the two poles.
+  2,$n1,1,1,3,0 1,$n1,1,1,'y' --+. 1 %. {h} 2,$n1,1,1,3,1 [-3,-2]  # Connect the two poles.
   +[-5,-4] 2 rv[-5,-4] +[-2,-1] {$nbv-$n1} a[-3--1] x a[-4--2] x
   nbp={h+{-2,h}+{-3,h}}
   y[-3--1] a[-3--1] y
@@ -13699,9 +13699,9 @@ spline3d : check ${13=128}>=2
   ($13;{$13-1})          # Nb vertices / primitives.
   # Define vertices.
   1,$13,1,1,1 (0;1) r. 1,$13,1,1,3 --sqr. --*[-2,-1] a[-4--1] x
-  --*. '$2,$5,{3*(($8)-($2))-2*($5)-($11)},{($5)+($11)+2*(($2)-($8))}' l. s x -+ endl
-  --*.. '$3,$6,{3*(($9)-($3))-2*($6)-($12)},{($6)+($12)+2*(($3)-($9))}' l. s x -+ endl
-  *... '$1,$4,{3*(($7)-($1))-2*($4)-($10)},{($4)+($10)+2*(($1)-($7))}' l... s x -+ endl
+  --*. '$2,$5,{3*(($8)-($2))-2*($5)-($11)},{($5)+($11)+2*(($2)-($8))}' l. s x + endl
+  --*.. '$3,$6,{3*(($9)-($3))-2*($6)-($12)},{($6)+($12)+2*(($3)-($9))}' l. s x + endl
+  *... '$1,$4,{3*(($7)-($1))-2*($4)-($10)},{($4)+($10)+2*(($1)-($7))}' l... s x + endl
   a[-3--1] x
   1,{$13-1},1,1,2 (0,1;{$13-2},{$13-1}) r. 2,..,1,1,3 round. a[-2,-1] x # Primitives.
   1,{3*($13-1)},1,1,200 1,{$13-1},1,1,1 # Colors / opacities.
@@ -13809,7 +13809,7 @@ superformula3d : check "${1=1024}>1 && ${2=8}>=1" skip ${3=1},${4=5},${5=8}
   (0,{2*pi}) r. $res,1,1,1,3 .
 
   *. {$2/4} --sin. cos.. abs[-2,-1]
-  -^.. $4 -^. $5 +[-2,-1] -^. {-1/$3}
+  ^.. $4 ^. $5 +[-2,-1] ^. {-1/$3}
   --sin.. cos... *. .. *[-3,-2] n[-2,-1] -1,1
   a[-2,-1] y rows. 0,2 transpose. r. 1,{w*h},1,1,-1
 
@@ -13895,7 +13895,7 @@ text_pointcloud3d : skip ${1="text1"},${2="text2"},${3=1}
   0 t. "$2",0,0,53,1,1 mirror. y
   autocrop[-2,-1] 0
   expand_xy[-2,-1] 2,0 dilate[-2,-1] 2
-  permute. zyxc r[-2,-1] ${-max_whd} -&[-2,-1]
+  permute. zyxc r[-2,-1] ${-max_whd} &[-2,-1]
 
   100%,100% rand. 0,{{-2,d}-1} round. r. .. f. 'if(z==i,1,0)'
   distance. 1 +. 1 --f. 1 rv[-2,-1] /[-2,-1] *. ..
@@ -14372,7 +14372,7 @@ frame_blur : skip ${1=10},${2=30},${3=0},${4=1},${5=3%}
   e[^-1] "Draw round frame on image$?, with sharpness $1, size $2, smoothness $3, shading $4 and blur $5."
   v - to_rgba repeat $! l[$>] nm={0,n}
     100%,100%,1,1,"-(abs(x/w-0.5)^$1 + abs(y/h-0.5)^$1)^(1/$1)" ->=. $2%
-    if $4 distance. 1 n. 0,1 *. -1 +. 1 -^. {1/$4} endif
+    if $4 distance. 1 n. 0,1 *. -1 +. 1 ^. {1/$4} endif
     b. $3 --b.. $5 mv. -3 blend_fade[0,1] . rm.
   -nm $nm endl done v +
 
@@ -14438,7 +14438,7 @@ frame_painting :
   v - repeat $! l[$>]
     if {!$1} return endif
     $1,$1 s={max(w,h)} rm.                             # Determine size of the frame.
-    ({'${-dec2bin\ $13}'}) --. {'0'} r. $s             # Generate frame profile from serial number.
+    ({'${-dec2bin\ $13}'}) -. {'0'} r. $s             # Generate frame profile from serial number.
     transpose. b. $3 n. {1-$2},{1+$2}
     --r. {{-2,w}+2*$s},100%,1,1                         # Upper frame.
     --mirror. y                                         # Lower frame.
@@ -14504,7 +14504,7 @@ frame_round : skip ${1=10},${2=10},${3=0},${4=0},${5=255},${6=$5},${7=$6},${8=25
   e[^-1] "Draw round frame on image$?, with sharpness $1, size $2, smoothness $3, shading $4 and RGBA color ($5,$6,$7,$8)."
   v - to_rgba repeat $! l[$>] nm={0,n}
     100%,100%,1,1,"-(abs(x/w-0.5)^$1 + abs(y/h-0.5)^$1)^(1/$1)" ->=. $2%
-    if $4 distance. 1 n. 0,1 *. -1 +. 1 -^. {1/$4} endif
+    if $4 distance. 1 n. 0,1 *. -1 +. 1 ^. {1/$4} endif
     b. $3 -i... 100%,100%,1,4 fc... $5,$6,$7,$8 blend_fade[0,1] . rm.
   -nm $nm endl done v +
 
@@ -14608,7 +14608,7 @@ img2ascii : skip "${1= !\042#$%&\047()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRS
     s[0] y,-$h s[0--3] x,-$w r[0--3] $w,$h,1,1,0,0
     repeat {$!-2} l[$>,-2,-1]
       rprogress {$>*100/($!-2)}
-      r[0] [1] --[0] [1] sqr[0] r[0] 1,1,100%,1,2 y[0]
+      r[0] [1] -[0] [1] sqr[0] r[0] 1,1,100%,1,2 y[0]
       C={0,ym} rm[0]
       --slices[1] $C mv. 0
       if {narg("$5")} --f[0] $C a[0,-1] c endif
@@ -14651,8 +14651,8 @@ imagegrid_hexagonal : check "isint(${1=32}) && $1>0 && ${2=0.1}>=0 && $2<=1"
     l[]
       # Generate hexagon.
       ({'CImg3d'},6,6)
-      (0;{2*pi}) --. {pi/2} r. 1,7,1,1,3 --sin. cos.. a[-2,-1] x rows. 0,5 z. 0,2
-      2,6,1,1,3,0 1,100%,1,1,y --+. 1 -%. 6 rv[-2,-1] a[-3--1] x
+      (0;{2*pi}) -. {pi/2} r. 1,7,1,1,3 --sin. cos.. a[-2,-1] x rows. 0,5 z. 0,2
+      2,6,1,1,3,0 1,100%,1,1,y --+. 1 %. 6 rv[-2,-1] a[-3--1] x
       3,100%,1,1,1 1,100%,1,1,1 y a y
       *3d. {1-$2}
 
@@ -15054,7 +15054,7 @@ brushify : check ${"-is_image_arg $1"}" &&"\         # $1: [brush]
 
     # Generate set of random points with orientations.
     --diffusiontensors[img] $9,$10,$11,$12 nm. geometry
-    --channels[geometry] 0 sh[geometry] 2 +[-2,-1] -^. 0.3 -quantize. $2,0 *. -1 +. $2 --. 1 nm. contours
+    --channels[geometry] 0 sh[geometry] 2 +[-2,-1] ^. 0.3 -quantize. $2,0 *. -1 +. $2 -. 1 nm. contours
     1,{img,max(1,${"is_percent $8"}?wh*$8:$8)} rand. 0,{img,w-1} --rand. 0,{img,h-1} a[-2,-1] c nm. pts
     --to_rgba[img] nm. res
 
@@ -15154,7 +15154,7 @@ cubism : check "${1=50}>=0 && ${2=10}>=0 && $2<=50 && ${5=0}>=0" skip ${3=75},${
 draw_whirl : skip ${1=100}
   e[^-1] "Apply whirl drawing effect on image$? with amplitude $1."
   v - repeat $! l[$>]
-    100%,100% noise. 70,2 *. 255 r. .. -&[-1,-2] smooth. $1,0,1,2,2
+    100%,100% noise. 70,2 *. 255 r. .. &[-1,-2] smooth. $1,0,1,2,2
     sqrt. n. 0,255 equalize.
   endl done v +
 
@@ -15192,7 +15192,7 @@ drop_shadow : check "${3=5}>=0 && ${4=0}>=0 && $4<=1" skip ${1=20},${2=$1},${5=1
     endif
     b. $sigma,0
     r. 100%,100%,1,2,0,0,0,0,0,1 mv. 0 blend alpha
-    --channels. 100% ->=. 1 -* autocrop 0
+    --channels. 100% ->=. 1 * autocrop 0
     if {!$5} $w,$h,1,$s j. ..,{arg(1,$coords)},{arg(2,$coords)} rm.. endif
     -nm $nm
   endl done v +
@@ -15299,7 +15299,7 @@ halftone : check "${1=5}>=2 && ${2=8}>=2 && ${3=8}>=2 && ${5=0}>=0" skip ${4=5}
       s={round(($2*$<+$3*$>)/($1-1))}
       $s,$s -=. 1,50%,50% distance. 1,{$4%3} --shift. {round(w/2)},{round(h/2)},0,0,2 min[-2,-1]
       if {$4>=3} -<. {100*$</($1-1.1)}% *. {-255} +. {255-$>}
-      else -<. {100*$>/($1-1.1)}% *. 255 --. $>
+      else -<. {100*$>/($1-1.1)}% *. 255 -. $>
       endif
       r. ..,0,2 b. $5 --==.. $> *[-2,-1] +[-2,-1]
     done endl done a c
@@ -15317,7 +15317,7 @@ hardsketchbw : skip ${1=300},${2=50},${3=0.1},${4=20},${5=0}
   if $5 # Fast version.
     repeat $! l[$>] nm={0,n}
       g xy rv *.. -1 a c
-      if $4 --norm ->=. $4% -* endif
+      if $4 --norm ->=. $4% * endif
       100%,100%,1,1,255 -quiver. ..,{max(1,10-$2/6)},$1,0,$3 rm..
     -nm $nm endl done
 
@@ -15325,7 +15325,7 @@ hardsketchbw : skip ${1=300},${2=50},${3=0.1},${4=20},${5=0}
     repeat $! l[$>] nm={0,n}
 
       # Isolate starting points and tangents.
-      w={w} h={h} g xy rv *.. -1 a c -* $1
+      w={w} h={h} g xy rv *.. -1 a c * $1
       --norm ->=. $4% 100%,100% noise. $2,2 *[-2,-1]
 
       # Retrieve points coordinates and corresponding tangents.
@@ -15383,7 +15383,7 @@ houghsketchbw : check "${1=8}>=0 && ${2=5}>=0 && ${3=80}>=0 && $3<=100 && ${4=0.
     cos[-4] sin... *[-4,-3] 10000   # cos(t) sin(t)
     --+.. ...                          # x + sin(t)
     ---.. [-5]                         # y - cos(t)
-    --[-4] [-5]                        # x - sin(t)
+    -[-4] [-5]                        # x - sin(t)
     +... [-6]                         # y + cos(t)
     rm[-6,-5]
 
@@ -15401,11 +15401,11 @@ houghsketchbw : check "${1=8}>=0 && ${2=5}>=0 && ${3=80}>=0 && $3<=100 && ${4=0.
 #@cli lightrays : 100<=_density<=0,_center_x[%],_center_y[%],_ray_length>=0,_ray_attenuation>=0
 #@cli : Generate ray lights from the edges of selected images.
 #@cli : Defaults values : 'density=50%', 'center_x=50%', 'center_y=50%', 'ray_length=0.9' and 'ray_attenuation=0.5'.
-#@cli : $ image.jpg --lightrays , -+ cut 0,255
+#@cli : $ image.jpg --lightrays , + cut 0,255
 lightrays : check "${1=50}>=0 && $1<=100 && ${4=1}>=0 && ${5=1}>=0" skip ${2=50%},${3=50%}
   e[^-1] "Generate ray lights from image$?, with density $1, center point ($2,$3), ray length $4 and attenuation $5."
   v - repeat $! l[$>]
-    gradient_norm -* -1 -< $1% -euclidean2polar $2,$3
+    gradient_norm * -1 -< $1% -euclidean2polar $2,$3
     repeat {log2(w)} --shift. {2^$>} +[-2,-1] done
     -function1d 0.5,0,1,{$4*w},1,{1+($4+1-$5)*w},0 r. {-2,w},1,1,1,0
     (1,{w}) r. {-2,w},1,1,1,3 /[-2,-1]
@@ -15426,7 +15426,7 @@ light_relief : skip ${1=0.3},${2=0.5},${3=0.2},${4=0},${5=0.2},${6=0.5},${7=0.5}
     -orientation[-2,-1] *[-2,-1] s. c +[-3--1]                                          # Normalized scalar product.
     100%,100% -=. 1,{$6*100}%,{$7*100}% distance. 1 sqr. *. -1                          # Compute specular attenuation.
     /. {($3*max(w,h))^2} exp. *. $2 +. $1
-    *[-2,-1] --. $4 *. {-2,iM}
+    *[-2,-1] -. $4 *. {-2,iM}
     split_opacity[0] +[0,-1] a c c 0,255
   endl done v +
 
@@ -15535,7 +15535,7 @@ _pixelsort :
 #@cli : $ image.jpg to_rgba polaroid 5,30 rotate 20 drop_shadow , display_rgba
 polaroid : check "${1=10}>=0 && ${2=20}>=0"
   e[^-1] "Create polaroid effect in image$?, with borders sizes $1 and $2."
-  v - -- 255 r {100+$1}%,{100+$1}%,1,100%,0,0,0.5,0.5 r 100%,{100+$2}%,1,100%,0,0,0 -+ 255 v +
+  v - - 255 r {100+$1}%,{100+$1}%,1,100%,0,0,0.5,0.5 r 100%,{100+$2}%,1,100%,0,0,0 + 255 v +
 
 #@cli polygonize : _warp_amplitude>=0,_smoothness[%]>=0,_min_area[%]>=0,_resolution_x[%]>0,_resolution_y[%]>0
 #@cli : Apply polygon effect on selected images.
@@ -15612,12 +15612,12 @@ rodilius : check "${1=10}>=0 && $1<=200 && ${2=10}>=0 && $2<=100 && ${3=400}>=0 
 stained_glass : check "${1=40%}>=0 && ${2=0.2}>=0" skip ${3=0}
   e[^-1] "Apply stained glass effect on image$?, with edges $1, shading $2 and thin-separators "${-arg\ 1+!$3,enabled,disabled}"."
   v - repeat $! l[$>]
-    im={im-1} -- $im  # Ensure strict positiveness of image labels.
+    im={im-1} - $im  # Ensure strict positiveness of image labels.
     --gradient_norm ->=. $1 *.. .
     distance. 1 sharpen. 1e10 -!=. 0
     if $3 -skeleton. 0 endif
     distance. 1 -watershed.. . +.. $im
-    n. 0,1  -^. $2 -*
+    n. 0,1  ^. $2 -*
   endl done v +
 
 #@cli stars : _density[%]>=0,_depth>=0,_size>0,_nb_branches>=1,0<=_thickness<=1,_smoothness[%]>=0,_R,_G,_B,_opacity
@@ -15775,8 +15775,8 @@ weave : check "${1=6}>=0 && ${2=65}>=0 && $2<=100 && ${3=40}>=0 && $3<=100 && ${
     w={round(max(w,h)/$1,1,1)} h=$w s={(100-$3)*255%} p={max(0.01,$4)}
 
     # Create patterns.
-    1,$h -=. 1,0,50% distance. 1 -^. $p c. 50%,100% r. {max(1,round($2*$w%))},100%
-    $w,1 -=. 1,50% distance. 1 -^. $p c. 50%,100% *. -1 r. 100%,{max(1,round($2*$h%))}
+    1,$h -=. 1,0,50% distance. 1 ^. $p c. 50%,100% r. {max(1,round($2*$w%))},100%
+    $w,1 -=. 1,50% distance. 1 ^. $p c. 50%,100% *. -1 r. 100%,{max(1,round($2*$h%))}
     --*. -1 --*... -1 n[-4,-2] 0,$s n[-3,-1] $s,255
     {w},1 1,... rand[-2,-1] 0,1 b[-2,-1] $6% n[-2,-1] -$5,$5 r. [-4] +[-5] . +[-4,-1] +[-5] . +[-2,-1]
     --f... 255 a[-4,-1] c --f. 255 a[-2,-1] c
@@ -15798,8 +15798,8 @@ weave : check "${1=6}>=0 && ${2=65}>=0 && $2<=100 && ${3=40}>=0 && $3<=100 && ${
 whirls : skip ${1=3},${2=6},${3=0.5},${4=1.8}
   e[^-1] "Add random whirl texture to image$?, with texture $1, smoothness $2, darkness $3 and lightness $4."
   v - repeat $! l[$>]
-    100%,100% noise. 0.3,2 repeat $1 b. $2 gradient_norm. -^. 0.2 done
-    n. $3,$4 r. .. -* c 0,255
+    100%,100% noise. 0.3,2 repeat $1 b. $2 gradient_norm. ^. 0.2 done
+    n. $3,$4 r. .. * c 0,255
   endl done v +
 
 #------------------------------------
@@ -15865,7 +15865,7 @@ fisheye : skip ${1=50},${2=50},${3=50},${4=1.2}
   e[^-1] "Apply Fish-eye effect on image$?, centered at ($1%,$2%) with radius $3% and amplitude $4."
   if {$4==0} return endif
   v - repeat $! l[$>]
-    100%,100%,1,1 -=. 1,$1%,$2% distance. 1 c. 0,$3% *. -1 n. 0,1 -^. {1/$4}
+    100%,100%,1,1 -=. 1,$1%,$2% distance. 1 c. 0,$3% *. -1 n. 0,1 ^. {1/$4}
     -i.. ({-$1/100},{1-$1/100};{-$1/100},{1-$1/100}^{-$2/100},{-$2/100};{1-$2/100},{1-$2/100}) r.. .,.,1,2,3
     n. 0,{max(w,h)} *[-2,-1]
     warp.. .,1,1,1 rm.
@@ -15906,8 +15906,8 @@ map_sphere : check "${1=512}>0 && ${2=512}>0 && ${5=0}>=0 && ${6=0.5}>=0" skip $
      $1,$2 -=. 1,50%,50% distance. 1,3 /. $r2 sqrt. c. 0,1
      -asin. # Compute phi angle.
      +.. {pi} *.. {({-3,w}-1)/(2*pi)} # Normalize theta to X-coordinates
-     *. {2/pi} -^. $4 *. {{-3,h}-1} *. -1 +. {{-3,h}-1} # Normalize phi to Y-coordinates
-     if $5 -->=. 1 distance. 1 c. 0,$5% n. 0,1 -^. $6 c.. 1,100% --[-2,-1] endif
+     *. {2/pi} ^. $4 *. {{-3,h}-1} *. -1 +. {{-3,h}-1} # Normalize phi to Y-coordinates
+     if $5 -->=. 1 distance. 1 c. 0,$5% n. 0,1 ^. $6 c.. 1,100% -[-2,-1] endif
      r[-1,-2] 100%,100%,{-3,d}
      --f. z a[-3--1] c
      warp.. .,0,1,1 rm. # Apply image warping
@@ -15966,7 +15966,7 @@ raindrops : check "${2=0.1}>=0 && ${3=1}>=0 && isint(${4=0}) && $4>=0" skip ${1=
     100%,100% noise. $2,2 distance. 1 f. 'cos(i)/(1+i/(1e-8+$3))'
     if $4
       -i.. (0,1,0;1,0,1;0,1,0) /.. 2 .
-      repeat $4 --convolve. ...,1 --. ... rm... done rm[-3,-2]
+      repeat $4 --convolve. ...,1 -. ... rm... done rm[-3,-2]
     endif
     g. a[-2,-1] c *. {$1/(1e-5+max(abs(im),abs(iM)))}
     warp.. .,1 rm.
@@ -15981,8 +15981,8 @@ ripple : skip ${1=10},${2=20},${3=2},${4=0},${5=0}
   v -
   theta={$4*pi/180} C={cos($theta)} S={-sin($theta)}
   repeat $! l[$>]
-    100%,100%,1,1,"x" --. {w/2} 100%,100%,1,1,'y'
-    --. {h/2-$5} *.. $S *. $C +[-2,-1]      # Generate rotated Y.
+    100%,100%,1,1,"x" -. {w/2} 100%,100%,1,1,'y'
+    -. {h/2-$5} *.. $S *. $C +[-2,-1]      # Generate rotated Y.
     _ripple$3. $1,$2                          # Generate warp field.
     --*. {-$S} *.. $C a[-2,-1] c             # Rotate warp field.
     warp.. .,1 rm.
@@ -16092,7 +16092,7 @@ twirl : skip ${1=1},${2=50%},${3=50%},${4=3}
 warp_perspective : skip ${1=1.5},${2=0},${3=1},${4=50},${5=50},${6=2}
   e[^-1] "Apply perspective warp on image$?, with angles ($1 deg.,$2 deg.), zoom $3 and offsets ($4,$5)."
   v - repeat $! l[$>]
-    (0,100) --. $4 /. 100 (0;100) --. $5 /. 100 r[-2,-1] ...,...,...,1,3
+    (0,100) -. $4 /. 100 (0;100) -. $5 /. 100 r[-2,-1] ...,...,...,1,3
     --*.. $2 --*.. $1 +[-2,-1] +. $3 /... . /[-2,-1]
     *.. 100 +.. $4 /.. 100 *.. {-3,w}
     *. 100 +. $5 /. 100 *. {-3,h}
@@ -16184,7 +16184,7 @@ cracks : check "${1=25}>=0" skip ${2=0},${3=1},${4=0}
   v - repeat $! l[$>] cut={[im,iM]}
     100%,100%,1,2,'u<0.25*($1%)^4?[u,1]:[0,0]'
     s. c distance. 1 *. -1 -watershed.. . rm.
-    --dilate. 3 --[-2,-1] -!=. 0 thinning.
+    --dilate. 3 -[-2,-1] -!=. 0 thinning.
     if $2
       f. "i?i:j(1)?2:j(-1)?0.5:i" n. 0,1
       --fc.. ${4--1} *. .. -neq.. 0 j... .,0,0,0,0,$3,..
@@ -16202,7 +16202,7 @@ light_patch : skip ${1=10},${2=0.9},${3=1.7}
   e[^-1] "Apply light patches to image$?, with density $1, darkness $2 and lightness $3."
   v - repeat $! l[$>]
     n 0,255 $1,$1 noise. 40 r. ..,5 c. 0,255
-    n. $2,$3 -* c 0,255
+    n. $2,$3 * c 0,255
   endl done v +
 
 #@cli noise_hurl : _amplitude>=0
@@ -16234,11 +16234,11 @@ scanlines : skip ${1=60},${2=2},${3=0},${4=0},${5=0}
   v -
   theta={$4*pi/180} C={cos($theta)} S={-sin($theta)}
   repeat $! l[$>]
-    100%,100%,1,1,"x" --. {w/2} 100%,100%,1,1,'y'
-    --. {h/2-$5} *.. $S *. $C +[-2,-1]      # Generate rotated Y.
+    100%,100%,1,1,"x" -. {w/2} 100%,100%,1,1,'y'
+    -. {h/2-$5} *.. $S *. $C +[-2,-1]      # Generate rotated Y.
     _ripple$3. $1,$2                            # Generate warp field.
     n. {-$1},$1
-    -+ cut 0,255
+    + cut 0,255
   endl done v +
 
 #@cli shade_stripes : _frequency>=0,_direction={ 0=horizontal | 1=vertical },_darkness>=0,_lightness>=0
@@ -16248,7 +16248,7 @@ scanlines : skip ${1=60},${2=2},${3=0},${4=0},${5=0}
 shade_stripes : skip ${1=5},${2=1},${3=0.8},${4=2}
   e[^-1] "Add "${-arg\ 1+!$2,vertical,horizontal}" shaded stripes to image$?, with frequency $1, darkness $3 and lightness $4."
   v - n 0,255 repeat $! l[$>]
-    {max(1,w*($2!=0))},{max(1,h*($2==0))} noise. $1,2 distance. 1 r. .. n. $3,$4 -* c 0,255
+    {max(1,w*($2!=0))},{max(1,h*($2==0))} noise. $1,2 distance. 1 r. .. n. $3,$4 * c 0,255
   endl done v +
 
 #@cli shadow_patch : _opacity>=0
@@ -16285,7 +16285,7 @@ stripes_y : skip ${1=10}
   e[^-1] "Add vertical stripes to image$?, with frequency $1."
   v - repeat $! l[$>]
     100% noise. $1,2 *. 255 r. ..
-    *. 0.15 -+ c 0,255
+    *. 0.15 + c 0,255
   endl done v +
 
 #@cli texturize_canvas : _amplitude>=0,_fibrousness>=0,_emboss_level>=0
@@ -16298,7 +16298,7 @@ texturize_canvas : check "${1=20}>=0 && ${2=3}>=0 && ${3=0.6}>=0 && ${4=80}"
   repeat $! l[$>]
     {w},{h} rand. 0,255 --blur_x. $2 blur_y.. $2 +[-2,-1] g. a[-2,-1] c
     --compose_channels. + -orientation.. compose_channels.. + n.. $3,1 n. 0,255
-    sharpen. 80 *[-2,-1] n. -$1,$1 -+ c 0,255
+    sharpen. 80 *[-2,-1] n. -$1,$1 + c 0,255
   endl done v +
 
 #@cli texturize_paper
@@ -16321,7 +16321,7 @@ vignette : check "${1=100}>=0 && ${2=70}>=0 && $2<=100 && ${3=90}>=0 && $3<=100"
   v - repeat $! l[$>]
     mM={[im,iM]} d={max(w,h)}
     $d,$d -=. 1,50%,50% distance. 1 r. ..,2
-    c. $2%,$3% n. 0,$1 -- c $mM
+    c. $2%,$3% n. 0,$1 - c $mM
   endl done v +
 
 #@cli watermark_visible : _text,0<_opacity<1,_size>0,_angle,_mode={ 0=remove | 1=add },_smoothness>=0
@@ -16333,8 +16333,8 @@ watermark_visible : skip "${1=\251\ G\47MIC}" check "${2=0.3}>0 && $2<1 && ${3=5
   v - repeat $! l[$>]
     0 t. "$1",0,0,$3,1,255 rotate. $4,0,0 b. $6 n. 0,255
     r. ..,0,2 +. .. c. 0,255   # Generate opaque watermark image
-    if $5 *. $2 *.. {1-$2} -+  # Add watermark
-    else *. $2 -- -/ {1-$2}     # Remove watermark
+    if $5 *. $2 *.. {1-$2} +  # Add watermark
+    else *. $2 - / {1-$2}     # Remove watermark
     endif
     c 0,255
   endl done v +
@@ -16402,7 +16402,7 @@ blend : skip ${1=alpha},${2=1},${3=1},${4=0}
 _blend_alpha :
 _blend_normal :
 _blend_and :
-  -&[1] [0]
+  &[1] [0]
 _blend_add :
   +[1] [0] -c[1] 0,255
 _blend_average :
@@ -16414,32 +16414,32 @@ _blend_burn :
 _blend_darken :
   min[1] [0]
 _blend_difference :
-  --[1] [0] abs[1]
+  -[1] [0] abs[1]
 _blend_divide :
-  +[1] 0.1 -^[1] -1 *[1] [0] *[1] 255 -c[1] 0,255
+  +[1] 0.1 ^[1] -1 *[1] [0] *[1] 255 -c[1] 0,255
 _blend_dodge :
-  --[1] 255.1 -^[1] -1 *[1] [0] *[1] -255 -c[1] 0,255
+  -[1] 255.1 ^[1] -1 *[1] [0] *[1] -255 -c[1] 0,255
 _blend_edges :
   --blend_edges 0.5 rm[1]
 _blend_exclusion :
   --*[0,1] /[2] -127.5 +[1,2] +[1] [0]
 _blend_freeze :
-  *[1] -255 --[1] 0.1 ---[0] 255 sqr[2] /[2] [1] rm[1] +[1] 1 *[1] 255 -c[1] 0,255
+  *[1] -255 -[1] 0.1 ---[0] 255 sqr[2] /[2] [1] rm[1] +[1] 1 *[1] 255 -c[1] 0,255
 _blend_grainextract :
-  --[1] [0] *[1] -1 +[1] 128 -c[1] 0,255
+  -[1] [0] *[1] -1 +[1] 128 -c[1] 0,255
 _blend_grainmerge :
-  +[1] [0] --[1] 128 -c[1] 0,255
+  +[1] [0] -[1] 128 -c[1] 0,255
 _blend_green :
   sh[0] 0 sh[0] 2 j[1] [2] j[1] [3],0,0,0,2 rm[2,3]
 _blend_hardlight :
-  --*[0,1] /[2] 127.5 --+[0,1] *[3] 2 --[3] 255 --[3] [2] ->[1] 128
+  --*[0,1] /[2] 127.5 --+[0,1] *[3] 2 -[3] 255 -[3] [2] ->[1] 128
   j[2] [3],0,0,0,0,1,[1] rm[1,3] -c[1] 0,255
 _blend_hardmix :
   +[1] [0] ->=[1] 255 *[1] 255
 _blend_hue :
   to_color sh 0,2 rgb2hsv[2,3] sh[2] 1,2 j[1] [4],0,0,0,1 rm[4] hsv2rgb[2,3] rm[2,3]
 _blend_interpolation :
-  --*[0] {pi/255} *[1] {pi/255} cos[1,2] +[1,2] --[1] 2 *[1] -63.75 -c[1] 0,255
+  --*[0] {pi/255} *[1] {pi/255} cos[1,2] +[1,2] -[1] 2 *[1] -63.75 -c[1] 0,255
 _blend_lighten :
   max[1] [0]
 _blend_lightness :
@@ -16447,22 +16447,22 @@ _blend_lightness :
 _blend_luminance :
   to_color sh 0,2 rgb2ycbcr[2,3] sh[2] 1,2 j[1] [4],0,0,0,1 rm[4] ycbcr2rgb[2,3] rm[2,3]
 _blend_linearburn :
-  +[1] [0] --[1] 255 c. 0,255
+  +[1] [0] -[1] 255 c. 0,255
 _blend_linearlight :
-  *[1] 2 +[1] [0] --[1] 255 -c[1] 0,255
+  *[1] 2 +[1] [0] -[1] 255 -c[1] 0,255
 _blend_multiply :
   *[1] [0] /[1] 255
 _blend_negation :
-  +[1] [0] --[1] 255 abs[1] *[1] -1 +[1] 255
+  +[1] [0] -[1] 255 abs[1] *[1] -1 +[1] 255
 _blend_or :
   -|[1] [0]
 _blend_overlay :
-  --*[0,1] /[2] 127.5 +[1] [0] *[1] 2 --[1] 255 --[1] [2] --<[0] 128 j[1] [2],0,0,0,0,1,[3] rm[2,3] -c[1] 0,255
+  --*[0,1] /[2] 127.5 +[1] [0] *[1] 2 -[1] 255 -[1] [2] --<[0] 128 j[1] [2],0,0,0,0,1,[3] rm[2,3] -c[1] 0,255
 _blend_pinlight :
-  *[1] 2 --blend darken --[1] 256 --blend[0,1] lighten ->=[1] 0
+  *[1] 2 --blend darken -[1] 256 --blend[0,1] lighten ->=[1] 0
   j[2] [3],0,0,0,0,1,[1] rm[1,3]
 _blend_reflect :
-  --[1] 255.1 *[1] -1 --sqr[0] /[2] [1] rm[1] -c[1] 0,255
+  -[1] 255.1 *[1] -1 --sqr[0] /[2] [1] rm[1] -c[1] 0,255
 _blend_red :
   sh[0] 1,100% j[1] [2],0,0,0,1 rm[2]
 _blend_seamless :
@@ -16472,7 +16472,7 @@ _blend_seamless_mixed :
 _blend_saturation :
   to_color sh 0,2 rgb2hsv[2,3] shift[2,3] 0,0,0,-1,2 sh[2] 1,2 j[1] [4],0,0,0,1 rm[4] shift[2,3] 0,0,0,1,2 hsv2rgb[2,3] rm[2,3]
 _blend_screen :
-  ---[0] 255 --[1] 255 *[1,2] /[1] 255 *[1] -1 +[1] 255
+  ---[0] 255 -[1] 255 *[1,2] /[1] 255 *[1] -1 +[1] 255
 
 _blend_shapeareamax :
   f[1] "init(A = resize([ 0,(s-1)/s ],s,3));I+A" norm[1] label[1] 0
@@ -16536,21 +16536,21 @@ _blend_shapemax0 :
   f[0] ">i(#2,i(#1,x,y,z,0),0,0,c) = max(i(#2,i(#1,x,y,z,0),0,0,c),i);i"
   point. 0,0,0,1,0 map[1] [2] rm.
 _blend_softburn :
-  ---[0] 255.1 -^[2] -1 *[2] [1] *[2] -127.5 ---[0] 255 --+[1] 0.1 /[3,4] *[3] 127.5 +[3] 255 +[1] [0] ->[1] 255
+  ---[0] 255.1 ^[2] -1 *[2] [1] *[2] -127.5 ---[0] 255 --+[1] 0.1 /[3,4] *[3] 127.5 +[3] 255 +[1] [0] ->[1] 255
   j[2] [3],0,0,0,0,1,[1] rm[1,3] -c[1] 0,255
 _blend_softdodge :
-  ---[1] 255.1 -^[2] -1 *[2] [0] *[2] -127.5 ---[1] 255 --+[0] 0.1 /[3,4] *[3] 127.5 +[3] 255 +[1] [0] ->[1] 255
+  ---[1] 255.1 ^[2] -1 *[2] [0] *[2] -127.5 ---[1] 255 --+[0] 0.1 /[3,4] *[3] 127.5 +[3] 255 +[1] [0] ->[1] 255
   j[2] [3],0,0,0,0,1,[1] rm[1,3] -c[1] 0,255
 _blend_softlight :
   --/[0] 255 /[1] 255 --sqr. *[2] [1] *[1] [3] *[1] -2 *[2] 2 +[1-3] *[1] 255 -c[1] 0,255
 _blend_stamp :
-  *[1] 2 +[1] [0] --[1] 255 -c[1] 0,255
+  *[1] 2 +[1] [0] -[1] 255 -c[1] 0,255
 _blend_subtract :
-  --[1] [0] *[1] -1 -c[1] 0,255
+  -[1] [0] *[1] -1 -c[1] 0,255
 _blend_value :
   to_color sh 0,2 rgb2hsv[2,3] sh[2] 0,1 j[1] [4] rm[4] hsv2rgb[2,3] rm[2,3]
 _blend_vividlight :
-  *[1] 2 --blend burn --[1] 256 --blend[0,1] dodge ->=[1] 0
+  *[1] 2 --blend burn -[1] 256 --blend[0,1] dodge ->=[1] 0
   j[2] [3],0,0,0,0,1,[1] rm[1,3]
 _blend_xor :
   -xor[1] [0]
@@ -16562,7 +16562,7 @@ blend_edges : check {$1>=0}
   e[^-1] "Blend image$? using 'edges' mode, with smoothness $1."
   if {$!>1} v - to_rgb r[^0] [0],0,0,0.5,0.5 repeat $! l[$>]
     --gradient_norm +. 1 b. $1 n. 1,10 sqr. s.. c *[-4--2] . a[-4--1] c
-  endl done r[^0] [0],0,0,0.5,0.5 -+ s. c /[-4--2] . rm. a[-3--1] c v + endif
+  endl done r[^0] [0],0,0,0.5,0.5 + s. c /[-4--2] . rm. a[-3--1] c v + endif
 
 #@cli blend_fade : [fading_shape]
 #@cli : Blend selected images together using specified fading shape.
@@ -16571,8 +16571,8 @@ blend_fade :
   e[^-1] "Blend image$? together using fading pattern $1."
   v - r ${-max_whds},0
   -pass$1 0 r. [0],[0],[0],100%,1 max. 0 min. {$!-2}
-  repeat {$!-1} ---. $> abs. --. 1 *. -1 max. 0 *[$>,-1] done rm.
-  -+ v +
+  repeat {$!-1} ---. $> abs. -. 1 *. -1 max. 0 *[$>,-1] done rm.
+  + v +
 
 _fade :
   r.. ...,5 r. ..,3 c. $1%,$2% n. 0,1 j... ..,0,0,0,0,1,. rm[-2,-1]
@@ -16585,7 +16585,7 @@ blend_median :
   v -
   if {$!<2} v + return endif
   to_colormode 0 r ${-max_whd},100%,0,0,0.5,0.5,0.5
-  if {$!==2} -+ -/ 2
+  if {$!==2} + / 2
   else
     whds={w},{h},{d},{s} r 100%,100%,{d*s},1,-1 a c
     100%,100%,100%,1,"med(I(#0))" k. r $whds,-1
@@ -16646,7 +16646,7 @@ blend_seamless : check "${2=0}>=0 && ${3=100%}>=0" skip ${1=0}
 
       # Inverse Laplacian.
       -fft[0]
-      100%,100%,1,1,'cos(2*x*pi/w)+cos(2*y*pi/h)' *. 2 --. 4
+      100%,100%,1,1,'cos(2*x*pi/w)+cos(2*y*pi/h)' *. 2 -. 4
       -=. 1 /[-3,-2] . rm.
       -=.. 0 -=. 0
       -ifft[-2,-1] rm.
@@ -16725,7 +16725,7 @@ sub_alpha : check "${2=1}>=1 && "${"-is_image_arg $1"}
 
     # Estimate minimal alpha-channel.
     -->[0,1] *[2] 255
-    --[0,2] [1] -replace[2] 0,1
+    -[0,2] [1] -replace[2] 0,1
     i[2] [0] /[2,3]
     compose_channels[2] max
     *[2] $2 -c[2] 0,1
@@ -16884,7 +16884,7 @@ _average_stream : skip "${5=}"
       v + e[] "\r  > Frame ""#"$frame$_N"        " v -
       imM={v=[$imM];[min(im,v[0]),max(iM,v[1])]}
       N+=1
-      if {$!>1} -+ endif
+      if {$!>1} + endif
       if {narg("$5")}
         --/. $N c. $imM
         if $is_outavi z. 0,{w-(w%8)-1} o. "$5",25,mp4v,1 else o. ${-filename\ "$5",$i} i+=1 endif
@@ -16904,7 +16904,7 @@ _average_stream : skip "${5=}"
       frame+=$4
     endif
   while {$go_on" && "($3==-1" || "$frame<=$3)}
-  -/ $N c $imM
+  / $N c $imM
   if $is_outavi o[] "$5",25,mp4v,0 endif
 
 #@cli fade_files : "filename_pattern",_nb_inner_frames>0,_first_frame>=0,_last_frame={ >=0 | -1=last },_frame_step>=1,_output_filename
@@ -17106,7 +17106,7 @@ _median_stream :
 # Median blending optimized to deal with a lot of input frames.
 __median_stream :
   if {$!<2} return
-  elif {$!==2} -+ -/ 2
+  elif {$!==2} + / 2
   else
     f. ":
       stack = vector"{0,2*$!}"();
@@ -17128,7 +17128,7 @@ __median_stream :
         if (lo<range[1],push(lo,range[1]));
       )"
     if {$!%2} k[{int($!/2)}]
-    else k[{int($!/2-1)},{$!/2}] -+ -/ 2
+    else k[{int($!/2-1)},{$!/2}] + / 2
     endif
   endif
 
@@ -17422,7 +17422,7 @@ pink_grayskel : skip ${1=4},${2=0}
 #@cli : (http://pinkhq.com/doxygen/heightmaxima_8c.html)
 #@cli : Heightmaxima filtering (requires the PINK library to be installed).
 #@cli : Default values: 'connectivity=4' and 'height=1'.
-#@cli : $ image.jpg --blur 2 --pink_heightminima ,15 --pink_heightmaxima[0,1] ,15 --[-3,-1] --[-3,-1] keep[-1,-2]
+#@cli : $ image.jpg --blur 2 --pink_heightminima ,15 --pink_heightmaxima[0,1] ,15 -[-3,-1] -[-3,-1] keep[-1,-2]
 pink_heightmaxima : check "${1=4}==4 || $1==8 || $1==6 || $1==26" skip ${2=1}
   e[^-1] "Filter by heightmaxima exec with connectivity $1 height $2."
   v - repeat $! l[$>]
@@ -17435,7 +17435,7 @@ pink_heightmaxima : check "${1=4}==4 || $1==8 || $1==6 || $1==26" skip ${2=1}
 #@cli : (http://pinkhq.com/doxygen/heightminima_8c.html)
 #@cli : Heightminima filtering (requires the PINK library to be installed).
 #@cli : Default values: 'connectivity=4' and 'height=1'.
-#@cli : $ image.jpg --blur 2 --pink_heightminima ,15 --pink_heightmaxima[0,1] ,15 --[-3,-1] --[-3,-1] keep[-1,-2]
+#@cli : $ image.jpg --blur 2 --pink_heightminima ,15 --pink_heightmaxima[0,1] ,15 -[-3,-1] -[-3,-1] keep[-1,-2]
 pink_heightminima : check "${1=4}==4 || $1==8 || $1==6 || $1==26" skip ${2=1}
   e[^-1] "Apply filter by heightminima exec with connectivity $1 height $2."
   v - repeat $! l[$>]
@@ -17568,9 +17568,9 @@ alert : skip "${1=[G"{`39`}"MIC Alert]},${2=This is an alert box.},${3=OK}"
     if {$!==1} to_rgb
     else # No logo provided, generate default logo (alert).
       64,64 polygon 3,50%,10%,10%,90%,90%,90%,1,1 b 3 ->= 50%
-      --erode. 5 --. .. -==. 0
+      --erode. 5 -. .. -==. 0
       polygon. 4,47%,43%,53%,43%,53%,66%,47%,66%,1,0 circle. 50%,76%,2,1,0
-      --*[0] 255 . 100%,100% a[-3--1] c --. '3*(y-h/2)'
+      --*[0] 255 . 100%,100% a[-3--1] c -. '3*(y-h/2)'
       *. .. rm.. *[0] 255 rv a c
       drop_shadow 3,3,1 i[0] 100%,100%,1,3,200 blend alpha
     endif
@@ -17611,7 +17611,7 @@ alert : skip "${1=[G"{`39`}"MIC Alert]},${2=This is an alert box.},${3=OK}"
 
     # Render alert box graphics.
     --l
-      channels 0,3 sh 1,100% --[50%--1] 200 rm[50%--1] frame 8,8,0
+      channels 0,3 sh 1,100% -[50%--1] 200 rm[50%--1] frame 8,8,0
       if {$!<6} a[^-1] x else append_tiles[^-1] , endif
       0 t. "$2",0,0,16,1,0,-200,-200,-200 r. {w+16},{h+8},1,4,0
       a[-2,-1] x,0.5 rv a y,0.5
@@ -18043,7 +18043,7 @@ img2text : skip "${1= }"
 #@cli : Convert selected 8bits-valued vectors into their hexadecimal representations (ascii-encoded).
 img82hex :
   e[^-1] "Convert 8bits-valued vector$? into hexadecimal representations (ascii-encoded)."
-  v - -% 256 -y
+  v - % 256 -y
   repeat $!
     --f[$>] 'v=int(i)&15;v+if(v<10,48,87)' # Lower digit
     f[$>] 'v=int(i)>>4;v+if(v<10,48,87)'  # Higher digit
@@ -18685,7 +18685,7 @@ RGBA :
 #@cli std_noise
 #@cli : Return the estimated noise standard deviation of the last selected image.
 std_noise :
-  v - if $! --laplacian. --. {ic} abs. u {1.4826*ic/sqrt(d==1?20:42)} rm. else u 0 endif v +
+  v - if $! --laplacian. -. {ic} abs. u {1.4826*ic/sqrt(d==1?20:42)} rm. else u 0 endif v +
 
 #@cli str : string
 #@cli : Print specified string into its binary, octal, decimal and hexadecimal representations.
@@ -19032,15 +19032,15 @@ x_2048 :
       is_shift=1
     elif {*,ARROWRIGHT}
       m "shift2048: rotate 180" m "ishift2048: rotate 180"
-      m "vshift2048: -s3d l[2] r 3,{h/3},1,1,-1 s x --[0,1] 3 *[0,1] -1 a x y endl a y"
+      m "vshift2048: -s3d l[2] r 3,{h/3},1,1,-1 s x -[0,1] 3 *[0,1] -1 a x y endl a y"
       is_shift=1
     elif {*,ARROWUP}
       m "shift2048: rotate -90" m "ishift2048: rotate 90"
-      m "vshift2048: -s3d l[2] r 3,{h/3},1,1,-1 s x rv[0,1] --[0] 3 *[0] -1  a x y endl a y"
+      m "vshift2048: -s3d l[2] r 3,{h/3},1,1,-1 s x rv[0,1] -[0] 3 *[0] -1  a x y endl a y"
       is_shift=1
     elif {*,ARROWDOWN}
       m "shift2048: rotate 90" m "ishift2048: rotate -90"
-      m "vshift2048: -s3d l[2] r 3,{h/3},1,1,-1 s x rv[0,1] --[1] 3 *[1] -1  a x y endl a y"
+      m "vshift2048: -s3d l[2] r 3,{h/3},1,1,-1 s x rv[0,1] -[1] 3 *[1] -1  a x y endl a y"
       is_shift=1
     endif
     if {*,r} w[1] 100%,100% endif
@@ -19055,7 +19055,7 @@ x_2048 :
         _x_2048_object3d
         --s[0] y discard[-4--1] 0 y[-4--1] x r[-4--1] 4,1,1,1,0,0 a[-4--1] y
         --==[0,-1] insert_new={$insert_new||!im} rm.
-        --f[0,-1] 'if(i,x,-1)' discard[-2,-1] -1 rv[-2,-1] --[-2,-1] rv[0,-2] rm..
+        --f[0,-1] 'if(i,x,-1)' discard[-2,-1] -1 rv[-2,-1] -[-2,-1] rv[0,-2] rm..
 
         if {(im||iM)&&!{*,k}} # Render animation for shift.
           /. 5 z. 0,2 y.
@@ -19090,7 +19090,7 @@ x_2048 :
             repeat 6  # Render animation for fusion.
               --vshift2048... *3d. 121 --j3d[1] .,78,190
               j. ...,430,{80-$>},0,0,{min(1,$</6)},[-4]
-              w. rm[-2,-1] --3d... {1/6},0,0 wait 20
+              w. rm[-2,-1] -3d... {1/6},0,0 wait 20
             done
             rm[-3--1]
           endif
@@ -19576,7 +19576,7 @@ _x_colorize :
     N={points,w}
     if {narg($baseview)" && "($b&3" || "{*,X}" || "{*,P})" && "$x>=0" && "$y>=0" && "$x<$w" && "$y<$h}
       if {$selection==-1" && "$N} # Check for selection of an existing point.
-        ($x;$y) r. $N,2 --. [points] *. {max($ww,$wh)/max($x1-$x0,$y1-$y0)} sqr. s. y +[-2,-1]
+        ($x;$y) r. $N,2 -. [points] *. {max($ww,$wh)/max($x1-$x0,$y1-$y0)} sqr. s. y +[-2,-1]
         dmin={im} selection={if($dmin>25,-1,xm)} rm.
       endif
       if {narg($replace_color)} # Go back from 'Replace color' mode.
@@ -19623,9 +19623,9 @@ _x_colorize :
         sh. 0,0,0,0 *. {$pw/$w} rm.
         sh. 1,1,0,0 *. {$ph/$h} rm.
         pointcloud. -1,$pw,$ph
-        --compose_channels. max -!=. 0 distance. 1 *. 0.02 +. 1 -^. -1 +. [potential] # Additional term that depends on marker's positions.
+        --compose_channels. max -!=. 0 distance. 1 *. 0.02 +. 1 ^. -1 +. [potential] # Additional term that depends on marker's positions.
         if {!$1} dilate.. 3 endif
-        -watershed.. . rm. --. 1
+        -watershed.. . rm. -. 1
       else [potential],[potential],1,3,255
       endif
       nm. colors
@@ -19640,7 +19640,7 @@ _x_colorize :
       current_replace_color=$__color
       if {points,w}
         --replace_color[colors] 0,0,$replace_color,$current_replace_color
-        --rows[points] 3,5 permute. xzcy --. 1
+        --rows[points] 3,5 permute. xzcy -. 1
         replace_color. 0,0,$replace_color,$current_replace_color
         +. 1 permute. xcyz --j[points] .,0,3 rm..
       else 0 0
@@ -19699,9 +19699,9 @@ _x_colorize :
     status={points,^}
     [img] __x_colorize. $1
     pointcloud[points] -1,$w,$h
-    --compose_channels[points] max -!=. 0 distance. 1 *. 0.02 +. 1 -^. -1 +[potential,-1]
+    --compose_channels[points] max -!=. 0 distance. 1 *. 0.02 +. 1 ^. -1 +[potential,-1]
     if {!$1} zfact={{img,max(w,h)}/{potential,max(w,h)}} dilate[points] {int(3*$zfact)} endif
-    -watershed[points] [potential] --[points] 1 nm[points] colors
+    -watershed[points] [potential] -[points] 1 nm[points] colors
   else [img],[img],1,3,255 nm. colors
   endif
 
@@ -19722,7 +19722,7 @@ _x_colorize :
 # Compute potential function.
 __x_colorize :
   if $1 # Potential for lineart.
-    n. 0,1 -^. 5 repeat 4 --b. 0.5% min done
+    n. 0,1 ^. 5 repeat 4 --b. 0.5% min done
   else  # Potential for generic grayscale image.
     gradient_norm. n. 0,255 normalize_local. 3,3 *. -1 n. 0,255
     b. 0.05% n. 0,1 sqr. --b. 0.5% n[-2,-1] 0,1 min[-2,-1]
@@ -20245,7 +20245,7 @@ _x_grab_color :
    237,168,125,52,61,152,68,198,225,81,120,20,178,130,195,128,\
    233,241,177,255,190,211,244,215,215,52,95,213,247,13,107,72,\
    143,131)
-  -unserialize. --. 127 decompress_rle.
+  -unserialize. -. 127 decompress_rle.
   frame. 10,10,0
   r2dx. 24
 
@@ -20294,8 +20294,8 @@ x_histogram :
     # Render corrected image and insert it in canvas.
     [0]
     ia={ia}
-    if $gamma /. 255 -^. {1/$gamma} *. 255 endif
-    --. $ia *. $contrast +. $brightness +. $ia
+    if $gamma /. 255 ^. {1/$gamma} *. 255 endif
+    -. $ia *. $contrast +. $brightness +. $ia
     b. $smoothness
     sharpen. $sharpness
     c. 0,255
@@ -20402,7 +20402,7 @@ x_hough :
         (0,{2*pi}) ($theta0,{$theta0-2*pi})
         r[-2,-1] {-3,w},1,1,1,3
         cos. *. $rho0 --<. 0 abs..
-        *. {pi} +[-3,-1] -%.. {2*pi}
+        *. {pi} +[-3,-1] %.. {2*pi}
         *.. {0.5*{-3,w}/pi} *. {{-3,h}/$rhomax}
         a[-2,-1] y
         repeat {w} point.. {i($>,0)},{i($>,1)},0,0.3,255 done
@@ -20483,7 +20483,7 @@ x_jawbreaker : check "${1=12}>0 && $1<20 && ${2=13}>0 && $2<20 && ${3=5}>0 && $3
 
     # Render board graphics.
     if $render_board
-      --abs[board] --. 1 *. {360/$3} -->=[board] 0 *. 0.9 --!=[board] 0
+      --abs[board] -. 1 *. {360/$3} -->=[board] 0 *. 0.9 --!=[board] 0
       r[-3--1] [balls] [balls] *[-2,-1] a[-3--1] c hsv2rgb.
       --compose_channels. + ->. 0 dilate. 3
       j[visu] [back] j[visu] ..,0,0,0,0,1,. rm[-2,-1]
@@ -20520,7 +20520,7 @@ x_jawbreaker : check "${1=12}>0 && $1<20 && ${2=13}>0 && $2<20 && ${3=5}>0 && $3
       # When selecting a ball -> display selection and init new shape score sprite.
       if {{board,i($x,$y)}>0}
         abs[board] flood[board] $x,$y,0,0,0,1,-{board,i($x,$y)}
-        -->=[board] 0 --. 1
+        -->=[board] 0 -. 1
         shapescore={(is+1)^2} shapescorey={if($shapescore,32,0)} rm.
 
       # When confirming selection of a ball -> remove set of connected balls.
@@ -20605,7 +20605,7 @@ x_landscape :
 
   # Generate global map + colors.
   900,900 plasma. 1,1,6 b. 0.07% n. 0,255 nm. map
-  --g. *. 0.5 +[-2,-1] n. 0,1 -^. 2 n. -150,330
+  --g. *. 0.5 +[-2,-1] n. 0,1 ^. 2 n. -150,330
   equalize[map] 256 n[map] -400,160 -c[map] 0,100% # Add water.
   (0,102,51;149,175,124;102,42,0;255,255,255) permute. yzcx srgb2rgb. r. 256,1,1,3,3 rgb2srgb. --n[map] 0,255 map. .. rm..
   +. .. rm.. c. 0,255 nm. colors # Colors.
@@ -20655,7 +20655,7 @@ x_landscape :
     # Keep only visible primitives.
     -->[y0] 0 *. [offsets] discard. 0
     if {h} # There is something to display (ground).
-      --. 1 --warp[x] .,0,0,0 nm. lx
+      -. 1 --warp[x] .,0,0,0 nm. lx
       warp[lcolors,y0,y1] ..,0,0,0 rm..
 
       # Generate 3d object.
@@ -20714,7 +20714,7 @@ x_life :
   # Start user-event loop.
   do
     (1,1,1;1,0,1;1,1,1) --correlate[0] .,0 rm..                # Count numbers of neighboring living cells.
-    --ir. 2,2 -&. [0] -ir.. 3,3 -|[-2,-1]                       # Make the game evolve (kill or create cells).
+    --ir. 2,2 &. [0] -ir.. 3,3 -|[-2,-1]                       # Make the game evolve (kill or create cells).
     rv[0,-1]                                                   # Update game state.
     if {{*,x}>0" && "{*,b}==1" && "$stock>0}                   # Add random cells to the game if user presses mouse button.
       nb={u*7}
@@ -20728,7 +20728,7 @@ x_life :
       stock={round(max(0,$stock-$nb))}
     endif
 
-    --. [0] *. -1                                              # Compute difference between consecutive states.
+    -. [0] *. -1                                              # Compute difference between consecutive states.
     stock-={2*(min(0,int(is/16*$score/150)))}                   # Increment available cells if the evolution is fast.
     +[1] [0]                                                   # Increment generation counter for still existing cells.
     min. 0 +. 1 *[1,-1]                                      # Reset generation counter for died cells.
@@ -20744,7 +20744,7 @@ x_life :
       r[3] {u(100,600)}%,1,1,3,5 -c[3] 0,255
     endif
 
-    --r[1] {2,w},{2,h} -&. 7 b. {1+$score*0.05}                # Render colored image of the game and display it.
+    --r[1] {2,w},{2,h} &. 7 b. {1+$score*0.05}                # Render colored image of the game and display it.
     n. 0,{3,w} map. [3] *. 0.1 +[2,-1] /[2] 1.1
     [2] if {{*,x}>0}                                           # Add a small target icon at the mouse position.
       opac={0.7*min(1,$stock/500)} r={min(500,$stock)*cos($iteration)/100}
@@ -21050,7 +21050,7 @@ x_metaballs3d :
       z$>={d/2+0.5*(d-{2,d}-4)*sin(${fz$>}*$|)}
     done
     f[3] 0 repeat $M j[3] [2],{${x$>}-{2,w/2}},{${y$>}-{2,h/2}},{${z$>}-{2,d/2}},0,-1 done
-    --r[3] 28,28,28,1,2 -isosurface3d. 0.4 --3d. 12,12,12 *3d. 13 -rv3d.
+    --r[3] 28,28,28,1,2 -isosurface3d. 0.4 -3d. 12,12,12 *3d. 13 -rv3d.
     r3d. 1,2,1,{100*$|}
     N={i[7]} (255,255,150;200,96,164;50,150,230) r. 3,$N,1,1,3 y. j.. .,0,{{-2,h}-4*$N} # Do some color tweaks.
     if {!$mode} circles3d.. 4 endif
@@ -21783,7 +21783,7 @@ x_quantize_rgb : check "isint(${1=16}) && $1>1"
 
     # Create and display visualization.
     if {!narg($visu_3d)} # Update 3d vizualization.
-      ---[centroids] 2 --+[centroids] 2 a[-2,-1] x permute. cxyz y. --. 128
+      ---[centroids] 2 --+[centroids] 2 a[-2,-1] x permute. cxyz y. -. 128
       j[obj3d] .,0,8 rm.  # Update centroids position in 3d object.
       [obj3d]
       if $clustering
@@ -21820,20 +21820,20 @@ x_quantize_rgb : check "isint(${1=16}) && $1>1"
     if {$b&1" && "$i==1} # Toggle dithering.
       dithering={!$dithering} rm[visu_img] wait -1
     elif {$b&1" && "$i==2} # Add new color.
-      (${-RGB}) y. c a[centroids,-1] x  _x_quantize_rgb_3d rm[visu_3d,visu_img,visu_centroids] -&[colors] 255 pause=1 wait 100
+      (${-RGB}) y. c a[centroids,-1] x  _x_quantize_rgb_3d rm[visu_3d,visu_img,visu_centroids] &[colors] 255 pause=1 wait 100
     elif {$b&2" && "$i==2" && "{centroids,w}>2} # Remove color.
-      r[centroids] {centroids,w-1} _x_quantize_rgb_3d rm[visu_3d,visu_img,visu_centroids] -&[colors] 255 pause=1 wait 100
+      r[centroids] {centroids,w-1} _x_quantize_rgb_3d rm[visu_3d,visu_img,visu_centroids] &[colors] 255 pause=1 wait 100
     elif {$b&2" && "$i>=3} # Toggle clusters/colors mode.
       clustering={!$clustering} rm[visu_3d] wait -1
     elif {*,M} # Init colormap with median-cut.
       --&[colors] 255 colormap. {centroids,w},0,0 rm[centroids] nm. centroids
-      _x_quantize_rgb_3d rm[visu_3d,visu_img,visu_centroids] -&[colors] 255 pause=1 wait -1
+      _x_quantize_rgb_3d rm[visu_3d,visu_img,visu_centroids] &[colors] 255 pause=1 wait -1
     elif {*,R} # Init colormap with random values.
       rand[centroids] 0,255 round[centroids] 1
-      _x_quantize_rgb_3d rm[visu_3d,visu_img,visu_centroids] -&[colors] 255 pause=1 wait -1
+      _x_quantize_rgb_3d rm[visu_3d,visu_img,visu_centroids] &[colors] 255 pause=1 wait -1
     elif {*,U} # Init colormap with uniform sampling.
       -uniform_distribution {centroids,w},3 *. 255 rm[centroids] nm. centroids
-      _x_quantize_rgb_3d rm[visu_3d,visu_img,visu_centroids] -&[colors] 255 pause=1 wait -1
+      _x_quantize_rgb_3d rm[visu_3d,visu_img,visu_centroids] &[colors] 255 pause=1 wait -1
     elif {*,ENTER} # Start k-means iterations.
       pause=0
     elif {$b&1" && "$i>=3} # Manage 3d view rotation.
@@ -21855,7 +21855,7 @@ x_quantize_rgb : check "isint(${1=16}) && $1>1"
       pause={*,-SPACE}
 
       # Estimate new centroids positions.
-      -&[colors] 255 --index[colors] [centroids] *. 256 +[colors,-1]      # Estimate nearest centroids for all colors.
+      &[colors] 255 --index[colors] [centroids] *. 256 +[colors,-1]      # Estimate nearest centroids for all colors.
       repeat {colors,s}                                                    # Recompute centroid positions.
         sh[colors] $> --histogram. {centroids,w*256},0,{centroids,w*256-1} rm..
         -i.. 256,1,1,1,'x' r.. {w},1,1,1,0,2 *.. . r[-2,-1] {centroids,w},1,1,1,2 max. 0.01 /[-2,-1]
@@ -21884,7 +21884,7 @@ x_quantize_rgb : check "isint(${1=16}) && $1>1"
   --distribution3d[centroids] circles3d. 5 col3d. 255      # Pre-compute 3d object.
   colorcube3d -p3d. 1
   --&[colors] 255 distribution3d. -o3d. 0.8 +3d[-3--1]
-  --3d. 128,128,128 nm. obj3d _N={i[7]}
+  -3d. 128,128,128 nm. obj3d _N={i[7]}
 
 _x_quantize_rgb_text :
   0 t. "$1",0,0,16,1,255 r. {w+2},15,1,1,0,0,0.5,0.5 --dilate. 3 to_rgb..
@@ -21986,7 +21986,7 @@ x_rubber3d :
     w.
     if {{*,CTRLLEFT}&&{*,D}} w[] {2*w},{2*h} elif {{*,CTRLLEFT}&&{*,C}} w[] {w},{h} endif
     wait[0] 20
-    sh[2] 2 --. 1 -&. {{1,d}-1} rm.
+    sh[2] 2 -. 1 &. {{1,d}-1} rm.
     frame={($frame-1)%{1,d}}
   while {{*}" && "!{*,ESC}" && "!{*,Q}}
   rm -w 0 v +
@@ -22104,7 +22104,7 @@ x_segment : check "${1=1024}==0 || $1>=128"
       is_left_button={$b&1" || "{*,F}} is_right_button={$b&2" || "{*,B}} is_button={$is_left_button" || "$is_right_button}
       if {narg($baseview)" && "$is_button" && "$x>=0" && "$y>=0" && "$x<$w" && "$y<$h}
         if {$selection==-1" && "$N} # Check for selection of an existing point.
-          ($x;$y) r. $N,2 --. [points] *. {max($ww,$wh)/max($x1-$x0,$y1-$y0)} sqr. s. y +[-2,-1]
+          ($x;$y) r. $N,2 -. [points] *. {max($ww,$wh)/max($x1-$x0,$y1-$y0)} sqr. s. y +[-2,-1]
           dmin={im} selection={if($dmin>25,-1,xm)} rm.
         endif
         if {$selection>=0}
@@ -22142,7 +22142,7 @@ x_segment : check "${1=1024}==0 || $1>=128"
           sh. 0,0,0,0 *. {$pw/$w} rm.
           sh. 1,1,0,0 *. {$ph/$h} rm.
           pointcloud. -1,$pw,$ph dilate. 3
-          -watershed. [potential] --. 1
+          -watershed. [potential] -. 1
         else [potential],[potential],1,1,1
         endif
         nm. labels
@@ -22192,7 +22192,7 @@ x_segment : check "${1=1024}==0 || $1>=128"
       status={points,^}
       [img] _x_segment. pointcloud[points] -1,$w,$h
       zfact={{img,max(w,h)}/{potential,max(w,h)}} dilate[points] {int(3*$zfact)}
-      -watershed[points] [potential] --[points] 1 k[img,points]
+      -watershed[points] [potential] -[points] 1 k[img,points]
       *. 255
     else k[img] [img],[img],1,1,255
     endif
@@ -22252,7 +22252,7 @@ x_select_color : skip ${1=xsc_variable}
         ($_xsc_old) y. c r. 48,16 drgba. r. {w+2},{h+2},1,3,0,0,0.5,0.5 j.. .,{$x0+55},{$y1+32} rm.
       endif
       repeat 12
-        (${_xsc_preset$>}) --. 255 r. 4,1,1,1,0 +. 255
+        (${_xsc_preset$>}) -. 255 r. 4,1,1,1,0 +. 255
         y. c r. 18,18 drgba. frame. 1,1,{255*($>==$_xsc_preset)}
         j.. .,{$x6+($>%6)*25},{$y6+($>>=6)*25} rm.
       done
@@ -22284,7 +22284,7 @@ x_select_color : skip ${1=xsc_variable}
       if $rgba_mode t. "RGBA ("$R","$G","$B","{round($A)}")",{$x0+115},{$y1+8},14,1,0
       else t. "RGB ("$R","$G","$B")",{$x0+115},{$y1+8},14,1,0
       endif
-      ({'${-dec2hex\ {$R*65536+$G*256+$B}}'}) --. {'0'} r. 6,1,1,1,0,0,1,0 +. {'0'}
+      ({'${-dec2hex\ {$R*65536+$G*256+$B}}'}) -. {'0'} r. 6,1,1,1,0,0,1,0 +. {'0'}
       f. if(i>=_'a'" && "i<=_'z',i+_'A'-_'a',i)
       t.. "HTML ""#"{t},{$x0+115},{$y1+40},14,1,0 rm.
       w. 100%,100%,0 rm.
@@ -22319,7 +22319,7 @@ x_select_color : skip ${1=xsc_variable}
         ($_xsc_old) y. c sh. 0,2 rgb2hsv. rm. H={i[0]} S={i[1]} V={i[2]} A={i[3]}
         colordb=0 rm
       elif {!$is_sv" && "!$is_h" && "!$is_a" && "$x>=$x6" && "$x<=$x5" && "$y>=$y6" && "$y<=$y6+50" && "($x-$x6)%25<=20" && "($y-$y6)%25<=20} # Preset.
-        p={int(($x-$x6)/25)+6*int(($y-$y6)/25)} (${_xsc_preset$p}) --. 255 r. 4,1,1,1,0 +. 255 y. c sh. 0,2 rgb2hsv. rm.
+        p={int(($x-$x6)/25)+6*int(($y-$y6)/25)} (${_xsc_preset$p}) -. 255 r. 4,1,1,1,0 +. 255 y. c sh. 0,2 rgb2hsv. rm.
         H={i[0]} S={i[1]} V={i[2]} A={i[3]}
         colordb=0 rm
       elif {!$is_sv" && "!$is_h" && "!$is_a" && "$x>=$x0+55" && "$x<=$x0+102" && "$y>=$y1+10" && "$y<=$y1+27} # Add current as old and/or preset.
@@ -22341,7 +22341,7 @@ x_select_color : skip ${1=xsc_variable}
     # Check RGB variable modification from another thread.
     if {['$$1']=='-1'} break endif # Close request
     if {(($rgba_mode" && "['$$1']!='$R,$G,$B,$A')" || "(!$rgba_mode" && "['$$1']!='$R,$G,$B'))" && "$x<0" && "$y<0" && "!$is_sv" && "!$is_h" && "!$is_a}
-      ($$1) y. c --. 255 r. 1,1,1,4,0 +. 255 sh. 0,2 rgb2hsv. rm.
+      ($$1) y. c -. 255 r. 1,1,1,4,0 +. 255 sh. 0,2 rgb2hsv. rm.
       H={i[0]} S={i[1]} V={i[2]} A={i[3]} rm
     endif
 
@@ -22513,8 +22513,8 @@ x_select_palette : skip ${1=xsp_variable},${2=0}
       r[-2,-1] .,.. -|[-2,-1]
       line. 100%,0,100%,100%,1,1
       line. 0,100%,100%,100%,1,1
-      --. 1 *. -1
-      r.. .,.,1,1,1 --.. 1
+      -. 1 *. -1
+      r.. .,.,1,1,1 -.. 1
       --map.. [0],0 drgba.
       rv[-2,-1] *[-2,-1]
       --!=.. -1 dilate. 3
@@ -22531,14 +22531,14 @@ x_select_palette : skip ${1=xsp_variable},${2=0}
       else
         --channels[baseview] 0,2 --channels[baseview] 4,4
         -!=. {$selected+1} rectangle. 0,0,100%,100%,1,0xFFFFFFFF,1
-        --dilate. 5 --[-2,-1] *. -1 --dilate. 5 *.. 255
+        --dilate. 5 -[-2,-1] *. -1 --dilate. 5 *.. 255
         r.. 100%,100%,1,3 j... ..,0,0,0,0,1,. rm[-2,-1]
         if $rgba_mode t.. "RGBA ("$R","$G","$B","$A")",8,{$wh-45},14,1,0
         else t.. "RGB ("$R","$G","$B")",8,{$wh-45},14,1,0
         endif
         ($R^$G^$B) rgb2hsv. H={round(i[0])} S={round(i[1]*255)} V={round(i[2]*255)} rm.
         t.. "HSV ("$H","$S","$V")",8,{$wh-31},14,1,0
-        ({'${-dec2hex\ {$R*65536+$G*256+$B}}'}) --. {'0'} r. 6,1,1,1,0,0,1,0 +. {'0'}
+        ({'${-dec2hex\ {$R*65536+$G*256+$B}}'}) -. {'0'} r. 6,1,1,1,0,0,1,0 +. {'0'}
         f. if(i>=_'a'" && "i<=_'z',i+_'A'-_'a',i)
         t... "HTML ""#"{t},8,{$wh-17},14,1,0 rm.
       endif
@@ -22613,11 +22613,11 @@ x_shadebobs :
     +.. {360*sin($rz*$t)} *.. {pi/180}
     --sin[-2,-1] cos[-4,-3] *[-4,-2] $r *[-3,-1] $rcx +[-4,-3] +[-2,-1]
     *.. {{*,w}/2} *. {{*,h}/2} a[-2,-1] x
-    --+. $R --.. $R a[-2,-1] y z. 0,2 y. j[obj3d] .,0,8 rm.
+    --+. $R -.. $R a[-2,-1] y z. 0,2 y. j[obj3d] .,0,8 rm.
 
     # Draw bobs, map colors and display.
     j3d[img] [obj3d],50%,50%,0,-1,2,0,0
-    -&[img] 255 --map[img] [colormap] w. rm. wait 20
+    &[img] 255 --map[img] [colormap] w. rm. wait 20
     if {{*,CTRLLEFT}&&{*,D}} w[] 1024,1024 elif {{*,CTRLLEFT}&&{*,C}} w[] 512,512 endif
   while {{*}" && "!{*,ESC}" && "!{*,Q}}
   rm -w 0 v +
@@ -22667,7 +22667,7 @@ x_spline :
 
     # Estimate screen-normalized coordinates [2], curve tangents [3] and tangent orientations [4].
     [1] ({{*,w}/{0,w}},{{*,h}/{0,h}}) *[-2,-1]                         # Normalized coordinates.
-    --shift[2] 0,-1,0,0,2 --shift[2] 0,1,0,0,2 --[-2,-1] *. $roundness # Curve tangents.
+    --shift[2] 0,-1,0,0,2 --shift[2] 0,1,0,0,2 -[-2,-1] *. $roundness # Curve tangents.
     --s. x sqr[-2,-1] +[-2,-1] sqrt. r. 2 --/[-2,-1] rm..          # Tangent orientations.
 
     # Display curve, control points, polygon and tangents.
@@ -22704,7 +22704,7 @@ x_spline :
     # Set/unset active point.
     if {{*,b}==0} active=-1                             # Unset active point if mouse button is released.
     elif {{*,x}>=0" && "{*,b}" && "$active==-1}         # Find new active point.
-      [2] ({*,x},{*,y}) --[-2,-1] sqr. s. x +[-2,-1]  # Compute distance vector to points.
+      [2] ({*,x},{*,y}) -[-2,-1] sqr. s. x +[-2,-1]  # Compute distance vector to points.
       nearest={ym}                                       # Set nearest point.
       if {im<64} active=$nearest endif                 # Set it as active point, if near enough.
       rm.
@@ -22724,7 +22724,7 @@ x_spline :
     elif {{*,b}&1" && "{*,x}>=0}
       xy=({{*,x}*{0,w}/{*,w}},{{*,y}*{0,h}/{*,h}})    # Point coordinates in the image basis.
       --shift[1] 0,-1,0,0,2 +. [1] /. 2             # Compute center of segments.
-      $xy --[-2,-1] sqr. s. x +[-2,-1]             # Compute distance vector to segments.
+      $xy -[-2,-1] sqr. s. x +[-2,-1]             # Compute distance vector to segments.
       ns={ym} rm.                                    # Get nearest segment.
       l[1] s y i[{$ns+1}] $xy a y endl           # Insert new point at right position.
       active={$ns+1}                                  # Set new active point as newly inserted.
@@ -22733,7 +22733,7 @@ x_spline :
   while {{*}" && "!{*,ESC}" && "!{*,Q}}
 
   # Render spline as a tertiary mask for output.
-  --shift[1] 0,-1,0,0,2 --shift[1] 0,1,0,0,2 --[-2,-1] *. $roundness
+  --shift[1] 0,-1,0,0,2 --shift[1] 0,1,0,0,2 -[-2,-1] *. $roundness
   [0],[0],1,1,2 rm[0]
   repeat {1,h} spline. {0,@0-1},{1,@0-1},{0,@2-3},{1,@2-3},1,1 shift[0] 0,-1,0,0,2 shift[1] 0,-1,0,0,2 done
   flood. 0,0,0,0,0,1,0
@@ -22992,7 +22992,7 @@ x_waves :
     mandelbrot $x,$y,{$x+0.1},{$y+0.1},256
     16,1,1,3,u r. 256,1,1,3,3 shift. 1
     map[0] . rm. r2dx 100
-    --mirror y --mirror x -+ n 0,128
+    --mirror y --mirror x + n 0,128
     shape_fern {2*w},70%,25 r2dx. {-2,3*w/4} to_rgb. r. ..,0,0,0.5,0.5 n. 0,196 +[-2,-1] c. 0,255
   endl else k[0] r[0] 100,100,1,3,2 endif
   i[0] (20;80;0^20;80;0^20;80;0) r[0] 400,300,1,3,3 -water[0] 100,2
@@ -23004,7 +23004,7 @@ x_waves :
   0 $w,$w .
   -l3d {$w/2},-200,-1000 -sl3d 0.4 -ss3d 0.8 f3d 500 time0=$|
   do
-    --convolve. [3],1 --. ... rm... b. 0.8 --. {ia} # Update height map.
+    --convolve. [3],1 -. ... rm... b. 0.8 -. {ia} # Update height map.
     r. 1,{$w*$w},1,1,-1 j[2] .,2,0 r. $w,$w,1,1,-1 # Set 3d object coordinates.
     [1]
     if {5,h} --l[5] rows 0,2
@@ -23013,7 +23013,7 @@ x_waves :
       (1,0;1,{$nb-1}) r. 2,$nb,1,1,3 round.
       1,{4*$nb},1,1,1 y a y
     endl [4] sprites3d.. .,1 rm. +3d[-2,-1] endif
-    --3d. {$w/2},{$w/2} *3d. {0,0.9*max(w,h)/$w} # Center and scale 3d object.
+    -3d. {$w/2},{$w/2} *3d. {0,0.9*max(w,h)/$w} # Center and scale 3d object.
     r3d. 0,0,1,{if({*,b}&2,{*,x}*360/{*,w},$|*30)} r3d. 1,0,0,120 # Get rotated 3d object.
     --j3d[0] .,50%,65%,30,1,3,0,0
     fps=${-fps} if {$fps>0} to. $fps" fps",5,{h-22},16,2,0.2 endif
@@ -23028,7 +23028,7 @@ x_waves :
     rm[-2,-1] wait 20
     if {{*,b}&1||($|-$time0)>1} ({u*$w};{u*$w};70;0) a[5,-1] x time0={$|-u} endif # Insert new ball.
     if {5,h} l[5,-1] # Manage ball motion and collision.
-      sh[0] 2,2,0,0 sh[0] 3,3,0,0 --.. . +. 0.2 rm[-2,-1]
+      sh[0] 2,2,0,0 sh[0] 3,3,0,0 -.. . +. 0.2 rm[-2,-1]
       s[0] x repeat {$!-1} coords={$<,@0-1} if {{$<,@2}<i($coords)} -=. {80+{i($coords)}},$coords rm[$<] endif done
       if {$!==1} i[0] 0 else a[0--2] x endif
       endl
@@ -23270,7 +23270,7 @@ gui_split_preview : skip ${3=0},${4=0}
 gui_print_preview : skip "${1=},${3=}" check "${2=32}>=0 && ${4=20}>=0 && ${5=20}>=0"
   if {!$!" || "w<128" || "h<128} rm 420,300,1,4,0 endif
   k[0] drgba
-  (1;1^1;0.5^0;0.5) (1.5,0,1.5;0,0,0;1.5,0,1.5) r[-2,-1] ...,3 -* c 0,255
+  (1;1^1;0.5^0;0.5) (1.5,0,1.5;0,0,0;1.5,0,1.5) r[-2,-1] ...,3 * c 0,255
 
   l[] # Render title.
     0 t. "$1",0,0,$2,1,255 r. 100%,140%,1,1,0
@@ -24450,7 +24450,7 @@ fx_imagegrid_triangular :
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2015/24/02</i>.</small>")
 fx_make_seamless :
   repeat $! l[$>]
-    if $1 --b {20.5-$1/50}% --[0] [1] fc. ${-average_color.} -+ endif
+    if $1 --b {20.5-$1/50}% -[0] [1] fc. ${-average_color.} + endif
   endl done
   periodize_poisson c 0,255
 
@@ -24472,7 +24472,7 @@ fx_make_seamless_preview :
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2015/15/12</i>.</small>")
 fx_frame_seamless :
   repeat $! l[$>]
-    if $5 --b {20.5-$5/50}% --[0] [1] fc. ${-average_color.} -+ endif
+    if $5 --b {20.5-$5/50}% -[0] [1] fc. ${-average_color.} + endif
   endl done
   frame_seamless ${1-4} c 0,255
 
@@ -24501,7 +24501,7 @@ fx_ministeck :
       if $7 . endif
       --shift. 1,1 *.. -1 +[-2,-1] b. {$6*$3/5} n. -$5,$5
       map[0] [1] rm[1] +[0,-1]
-      if $7 -==[1] 0 -* endif
+      if $7 -==[1] 0 * endif
     endl r. [0],[0],1,100% a c
   endl done
   c 0,255
@@ -24820,7 +24820,7 @@ _fx_bokeh :
 
   random3d $1 *3d. {-2,w},{-2,h},0
   _fx_bokeh$_shape $radius1
-  if {$radius2>=1} _fx_bokeh$_shape $radius2 r. ..,0,0,0.5,0.5 *. {max(0,min(1,1-$4))} --[-2,-1] endif
+  if {$radius2>=1} _fx_bokeh$_shape $radius2 r. ..,0,0,0.5,0.5 *. {max(0,min(1,1-$4))} -[-2,-1] endif
   sigma={-3,$5%*w}
   r. {w+5*$sigma},{h+5*$sigma},1,1,0,0,0.5,0.5
   b. $sigma,0 n. 0,255
@@ -25078,12 +25078,12 @@ fx_poster_hope_preview :
 fx_highlight_bloom :
   repeat $! l[$>] split_opacity l[0]
     --smooth $2,0.3,0.8,1,2
-    --.. .
+    -.. .
     amp=$3 do smooth. {min(50,$amp)},0.1,1,1,2 amp-=50 while {$amp>0}
     --retinex. 16,lab,0,15 j.. .,0,0,0,0,{$4%} rm.
     -ac. "normalize_local {$5%},5",lab_l
     *.. {$1%}
-    -+ c 0,255
+    + c 0,255
   endl a c endl done
 
 fx_highlight_bloom_preview :
@@ -25103,7 +25103,7 @@ fx_illustration_look :
     # Create processed layers.
     --fx_smooth_anisotropic[base_layer] 20,0.16,0.63,0.6,2.35,0.8,30,2,0,1,1,0,1,24 nm. blur_layer
     --blend[base_layer,blur_layer] grainextract nm. detail_layer
-    if $2 rgb2hsv[blur_layer] sh[blur_layer] 1 --. {$2%} c. 0,1 rm. hsv2rgb[blur_layer] endif
+    if $2 rgb2hsv[blur_layer] sh[blur_layer] 1 -. {$2%} c. 0,1 rm. hsv2rgb[blur_layer] endif
     if $3 --fx_mix_rgb[blur_layer] 1,10,0,1,0,0,0.7,-10,0,0,10,0 j[blur_layer] .,0,0,0,0,{$3%} rm. endif
     if $1 --fx_map_tones_fast[blur_layer] 20,0.2,11,0 j[blur_layer] .,0,0,0,0,{$1%} rm. endif
     simplelocalcontrast_p[blur_layer] 25,1,50,1,1,1,1,1,1,1,1,1
@@ -25280,7 +25280,7 @@ fx_posterize :
     index.. .,0,0
     if $5 --area.. 0,0 -<. $5 -inpaint... .,0,3 rm. endif
     map.. . rm.
-    if $6 --norm (0,1,0;1,1,1;0,1,0) --dilate.. . rm.. --[-2,-1] -!=. 0 100%,100%,1,{0,s} j... .,0,0,0,0,{$6%},.. rm[-2,-1] endif
+    if $6 --norm (0,1,0;1,1,1;0,1,0) --dilate.. . rm.. -[-2,-1] -!=. 0 100%,100%,1,{0,s} j... .,0,0,0,0,{$6%},.. rm[-2,-1] endif
     if $7 n 0,255 endif
   endl a c endl done
 
@@ -25449,7 +25449,7 @@ fx_rodilius_preview :
 fx_shapeism :
   repeat $! l[$>]
     to_rgb
-    --gradient_norm b. $13% -^. $12 -quantize. $6,0,0
+    --gradient_norm b. $13% ^. $12 -quantize. $6,0,0
     100%,100%,1,2
     repeat $6
 
@@ -25778,7 +25778,7 @@ fx_recolorize :
       channels[0] 0 to_rgb.. # Convert to pure gray.
       to_rgba. split_opacity. -!=. 0  # Retrieve mask of color patchs.
       srgb2rgb[-3,-2] rgb2lab8[-3,-2] channels... 0 channels.. 1,2 # Now, list is [0]=lightness / [1]=chroma / [2]=mask.
-      +.. 1 *.. . --gradient_norm... *. -1 -watershed... . rm. --.. 1 # Get first estimate for the color interpolation.
+      +.. 1 *.. . --gradient_norm... *. -1 -watershed... . rm. -.. 1 # Get first estimate for the color interpolation.
       --diffusiontensors... $2,1,0.5,0.5 -==.. 0 *. .. rm..
       smooth.. .,{$1*80},0.8,60 rm.
       a[-2,-1] c lab82rgb. rgb2srgb.
@@ -25880,7 +25880,7 @@ fx_autofill_lineart :
       # Colorize regions.
       N={iM}
       if $N
-        --. 1
+        -. 1
         -srand 0 {iM+1},1,1,3,">arg(1+c,j(-1) + u(135,225),u(0,0.7),u(0.4,0.9))"
         hsv2rgb. round. point. $label_maxarea,0,0,1,255
         map.. . rm.
@@ -25992,7 +25992,7 @@ _fx_colorize_lineart_smartcoloring :
       label_fg. 0 {1+iM},1,1,{colors,s+1}
       f.. ">I[#-1,i]+=[ I(#"$colors"),1 ];I"
       s. c,{-s+1} /[-2,-1]
-      --l[new_strokes] -* -1 -+ 1 --b 1% b.. 1 min endl
+      --l[new_strokes] * -1 + 1 --b 1% b.. 1 min endl
       -watershed... .,0 rm. map.. . rm.
 
       if {!$8} rm[strokes] # No color shading
@@ -26047,7 +26047,7 @@ _fx_colorize_lineart_smartcoloring :
           100%,100%,1,3,255 blend. [0],alpha,1 rgb2hsv. channels. 2 *. 255 negate.
           channels.. 0,{0,s-2} s={0,s} luminance[0] to_colormode[0] $s a c
         else
-          s={s} to_rgb rgb2hsv channels 2 -* 255 to_colormode $s
+          s={s} to_rgb rgb2hsv channels 2 * 255 to_colormode $s
         endif
       endl endif
 
@@ -26061,7 +26061,7 @@ _fx_colorize_lineart_smartcoloring :
     else # Preview : Colored lineart
       if {$is_alpha} channels[$ind_lineart] 100% negate[$ind_lineart] endif to_rgb[$ind_lineart]
 
-      if $4 l[$ind_lineart] s={s} to_rgb rgb2hsv channels 2 -* 255 to_colormode $s endl endif
+      if $4 l[$ind_lineart] s={s} to_rgb rgb2hsv channels 2 * 255 to_colormode $s endl endif
 
       blend[$ind_lineart,$ind_colors] multiply k[$ind_lineart]
     endif
@@ -26102,7 +26102,7 @@ fx_colorize_lineart :
     --norm[1] n. 0,1 --histogram. 2,0,1
     if {i(0)>i(1)} *.. -1 +.. 1 endif rm.          # Determine color model of the drawing.
     b. $4% -watershed.. . rm.                         # Priority map.
-    --. 1
+    -. 1
     # Here we have 'color strokes + drawing + extrapolated colors'.
 
     # Format output layers.
@@ -26125,7 +26125,7 @@ fx_colorize_lineart :
         endif
       while {$iM>=0} else  # Split by disconnected regions.
         label.
-        if {$3<10} -%. {$3+1} endif
+        if {$3<10} %. {$3+1} endif
         repeat {iM+1} --==[1] $< area={is} --r. 100%,100%,1,[0] *. [0] rv[-2,-1] *. 255 a[-2,-1] c nm. $area done
       endif
       rm[0,1]
@@ -26150,7 +26150,7 @@ fx_ditheredbw :
   repeat $! l[$>] split_opacity l[0]
     luminance  -adjust_colors ${1-3} b $6
     ditheredbw
-    if {$4" || "$5} -/ 255 i[0] 100%,100%,1,2 fc[0] $4,{$5%} a c hsv2rgb endif
+    if {$4" || "$5} / 255 i[0] 100%,100%,1,2 fc[0] $4,{$5%} a c hsv2rgb endif
   endl a c endl done
 
 fx_ditheredbw_preview :
@@ -26199,7 +26199,7 @@ fx_engrave :
       if {$6<0} -area_fg 0,0 -> {$f*$6*$6}
       elif {$6>0} -== 0 -area_fg 0,0 -> {$f*$6*$6} -== 0
       endif
-      -* 255
+      * 255
       if $14 r $wh,1,1,2 endif
     endl a c endl
 
@@ -26268,7 +26268,7 @@ fx_freaky_bw :
 
     # Reconstruct image from laplacian.
     -fft.
-    100%,100%,1,1,'cos(2*x*pi/w)+cos(2*y*pi/h)' *. 2 --. 4
+    100%,100%,1,1,'cos(2*x*pi/w)+cos(2*y*pi/h)' *. 2 -. 4
     -=. 1 /[-3,-2] . rm.
     -=.. 0 -=. 0
     -ifft[-2,-1] rm.
@@ -26468,7 +26468,7 @@ fx_stamp_preview :
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2011/19/10</i>.</small>")
 fx_color_abstraction :
   repeat $! l[$>] split_opacity l[0] to_rgb
-    b $1 s c -quantize $2,1,0 -area 0 -^ $3 n 0,255
+    b $1 s c -quantize $2,1,0 -area 0 ^ $3 n 0,255
   endl a c endl done
 
 fx_color_abstraction_preview :
@@ -26575,7 +26575,7 @@ fx_channels2layers :
       r[1] 100%,100%,1,3,0,0,0,0,0,0.5 nm[1] name($nm" "[green]),mode(add)
       r[2] 100%,100%,1,3,0,0,0,0,0,1 nm[2] name($nm" "[blue]),mode(add)
     elif {$1==1} # CMY
-      rgb2cmy[0] --[0] 255 s[0] c
+      rgb2cmy[0] -[0] 255 s[0] c
       r[0] 100%,100%,1,3,0,0,0,0,0,0 nm[0] name($nm" "[cyan]),mode(difference)
       r[1] 100%,100%,1,3,0,0,0,0,0,0.5 nm[1] name($nm" "[magenta]),mode(difference)
       r[2] 100%,100%,1,3,0,0,0,0,0,1 nm[2] name($nm" "[yellow]),mode(difference)
@@ -26826,7 +26826,7 @@ fx_customize_clut :
   s c,-3
   if {$1<100} # Need to compute a weighting map.
     --distance. 1
-    if $1 -^. {1/(0.05+4*$1%)} else f. 0 endif
+    if $1 ^. {1/(0.05+4*$1%)} else f. 0 endif
     n. 0,1 nm. influence mv. -3
   endif
   -eq. 0 -inpaint_diffusion.. .,100%,1,20 rm. c. 0,255
@@ -26840,7 +26840,7 @@ fx_customize_clut :
   # Apply CLUT on input layers + global color corrections.
   if {!$3} map_clut[^-1] . # w/o spatial regularization
   else repeat {$!-1}       # w/ spatial regularization
-    --luminance[$>] --map_clut[$>] .. --. [$>]
+    --luminance[$>] --map_clut[$>] .. -. [$>]
     repeat $3 -guided. ..,2,50 done +[$>,-1] rm.
   done endif
   -adjust_colors ${4-8},0,255
@@ -26895,7 +26895,7 @@ fx_customize_clut_preview :
       a[0,1] x r[0] $w,100%,1,3,0
     endif
 
-    -snapshot3d. {0,1.1*min(w,h)},1.2,64,64,64 autocrop. --. 64 r. {0,max(w,$w-w)},{0,max(h,$h-h)},1,3,0,0,0.5,0.5 +. 64
+    -snapshot3d. {0,1.1*min(w,h)},1.2,64,64,64 autocrop. -. 64 r. {0,max(w,$w-w)},{0,max(h,$h-h)},1,3,0,0,0.5,0.5 +. 64
     to. "RGB CLUT",2,0,13,1,0.75
     a {`$w>$h?_'x':_'y'`}
   endif
@@ -26988,7 +26988,7 @@ fx_detect_skin :
   m "_fx_detect_skin :
        if $5 balance_gamma 128,128,128 endif
        if $1 detect_skin $2 else detect_skin $2,$6%,$7%,$8% endif
-       M={iM} b $3% -* {255*$M/iM} -* $4 c 0,255"
+       M={iM} b $3% * {255*$M/iM} * $4 c 0,255"
   repeat $! l[$>]
     if $9  # Opaque/transparent skin.
       --_fx_detect_skin a c
@@ -27043,17 +27043,17 @@ fx_hsv_equalizer :
   --threshold[1,2] 0.01 *[-1,-2] [-1]x2 *[-1,3] *[-1,4] *[-1,5]	#0 saturation and value not in mask
 # Hue shift:
   --*[3] $4 --*[4] $9 --*[5] $14 +[-1,-2,-3]
-  +[-1,0] -%[0] 360
+  +[-1,0] %[0] 360
 # Saturation :
   if {$5>=0} --*[3] -$5 else --*[3] {1/(1+$5)-1} endif +. 1
   if {$10>=0} --*[4] -$10 else --*[4] {1/(1+$10)-1} endif +. 1
   if {$15>=0} --*[5] -$15 else --*[5] {1/(1+$15)-1} endif +. 1
-  *[-1,-2,-3] -^[1,-1]
+  *[-1,-2,-3] ^[1,-1]
 # Value :
   if {$6>=0} --*[3] -$6 else --*[3] {1/(1+$6)-1} endif +. 1
   if {$11>=0} --*[4] -$11 else --*[4] {1/(1+$11)-1} endif +. 1
   if {$16>=0} --*[5] -$16 else --*[5] {1/(1+$16)-1} endif +. 1
-  *[-1,-2,-3] -^[2,-1]
+  *[-1,-2,-3] ^[2,-1]
 #reconstruction
   rm[3,4,5] a[0,1,2] c hsv2rgb
   endl done
@@ -27128,11 +27128,11 @@ fx_mix_cmyk_preview :
 fx_mix_hsv :
   repeat $! l. split_opacity rv to_rgb.
     fx_start_mix $10,$11
-    rgb2hsv. s. c --[-2,-1] 0.5
+    rgb2hsv. s. c -[-2,-1] 0.5
     *... $1 +... $2 b... $3%
     *.. $4 +.. $5 b.. $6%
     *. $7 +. $8 b. $9%
-    -%... 360 +[-2,-1] 0.5 -c[-2,-1] 0,1 a[-3--1] c hsv2rgb.
+    %... 360 +[-2,-1] 0.5 -c[-2,-1] 0,1 a[-3--1] c hsv2rgb.
     fx_end_mix $10
   if {$!!=3} rv a c endif endl mv. 0 done
 
@@ -27206,7 +27206,7 @@ fx_end_mix :
 fx_mix_rgb :
   repeat $! l. split_opacity rv to_rgb.
     fx_start_mix $10,$11
-    --. 128 s. c
+    -. 128 s. c
     *... $1 +... $2 b... $3%
     *.. $4 +.. $5 b.. $6%
     *. $7 +. $8 b. $9%
@@ -27237,7 +27237,7 @@ fx_mix_rgb_preview :
 fx_mix_ycbcr :
   repeat $! l. split_opacity rv to_rgb.
     fx_start_mix $10,$11
-    rgb2ycbcr. --. 128 s. c
+    rgb2ycbcr. -. 128 s. c
     *... $1 +... $2 b... $3%
     *.. $4 +.. $5 b.. $6%
     *. $7 +. $8 b. $9%
@@ -27325,12 +27325,12 @@ fx_select_color :
     -select_color[1] $2%,$color
     if $4 --area. 0,0 -<=. {round($4^1.5)} -inpaint.. .,0,3 rm. endif # Fill holes.
     b[1] $3 n[1] 0,255
-    if {$9==0} sh[0] 100% -&. [1]                        # Selected colors.
+    if {$9==0} sh[0] 100% &. [1]                        # Selected colors.
     elif {$9==1} rm[0]                                   # Selected mask.
-    elif {$9==2} --[1] 255 *[1] -1 sh[0] 100% -&. [1]   # Rejected colors.
-    elif {$9==3} rm[0] -- 255 -* -1                      # Rejected mask.
+    elif {$9==2} -[1] 255 *[1] -1 sh[0] 100% &. [1]   # Rejected colors.
+    elif {$9==3} rm[0] - 255 * -1                      # Rejected mask.
     else # Replaced color.
-      /[1] 255 --*[0,1] --*[1] $11 --*[1] $12 --*[1] $13 *[1] $10 a[1,-3--1] c --[1,2] -+
+      /[1] 255 --*[0,1] --*[1] $11 --*[1] $12 --*[1] $13 *[1] $10 a[1,-3--1] c -[1,2] -+
     endif
     k[0]
   endl done
@@ -27349,7 +27349,7 @@ fx_select_color_preview :
 fx_selective_desaturation :
   repeat $! l[$>] to_color split_opacity l[0]
     --fc $1,$2,$3
-    --[1] [0] norm[1] /[1] {1e-6+iM}
+    -[1] [0] norm[1] /[1] {1e-6+iM}
     if $4 *[1] -{max(0.01,$5)} +[1] 1
     else ->=[1] {5*$5}%
     endif
@@ -27541,7 +27541,7 @@ fx_distance :
     distance $1,$2
     if {$3==0} c 0,255
     elif {$3==1} n 0,255
-    else -% $4 n 0,255
+    else % $4 n 0,255
     endif
   endl a c endl done
 
@@ -27573,7 +27573,7 @@ fx_edges_preview :
 fx_edge_offsets :
   repeat $!
     os={s}
-    b. $1% gradient_norm. ->=. $2% -skeleton. 0 distance. 1 round. 1 -%. $3 ->=. {max(1,$3-$4)}
+    b. $1% gradient_norm. ->=. $2% -skeleton. 0 distance. 1 round. 1 %. $3 ->=. {max(1,$3-$4)}
     if {!$5} negate. endif
     n. 0,255 to_colormode. $os
   mv. 0 done
@@ -27648,7 +27648,7 @@ fx_extract_foreground :
 #@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2010/29/12</i>.</small>")
 fx_gradient_norm :
-  b $1 gradient_norm -^ $2
+  b $1 gradient_norm ^ $2
   c $3%,$4%
   if $5 negate endif
   n 0,255
@@ -27816,7 +27816,7 @@ fx_skeleton :
   if {!$4} norm endif
   b $2% ->= 50%
   if $1 thinning else -skeleton $3% endif
-  -* 255
+  * 255
 
 fx_skeleton_preview :
   gui_split_preview "fx_skeleton ${^0}",$-1
@@ -28045,7 +28045,7 @@ fx_drop_water :
 
     # Drop shadow.
     --shift[shape] {-$11*$ca}%,{-$11*$sa}%,0,0,1
-    --. [shape] ->=. 1 b. $13% n. 0,1
+    -. [shape] ->=. 1 b. $13% n. 0,1
     nm. shadow
     b[shape] $14% n. 0,1  # Add diffuse shadow around each drop.
 
@@ -28278,7 +28278,7 @@ _fx_seamcarve :
   mv[0] $!
   l.
     s c k[0,1]
-    ->[1] [0] -!=[0] 0 --[0] [1] *[0] -1 -+ -* 256
+    ->[1] [0] -!=[0] 0 -[0] [1] *[0] -1 + * 256
   endl
   repeat {$!-1} a[$>] .,c done rm.
 
@@ -28309,7 +28309,7 @@ fx_map_sphere :
   if $9
     repeat $!
       --rows[$>] 0 r. 1,1,1,4,2 RGBA$>={^}
-      r. [$>],[$>],1,4 --[$>,-1]
+      r. [$>],[$>],1,4 -[$>,-1]
     done
   endif
   map_sphere $1,$2,$3,$4,$10,$11
@@ -28435,7 +28435,7 @@ fx_textured_glass :
     if $7 plasma. 1,1,$7 else rand. 0,1 endif
     g. xy
     if $5
-      --gradient_norm... +. 1 b. $6 -^. -$5
+      --gradient_norm... +. 1 b. $6 ^. -$5
       *... . *[-2,-1]
     endif
     blur_xy[-2,-1] $3,$4
@@ -28584,7 +28584,7 @@ _fx_blur_dof :
       l1={($rmax/(1e-8+$R))^2} l2={($rmax/(1e-8+$r))^2}
       a={$l1*($u)^2+$l2*($v)^2} b={$u*$v*($l1-$l2)} c={$l1*($v)^2+$l2*($u)^2}
       100%,100%,1,1,'X=(x-$5*w/100)/max(w,h);Y=(y-$6*h/100)/max(w,h);f=$a*X*X+2*$b*X*Y+$c*Y*Y;exp(-f^$10/2.5)'
-      --[1] 1 *[1] -$1 ms={im} Ms={iM}
+      -[1] 1 *[1] -$1 ms={im} Ms={iM}
 
       if $11 # With preview of guides.
         --isoline3d[1] {0.1*$1} col3d. 255,255,0
@@ -28599,7 +28599,7 @@ _fx_blur_dof :
       endif
     endl if $11 k[0] endif a c endl done
   elif {$!>1} # User-defined DOF (as bottom layer).
-    luminance. n. 0,1 -^. {10^$12}
+    luminance. n. 0,1 ^. {10^$12}
     repeat {$!-1} --r. {$>,w},{$>,h},1,1,3 l[$>,-1] split_opacity[0]
       __fx_dof_blur[0,-1] $2,0,$1,$4
     a c endl done rm.
@@ -28711,7 +28711,7 @@ fx_chromatic_aberrations :
   # Compute orthonormal color basis.
   l[]
     (${1-3}) (${6-8}) y c -orientation[0]
-    --*[0,1] --*[0] {is} --[1,3] rm[2] -orientation[1]
+    --*[0,1] --*[0] {is} -[1,3] rm[2] -orientation[1]
     _cross3d {0,^},{^} y x a y
     M={^} transpose Minv={^} rm
   endl
@@ -28748,7 +28748,7 @@ _fx_dirty :
   repeat $! l[$>]
     -dct 100%,100%,1,{if($2,1,s)} noise. $1,2
     -==. 0 point. 0,0,0,1,1
-    -* -idct c 0,255
+    * -idct c 0,255
   endl done
 
 #@gui Flip &amp; rotate blocs : fx_flip_blocs,fx_flip_blocs_preview(0)
@@ -28953,7 +28953,7 @@ _fx_pixelsort :
     endif
     b. $7% -ir. $5%,{$6+0.01}%
     if $8 -==. 0 endif
-    if $9 k. -* 255
+    if $9 k. * 255
     else -pixelsort[0] {`$1?_'+':_'-'`},{`$2==0?'x':$2==1?'y':$2==2?'xy':'yx'`},[1],[2] k[0]
     endif
   endl done
@@ -29091,7 +29091,7 @@ _fx_equalize_details :
     __fx_equalize_details[2] ${7-10},4
     __fx_equalize_details[3] ${11-14},2
     __fx_equalize_details[4] ${15-18},1
-    -+ c 0,255
+    + c 0,255
   endl done
 
 __fx_equalize_details :
@@ -29105,7 +29105,7 @@ __fx_equalize_details :
       *. {($M-$m)/255} +. $m
     endif
   else smooth {$2*50},0.2,0.8,$5,$5 endif
-  -* {10^$4}
+  * {10^$4}
 
 fx_equalize_details :
   ac "gui_parallel_overlap \"-_fx_equalize_details ${1-18}\",$21,$22",$19,$20
@@ -29165,8 +29165,8 @@ fx_normalize_local_preview :
 #@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2014/08/08</i>.</small>")
 _fx_mighty_details :
-  --smooth $3,0,1,0.5,0.5 --[1] [0]
-  --abs. sign.. M={iM} -^. {2-$2} *. {$M/iM} *[-2,-1]
+  --smooth $3,0,1,0.5,0.5 -[1] [0]
+  --abs. sign.. M={iM} ^. {2-$2} *. {$M/iM} *[-2,-1]
   --diffusiontensors[0] 0,1,0.5,0.5
   repeat $4 smooth[1] [2],20 done
   *[1] {-$1/5} -+
@@ -29283,7 +29283,7 @@ fx_sharpen_texture :
 
 _fx_sharpen_texture :
   repeat $! l[$>]
-    --rolling_guidance $2,5,0.5 --. [0] *. $1 -- c 0,255
+    --rolling_guidance $2,5,0.5 -. [0] *. $1 - c 0,255
   endl done
 
 fx_sharpen_texture_preview :
@@ -29308,7 +29308,7 @@ fx_sharpen_texture_preview :
 _fx_unsharp :
   repeat $! repeat $8
     if {$1==0} --b. $2 else --bilateral. $2,$3 endif
-    --. .. *. -$4
+    -. .. *. -$4
     --norm. ->=. $5% r. .. *[-2,-1]
     if $9 *. -1 endif
     --c. 0,100% c.. -100%,0 *.. $6 *. $7 +[-2,-1]
@@ -29851,7 +29851,7 @@ fx_emulate_film_userdefined : skip "${2=}"
     onfail gui_warning_preview "Specified HaldCLUT filename not found" return
     endl
     map_clut[^-1] . rm.
-    if {iM>255} -/ 255 endif # Was possibly a 16bits HaldCLUT.
+    if {iM>255} / 255 endif # Was possibly a 16bits HaldCLUT.
   endif
   _fx_emulate_film 0,1,${3--1}
 
@@ -30049,7 +30049,7 @@ _fx_emulate_film_collage :
     -progress {(1+$>)*100/$#}
   done
   to[0] "Original image",2,2,$_label_size,2,1,255
-  if {!$_output_type} frame 1,1,0 frame 5,5,255 -- 255 append_tiles {min($_nbc,$!)} -+ 255 endif
+  if {!$_output_type} frame 1,1,0 frame 5,5,255 - 255 append_tiles {min($_nbc,$!)} + 255 endif
 
 #@gui Various - collage : fx_emulate_film_collage_various, gui_no_preview
 #@gui : Image size = float(512,16,1024)
@@ -30426,7 +30426,7 @@ fx_blend_average_all :
   if $! to_rgba
     N=$! r ${-max_wh},1,100%,0,0,0.5,0.5
     _gb_fwd $1
-    -+ -/ $N
+    + / $N
     _gb_bwd $1
   endif
 
@@ -30483,7 +30483,7 @@ fx_blend_fade :
   else _fx_blend_fade$1 $8,$9,$10 r. [0],[0],1,1,3
   endif
   n. {-($!-2)*$3},{($!-2)*(1+$3)}
-  --. {$2*(1+$3)*($!-2)}
+  -. {$2*(1+$3)*($!-2)}
   c. 0,{$!-2}
   if $6 rv[^-1] endif
   if $5 round. 1
@@ -30616,7 +30616,7 @@ fx_fade_layers_preview :
   if {$!<2} return endif
   to_colormode 0
   r ${-max_wh},1,100%,0,0,0.5,0.5
-  k[0,1] -+ -/ 2
+  k[0,1] + / 2
 
 #@gui Layers to tiles : append_tiles, fx_append_tiles_preview(1)
 #@gui : X-tiles = int(0,0,256)
@@ -30874,7 +30874,7 @@ fx_contrast_swm :
 #@gui : Angle = float(0,0,360)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2012/14/11</i>.</small>")
 fx_drop_shadow :
-  -* -1 -+ 255 -vignette {255*$5},80,95 -* -1 -+ 255
+  * -1 + 255 -vignette {255*$5},80,95 * -1 + 255
   drop_shadow $1%,$2%,$3%,$4 rotate $6,1,0
 
 #@gui Drop shadow 3d : fx_drop_shadow3d, fx_drop_shadow3d_preview(1)
@@ -30931,7 +30931,7 @@ fx_equalize_shadow_preview :
 _fx_lightglow :
   mode=${-arg\ 1+$3,burn,dodge,freeze,grainmerge,hardlight,interpolation,lighten,multiply,overlay,reflect,softlight,stamp,value}
   repeat $!
-    --gradient_norm. ->=. {100-$1}% distance. 1 -^. $2 *. -1 n. 0,255 blend $mode,$4
+    --gradient_norm. ->=. {100-$1}% distance. 1 ^. $2 *. -1 n. 0,255 blend $mode,$4
   mv. 0 done
 
 fx_lightglow :
@@ -31335,10 +31335,10 @@ fx_mineral_mosaic :
     --b $3 -segment_watershed. $1 --norm.
     -area. 0 --<=. {$2^2} -inpaint.. . rm. label.
     --f[0] 'if(c==0,x,y)' rv[-2,-1] --blend[-2,-1] shapeaverage,1,1
-    --[-3,-1] rm[0,-2] channels. 0,1
+    -[-3,-1] rm[0,-2] channels. 0,1
     alpha={$5*pi/180} sh. 0 *. {cos($alpha)} rm. sh. 1 *. {sin($alpha)} rm. compose_channels. +
     normalize_local. 1000 n. -$4,$4
-    -+ c 0,255
+    + c 0,255
   endl done
 
 #@gui Mosaic : fx_mosaic, fx_mosaic_preview(0)
@@ -31375,7 +31375,7 @@ fx_mosaic_preview :
 fx_shapes :
   if $1 # Pre-defined shapes.
     remove_opacity repeat $! l[$>]
-      if {!$7} _fx_shapes $* -* 255
+      if {!$7} _fx_shapes $* * 255
       elif {$7==1} split_opacity to_rgb[0] s[0] c repeat 3 _fx_shapes[$>] $* done *[0-2] 255 a[0-2] c a c
       else --_fx_shapes $* r[0] $3%,$3% r[0] [1],[1] -*
       endif
@@ -31529,7 +31529,7 @@ fx_plaid_texture :
     r $w,$h,1,$s,2
     --rotate[0] $3,1,2,50%,50%
     repeat {$2-1} --rotate[0] {$3+$4*($>+1)/($2-1)},1,2,50%,50% +[-2,-1] done rm[0]
-    -/ $2
+    / $2
   endl done
 
 #@gui Polka dots : fx_polka_dots, fx_polka_dots(1)
@@ -31568,7 +31568,7 @@ fx_color_ellipses :
 #@gui : sep = separator(), note = note("<small>Authors: <i>David Tschumperl&#233;</i> and <i>J&#233;rome Boulanger</i>.      Latest update: <i>2014/09/04</i>.</small>")
 fx_syntexturize :
   repeat $! l[$>]
-    if $3 --b {20.5-$3/50}% --[0] [1] fc. ${-average_color.} -+ c 0,255 endif
+    if $3 --b {20.5-$3/50}% -[0] [1] fc. ${-average_color.} + c 0,255 endif
     -syntexturize $1,$2
   endl done
 
@@ -31590,7 +31590,7 @@ fx_syntexturize_preview :
 #@gui : sep = separator(), note = note("<small>Authors: <i>David Tschumperl&#233;</i>.      Latest update: <i>2015/22/10</i>.</small>")
 _fx_syntexturize_patchmatch_preview :
   repeat $! l[$>]
-    if $7 --b {20.5-$7/50}% --[0] [1] fc. ${-average_color.} -+ c 0,255 endif
+    if $7 --b {20.5-$7/50}% -[0] [1] fc. ${-average_color.} + c 0,255 endif
     w={w} h={h}
     -syntexturize_patchmatch 100%,100%,${3--1}
     to_rgba r $w,$h,1,4,0,0,0.5,0.5
@@ -31606,8 +31606,8 @@ fx_syntexturize_patchmatch_preview :
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2011/12/03</i>.</small>")
 fx_rorschach :
   repeat $! remove_opacity l[$>]
-    if {$3==0} norm -rorschach $1%,$2 -* 255
-    elif {$3==1} to_rgb -rorschach $1%,$2 -* 255
+    if {$3==0} norm -rorschach $1%,$2 * 255
+    elif {$3==1} to_rgb -rorschach $1%,$2 * 255
     else --norm -rorschach. $1%,$2 blend shapeaverage0
     endif
   endl done
@@ -31629,7 +31629,7 @@ fx_seamless_turbulence :
     -vector2tensor.
     smooth.. .,$1,0.5,20 rm.
     r. $wh,1,100%,0,0,0.5,0.5
-    if {$5!=1} ia={ia} -- $ia -* $5 -+ $ia endif
+    if {$5!=1} ia={ia} - $ia * $5 + $ia endif
   endl done
   c 0,255 n 0,255
 
@@ -31643,7 +31643,7 @@ fx_seamless_turbulence :
 _fx_shockwaves :
   -dct
   100%,100%,1,1,1 circle. 0,0,{$2+$3}%,1,{$1+1} circle. 0,0,$2%,1,1
-  -* -idct c 0,255
+  * -idct c 0,255
 
 fx_shockwaves :
   ac "_fx_shockwaves ${1-3}",$4
@@ -31738,11 +31738,11 @@ fx_tetris :
 fx_truchet :
   repeat $! l[$>]
     100%,100% truchet $1,$2,$4 rm..
-    if {$5==1} -* -1
+    if {$5==1} * -1
     elif {$5==2} i[0] 100%,100%,1,1,1
     elif {$5==3} i[0] 100%,100%
-    elif {$5==4} -* -1 i[0] 100%,100%
-    elif {$5==5} -* -1 i[0] 100%,100%,1,1,-1
+    elif {$5==4} * -1 i[0] 100%,100%
+    elif {$5==5} * -1 i[0] 100%,100%,1,1,-1
     elif {$5==6} label 0,1 {iM+1},1,1,3 rand. 0,255 map.. . rm.
     endif
     a c b $3 n 0,255
@@ -32172,7 +32172,7 @@ fx_smooth_skin :
     split_details[0] 4,$9%,$10%
     --_fx_smooth_skin[2] $12,$11
     j[2] .,0,0,0,0,1,.. rm[-2,-1]
-    *. {10^$13} -+ c 0,255
+    *. {10^$13} + c 0,255
 
   endl a c endl done
 
@@ -32183,13 +32183,13 @@ _fx_smooth_skin :
       m={im} M={iM} n 0,255
       repeat {int($2/5)} bilateral 3%,{5*3} done
       bilateral 3%,{($2%5)*3}
-      -* {($M-$m)/255} -+ $m
+      * {($M-$m)/255} + $m
     endif
   endif
 
 fx_smooth_skin_preview :
   if {$-2==0}
-    gui_split_preview "if $5 balance_gamma 128,128,128 endif if {$1==0} -f 1 elif {$1==2} detect_skin $2 else detect_skin $2,$6%,$7%,$8% endif M={iM} b $3% -* {255*$M/iM} -* $4 c 0,255",$-1
+    gui_split_preview "if $5 balance_gamma 128,128,128 endif if {$1==0} -f 1 elif {$1==2} detect_skin $2 else detect_skin $2,$6%,$7%,$8% endif M={iM} b $3% * {255*$M/iM} * $4 c 0,255",$-1
   elif {$-2==1}
     gui_split_preview "b $9%",$-1
   elif {$-2==2}
@@ -32399,7 +32399,7 @@ fx_blocks3d :
     w={w} h={h} m={max(w,h)}
     if {$3>0} mirror y endif
     -imageblocks3d $3,$2%
-    --3d. {$w/2},{$h/2} f={$4*$M/($m*(2-$16))} *3d $f,$f,{$f*abs($3*$1/100)}
+    -3d. {$w/2},{$h/2} f={$4*$M/($m*(2-$16))} *3d $f,$f,{$f*abs($3*$1/100)}
     if {$3>0} r3d 1,0,0,180 endif
     r3d 0,0,1,$5 r3d 1,0,0,-$6
 
@@ -32740,7 +32740,7 @@ fx_circle_art :
   l.
     transpose s x,-1 h={h}
     i[0] ({'CImg3d'},{2*$h},$h)  # Header.
-    --+... . --[-4,-2] i .. i[-3,-1] 1,100% a[-6--1] x  # Vertices.
+    --+... . -[-4,-2] i .. i[-3,-1] 1,100% a[-6--1] x  # Vertices.
     1,$h,1,1,5 1,$h,1,1,2*y --+. 1 a[-3--1] x z. 0,5 # Primitives.
     3,$h,1,1,1 1,$h,1,1,-1 y a y # Colors + Opacities.
   endl
@@ -32752,7 +32752,7 @@ fx_circle_art :
     else $s,$s --*3d[0] {$s/2} # No anti-aliasing.
     endif
     j3d[1] [2],50%,50%,0,1,2,0,0 rm[2]
-    -%. $4
+    %. $4
     if $6 -i.. 100%,100%,1,3 rand.. 0,255 plasma.. 1,1 equalize.. 256 n.. 0,255 blend[-2,-1] shapeaverage endif
     -rv
   endl done
@@ -32872,7 +32872,7 @@ fx_corner_gradient : skip ${17=0}
 fx_custom_gradient_preview : skip "${15=}"
   repeat $! l[$>]
     if $4
-      --_fx_custom_gradient1 ${1-14},"$15",${16--1} --erode. 3 --[-2,-1] --dilate. 5 a[-2,-1] c n. 0,255
+      --_fx_custom_gradient1 ${1-14},"$15",${16--1} --erode. 3 -[-2,-1] --dilate. 5 a[-2,-1] c n. 0,255
       fx_custom_gradient[0] ${1-14},"$15",${16--1},-1 blend alpha
     else fx_custom_gradient ${1-14},"$15",${16--1},-1
     endif
@@ -32892,7 +32892,7 @@ fx_custom_gradient : skip "${15=}"
     _fx_custom_gradient1[0] ${1-14},"$15",${16--1}
     --distance[0] 1,$11 --distance[0] 0,$11 *. -1 +[0] 1 +[0,-2,-1]  # Signed distance function.
     m={$9%*{0,im}} M={$10%*{0,iM}}
-    --[0] $m *[0] {1,(w-2)/($M-$m)} +[0] 1
+    -[0] $m *[0] {1,(w-2)/($M-$m)} +[0] 1
     round[0] map[0] .
   endl done
   rm.
@@ -33142,7 +33142,7 @@ fx_lightning :
       ($new_level;$new_angle) a[-2,-1] y
       -progress {($>*100)/($1-1)}
     done
-    k[0] -* 255 i[0] 100%,100%,1,3 fc[0] ${7-9} a c
+    k[0] * 255 i[0] 100%,100%,1,3 fc[0] ${7-9} a c
     endl
     -rv
   endl done
@@ -33262,7 +33262,7 @@ fx_neon_lightning :
     --b. $8%,1 n. 0,1 sqrt. n[-2,-1] 0,255 max[-2,-1]
     . blend[0,1] value
     smooth 5,0,1,0.5,2,10,0
-    /. 255 -^. $14 *. 255
+    /. 255 ^. $14 *. 255
     a c c 0,255
   endl done
 
@@ -33352,7 +33352,7 @@ fx_shadebobs :
       t+={$4%}
     done
   endl done
-  -& 255 if $10 map {$10-1} endif
+  & 255 if $10 map {$10-1} endif
 
 #@gui Sierpinski triangle : fx_sierpinski, fx_sierpinski(1)
 #@gui : Recursions = int(6,0,10)
@@ -34000,7 +34000,7 @@ fx_custom_code_preview : skip "${1=-skip ,}"
     gui_print_preview "Syntax error:",,$error_msg,15,40
   endl
   if $4 # Display debug infos on preview
-    if {!$3} -% 256 endif
+    if {!$3} % 256 endif
     if {$_preview_mode>=4} gui_preview endif
     siz0=13 siz1=17 siz2=19 siz3=22
     if {['$_status_out']==0} _status_out=(empty) endif
@@ -34116,7 +34116,7 @@ fx_intarsia :
     repeat $nb_cols
       color={1,I($>)}
       R={arg(1,$color)} G={arg(2,$color)} B={arg(3,$color)}
-      ({'${-dec2hex\ {$R*65536+$G*256+$B}}'}) --. {'0'} r. 6,1,1,1,0,0,1,0 +. {'0'}
+      ({'${-dec2hex\ {$R*65536+$G*256+$B}}'}) -. {'0'} r. 6,1,1,1,0,0,1,0 +. {'0'}
       f. if(i>=_'a'" && "i<=_'z',i+_'A'-_'a',i)
       hcolor={t} rm.
       48,32,1,4 fc. $color,255 frame. 1,1,0,0,0,255 o. "$1/"${image_name}_$>.png rm.
