@@ -6671,12 +6671,15 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
           check_elif = false;
           if (is_very_verbose) print(images,0,"Reach '-else' block.");
           for (int nb_ifs = 1; nb_ifs && position<commands_line.size(); ++position) {
-            const char *const it = commands_line[position].data();
+            const char *it = commands_line[position].data();
             if (*it==1 &&
                 cimg_sscanf(commands_line[position].data() + 1,"%x,%x",&_debug_line,&(_debug_filename=0))>0) {
               is_debug_info = true; next_debug_line = _debug_line; next_debug_filename = _debug_filename;
-            } else if (!std::strcmp("-if",it) || !std::strcmp("if",it)) ++nb_ifs;
-            else if (!std::strcmp("-endif",it) || !std::strcmp("endif",it)) { if (!--nb_ifs) --position; }
+            } else {
+              it+=*it=='-';
+              if (!std::strcmp("if",it)) ++nb_ifs;
+              else if (!std::strcmp("endif",it)) { if (!--nb_ifs) --position; }
+            }
           }
           continue;
         }
@@ -7108,9 +7111,9 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             int nb_repeat_fors = 0;
             for (nb_repeat_fors = 1; nb_repeat_fors && position<commands_line.size(); ++position) {
               const char *it = commands_line[position].data();
-              if (!std::strcmp("-repeat",it) || !std::strcmp("repeat",it) ||
-                  !std::strcmp("-for",it) || !std::strcmp("for",it)) ++nb_repeat_fors;
-              else if (!std::strcmp("-done",it) || !std::strcmp("done",it)) --nb_repeat_fors;
+              it+=*it=='-';
+              if (!std::strcmp("repeat",it) || !std::strcmp("for",it)) ++nb_repeat_fors;
+              else if (!std::strcmp("done",it)) --nb_repeat_fors;
             }
             if (nb_repeat_fors && position>=commands_line.size())
               error(images,0,0,
@@ -8112,19 +8115,18 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
           } catch (gmic_exception &e) {
             int nb_locals = 0;
             for (nb_locals = 1; nb_locals && position<commands_line.size(); ++position) {
-              const char *const it = commands_line[position].data();
+              const char *it = commands_line[position].data();
               if (*it==1 &&
                   cimg_sscanf(commands_line[position].data() + 1,"%x,%x",&_debug_line,&(_debug_filename=0))>0) {
                 is_debug_info = true; next_debug_line = _debug_line; next_debug_filename = _debug_filename;
-              } else if (!std::strcmp("--local",it) || !std::strcmp("-local",it) || !std::strcmp("local",it) ||
-                         !std::strcmp("--l",it) || !std::strcmp("-l",it) || !std::strcmp("l",it) ||
-                         !std::strncmp("--local[",it,8) || !std::strncmp("-local[",it,7) ||
-                         !std::strncmp("local[",it,6) ||
-                         !std::strncmp("--l[",it,4) || !std::strncmp("-l[",it,3) ||
-                         !std::strncmp("l[",it,2)) ++nb_locals;
-              else if (!std::strcmp("-endlocal",it) || !std::strcmp("endlocal",it) ||
-                       !std::strcmp("-endl",it) || !std::strcmp("endl",it)) --nb_locals;
-              else if (nb_locals==1 && (!std::strcmp("-onfail",it) || !std::strcmp("onfail",it))) break;
+              } else {
+                const bool is_ddash = *it=='-' && it[1]=='-';
+                it+=*it=='-'; it+=*it=='-';
+                if (!std::strcmp("local",it) || !std::strcmp("l",it) ||
+                    !std::strncmp("local[",it,6) || !std::strncmp("l[",it,2)) ++nb_locals;
+                else if (!is_ddash && (!std::strcmp("endlocal",it) || !std::strcmp("endl",it))) --nb_locals;
+                else if (!is_ddash && nb_locals==1 && !std::strcmp("onfail",it)) break;
+              }
             }
             if (callstack.size()>local_callstack_size) callstack.remove(local_callstack_size,callstack.size() - 1);
             if (nb_locals==1 && position<commands_line.size()) { // Onfail block found.
@@ -8772,19 +8774,18 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                   "Command '-onfail': Not associated to a '-local' command within "
                   "the same scope.");
           for (int nb_locals = 1; nb_locals && position<commands_line.size(); ++position) {
-            const char *const it = commands_line[position].data();
+            const char *it = commands_line[position].data();
             if (*it==1 &&
                 cimg_sscanf(commands_line[position].data() + 1,"%x,%x",&_debug_line,&(_debug_filename=0))>0) {
               is_debug_info = true; next_debug_line = _debug_line; next_debug_filename = _debug_filename;
-            } else if (!std::strcmp("--local",it) || !std::strcmp("-local",it) || !std::strcmp("local",it) ||
-                       !std::strcmp("--l",it) || !std::strcmp("-l",it) || !std::strcmp("l",it) ||
-                       !std::strncmp("--local[",it,8) || !std::strncmp("-local[",it,7) ||
-                       !std::strncmp("local[",it,6) ||
-                       !std::strncmp("--l[",it,4) || !std::strncmp("-l[",it,3) ||
-                       !std::strncmp("l[",it,2)) ++nb_locals;
-            else if (!std::strcmp("-endlocal",it) || !std::strcmp("endlocal",it) ||
-                     !std::strcmp("-endl",it) || !std::strcmp("endl",it)) {
-              --nb_locals; if (!nb_locals) --position;
+            } else {
+              const bool is_ddash = *it=='-' && it[1]=='-';
+              it+=*it=='-'; it+=*it=='-';
+              if (!std::strcmp("local",it) || !std::strcmp("l",it) ||
+                  !std::strncmp("local[",it,6) || !std::strncmp("l[",it,2)) ++nb_locals;
+              else if (!is_ddash && (!std::strcmp("endlocal",it) || !std::strcmp("endl",it))) {
+                --nb_locals; if (!nb_locals) --position;
+              }
             }
           }
           continue;
@@ -10156,9 +10157,9 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
               int nb_repeat_fors = 0;
               for (nb_repeat_fors = 1; nb_repeat_fors && position<commands_line.size(); ++position) {
                 const char *it = commands_line[position].data();
-                if (!std::strcmp("-repeat",it) || !std::strcmp("repeat",it) ||
-                    !std::strcmp("-for",it) || !std::strcmp("for",it)) ++nb_repeat_fors;
-                else if (!std::strcmp("-done",it) || !std::strcmp("done",it)) --nb_repeat_fors;
+                it+=*it=='-';
+                if (!std::strcmp("repeat",it) || !std::strcmp("for",it)) ++nb_repeat_fors;
+                else if (!std::strcmp("done",it)) --nb_repeat_fors;
               }
               if (nb_repeat_fors && position>=commands_line.size())
                 error(images,0,0,
@@ -12692,17 +12693,17 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                                             (is_cond?"holds":"does not hold"));
           if (!is_cond) {
             for (int nb_ifs = 1; nb_ifs && position<commands_line.size(); ++position) {
-              const char *const it = commands_line[position].data();
+              const char *it = commands_line[position].data();
               if (*it==1 &&
                   cimg_sscanf(commands_line[position].data() + 1,"%x,%x",&_debug_line,&(_debug_filename=0))>0) {
                 is_debug_info = true; next_debug_line = _debug_line; next_debug_filename = _debug_filename;
-              } else if (!std::strcmp("-if",it) || !std::strcmp("if",it)) ++nb_ifs;
-              else if (!std::strcmp("-endif",it) || !std::strcmp("endif",it)) {
-                --nb_ifs; if (!nb_ifs) --position;
-              } else if (nb_ifs==1) {
-                if (!std::strcmp("-else",it) || !std::strcmp("else",it)) --nb_ifs;
-                else if (!std::strcmp("-elif",it) || !std::strcmp("elif",it)) {
-                  --nb_ifs; check_elif = true; --position;
+              } else {
+                it+=*it=='-';
+                if (!std::strcmp("if",it)) ++nb_ifs;
+                else if (!std::strcmp("endif",it)) { --nb_ifs; if (!nb_ifs) --position; }
+                else if (nb_ifs==1) {
+                  if (!std::strcmp("else",it)) --nb_ifs;
+                  else if (!std::strcmp("elif",it)) { --nb_ifs; check_elif = true; --position; }
                 }
               }
             }
@@ -12735,9 +12736,9 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                   Com,is_continue?"to next iteration of ":"");
             for (level = 1; level && position<commands_line.size(); ++position) {
               const char *it = commands_line[position].data();
-              if (!std::strcmp("-repeat",it) || !std::strcmp("repeat",it) ||
-                  !std::strcmp("-for",it) || !std::strcmp("for",it)) ++level;
-              else if (!std::strcmp("-done",it) || !std::strcmp("done",it)) --level;
+              it+=*it=='-';
+              if (!std::strcmp("repeat",it) || !std::strcmp("for",it)) ++level;
+              else if (!std::strcmp("done",it)) --level;
             }
             callstack_ind = callstack_repeat;
             stb = "repeat"; ste = "done";
@@ -12746,8 +12747,9 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                   Com,is_continue?"to next iteration of ":"");
             for (level = 1; level && position<commands_line.size(); ++position) {
               const char *it = commands_line[position].data();
-              if (!std::strcmp("-do",it) || !std::strcmp("do",it)) ++level;
-              else if (!std::strcmp("-while",it) || !std::strcmp("while",it)) --level;
+              it+=*it=='-';
+              if (!std::strcmp("do",it)) ++level;
+              else if (!std::strcmp("while",it)) --level;
             }
             callstack_ind = callstack_do;
             stb = "do"; ste = "while";
@@ -12756,9 +12758,9 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                   Com,is_continue?"to next iteration of ":"");
             for (level = 1; level && position<commands_line.size(); ++position) {
               const char *it = commands_line[position].data();
-              if (!std::strcmp("-repeat",it) || !std::strcmp("repeat",it) ||
-                  !std::strcmp("-for",it) || !std::strcmp("for",it)) ++level;
-              else if (!std::strcmp("-done",it) || !std::strcmp("done",it)) --level;
+              it+=*it=='-';
+              if (!std::strcmp("repeat",it) || !std::strcmp("for",it)) ++level;
+              else if (!std::strcmp("done",it)) --level;
             }
             callstack_ind = callstack_for;
             stb = "for"; ste = "done";
@@ -12767,12 +12769,11 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                   Com,is_continue?"to end of ":"");
             for (level = 1; level && position<commands_line.size(); ++position) {
               const char *it = commands_line[position].data();
-              if (!std::strcmp("--local",it) || !std::strcmp("-local",it) || !std::strcmp("local",it) ||
-                  !std::strcmp("--l",it) || !std::strcmp("-l",it) || !std::strcmp("l",it) ||
-                  !std::strncmp("--local[",it,8) || !std::strncmp("-local[",it,7) || !std::strncmp("-local[",it,6) ||
-                  !std::strncmp("--l[",it,4) || !std::strncmp("-l[",it,3) || !std::strncmp("l[",it,2)) ++level;
-              else if (!std::strcmp("-endlocal",it) || !std::strcmp("endlocal",it) ||
-                       !std::strcmp("-endl",it) || !std::strcmp("endl",it)) --level;
+              const bool is_ddash = *it=='-' && it[1]=='-';
+              it+=*it=='-'; it+=*it=='-';
+              if (!std::strcmp("local",it) || !std::strcmp("l",it) ||
+                  !std::strncmp("-local[",it,6) || !std::strncmp("l[",it,2)) ++level;
+              else if (!is_ddash && (!std::strcmp("endlocal",it) || !std::strcmp("endl",it))) --level;
             }
             callstack_ind = callstack_local;
             stb = "local"; ste = "endlocal";
