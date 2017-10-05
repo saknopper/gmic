@@ -4676,7 +4676,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
       char *item = _item;
       const char *argument = initial_argument;
 
-      // Auto-preprend minus sign to item recognized as a command.
+      // Auto-preprend minus sign to current item if recognized as a command.
       if (*item!='-' && *item!='(' && *item!='[' && (*item<'0' || *item>'9')) {
 #define _gmic_eok(i) (!item[i] || item[i]=='[' || (item[i]=='.' && (!item[i+1] || item[i+1]=='.')))
         bool is_command = *item>='a' && *item<='z' && _gmic_eok(1); // Alphabetical shortcut commands
