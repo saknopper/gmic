@@ -9398,7 +9398,7 @@ inpaint_patchmatch : check ${-is_image_arg\ $1}"&& ${2=0}>=0 && isint(${3=9}) &&
     nm={0,n} nms img,mask
     nb_scales={max(1,round(if($2,$2,log2(min(w,h)/16)),1,1))}
     visu_size=${fitscreen[]" "{0,w},{0,h},1,25%,50%}
-    -slices[img] 0 r[mask] [img],[img],1,1,0 !=[mask] 0
+    slices[img] 0 r[mask] [img],[img],1,1,0 !=[mask] 0
     if {!$7} -inpaint_diffusion[img] [mask],75% endif # Quick first estimate.
     im={img,im} -[img] $im
 
@@ -10463,7 +10463,7 @@ histogram_pointwise : skip ${2=0%},${3=100%}
 #@cli : $ image.jpg --blur 1.5 -hough[-1] 400,400 blur[-1] 0.5 add[-1] 1 log[-1]
 hough : check "${1=512}>0 && ${2=$1}>0" skip ${3=1}
   e[^-1] "Compute $1x$2 hough transform of image$?, "${-arg\ 1+!$3,with,without}" gradient norm voting."
-  v - -slices 50% luminance repeat $! l[$>] nm={0,n}
+  v - slices 50% luminance repeat $! l[$>] nm={0,n}
     rhomax={sqrt(w^2+h^2)/2}
     g (0,{w-1}) (0;{{-2,h}-1}) r[-2,-1] {-3,w},{-3,h},1,1,3 -.. {w/2} -. {h/2}
     complex2polar[-4--1] -. ... polar2complex[-2,-1] rm.
@@ -11066,7 +11066,7 @@ close_binary :
   repeat $! l[$>] nm={n}
 
     # Ensure input is a 2d binary image.
-    -slices 50% channels 0 > 0
+    slices 50% channels 0 > 0
     nm. strokes
 
     # Extract primary edgel normals.
@@ -12975,7 +12975,7 @@ imageblocks3d : check ${2=0}>=0 skip ${1=10},${3=0}
 #@cli : $ image.jpg imagecube3d
 imagecube3d :
   e[^-1] "Generate 3d mapped cubes from image$?."
-  v - -slices 50% to_rgb repeat $! l[$>] nm={0,n}
+  v - slices 50% to_rgb repeat $! l[$>] nm={0,n}
     i.. (67.5;73.5;109.5;103.5;51.5;100.5;\  # Magick number for CImg3d.
          8;6;\                               # Number of vertices and primitives.
          -0.5;-0.5;-0.5;\                    # Vertex coordinates.
@@ -13003,7 +13003,7 @@ imagecube3d :
 #@cli : $ image.jpg imageplane3d
 imageplane3d :
   e[^-1] "Generate 3d mapped planes from image$?."
-  v - -slices 50% to_color repeat $! l[$>] nm={0,n}
+  v - slices 50% to_color repeat $! l[$>] nm={0,n}
     i.. (67.5;73.5;109.5;103.5;51.5;100.5;\   # Magick number for CImg3d.
          4;1;\                                # Number of vertices and primitives.
          0;0;0;\                              # Vertex coordinates.
@@ -13422,7 +13422,7 @@ projections3d : skip ${1=50%},${2=50%},${3=50%},${4=1}
     z={if(${is_percent\ $3},$3*d,$3)}
     --rows $2,$2 r. {w},{d},1,100%,-1
     --columns.. $1,$1 permute. zyxc
-    -slices... $3,$3 r[-3--1] 100%,100%,1,3
+    slices... $3,$3 r[-3--1] 100%,100%,1,3
     imageplane3d[-3--1]
     r3d. 0,1,0,-90 r3d.. 1,0,0,90
     +3d... 0,0,$z +3d.. 0,$y,0 +3d. $x,0,0
@@ -14753,7 +14753,7 @@ linearize_tiles : check "$1>0 && ${2=$1}>0"
 map_sprites : check "isint($1) && $1>0 && isint(${2=0}) && $2>=0 && $2<=2"
   e[^-1] "Map set of $1 sprites to image selection$?."
   v - norm[0--{$1+1}] -quantize[0--{$1+1}] $1,0,1
-  -slices[-$1--1] 0 r[-$1--1] ${-max_wh[-$1--1]},1,100%,0,0,0.5,0.5
+  slices[-$1--1] 0 r[-$1--1] ${-max_wh[-$1--1]},1,100%,0,0,0.5,0.5
   if {$2==1}
     N={4*$1}
     repeat {$!-$1} *[$>] 4 --rand[$>] 0,3 round. +[$>,-1] done
@@ -15029,7 +15029,7 @@ brushify : check ${"-is_image_arg $1"}" &&"\         # $1: [brush]
 
   # Precompute the set of oriented/resized brushes.
   -pass$1 0 l.
-    -slices 0 norm n 0,1 threshold 0.1,1 autocrop.
+    slices 0 norm n 0,1 threshold 0.1,1 autocrop.
     repeat $4 --rotate[0] {360*$>/$4} done
     rm[0] n 0,1 threshold 0.1,1 autocrop r ${-max_wh},1,1,0,0,0.5,0.5
     a z nm brush
@@ -17276,7 +17276,7 @@ transition3d : check "isint(${1=10}) && $1>=2 && isint(${2=3}) && $2>0 && isint(
   e[^-1] "Create 3d transition sequence between image$?, with $1 frames, $2x$3 tiles and rotation axis ($4,$5,$6).\n"
   v -
   if {$!<2} return endif
-  -slices 0 to_rgb r ${-max_whds},3
+  slices 0 to_rgb r ${-max_whds},3
   off=0 repeat {$!-1} l[{$>+$off},{$>+$off+1}]
     v + e[] "\r > Generate transition from image "$>" to image "{$>+1}".    " v -
 
@@ -18672,7 +18672,7 @@ path_tmp :
 #@cli : Reset global parameters of the interpreter environment.
 reset :
   e[^-1] "Reset global parameters of the interpreter environment."
-  v -1 db3d m3d -md3d f3d -l3d -sl3d -ss3d v +
+  v -1 db3d m3d md3d f3d l3d sl3d ss3d v +
 
 #@cli RGB
 #@cli : Return a random int-valued RGB color.
@@ -20906,7 +20906,7 @@ x_mask_color : check "${2=5}>=0 && ${3=5}>=0" skip ${1=all}
 ----------------------------------------------------------------------------------------------------"
   v - l[] _ac_$1 onfail error[0--3] "Command '-x_mask_color' : Invalid colorspace '$*'." endl
   m _ac_forward:$_f
-  repeat $! l[$>] -slices 0 basename {0,n} nm=${}
+  repeat $! l[$>] slices 0 basename {0,n} nm=${}
     wh=${fitscreen\ {[w,h]},1,128,1024}
     --r $wh,1,100%,2
     --_ac_forward. channels. $_s
@@ -21038,7 +21038,7 @@ x_metaballs3d :
 -----------------------------------------------------------"
   v - l[]
   100,100 noise. 100,1 plasma. 1,0,10 r. 512,320,1,3 n. 0,1 b. 4,0 n. 0,255
-  -mix_channels. (0.7,0,0;0,0.9,0;0,0,1.2) c. 0,255 -l3d
+  -mix_channels. (0.7,0,0;0,0.9,0;0,0,1.2) c. 0,255 l3d
   0
   24,24,24,1,'X=x-w/2;Y=y-h/2;Z=z-d/2;exp(-(X*X+Y*Y+Z*Z)/100)'
   72,72,72 M=8 mode=3
@@ -21938,7 +21938,7 @@ x_reflection3d :
     j3d. [-6],{20+$xf}%,$yf%,0,1,4,0,0
 
     # Add light reflection to 3d background object.
-    -l3d . rm. --j3d. ..,75%,50%,0,1,5,0,0 j.. .,0,0,0,0,0.6 rm[-3,-1]
+    l3d . rm. --j3d. ..,75%,50%,0,1,5,0,0 j.. .,0,0,0,0,0.6 rm[-3,-1]
 
     # Add 3d foreground object.
     j3d. [-4],$xf%,$yf%,0,1,4,0,0
@@ -23004,7 +23004,7 @@ x_waves :
   (0,1,0;1,0,1;0,1,0) /. 2
   ball[] 20,200,255,128,1,0.7,3.5
   0 $w,$w .
-  -l3d {$w/2},-200,-1000 -sl3d 0.4 -ss3d 0.8 f3d 500 time0=$|
+  l3d {$w/2},-200,-1000 sl3d 0.4 ss3d 0.8 f3d 500 time0=$|
   do
     --convolve. [3],1 -. ... rm... b. 0.8 -. {ia} # Update height map.
     r. 1,{$w*$w},1,1,-1 j[2] .,2,0 r. $w,$w,1,1,-1 # Set 3d object coordinates.
@@ -23414,7 +23414,7 @@ fx_logo_version1 : skip "${1=Universal plug-in}"
   isosurface3d 50%
   col3d {u(150,255)},{u(150,255)},{u(150,255)}
   sphere3d 8 col3d. {u(150,255)},{u(150,255)},{u(150,255)} +3d. 77,-6 +3d c3d. rv3d
-  db3d 0 -sl3d 0.2 -ss3d 1.3 r3d. 1,0,0,-30 f3d 120 *3d. 1.5
+  db3d 0 sl3d 0.2 ss3d 1.3 r3d. 1,0,0,-30 f3d 120 *3d. 1.5
   230,120,1,3 j3d. ..,50%,30%,0,1,4 rm..
   0 t. "$1",0,0,13,1,255,255,255 j.. .,{({-2,w}-w)/2},75% rm.
   to_rgba replace_color 0,0,0,0,0,255,0,0,0,0 drop_shadow 6,6,2
@@ -32362,7 +32362,7 @@ fx_scale_dcci2x_preview :
 fx_render3d : skip ${14=1}
   width={(1+$14)*$1} height={(1+$14)*$2}
   n3d c3d m3d {round($13)} f3d={0.5*max($width,$height)/tan($7*pi/360)}
-  f3d $f3d -l3d {$8*$f3d},{$9*$f3d},{$10*$f3d} -sl3d $11 -ss3d $12
+  f3d $f3d l3d {$8*$f3d},{$9*$f3d},{$10*$f3d} sl3d $11 ss3d $12
   repeat $! l[$>]
     *3d {$3*max($width,$height)} r3d 0,0,1,{-$6} r3d 0,1,0,{-$5} r3d 1,0,0,{-$4}
     $width,$height,1,3,-1
@@ -32408,7 +32408,7 @@ fx_blocks3d :
     # Render object.
     if $16 {2*$M},{2*$M},1,4,-1 else $M,$M,1,4,-1 endif
     f3d={0.5*w/tan($7*pi/360)} f3d $f3d
-    -l3d {$10*$f3d},{$11*$f3d},{$12*$f3d} -sl3d $13 -ss3d $14
+    l3d {$10*$f3d},{$11*$f3d},{$12*$f3d} sl3d $13 ss3d $14
     j3d. [0],$8%,$9%,0,1,{if($15,3,2)},0,1
     sh. 100% +. 1 *. 255 rm.
 
@@ -32653,7 +32653,7 @@ fx_lathing3d_preview :
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2010/29/12</i>.</small>")
 fx_random3d :
   repeat $! l[$>]
-    f3d={0.5*max(w,h)/tan($5*pi/360)} f3d $f3d -l3d {$6*$f3d},{$7*$f3d},{$8*$f3d} -sl3d $9 -ss3d $10
+    f3d={0.5*max(w,h)/tan($5*pi/360)} f3d $f3d l3d {$6*$f3d},{$7*$f3d},{$8*$f3d} sl3d $9 ss3d $10
     to_rgb ({w},{h},{d},{s}) /. 2 repeat $2
     ({1,@0}) +. {1,@1} *. $3 /. 100 _fx_random3d$1 {^} rm..
     r3d. 1,1,0,{u(0,360)}
