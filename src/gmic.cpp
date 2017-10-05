@@ -2050,10 +2050,12 @@ void gmic::_gmic_substitute_args(const char *const argument, const char *const a
                                  const char *const command, const char *const item,
                                  const CImgList<T>& images) {
   if (is_debug) {
-    if (std::strcmp(argument,argument0)) debug(images,"Command '%s': arguments = '%s' -> '%s'.",
-                                               *command?command:item,argument0,argument); \
-    else debug(images,"Command '%s': arguments = '%s'.",
-               *command?command:item,argument0);
+    if (std::strcmp(argument,argument0))
+      debug(images,"Command '%s': arguments = '%s' -> '%s'.",
+            *command?command:item,argument0,argument);
+    else
+      debug(images,"Command '%s': arguments = '%s'.",
+            *command?command:item,argument0);
   }
 }
 
@@ -2983,7 +2985,7 @@ gmic& gmic::add_commands(const char *const data_commands,
           move_to(commands[ind],pos[ind]++);
       } else body.move_to(commands[ind],pos[ind]++); // Insert code without debug info.
     } else { // Continuation of a previous line.
-      if (ind<0) error("Command '-command': Syntax error in expression '%s'.",lines);
+      if (ind<0) error("Command 'command': Syntax error in expression '%s'.",lines);
       const unsigned int p = pos[ind] - 1;
       if (!is_last_slash) commands[ind][p].back() = ' ';
       else --(commands[ind][p]._width);
@@ -3372,7 +3374,7 @@ gmic& gmic::error(const CImgList<T>& list, const CImg<unsigned int> *const calls
   throw gmic_exception(command,status);
 }
 
-#define arg_error(command) gmic::error(images,0,command,"Command '-%s': Invalid argument '%s'.",\
+#define arg_error(command) gmic::error(images,0,command,"Command '%s': Invalid argument '%s'.",\
                                        command,gmic_argument_text())
 
 // Print debug message.
@@ -3756,7 +3758,7 @@ gmic& gmic::display_plots(const CImgList<T>& images, const CImgList<char>& image
     CImg<char> eselec;
     selection2string(empty_indices>'y',images_names,1,eselec);
     warn(images,0,false,
-         "Command '-plot': Image%s %s empty.",
+         "Command 'plot': Image%s %s empty.",
          eselec.data(),empty_indices.size()>1?"are":"is");
   }
 
@@ -3813,7 +3815,7 @@ gmic& gmic::display_objects3d(const CImgList<T>& images, const CImgList<char>& i
   CImg<char> error_message(1024);
   cimg_forY(selection,l) if (!gmic_check(images[selection[l]]).is_CImg3d(true,error_message))
     error(images,0,0,
-          "Command '-display3d': Invalid 3d object [%d] in selected image%s (%s).",
+          "Command 'display3d': Invalid 3d object [%d] in selected image%s (%s).",
           selection[l],gmic_selection_err.data(),error_message.data());
 #if cimg_display==0
   print(images,0,"Display 3d object%s (skipped, no display support).",gmic_selection.data());
@@ -5082,7 +5084,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
               catch (CImgException&) {
                 if (!img.is_CImg3d(true,&(*message=0)))
                   error(images,0,0,
-                        "Command '-add3d': Invalid 3d object [%d], in selected image%s (%s).",
+                        "Command 'add3d': Invalid 3d object [%d], in selected image%s (%s).",
                         uind,gmic_selection_err.data(),message.data());
                 else throw;
               }
@@ -5105,12 +5107,12 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
               catch (CImgException&) {
                 if (!img0.is_CImg3d(true,&(*message=0)))
                   error(images,0,0,
-                        "Command '-add3d': Invalid 3d object [%u], in specified "
+                        "Command 'add3d': Invalid 3d object [%u], in specified "
                         "argument '%s' (%s).",
                         *ind,gmic_argument_text(),message.data());
                 else if (!img.is_CImg3d(true,message))
                   error(images,0,0,
-                        "Command '-add3d': Invalid 3d object [%d], in selected image%s (%s).",
+                        "Command 'add3d': Invalid 3d object [%d], in selected image%s (%s).",
                         _ind,gmic_selection_err.data(),message.data());
                 else throw;
               }
@@ -5134,7 +5136,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                   const unsigned int uind = selection[l];
                   if (!images[uind].is_CImg3d(true,&(*message=0)))
                     error(images,0,0,
-                          "Command '-add3d': Invalid 3d object [%d], in selected image%s (%s).",
+                          "Command 'add3d': Invalid 3d object [%d], in selected image%s (%s).",
                           uind,gmic_selection_err.data(),message.data());
                 }
                 throw;
@@ -5403,10 +5405,10 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                   is_filename?(is_cond?"found":"not found"):(is_cond?"true":"false"));
           if (!is_cond) {
             if (is_first_item && callstack.size()>1 && callstack.back()[0]!='*')
-              gmic::error(images,0,callstack.back(),"Command '-%s': Invalid argument '%s'.",
+              gmic::error(images,0,callstack.back(),"Command '%s': Invalid argument '%s'.",
                           callstack.back().data(),_gmic_argument_text(parent_arguments,argument_text,true));
             else error(images,0,0,
-                       "Command '-check': Expression '%s' is false (and no file with this name exists).",
+                       "Command 'check': Expression '%s' is false (and no file with this name exists).",
                        gmic_argument_text());
           }
           ++position; continue;
@@ -5903,7 +5905,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             }
             if (!file)
               error(images,0,0,
-                    "Command '-command': Unable to load custom command file '%s' "
+                    "Command 'command': Unable to load custom command file '%s' "
                     "from network.",
                     gmic_argument_text() + offset_argument_text);
             std::remove(argx);
@@ -5948,7 +5950,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                 cimg::mutex(29,0);
               }
               error(images,0,0,
-                    "Command '-check3d': Invalid 3d object [%d], in selected image%s (%s).",
+                    "Command 'check3d': Invalid 3d object [%d], in selected image%s (%s).",
                     uind,gmic_selection_err.data(),message.data());
             }
           }
@@ -6048,7 +6050,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
               catch (CImgException&) {
                 if (!img.is_CImg3d(true,&(*message=0)))
                   error(images,0,0,
-                        "Command '-color3d': Invalid 3d object [%d], "
+                        "Command 'color3d': Invalid 3d object [%d], "
                         "in selected image%s (%s).",
                         uind,gmic_selection_err.data(),message.data());
                 else throw;
@@ -6189,7 +6191,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
           const CImg<char> &s = callstack.back();
           if (s[0]!='*' || (s[1]!='r' && s[1]!='f'))
             error(images,0,0,
-                  "Command '-done': Not associated to a '-repeat' or '-for' command "
+                  "Command 'done': Not associated to a '-repeat' or '-for' command "
                   "within the same scope.");
           if (s[1]=='r') { // End a 'repeat...done' block
             *title = 0;
@@ -6655,7 +6657,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
           const CImg<char> &s = callstack.back();
           if (s[0]!='*' || s[1]!='i')
             error(images,0,0,
-                  "Command '-endif': Not associated to a '-if' command within the same scope.");
+                  "Command 'endif': Not associated to a '-if' command within the same scope.");
           if (is_very_verbose) print(images,0,"End 'if...endif' block.");
           check_elif = false;
           callstack.remove();
@@ -6690,7 +6692,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
           const CImg<char> &s = callstack.back();
           if (s[0]!='*' || s[1]!='l')
             error(images,0,0,
-                  "Command '-endlocal': Not associated to a '-local' command within "
+                  "Command 'endlocal': Not associated to a '-local' command within "
                   "the same scope.");
           if (is_very_verbose) print(images,0,"End 'local...endlocal' block.");
           is_endlocal = true;
@@ -6717,7 +6719,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
           } catch (CImgException &e) {
             const char *err = std::strstr(e.what(),"eval(): ");
             if (!err) err = e.what(); else err+=8;
-            error(images,0,0,"Command '-eval': %s",err);
+            error(images,0,0,"Command 'eval': %s",err);
           }
           ++position; continue;
         }
@@ -6751,7 +6753,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
           cimg::mutex(31,0);
           cimg_snprintf(title,_title.width(),"%d",errcode);
           CImg<char>::string(title).move_to(status);
-          if (errcode) print(images,0,"Command '-exec' returned error code '%d'.",
+          if (errcode) print(images,0,"Command 'exec' returned error code '%d'.",
                              errcode);
 #endif // #ifdef gmic_noexec
           ++position; continue;
@@ -7118,7 +7120,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             }
             if (nb_repeat_fors && position>=commands_line.size())
               error(images,0,0,
-                    "Command '-for': Missing associated '-done' command.");
+                    "Command 'for': Missing associated '-done' command.");
             if (!is_first) { --nb_fordones; callstack.remove(); }
           }
           continue;
@@ -7774,7 +7776,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                 }
                 if (!vertices)
                   warn(images,0,false,
-                       "Command '-isoline3d': Isovalue %g%s not found in image [%u].",
+                       "Command 'isoline3d': Isovalue %g%s not found in image [%u].",
                        value,sep=='%'?"%":"",uind);
                 vertices.object3dtoCImg3d(primitives,g_list_uc,false);
                 gmic_apply(replace(vertices));
@@ -7867,11 +7869,11 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                 if (!vertices) {
                   if (img.depth()>1)
                     warn(images,0,false,
-                         "Command '-isosurface3d': Isovalue %g%s not found in image [%u].",
+                         "Command 'isosurface3d': Isovalue %g%s not found in image [%u].",
                          value,sep=='%'?"%":"",uind);
                   else
                     warn(images,0,false,
-                         "Command '-isosurface3d': Image [%u] has a single slice, "
+                         "Command 'isosurface3d': Image [%u] has a single slice, "
                          "isovalue %g%s not found.",
                          uind,value,sep=='%'?"%":"");
                 }
@@ -8094,7 +8096,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                 if ((images[uind].width() || images[uind].height()) && !images[uind]._spectrum) {
                   selection2string(selection,images_names,1,name);
                   error(images,0,0,
-                        "Command '-local': Invalid selection%s "
+                        "Command 'local': Invalid selection%s "
                         "(image [%u] is already used in another thread).",
                         name.data() + (*name=='s'?1:0),uind);
                 }
@@ -8344,7 +8346,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
               iind0 = _iind0<0?_iind0 + (int)images.size():_iind0;
             if (iind0<0 || iind0>(int)images.size())
               error(images,0,0,
-                    "Command '-move': Invalid position '%d' (not in range -%u...%u).",
+                    "Command 'move': Invalid position '%d' (not in range -%u...%u).",
                     _iind0,images.size(),images.size() - 1);
             print(images,0,"Move image%s to position %d.",
                   gmic_selection.data(),
@@ -8772,7 +8774,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
           const CImg<char> &s = callstack.back();
           if (s[0]!='*' || s[1]!='l')
             error(images,0,0,
-                  "Command '-onfail': Not associated to a '-local' command within "
+                  "Command 'onfail': Not associated to a '-local' command within "
                   "the same scope.");
           for (int nb_locals = 1; nb_locals && position<commands_line.size(); ++position) {
             const char *it = commands_line[position].data();
@@ -8879,7 +8881,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             } catch (CImgException&) {
               if (!vertices.is_CImg3d(true,&(*message=0)))
                 error(images,0,0,
-                      "Command '-object3d': Invalid 3d object [%u], specified "
+                      "Command 'object3d': Invalid 3d object [%u], specified "
                       "in argument '%s' (%s).",
                       *ind,gmic_argument_text(),message.data());
               else throw;
@@ -8944,7 +8946,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             catch (CImgException&) {
               if (!img.is_CImg3d(true,&(*message=0)))
                 error(images,0,0,
-                      "Command '-opacity3d': Invalid 3d object [%d], "
+                      "Command 'opacity3d': Invalid 3d object [%d], "
                       "in selected image%s (%s).",
                       uind,gmic_selection.data(),message.data());
               else throw;
@@ -9005,7 +9007,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
 
             if (*options)
               error(images,0,0,
-                    "Command '-output': File '%s', format does not take any output options (options '%s' specified).",
+                    "Command 'output': File '%s', format does not take any output options (options '%s' specified).",
                     formula,options.data());
 
             print(images,0,"Output 3d object%s as %s file '%s'.",
@@ -9023,7 +9025,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
               } catch (CImgException&) {
                 if (!vertices.is_CImg3d(true,&(*message=0)))
                   error(images,0,0,
-                        "Command '-output': 3d object file '%s', invalid 3d object [%u] "
+                        "Command 'output': 3d object file '%s', invalid 3d object [%u] "
                         "in selected image%s (%s).",
                         formula,uind,gmic_selection.data(),message.data());
                 else throw;
@@ -9045,7 +9047,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             if (empty_indices && is_verbose) {
               selection2string(empty_indices>'y',images_names,1,eselec);
               warn(images,0,false,
-                   "Command '-output': Image%s %s empty.",
+                   "Command 'output': Image%s %s empty.",
                    eselec.data(),empty_indices.size()>1?"are":"is");
             }
             cimg_forY(selection,l)
@@ -9064,7 +9066,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                        stype);
             if (!g_list)
               error(images,0,0,
-                    "Command '-output': File '%s', instance list (%u,%p) is empty.",
+                    "Command 'output': File '%s', instance list (%u,%p) is empty.",
                     _filename.data(),g_list.size(),g_list.data());
 
 #define gmic_save_multitype(value_type,svalue_type) \
@@ -9097,7 +9099,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                                   else gmic_save_multitype(float,"float")
                                     else gmic_save_multitype(double,"double")
                                       else error(images,0,0,
-                                                 "Command '-output': File '%s', invalid "
+                                                 "Command 'output': File '%s', invalid "
                                                  "specified pixel type '%s'.",
                                                  _filename.data(),stype);
           } else if (!cimg::strcasecmp(ext,"tiff") || !cimg::strcasecmp(ext,"tif")) {
@@ -9124,7 +9126,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             if (empty_indices && is_verbose) {
               selection2string(empty_indices>'y',images_names,1,eselec);
               warn(images,0,false,
-                   "Command '-output': Image%s %s empty.",
+                   "Command 'output': Image%s %s empty.",
                    eselec.data(),empty_indices.size()>1?"are":"is");
             }
             cimg_forY(selection,l)
@@ -9147,7 +9149,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                        use_bigtiff?"":"no ");
             if (!g_list)
               error(images,0,0,
-                    "Command '-output': File '%s', instance list (%u,%p) is empty.",
+                    "Command 'output': File '%s', instance list (%u,%p) is empty.",
                     _filename.data(),g_list.size(),g_list.data());
 
 #define gmic_save_tiff(value_type,svalue_type) \
@@ -9180,7 +9182,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                                   else gmic_save_tiff(float,"float")
                                     else gmic_save_tiff(double,"double")
                                       else error(images,0,0,
-                                                 "Command '-output': File '%s', invalid "
+                                                 "Command 'output': File '%s', invalid "
                                                  "specified pixel type '%s'.",
                                                  _filename.data(),stype);
 
@@ -9192,7 +9194,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             if (empty_indices && is_verbose) {
               selection2string(empty_indices>'y',images_names,1,eselec);
               warn(images,0,false,
-                   "Command '-output': Image%s %s empty.",
+                   "Command 'output': Image%s %s empty.",
                    eselec.data(),empty_indices.size()>1?"are":"is");
             }
             cimg_forY(selection,l)
@@ -9230,7 +9232,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             if (empty_indices && is_verbose) {
               selection2string(empty_indices>'y',images_names,1,eselec);
               warn(images,0,false,
-                   "Command '-output': Image%s %s empty.",
+                   "Command 'output': Image%s %s empty.",
                    eselec.data(),empty_indices.size()>1?"are":"is");
             }
             cimg_forY(selection,l)
@@ -9249,7 +9251,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                        quality);
             if (!g_list)
               error(images,0,0,
-                    "Command '-output': File '%s', instance list (%u,%p) is empty.",
+                    "Command 'output': File '%s', instance list (%u,%p) is empty.",
                     _filename.data(),g_list.size(),g_list.data());
             if (g_list.size()==1)
               g_list[0].save_jpeg(filename,(unsigned int)cimg::round(quality));
@@ -9266,7 +9268,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             if (empty_indices && is_verbose) {
               selection2string(empty_indices>'y',images_names,1,eselec);
               warn(images,0,false,
-                   "Command '-output': Image%s %s empty.",
+                   "Command 'output': Image%s %s empty.",
                    eselec.data(),empty_indices.size()>1?"are":"is");
             }
             cimg_forY(selection,l)
@@ -9303,7 +9305,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             if (empty_indices && is_verbose) {
               selection2string(empty_indices>'y',images_names,1,eselec);
               warn(images,0,false,
-                   "Command '-output': Image%s %s empty.",
+                   "Command 'output': Image%s %s empty.",
                    eselec.data(),empty_indices.size()>1?"are":"is");
             }
             cimg_forY(selection,l)
@@ -9322,7 +9324,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                        stype);
             if (!g_list)
               error(images,0,0,
-                    "Command '-output': File '%s', instance list (%u,%p) is empty.",
+                    "Command 'output': File '%s', instance list (%u,%p) is empty.",
                     _filename.data(),g_list.size(),g_list.data());
 
 #define gmic_save_raw(value_type,svalue_type) \
@@ -9355,7 +9357,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                                   else gmic_save_raw(float,"float")
                                     else gmic_save_raw(double,"double")
                                       else error(images,0,0,
-                                                 "Command '-output': File '%s', invalid "
+                                                 "Command 'output': File '%s', invalid "
                                                  "specified pixel type '%s'.",
                                                  _filename.data(),stype);
           } else if (!cimg::strcasecmp(ext,"cimg") || !cimg::strcasecmp(ext,"cimgz")) {
@@ -9389,7 +9391,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                                   else gmic_save_cimg(float,"float")
                                     else gmic_save_cimg(double,"double")
                                       else error(images,0,0,
-                                                 "Command '-output': File '%s', invalid "
+                                                 "Command 'output': File '%s', invalid "
                                                  "specified pixel type '%s'.",
                                                  _filename.data(),stype);
           } else if (!cimg::strcasecmp(ext,"gmz") || !*ext) {
@@ -9426,7 +9428,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                                   else gmic_save_gmz(float,"float")
                                     else gmic_save_gmz(double,"double")
                                       else error(images,0,0,
-                                                 "Command '-output': File '%s', invalid "
+                                                 "Command 'output': File '%s', invalid "
                                                  "specified pixel type '%s'.",
                                                  _filename.data(),stype);
           } else if (!cimg::strcasecmp(ext,"avi") ||
@@ -9464,7 +9466,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             if (empty_indices && is_verbose) {
               selection2string(empty_indices>'y',images_names,1,eselec);
               warn(images,0,false,
-                   "Command '-output': Image%s %s empty.",
+                   "Command 'output': Image%s %s empty.",
                    eselec.data(),empty_indices.size()>1?"are":"is");
             }
             cimg_forY(selection,l)
@@ -9477,7 +9479,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
               g_list.save_video(filename,(unsigned int)fps,name,(bool)keep_open);
             } catch (CImgException &e) {
               warn(images,0,false,
-                   "Command '-output': Cannot encode file '%s' natively (%s). Trying fallback function.",
+                   "Command 'output': Cannot encode file '%s' natively (%s). Trying fallback function.",
                    filename,e.what());
               g_list.save_ffmpeg_external(filename,(unsigned int)fps);
             }
@@ -9488,7 +9490,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             if (empty_indices && is_verbose) {
               selection2string(empty_indices>'y',images_names,1,eselec);
               warn(images,0,false,
-                   "Command '-output': Image%s %s empty.",
+                   "Command 'output': Image%s %s empty.",
                    eselec.data(),empty_indices.size()>1?"are":"is");
             }
             cimg_forY(selection,l)
@@ -9504,7 +9506,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
 
             if (*options)
               error(images,0,0,
-                    "Command '-output': File '%s', format '%s' does not take any output options "
+                    "Command 'output': File '%s', format '%s' does not take any output options "
                     "(options '%s' specified).",
                     _filename.data(),ext,options.data());
 
@@ -9526,7 +9528,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
               }
               if (save_failure)
                 error(images,0,0,
-                      "Command '-output': Invalid write of file '%s' from temporary file '%s'.",
+                      "Command 'output': Invalid write of file '%s' from temporary file '%s'.",
                       _filename.data(),filename_tmp.data());
             }
           }
@@ -9571,7 +9573,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                 }
               }
               if (!found_image) error(images,0,0,
-                                      "Command '-pass': Unreferenced image [%d] from parent context "
+                                      "Command 'pass': Unreferenced image [%d] from parent context "
                                       "(has been re-allocated in current context or reserved by another thread).",
                                       selection[l]);
             } else { // Easy case, parent image not in the current selection.
@@ -9940,7 +9942,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
               catch (CImgException&) {
                 if (!img.is_CImg3d(true,&(*message=0)))
                   error(images,0,0,
-                        "Command '-primitives3d': Invalid 3d object [%d], "
+                        "Command 'primitives3d': Invalid 3d object [%d], "
                         "in selected image%s (%s).",
                         uind,gmic_selection_err.data(),message.data());
                 else throw;
@@ -10164,7 +10166,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
               }
               if (nb_repeat_fors && position>=commands_line.size())
                 error(images,0,0,
-                      "Command '-repeat': Missing associated '-done' command.");
+                      "Command 'repeat': Missing associated '-done' command.");
               continue;
             }
           } else arg_error("repeat");
@@ -10598,7 +10600,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
               catch (CImgException&) {
                 if (!img.is_CImg3d(true,&(*message=0)))
                   error(images,0,0,
-                        "Command '-rotate3d': Invalid 3d object [%d], "
+                        "Command 'rotate3d': Invalid 3d object [%d], "
                         "in selected image%s (%s).",
                         uind,gmic_selection_err.data(),message.data());
                 else throw;
@@ -10665,7 +10667,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             catch (CImgException&) {
               if (!img.is_CImg3d(true,&(*message=0)))
                 error(images,0,0,
-                      "Command '-reverse3d': Invalid 3d object [%d], "
+                      "Command 'reverse3d': Invalid 3d object [%d], "
                       "in selected image%s (%s).",
                       uind,gmic_selection_err.data(),message.data());
               else throw;
@@ -11240,7 +11242,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
               catch (CImgException&) {
                 if (!img.is_CImg3d(true,&(*message=0)))
                   error(images,0,0,
-                        "Command '-sub3d': Invalid 3d object [%d], in selected image%s (%s).",
+                        "Command 'sub3d': Invalid 3d object [%d], in selected image%s (%s).",
                         uind,gmic_selection_err.data(),message.data());
                 else throw;
               }
@@ -11435,7 +11437,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             } catch (CImgException&) {
               if (!img.is_CImg3d(true,&(*message=0)))
                 error(images,0,0,
-                      "Command '-split3d': Invalid 3d object [%d], in selected image%s (%s).",
+                      "Command 'split3d': Invalid 3d object [%d], in selected image%s (%s).",
                       uind - off,gmic_selection_err.data(),message.data());
               else throw;
             }
@@ -11630,7 +11632,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
               } else {
                 vertices.assign();
                 warn(images,0,false,
-                     "Command '-streamline3d': Empty streamline starting from "
+                     "Command 'streamline3d': Empty streamline starting from "
                      "(%g%s,%g%s,%g%s) in image [%u].",
                      x,sepx=='%'?"%":"",
                      y,sepy=='%'?"%":"",
@@ -11669,7 +11671,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             } else {
               vertices.assign();
               warn(images,0,false,
-                   "Command '-streamline3d': Empty streamline starting from (%g,%g,%g) "
+                   "Command 'streamline3d': Empty streamline starting from (%g,%g,%g) "
                    "in expression '%s'.",
                    x,y,z,formula);
             }
@@ -11835,7 +11837,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                                   else gmic_serialize(float,"float")
                                     else gmic_serialize(double,"double")
                                       else error(images,0,0,
-                                                 "Command '-serialize': Invalid "
+                                                 "Command 'serialize': Invalid "
                                                  "specified pixel type '%s'.",
                                                  argx);
             if (is_double_hyphen) {
@@ -12066,7 +12068,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
               catch (CImgException&) {
                 if (!img.is_CImg3d(true,&(*message=0)))
                   error(images,0,0,
-                        "Command '-texturize3d': Invalid 3d object [%d], "
+                        "Command 'texturize3d': Invalid 3d object [%d], "
                         "in selected image%s (%s).",
                         uind,gmic_selection_err.data(),message.data());
                 else throw;
@@ -12269,7 +12271,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
           const CImg<char>& s = callstack.back();
           if (s[0]!='*' || s[1]!='d')
             error(images,0,0,
-                  "Command '-while': Not associated to a '-do' command within the same scope.");
+                  "Command 'while': Not associated to a '-do' command within the same scope.");
           float _is_cond = 0;
           bool is_filename = false;
           if (cimg_sscanf(argument,"%f%c",&_is_cond,&end)!=1) {
@@ -12781,12 +12783,12 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
           } else {
             print(images,0,"%s",Com);
             error(images,0,0,
-                  "Command '-%s': There are no loops or local environment to %s.",com,com);
+                  "Command '%s': There are no loops or local environment to %s.",com,com);
             continue;
           }
           if (level && position>=commands_line.size())
             error(images,0,0,
-                  "Command '-%s': Missing associated '-%s' command.",stb,ste);
+                  "Command '%s': Missing associated '-%s' command.",stb,ste);
           if (is_continue || callstack_local) {
 	    if (callstack_ind<callstack.size() - 1) callstack.remove(callstack_ind + 1,callstack.size() - 1);
 	    --position;
@@ -12916,7 +12918,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
               } catch (CImgException&) {
                 if (!img.is_CImg3d(true,&(*message=0)))
                   error(images,0,0,
-                        "Command '-%s3d': Invalid 3d object [%d], in selected image%s (%s).",
+                        "Command '%s3d': Invalid 3d object [%d], in selected image%s (%s).",
                         divide3d?"div":"mul",uind,gmic_selection_err.data(),message.data());
                 else throw;
               }
@@ -13086,7 +13088,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                       const int nind = ind + (ind<0?(int)nb_arguments + 1:0);
                       if ((nind<=0 && ind) || nind>=arguments.width() || !arguments[nind]) {
                         error(images,0,custom_command,
-                              "Command '-%s': Undefined argument '$%d', in expression '$%s%d%s' "
+                              "Command '%s': Undefined argument '$%d', in expression '$%s%d%s' "
                               "(for %u argument%s specified).",
                               custom_command,ind,sep=='}'?"{":"",ind,sep=='}'?"}":"",
                               nb_arguments,nb_arguments!=1?"s":"");
@@ -13104,7 +13106,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                       const int nind1 = ind1 + (ind1<0?(int)nb_arguments + 1:0);
                       if (nind1<=0 || nind1>=arguments.width() || !arguments[nind1])
                         error(images,0,custom_command,
-                              "Command '-%s': Undefined argument '$%d', in expression '${%d=$%d}' "
+                              "Command '%s': Undefined argument '$%d', in expression '${%d=$%d}' "
                               "(for %u argument%s specified).",
                               custom_command,ind1,ind,ind1,
                               nb_arguments,nb_arguments!=1?"s":"");
@@ -13187,7 +13189,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                                 if (uind) has_arguments = true;
                                 if (!arguments[uind])
                                   error(images,0,custom_command,
-                                        "Command '-%s': Undefined argument '$%d', "
+                                        "Command '%s': Undefined argument '$%d', "
                                         "in expression '${%s}'.",
                                         custom_command,uind,inbraces.data());
                                 CImg<char>(arguments[uind],true).append_string_to(substituted_command,ptr_sub);
@@ -13272,7 +13274,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                 if ((images[uind].width() || images[uind].height()) && !images[uind].spectrum()) {
                   selection2string(selection,images_names,1,name);
                   error(images,0,0,
-                        "Command '-%s': Invalid selection%s "
+                        "Command '%s': Invalid selection%s "
                         "(image [%u] is already used in another thread).",
                         custom_command,name.data() + (*name=='s'?1:0),uind);
                 }
@@ -13729,7 +13731,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
 
           if (*options)
             error(images,0,0,
-                  "Command '-input': File '%s', format does not take any input options (options '%s' specified).",
+                  "Command 'input': File '%s', format does not take any input options (options '%s' specified).",
                   _filename0,options.data());
 
           CImg<float>::get_load_off(primitives,g_list_f,filename).move_to(vertices);
@@ -13824,7 +13826,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             }
           } else
             error(images,0,0,
-                  "Command '-input': .cimg file '%s', invalid file options '%s'.",
+                  "Command 'input': .cimg file '%s', invalid file options '%s'.",
                   _filename0,options.data());
 
         } else if (!cimg::strcasecmp(ext,"gmz")) {
@@ -13847,10 +13849,10 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             }
           }
           if (!is_gmz)
-            error(images,0,0,"Command '-input': File '%s' is not in .gmz format (magic number not found).",
+            error(images,0,0,"Command 'input': File '%s' is not in .gmz format (magic number not found).",
                   _filename0);
           if (input_images.size()!=input_images_names.size())
-            error(images,0,0,"Command '-input': File '%s' is not in .gmz format "
+            error(images,0,0,"Command 'input': File '%s' is not in .gmz format "
                   "(numbers of images and names do not match).",
                   _filename0);
 
@@ -13927,7 +13929,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             input_images.load_video(filename);
           } else
             error(images,0,0,
-                  "Command '-input': video file '%s', invalid file options '%s'.",
+                  "Command 'input': video file '%s', invalid file options '%s'.",
                   _filename0,options.data());
           if (input_images) {
             input_images_names.insert(__filename0);
@@ -13960,7 +13962,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             dc = cimg::round(dc);
             if (dx<0 || dy<=0 || dz<=0 || dc<=0)
               error(images,0,0,
-                    "Command '-input': raw file '%s', invalid specified "
+                    "Command 'input': raw file '%s', invalid specified "
 		    "dimensions %gx%gx%gx%g.",
                     _filename0,dx,dy,dz,dc);
 
@@ -13994,13 +13996,13 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                                   else gmic_load_raw(float,"float")
                                     else gmic_load_raw(double,"double")
                                       else error(images,0,0,
-                                                 "Command '-input': raw file '%s', "
+                                                 "Command 'input': raw file '%s', "
                                                  "invalid specified pixel type '%s'.\n",
                                                  _filename0,stype);
             input_images_names.insert(__filename0);
           } else
             error(images,0,0,
-                  "Command '-input': raw file '%s', invalid file options '%s'.",
+                  "Command 'input': raw file '%s', invalid file options '%s'.",
                   _filename0,options.data());
         } else if (!cimg::strcasecmp("yuv",ext)) {
 
@@ -14012,7 +14014,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             dy = cimg::round(dy);
             if (dx<=0 || dy<=0)
               error(images,0,0,
-                    "Command '-input': YUV file '%s', invalid specified dimensions %gx%g.",
+                    "Command 'input': YUV file '%s', invalid specified dimensions %gx%g.",
                     _filename0,dx,dy);
             first_frame = cimg::round(first_frame);
             if (err>3) { // Load multiple frames.
@@ -14045,7 +14047,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             }
           } else
             error(images,0,0,
-                  "Command '-input': YUV file '%s', invalid or missing file options '%s'.",
+                  "Command 'input': YUV file '%s', invalid or missing file options '%s'.",
                   _filename0,options.data());
 
           } else if (!cimg::strcasecmp("tif",ext) || !cimg::strcasecmp("tiff",ext) ||
@@ -14078,7 +14080,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             }
           } else { // Load all frames.
             if (*options) error(images,0,0,
-                                "Command '-input': TIFF file '%s', "
+                                "Command 'input': TIFF file '%s', "
                                 "invalid file options '%s'.",
                                 _filename0,options.data());
             print(images,0,"Input all frames of TIFF file '%s' at position%s",
@@ -14117,11 +14119,11 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
           if (is_command_error) {
             if (is_network_file)
               error(images,0,0,
-                    "Command '-input': Unable to load custom command file '%s' from network.",
+                    "Command 'input': Unable to load custom command file '%s' from network.",
                     _filename0);
             else
               error(images,0,0,
-                    "Command '-input': File '%s' is not recognized as a custom command file.",
+                    "Command 'input': File '%s' is not recognized as a custom command file.",
                     _filename0);
           }
           cimg::fclose(file);
@@ -14145,7 +14147,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
 
           if (*options)
             error(images,0,0,
-                  "Command '-input': File '%s', format does not take any input options (options '%s' specified).",
+                  "Command 'input': File '%s', format does not take any input options (options '%s' specified).",
                   _filename0,options.data());
 
           try {
@@ -14155,7 +14157,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             } catch (CImgIOException&) {
               if (is_network_file)
                 error(images,0,0,
-                      "Command '-input': Unable to load image file '%s' from network.",
+                      "Command 'input': Unable to load image file '%s' from network.",
                       _filename0);
               else throw;
             }
@@ -14647,7 +14649,7 @@ int main(int argc, char **argv) {
       std::fflush(cimg::output());
     }
     if (*e.command_help()) {
-      std::fprintf(cimg::output(),"\n[gmic] Command '-%s' has the following description: \n",
+      std::fprintf(cimg::output(),"\n[gmic] Command '%s' has the following description: \n",
 		   e.command_help());
       std::fflush(cimg::output());
       CImgList<gmic_pixel_type> images;

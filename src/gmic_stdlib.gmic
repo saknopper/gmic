@@ -8810,15 +8810,15 @@ deconvolve_fft : check ${-is_image_arg\ $1}" && ${2=.001}>=0"
   v - repeat $! -pass$1 0 l[$>,-1]
     w2={0,int(w/2)} h2={0,int(h/2)} d2={0,int(d/2)}
     r[1] [0],[0],[0],1,0,0,0.5,0.5,0.5,0.5 shift[1] -$w2,-$h2,-$d2,0,2
-    fft[0] fft[2]                        # a b a' b'
-    --l[-1,-2] sqr + -+ $2 endl          # a b a' b' (a'^2+b'^2+eps)
-    --*[-4] ...                            # a b a' b' (a'^2+b'^2) ba'
-    --*[-6] ...                            # a b a' b' (a'^2+b'^2) ba' ab'
-    -[-2,-1]                              # a b a' b' (a'^2+b'^2) ba'-ab'
-    *[-6,-4]                              # aa' b b' (a'^2+b'^2) ba'-ab'
-    *[-4,-3]                              # aa' bb' (a'^2+b'^2) ba'-ab'
-    +[-4,-3]                              # aa'+bb' (a'^2+b'^2) ba'-ab'
-    /. .. /[-3,-2]                       # divide (aa'+bb') and (ba'-ab') by (a'^2+b'^2)
+    fft[0] fft[2]                 # a b a' b'
+    --l[-1,-2] sqr + + $2 endl    # a b a' b' (a'^2+b'^2+eps)
+    --*[-4] ...                   # a b a' b' (a'^2+b'^2) ba'
+    --*[-6] ...                   # a b a' b' (a'^2+b'^2) ba' ab'
+    -[-2,-1]                      # a b a' b' (a'^2+b'^2) ba'-ab'
+    *[-6,-4]                      # aa' b b' (a'^2+b'^2) ba'-ab'
+    *[-4,-3]                      # aa' bb' (a'^2+b'^2) ba'-ab'
+    +[-4,-3]                      # aa'+bb' (a'^2+b'^2) ba'-ab'
+    /. .. /[-3,-2]                # divide (aa'+bb') and (ba'-ab') by (a'^2+b'^2)
     ifft rm.
   endl done v +
 
