@@ -12772,7 +12772,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
               const bool is_ddash = *it=='-' && it[1]=='-';
               it+=*it=='-'; it+=*it=='-';
               if (!std::strcmp("local",it) || !std::strcmp("l",it) ||
-                  !std::strncmp("-local[",it,6) || !std::strncmp("l[",it,2)) ++level;
+                  !std::strncmp("local[",it,6) || !std::strncmp("l[",it,2)) ++level;
               else if (!is_ddash && (!std::strcmp("endlocal",it) || !std::strcmp("endl",it))) --level;
             }
             callstack_ind = callstack_local;
