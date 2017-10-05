@@ -2326,16 +2326,11 @@ _document_gmic_footer_bash : skip $1
       e[] "\t\tCOMPREPLY=( $(compgen -W \""${_argumentlink${_shortcutlink$>}}"\") )\n\t\treturn 0\n\t\t;;"
     endif
   done
-  e[] "\tesac"
-  e[] "\n\tif [[ \"$cur\" == -* ]] ; then
-\n\t\tCOMPREPLY=( $(compgen -W \"$opts\" -- \"$cur\") )
-\n\telse
-\n\t\t_filedir
-\n\tfi
-\n
+  e[] "\tesac\n
+\n\tCOMPREPLY=( $(compgen -W \"$opts\" -- \"$cur\") )
+\n\t_filedir
 \n}
-\n
-complete -F _"$_name" -o filenames gmic"
+\ncomplete -F _"$_name" -o filenames gmic"
   v -
 
 # Define document_gmic commands for html output.
