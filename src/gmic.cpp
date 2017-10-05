@@ -4681,6 +4681,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
       if ((*item!='-' && *item!='(' && *item!='[' && (*item<'0' || *item>'9')) ||
           (*item=='-' && (_gmic_eok(1) || (item[1]=='3' && item[2]=='d' && _gmic_eok(3))))) {
         bool is_command = *item>='a' && *item<='z' && _gmic_eok(1); // Alphabetical shortcut commands
+        is_command|= *item=='m' && (item[1]=='*' || item[1]=='/') && _gmic_eok(2); // Shortcuts '-m*' and '-m/'
         if (!is_command) {
           *command = sep0 = sep1 = 0;
           switch (*item) {
