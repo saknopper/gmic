@@ -2298,7 +2298,7 @@ const char *gmic::native_commands_names[] = {
   "c","camera","channels","check","check3d","col3d","color3d","columns","command","continue","convolve","correlate",
     "cos","cosh","crop","cumulate","cursor","cut",
   "d","d3d","db3d","debug","denoise","deriche","dijkstra","dilate","discard","displacement","display","display3d",
-    "distance","div3d","divide","do","done","double3d",
+    "distance","div","div3d","divide","do","done","double3d",
   "e","echo","eigen","eikonal","elevation3d","elif","ellipse","else","endian","endif","endl","endlocal","eq",
     "equalize","erode","error","exec","exp",
   "f","f3d","fft","files","fill","flood","focale3d","for",

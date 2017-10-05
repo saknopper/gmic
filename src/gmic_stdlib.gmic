@@ -1113,8 +1113,8 @@ _help_examples :
 \n
 \n  - Generate a 3d ring of torii:
 \n     "${c}"gmic -repeat 20 torus3d 15,2 color3d[-1] \"{u(60,255)},{u(60,255)},{u(60,255)}\" \\\
-\n      -*3d[-1] 0.5,1 -if \"{$>%2}\" rotate3d[-1] 0,1,0,90 -endif add3d[-1] 70 add3d \\\
-\n      rotate3d 0,0,1,18 -done moded3d 3 mode3d 5 db3d 0"$n"
+\n      *3d[-1] 0.5,1 if \"{$>%2}\" rotate3d[-1] 0,1,0,90 endif add3d[-1] 70 add3d \\\
+\n      rotate3d 0,0,1,18 done moded3d 3 mode3d 5 db3d 0"$n"
 \n
 \n  - Create a vase from a 3d isosurface:
 \n     "${c}"gmic -md3d 4 -isosurface3d \"'x^2+2*abs(y/2)*sin(2*y)^2+z^2-3',0\" sphere3d 1.5 \\\
@@ -1771,14 +1771,14 @@ display_parametric : check "${1=512}>0 && ${2=$1}>0 && ${4=0}>=0" skip ${3=3},${
     sh. 2 zm={im} zM={iM} rm.
     permute. cxyz s. x,2
     -i.. (1,0;1,{$N-1}) r.. 2,$N,1,1,3 round.. 1,$N,1,1,1 # Primitives, colors and opacities.
-    y a y -c3d -n3d -*3d 1,-1,1
+    y a y -c3d -n3d *3d 1,-1,1
 
     {if($6,max(1,$1-32),$1)},{if($6,max(1,$2-32),$2)},1,{if($is_grayscale,1,3)},255
-    -*3d[0] {0.96*min(w,h)}
+    *3d[0] {0.96*min(w,h)}
     if $6 L={0.1*max($1,$2)} grid[1] $L,$L,0,0,0.25,0xCCCCCCCC,0 endif
 
     if $5 # Anti-aliased.
-      r[1] 200%,200%,1,100%,1 -*3d[0] 2
+      r[1] 200%,200%,1,100%,1 *3d[0] 2
       if $4 --circles3d[0] {2*$4} j3d[1] [2],50%,50%,0,1,3,0,0 rm[2] endif
     elif $4 # Aliased.
       --circles3d[0] $4 j3d[1] [2],50%,50%,0,1,3,0,0 rm[2]
@@ -3508,7 +3508,7 @@ shape_star : check "${1=512}>=0 && ${2=5}>0 && ${3=0.5}>=0 && $3<=1"
   ir={round($1)}
   if {!$ir} 0
   else l[]
-      star3d $2,$3 col3d 1 -c3d -n3d -*3d $1,$1
+      star3d $2,$3 col3d 1 -c3d -n3d *3d $1,$1
       $1,$1 j3d. ..,50%,50%,0,1,2 rm..
     endl
   endif
@@ -10486,7 +10486,7 @@ ifftpolar :
 isophotes : skip ${1=64}
   e[^-1] "Render isophote maps from images$?, with $1 levels."
   v - to_rgba repeat $! l[$>]
-    --luminance repeat $1 --isoline3d[1] {$>*255/($1-1)} done rm[1] -+3d[^0] col3d. 1
+    --luminance repeat $1 --isoline3d[1] {$>*255/($1-1)} done rm[1] +3d[^0] col3d. 1
     [0],[0] j3d. ..,0,0,0,1,0,0,0 rm.. -*
   endl done v +
 
@@ -12389,7 +12389,7 @@ transpose :
 animate3d : skip ${1=640},${2=480},${3=0},${4=1},${5=0},"${7=""}" check ${6=1}>=0
   e[^-1] "Animate 3d object$?, in a $1x$2 window with angle velocities ($3,$4,$5)."
   v - is_multi={$!>1} repeat $! --l[$>]
-    -n3d -*3d {$6*min($1,$2)/1.5} -c3d
+    -n3d *3d {$6*min($1,$2)/1.5} -c3d
     ax=0 ay=0 az=0 frame=0 vfact=1
     do
        --r3d 1,0,0,$ax r3d. 0,1,0,$ay r3d. 0,0,1,$az
@@ -12454,27 +12454,27 @@ array3d : check "isint($1) && $1>0 && isint(${2=1}) && $2>0 && isint(${3=1}) && 
 
     # Duplicate along X.
     off=0 repeat {int(log2($1))}
-      --+3d. {2^$>*$dx} -+3d. ..
-      if {!($1&(2^$>))} rm.. else -+3d.. $off off+={2^$>*$dx} endif
-    done -+3d. $off -+3d
+      --+3d. {2^$>*$dx} +3d. ..
+      if {!($1&(2^$>))} rm.. else +3d.. $off off+={2^$>*$dx} endif
+    done +3d. $off +3d
 
     # Duplicate along Y.
     off=0 repeat {int(log2($2))}
-      --+3d. 0,{2^$>*$dy} -+3d. ..
-      if {!($2&(2^$>))} rm.. else -+3d.. 0,$off off+={2^$>*$dy} endif
-    done -+3d. 0,$off -+3d
+      --+3d. 0,{2^$>*$dy} +3d. ..
+      if {!($2&(2^$>))} rm.. else +3d.. 0,$off off+={2^$>*$dy} endif
+    done +3d. 0,$off +3d
 
     # Duplicate along Z.
     off=0 repeat {int(log2($3))}
-      --+3d. 0,0,{2^$>*$dz} -+3d. ..
-      if {!($3&(2^$>))} rm.. else -+3d.. 0,0,$off off+={2^$>*$dz} endif
-    done -+3d. 0,0,$off -+3d
+      --+3d. 0,0,{2^$>*$dz} +3d. ..
+      if {!($3&(2^$>))} rm.. else +3d.. 0,0,$off off+={2^$>*$dz} endif
+    done +3d. 0,0,$off +3d
   endl done v +
 
 #@cli arrow3d : x0,y0,z0,x1,y1,z1,_radius[%]>=0,_head_length[%]>=0,_head_radius[%]>=0
 #@cli : Input 3d arrow with specified starting and ending 3d points.
 #@cli : Default values: 'radius=5%', 'head_length=25%' and 'head_radius=15%'.
-#@cli : $ repeat 10 a={$>*2*pi/10} -arrow3d 0,0,0,{cos($a)},{sin($a)},-0.5 done -+3d
+#@cli : $ repeat 10 a={$>*2*pi/10} -arrow3d 0,0,0,{cos($a)},{sin($a)},-0.5 done +3d
 arrow3d : check "${7=5%}>=0 && ${8=25%}>=0 && ${9=15%}>=0"
   e[^-1] "Input 3d arrow, from (${1-3}) to (${4-6}), with radius $7, head length $8 and head radius $9."
   v -
@@ -12484,7 +12484,7 @@ arrow3d : check "${7=5%}>=0 && ${8=25%}>=0 && ${9=15%}>=0"
   R={if(${is_percent\ $7},$7*$L,$7)}
   l={if(${is_percent\ $8},$8*$L,$8)}
   r={if(${is_percent\ $9},$9*$L,$9)}
-  L-=$l -cylinder3d $R,$L cone3d $r,$l -+3d. 0,0,$L -+3d[-2,-1]
+  L-=$l -cylinder3d $R,$L cone3d $r,$l +3d. 0,0,$L +3d[-2,-1]
 
   # Compute rotation matrix for arrow orientation.
   ({$4-$1}^{$5-$2}^{$6-$3}) (0.01^-0.02^0.03) -orientation[-2,-1]
@@ -12493,7 +12493,7 @@ arrow3d : check "${7=5%}>=0 && ${8=25%}>=0 && ${9=15%}>=0"
 
   # Rotate and translate the arrow at specified coordinates.
   -s3d.. r[-5] 3,{-5,h/3},1,1,-1 -m*[-5,-1]
-  y[-4] a[-6--1] y -+3d. ${1-3} -rv3d.
+  y[-4] a[-6--1] y +3d. ${1-3} -rv3d.
   v +
 
 #@cli axes3d : _size_x,_size_y,_size_z,_font_size>0,_label_x,_label_y,_label_z
@@ -12507,20 +12507,20 @@ axes3d : check ${4=23}>0 skip ${1=1},${2=$1},${3=$2},"${5=X},${6=Y},${7=Z}"
   _axes3d "O",$4 --3d. $m3,$m3,$m3
   if $1
     line3d 0,0,0,$1,0,0
-    cone3d $m,{2*$m},16 r3d. 0,1,0,90 -+3d. {$1-$m2},0,0
-    _axes3d "$5",$4 -+3d. {$1+$m3},0,0
+    cone3d $m,{2*$m},16 r3d. 0,1,0,90 +3d. {$1-$m2},0,0
+    _axes3d "$5",$4 +3d. {$1+$m3},0,0
   endif
   if $2
     line3d 0,0,0,0,$2,0
-    cone3d $m,{2*$m},16 r3d. 1,0,0,-90 -+3d. 0,{$2-$m2},0
-    _axes3d "$6",$4 -+3d. 0,{$2+$m3},0
+    cone3d $m,{2*$m},16 r3d. 1,0,0,-90 +3d. 0,{$2-$m2},0
+    _axes3d "$6",$4 +3d. 0,{$2+$m3},0
   endif
   if $3
     line3d 0,0,0,0,0,$3
-    cone3d $m,{2*$m},16 -+3d. 0,0,{$3-$m2}
-    _axes3d "$7",$4 -+3d. 0,0,{$3+$m3}
+    cone3d $m,{2*$m},16 +3d. 0,0,{$3-$m2}
+    _axes3d "$7",$4 +3d. 0,0,{$3+$m3}
   endif
-  -+3d -nm [3d\ axes]
+  +3d -nm [3d\ axes]
   endl v +
 
 _axes3d :
@@ -12591,7 +12591,7 @@ circles3d : check ${1=1}>=0 skip ${2=1}
   v - -p3d 0 repeat $! l[$>]
     nbv={@6} nbp={@7}
     if {$nbv&&$nbp}
-      --3d {$1/2},0,0 --+3d $1,0,0 -+3d nbp2={@7}
+      --3d {$1/2},0,0 --+3d $1,0,0 +3d nbp2={@7}
       -s3d -=[1] $nbp,0,1
       r[3] 2,$nbp2,1,1,-1 columns[3] 1,1 s[3] y,2 i[3] 1,$nbp,1,1,5
       i[6] 1,$nbp,1,1,{!$2} a[3-6] x columns[3] 0,5
@@ -12830,7 +12830,7 @@ extrude3d : check "${1=16}>0 && ${2=1024}>0 && ${3=0.5%}>=0"
     hr={round(max(1,if(w>h,min($2,w)*h/w,min($2,h))))}
     fact={$1/max(w/$wr,h/$hr)}
     b $3,0 r $wr,$hr,1,1,2 expand_xyz 1,0
-    -isosurface3d 50% -*3d 1,1,$fact -rv3d
+    -isosurface3d 50% *3d 1,1,$fact -rv3d
   -nm $nm endl done v +
 
 #@cli f3d : eq. to '-focale3d'. : (+)
@@ -12845,7 +12845,7 @@ extrude3d : check "${1=16}>0 && ${2=1024}>0 && ${3=0.5%}>=0"
 
 #@cli gaussians3d : _size>0,_opacity
 #@cli : Convert selected 3d objects into set of 3d gaussian-shaped sprites.
-#@cli : $ image.jpg r2dy 32 distribution3d -gaussians3d 20 colorcube3d -primitives3d[-1] 1 -+3d
+#@cli : $ image.jpg r2dy 32 distribution3d -gaussians3d 20 colorcube3d -primitives3d[-1] 1 +3d
 gaussians3d : check "${1=32}>0" skip ${2=0.3}
   e[^-1] "Convert 3d object$? into sets of gaussian-shaped 3d sprites, with size $1 and opacity $2."
   v - -p3d 2 -p3d 0 repeat $! l[$>] nm={0,n} -s3d
@@ -12862,18 +12862,18 @@ gmic3d :
   e[^-1] "Input 3d G\47MIC logo."
   v -
   text3d G,60,20,2 col3d. 16,64,255
-  text3d \',60,20,2 -+3d. 40 col3d. 64,128,255
-  text3d M,60,20,2 -+3d. 50 col3d. 96,196,255
-  text3d I,60,20,2 -+3d. 90 col3d. 64,128,255
-  text3d C,60,20,2 -+3d. 100 col3d. 16,64,255
-  sphere3d 8 -+3d. 102,-3,20 col3d. 192,128,255
-  -+3d[-6--1] -c3d.
+  text3d \',60,20,2 +3d. 40 col3d. 64,128,255
+  text3d M,60,20,2 +3d. 50 col3d. 96,196,255
+  text3d I,60,20,2 +3d. 90 col3d. 64,128,255
+  text3d C,60,20,2 +3d. 100 col3d. 16,64,255
+  sphere3d 8 +3d. 102,-3,20 col3d. 192,128,255
+  +3d[-6--1] -c3d.
   repeat 30
     -box3d {min(3+$</2,10)} col3d. {30*$>},{20+80*$>},{10*$>},0.5
     r3d. 1,1,1,{$>*12}
-    -+3d. {80*cos(0.5+1.02*$>*12*pi/180)},{30*sin(0.8+$>*12*pi/180)},{2*$>-60}
+    +3d. {80*cos(0.5+1.02*$>*12*pi/180)},{30*sin(0.8+$>*12*pi/180)},{2*$>-60}
   done
-  -+3d[-30--1] -+3d. 0,5,30 -+3d[-2--1] nm. [3d\ gmic]
+  +3d[-30--1] +3d. 0,5,30 +3d[-2--1] nm. [3d\ gmic]
   v +
 
 #@cli gyroid3d : _resolution>0,_zoom
@@ -12923,13 +12923,13 @@ image6cube3d :
   e[^-1] "Generate 3d mapped cubes from image$?."
   v - M={max(${-max_wh})} r $M,$M,1,3 -imageplane3d -n3d -c3d
   repeat {int($!/6)} l[$>-{$>+5}]
-    -+3d[0] 0,0,-0.5
-    r3d[1] 0,1,0,90 -+3d[1] -0.5,0,0
-    r3d[2] 0,1,0,180 -+3d[2] 0,0,0.5
-    r3d[3] 0,1,0,270 -+3d[3] 0.5,0,0
-    r3d[4] 1,0,0,90 -+3d[4] 0,0.5,0
-    r3d[5] 1,0,0,270 -+3d[5] 0,-0.5,0
-    -+3d -nm "[3d image cube]"
+    +3d[0] 0,0,-0.5
+    r3d[1] 0,1,0,90 +3d[1] -0.5,0,0
+    r3d[2] 0,1,0,180 +3d[2] 0,0,0.5
+    r3d[3] 0,1,0,270 +3d[3] 0.5,0,0
+    r3d[4] 1,0,0,90 +3d[4] 0,0.5,0
+    r3d[5] 1,0,0,270 +3d[5] 0,-0.5,0
+    +3d -nm "[3d image cube]"
   endl done v +
 
 #@cli imageblocks3d : _maximum_elevation,_smoothness[%]>=0
@@ -12945,8 +12945,8 @@ imageblocks3d : check ${2=0}>=0 skip ${1=10},${3=0}
 
     # Create 3d object template.
     l[] -box3d 1,1,0
-    repeat {$w-1} --+3d. 1,0,0 done -+3d
-    repeat {$h-1} --+3d. 0,1,0 done -+3d
+    repeat {$w-1} --+3d. 1,0,0 done +3d
+    repeat {$h-1} --+3d. 0,1,0 done +3d
     endl
     -s3d.
 
@@ -13066,13 +13066,13 @@ imagerubik3d : check "${1=3}>=1 && ${2=5}>=0 && $2<=100 && ${3=5}>=0 && $3<=100"
     3,5,1,1,200
     1,5,1,1,1
     y[-6--1] a[-6--1] y
-    repeat {$1-1} --+3d. 100 done -+3d[-$1--1]   # Duplicate along X
-    repeat {$1-1} --+3d. 0,100 done -+3d[-$1--1] # Duplicate along Y
+    repeat {$1-1} --+3d. 100 done +3d[-$1--1]   # Duplicate along X
+    repeat {$1-1} --+3d. 0,100 done +3d[-$1--1] # Duplicate along Y
     -t3d. .. rm..
-    -/3d. $1 --3d. 50,50,50
+    /3d. $1 --3d. 50,50,50
     --r3d. 0,1,0,-90 --r3d. 0,1,0,-90 --r3d. 0,1,0,-90  # Generate the 5 other sides.
     --r3d. 0,0,1,-90 --r3d. 0,0,1,180
-    -+3d
+    +3d
   -nm $nm endl done v +
 
 #@cli imagesphere3d : _resolution1>=3,_resolution2>=3
@@ -13151,7 +13151,7 @@ label_points3d : check ${1=13}>0 skip ${2=0.8}
     done
     a y  # Merge final object data.
     endl
-    -+3d[$>,-1]
+    +3d[$>,-1]
   done v +
 
 #@cli lathe3d : _resolution>0,_smoothness[%]>=0,_max_angle>=0
@@ -13284,7 +13284,7 @@ parametric3d : skip "${1=(2+cos(b))*sin(a)}","${2=(2+cos(b))*cos(a)}","${3=sin(b
   # Extract 3d surface.
   pointcloud. 1 r. $10,$11,$12,1,0 b. $13,0
   -isosurface3d. $14
-  -c3d. -n3d. -*3d. {$xmax-$xmin},{$ymax-$ymin},{$zmax-$zmin} nm. [3d\ parametric]
+  -c3d. -n3d. *3d. {$xmax-$xmin},{$ymax-$ymin},{$zmax-$zmin} nm. [3d\ parametric]
   v +
 
 #@cli pca_patch3d : _patch_size>0,_M>0,_N>0,_normalize_input={ 0 | 1 },_normalize_output={ 0 | 1 },_lambda_xy
@@ -13352,7 +13352,7 @@ pca_patch3d : check "isint(${1=7}) && $1>0 && isint(${2=1000}) && $2>0 && isint(
 #@cli : $ -plane3d 50,30 --primitives3d 1 color3d[-2] ${-RGB}
 plane3d : check "${3=24}>0 && ${4=24}>0" skip ${1=1},${2=$1}
   e[^-1] "Input 3d plane, with size (${1,2}) and subdivisions (${3,4})."
-  v - {$3+1},{$4+1} -elevation3d. 0 -*3d. {$1/$3},{$2/$4} col3d. 200 nm. [3d\ plane] v +
+  v - {$3+1},{$4+1} -elevation3d. 0 *3d. {$1/$3},{$2/$4} col3d. 200 nm. [3d\ plane] v +
 
 #@cli point3d : x0,y0,z0
 #@cli : Input 3d point at specified coordinates.
@@ -13386,7 +13386,7 @@ pointcloud3d :
       else rm -empty3d
       endif
       endl done
-    -+3d
+    +3d
   -nm $nm endl done v +
 
 #@cli pose3d : p1,...,p12
@@ -13423,9 +13423,9 @@ projections3d : skip ${1=50%},${2=50%},${3=50%},${4=1}
     -slices... $3,$3 r[-3--1] 100%,100%,1,3
     -imageplane3d[-3--1]
     r3d. 0,1,0,-90 r3d.. 1,0,0,90
-    -+3d... 0,0,$z -+3d.. 0,$y,0 -+3d. $x,0,0
-    -+3d[-3--1] -o3d. 0.8
-    if $4 -box3d $w,$h,$d -p3d. 1 -o3d. 0.4 -+3d[-2,-1] endif
+    +3d... 0,0,$z +3d.. 0,$y,0 +3d. $x,0,0
+    +3d[-3--1] -o3d. 0.8
+    if $4 -box3d $w,$h,$d -p3d. 1 -o3d. 0.4 +3d[-2,-1] endif
   endl done v +
 
 #@cli pyramid3d : width,height
@@ -13500,7 +13500,7 @@ rotation3d :
 #@cli : $ sierpinski3d 3,100,-100 --primitives3d 1 color3d[-2] ${-RGB}
 sierpinski3d : check ${1=4}>=0 skip ${2=1},${3=1}
 -e[^-1] "Input 3d Sierpinski pyramid of degree $1, with width $2 and height $3."
-  v - l[] _sierpinski3d {-$2/2},{-$2/2},{-$3/2},{$2/2},{-$2/2},{-$3/2},{$2/2},{$2/2},{-$3/2},{-$2/2},{$2/2},{-$3/2},0,0,{$3/2},$1 -+3d endl
+  v - l[] _sierpinski3d {-$2/2},{-$2/2},{-$3/2},{$2/2},{-$2/2},{-$3/2},{$2/2},{$2/2},{-$3/2},{-$2/2},{$2/2},{-$3/2},0,0,{$3/2},$1 +3d endl
   nm. [3d\ sierpinski] v +
 
 _sierpinski3d :
@@ -13599,7 +13599,7 @@ skeleton3d : check "isint(${1=2}) && $1>=0 && $1<=2 && isint(${2=3}) && $2>=0 &&
         y a y -o3d $4 if $5 -p3d 1 endif col3d 200
       else rm -empty3d endif
     endl else rm[0] endif
-    -+3d
+    +3d
   endl done v +
 
 #@cli snapshot3d : _size>0,_zoom>=0,_backgroundR,_backgroundG,_backgroundB,_backgroundA : [background_image],zoom>=0
@@ -13620,7 +13620,7 @@ snapshot3d : check "${2=1}>=0" skip ${1=512},${3=""}
     v - 1,2,1,3,32,64,32,116,64,96 r. $1,$1,1,3,3
   endif
   repeat {$!-1} . l[$>,-1]
-    if {$2!=0} -c3d[0] -n3d[0] -*3d[0] {3*min(w,h)*$2/4} endif
+    if {$2!=0} -c3d[0] -n3d[0] *3d[0] {3*min(w,h)*$2/4} endif
     if {s>3} # RGBA rendering.
       100%,100%,1,3,-1 j3d. [0],50%,50%,0,1
       to_rgba. replace_color. 0,0,-1,-1,-1,255,0,0,0,0 blend[-2,-1] alpha
@@ -13881,7 +13881,7 @@ tensors3d : check "${1=1}>=0 && isint(${2=2}) && $2>=0 && ${3=0.05}>=0"
         const off = siz - 4*P;
         draw(#ind,col,0,off,0,0,1,size(col),1,1);
         0); I"
-    rm[0] -+3d
+    rm[0] +3d
   endl done v +
 
 #@cli text_pointcloud3d : _"text1",_"text2",_smoothness
@@ -13973,7 +13973,7 @@ volume3d :
     --slices 0 --slices[0] 100% mirror. y
     --columns[0] 0 --columns[0] 100% permute[-2,-1] zyxc mirror.. x
     --rows[0] 0 --rows[0] 100% permute[-2,-1] xzyc mirror.. y
-    rm[0] -image6cube3d -*3d $w,$h,$d
+    rm[0] -image6cube3d *3d $w,$h,$d
   endl done v +
 
 #@cli weird3d : _resolution>0
@@ -14386,19 +14386,19 @@ frame_cube : check "${1=1}>=0" skip ${2=0},${3=0},${4=0},${5=0},${6=0},${7=0}
     if {$!==2} frame_cube ${1--1} a c  # Manage image with alpha-channel.
     else
       m={max(w,h)} w={w} h={h} s={s}
-      -imageplane3d -c3d -/3d. $w,$h,1
-      --_frame_cube[0] $4 r3d. 0,1,0,-90 -+3d. -0.5,0,-0.5  # Left side.
-      --_frame_cube[0] $5 r3d. 0,1,0,90 -+3d. 0.5,0,-0.5  # Right side.
-      --_frame_cube[0] $6 r3d. 1,0,0,-90 -+3d. 0,0.5,-0.5   # Lower side.
-      --_frame_cube[0] $7 r3d. 1,0,0,90 -+3d. 0,-0.5,-0.5 # Upper side.
-      -+3d 0,0,1 -+3d -*3d $w,$h,$m  # Append sides together.
+      -imageplane3d -c3d /3d. $w,$h,1
+      --_frame_cube[0] $4 r3d. 0,1,0,-90 +3d. -0.5,0,-0.5  # Left side.
+      --_frame_cube[0] $5 r3d. 0,1,0,90 +3d. 0.5,0,-0.5  # Right side.
+      --_frame_cube[0] $6 r3d. 1,0,0,-90 +3d. 0,0.5,-0.5   # Lower side.
+      --_frame_cube[0] $7 r3d. 1,0,0,90 +3d. 0,-0.5,-0.5 # Upper side.
+      +3d 0,0,1 +3d *3d $w,$h,$m  # Append sides together.
       f=1000
       cx=$2*$w/2*($f+$m*$1)/$f
       cy=$3*$h/2*($f+$m*$1)/$f
       -s3d r[2] 3,{{2,h}/3},1,1,-1
       f[2] "if(i(2,y)<0.5,i,i+if(x==0,"$cx",if(x==1,"$cy",($1-1)*"$m")))"
       y[2] a y
-      -*3d 2 {2*$w},{2*$h},1,$s f3d {2*$f}
+      *3d 2 {2*$w},{2*$h},1,$s f3d {2*$f}
       j3d. ..,50%,50%,0,1,2,0,0 rm..
       r $w,$h,1,100%,2
     endif
@@ -14654,19 +14654,19 @@ imagegrid_hexagonal : check "isint(${1=32}) && $1>0 && ${2=0.1}>=0 && $2<=1"
       (0;{2*pi}) --. {pi/2} r. 1,7,1,1,3 --sin. cos.. a[-2,-1] x rows. 0,5 z. 0,2
       2,6,1,1,3,0 1,100%,1,1,y --+. 1 -%. 6 rv[-2,-1] a[-3--1] x
       3,100%,1,1,1 1,100%,1,1,1 y a y
-      -*3d. {1-$2}
+      *3d. {1-$2}
 
       # Generate minimal pattern (2x2 hexagons).
       --+3d {sqrt(3)} --+3d {sqrt(3)/2},1.5
-      col3d... 2 col3d.. 3 col3d. 4 -+3d
-      -/3d 1.5
+      col3d... 2 col3d.. 3 col3d. 4 +3d
+      /3d 1.5
     endl
 
     # Duplicate it to get a grid with correct size.
     ny={1+round(0.5*$1,1,1)}
     nx={0,1+round($1*w/h*3/(sqrt(3)*4),1,1)}
     -array3d. $nx,$ny,1,{4*sqrt(3)/3},2
-    -c3d. -*3d. {0,h/$1}
+    -c3d. *3d. {0,h/$1}
 
     # Fill grid with image colors.
     [0],[0] j3d. ..,50%,50%,0,1,2,0,0 rm..
@@ -14860,9 +14860,9 @@ puzzle : check "isint(${1=512}) && $1>0 && isint(${2=$1}) && $2>0 && isint(${3=5
          skip ${5=0.5},${6=0.5},${7=0.5}
   e[^-1] "Draw $3x$4 puzzle pattern on image$?, with curvature $5, centering $6, connectors variability $7 and resolution $8."
   v - l[]
-    if {$4>=2} _puzzle[] $3,{$4-1},${5-8} -+3d. 0,1 endif
-    if {$3>=2} _puzzle[] $4,{$3-1},${5-8} r3d. 0,0,1,-90 -+3d. 1,$4 endif
-    -*3d {$1/$3},{$2/$4} -quadrangle3d 0,0,0,{$1-1},0,0,{$1-1},{$2-1},0,0,{$2-1},0 -p3d. 1 -+3d col3d 1
+    if {$4>=2} _puzzle[] $3,{$4-1},${5-8} +3d. 0,1 endif
+    if {$3>=2} _puzzle[] $4,{$3-1},${5-8} r3d. 0,0,1,-90 +3d. 1,$4 endif
+    *3d {$1/$3},{$2/$4} -quadrangle3d 0,0,0,{$1-1},0,0,{$1-1},{$2-1},0,0,{$2-1},0 -p3d. 1 +3d col3d 1
     $1,$2 j3d. ..,0,0,0,1,1,0,0 rm..
   endl v +
 
@@ -14886,8 +14886,8 @@ _puzzle :
     done
     ($1,0) a[-{$1+1}--1] y r. 2,$R,1,1,5 z. 0,2
     (2,0,1;2,{$R-2},{$R-1}) r. 3,{$R-1},1,1,3 round.
-    3,{h},1,1,255 1,{h},1,1,255 y[-5--1] y a[-5--1] y -+3d. 0,$>
-  done -+3d
+    3,{h},1,1,255 1,{h},1,1,255 y[-5--1] y a[-5--1] y +3d. 0,$>
+  done +3d
 
 #@cli quadratize_tiles : M>0,_N>0
 #@cli : Quadratize MxN tiles on selected images.
@@ -15547,7 +15547,7 @@ polygonize : check "${1=300}>=0 && ${2=2%}>=0 && ${3=0.1%}>=0 && ${4=10%}>0 && $
     --b $2 gradient_norm. g. a[-2,-1] c channels. 0,2 *. {1/0.1+max(abs(im),abs(iM))}
     resx={max(1,round(if(${is_percent\ $4},w*$4,w/$4)-1))}
     resy={max(1,round(if(${is_percent\ $5},h*$5,h/$5)-1))}
-    -plane3d 1,1,$resx,$resy -*3d. {0,w-1},{0,h-1},1
+    -plane3d 1,1,$resx,$resy *3d. {0,w-1},{0,h-1},1
     -s3d. rm.. -i.. (0;{h-1}) r.. 3,{h},1,1,3 round.. y..
     [-4] a[-7--2] y r. 3,{h/3},1,1,-1 z. 0,1 permute. yzcx
     repeat $1 --warp[1] .,0,0 +[-2,-1] done
@@ -15630,7 +15630,7 @@ stars : check "${1=10%}>=0 && ${2=1}>=0 && ${3=32}>0 && ${4=5}>=1 && ${5=0.38}>=
   v -
 
   # Generate star sprites.
-  star3d $4,$5 col3d. 255 -*3d. $3
+  star3d $4,$5 col3d. 255 *3d. $3
   l. repeat 4 {round(2*$3)},{round(2*$3)} j3d. [0],50%,50%,0,1,2,0,0 r3d[0] 0,0,1,-90 done rm[0] endl
   autocrop[-4--1] 0 r2dy[-4--1] $3 b[-4--1] $6,0 r[-4--1] 100%,100%,1,4
   repeat 4 sh[{-1-$>}] 0,2 fc. $7,$8,$9 rm. done
@@ -15642,7 +15642,7 @@ stars : check "${1=10%}>=0 && ${2=1}>=0 && ${3=32}>0 && ${4=5}>=1 && ${5=0.38}>=
       2,$N rand. -1,1 1,$N rand. 0,1 a[-2,-1] x
       -i.. ({'CImg3d'}) +.. 0.5 -i.. ($N;$N)
       (1,0;1,{$N-1}) r. 2,$N,1,1,3 round. 4,$N,1,1,1 y[-5,-3--1] a[-5--1] y
-      rv[-2,-1] sprites3d.. .,1 rm. -*3d. {0.75*{0,w}},{0.75*{0,h}},{1000*$2}
+      rv[-2,-1] sprites3d.. .,1 rm. *3d. {0.75*{0,w}},{0.75*{0,h}},{1000*$2}
       j3d[0] .,50%,50%,0,$10,0,0,0 rm.
     done
   endl done
@@ -17294,7 +17294,7 @@ transition3d : check "isint(${1=10}) && $1>=2 && isint(${2=3}) && $2>0 && isint(
       x=0
       repeat $2
         lw={$i,w} lh={$i,h}
-        -imageplane3d[$i] -imageplane3d[$N] r3d[$N] ${rot$i},180 -c3d[$i,$N] -+3d[$i,$N]
+        -imageplane3d[$i] -imageplane3d[$N] r3d[$N] ${rot$i},180 -c3d[$i,$N] +3d[$i,$N]
         x$i=$x y$i=$y x+=$lw i+=1
       done
       y+=$lh
@@ -17303,11 +17303,11 @@ transition3d : check "isint(${1=10}) && $1>=2 && isint(${2=3}) && $2>0 && isint(
     # Generate intermediate animation frames.
     repeat {$1-2}
       repeat $N r3d[$>] ${rot$>},{180/(1-$1)} --+3d[$>] ${x$>},${y$>},0 done
-      -+3d[-$N--1] -c3d.
+      +3d[-$N--1] -c3d.
 
       if $7 # Antialiased rendering.
         -i... {2*{-2,w}},{2*{-2,h}},1,3,-1
-        -*3d. 2 j3d... .,50%,50%,0,1,2,0,0 rm.
+        *3d. 2 j3d... .,50%,50%,0,1,2,0,0 rm.
         to_rgba.. replace_color.. 0,0,-1,-1,-1,255,0,0,0,0
         r.. .,.,1,100%,2
       else # Standard rendering.
@@ -18897,7 +18897,7 @@ demo : check "isint(${1=2}) && $1>=0 && $1<=2"
                    oma*sin("$cfz"*y + t) + a*sin("$nfz"*y + t)"
     y.
     j[6] .,0,8 rm.
-    --r3d[6] 1,2,3,{20*$|} -*3d. {0,w/2-30},{0,h/2-30},300 -+3d. 0,0,300
+    --r3d[6] 1,2,3,{20*$|} *3d. {0,w/2-30},{0,h/2-30},300 +3d. 0,0,300
 
     # Render image.
     *[0] 0.85 +[0] [1] j3d[0] .,50%,50%,0,1,1,0,0,200 rm.
@@ -18979,7 +18979,7 @@ x_2048 :
      rm."
   m "_x_2048_object3d : --f[0] 'if(i,i*16+4*y+x,-1)' discard. -1
      N={h} repeat {h} v={-{1+$>},@$>} --+3d[{2+($v>>4)}] {$v&3},{($v>>2)&3} done
-     -+3d[-$N--1] rm.."
+     +3d[-$N--1] rm.."
   i[0] 4,4
 
   # Pre-render game canvas and numbered titles.
@@ -19007,7 +19007,7 @@ x_2048 :
 
     # Render game graphics at current iteration.
     if $insert_new
-      _x_2048_object3d -*3d. 121 j[1] [2],18,130 j3d[1] .,78,190 rm.
+      _x_2048_object3d *3d. 121 j[1] [2],18,130 j3d[1] .,78,190 rm.
       80,25,1,3 fc. $c1 0 t. $score,0,0,25,1,1,1,1 r. ..,0,0,0.5,0.8
       rectangle[1] 422,45,501,69,1,187,173,160 j[1] ..,422,45,0,0,1,. rm[-2,-1]
       w[1] insert_new=0
@@ -19061,7 +19061,7 @@ x_2048 :
           /. 5 z. 0,2 y.
           repeat 5
             j.. .,0,8,0,0,-1
-            j[1] [2],18,130 --vshift2048.. -*3d. 121 j3d[1] .,78,190 rm.
+            j[1] [2],18,130 --vshift2048.. *3d. 121 j3d[1] .,78,190 rm.
             w[1] wait 20
           done
         endif
@@ -19082,13 +19082,13 @@ x_2048 :
           if {iM<0} rm[-2,-1]
           else # At least one tile fusions.
             discard. -1
-            rv[0,-2] _x_2048_object3d rv[0,-3] -vshift2048. -*3d. 121 # Only tiles that do not move in this step.
+            rv[0,-2] _x_2048_object3d rv[0,-3] -vshift2048. *3d. 121 # Only tiles that do not move in this step.
             j[1] [2],18,130 j3d[1] .,78,190 rm[-3,-1]
             N={h} repeat {h} v={-{1+$>},@$>} --+3d[{2+($v>>4)}] {$v&3},{($v>>2)&3} done # Only tiles that move.
-            -+3d[-$N--1] rm..
+            +3d[-$N--1] rm..
             0 t. +$dscore,0,0,33,1,1 100%,100%,1,3 fc. $c0
             repeat 6  # Render animation for fusion.
-              --vshift2048... -*3d. 121 --j3d[1] .,78,190
+              --vshift2048... *3d. 121 --j3d[1] .,78,190
               j. ...,430,{80-$>},0,0,{min(1,$</6)},[-4]
               w. rm[-2,-1] --3d... {1/6},0,0 wait 20
             done
@@ -19934,7 +19934,7 @@ x_fire : skip "${1=G\47MIC}"
   i[1] (0,255,255,255,255^0,0,255,255,255^0,0,0,128,255) r[1] 256,1,1,3,3
   i[2] (0,0,0;0,0,0;1,1,1;0,1,0) *[2] 0.21
   text3d "$1",33,3,1
-  mv. 3 -c3d[3] -n3d[3] -*3d[3] 320 col3d[3] 255,205,130 db3d 0 f3d 300
+  mv. 3 -c3d[3] -n3d[3] *3d[3] 320 col3d[3] 255,205,130 db3d 0 f3d 300
   100,100 rand. 0,255 ellipse. 50%,50%,5,5,0,1,300 b. 10
   sharpen. 1000 shrink_xy. 1 n. 0,255 to_rgb. light3d . rm.
 
@@ -19945,7 +19945,7 @@ x_fire : skip "${1=G\47MIC}"
     {0,w},1 rand. 128,256 j[0] .,0,{{0,h}-1} rm.       # Add new random values at the bottom line.
     --r[0] 400,200,1,1,3 map. [1]                        # Map fire palette
     --r3d[3] 0,1,0,$angle j3d.. .,50%,50%,0,1,5,0,0      # Draw 3d object.
-    -*3d. 0.25,0.16,1 j3d[0] .,50%,50%,0,1,3,0,0
+    *3d. 0.25,0.16,1 j3d[0] .,50%,50%,0,1,3,0,0
     rm.
     angle+=3                                                 # Update 3d angle.
     fps=${-fps} if {$fps>0} to. $fps" fps",5,{h-22},16,1,0.2 endif
@@ -20037,7 +20037,7 @@ x_fisheye :
   -f i+150-3*abs(y-h/2) c. 0,255 frame_fuzzy. 15,10,15,1.5,0 to_rgb.
   endif
   torus3d 20,6 col3d. {u(30,255)},{u(30,255)},{u(30,255)} --r3d. 1,0,0,90
-  col3d. {u(30,255)},{u(30,255)},{u(30,255)} -+3d. 15 -+3d[-2,-1] -*3d. 4 db3d 0 -c3d.
+  col3d. {u(30,255)},{u(30,255)},{u(30,255)} +3d. 15 +3d[-2,-1] *3d. 4 db3d 0 -c3d.
   R=30
   w.. {1.25*{-2,w}},{1.25*{-2,h}},0,"[G"{`39`}"MIC] Fish-eye effect"
   do
@@ -20623,7 +20623,7 @@ x_landscape :
   a[-2,-1] x map.. . rm.
 
   nm. background
-  -quadrangle3d[] -0.45,0,0,0.45,0,0,0.55,1,0,-0.55,1,0 -*3d. {$W/2},{$H/2} nm. viewrange3d # View range.
+  -quadrangle3d[] -0.45,0,0,0.45,0,0,0.55,1,0,-0.55,1,0 *3d. {$W/2},{$H/2} nm. viewrange3d # View range.
   (64^16^0) r. $W nm. groundcolor # Ground color.
 
   # Start animation.
@@ -20664,7 +20664,7 @@ x_landscape :
       1,$N,1,1,2 --f. y --+. $N a[-3--1] x
       mv[lcolors] $! permute. cyzx
       1,$N,1,1,1
-      y[-5--1] y a[-5--1] y -*3d. -1,-1
+      y[-5--1] y a[-5--1] y *3d. -1,-1
       --j3d[background] .,{background,w-1},{background,h},0,1,1,0,0,0 rm[-3,-2]
 
     else # Case of nothing to display (only water).
@@ -21050,7 +21050,7 @@ x_metaballs3d :
       z$>={d/2+0.5*(d-{2,d}-4)*sin(${fz$>}*$|)}
     done
     f[3] 0 repeat $M j[3] [2],{${x$>}-{2,w/2}},{${y$>}-{2,h/2}},{${z$>}-{2,d/2}},0,-1 done
-    --r[3] 28,28,28,1,2 -isosurface3d. 0.4 --3d. 12,12,12 -*3d. 13 -rv3d.
+    --r[3] 28,28,28,1,2 -isosurface3d. 0.4 --3d. 12,12,12 *3d. 13 -rv3d.
     r3d. 1,2,1,{100*$|}
     N={i[7]} (255,255,150;200,96,164;50,150,230) r. 3,$N,1,1,3 y. j.. .,0,{{-2,h}-4*$N} # Do some color tweaks.
     if {!$mode} circles3d.. 4 endif
@@ -21883,7 +21883,7 @@ x_quantize_rgb : check "isint(${1=16}) && $1>1"
   if $obj3d rm[obj3d] endif
   --distribution3d[centroids] circles3d. 5 col3d. 255      # Pre-compute 3d object.
   colorcube3d -p3d. 1
-  --&[colors] 255 distribution3d. -o3d. 0.8 -+3d[-3--1]
+  --&[colors] 255 distribution3d. -o3d. 0.8 +3d[-3--1]
   --3d. 128,128,128 nm. obj3d _N={i[7]}
 
 _x_quantize_rgb_text :
@@ -21971,7 +21971,7 @@ x_rubber3d :
   v - rm
   sphere3d 150,0 torus3d 70,15 -cylinder3d 20,40
   col3d... 200,200,200,0.3 col3d.. 128,200,76 col3d. 200,128,76
-  -c3d[-3--1] r3d. 1,0,0,70 -+3d[-3--1] -+3d. 10,-8,20 -*3d. 1.5
+  -c3d[-3--1] r3d. 1,0,0,70 +3d[-3--1] +3d. 10,-8,20 *3d. 1.5
   400,400,64,3
   {w},{h},1,3,'if(c==0,x,if(c==1,y,y*{1,d}/h))'
   {w},{h},1,3
@@ -22404,7 +22404,7 @@ x_select_function1d : skip ${1=xsf_variable},${2=220},${3=$2},${4=$2}
         1,{h-1},1,1,2 --f. y --+. 1 a[-3--1] x
         4,100%,1,1,1 y a y col3d 0
       endl
-      -*3d. {-2,(w-1)/100},{-2,(1-h)/100}
+      *3d. {-2,(w-1)/100},{-2,(1-h)/100}
       j3d.. .,0,100%,0,1,1,0,0 rm.
 
       # Draw control points.
@@ -23012,8 +23012,8 @@ x_waves :
       i[0] ({'CImg3d'}) i[1] ($nb,$nb) transpose[2]
       (1,0;1,{$nb-1}) r. 2,$nb,1,1,3 round.
       1,{4*$nb},1,1,1 y a y
-    endl [4] sprites3d.. .,1 rm. -+3d[-2,-1] endif
-    --3d. {$w/2},{$w/2} -*3d. {0,0.9*max(w,h)/$w} # Center and scale 3d object.
+    endl [4] sprites3d.. .,1 rm. +3d[-2,-1] endif
+    --3d. {$w/2},{$w/2} *3d. {0,0.9*max(w,h)/$w} # Center and scale 3d object.
     r3d. 0,0,1,{if({*,b}&2,{*,x}*360/{*,w},$|*30)} r3d. 1,0,0,120 # Get rotated 3d object.
     --j3d[0] .,50%,65%,30,1,3,0,0
     fps=${-fps} if {$fps>0} to. $fps" fps",5,{h-22},16,2,0.2 endif
@@ -23411,8 +23411,8 @@ fx_logo_version1 : skip "${1=Universal plug-in}"
   rm 118,44,1,1 -t "G\47MIC",3,-6,53,1,255 r 100%,100%,10,1 r 100%,100%,20,1,0,0,0.5,0.5,0.5 b 1.5
   -isosurface3d 50%
   col3d {u(150,255)},{u(150,255)},{u(150,255)}
-  sphere3d 8 col3d. {u(150,255)},{u(150,255)},{u(150,255)} -+3d. 77,-6 -+3d -c3d. -rv3d
-  db3d 0 -sl3d 0.2 -ss3d 1.3 r3d. 1,0,0,-30 f3d 120 -*3d. 1.5
+  sphere3d 8 col3d. {u(150,255)},{u(150,255)},{u(150,255)} +3d. 77,-6 +3d -c3d. -rv3d
+  db3d 0 -sl3d 0.2 -ss3d 1.3 r3d. 1,0,0,-30 f3d 120 *3d. 1.5
   230,120,1,3 j3d. ..,50%,30%,0,1,4 rm..
   0 t. "$1",0,0,13,1,255,255,255 j.. .,{({-2,w}-w)/2},75% rm.
   to_rgba replace_color 0,0,0,0,0,255,0,0,0,0 drop_shadow 6,6,2
@@ -24818,7 +24818,7 @@ _fx_bokeh :
   radius1={r=max(w,h)*$2%;r+1-(r%2)}
   radius2={r=$radius1-($radius1*$3%);r+1-(r%2)}
 
-  random3d $1 -*3d. {-2,w},{-2,h},0
+  random3d $1 *3d. {-2,w},{-2,h},0
   _fx_bokeh$_shape $radius1
   if {$radius2>=1} _fx_bokeh$_shape $radius2 r. ..,0,0,0.5,0.5 *. {max(0,min(1,1-$4))} --[-2,-1] endif
   sigma={-3,$5%*w}
@@ -25208,7 +25208,7 @@ fx_delaunay :
     remove_pixels. {100-max(0.1,$1/4)}%
     delaunay3d.
     l. -s3d rm[4] i[4] 1,100%,1,1,y r[4] 3,100% y a y endl  # Assign a different color to each triangle.
-    if $10 r[0] 200%,200% -*3d[1] 2 endif
+    if $10 r[0] 200%,200% *3d[1] 2 endif
 
     if {$4==0} f[0] 0
     elif {$4==1} f[0] 255
@@ -25498,16 +25498,16 @@ _fx_shapeism3 : # Diamond
   shape_diamond {w} rm.. skip $*
 
 _fx_shapeism4 : # Hexagon
-  star3d 3,1 -*3d. {0,min(w,h)/2} j3d[0] .,50%,50%,0,1,2,0 k[0] skip $*
+  star3d 3,1 *3d. {0,min(w,h)/2} j3d[0] .,50%,50%,0,1,2,0 k[0] skip $*
 
 _fx_shapeism5 : # Octogon
-  star3d 4,1 -*3d. {0,min(w,h)/2} j3d[0] .,50%,50%,0,1,2,0 k[0] skip $*
+  star3d 4,1 *3d. {0,min(w,h)/2} j3d[0] .,50%,50%,0,1,2,0 k[0] skip $*
 
 _fx_shapeism6 : # Star
-  star3d 5 -*3d. {0,min(w,h)/2} j3d[0] .,50%,50%,0,1,2,0 k[0] skip $*
+  star3d 5 *3d. {0,min(w,h)/2} j3d[0] .,50%,50%,0,1,2,0 k[0] skip $*
 
 _fx_shapeism7 : # Custom
-  star3d $1,$2 -*3d. {0,min(w,h)/2} r3d. 0,0,1,$3 j3d[0] .,50%,50%,0,1,2,0 k[0]
+  star3d $1,$2 *3d. {0,min(w,h)/2} r3d. 0,0,1,$3 j3d[0] .,50%,50%,0,1,2,0 k[0]
 
 #@gui Sharp abstract : fx_sharp_abstract, fx_sharp_abstract_preview(0)
 #@gui : Spatial scale = float(4,0,32)
@@ -26877,9 +26877,9 @@ fx_customize_clut_preview :
           circle3d $xy,$z,0.75 col3d. {$mode==2?[$tr,$tg,$tb]:[$sr,$sg,$sb]}
         endif
       done
-      colorcube3d -*3d. {$_N/255} -o3d. 0.5 col3d. 0 -p3d. 1
+      colorcube3d *3d. {$_N/255} -o3d. 0.5 col3d. 0 -p3d. 1
     endl
-    -+3d[2--1]
+    +3d[2--1]
     pose3d. 5.10656,2.04904,2.723,-316.115,-0.0815767,4.97762,-3.59262,-41.7094,-3.40685,2.95212,4.16756,-118.811,0,0,203,1
 
     # Try to find the best layout for displaying preview.
@@ -28015,7 +28015,7 @@ fx_drop_water :
       rmin={max(0.1,$3*(1-$4%))} rmax={max(0.1,$3)}
       repeat 10
         100%,100%
-        random3d {max(1,$2)} -*3d. {-2,w},{-2,h},0
+        random3d {max(1,$2)} *3d. {-2,w},{-2,h},0
         j3d.. .,0,0,0,1,1,0,0 rm.
         b. {$rmin+($rmax-$rmin)*$>/9}%,0,1
         j.. .,0,0,0,0,0.5 rm.
@@ -28589,7 +28589,7 @@ _fx_blur_dof :
       if $11 # With preview of guides.
         --isoline3d[1] {0.1*$1} col3d. 255,255,0
         --isoline3d[1] {0.5*$1} col3d. 255,128,0
-        -+3d[-2--1]
+        +3d[-2--1]
         __fx_dof_blur[0,1] $2,$ms,$Ms,$4
         [0],[0],1,3 j3d. ..,0,0,0,1,1,0,0 rm..
         circle. $5%,$6%,3,1,255,255,255
@@ -31447,7 +31447,7 @@ _fx_shapes8 :
   shape_star $1
 
 _fx_shapes9 :
-  -arrow3d 0,0,0,1,0,0,15%,40%,30% col3d 1 -*3d $1 -c3d
+  -arrow3d 0,0,0,1,0,0,15%,40%,30% col3d 1 *3d $1 -c3d
   $2,$2 j3d. ..,50%,50%,0,1,2,0,0
   rm.. --mirror y max
 
@@ -32362,7 +32362,7 @@ fx_render3d : skip ${14=1}
   -n3d -c3d m3d {round($13)} f3d={0.5*max($width,$height)/tan($7*pi/360)}
   f3d $f3d -l3d {$8*$f3d},{$9*$f3d},{$10*$f3d} -sl3d $11 -ss3d $12
   repeat $! l[$>]
-    -*3d {$3*max($width,$height)} r3d 0,0,1,{-$6} r3d 0,1,0,{-$5} r3d 1,0,0,{-$4}
+    *3d {$3*max($width,$height)} r3d 0,0,1,{-$6} r3d 0,1,0,{-$5} r3d 1,0,0,{-$4}
     $width,$height,1,3,-1
     j3d. ..,50%,50% rm..
     to_rgba replace_color 0,0,-1,-1,-1,255,0,0,0,0
@@ -32399,7 +32399,7 @@ fx_blocks3d :
     w={w} h={h} m={max(w,h)}
     if {$3>0} mirror y endif
     -imageblocks3d $3,$2%
-    --3d. {$w/2},{$h/2} f={$4*$M/($m*(2-$16))} -*3d $f,$f,{$f*abs($3*$1/100)}
+    --3d. {$w/2},{$h/2} f={$4*$M/($m*(2-$16))} *3d $f,$f,{$f*abs($3*$1/100)}
     if {$3>0} r3d 1,0,0,180 endif
     r3d 0,0,1,$5 r3d 1,0,0,-$6
 
@@ -32468,22 +32468,22 @@ fx_coloredobject3d_preview :
     blend[$>,-1] alpha
   done rm.
 
-_fx_coloredobject3d_0 : plane3d 1 -*3d. $1,$2,1
-_fx_coloredobject3d_1 : box3d 1 -*3d. $1,$2,$3
-_fx_coloredobject3d_2 : pyramid3d 1,1 -*3d. $1,$2,$3
-_fx_coloredobject3d_3 : sphere3d 1 -*3d. 1,{2*$2},{2*$3}
-_fx_coloredobject3d_4 : torus3d $1,{$2/2},100,50 -*3d. $3,0.5,0.5
-_fx_coloredobject3d_5 : gyroid3d 24 -*3d. $1,$2,$3
-_fx_coloredobject3d_6 : weird3d 32 -*3d. $1,$2,$3
-_fx_coloredobject3d_7 : cup3d 128 -*3d. $1,$2,$3
-_fx_coloredobject3d_preview_0 : plane3d 1 -*3d. $1,$2,1
-_fx_coloredobject3d_preview_1 : box3d 1 -*3d. $1,$2,$3
-_fx_coloredobject3d_preview_2 : pyramid3d 1,1 -*3d. $1,$2,$3
-_fx_coloredobject3d_preview_3 : sphere3d 1 -*3d. 1,{2*$2},{2*$3}
-_fx_coloredobject3d_preview_4 : torus3d $1,{$2/2},100,50 -*3d. $3,0.5,0.5
-_fx_coloredobject3d_preview_5 : gyroid3d 8 -*3d. $1,$2,$3
-_fx_coloredobject3d_preview_6 : weird3d 12 -*3d. $1,$2,$3
-_fx_coloredobject3d_preview_7 : cup3d 64 -*3d. $1,$2,$3
+_fx_coloredobject3d_0 : plane3d 1 *3d. $1,$2,1
+_fx_coloredobject3d_1 : box3d 1 *3d. $1,$2,$3
+_fx_coloredobject3d_2 : pyramid3d 1,1 *3d. $1,$2,$3
+_fx_coloredobject3d_3 : sphere3d 1 *3d. 1,{2*$2},{2*$3}
+_fx_coloredobject3d_4 : torus3d $1,{$2/2},100,50 *3d. $3,0.5,0.5
+_fx_coloredobject3d_5 : gyroid3d 24 *3d. $1,$2,$3
+_fx_coloredobject3d_6 : weird3d 32 *3d. $1,$2,$3
+_fx_coloredobject3d_7 : cup3d 128 *3d. $1,$2,$3
+_fx_coloredobject3d_preview_0 : plane3d 1 *3d. $1,$2,1
+_fx_coloredobject3d_preview_1 : box3d 1 *3d. $1,$2,$3
+_fx_coloredobject3d_preview_2 : pyramid3d 1,1 *3d. $1,$2,$3
+_fx_coloredobject3d_preview_3 : sphere3d 1 *3d. 1,{2*$2},{2*$3}
+_fx_coloredobject3d_preview_4 : torus3d $1,{$2/2},100,50 *3d. $3,0.5,0.5
+_fx_coloredobject3d_preview_5 : gyroid3d 8 *3d. $1,$2,$3
+_fx_coloredobject3d_preview_6 : weird3d 12 *3d. $1,$2,$3
+_fx_coloredobject3d_preview_7 : cup3d 64 *3d. $1,$2,$3
 
 #@gui 3d elevation : fx_elevation3d, fx_elevation3d_preview(1)
 #@gui : Factor = float(100,-1000,1000)
@@ -32656,8 +32656,8 @@ fx_random3d :
     ({1,@0}) +. {1,@1} *. $3 /. 100 _fx_random3d$1 {^} rm..
     r3d. 1,1,0,{u(0,360)}
     ({u(-1,1)}) *. {1,@0} ({u(-1,1)}) *. {1,@1}
-    -+3d... {-2,^},{^},{u(-$4,$4)} rm[-2,-1]
-    col3d. {u(255)},{u(255)},{u(255)} done -+3d[2--1] j3d[0] .,50%,50%,0,$12,$11,0,1
+    +3d... {-2,^},{^},{u(-$4,$4)} rm[-2,-1]
+    col3d. {u(255)},{u(255)},{u(255)} done +3d[2--1] j3d[0] .,50%,50%,0,$12,$11,0,1
     k[0]
   endl done
 
@@ -33131,7 +33131,7 @@ fx_lightning :
 
       _fx_lightning $new_length,$4,$5
       r3d. 0,0,1,$new_angle
-      -+3d. $new_x,$new_y
+      +3d. $new_x,$new_y
       --*3d. $fact [0],[0] j3d. ..,$12%,$13%,0,1,1,0,0 rm..
 
       dilation={$15*(if($23>0,1.5,10)^($23*($new_level-1)))}
@@ -33189,7 +33189,7 @@ fx_lissajous :
     f3d {0.5*max(w,h)/tan($4*pi/360)}
     -lissajous3d $1,$5,$8,$6,$9,$7,$10
     r3d. 0,0,1,$13 r3d. 0,1,0,$12 r3d. 1,0,0,$11
-    -*3d. {0.5*$2*{-2,w}},{0.5*$3*{-2,h}},{0.5*$4*max({-2,w},{-2,h})}
+    *3d. {0.5*$2*{-2,w}},{0.5*$3*{-2,h}},{0.5*$4*max({-2,w},{-2,h})}
     col3d. 1 j3d.. .,50%,50%,0,1,1,0,0 rm.
     distance. 1 ->. $14% *.. . -==. 0
     r. 100%,100%,1,4
@@ -33406,7 +33406,7 @@ fx_superformula :
     f3d {0.5*max(w,h)/tan($4*pi/360)}
     superformula3d $1,${4-7}
     r3d. 0,0,1,$10 r3d. 0,1,0,$9 r3d. 1,0,0,$8
-    -*3d. {0.5*$2*{-2,w}},{0.5*$3*{-2,h}}
+    *3d. {0.5*$2*{-2,w}},{0.5*$3*{-2,h}}
     col3d. 1 j3d.. .,50%,50%,0,1,1,0,0 rm.
     distance. 1 ->. $11% *.. . -==. 0
     r. 100%,100%,1,4
@@ -33600,7 +33600,7 @@ fx_animate_imageobject3d_preview : skip "${4=}"
 fx_text_pointcloud3d :
   W={w} H={h} M={round(1.5*max(w,h))} rm
   text_pointcloud3d "$2","$3",$4
-  col3d. ${5-7} -*3d. {0.7*$M}
+  col3d. ${5-7} *3d. {0.7*$M}
   f3d 4000 db3d 0 m3d
   repeat $1
     rprogress {60*$>/$1}
