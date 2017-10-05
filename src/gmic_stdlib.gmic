@@ -1825,7 +1825,7 @@ display_parallel :
 
 _display_parallel :
   e[0--3] "Display image$? in parallel."
-  -print
+  print
   v -
   if {$!<=1} -d v + return endif
   $!,1,1,1,x ({'{^}'}) rm..
@@ -1853,7 +1853,7 @@ display_parallel0 :
 
 _display_parallel0 :
   e[0--3] "Display image$? in parallel, without value normalization."
-  -print
+  print
   v -
   if {$!<=1} -d0 v + return endif
   $!,1,1,1,x ({'{^}'}) rm..
@@ -4282,30 +4282,30 @@ update_server :
   # Get command source files and archive them.
   v + e[] "> Load and archive .gmic source files.\n" v -
   _nb_sources=0
-  -load_gmic ${HOME}/work/src/gmic/src/gmic_stdlib.gmic
+  load_gmic ${HOME}/work/src/gmic/src/gmic_stdlib.gmic
   -x "cd $HOME/work/src/gmic-community && git pull 2>&1 >/dev/null"
-  -load_gmic ${HOME}/work/src/gmic-community/include/andreas_pahlsson.gmic
-  -load_gmic ${HOME}/work/src/gmic-community/include/andy_kelday.gmic
-  -load_gmic ${HOME}/work/src/gmic-community/include/arto_huotari.gmic
-  -load_gmic ${HOME}/work/src/gmic-community/include/david_tschumperle.gmic
-  -load_gmic ${HOME}/work/src/gmic-community/include/garry_osgood.gmic
-  -load_gmic ${HOME}/work/src/gmic-community/include/gentlemanbeggar.gmic
-  -load_gmic ${HOME}/work/src/gmic-community/include/iain_fergusson.gmic
-  -load_gmic ${HOME}/work/src/gmic-community/include/james_prichard.gmic
-  -load_gmic ${HOME}/work/src/gmic-community/include/jerome_boulanger.gmic
-  -load_gmic ${HOME}/work/src/gmic-community/include/jerome_ferrari.gmic
-  -load_gmic ${HOME}/work/src/gmic-community/include/karsten_rodenacker.gmic
-  -load_gmic ${HOME}/work/src/gmic-community/include/martin_souphead.gmic
-  -load_gmic ${HOME}/work/src/gmic-community/include/photocomix.gmic
-  -load_gmic ${HOME}/work/src/gmic-community/include/joan_rake1.gmic
-  -load_gmic ${HOME}/work/src/gmic-community/include/afre.gmic
-  -load_gmic ${HOME}/work/src/gmic-community/include/mccap.gmic
+  load_gmic ${HOME}/work/src/gmic-community/include/andreas_pahlsson.gmic
+  load_gmic ${HOME}/work/src/gmic-community/include/andy_kelday.gmic
+  load_gmic ${HOME}/work/src/gmic-community/include/arto_huotari.gmic
+  load_gmic ${HOME}/work/src/gmic-community/include/david_tschumperle.gmic
+  load_gmic ${HOME}/work/src/gmic-community/include/garry_osgood.gmic
+  load_gmic ${HOME}/work/src/gmic-community/include/gentlemanbeggar.gmic
+  load_gmic ${HOME}/work/src/gmic-community/include/iain_fergusson.gmic
+  load_gmic ${HOME}/work/src/gmic-community/include/james_prichard.gmic
+  load_gmic ${HOME}/work/src/gmic-community/include/jerome_boulanger.gmic
+  load_gmic ${HOME}/work/src/gmic-community/include/jerome_ferrari.gmic
+  load_gmic ${HOME}/work/src/gmic-community/include/karsten_rodenacker.gmic
+  load_gmic ${HOME}/work/src/gmic-community/include/martin_souphead.gmic
+  load_gmic ${HOME}/work/src/gmic-community/include/photocomix.gmic
+  load_gmic ${HOME}/work/src/gmic-community/include/joan_rake1.gmic
+  load_gmic ${HOME}/work/src/gmic-community/include/afre.gmic
+  load_gmic ${HOME}/work/src/gmic-community/include/mccap.gmic
   l[]
-    -load_gmic ${HOME}/work/src/gmic-community/include/sylvie_alexandre.gmic
+    load_gmic ${HOME}/work/src/gmic-community/include/sylvie_alexandre.gmic
     s +,{'"#@gui <b>"'} i[1--2:2] ({'"#@gui ________<b>Testing<b>\n#@gui <i>Samj</i>\n"'}) y a y
   endl
-  -load_gmic ${HOME}/work/src/gmic-community/include/tom_keil.gmic
-  -load_gmic ${HOME}/work/src/gmic-community/include/tou_omiya.gmic
+  load_gmic ${HOME}/work/src/gmic-community/include/tom_keil.gmic
+  load_gmic ${HOME}/work/src/gmic-community/include/tou_omiya.gmic
 
   # Merge them together.
   i[0] (10) i[2--1] ({"'\n#@gui ________________\n'"}) y a y discard 13 replace 9,32
@@ -8546,9 +8546,9 @@ blur_bloom : check "${1=1}>=0 && ${2=2}>=0 && isint(${3=5}) && $3>=0 && isint(${
   if {narg("$7")} axes=$7, endif
   m "_bloom0 : b "$axes"$""1"
   m "_bloom1 : b "$axes"$""1,1,1"
-  m "_bloom2 : -boxfilter "$axes"{1+2*$""1},0,1"
-  m "_bloom3 : -boxfilter "$axes"{1+2*$""1},0,1,2"
-  m "_bloom4 : -boxfilter "$axes"{1+2*$""1},0,1,3"
+  m "_bloom2 : boxfilter "$axes"{1+2*$""1},0,1"
+  m "_bloom3 : boxfilter "$axes"{1+2*$""1},0,1,2"
+  m "_bloom4 : boxfilter "$axes"{1+2*$""1},0,1,3"
   repeat $! l[$>] nm={n} mM={[im,iM]}
     [0] repeat $3 sigma={$1*($2^$>)} --_bloom$5[0] $sigma
     if $6 n. $mM endif
@@ -9040,11 +9040,11 @@ diffusiontensors : check "${1=0.7}>=0 && ${2=0.3}>=0 && $2<=1" skip ${3=0.6},${4
   p2={$p1/(1e-7+1-$2)}
   b $3 n 0,255 structuretensors 0 b $4
   repeat $! l[$>]
-    -eigen max.. 0
+    eigen max.. 0
     if {s==2} s.. c +[-3,-2] +.. 1 --^.. -$p1 ^... -$p2 a[-3,-1] c                  # 2d
     else s.. c +[-4--2] +.. 1 --^.. -$p1 r. 100%,100%,100%,2 ^... -$p2 a[-3,-1] c  # 3d
     endif
-    -eigen2tensor
+    eigen2tensor
   endl done v +
 
 #@cli edges : _threshold[%]>=0
@@ -9345,10 +9345,10 @@ inpaint_flow : check ${-is_image_arg\ $1}" && ${2=10}>=0 && ${3=100}>=0 && ${4=5
   v - repeat $! -pass$1 0 l[$>,-1]
     r. [0],[0],[0],1,0 -inpaint.. [1]
     repeat $2
-      -progress {100*$>/($2-1)}
+      progress {100*$>/($2-1)}
       --diffusiontensors.. 0,1,$5,$6,0 *. .. smooth... .,$3,$4,0 rm.
     done
-    -progress 100
+    progress 100
   endl rm. done v +
 
 #@cli inpaint_holes : maximal_area[%]>=0,_tolerance>=0,_is_high_connectivity={ 0 | 1 }
@@ -9406,7 +9406,7 @@ inpaint_patchmatch : check ${-is_image_arg\ $1}"&& ${2=0}>=0 && isint(${3=9}) &&
     repeat $nb_scales
       scale={100*(0.5^$<)}
       v + e[] "> Process scale "{1+$>}"/"$nb_scales" -> "$scale% v -
-      -progress {100*$>/max(1,$nb_scales-1)}
+      progress {100*$>/max(1,$nb_scales-1)}
 
       # Compute image and mask at current scales.
       --r[img,mask] $scale%,$scale%,1,100%,2 nms[-2,-1] scaled_img,scaled_mask
@@ -9461,7 +9461,7 @@ inpaint_patchmatch : check ${-is_image_arg\ $1}"&& ${2=0}>=0 && isint(${3=9}) &&
       endif
 
     done
-    -progress 100
+    progress 100
 
     # Generate final result.
     if $correspondence
@@ -12339,7 +12339,7 @@ yinyang :
 #@cli : If one selected image has 3 or 6 channels, it is regarded as a field of 2x2 or 3x3 symmetric matrices,
 #@cli : whose eigen elements are computed at each point of the field.
 #@cli : $ (1,0,0;0,2,0;0,0,3) --eigen
-#@cli : $ image.jpg structuretensors blur 2 -eigen split[0] c
+#@cli : $ image.jpg structuretensors blur 2 eigen split[0] c
 #@cli : $$
 
 #@cli invert : (+)
@@ -12533,7 +12533,7 @@ _axes3d :
 #@cli box3d : _size_x,_size_y,_size_z
 #@cli : Input 3d box at (0,0,0), with specified geometry.
 #@cli : Default values: 'size_x=1' and 'size_z=size_y=size_x'.
-#@cli : $ -box3d 100,40,30 --primitives3d 1 color3d[-2] ${-RGB}
+#@cli : $ box3d 100,40,30 --primitives3d 1 color3d[-2] ${-RGB}
 box3d : skip ${1=1},${2=$1},${3=$2}
   e[^-1] "Input 3d box, with size ($1,$2,$3)."
   v -
@@ -12776,7 +12776,7 @@ _delaunay3d :
 
 #@cli distribution3d
 #@cli : Get 3d color distribution of selected images.
-#@cli : $ image.jpg distribution3d colorcube3d -primitives3d[-1] 1 add3d
+#@cli : $ image.jpg distribution3d colorcube3d primitives3d[-1] 1 add3d
 distribution3d :
   e[^-1] "Get 3d color distribution of image$?."
   v - to_rgb permute "cxyz" -y
@@ -12847,7 +12847,7 @@ extrude3d : check "${1=16}>0 && ${2=1024}>0 && ${3=0.5%}>=0"
 
 #@cli gaussians3d : _size>0,_opacity
 #@cli : Convert selected 3d objects into set of 3d gaussian-shaped sprites.
-#@cli : $ image.jpg r2dy 32 distribution3d -gaussians3d 20 colorcube3d -primitives3d[-1] 1 +3d
+#@cli : $ image.jpg r2dy 32 distribution3d -gaussians3d 20 colorcube3d primitives3d[-1] 1 +3d
 gaussians3d : check "${1=32}>0" skip ${2=0.3}
   e[^-1] "Convert 3d object$? into sets of gaussian-shaped 3d sprites, with size $1 and opacity $2."
   v - -p3d 2 -p3d 0 repeat $! l[$>] nm={0,n} s3d
@@ -12871,7 +12871,7 @@ gmic3d :
   sphere3d 8 +3d. 102,-3,20 col3d. 192,128,255
   +3d[-6--1] c3d.
   repeat 30
-    -box3d {min(3+$</2,10)} col3d. {30*$>},{20+80*$>},{10*$>},0.5
+    box3d {min(3+$</2,10)} col3d. {30*$>},{20+80*$>},{10*$>},0.5
     r3d. 1,1,1,{$>*12}
     +3d. {80*cos(0.5+1.02*$>*12*pi/180)},{30*sin(0.8+$>*12*pi/180)},{2*$>-60}
   done
@@ -12911,7 +12911,7 @@ gyroid3d : check ${1=32}>0 skip ${2=5}
 
 #@cli histogram3d
 #@cli : Get 3d color histogram of selected images.
-#@cli : $ image.jpg histogram3d colorcube3d -primitives3d[-1] 1 add3d
+#@cli : $ image.jpg histogram3d colorcube3d primitives3d[-1] 1 add3d
 histogram3d :
   e[^-1] "Get 3d color histogram of image$?."
   v - to_rgb repeat $! l[$>]
@@ -12946,7 +12946,7 @@ imageblocks3d : check ${2=0}>=0 skip ${1=10},${3=0}
     split_opacity to_rgb[0] is_opacity={$!==2}
 
     # Create 3d object template.
-    l[] -box3d 1,1,0
+    l[] box3d 1,1,0
     repeat {$w-1} --+3d. 1,0,0 done +3d
     repeat {$h-1} --+3d. 0,1,0 done +3d
     endl
@@ -13317,7 +13317,7 @@ pca_patch3d : check "isint(${1=7}) && $1>0 && isint(${2=1000}) && $2>0 && isint(
 
     # Do PCA for dimension reduction.
     --transpose. m*[-2,-1]
-    -eigen. rows.. 0,2 columns. 0,2 transpose.
+    eigen. rows.. 0,2 columns. 0,2 transpose.
     if $5 sqrt.. /.. {-2,iM} r.. . /. .. endif
     rm..
 
@@ -13409,7 +13409,7 @@ pose3d :
 #@cli : Convert primitives of selected 3d objects.
 #@cli : (eq. to '-p3d').\n
 #@cli : 'mode' can be { 0=points | 1=segments | 2=non-textured }.
-#@cli : $ sphere3d 30 -primitives3d 1 torus3d 50,10 color3d[-1] ${-RGB} add3d
+#@cli : $ sphere3d 30 primitives3d 1 torus3d 50,10 color3d[-1] ${-RGB} add3d
 
 #@cli projections3d : _x[%],_y[%],_z[%],_is_bounding_box={ 0 | 1 }
 #@cli : Generate 3d xy,xz,yz projection planes from specified volumetric images.
@@ -13427,7 +13427,7 @@ projections3d : skip ${1=50%},${2=50%},${3=50%},${4=1}
     r3d. 0,1,0,-90 r3d.. 1,0,0,90
     +3d... 0,0,$z +3d.. 0,$y,0 +3d. $x,0,0
     +3d[-3--1] -o3d. 0.8
-    if $4 -box3d $w,$h,$d -p3d. 1 -o3d. 0.4 +3d[-2,-1] endif
+    if $4 box3d $w,$h,$d -p3d. 1 -o3d. 0.4 +3d[-2,-1] endif
   endl done v +
 
 #@cli pyramid3d : width,height
@@ -13693,7 +13693,7 @@ spherical3d : check "${1=64}>=3 && ${2=$1}>=3" skip "${3=abs(1+0.5*cos(3*phi)*si
 #@cli spline3d : x0[%],y0[%],z0[%],u0[%],v0[%],w0[%],x1[%],y1[%],z1[%],u1[%],v1[%],w1[%],_nb_vertices>=2
 #@cli : Input 3d spline with specified geometry.
 #@cli : Default values: 'nb_vertices=128'.
-#@cli : $ repeat 100 spline3d {u},{u},{u},{u},{u},{u},{u},{u},{u},{u},{u},{u},128 color3d[-1] ${-RGB} done -box3d 1 -primitives3d[-1] 1 add3d
+#@cli : $ repeat 100 spline3d {u},{u},{u},{u},{u},{u},{u},{u},{u},{u},{u},{u},128 color3d[-1] ${-RGB} done box3d 1 primitives3d[-1] 1 add3d
 spline3d : check ${13=128}>=2
   e[^-1] "Input new 3d spline from (${1-3}) [${4-6}] to (${7-9}) [${10-12}] with $13 vertices."
   v -
@@ -13718,7 +13718,7 @@ spline3d : check ${13=128}>=2
 #@cli : (eq. to '-s3d').\n
 #@cli : To recreate the 3d object, append these 6 images along the y-axis.
 #@cli : Default value: 'keep_shared_data=1'.
-#@cli : $ -box3d 100 --split3d
+#@cli : $ box3d 100 --split3d
 
 #@cli sprite3d
 #@cli : Convert selected images as 3d sprites.
@@ -13787,7 +13787,7 @@ star3d : check "${1=5}>0 && ${2=0.38}>=0 && $2<=1"
 #@cli : Extract 3d streamlines from selected vector fields or from specified formula.
 #@cli : 'interpolation' can be { 0=nearest integer | 1=1st-order | 2=2nd-order | 3=4th-order }.
 #@cli : Default values: 'dl=0.1', 'interpolation=2', 'is_backward=0' and 'is_oriented=0'.
-#@cli : $ 100,100,100,3 rand -10,10 blur 3 repeat 300 --streamline3d[0] {u(100)},{u(100)},{u(100)},1000,1,1 color3d[-1] ${-RGB} done remove[0] -box3d 100 -primitives3d[-1] 1 add3d
+#@cli : $ 100,100,100,3 rand -10,10 blur 3 repeat 300 --streamline3d[0] {u(100)},{u(100)},{u(100)},1000,1,1 color3d[-1] ${-RGB} done remove[0] box3d 100 primitives3d[-1] 1 add3d
 
 #@cli -3d : eq. to '-sub3d'. : (+)
 
@@ -13851,7 +13851,7 @@ tensors3d : check "${1=1}>=0 && isint(${2=2}) && $2>=0 && ${3=0.05}>=0"
     k.
 
     # Create 3d object.
-    if $2 sphere3d 1,{$2-1} else -box3d 1 endif
+    if $2 sphere3d 1,{$2-1} else box3d 1 endif
     N,P={[i[6],i[7]]} siz={h} n3d. c3d. .x{0,whd-1}
     f[0] "
       const N = "$N";
@@ -14212,7 +14212,7 @@ eval :
 #@cli local : (+)
 #@cli : Start a 'local...[onfail]...endlocal' block, with selected images.
 #@cli : (eq. to '-l').
-#@cli : $ image.jpg -local[] 300,300,1,3 rand[0] 0,255 blur 4 sharpen 1000 endlocal
+#@cli : $ image.jpg local[] 300,300,1,3 rand[0] 0,255 blur 4 sharpen 1000 endlocal
 #@cli : $ image.jpg --local repeat 3 deform 20 done endlocal
 #@cli : $$
 
@@ -14276,13 +14276,13 @@ rprogress : skip ${2=""}
   m={arg(-2,$_progress_bounds)} M={arg(-1,$_progress_bounds)}
   if {$#==2&&!narg($2)} # 1 argument -> Set progress bar.
     v + e[0--3] "Set relative progress indice to $1%." v -
-    -progress {if($1<0,-1,min(100,max(0,$m+($M-$m)*$1%)))}
+    progress {if($1<0,-1,min(100,max(0,$m+($M-$m)*$1%)))}
   elif {$#==3} # 3 arguments -> Call command with specified bounds.
     nm={min($2,$-1)} nM={max($2,$-1)}
     v + e[0--3] "Call command '$1' with progress bounds ["$nm,$nM"]." v -
-    -progress $m _progress_bounds=$_progress_bounds,{$m+$nm*($M-$m)/100},{$m+$nM*($M-$m)/100}  # Push new bounds.
+    progress $m _progress_bounds=$_progress_bounds,{$m+$nm*($M-$m)/100},{$m+$nM*($M-$m)/100}  # Push new bounds.
     _rprogress "$1"
-    -progress $M ($_progress_bounds) _progress_bounds={@0--3} rm. # Pop bounds.
+    progress $M ($_progress_bounds) _progress_bounds={@0--3} rm. # Pop bounds.
   else v + error[0--3] "Command '-rprogress': Invalid argument '$*'."
   endif
   v +
@@ -23618,18 +23618,18 @@ gui_download_all_data :
   # Manage downloads.
   _n=0
   _N={narg($_filenames_grain,$_filenames_lightleak,$_filename_logo)}
-  -progress 0
+  progress 0
   _gui_download_all_data[] grain,$1
   _gui_download_all_data[] lightleak,$1
   _gui_download_all_data[] logo,$1
-  -progress 100
+  progress 100
 
 _gui_download_all_data :
    repeat {narg(${_filenames_$1})}
      filename=${-arg\ 1+$>,${_filenames_$1}}.cimgz
      v + e[] "Download "$filename v -
      if {$2" || "!isfile(${_path_rc}${_prefix_$1}$filename)} l[] ${_url_$1}/$filename o ${_path_rc}${_prefix_$1}$filename rm onfail endl endif
-     -progress {100*$_n/$_N}
+     progress {100*$_n/$_N}
      _n+=1
    done
 
@@ -27288,10 +27288,10 @@ fx_retrofade :
     repeat $1
       --noise[0] $3 c. 0,255 -autoindex. $2,0,0
       +[-2,-1]
-      -progress {$>*100/$1}
+      progress {$>*100/$1}
     done
     k. n 0,255
-    -progress 100
+    progress 100
   endl a c endl done
 
 fx_retrofade_preview :
@@ -30040,7 +30040,7 @@ fx_emulate_film_collage_colorslide :
   _nbc=$2 _label_size=$3 _output_type=$4 _fx_emulate_film_collage ${-_fx_emulate_film_colorslide}
 
 _fx_emulate_film_collage :
-  $=arg -progress 0
+  $=arg progress 0
   repeat $#
     preset=${arg{$>+1}}
     --l[0]
@@ -30048,7 +30048,7 @@ _fx_emulate_film_collage :
       ({'$preset'}) replace. {'_'},32 f. if(x==0" && "i>=_'a'" && "i<=_'z',i+_'A'-_'a',i) title={t} rm.
       to. $title,2,2,$_label_size,2,1,255
     endl
-    -progress {(1+$>)*100/$#}
+    progress {(1+$>)*100/$#}
   done
   to[0] "Original image",2,2,$_label_size,2,1,255
   if {!$_output_type} frame 1,1,0 frame 5,5,255 - 255 append_tiles {min($_nbc,$!)} + 255 endif
@@ -31124,11 +31124,11 @@ _fx_slice_luminosity :
 #@gui : url = link("http://www.complexification.net/gallery/machines/boxFittingImg/")
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2013/06/06</i>.</small>")
 fx_boxfitting :
-  -boxfitting ${1-3},3
+  boxfitting ${1-3},3
   if $4 to_rgba replace_color 0,0,0,0,0,255,0,0,0,0 endif
 
 fx_boxfitting_preview :
-  -boxfitting ${1-3},1
+  boxfitting ${1-3},1
   if $4 to_rgba replace_color 0,0,0,0,0,255,0,0,0,0 endif
 
 #@gui Camouflage : fx_camouflage, fx_camouflage
@@ -33142,7 +33142,7 @@ fx_lightning :
 
       dilate. $dilation b. $blur% n. 0,1 *. $opacity max[0,-1]
       ($new_level;$new_angle) a[-2,-1] y
-      -progress {($>*100)/($1-1)}
+      progress {($>*100)/($1-1)}
     done
     k[0] * 255 i[0] 100%,100%,1,3 fc[0] ${7-9} a c
     endl
