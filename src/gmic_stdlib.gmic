@@ -1457,7 +1457,7 @@ clut : check "isval(${2=64}) && $2>0"
         if {$!==1} break endif # CLUT found!
         rm
       done
-      if {!$!} v + error[0--4] "Command '-clut': Unknown CLUT name '$1'." endif
+      if {!$!} v + error[0--4] "Command '$0': Unknown CLUT name '$1'." endif
       decompress_clut $2,$2,$2 -round
       o. ${_path_rc}clut_$1.cimgz,uchar
     endif
@@ -2067,7 +2067,7 @@ _display_warp : check "${1=15}>0"
   e[0--3] "Render 2d warping field"$_gmic_s", with cell size $1."
   v - repeat $! l[$>]
     if {d!=1||s!=2}
-      v + error[0--3] "Command '-display_warp': Invalid image ["{$!-$>-1}"]: Dimensions "{w}","{h}","{d}","{s}" does not represent a 2d field of 2d vectors."
+      v + error[0--3] "Command 'display_warp': Invalid image ["{$!-$>-1}"]: Dimensions "{w}","{h}","{d}","{s}" does not represent a 2d field of 2d vectors."
     endif
     i[0] 100%,100%,1,1,1 grid[0] $1,$1 nm[0] {1,n}
     warp[0] [1],1,1,0 rm[1]
@@ -2556,7 +2556,7 @@ _document_gmic_description_images :
 _document_gmic_example_images :
   if {i==_'$'} return endif
   v +
-  e[] "    ["$_example"] Command '-"$_command_name"': $ "{t}
+  e[] "    ["$_example"] Command '"$_command_name"': $ "{t}
   v -
   if $_filename else # Generate picture only if the file doesn't yet exist.
     m "foo"$_example" : "{t}
@@ -3041,7 +3041,7 @@ _input_glob :
   N=$!
   m "_ig : $""=arg repeat $""# i ${arg{1+$>}} done"
   _ig ${} uncommand _ig
-  if {$N==$!} v + error[0--3] "Command '-input_glob': No matching filenames for pattern '$*'." endif
+  if {$N==$!} v + error[0--3] "Command 'input_glob': No matching filenames for pattern '$*'." endif
   v +
 
 #@cli input_gpl : filename
@@ -3072,7 +3072,7 @@ output_cube :
  e[^-1] "Output CLUT$? as file '$1'."
  v - N=$! repeat $N --l[$>] to_rgb
    l={round((w*h*d)^(1/3))}
-   if {w*h*d!=$l^3} v + error "Command '-output_cube': CLUT '"{n}"' has invalid dimensions "({w},{h},{d},{s}). endif
+   if {w*h*d!=$l^3} v + error "Command '$0': CLUT '"{n}"' has invalid dimensions "({w},{h},{d},{s}). endif
    r $l,$l,$l,3,-1 permute cxyz / 255
    if {$N>1} fn=${"-filename \"$1\",$>"} else fn="$1" endif
    o dlm:$fn rm i raw:$fn,uchar replace {','},32
@@ -3654,7 +3654,7 @@ _update :
   l[] cimgz:http://gmic.eu/update$_version.gmic
     if {h>7" && "same([{^}],'#@gmic',6)} o raw:$out,char endif
     rm
-  onfail v + error[0--3] "Command '-update' : Unreachable update file."
+  onfail v + error[0--3] "Command 'update' : Unreachable update file."
   endl
   m $out
   v +
@@ -3662,7 +3662,7 @@ _update :
 # Generate film emulation page for G'MIC web.
 # Input images : samples you want to generate
 update_film_emulation_html :
-  if {!$!} error[^-1] "Command '-update_film_emulation': Missing input images !" endif
+  if {!$!} error[^-1] "Command '$0': Missing input images !" endif
   v -
 
   # Init variables.
@@ -5869,7 +5869,7 @@ eigen2tensor :
       s... c
       -[-5] ... -[-4] ... *.. [-5] *. [-4]
       (1^0^0^1^0^1) r. ... *. [-4] rm[-6--4] +[-3--1]
-    else v + error[0--3] "Command '-eigen2tensor': Invalid image ["{$!-$>-1}"] : Dimensions "{w}","{h}","{d}","{s}" does not represent a field of 2d or 3d eigenvectors."
+    else v + error[0--3] "Command '$0': Invalid image ["{$!-$>-1}"] : Dimensions "{w}","{h}","{d}","{s}" does not represent a field of 2d or 3d eigenvectors."
     endif
   nm $nm endl done v +
 
@@ -5969,7 +5969,7 @@ map_clut :
   to_color
   if ${"-is_image_arg $1"} -pass$1 0 to_rgb. else clut "$1" endif
   l={round((w*h*d)^(1/3))}
-  if {w*h*d!=$l^3} v + error "Command '-map_clut': Specified CLUT $1 has invalid dimensions "({w},{h},{d},{s}). endif
+  if {w*h*d!=$l^3} v + error "Command '$0': Specified CLUT $1 has invalid dimensions "({w},{h},{d},{s}). endif
   r. $l,$l,$l,3,-1
   repeat {$!-1} l[$>,-1] split_opacity[0] /[0] {256/$l}
     --warp. [0],0,1,1
@@ -6232,7 +6232,7 @@ vector2tensor :
     s c
     if {$!==2} --sqr. *.. ... sqr...
     elif {$!==3} --sqr.. --*... .. --sqr... *[-5,-4] [-6] sqr[-6]
-    else v + error[0--4] "Command '-vector2tensor': Invalid image ["{$!-$>-1}"] : Dimensions "{w}","{h}","{d}","{s}" does not represent a field of 2d or 3d vectors."
+    else v + error[0--4] "Command '$0': Invalid image ["{$!-$>-1}"] : Dimensions "{w}","{h}","{d}","{s}" does not represent a field of 2d or 3d vectors."
     endif
     a c
   endl done v +
@@ -6776,7 +6776,7 @@ retinex : check "${1=5}>0 && ${3=1}>=0 && $3<=100 && ${4=1}>=0 && $4<=100 && ${5
   elif {;'$2'=='rgb'} mode=rgb
   elif {;'$2'=='lrgb'} mode=lrgb
   elif {;'$2'=='ycbcr'} mode=ycbcr_y
-  else v + error[0--2] "Command '-retinex': Invalid colorspace argument '$2'."
+  else v + error[0--2] "Command '$0': Invalid colorspace argument '$2'."
   endif
   ac "_retinex $1,${3--1}",$mode
   v +
@@ -7118,7 +7118,7 @@ to_a :
 to_color :
   e[^-1] "Force image$? to be in color mode."
   v - repeat $! l[$>]
-    if {s>4} v + error[] "Command '-to_color': Image ["$>"] is not a G,GA,RGB or RGBA image ("{s}" channels)."
+    if {s>4} v + error[] "Command '$0': Image ["$>"] is not a G,GA,RGB or RGBA image ("{s}" channels)."
     elif {s==2} r 100%,100%,1,4,0,1,0,0,0,1
     elif {s==1} r 100%,100%,1,3,1
     endif
@@ -7135,7 +7135,7 @@ to_colormode : skip ${1=0}
   else
     v - is_rgb=0 is_alpha=0
     repeat $!
-      if {$>,!s||s>4} v + error "Command '-to_colormode': Image ["$>"] is not a G,GA,RGB or RGBA image ("{s}" channels)."
+      if {$>,!s||s>4} v + error "Command '$0': Image ["$>"] is not a G,GA,RGB or RGBA image ("{s}" channels)."
       elif {$>,s==2} is_alpha=1
       elif {$>,s==3} is_rgb=1
       elif {$>,s==4} is_rgb=1 is_alpha=1
@@ -7151,7 +7151,7 @@ to_colormode : skip ${1=0}
 to_gray :
   e[^-1] "Force image$? to be in GRAY mode."
   v - repeat $! l[$>]
-    if {s>4} v + error[] "Command '-to_gray': Image ["$>"] is not a G,GA,RGB or RGBA image ("{s}" channels)."
+    if {s>4} v + error[] "Command '$0': Image ["$>"] is not a G,GA,RGB or RGBA image ("{s}" channels)."
     elif {s>=3} channels 0,2 luminance
     elif {s==2} r 100%,100%,100%,1,0
     endif
@@ -7162,7 +7162,7 @@ to_gray :
 to_graya :
   e[^-1] "Force image$? to be in GRAYA mode."
   v - repeat $! l[$>]
-    if {s>4} v + error[] "Command '-to_graya': Image ["$>"] is not a G,GA,RGB or RGBA image ("{s}" channels)."
+    if {s>4} v + error[] "Command '$0': Image ["$>"] is not a G,GA,RGB or RGBA image ("{s}" channels)."
     elif {s==4} --channels 3 channels.. 0,2 luminance.. a c
     elif {s==3} luminance channels 0,1 sh. 1 f. 255 rm.
     elif {s==1} channels 0,1 sh. 1 f. 255 rm.
@@ -7194,7 +7194,7 @@ to_pseudogray : check "isint(${1=5}) && $1>=0 && isint(${3=8}) && $3>0" skip ${2
 to_rgb :
    e[^-1] "Force image$? to be in RGB mode."
    v - repeat $! l[$>]
-     if {s>4} v + error[] "Command '-to_rgb': Image ["$>"] is not a G,GA,RGB or RGBA image ("{s}" channels)."
+     if {s>4} v + error[] "Command '$0': Image ["$>"] is not a G,GA,RGB or RGBA image ("{s}" channels)."
      elif {s==4} channels 0,2
      elif {s==2} channels 0,0 r 100%,100%,100%,3
      elif {s==1} r 100%,100%,100%,3
@@ -7206,7 +7206,7 @@ to_rgb :
 to_rgba :
    e[^-1] "Force image$? to be in RGBA mode."
    v - repeat $! l[$>]
-     if {s>4} v + error[] "Command '-to_rgba': Image ["$>"] is not a G,GA,RGB or RGBA image ("{s}" channels)."
+     if {s>4} v + error[] "Command '$0': Image ["$>"] is not a G,GA,RGB or RGBA image ("{s}" channels)."
      elif {s==3} channels 0,3 sh. 3 f. 255 rm.
      elif {s==2} r 100%,100%,100%,4 sh. 2 f. .. rm.
      elif {s==1} r 100%,100%,100%,4 sh. 3 f. 255 rm.
@@ -7786,7 +7786,7 @@ montage : check "isval(${2=2}) && $2>=0 && $2<=3" skip "${1=X}",${3=0},"${4=}"
   v +
 
 _montage :
-  if {$_p>$_lcode} v + error "Command '-montage': Incomplete layout code '"$_scode"'." endif
+  if {$_p>$_lcode} v + error "Command 'montage': Incomplete layout code '"$_scode"'." endif
   c={arg($_p,$_code)}
   if {$c>=0} _p+=1 u $c # Single indice.
   elif {$c==-4} # Mirror.
@@ -8102,7 +8102,7 @@ rotate_tileable : check ${2=8}>=0
       r {1.5*$nw},{1.5*$nh},1,100%,0,2
       rotate {$theta*180/pi},1,2,50%,50%
       r $nw,$nh,1,100%,0,2,0.5,0.5
-    else v + error[0--4] "Command '-rotate_tileable': Invalid image dimension "({w},{h},{d},{s}).
+    else v + error[0--4] "Command '$0': Invalid image dimension "({w},{h},{d},{s}).
     endif
   endl done v +
 
@@ -9014,7 +9014,7 @@ divergence :
     if {s==1} g x,0
     elif {s==2} s c g.. x,0 g. y,0 -+
     elif {s==3} s c g... x,0 g.. y,0 g. z,0 -+
-    else v + error[] "Command '-divergence': Cannot compute divergence of image ["$>"] (has "{s}">3 channels)."
+    else v + error[] "Command '$0': Cannot compute divergence of image ["$>"] (has "{s}">3 channels)."
     endif
   endl done v +
 
@@ -9178,17 +9178,17 @@ _haar : # Mono-scale direct haar transform.
 
 _haar_x : # Direct haar transform along the x-axis.
   if {w<=1} return endif
-  if {w%2} v + error[0--6] "Command '-haar': Invalid image width="{w}" (is not even)." endif
+  if {w%2} v + error[0--6] "Command 'haar': Invalid image width="{w}" (is not even)." endif
   --shift -1 r 50% ---[1] [0] +[0,1] / {sqrt(2)} a x
 
 _haar_y : # Direct haar transform along the y-axis.
   if {h<=1} return endif
-  if {h%2} v + error[0--6] "Command '-haar': Invalid image height="{h}" (is not even)." endif
+  if {h%2} v + error[0--6] "Command 'haar': Invalid image height="{h}" (is not even)." endif
   --shift 0,-1 r 100%,50% ---[1] [0] +[0,1] / {sqrt(2)} a y
 
 _haar_z : # Direct haar transform along the z-axis.
   if {d<=1} return endif
-  if {d%2} v + error[0--6] "Command '-haar': Invalid image depth="{h}" (is not even)." endif
+  if {d%2} v + error[0--6] "Command 'haar': Invalid image depth="{h}" (is not even)." endif
   --shift 0,0,-1 r 100%,100%,50% ---[1] [0] +[0,1] / {sqrt(2)} a z
 
 #@cli heat_flow : _nb_iter>=0,_dt,_keep_sequence={ 0 | 1 }
@@ -9291,17 +9291,17 @@ _ihaar : # Mono-scale inverse haar transform.
 
 _ihaar_x : # Inverse haar transform along the x-axis.
   if {w<=1} return endif
-  if {w%2} v + error[0--6] "Command '-ihaar': Invalid image width="{w}" (is not even)." endif
+  if {w%2} v + error[0--6] "Command 'ihaar': Invalid image width="{w}" (is not even)." endif
   s x,2 r 200% (-1,1) *[-2,-1] + / {sqrt(2)}
 
 _ihaar_y : # Inverse haar transform along the y-axis.
   if {h<=1} return endif
-  if {h%2} v + error "Command '-ihaar': Invalid image height="{h}" (is not even)." endif
+  if {h%2} v + error "Command 'ihaar': Invalid image height="{h}" (is not even)." endif
   s y,2 r 100%,200% (-1;1) r. {-2,w} *[-2,-1] + / {sqrt(2)}
 
 _ihaar_z : # Inverse haar transform along the z-axis.
   if {d<=1} return endif
-  if {d%2} v + error "Command '-ihaar': Invalid image depth="{h}" (is not even)." endif
+  if {d%2} v + error "Command 'ihaar': Invalid image depth="{h}" (is not even)." endif
   s z,2 r 100%,100%,200% (-1/1) r. {-2,w},{-2,h} *[-2,-1] + / {sqrt(2)}
 
 #@cli inn
@@ -10614,7 +10614,7 @@ pointcloud : check "${1=0}<=2" skip ${2=0},${3=0},${4=0}
   e[^-1] "Convert image$? to point clouds, in "${-arg\ 2+($1>=0)*$1-($1<0),{-$1}-opacity,binary,cumulative,labeling}" mode,"\
           "with ($2,$3,$4) as maximal dimensions."
   v - repeat $! l[$>] nm={0,n}
-    if {"d>1 || s>1"} v + error "Command '-pointcloud': Invalid input image "{w}x{h}x{d}x{s}". Should be NxMx1x1." endif
+    if {"d>1 || s>1"} v + error "Command '$0': Invalid input image "{w}x{h}x{d}x{s}". Should be NxMx1x1." endif
 
     # Retrieve coordinates and color info.
     if {h<3} r 100%,3,1,1,0 endif
@@ -13400,7 +13400,7 @@ pose3d :
     s3d r[2] 3,{2,h/3},1,1,-1 i[3] 1,{2,h},1,1,1 a[2,3] x
     i[3] ($1,$5,$9;$2,$6,$10;$3,$7,$11;$4,$8,$12) m*[2,3]
     r[2] 1,{2,3*h},1,1,-1 a y
-  else v + error "Command '-pose3d': Image ["{$!-$>-1}"] does not represent a 3d object."
+  else v + error "Command '$0': Image ["{$!-$>-1}"] does not represent a 3d object."
   endif endl done v +
 
 #@cli p3d : eq. to '-primitives3d'. : (+)
@@ -13836,7 +13836,7 @@ tensors3d : check "${1=1}>=0 && isint(${2=2}) && $2>=0 && ${3=0.05}>=0"
     elif {s==4} 100%,100%,100%,6,"[R#0,G#0,0,A#0,0,0]" k.
     elif {s==9} 100%,100%,100%,6,"I=I#0;[I[0],I[1],I[2],I[4],I[5],I[8]]" k.
     endif
-    if {s!=6} error[0--4] "Command '-tensors3d': Image '"{n}"' has an invalid size (spectrum="{s}")." endif
+    if {s!=6} error[0--4] "Command '$0': Image '"{n}"' has an invalid size (spectrum="{s}")." endif
 
     # Estimate eigenvalues/eigenvectors.
     100%,100%,100%,12,"
@@ -14067,7 +14067,7 @@ _apply_parallel_overlap : check "${2=0}>=0 && isint(${3=0}) && $3>=0"
   e[0--3] "Apply parallelized command '$1' on image"$_gmic_s", with overlap $2 and "$N" threads."
   v -
   __apo_exception=""
-  m "_check1 : if {$!!=1} rm 0 __apo_exception=\"Command '-apply_parallel_overlap': Specified command '$1' changes the size of the image stack.\" endif"
+  m "_check1 : if {$!!=1} rm 0 __apo_exception=\"Command 'apply_parallel_overlap': Specified command '$1' changes the size of the image stack.\" endif"
   repeat $! l[$>]
     _apply_parallel_overlap$N "$1",$2
   endl done
@@ -14130,8 +14130,8 @@ apply_timeout :
               "do if {$|>$2} __is_timeout"$id"=1 error \"\" endif wait 500 while {!$__done"$id"}"
     onfail
       v +
-      if ${__is_timeout$id} v + error[0--5] "Command '-apply_timeout': Time out ($2 seconds) for command '$1'."
-      else v + error[0--5] "Command '-apply_timeout': "${}
+      if ${__is_timeout$id} v + error[0--5] "Command '$0': Time out ($2 seconds) for command '$1'."
+      else v + error[0--5] "Command '$0': "${}
       endif
     endl
     v +
@@ -14283,7 +14283,7 @@ rprogress : skip ${2=""}
     progress $m _progress_bounds=$_progress_bounds,{$m+$nm*($M-$m)/100},{$m+$nM*($M-$m)/100}  # Push new bounds.
     _rprogress "$1"
     progress $M ($_progress_bounds) _progress_bounds={@0--3} rm. # Pop bounds.
-  else v + error[0--3] "Command '-rprogress': Invalid argument '$*'."
+  else v + error[0--3] "Command '$0': Invalid argument '$*'."
   endif
   v +
 
@@ -14777,7 +14777,7 @@ map_sprites : check "isint($1) && $1>0 && isint(${2=0}) && $2>=0 && $2<=2"
 pack : skip ${1=0},${2=max(w,h)}
   e[^-1] "Pack image$? into a single image."
   if {$!<2} return endif
-  if {${-max_d}>1} error[0--3] "Command '-pack': Selected images contain at least one volumetric image (depth>1). Should all be 2d." endif
+  if {${-max_d}>1} error[0--3] "Command '$0': Selected images contain at least one volumetric image (depth>1). Should all be 2d." endif
   v -
   nm={0,n} to_colormode 0
 
@@ -16839,7 +16839,7 @@ _apply_stream : skip "${2=},${6=}"
     if $go_on
       v + e[] "\r  > Frame ""#"$frame$_N"        " v -
       frame+=$5
-      l $2 onfail error[0--5] "Command '-apply_files': Specified command errored: "${} endl
+      l $2 onfail error[0--5] "Command 'apply_stream': Specified command errored: "${} endl
       if {!$!} continue endif
       if {narg("$6")}
         if $is_outavi z. 0,{w-(w%8)-1} o. "$6",25,mp4v,1 else o. ${-filename\ "$6",$i} i+=1 endif
@@ -17633,7 +17633,7 @@ alert : skip "${1=[G"{`39`}"MIC Alert]},${2=This is an alert box.},${3=OK}"
 
     # Enter event loop.
     repeat 9 if {!{*$>}} disp=$> break endif done   # Find available display window.
-    if {!narg($disp)} v + error[0--4] "Command '-alert': Cannot open display window for alert box." endif
+    if {!narg($disp)} v + error[0--4] "Command '$0': Cannot open display window for alert box." endif
 
     selected={if($#==3,0,-1)} clicked=-1
     do
@@ -18793,7 +18793,7 @@ toc :
 #@cli demo : _run_in_parallel={ 0=no | 1=yes | 2=auto }
 #@cli : Show a menu to select and view all G'MIC interactive demos.
 demo : check "isint(${1=2}) && $1>=0 && $1<=2"
-  if {!{*,u}} error[0--3] "Command '-$0': No display available." return endif
+  if {!{*,u}} error[0--3] "Command '$0': No display available." return endif
   v -
   use_vt100 g=$_gmic_g c=$_gmic_c n=$_gmic_n r=$_gmic_r
   strver=${-strver}
@@ -18956,7 +18956,7 @@ _demo_color_curves :
 #@cli x_2048
 #@cli : Launch the 2048 game.
 x_2048 :
-  if {!{*,u}} error[0--3] "Command '-$0': No display available." return endif
+  if {!{*,u}} error[0--3] "Command '$0': No display available." return endif
   v - use_vt100 g=$_gmic_g c=$_gmic_c n=$_gmic_n r=$_gmic_r v +
   e[] "\n
 ------ "${g}"2048"$n" -----------------------------------------------\n
@@ -19111,7 +19111,7 @@ x_2048 :
 #@cli x_blobs
 #@cli : Launch the blobs editor.
 x_blobs :
-  if {!{*,u}} error[0--3] "Command '-$0': No display available." return endif
+  if {!{*,u}} error[0--3] "Command '$0': No display available." return endif
   v - use_vt100 g=$_gmic_g c=$_gmic_c n=$_gmic_n r=$_gmic_r v +
   e[] "\n
 ------ "${g}"Blobs editor"$n" --------------------------\n
@@ -19190,7 +19190,7 @@ x_blobs :
 #@cli x_bouncing
 #@cli : Launch the bouncing balls demo.
 x_bouncing :
-  if {!{*,u}} error[0--3] "Command '-$0': No display available." return endif
+  if {!{*,u}} error[0--3] "Command '$0': No display available." return endif
   v - use_vt100 g=$_gmic_g c=$_gmic_c n=$_gmic_n r=$_gmic_r v +
   e[] "\n
 ------ "${g}"Bouncing balls"$n" ------------------------------\n
@@ -19247,7 +19247,7 @@ x_bouncing :
 #@cli : Set 'colorspace' to 'last' to apply last defined color curves without opening interactive windows.
 #@cli : Default value: 'colorspace=rgb'.
 x_color_curves : skip ${1=rgb}
-  if {['"$1"']!='last'&&!{*,u}} error[0--3] "Command '-$0': No display available." return endif
+  if {['"$1"']!='last'&&!{*,u}} error[0--3] "Command '$0': No display available." return endif
   v - use_vt100 g=$_gmic_g c=$_gmic_c n=$_gmic_n r=$_gmic_r v +
   e[^-1] "Apply color curves of image$?, in the '$1' colorspace."
   if {['"$1"']=='last'} v -
@@ -19418,7 +19418,7 @@ __x_color_curves :
 #@cli : When >0, argument 'max_resolution' defines the maximal image resolution used in the interactive window.
 #@cli : Default values: 'is_lineart=1', 'max_resolution=1024' and 'multichannels_output=0'.
 x_colorize : skip ${1=0},${3=0},${4=0},${5=0},${6=0} check "${2=1024}==0 || $2>=128"
-  if {!{*,u}} error[0--3] "Command '-$0': No display available." return endif
+  if {!{*,u}} error[0--3] "Command '$0': No display available." return endif
   v - s0="image" s1="lineart" s2="multichannel" s3="merged" v +
   v - use_vt100 g=$_gmic_g c=$_gmic_c n=$_gmic_n r=$_gmic_r v +
   e[^-1] "Colorize selected B&W "${s{!$1}}"$? interactively, with maximum resolution $2 and "${s{2+!$3}}" output."
@@ -19734,7 +19734,7 @@ __x_colorize :
 #@cli x_connect4
 #@cli : Launch the Connect Four game.
 x_connect4 :
-  if {!{*,u}} error[0--3] "Command '-$0': No display available." return endif
+  if {!{*,u}} error[0--3] "Command '$0': No display available." return endif
   v - use_vt100 g=$_gmic_g c=$_gmic_c n=$_gmic_n r=$_gmic_r v +
   e[] "\n
 ------ "${g}"Connect Four"$n" --------------------------------------------\n
@@ -19918,7 +19918,7 @@ x_connect4 :
 #@cli x_fire
 #@cli : Launch the fire effect demo.
 x_fire : skip "${1=G\47MIC}"
-  if {!{*,u}} error[0--3] "Command '-$0': No display available." return endif
+  if {!{*,u}} error[0--3] "Command '$0': No display available." return endif
   v - use_vt100 g=$_gmic_g c=$_gmic_c n=$_gmic_n r=$_gmic_r v +
   e[] "\n
 ------ "${g}"Fire effect"$n" ------------------------\n
@@ -19963,7 +19963,7 @@ x_fire : skip "${1=G\47MIC}"
 #@cli x_fireworks
 #@cli : Launch the fireworks demo.
 x_fireworks :
-  if {!{*,u}} error[0--3] "Command '-$0': No display available." return endif
+  if {!{*,u}} error[0--3] "Command '$0': No display available." return endif
   v - use_vt100 g=$_gmic_g c=$_gmic_c n=$_gmic_n r=$_gmic_r v +
   e[] "\n
 ------ "${g}"Fireworks"$n" --------------------------\n
@@ -20020,7 +20020,7 @@ x_fireworks :
 #@cli x_fisheye
 #@cli : Launch the fish-eye effect demo.
 x_fisheye :
-  if {!{*,u}} error[0--3] "Command '-$0': No display available." return endif
+  if {!{*,u}} error[0--3] "Command '$0': No display available." return endif
   v - use_vt100 g=$_gmic_g c=$_gmic_c n=$_gmic_n r=$_gmic_r v +
   e[] "\n
 ------ "${g}"Fish-eye effect"$n" --------------------\n
@@ -20059,7 +20059,7 @@ x_fisheye :
 #@cli x_fourier
 #@cli : Launch the fourier filtering demo.
 x_fourier :
-  if {!{*,u}} error[0--3] "Command '-$0': No display available." return endif
+  if {!{*,u}} error[0--3] "Command '$0': No display available." return endif
   v - use_vt100 g=$_gmic_g c=$_gmic_c n=$_gmic_n r=$_gmic_r v +
   e[] "\n
 ------ "${g}"Fourier-filtering"$n" ----------------------------------------\n
@@ -20166,8 +20166,8 @@ x_fourier :
 #@cli : Assigning '-1' to it forces the interactive window to close.
 #@cli : Default values: 'variable_name=xgc_variable'.
 x_grab_color : skip ${1=xgc_variable}
-  if {!{*,u}} error[0--3] "Command '-$0': No display available." return endif
-  if {!$!} error[0--3] "Command '-x_grab_color': Missing specified input image." endif
+  if {!{*,u}} error[0--3] "Command '$0': No display available." return endif
+  if {!$!} error[0--3] "Command '$0': Missing specified input image." endif
   v - l[0] nm={n} nm. img v +
   e[^-1] "Open "${-arg\ {0,s},GRAY,GRAYA,RGB,RGBA}" color grabber widget for image$?, with variable name '$1'."
   v -
@@ -20254,7 +20254,7 @@ _x_grab_color :
 #@cli x_histogram
 #@cli : Launch the histogram demo.
 x_histogram :
-  if {!{*,u}} error[0--3] "Command '-$0': No display available." return endif
+  if {!{*,u}} error[0--3] "Command '$0': No display available." return endif
   v - use_vt100 g=$_gmic_g c=$_gmic_c n=$_gmic_n r=$_gmic_r v +
   e[] "\n
 ------ "${g}"Histogram demo"$n" -------------------------------\n
@@ -20359,7 +20359,7 @@ _x_histogram :
 #@cli x_hough
 #@cli : Launch the hough transform demo.
 x_hough :
-  if {!{*,u}} error[0--3] "Command '-$0': No display available." return endif
+  if {!{*,u}} error[0--3] "Command '$0': No display available." return endif
   v - use_vt100 g=$_gmic_g c=$_gmic_c n=$_gmic_n r=$_gmic_r v +
   e[] "\n
 ------ "${g}"Hough-transform"$n" -----------------------------------------\n
@@ -20445,7 +20445,7 @@ x_hough :
 #@cli x_jawbreaker : 0<_width<20,0<_height<20,0<_balls<=8
 #@cli : Launch the Jawbreaker game.
 x_jawbreaker : check "${1=12}>0 && $1<20 && ${2=13}>0 && $2<20 && ${3=5}>0 && $3<=8"
-  if {!{*,u}} error[0--3] "Command '-$0': No display available." return endif
+  if {!{*,u}} error[0--3] "Command '$0': No display available." return endif
   v - use_vt100 g=$_gmic_g c=$_gmic_c n=$_gmic_n r=$_gmic_r v +
   e[] "\n
 ------ "${g}"Jawbreaker"$n" --------------------------------------------\n
@@ -20590,7 +20590,7 @@ _x_jawbreaker_ball :
 #@cli x_landscape
 #@cli : Launch the virtual landscape demo.
 x_landscape :
-  if {!{*,u}} error[0--3] "Command '-$0': No display available." return endif
+  if {!{*,u}} error[0--3] "Command '$0': No display available." return endif
   v - use_vt100 g=$_gmic_g c=$_gmic_c n=$_gmic_n r=$_gmic_r v +
   e[] "\n
 ------ "${g}"Virtual landscape"$n" -------------------------------------\n
@@ -20684,7 +20684,7 @@ x_landscape :
 #@cli x_life
 #@cli : Launch the game of life.
 x_life :
-  if {!{*,u}} error[0--3] "Command '-$0': No display available." return endif
+  if {!{*,u}} error[0--3] "Command '$0': No display available." return endif
   v - use_vt100 g=$_gmic_g c=$_gmic_c n=$_gmic_n r=$_gmic_r v +
   e[] "\n
 ------ "${g}"The game of life"$n" --------------------------------------\n
@@ -20772,7 +20772,7 @@ x_life :
 #@cli x_light
 #@cli : Launch the light effect demo.
 x_light :
-  if {!{*,u}} error[0--3] "Command '-$0': No display available." return endif
+  if {!{*,u}} error[0--3] "Command '$0': No display available." return endif
   v - use_vt100 g=$_gmic_g c=$_gmic_c n=$_gmic_n r=$_gmic_r v +
   e[] "\n
 ------ "${g}"Light effect"$n" ------------------------\n
@@ -20832,7 +20832,7 @@ x_light :
 #@cli x_mandelbrot : _julia={ 0 | 1 },_c0r,_c0i
 #@cli : Launch Mandelbrot/Julia explorer.
 x_mandelbrot : skip ${1=0},${2=0.317},${3=0.03}
-  if {!{*,u}} error[0--3] "Command '-$0': No display available." return endif
+  if {!{*,u}} error[0--3] "Command '$0': No display available." return endif
   v - use_vt100 g=$_gmic_g c=$_gmic_c n=$_gmic_n r=$_gmic_r v +
   e[] "\n
 ------ "${g}"Mandelbrot/Julia explorer"$n" -----------------\n
@@ -20888,7 +20888,7 @@ _x_mandelbrot_palette :
 #@cli : You can also select one one particular channel of this colorspace, by setting 'colorspace' as 'colorspace_channel' (e.g. 'hsv_h' for the hue).
 #@cli : Default values: 'colorspace=all', 'spatial_tolerance=5' and 'color_tolerance=5'.
 x_mask_color : check "${2=5}>=0 && ${3=5}>=0" skip ${1=all}
-  if {!{*,u}} error[0--3] "Command '-$0': No display available." return endif
+  if {!{*,u}} error[0--3] "Command '$0': No display available." return endif
   v - use_vt100 g=$_gmic_g c=$_gmic_c n=$_gmic_n r=$_gmic_r v +
   e[^-1] "Interactively create color mask for image$?, with color space $1, spatial tolerance $2 and color tolerance $3."
   e[] "\n
@@ -20904,7 +20904,7 @@ x_mask_color : check "${2=5}>=0 && ${3=5}>=0" skip ${1=all}
 ---- Keys '"${c}"ESC"$n"', '"${c}"Q"$n"' or '"${c}"ENTER"$n"' exit the interactive window.\n
 ----\n
 ----------------------------------------------------------------------------------------------------"
-  v - l[] _ac_$1 onfail error[0--3] "Command '-x_mask_color' : Invalid colorspace '$*'." endl
+  v - l[] _ac_$1 onfail error[0--3] "Command '$0' : Invalid colorspace '$*'." endl
   m _ac_forward:$_f
   repeat $! l[$>] slices 0 basename {0,n} nm=${}
     wh=${fitscreen\ {[w,h]},1,128,1024}
@@ -21025,7 +21025,7 @@ _x_mask_color : # Estimate color mask image.
 #@cli x_metaballs3d
 #@cli : Launch the 3d metaballs demo.
 x_metaballs3d :
-  if {!{*,u}} error[0--3] "Command '-$0': No display available." return endif
+  if {!{*,u}} error[0--3] "Command '$0': No display available." return endif
   v - use_vt100 g=$_gmic_g c=$_gmic_c n=$_gmic_n r=$_gmic_r v +
   e[] "\n
 ------ "${g}"3d metaballs"$n" ---------------------------------------\n
@@ -21072,7 +21072,7 @@ x_metaballs3d :
 #@cli x_minesweeper : 8<=_width=<20,8<=_height<=20
 #@cli : Launch the Minesweeper game.
 x_minesweeper : check "${1=20}>=8 && $1<=30 && ${2=$1}>=8 && $2<=30"
-  if {!{*,u}} error[0--3] "Command '-$0': No display available." return endif
+  if {!{*,u}} error[0--3] "Command '$0': No display available." return endif
   v - use_vt100 g=$_gmic_g c=$_gmic_c n=$_gmic_n r=$_gmic_r v +
   e[] "\n
 ------ "${g}"Minesweeper"$n" -------------------------------------------\n
@@ -21168,7 +21168,7 @@ x_minesweeper : check "${1=20}>=8 && $1<=30 && ${2=$1}>=8 && $2<=30"
 #@cli x_minimal_path
 #@cli : Launch the minimal path demo.
 x_minimal_path :
-  if {!{*,u}} error[0--3] "Command '-$0': No display available." return endif
+  if {!{*,u}} error[0--3] "Command '$0': No display available." return endif
   v - use_vt100 g=$_gmic_g c=$_gmic_c n=$_gmic_n r=$_gmic_r v +
   e[] "\n
 ------ "${g}"Minimal path"$n" ------------------------------------------\n
@@ -21233,7 +21233,7 @@ x_minimal_path :
 #@cli x_pacman
 #@cli : Launch pacman game.
 x_pacman :
-  if {!{*,u}} error[0--3] "Command '-$0': No display available." return endif
+  if {!{*,u}} error[0--3] "Command '$0': No display available." return endif
   v - use_vt100 g=$_gmic_g c=$_gmic_c n=$_gmic_n r=$_gmic_r v +
   e[] "\n
 ------ "${g}"Pacman"$n" -----------------------------------------------\n
@@ -21543,7 +21543,7 @@ _pacman_map_level6 :
 #@cli x_paint
 #@cli : Launch the interactive painter.
 x_paint :
-  if {!{*,u}} error[0--3] "Command '-$0': No display available." return endif
+  if {!{*,u}} error[0--3] "Command '$0': No display available." return endif
   v - use_vt100 g=$_gmic_g c=$_gmic_c n=$_gmic_n r=$_gmic_r v +
   e[] "\n
 ------ "${g}"Interactive painter"$n" -----------------------\n
@@ -21669,7 +21669,7 @@ _x_paint :
 #@cli x_plasma
 #@cli : Launch the plasma effect demo.
 x_plasma :
-  if {!{*,u}} error[0--3] "Command '-$0': No display available." return endif
+  if {!{*,u}} error[0--3] "Command '$0': No display available." return endif
   v - use_vt100 g=$_gmic_g c=$_gmic_c n=$_gmic_n r=$_gmic_r v +
   e[] "\n
 ------ "${g}"Plasma effect"$n" ----------------------\n
@@ -21735,7 +21735,7 @@ x_plasma :
 #@cli x_quantize_rgb : _nbcolors>=2
 #@cli : Launch the RGB color quantization demo.
 x_quantize_rgb : check "isint(${1=16}) && $1>1"
-  if {!{*,u}} error[0--3] "Command '-$0': No display available." return endif
+  if {!{*,u}} error[0--3] "Command '$0': No display available." return endif
   v - use_vt100 g=$_gmic_g c=$_gmic_c n=$_gmic_n r=$_gmic_r v +
   e[] "\n
 ------ "${g}"RGB Quantization"$n" --------------------------------------\n
@@ -21895,7 +21895,7 @@ _x_quantize_rgb_text :
 #@cli x_reflection3d
 #@cli : Launch the 3d reflection demo.
 x_reflection3d :
-  if {!{*,u}} error[0--3] "Command '-$0': No display available." return endif
+  if {!{*,u}} error[0--3] "Command '$0': No display available." return endif
   v - use_vt100 g=$_gmic_g c=$_gmic_c n=$_gmic_n r=$_gmic_r v +
   e[] "\n
 ------ "${g}"3d reflection"$n" ----------------------\n
@@ -21960,7 +21960,7 @@ x_reflection3d :
 #@cli x_rubber3d
 #@cli : Launch the 3d rubber object demo.
 x_rubber3d :
-  if {!{*,u}} error[0--3] "Command '-$0': No display available." return endif
+  if {!{*,u}} error[0--3] "Command '$0': No display available." return endif
   v - use_vt100 g=$_gmic_g c=$_gmic_c n=$_gmic_n r=$_gmic_r v +
   e[] "\n
 ------ "${g}"3d rubber object"$n" -------------------\n
@@ -21998,7 +21998,7 @@ x_rubber3d :
 #@cli : Return RGBA images with binary alpha-channels.
 #@cli : Default value: 'max_resolution=1024'.
 x_segment : check "${1=1024}==0 || $1>=128"
-  if {!{*,u}} error[0--3] "Command '-$0': No display available." return endif
+  if {!{*,u}} error[0--3] "Command '$0': No display available." return endif
   v - use_vt100 g=$_gmic_g c=$_gmic_c n=$_gmic_n r=$_gmic_r v +
   e[^-1] "Extract foreground from background in image$? interactively, with maximum resolution $1."
   e[] "\n
@@ -22215,7 +22215,7 @@ _x_segment :
 #@cli : Its value specifies the initial selected color. Assigning '-1' to it forces the interactive window to close.
 #@cli : Default value: 'variable_name=xsc_variable'.
 x_select_color : skip ${1=xsc_variable}
-  if {!{*,u}} error[0--3] "Command '-$0': No display available." return endif
+  if {!{*,u}} error[0--3] "Command '$0': No display available." return endif
   v - rm
   n={narg($$1)} if {!$n} $1=0,0,0 endif
   rgba_mode={$n>=4} R={arg(1,$$1)} G={arg(2,$$1)} B={arg(3,$$1)} A={if($rgba_mode,arg(4,$$1),255)}
@@ -22362,7 +22362,7 @@ x_select_color : skip ${1=xsc_variable}
 #@cli : Assigning '-1' to it forces the interactive window to close.
 #@cli : Default values: 'variable_name=xsf_variable', 'background_curve_R=220', 'background_curve_G=background_curve_B=background_curve_T'.
 x_select_function1d : skip ${1=xsf_variable},${2=220},${3=$2},${4=$2}
-  if {!{*,u}} error[0--3] "Command '-$0': No display available." return endif
+  if {!{*,u}} error[0--3] "Command '$0': No display available." return endif
   e[^-1] "Open 1d function widget, with variable name '$1'."
   v -
   if $! k[0] endif
@@ -22483,12 +22483,12 @@ x_select_function1d : skip ${1=xsf_variable},${2=220},${3=$2},${4=$2}
 #@cli : Assigning '-1' to it forces the interactive window to close.
 #@cli : Default values: 'variable_name=xsp_variable' and 'number_of_columns=2'.
 x_select_palette : skip ${1=xsp_variable},${2=0}
-  if {!{*,u}} error[0--3] "Command '-$0': No display available." return endif
-  if {!$!} error[0--3] "Command '-x_select_palette': Missing specified palette image." endif
+  if {!{*,u}} error[0--3] "Command '$0': No display available." return endif
+  if {!$!} error[0--3] "Command '$0': Missing specified palette image." endif
   v - k[0] --r {w*h*d},1,1,{s},-1 to_color. rgba_mode={s==4} to_rgba. nm. palette v +
   e[^-1] "Open "${-arg\ 1+$rgba_mode,RGB,RGBA}" color selector widget for palette$?, with variable name '$1'."
   v -
-  if {w>1024} v + error[0--3] "Command 'x_select_color': Too much colors ("{w}") in selected palette." endif
+  if {w>1024} v + error[0--3] "Command '$0': Too much colors ("{w}") in selected palette." endif
   if {!{*}} w[] 400,400,0,0,-1,-1,"Palette: "{0,b} endif
 
   selected=-1 oselected=-1
@@ -22582,7 +22582,7 @@ x_select_palette : skip ${1=xsp_variable},${2=0}
 #@cli x_shadebobs
 #@cli : Launch the shade bobs demo.
 x_shadebobs :
-  if {!{*,u}} error[0--3] "Command '-$0': No display available." return endif
+  if {!{*,u}} error[0--3] "Command '$0': No display available." return endif
   v - use_vt100 g=$_gmic_g c=$_gmic_c n=$_gmic_n r=$_gmic_r v +
   e[] "\n
 ------ "${g}"Shade bobs"$n" -------------------------------\n
@@ -22627,7 +22627,7 @@ x_shadebobs :
 #@cli x_spline
 #@cli : Launch spline curve editor.
 x_spline :
-  if {!{*,u}} error[0--3] "Command '-$0': No display available." return endif
+  if {!{*,u}} error[0--3] "Command '$0': No display available." return endif
   v - use_vt100 g=$_gmic_g c=$_gmic_c n=$_gmic_n r=$_gmic_r v +
   e[] "\n
 ------ "${g}"Spline curve editor"$n" --------------------------\n
@@ -22746,7 +22746,7 @@ x_spline :
 #@cli x_tetris
 #@cli : Launch tetris game.
 x_tetris :
-  if {!{*,u}} error[0--3] "Command '-$0': No display available." return endif
+  if {!{*,u}} error[0--3] "Command '$0': No display available." return endif
   v - use_vt100 g=$_gmic_g c=$_gmic_c n=$_gmic_n r=$_gmic_r v +
   e[] "\n
 ------ "${g}"Tetris"$n" --------------------------------------------\n
@@ -22860,7 +22860,7 @@ x_tetris :
 #@cli x_tictactoe
 #@cli : Launch tic-tac-toe game.
 x_tictactoe :
-  if {!{*,u}} error[0--3] "Command '-$0': No display available." return endif
+  if {!{*,u}} error[0--3] "Command '$0': No display available." return endif
   v - use_vt100 g=$_gmic_g c=$_gmic_c n=$_gmic_n r=$_gmic_r v +
   e[] "\n
 ------ "${g}"Tic-Tac-Toe game"$n" -----------------\n
@@ -22975,7 +22975,7 @@ _x_tictactoe6 : # Generate a +- diagonal stroke and his mask.
 #@cli x_waves
 #@cli : Launch the image waves demo.
 x_waves :
-  if {!{*,u}} error[0--3] "Command '-$0': No display available." return endif
+  if {!{*,u}} error[0--3] "Command '$0': No display available." return endif
   v - use_vt100 g=$_gmic_g c=$_gmic_c n=$_gmic_n r=$_gmic_r v +
   e[] "\n
 ------ "${g}"Image waves"$n" --------------------------\n
@@ -23042,7 +23042,7 @@ x_waves :
 #@cli : Launch the fractal whirls demo.
 #@cli : Default values: 'opacity=0.2'.
 x_whirl : check "${1=0.2}>=0"
-  if {!{*,u}} error[0--3] "Command '-$0': No display available." return endif
+  if {!{*,u}} error[0--3] "Command '$0': No display available." return endif
   v - use_vt100 g=$_gmic_g c=$_gmic_c n=$_gmic_n r=$_gmic_r v +
   e[] "\n
 ------ "${g}"Fractal whirls"$n" ----------------------------\n
@@ -31383,7 +31383,7 @@ fx_shapes :
       endif
     endl done
   else # Custom shapes.
-    if {$!<=$2} error[] "Command '-fx_shapes': Some layers are missing in 'Custom layers' mode ("{$2+1}" expected at least, "$!" provided)." endif
+    if {$!<=$2} error[] "Command '$0': Some layers are missing in 'Custom layers' mode ("{$2+1}" expected at least, "$!" provided)." endif
     to_colormode[0-{$2-1}] ${-max_s[0-{$2-1}]} remove_opacity[$2--1]
     repeat {$!-$2} l[0-{$2-1},{$2+$>}]
       norm. w={w} h={h} r. $3%,$3%,1,1,2
@@ -31495,7 +31495,7 @@ _fx_shapes17 :
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2013/24/06</i>.</small>")
 fx_pack_sprites :
   if $6 # With mask.
-    if {$!<2} error[] "Command '-fx_pack_sprites': Masking requires at least two input layers ! (please check that 'Input Layers' is correctly set)." endif
+    if {$!<2} error[] "Command '$0': Masking requires at least two input layers ! (please check that 'Input Layers' is correctly set)." endif
     repeat {$!-1} l[$>] to_rgba split_opacity --!=[1] 0 *[0] . a c autocrop 0 endl done
     remove_empty[0--2] --channels. 100% channels. -4,0 mv. 0
     -pack_sprites[0--2] ${1-5}

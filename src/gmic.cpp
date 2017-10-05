@@ -2323,7 +2323,7 @@ const char *gmic::native_commands_names[] = {
   "t","t3d","tan","tanh","text","texturize3d","threshold","trisolve",
   "u","uncommand","unroll","unserialize",
   "v","vanvliet","verbose",
-  "w","wait","warn","warp","watershed","while","window",
+  "w","w0","w1","w2","w3","w4","w5","w6","w7","w8","w9","wait","warn","warp","watershed","while","window",
   "x","xor","y","z","^","|",
   0 };
 
