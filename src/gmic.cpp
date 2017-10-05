@@ -14435,10 +14435,8 @@ int _CRT_glob = 0; // Disable globbing for msys.
 int main(int argc, char **argv) {
 
   // Set default output messages stream.
-  const char
-    *const is_debug1 = cimg_option("-debug",(char*)0,0),
-    *const is_debug2 = cimg_option("debug",(char*)0,0);
-  cimg::output(is_debug1 || is_debug2?stdout:stderr);
+  const bool is_debug = cimg_option("-debug",false,0) || cimg_option("debug",false,0);
+  cimg::output(is_debug?stdout:stderr);
 
   // Set fallback for segfault signals.
 #if cimg_OS==1
