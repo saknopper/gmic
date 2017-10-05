@@ -158,13 +158,13 @@ cli_start :
 #@cli : messages about its internal state on the standard output (stdout).
 #@cli : This option is useful for developers or to report possible bugs of the interpreter.
 
-#@cli h : eq. to '-help'.
+#@cli h : eq. to 'help'.
 h :
   help $*
 
 #@cli help : command : (no arg)
 #@cli : Display help (optionally for specified command only) and exit.
-#@cli : (eq. to '-h').
+#@cli : (eq. to 'h').
 help : skip ${1=""},${2=1}
   if {!$!} return endif
   y a y
@@ -185,7 +185,7 @@ _help : skip ${1=""}
   r 1,{h+1},1,1,0,0,0,1
   s +,{'"#@cli "$command" :"'} s +,{'"#@cli "$command":"'} s +,{'"#@cli "$command"\n"'}
   if {$!==1}
-    l[] m "foo : -"$command # Detect command misspelling.
+    l[] m "foo : "$command # Detect command misspelling.
       repeat 16 uncommand $command done # Be sure the specified command does not exist anymore !
       foo uncommand foo
     onfail ({'${}'}) s -,{'" (did you mean "'} if {$!>1} s[1] -,39 k[1] misspelling={t} endif rm
@@ -205,7 +205,7 @@ _help : skip ${1=""}
       if {['{0,t}']==['$command']}
         _document_gmic_declaration_ascii
         if $_shortcut  # Found shortcut command.
-          v + e[] "\n    "$_gmic_m$_gmic_b"-"$command":"$_gmic_n" Shortcut for command '"$_gmic_m$_gmic_b$_shortcutlink0$_gmic_n"'." v -
+          v + e[] "\n    "$_gmic_m${_gmic_b}$command":"$_gmic_n" Shortcut for command '"$_gmic_m$_gmic_b$_shortcutlink0$_gmic_n"'." v -
           u $_shortcutlink0 return
         endif
         else stopflag=1
@@ -1464,11 +1464,11 @@ clut : check "isval(${2=64}) && $2>0"
     nm "[CLUT: $1]"
   endl v +
 
-#@cli m : eq. to '-command'. : (+)
+#@cli m : eq. to 'command'. : (+)
 
 #@cli command : _add_debug_info={ 0 | 1 },{ filename | http[s]://URL | "string" } : (+)
 #@cli : Import G'MIC custom commands from specified file, URL or string.
-#@cli : (eq. to '-m').\n
+#@cli : (eq. to 'm').\n
 #@cli : Imported commands are available directly after the '-command' invocation.
 #@cli : Default value: 'add_debug_info=1'.
 #@cli : $ image.jpg command "foo : mirror y deform $""1" --foo[0] 5 --foo[0] 15
@@ -1478,22 +1478,22 @@ clut : check "isval(${2=64}) && $2>0"
 #@cli : Command selection (if any) stands for instant display window indices instead of image indices.
 #@cli : Default value: 'mode=1'.
 
-#@cli d : eq. to '-display'. : (+)
+#@cli d : eq. to 'display'. : (+)
 
 #@cli display : _X>=0,_Y>=0,_Z>=0,_exit_on_anykey={ 0 | 1 } : (+)
 #@cli : Display selected images in an interactive viewer (use the instant display window [0] if opened).
-#@cli : (eq. to '-d').\n
+#@cli : (eq. to 'd').\n
 #@cli : Arguments 'X','Y','Z' determine the initial selection view, for 3d volumetric images.
 #@cli : Default value: 'X=Y=Z=0' and 'exit_on_anykey=0'.
 #@cli : $$
 
-#@cli d0 : eq. to '-display0'.
+#@cli d0 : eq. to 'display0'.
 d0 :
   _display0
 
 #@cli display0
 #@cli : Display selected images without value normalization.
-#@cli : (eq. to '-d0').
+#@cli : (eq. to 'd0').
 display0 :
   _$0
 
@@ -1507,14 +1507,14 @@ _display0 :
   endif
   v + d v - w[] 0 v +
 
-#@cli d3d : eq. to '-display3d'. : (+)
+#@cli d3d : eq. to 'display3d'. : (+)
 
 #@cli display3d : _[background_image],_exit_on_anykey={ 0 | 1 } : _exit_on_anykey={ 0 | 1 } : (+)
 #@cli : Display selected 3d objects in an interactive viewer (use the instant display window [0] if opened).
-#@cli : (eq. to '-d3d').
+#@cli : (eq. to 'd3d').
 #@cli : Default values: '[background_image]=(default)' and 'exit_on_anykey=0'.
 
-#@cli da : eq. to '-display_array'.
+#@cli da : eq. to 'display_array'.
 da :
   v - _gmic_s="$?" v +
   _display_array $*
@@ -1631,13 +1631,13 @@ __display_array :
   done
   rm[-3,-1]
 
-#@cli dfft : eq. to '-display_fft'.
+#@cli dfft : eq. to 'display_fft'.
 dfft :
   _display_fft
 
 #@cli display_fft
 #@cli : Display fourier transform of selected images, with centered log-module and argument.
-#@cli : (eq. to '-dfft').
+#@cli : (eq. to 'dfft').
 #@cli : $ image.jpg --display_fft
 display_fft :
   _$0
@@ -1646,7 +1646,7 @@ _display_fft :
   e[0--3] "Render fourier transform of image$? with centered log-module and argument."
   v - repeat $! l[$>] fftpolar +.. 1 log.. n 0,255 a x endl done s x,2 v +
 
-#@cli dg : eq. to '-display_graph'.
+#@cli dg : eq. to 'display_graph'.
 dg : check "${1=640}>32 && ${2=480}>32" skip ${3=1},${4=0},${5=0},${6=0},${7=0},${8=0},"${9=x-axis}","${10=y-axis}"
   _display_graph ${1-8},"$9","$10"
 
@@ -1706,7 +1706,7 @@ _display_graph : check "${1=640}>32 && ${2=480}>32" skip ${3=1},${4=0},${5=0},${
 
   nm $nm endl done c 0,255 v +
 
-#@cli dh : eq. to '-display_histogram'.
+#@cli dh : eq. to 'display_histogram'.
 dh :
   v - _gmic_s="$?" v +
   _display_histogram $"*"
@@ -1715,7 +1715,7 @@ dh :
 #@cli : Render a channel-by-channel histogram.
 #@cli : If selected image has several slices, the rendering is performed for all input slices.
 #@cli : 'expression' is a mathematical expression used to transform the histogram data for visualization purpose.
-#@cli : (eq. to '-dh').
+#@cli : (eq. to 'dh').
 #@cli : Default values: 'width=512', 'height=300', 'clusters=256', 'min_value=0%', 'max_value=100%', 'show_axes=1' and 'expression=i'.
 #@cli : $ image.jpg --display_histogram 512,300
 display_histogram :
@@ -1811,14 +1811,14 @@ display_parametric : check "${1=512}>0 && ${2=$1}>0 && ${4=0}>=0" skip ${3=3},${
     nm. $nm
   endl done v +
 
-#@cli dp : eq. to '-display_parallel'.
+#@cli dp : eq. to 'display_parallel'.
 dp :
   v - _gmic_s="$?" v +
   _display_parallel
 
 #@cli display_parallel
 #@cli : Display each selected image in a separate interactive display window.
-#@cli : (eq. to '-dp').
+#@cli : (eq. to 'dp').
 display_parallel :
   v - _gmic_s="$?" v +
   _$0
@@ -1839,14 +1839,14 @@ _display_parallel :
   m "__dp : parallel "$com __dp uncommand __dp
   -d[] v +
 
-#@cli dp0 : eq. to '-display_parallel0'.
+#@cli dp0 : eq. to 'display_parallel0'.
 dp0 :
   v - _gmic_s="$?" v +
   _display_parallel0
 
 #@cli display_parallel0
 #@cli : Display each selected image in a separate interactive display window, without value normalization.
-#@cli : (eq. to '-dp0').
+#@cli : (eq. to 'dp0').
 display_parallel0 :
   v - _gmic_s="$?" v +
   _$0
@@ -1934,14 +1934,14 @@ display_polar : check "${1=500}>32 && ${2=$1}>32" skip ${3=1},${4=200},${5=$4},$
 
   nm $nm endl done v +
 
-#@cli dq : eq. to '-display_quiver'.
+#@cli dq : eq. to 'display_quiver'.
 dq :
   v - _gmic_s="$?" v +
   _display_quiver $*
 
 #@cli display_quiver : _size_factor>0,_arrow_size>=0,_color_mode={ 0=monochrome | 1=grayscale | 2=color }
 #@cli : Render selected image of 2d vectors as a field of 2d arrows.
-#@cli : (eq. to '-dq').
+#@cli : (eq. to 'dq').
 #@cli : Default values: 'size_factor=16', 'arrow_size=1.5' and 'color_mode=1'.
 #@cli : $ image.jpg --luminance gradient[-1] xy rv[-2,-1] *[-2] -1 a[-2,-1] c -crop 60,10,90,30 --display_quiver[1] ,
 display_quiver :
@@ -1979,7 +1979,7 @@ _display_quiver : check "${1=16}>0 && ${2=1.5}>=0 && isint(${3=2}) && $3>=0 && $
     rm..
   endl done v +
 
-#@cli drgba : eq. to '-display_rgba'.
+#@cli drgba : eq. to 'display_rgba'.
 drgba : skip "${1=none}"
   v - _gmic_s="$?" v +
   _display_rgba ${^0}
@@ -1987,7 +1987,7 @@ drgba : skip "${1=none}"
 
 #@cli display_rgba : _background_RGB_color
 #@cli : Render selected RGBA images over a checkerboard background.
-#@cli : (eq. to '-drgba').
+#@cli : (eq. to 'drgba').
 #@cli : Default values: 'background_RGB_color=undefined' (checkerboard).
 #@cli : $ image.jpg --norm threshold[-1] 40% blur[-1] 3 normalize[-1] 0,255 append c display_rgba
 display_rgba : skip "${1=none}"
@@ -2008,14 +2008,14 @@ _display_rgba : skip "${1=}"
     sh. {s-1} j[0] [1],0,0,0,0,1,[2],255 k[0]
   endif endl done to_rgb u $is_rgb v +
 
-#@cli dt : eq. to '-display_tensors'.
+#@cli dt : eq. to 'display_tensors'.
 dt :
   v - _gmic_s="$?" v +
   _display_tensors $*
 
 #@cli display_tensors : _size_factor>0,_ellipse_size>=0,_color_mode={ 0=monochrome | 1=grayscale | 2=color },_outline>=0
 #@cli : Render selected image of tensors as a field of 2d ellipses.
-#@cli : (eq. to '-dt').
+#@cli : (eq. to 'dt').
 #@cli : Default values: 'size_factor=16', 'ellipse_size=1.5', 'color_mode=2' and 'outline=2'.
 #@cli : $ image.jpg diffusiontensors 0.1,0.9 resize2dx 32 --display_tensors 64,2
 #@cli : $$
@@ -2049,14 +2049,14 @@ _display_tensors : check "${1=16}>0 && ${2=1.5}>=0 && isint(${3=2}) && $3>=0 && 
     rm..
   endl done v +
 
-#@cli dw : eq. to '-display_warp'.
+#@cli dw : eq. to 'display_warp'.
 dw :
   v - _gmic_s="$?" v +
   _display_warp $*
 
 #@cli display_warp : _cell_size>0
 #@cli : Render selected 2d warping fields.
-#@cli : (eq. to '-dw').
+#@cli : (eq. to 'dw').
 #@cli : Default value: 'cell_size=15'.
 #@cli : $ 400,400,1,2,'x=x-w/2;y=y-h/2;r=sqrt(x*x+y*y);a=atan2(y,x);5*sin(r/10)*[cos(a),sin(a)]' --display_warp 10
 display_warp :
@@ -2669,7 +2669,7 @@ _document_gmic_description_latex :
       v + e[] ${-eoff}"\\begin{flushleft}\\Cc{\\textbf{"{0,t}"}:\\\\~\\\\\\hspace*{0.5cm}{\\small $\\bullet$~~\\texttt{"{t}"}}}\\end{flushleft}" v -
     else v + e[] ${-eoff}$s"~\\\\"{0,t} v -
     endif
-  elif $is_equivalent # Reached line as '#@cli : (eq. to '-shortcut').'.
+  elif $is_equivalent # Reached line as '#@cli : (eq. to 'shortcut').'.
     rows. 8,100% autocrop. {'.'} autocrop. {')'} autocrop. {'" "'}
     v + e[] ${-eoff}$s"(\\emph{eq. to} {\\small \\texttt{"{t}"}})." v -
   else                                    # Reached line as '#@cli : description'.
@@ -2817,11 +2817,11 @@ _document_gmic :
   if {w<256} - 255 r 256,100%,1,3,0,0,0.5,0.5 + 255 endif
   if {h<256} - 255 r 100%,256,1,3,0,0,0.5,0.5 + 255 endif
 
-#@cli e : eq. to '-echo'. : (+)
+#@cli e : eq. to 'echo'. : (+)
 
 #@cli echo : message : (+)
 #@cli : Output specified message on the error output.
-#@cli : (eq. to '-e').\n
+#@cli : (eq. to 'e').\n
 #@cli : Command selection (if any) stands for displayed call stack subset instead of image indices.
 
 #@cli echo_file : filename,message
@@ -2926,13 +2926,13 @@ gmicky_wilber :
   endif
   nm. [gmicky_wilber] v +
 
-#@cli i : eq. to '-input'. : (+)
+#@cli i : eq. to 'input'. : (+)
 
 #@cli input : [type:]filename : [type:]http://URL : [selection]x_nb_copies>0 : { width>0[%] | [image_w] },{ _height>0[%] | [image_h] },{ _depth>0[%] | [image_d] },{ _spectrum>0[%] | [image_s] },_{ value1,_value2,... | 'formula' } : (value1{,|;|/|^}value2{,|;|/|^}...) : 0 : (+)
 #@cli : Insert a new image taken from a filename or from a copy of an existing image [indice],
 #@cli : or insert new image with specified dimensions and values. Single quotes may be omitted in
 #@cli : 'formula'. Specifying argument '0' inserts an 'empty' image.
-#@cli : (eq. to '-i' | (no arg)).
+#@cli : (eq. to 'i' | (no arg)).
 #@cli : Default values: 'nb_copies=1', 'height=depth=spectrum=1' and 'value1=0'.
 #@cli : $ input image.jpg
 #@cli : $ input (1,2,3;4,5,6;7,8,9^9,8,7;6,5,4;3,2,1)
@@ -3020,7 +3020,7 @@ input_cube : skip ${2=1}
     nm "$1"
   endl v +
 
-#@cli ig : eq. to '-input_glob'.
+#@cli ig : eq. to 'input_glob'.
 ig :
   _input_glob "$*"
 
@@ -3054,11 +3054,11 @@ input_gpl :
     rm ($colors) rows 1,100% nm "$1" permute yzcx
   endl v +
 
-#@cli o : eq. to '-output'. : (+)
+#@cli o : eq. to 'output'. : (+)
 
 #@cli output : [type:]filename,_format_options : (+)
 #@cli : Output selected images as one or several numbered file(s).
-#@cli : (eq. to '-o').
+#@cli : (eq. to 'o').
 #@cli : Default value: 'format_options'=(undefined).
 
 #@cli output_cube : filename
@@ -3108,14 +3108,14 @@ output_ggr : skip "${2=}"
     rm
   endl done v +
 
-#@cli on : eq. to '-outputn'.
+#@cli on : eq. to 'outputn'.
 on :
   v - _gmic_s="$?" v +
   _outputn $*
 
 #@cli outputn : filename
 #@cli : Output selected images as automatically numbered filenames in repeat...done loops.
-#@cli : (eq. to '-on').
+#@cli : (eq. to 'on').
 outputn :
   v - _gmic_s="$?" v +
   _$0 $*
@@ -3125,14 +3125,14 @@ _outputn :
   e[0--3] "Output image"$_gmic_s" as file '"$filename"'."
   v - o $filename v +
 
-#@cli op : eq. to '-outputp'.
+#@cli op : eq. to 'outputp'.
 op :
   v - _gmic_s="$?" v +
   _outputp $*
 
 #@cli outputp : prefix
 #@cli : Output selected images as prefixed versions of their original filenames.
-#@cli : (eq. to '-op').
+#@cli : (eq. to 'op').
 #@cli : Default value: 'prefix=_'.
 outputp :
   v - _gmic_s="$?" v +
@@ -3144,14 +3144,14 @@ _outputp : skip ${1="_"}
   endif
   v - repeat $! o[$>] {$>,f}$1{$>,b}.{$>,x} done v +
 
-#@cli ow : eq. to '-outputw'.
+#@cli ow : eq. to 'outputw'.
 ow :
   v - _gmic_s="$?" v +
   _outputw
 
 #@cli outputw
 #@cli : Output selected images by overwritting their original location.
-#@cli : (eq. to '-ow').
+#@cli : (eq. to 'ow').
 outputw :
   v - _gmic_s="$?" v +
   _$0 $*
@@ -3162,14 +3162,14 @@ _outputw :
   endif
   v - repeat $! o[$>] {$>,n} done v +
 
-#@cli ox : eq. to '-outputx'.
+#@cli ox : eq. to 'outputx'.
 ox :
   v - _gmic_s="$?" v +
   _outputx $*
 
 #@cli outputx : extension1,_extension2,_...,_extensionN,_output_at_same_location={ 0 | 1 }
 #@cli : Output selected images with same base filenames but for N different extensions.
-#@cli : (eq. to '-ox').
+#@cli : (eq. to 'ox').
 #@cli : Default value: 'output_at_same_location=0'.
 outputx :
   v - _gmic_s="$?" v +
@@ -3217,11 +3217,11 @@ _outputx :
 #@cli : 'xmin','xmax','ymin','ymax' set the coordinates of the displayed xy-axes.
 #@cli : Default values: 'plot_type=1', 'vertex_type=1', 'xmin=xmax=ymin=ymax=0 (auto)' and 'exit_on_anykey=0'.
 
-#@cli p : eq. to '-print'. : (+)
+#@cli p : eq. to 'print'. : (+)
 
 #@cli print : (+)
 #@cli : Output information on selected images, on the standard error (stderr).
-#@cli : (eq. to '-p').
+#@cli : (eq. to 'p').
 
 #@cli rainbow_lut
 #@cli : Input a 256-entries RGB colormap of rainbow colors.
@@ -3512,24 +3512,24 @@ shape_star : check "${1=512}>=0 && ${2=5}>0 && ${3=0.5}>=0 && $3<=1"
   nm "[2d star shape]"
   v +
 
-#@cli sh : eq. to '-shared'. : (+)
+#@cli sh : eq. to 'shared'. : (+)
 
 #@cli shared : x0[%],x1[%],y[%],z[%],v[%] : y0[%],y1[%],z[%],v[%] : z0[%],z1[%],v[%] : v0[%],v1[%] : v0[%] : (no arg) : (+)
 #@cli : Insert shared buffers from (opt. points/rows/planes/channels of) selected images.
 #@cli : Shared buffers cannot be returned by a command, nor a local environment.
-#@cli : (eq. to '-sh').
+#@cli : (eq. to 'sh').
 #@cli : $ image.jpg shared 1 blur[-1] 3 remove[-1]
 #@cli : $ image.jpg repeat {s} shared 25%,75%,0,$> mirror[-1] x remove[-1] done
 #@cli : $$
 
-#@cli sp : eq. to '-sample'.
+#@cli sp : eq. to 'sample'.
 sp : skip "${1=?}",${2=0}
   v - _sample[] "$1",${2--1}
   if {!${}} -noarg endif v +
 
 #@cli sample : _name1={ ? | apples | barbara | boats | bottles | butterfly | cameraman | car | cat | cliff | david | dog | duck | eagle | elephant | earth | flower | fruits | greece | gummy | house | inside | landscape | leaf | lena | leno | lion | mandrill | monalisa | monkey | parrots | pencils | peppers | rooster | rose | square | teddy | tiger | wall | waterfall | zelda },_name2,...,_nameN,_width={ >=0 | 0 (auto) },_height = { >=0 | 0 (auto) } : (no arg)
 #@cli : Input a new sample RGB image (opt. with specified size).
-#@cli : (eq. to '-sp').\n
+#@cli : (eq. to 'sp').\n
 #@cli : Argument 'name' can be replaced by an integer which serves as a sample index.
 #@cli : $ repeat 6 sample done
 sample : skip "${1=?}",${2=0}
@@ -3632,13 +3632,13 @@ uniform_distribution : check "isint($1) && $1>0 && isint($2) && $2>0"
 #@cli unserialize : : (+)
 #@cli : Recreate lists of images from serialized image buffers, obtained with command '-serialize'.
 
-#@cli up : eq. to '-update'.
+#@cli up : eq. to 'update'.
 up :
   _update
 
 #@cli update
 #@cli : Update commands from the latest definition file on the G'MIC server.
-#@cli : (eq. to '-up').
+#@cli : (eq. to 'up').
 update :
   _$0
 
@@ -5037,11 +5037,11 @@ _update_tutorial_html :
   wait {5000+u(2000)}
   v +
 
-#@cli v : eq. to '-verbose'. : (+)
+#@cli v : eq. to 'verbose'. : (+)
 
 #@cli verbose : level : { + | - } : (+)
 #@cli : Set or increment/decrement the verbosity level. Default level is 0.
-#@cli : (eq. to '-v').\n
+#@cli : (eq. to 'v').\n
 #@cli : When 'level'>=0, G'MIC log messages are displayed on the standard error (stderr).
 #@cli : Default value: 'level=0'.
 
@@ -5058,12 +5058,12 @@ _update_tutorial_html :
 #@cli : Print specified warning message, on the standard error (stderr).
 #@cli : Command selection (if any) stands for displayed call stack subset instead of image indices.
 
-#@cli w : eq. to '-window'. : (+)
+#@cli w : eq. to 'window'. : (+)
 
 #@cli window : _width[%]>=-1,_height[%]>=-1,_normalization,_fullscreen,_pos_x[%],_pos_y[%],_title : (+)
 #@cli : Display selected images into an instant display window with specified size, normalization type,
 #@cli : fullscreen mode and title.
-#@cli : (eq. to '-w').\n
+#@cli : (eq. to 'w').\n
 #@cli : If 'width' or 'height' is set to -1, the corresponding dimension is adjusted to the window
 #@cli : or image size.
 #@cli : When arguments 'pos_x' and 'pos_y' are both different than -1, the window is moved to
@@ -5072,7 +5072,7 @@ _update_tutorial_html :
 #@cli : 'normalization' can be { -1=keep same | 0=none | 1=always | 2=1st-time | 3=auto }.
 #@cli : 'fullscreen' can be { -1=keep same | 0=no | 1=yes }.
 #@cli : You can manage up to 10 different instant display windows by using the numbered variants
-#@cli : '-w0' (default, eq. to '-w'),'-w1',...,'-w9' of the command '-w'.
+#@cli : '-w0' (default, eq. to 'w'),'-w1',...,'-w9' of the command '-w'.
 #@cli : Invoke '-window' with no selection to make the window visible, if is has been closed by the user.
 #@cli : Default values: 'width=height=normalization=fullscreen=-1' and 'title=(undefined)'.
 
@@ -5082,38 +5082,38 @@ _update_tutorial_html :
 #
 #---------------------------------
 
-#@cli k : eq. to '-keep'. : (+)
+#@cli k : eq. to 'keep'. : (+)
 
 #@cli keep : (+)
 #@cli : Keep only selected images.
-#@cli : (eq. to '-k').
+#@cli : (eq. to 'k').
 #@cli : $ image.jpg split x keep[0-50%:2] append x
 #@cli : $ image.jpg split x keep[^30%-70%] append x
 
-#@cli mv : eq. to '-move'. : (+)
+#@cli mv : eq. to 'move'. : (+)
 
 #@cli move : position[%] : (+)
 #@cli : Move selected images at specified position.
-#@cli : (eq. to '-mv').
+#@cli : (eq. to 'mv').
 #@cli : $ image.jpg split x,3 move[1] 0
 #@cli : $ image.jpg split x move[50%--1:2] 0 append x
 
-#@cli nm : eq. to '-name'. : (+)
+#@cli nm : eq. to 'name'. : (+)
 
 #@cli name : "name" : (+)
 #@cli : Set name of selected images.
-#@cli : (eq. to '-nm').
+#@cli : (eq. to 'nm').
 #@cli : $ image.jpg -name image blur[image] 2
 #@cli : $$
 
-#@cli nms : eq. to '-names'.
+#@cli nms : eq. to 'names'.
 nms :
   v - _gmic_s="$?" v +
   _names $*
 
 #@cli names : name1,name2,...,nameN
 #@cli : Set each name of (multiple) selected images from the sequence of the provided arguments.
-#@cli : (eq. to '-nms').
+#@cli : (eq. to 'nms').
 names :
   v - _gmic_s="$?" v +
   _$0 $*
@@ -5123,11 +5123,11 @@ _names :
   if {$#!=$!} warn[0--3] "Number of selected images ("$!") is different than number of provided arguments ($#)." endif
   v - $=arg repeat {min($!,$#)} nm[$>] ${arg{1+$>}} done v +
 
-#@cli rm : eq. to '-remove'. : (+)
+#@cli rm : eq. to 'remove'. : (+)
 
 #@cli remove : (+)
 #@cli : Remove selected images.
-#@cli : (eq. to '-rm').
+#@cli : (eq. to 'rm').
 #@cli : $ image.jpg split x remove[30%-70%] append x
 #@cli : $ image.jpg split x remove[0-50%:2] append x
 
@@ -5152,11 +5152,11 @@ remove_empty :
   e[^-1] "Remove empty images in selected list of image$?."
   v - repeat $! if {$<,!whds} rm[$<] endif done v +
 
-#@cli rv : eq. to '-reverse'. : (+)
+#@cli rv : eq. to 'reverse'. : (+)
 
 #@cli reverse : (+)
 #@cli : Reverse positions of selected images.
-#@cli : (eq. to '-rv').
+#@cli : (eq. to 'rv').
 #@cli : $ image.jpg split x,3 reverse[-2,-1]
 #@cli : $ image.jpg split x,-16 reverse[50%-100%] append x
 
@@ -5240,23 +5240,23 @@ sort_str :
 #@cli : $ 300,1,1,1,'x/w+0.1*u' --acos display_graph 400,300
 #@cli : $$ trigometric-and-inverse-trigometric-commands
 
-#@cli + : eq. to '-add'. : (+)
+#@cli + : eq. to 'add'. : (+)
 
 #@cli add : value[%] : [image] : 'formula' : (no arg) : (+)
 #@cli : Add specified value, image or mathematical expression to selected images,
 #@cli : or compute the pointwise sum of selected images.
-#@cli : (eq. to '-+').
+#@cli : (eq. to '+').
 #@cli : $ image.jpg --add 30% cut 0,255
 #@cli : $ image.jpg --blur 5 normalize 0,255 add[1] [0]
 #@cli : $ image.jpg add '80*cos(80*(x/w-0.5)*(y/w-0.5)+c)' cut 0,255
 #@cli : $ image.jpg repeat 9 --rotate[0] {$>*36},1,0,50%,50% done add div 10
 
-#@cli & : eq. to '-and'. : (+)
+#@cli & : eq. to 'and'. : (+)
 
 #@cli and : value[%] : [image] : 'formula' : (no arg) : (+)
 #@cli : Compute the bitwise AND of selected images with specified value, image or mathematical
 #@cli : expression, or compute the pointwise sequential bitwise AND of selected images.
-#@cli : (eq. to '-&').
+#@cli : (eq. to '&').
 #@cli : $ image.jpg and {128+64}
 #@cli : $ image.jpg --mirror x and
 
@@ -5298,22 +5298,22 @@ argmin :
 #@cli : $ (-1,1) (-1;1) resize 400,400,1,1,3 atan2[1] [0] keep[1] mod {pi/8}
 #@cli : $$ trigometric-and-inverse-trigometric-commands
 
-#@cli << : eq. to '-bsl'. : (+)
+#@cli << : eq. to 'bsl'. : (+)
 
 #@cli bsl : value[%] : [image] : 'formula' : (no arg) : (+)
 #@cli : Compute the bitwise left shift of selected images with specified value, image or
 #@cli : mathematical expression, or compute the pointwise sequential bitwise left shift of
 #@cli : selected images.
-#@cli : (eq. to '-<<').
+#@cli : (eq. to '<<').
 #@cli : $ image.jpg -bsl 'round(3*x/w,0)' cut 0,255
 
-#@cli >> : eq. to '-bsr'. : (+)
+#@cli >> : eq. to 'bsr'. : (+)
 
 #@cli bsr : value[%] : [image] : 'formula' : (no arg) : (+)
 #@cli : Compute the bitwise right shift of selected images with specified value, image or"
 #@cli : mathematical expression, or compute the pointwise sequential bitwise right shift of
 #@cli : selected images.
-#@cli : (eq. to '->>').
+#@cli : (eq. to '>>').
 #@cli : $ image.jpg -bsr 'round(3*x/w,0)' cut 0,255
 
 #@cli cos : (+)
@@ -5327,12 +5327,12 @@ argmin :
 #@cli : $ image.jpg --normalize -3,3 cosh[-1]
 #@cli : $ 300,1,1,1,'4*x/w+u' --cosh display_graph 400,300
 
-#@cli / : eq. to '-div'. : (+)
+#@cli / : eq. to 'div'. : (+)
 
 #@cli div : value[%] : [image] : 'formula' : (no arg) : (+)
 #@cli : Divide selected image by specified value, image or mathematical expression,
 #@cli : or compute the pointwise quotient of selected images.
-#@cli : (eq. to '-/').
+#@cli : (eq. to '/').
 #@cli : $ image.jpg div '1+abs(cos(x/10)*sin(y/10))'
 #@cli : $ image.jpg --norm add[-1] 1 --div
 
@@ -5349,12 +5349,12 @@ div_complex : check ${3=1e-8}>=0
     /[2] [1] /[0,1]
   endl done v +
 
-#@cli == : eq. to '-eq'. : (+)
+#@cli == : eq. to 'eq'. : (+)
 
 #@cli eq : value[%] : [image] : 'formula' : (no arg) : (+)
 #@cli : Compute the boolean equality of selected images with specified value, image or
 #@cli : mathematical expression, or compute the boolean equality of selected images.
-#@cli : (eq. to '-==').
+#@cli : (eq. to '==').
 #@cli : $ image.jpg round 40 eq {round(ia,40)}
 #@cli : $ image.jpg --mirror x eq
 
@@ -5363,39 +5363,39 @@ div_complex : check ${3=1e-8}>=0
 #@cli : $ image.jpg --normalize 0,2 exp[-1]
 #@cli : $ 300,1,1,1,'7*x/w+u' --exp display_graph 400,300
 
-#@cli >= : eq. to '-ge'. : (+)
+#@cli >= : eq. to 'ge'. : (+)
 
 #@cli ge : value[%] : [image] : 'formula' : (no arg) : (+)
 #@cli : Compute the boolean 'greater or equal than' of selected images with specified value, image
 #@cli : or mathematical expression, or compute the boolean 'greater or equal than' of selected images.
-#@cli : (eq. to '->=').
+#@cli : (eq. to '>=').
 #@cli : $ image.jpg -ge {ia}
 #@cli : $ image.jpg --mirror x -ge
 
-#@cli > : eq. to '-gt'. : (+)
+#@cli > : eq. to 'gt'. : (+)
 
 #@cli gt : value[%] : [image] : 'formula' : (no arg) : (+)
 #@cli : Compute the boolean 'greater than' of selected images with specified value, image or
 #@cli : mathematical expression, or compute the boolean 'greater than' of selected images.
-#@cli : (eq. to '->').
+#@cli : (eq. to '>').
 #@cli : $ image.jpg -gt {ia}
 #@cli : $ image.jpg --mirror x -gt
 
-#@cli <= : eq. to '-le'. : (+)
+#@cli <= : eq. to 'le'. : (+)
 
 #@cli le : value[%] : [image] : 'formula' : (no arg) : (+)
 #@cli : Compute the boolean 'less or equal than' of selected images with specified value, image or
 #@cli : mathematical expression, or compute the boolean 'less or equal than' of selected images.
-#@cli : (eq. to '-<=').
+#@cli : (eq. to '<=').
 #@cli : $ image.jpg -le {ia}
 #@cli : $ image.jpg --mirror x -le
 
-#@cli < : eq. to '-lt'. : (+)
+#@cli < : eq. to 'lt'. : (+)
 
 #@cli lt : value[%] : [image] : 'formula' : (no arg) : (+)
 #@cli : Compute the boolean 'less than' of selected images with specified value, image or
 #@cli : mathematical expression, or compute the boolean 'less than' of selected images.
-#@cli : (eq. to '-<').
+#@cli : (eq. to '<').
 #@cli : $ image.jpg -lt {ia}
 #@cli : $ image.jpg --mirror x -lt
 
@@ -5420,12 +5420,12 @@ div_complex : check ${3=1e-8}>=0
 #@cli : $ image.jpg --mirror x max
 #@cli : $ image.jpg max 'R=((x/w-0.5)^2+(y/h-0.5)^2)^0.5;255*R'
 
-#@cli m/ : eq. to '-mdiv'. : (+)
+#@cli m/ : eq. to 'mdiv'. : (+)
 
 #@cli mdiv : value[%] : [image] : 'formula' : (no arg) : (+)
 #@cli : Compute the matrix division of selected matrices/vectors by specified value, image or
 #@cli : mathematical expression, or compute the matrix division of selected images.
-#@cli : (eq. to '-m/').
+#@cli : (eq. to 'm/').
 
 #@cli min : value[%] : [image] : 'formula' : (no arg) : (+)
 #@cli : Compute the minimum between selected images and specified value, image or
@@ -5433,29 +5433,29 @@ div_complex : check ${3=1e-8}>=0
 #@cli : $ image.jpg --mirror x min
 #@cli : $ image.jpg min 'R=((x/w-0.5)^2+(y/h-0.5)^2)^0.5;255*R'
 
-#@cli % : eq. to '-mod'. : (+)
+#@cli % : eq. to 'mod'. : (+)
 
 #@cli mod : value[%] : [image] : 'formula' : (no arg) : (+)
 #@cli : Compute the modulo of selected images with specified value, image or mathematical
 #@cli : expression, or compute the pointwise sequential modulo of selected images.
-#@cli : (eq. to '-%').
+#@cli : (eq. to '%').
 #@cli : $ image.jpg --mirror x mod
 #@cli : $ image.jpg mod 'R=((x/w-0.5)^2+(y/h-0.5)^2)^0.5;255*R'
 
-#@cli m* : eq. to '-mmul'. : (+)
+#@cli m* : eq. to 'mmul'. : (+)
 
 #@cli mmul : value[%] : [image] : 'formula' : (no arg) : (+)
 #@cli : Compute the matrix right multiplication of selected matrices/vectors by specified value, image or
 #@cli : mathematical expression, or compute the matrix right multiplication of selected images.
-#@cli : (eq. to '-m*').
+#@cli : (eq. to 'm*').
 #@cli : $ (0,1,0;0,0,1;1,0,0) (1;2;3) --mmul
 
-#@cli * : eq. to '-mul'. : (+)
+#@cli * : eq. to 'mul'. : (+)
 
 #@cli mul : value[%] : [image] : 'formula' : (no arg) : (+)
 #@cli : Multiply selected images by specified value, image or mathematical expression,
 #@cli : or compute the pointwise product of selected images.
-#@cli : (eq. to '-*').
+#@cli : (eq. to '*').
 #@cli : $ image.jpg --mul 2 cut 0,255
 #@cli : $ image.jpg (1,2,3,4,5,6,7,8) resize[-1] [0] -mul[0] [-1]
 #@cli : $ image.jpg -mul '1-3*abs(x/w-0.5)' cut 0,255
@@ -5481,29 +5481,29 @@ mul_complex :
     *[0,2] *[1,2] -[0,1] # ac-bd
   endl done v +
 
-#@cli != : eq. to '-neq'. : (+)
+#@cli != : eq. to 'neq'. : (+)
 
 #@cli neq : value[%] : [image] : 'formula' : (no arg) : (+)
 #@cli : Compute the boolean inequality of selected images with specified value, image or
 #@cli : mathematical expression, or compute the boolean inequality of selected images.
-#@cli : (eq. to '-!=').
+#@cli : (eq. to '!=').
 #@cli : $ image.jpg round 40 neq {round(ia,40)}
 
-#@cli | : eq. to '-or'. : (+)
+#@cli | : eq. to 'or'. : (+)
 
 #@cli or : value[%] : [image] : 'formula' : (no arg) : (+)
 #@cli : Compute the bitwise OR of selected images with specified value, image or mathematical
 #@cli : expression, or compute the pointwise sequential bitwise OR of selected images.
-#@cli : (eq. to '-|').
+#@cli : (eq. to '|').
 #@cli : $ image.jpg -or 128
 #@cli : $ image.jpg --mirror x -or
 
-#@cli ^ : eq. to '-pow'. : (+)
+#@cli ^ : eq. to 'pow'. : (+)
 
 #@cli pow : value[%] : [image] : 'formula' : (no arg) : (+)
 #@cli : Raise selected image to the power of specified value, image or mathematical
 #@cli : expression, or compute the pointwise sequential powers of selected images.
-#@cli : (eq. to '-^').
+#@cli : (eq. to '^').
 #@cli : $ image.jpg div 255 --pow 0.5 -mul 255
 #@cli : $ image.jpg gradient pow 2 add pow 0.2
 
@@ -5550,12 +5550,12 @@ mul_complex :
 #@cli : $ image.jpg --sqrt
 #@cli : $ 300,1,1,1,'40*x/w+u' --sqrt display_graph 400,300
 
-#@cli - : eq. to '-sub'. : (+)
+#@cli - : eq. to 'sub'. : (+)
 
 #@cli sub : value[%] : [image] : 'formula' : (no arg) : (+)
 #@cli : Subtract specified value, image or mathematical expression to selected images,
 #@cli : or compute the pointwise difference of selected images.
-#@cli : (eq. to '--').
+#@cli : (eq. to '-').
 #@cli : $ image.jpg --sub 30% cut 0,255
 #@cli : $ image.jpg --mirror x sub[-1] [0]
 #@cli : $ image.jpg sub 'i(w/2+0.9*(x-w/2),y)'
@@ -5779,11 +5779,11 @@ compress_rle : skip ${1=0} check "isint(${2=0}) && $2>=0"
 #@cli : Compute the cumulative function of specified image data, optionally along the specified axes.
 #@cli : $ image.jpg --histogram --cumulate[-1] display_graph[-2,-1] 400,300,3
 
-#@cli c : eq. to '-cut'. : (+)
+#@cli c : eq. to 'cut'. : (+)
 
 #@cli cut : { value0[%] | [image0] },{ value1[%] | [image1] } : [image] : (no arg) : (+)
 #@cli : Cut values of selected images in specified range.
-#@cli : (eq. to '-c').\n
+#@cli : (eq. to 'c').\n
 #@cli : (no arg) runs interactive mode (uses the instant display window [0] if opened).
 #@cli : In this case, the chosen cut values are returned in the status.
 #@cli : $ image.jpg --add 30% cut[-1] 0,255
@@ -5880,12 +5880,12 @@ eigen2tensor :
 #@cli : $ image.jpg --equalize
 #@cli : $ image.jpg --equalize 4,0,128
 
-#@cli f : eq. to '-fill'. : (+)
+#@cli f : eq. to 'fill'. : (+)
 
 #@cli fill : value1,_value2,... : [image] : 'formula' : (+)
 #@cli : Fill selected images with values read from the specified value list, existing image
 #@cli : or mathematical expression. Single quotes may be omitted in 'formula'.
-#@cli : (eq. to '-f').
+#@cli : (eq. to 'f').
 #@cli : $ 4,4 -fill 1,2,3,4,5,6,7
 #@cli : $ 4,4 (1,2,3,4,5,6,7) -fill[-2] [-1]
 #@cli : $ 400,400,1,3 -fill "X=x-w/2; Y=y-h/2; R=sqrt(X^2+Y^2); a=atan2(Y,X); if(R<=180,255*abs(cos(c+200*(x/w-0.5)*(y/h-0.5))),850*(a%(0.1*(c+1))))"
@@ -5923,14 +5923,14 @@ int82float :
 #@cli : $ image.jpg (0;255;255^0;128;255^0;0;255) --index[-2] [-1],1,1
 #@cli : $$
 
-#@cli ir : eq. to '-inrange'.
+#@cli ir : eq. to 'inrange'.
 ir :
   v - _gmic_s="$?" v +
   _inrange $*
 
 #@cli inrange : min[%],max[%]
 #@cli : Detect pixels whose values are in specified range [min,max], in selected images.
-#@cli : (eq. to '-ir').
+#@cli : (eq. to 'ir').
 #@cli : $ image.jpg --inrange 25%,75%
 inrange :
   v - _gmic_s="$?" v +
@@ -6025,11 +6025,11 @@ norm :
   e[^-1] "Compute pointwise euclidean norm of vectors, in image$?."
   v - sqr compose_channels + sqrt v +
 
-#@cli n : eq. to '-normalize'. : (+)
+#@cli n : eq. to 'normalize'. : (+)
 
 #@cli normalize : { value0[%] | [image0] },{ value1[%] | [image1] } : [image] : (+)
 #@cli : Linearly normalize values of selected images in specified range.
-#@cli : (eq. to '-n').
+#@cli : (eq. to 'n').
 #@cli : $ image.jpg split x,2 normalize[-1] 64,196 append x
 #@cli : $$
 
@@ -6188,11 +6188,11 @@ roundify : check $1>=0
     --round 1 -.. . --*.. 2 abs. ^. $1 sign... *[-3,-1] *.. 0.5 -+
   endl done v +
 
-#@cli = : eq. to '-set'. : (+)
+#@cli = : eq. to 'set'. : (+)
 
 #@cli set : value,_x[%],_y[%],_z[%],_c[%] : (+)
 #@cli : Set pixel value in selected images, at specified coordinates.
-#@cli : (eq. to '-=').\n
+#@cli : (eq. to '=').\n
 #@cli : If specified coordinates are outside the image bounds, no action is performed.
 #@cli : Default values: 'x=y=z=c=0'.
 #@cli : $ 2,2 -set 1,0,0 -set 2,1,0 -set 3,0,1 -set 4,1,1
@@ -6268,14 +6268,14 @@ adjust_colors : check "${1=0}>=-100 && $1<=100 && ${2=0}>=-100 && $2<=100 && ${3
     a c
   endl done v +
 
-#@cli ac : eq. to '-apply_channels'.
+#@cli ac : eq. to 'apply_channels'.
 ac :
   v - _gmic_s="$?" v +
   _apply_channels $"*"
 
 #@cli apply_channels : "command",channels,_value_action={ 0=none | 1=cut | 2=normalize }
 #@cli : Apply specified command on the chosen color channel(s) of each selected images.
-#@cli : (eq. to '-ac').\n
+#@cli : (eq. to 'ac').\n
 #@cli : Argument 'channels' refers to a colorspace, and can be basically one of { all | rgba | rgb | lrgb | ycbcr | lab | lch | hsv | hsi | hsl | cmy | cmyk | yiq }.
 #@cli : You can also make the processing focus on one particular channel of this colorspace, by setting 'channels' as 'colorspace_channel' (e.g. 'hsv_h' for the hue).
 #@cli : All channel values are considered to be in the [0,255] range.
@@ -6564,14 +6564,14 @@ ditheredbw :
     luminance[0] n[0] 0,255 (0,255) index[0] .,1,1 rm.
   a c endl done v +
 
-#@cli fc : eq. to '-fill_color'.
+#@cli fc : eq. to 'fill_color'.
 fc :
   v - _gmic_s="$?" v +
   _fill_color $*
 
 #@cli fill_color : col1,...,colN
 #@cli : Fill selected images with specified color.
-#@cli : (eq. to '-fc').
+#@cli : (eq. to 'fc').
 #@cli : $ image.jpg --fill_color 255,0,255
 #@cli : $$
 fill_color :
@@ -7453,11 +7453,11 @@ yuv82rgb :
 #
 #---------------------------------
 
-#@cli a : eq. to '-append' : (+)
+#@cli a : eq. to 'append' : (+)
 
 #@cli append : [image],axis,_centering : axis,_centering : (+)
 #@cli : Append specified image to selected images, or all selected images together, along specified axis.
-#@cli : (eq. to '-a').\n
+#@cli : (eq. to 'a').\n
 #@cli : 'axis' can be { x | y | z | c }.
 #@cli : Usual 'centering' values are { 0=left-justified | 0.5=centered | 1=right-justified }.
 #@cli : Default value: 'centering=0'.
@@ -7595,11 +7595,11 @@ autocrop_seq : skip ${1=auto}
 #@cli : Dirichlet boundary is used when specified columns are out of range.
 #@cli : $ image.jpg columns -25%,50%
 
-#@cli z : eq. to '-crop'. : (+)
+#@cli z : eq. to 'crop'. : (+)
 
 #@cli crop : x0[%],x1[%],_boundary_conditions : x0[%],y0[%],x1[%],y1[%],_boundary_conditions : x0[%],y0[%],z0[%],x1[%],y1[%],z1[%],_boundary_conditions : x0[%],y0[%],z0[%],c0[%],x1[%],y1[%],z1[%],c1[%],_boundary_conditions : (no arg) : (+)
 #@cli : Crop selected images with specified region coordinates.
-#@cli : (eq. to '-z').\n
+#@cli : (eq. to 'z').\n
 #@cli : 'boundary_conditions' can be { 0=dirichlet | 1=neumann | 2=periodic | 3=mirror }.
 #@cli : (no arg) runs interactive mode (uses the instant display window [0] if opened).
 #@cli : Default value: 'boundary_conditions=0'.
@@ -7827,11 +7827,11 @@ _montage :
 #@cli : e.g. 'xycz', 'cxyz', ...
 #@cli : $ image.jpg permute yxzc
 
-#@cli r : eq. to '-resize'. : (+)
+#@cli r : eq. to 'resize'. : (+)
 
 #@cli resize : [image],_interpolation,_boundary_conditions,_ax,_ay,_az,_ac : {[image_w] | width>0[%]},_{[image_h] | height>0[%]},_{[image_d] | depth>0[%]},_{[image_s] | spectrum>0[%]},_interpolation,_boundary_conditions,_ax,_ay,_az,_ac : (no arg) : (+)
 #@cli : Resize selected images with specified geometry.
-#@cli : (eq. to '-r').\n
+#@cli : (eq. to 'r').\n
 #@cli : 'interpolation' can be { -1=none (memory content) | 0=none | 1=nearest | 2=average | 3=linear | 4=grid | 5=bicubic | 6=lanczos }.
 #@cli : 'boundary_conditions' has different meanings, according to the chosen 'interpolation' mode :
 #@cli : . When 'interpolation=={ -1 | 1 | 2 | 4 }', 'boundary_conditions' is meaningless.
@@ -7894,14 +7894,14 @@ resize_pow2 : check "isint(${1=0}) && $1>=-1 && $1<=6" skip ${2=0},${3=0},${4=0}
     r[$>] {$>,2^(round(log2(w),1,1))},{$>,2^(round(log2(h),1,1))},{$>,2^(round(log2(d),1,1))},100%,${1-6}
   done v +
 
-#@cli rr2d : eq. to '-resize_ratio2d'.
+#@cli rr2d : eq. to 'resize_ratio2d'.
 rr2d :
   v - _gmic_s="$?" v +
   _resize_ratio2d $*
 
 #@cli resize_ratio2d : width>0,height>0,_mode={ 0=inside | 1=outside | 2=padded },0=<_interpolation<=6
 #@cli : Resize selected images while preserving their aspect ratio.
-#@cli : (eq. to '-rr2d').
+#@cli : (eq. to 'rr2d').
 #@cli : Default values: 'mode=0' and 'interpolation=6'.
 resize_ratio2d :
   v - _gmic_s="$?" v +
@@ -7917,14 +7917,14 @@ _resize_ratio2d : check "$1>0 && $2>0 && ${3=0}>=0 && $3<=2 && ${4=6}>=0 && $4<=
   if {$3==2} r $1,$2,100%,100%,0,0,0.5,0.5 endif
   v +
 
-#@cli r2dx : eq. to '-resize2dx'.
+#@cli r2dx : eq. to 'resize2dx'.
 r2dx :
   v - _gmic_s="$?" v +
   _resize2dx $*
 
 #@cli resize2dx : width[%]>0,_interpolation,_boundary_conditions,_ax,_ay,_az,_ac
 #@cli : Resize selected images along the x-axis, preserving 2d ratio.
-#@cli : (eq. to '-r2dx').\n
+#@cli : (eq. to 'r2dx').\n
 #@cli : 'interpolation' can be { -1=none (memory content) | 0=none | 1=nearest | 2=average | 3=linear | 4=grid | 5=bicubic | 6=lanczos }.
 #@cli : 'boundary_conditions' has different meanings, according to the chosen 'interpolation' mode :
 #@cli : . When 'interpolation=={ -1 | 1 | 2 | 4 }', 'boundary_conditions' is meaningless.
@@ -7945,14 +7945,14 @@ _resize2dx : check "$1>0 && ${2=3}>=0 && $2<=6 && ${3=0}>=0 && $3<=3 && ${4=0}>=
     r {max(1,$size)},{max(1,h*$size/w)},100%,100%,${2-7}
   endl done v +
 
-#@cli r2dy : eq. to '-resize2dy'.
+#@cli r2dy : eq. to 'resize2dy'.
 r2dy :
   v - _gmic_s="$?" v +
   _resize2dy $*
 
 #@cli resize2dy : height[%]>=0,_interpolation,_boundary_conditions,_ax,_ay,_az,_ac
 #@cli : Resize selected images along the y-axis, preserving 2d ratio.
-#@cli : (eq. to '-r2dy').\n
+#@cli : (eq. to 'r2dy').\n
 #@cli : 'interpolation' can be { -1=none (memory content) | 0=none | 1=nearest | 2=average | 3=linear | 4=grid | 5=bicubic | 6=lanczos }.
 #@cli : 'boundary_conditions' has different meanings, according to the chosen 'interpolation' mode :
 #@cli : . When 'interpolation=={ -1 | 1 | 2 | 4 }', 'boundary_conditions' is meaningless.
@@ -7973,14 +7973,14 @@ _resize2dy : check "$1>=0 && ${2=3}>=0 && $2<=6 && ${3=0}>=0 && $3<=3 && ${4=0}>
     r {max(1,w*$size/h)},{max(1,$size)},100%,100%,${2-7}
   endl done v +
 
-#@cli r3dx : eq. to '-resize3dx'.
+#@cli r3dx : eq. to 'resize3dx'.
 r3dx :
   v - _gmic_s="$?" v +
   _resize3dx $*
 
 #@cli resize3dx : width[%]>0,_interpolation,_boundary_conditions,_ax,_ay,_az,_ac
 #@cli : Resize selected images along the x-axis, preserving 3d ratio.
-#@cli : (eq. to '-r3dx').\n
+#@cli : (eq. to 'r3dx').\n
 #@cli : 'interpolation' can be { -1=none (memory content) | 0=none | 1=nearest | 2=average | 3=linear | 4=grid | 5=bicubic | 6=lanczos }.
 #@cli : 'boundary_conditions' has different meanings, according to the chosen 'interpolation' mode :
 #@cli : . When 'interpolation=={ -1 | 1 | 2 | 4 }', 'boundary_conditions' is meaningless.
@@ -8000,14 +8000,14 @@ _resize3dx : check "$1>0 && ${2=3}>=0 && $2<=6 && ${3=0}>=0 && $3<=3 && ${4=0}>=
     r {max(1,$size)},{max(1,h*$size/w)},{max(1,d*$size/w)},100%,${2-7}
   endl done v +
 
-#@cli r3dy : eq. to '-resize3dy'.
+#@cli r3dy : eq. to 'resize3dy'.
 r3dy :
   v - _gmic_s="$?" v +
   _resize3dy $*
 
 #@cli resize3dy : height[%]>0,_interpolation,_boundary_conditions,_ax,_ay,_az,_ac
 #@cli : Resize selected images along the y-axis, preserving 3d ratio.
-#@cli : (eq. to '-r3dy').\n
+#@cli : (eq. to 'r3dy').\n
 #@cli : 'interpolation' can be { -1=none (memory content) | 0=none | 1=nearest | 2=average | 3=linear | 4=grid | 5=bicubic | 6=lanczos }.
 #@cli : 'boundary_conditions' has different meanings, according to the chosen 'interpolation' mode :
 #@cli : . When 'interpolation=={ -1 | 1 | 2 | 4 }', 'boundary_conditions' is meaningless.
@@ -8027,14 +8027,14 @@ _resize3dy : check "$1>0 && ${2=3}>=0 && $2<=6 && ${3=0}>=0 && $3<=3 && ${4=0}>=
     r {max(1,w*$size/h)},{max(1,$size)},{max(1,d*$size/h)},100%,${2-7}
   endl done v +
 
-#@cli r3dz : eq. to '-resize3dz'.
+#@cli r3dz : eq. to 'resize3dz'.
 r3dz :
   v - _gmic_s="$?" v +
   _resize3dz $*
 
 #@cli resize3dz : depth[%]>0,_interpolation,_boundary_conditions,_ax,_ay,_az,_ac
 #@cli : Resize selected images along the z-axis, preserving 3d ratio.
-#@cli : (eq. to '-r3dz').\n
+#@cli : (eq. to 'r3dz').\n
 #@cli : 'interpolation' can be { -1=none (memory content) | 0=none | 1=nearest | 2=average | 3=linear | 4=grid | 5=bicubic | 6=lanczos }.
 #@cli : 'boundary_conditions' has different meanings, according to the chosen 'interpolation' mode :
 #@cli : . When 'interpolation=={ -1 | 1 | 2 | 4 }', 'boundary_conditions' is meaningless.
@@ -8386,11 +8386,11 @@ shrink_z : check "$1>=0"
 #@cli : Default values: 'ordering=+' and 'axis=(undefined)'.
 #@cli : $ 64 rand 0,100 --sort display_graph 400,300,3
 
-#@cli s : eq. to '-split'. : (+)
+#@cli s : eq. to 'split'. : (+)
 
 #@cli split : { x | y | z | c }...{ x | y | z | c },_split_mode : keep_splitting_values={ + | - },_{ x | y | z | c }...{ x | y | z | c },value1,_value2,... : (no arg) : (+)
 #@cli : Split selected images along specified axes, or regarding to a sequence of scalar values (optionally along specified axes too).
-#@cli : (eq. to '-s').\n
+#@cli : (eq. to 's').\n
 #@cli : 'split_mode' can be { 0=split according to constant values | >0=split in N parts | <0=split in parts of size -N }.
 #@cli : Default value: 'split_mode=-1'.
 #@cli : $ image.jpg split c
@@ -8444,11 +8444,11 @@ undistort : check "${1=0.1}>=-1 && $1<=1 && ${6=0}>=0 && $6<=3" skip ${2=0},${3=
       I(x,y)"
   endl done v +
 
-#@cli y : eq. to '-unroll'. : (+)
+#@cli y : eq. to 'unroll'. : (+)
 
 #@cli unroll : _axis={ x | y | z | c } : (+)
 #@cli : Unroll selected images along specified axis.
-#@cli : (eq. to '-y').
+#@cli : (eq. to 'y').
 #@cli : Default value: 'axis=y'.
 #@cli : $ (1,2,3;4,5,6;7,8,9) --unroll y
 
@@ -8495,7 +8495,7 @@ bandpass : skip ${1=0},${2=20%}
   e[^-1] "Apply bandpass filter [$1,$2] to image$?."
   v - repeat $! l[$>]
     100%,100%,100% f. "sqrt((x/w-0.5)^2 + (y/h-0.5)^2 + (z/d-0.5)^2)"
-    n. 0,1 -ir. $1,$2 shift. {int(w/2)},{int(h/2)},{int(d/2)},0,2
+    n. 0,1 ir. $1,$2 shift. {int(w/2)},{int(h/2)},{int(d/2)},0,2
     fft.. *... . *[-2,-1] ifft rm.
   endl done v +
 
@@ -8506,11 +8506,11 @@ bandpass : skip ${1=0},${2=20%}
 #@cli : Set 'sampling' arguments to '0' for automatic adjustment.
 #@cli : $ image.jpg [0] repeat 5 bilateral[-1] 10,10 done
 
-#@cli b : eq. to '-blur'. : (+)
+#@cli b : eq. to 'blur'. : (+)
 
 #@cli blur : std_variation>=0[%],_boundary_conditions,_kernel : axes,std_variation>=0[%],_boundary_conditions,_kernel : (+)
 #@cli : Blur selected images by a quasi-gaussian or gaussian filter (recursive implementation).
-#@cli : (eq. to '-b').\n
+#@cli : (eq. to 'b').\n
 #@cli : 'boundary_conditions' can be { 0=dirichlet | 1=neumann } and 'kernel' can be { 0=quasi-gaussian (faster) | 1=gaussian }.
 #@cli : When specified, argument 'axes' is a sequence of { x | y | z | c }.
 #@cli : Specifying one axis multiple times apply also the blur multiple times.
@@ -8966,7 +8966,7 @@ dilate_oct : check $1>=0 skip ${2=1},${3=0}
 
 _kr_circle :
   if {$1%2==0} 2,2,1,1,1 else 1,1,1,1,1 endif r. $1,$1,1,1,0,0,0.5,0.5
-  distance. 1 round. 0.5 -ir. 0,{$1/2}
+  distance. 1 round. 0.5 ir. 0,{$1/2}
 
 _jf_circle :
   {round($1)},{round($1)}
@@ -8978,8 +8978,8 @@ _jf_circle :
     t2={sqrt(((round($1)+1)/2)^2+0.25)}
     k={$1-round($1)+0.5}
     t={$t1+($t2-$t1)*$k}
-    -ir. 0,$t
-  else -ir. 0,{$1/2-0.25}
+    ir. 0,$t
+  else ir. 0,{$1/2-0.25}
   endif
 
 #@cli dilate_threshold : size_x>=1,size_y>=1,size_z>=1,_threshold>=0,_boundary_conditions
@@ -9107,11 +9107,11 @@ erode_threshold : check "isint($1) && $1>=1 && isint(${2=$1}) && $2>=1 && isint(
 #@cli : $ image.jpg w2={int(w/2)} h2={int(h/2)} fft shift $w2,$h2,0,0,2 ellipse $w2,$h2,30,30,0,1,0 shift -$w2,-$h2,0,0,2 ifft remove[-1]
 #@cli : $$
 
-#@cli g : eq. to '-gradient'. : (+)
+#@cli g : eq. to 'gradient'. : (+)
 
 #@cli gradient : { x | y | z }...{ x | y | z },_scheme : (no arg) : (+)
 #@cli : Compute the gradient components (first derivatives) of selected images.
-#@cli : (eq. to '-g').\n
+#@cli : (eq. to 'g').\n
 #@cli : 'scheme' can be { -1=backward | 0=centered | 1=forward | 2=sobel | 3=rotation-invariant (default) | 4=deriche | 5=vanvliet }.
 #@cli : (no arg) compute all significant 2d/3d components.
 #@cli : Default value: 'scheme=3'.
@@ -11730,11 +11730,11 @@ grid : check "$1>=0 && $2>=0" skip ${3=0},${4=0},${5=1},${6=0},${7=$6}
 
   endl done v +
 
-#@cli j : eq. to '-image'. : (+)
+#@cli j : eq. to 'image'. : (+)
 
 #@cli image : [sprite],_x[%],_y[%],_z[%],_c[%],_opacity,_[sprite_mask],_max_opacity_mask : (+)
 #@cli : Draw specified sprite image on selected images.
-#@cli : (eq. to '-j').
+#@cli : (eq. to 'j').
 #@cli : Default values: 'x=y=z=c=0', 'opacity=1', 'sprite_mask=(undefined)' and 'max_opacity_mask=1'.
 #@cli : $ image.jpg --crop 40%,40%,60%,60% resize[-1] 200%,200%,1,3,5 frame[-1] 2,2,0 image[0] [-1],30%,30% keep[0]
 
@@ -11835,11 +11835,11 @@ maze_mask : check "isint(${1=24}) && $1>0"
     rm[0] + _render_maze. $1 nm. [maze]
   endl done v +
 
-#@cli j3d : eq. to '-object3d'. : (+)
+#@cli j3d : eq. to 'object3d'. : (+)
 
 #@cli object3d : [object3d],_x[%],_y[%],_z,_opacity,_rendering_mode,_is_double_sided={ 0 | 1 },_is_zbuffer={ 0 | 1 },_focale,_light_x,_light_y,_light_z,_specular_lightness,_specular_shininess : (+)
 #@cli : Draw specified 3d object on selected images.
-#@cli : (eq. to '-j3d').\n
+#@cli : (eq. to 'j3d').\n
 #@cli : 'rendering_mode' can be { 0=dots | 1=wireframe | 2=flat | 3=flat-shaded | 4=gouraud-shaded | 5=phong-shaded }.
 #@cli : Default values: 'x=y=z=0', 'opacity=1' and 'is_zbuffer=1'. All other arguments take their default values from the 3d environment variables.
 #@cli : $ image.jpg torus3d 100,10 cone3d 30,-120 add3d[-2,-1] rotate3d. 1,1,0,60 object3d[0] [-1],50%,50% keep[0]
@@ -11962,7 +11962,7 @@ pack_sprites : check "isint(${1=5}) && $1>=0 && ${2=25}>=0 && $2<=100 && isint($
 
 #@cli piechart : label_height>=0,label_R,label_G,label_B,"label1",value1,R1,G1,B1,...,"labelN",valueN,RN,GN,BN
 #@cli : Draw pie chart on selected (RGB) images.
-#@cli : $ image.jpg -piechart 25,0,0,0,"Red",55,255,0,0,"Green",40,0,255,0,"Blue",30,128,128,255,"Other",5,128,128,128
+#@cli : $ image.jpg piechart 25,0,0,0,"Red",55,255,0,0,"Green",40,0,255,0,"Blue",30,128,128,255,"Other",5,128,128,128
 piechart : check $1>=0
   e[^-1] "Draw pie chart on image$?, with label height $1 and color ($2,$3,$4)."
   v - $=arg repeat $! l[$>]
@@ -12199,11 +12199,11 @@ tetraedron_shade :
   rm.
   v +
 
-#@cli t : eq. to '-text'. : (+)
+#@cli t : eq. to 'text'. : (+)
 
 #@cli text : text,_x[%],_y[%],_font_height[%]>=0,_opacity,_color1,... : (+)
 #@cli : Draw specified colored text string on selected images.
-#@cli : (eq. to '-t').\n
+#@cli : (eq. to 't').\n
 #@cli : Exact pre-defined sizes are '13','23','53' and '103'. Using these sizes ensures you draw binary letters without anti-aliasing.
 #@cli : Any other font size is interpolated from an exact size (the upper when possible).
 #@cli : Specifying an empty target image resizes it to new dimensions such that the image contains
@@ -12212,7 +12212,7 @@ tetraedron_shade :
 #@cli : $ image.jpg resize2dy 600 y=0 repeat 30 text {2*$>}" : This is a nice text, isn't it ?",10,$y,{2*$>},0.9,255 y+={2*$>} done
 #@cli : $ 0 text "G'MIC",0,0,23,1,255
 
-#@cli to : eq. to '-text_outline'.
+#@cli to : eq. to 'text_outline'.
 to : skip ${2=1%}
   _text_outline "$1",${2--1}
 
@@ -12268,7 +12268,7 @@ truchet : check "isint(${1=32}) && $1>0 && ${2=3}>=0" skip ${3=1}
   v - repeat $! l[$>] nm={0,n}
     w={w} h={h} s={s} rm
     $1,$1 = 1,0,0 = 1,100%,100% distance 1,{1+$3} M={int(iM/2)} # Generate truchet pattern and its mirrored version.
-    -ir {$M-$2/2-($1%2)},{$M+$2/2} --mirror y a x
+    ir {$M-$2/2-($1%2)},{$M+$2/2} --mirror y a x
     {round($w/$1,1,1)},{round($h/$1,1,1)} rand. 0,1 >=. 50% r. {w*$1},{h*$1} *. $1
     channels. 0,1 (0,{$1-1}) r. $1,$1,1,1,3 --transpose. a[-2,-1] c r. ..,0,2 +[-2,-1]
     warp.. . rm. >= 50% r $w,$h,1,1,0 r 100%,100%,1,$s
@@ -12369,12 +12369,12 @@ transpose :
 #
 #---------------------------------
 
-#@cli +3d : eq. to '-add3d'. : (+)
+#@cli +3d : eq. to 'add3d'. : (+)
 
 #@cli add3d : tx,_ty,_tz : [object3d] : (no arg) : (+)
 #@cli : Shift selected 3d objects with specified displacement vector, or merge them with specified
 #@cli : 3d object, or merge all selected 3d objects together.
-#@cli : (eq. to '-+3d').
+#@cli : (eq. to '+3d').
 #@cli : Default values: 'ty=tz=0'.
 #@cli : $ sphere3d 10 repeat 5 --add3d[-1] 10,{u(-10,10)},0 color3d[-1] ${-RGB} done add3d
 #@cli : $ repeat 20 torus3d 15,2 color3d[-1] ${-RGB} -mul3d[-1] 0.5,1 if {$>%2} rotate3d[-1] 0,1,0,90 endif add3d[-1] 70 add3d rotate3d[-1] 0,0,1,18 done double3d 0
@@ -12542,13 +12542,13 @@ box3d : skip ${1=1},${2=$1},${3=$2}
   nm. [3d\ box]
   v +
 
-#@cli c3d : eq. to '-center3d'.
+#@cli c3d : eq. to 'center3d'.
 c3d :
   _center3d
 
 #@cli center3d
 #@cli : Center selected 3d objects at (0,0,0).
-#@cli : (eq. to '-c3d').
+#@cli : (eq. to 'c3d').
 #@cli : $ repeat 100 circle3d {u(100)},{u(100)},{u(100)},2 done add3d color3d[-1] 255,0,0 --center3d color3d[-1] 0,255,0 add3d
 center3d :
   _$0
@@ -12597,11 +12597,11 @@ circles3d : check ${1=1}>=0 skip ${2=1}
     endif
   endl done v +
 
-#@cli col3d : eq. to '-color3d'. : (+)
+#@cli col3d : eq. to 'color3d'. : (+)
 
 #@cli color3d : R,_G,_B,_opacity : (+)
 #@cli : Set color and opacity of selected 3d objects.
-#@cli : (eq. to '-col3d').
+#@cli : (eq. to 'col3d').
 #@cli : Default value: 'B=G=R' and 'opacity=(undefined)'.
 #@cli : $ torus3d 100,10 double3d 0 repeat 7 --rotate3d[-1] 1,0,0,20 color3d[-1] ${-RGB} done add3d
 
@@ -12785,20 +12785,20 @@ distribution3d :
     a y nm. [3d\ distribution]                 # Build 3d object.
   endl done v +
 
-#@cli /3d : eq. to '-div3d'. : (+)
+#@cli /3d : eq. to 'div3d'. : (+)
 
 #@cli div3d : factor : factor_x,factor_y,_factor_z : (+)
 #@cli : Scale selected 3d objects isotropically or anisotropically, with the inverse of specified
 #@cli : factors.
-#@cli : (eq. to '-/3d').
+#@cli : (eq. to '/3d').
 #@cli : Default value: 'factor_z=0'.
 #@cli : $ torus3d 5,2 repeat 5 --add3d[-1] 12,0,0 div3d[-1] 1.2 color3d[-1] ${-RGB} done add3d
 
-#@cli db3d : eq. to '-double3d'. : (+)
+#@cli db3d : eq. to 'double3d'. : (+)
 
 #@cli double3d : _is_double_sided={ 0 | 1 } : (+)
 #@cli : Enable/disable double-sided mode for 3d rendering.
-#@cli : (eq. to '-db3d').
+#@cli : (eq. to 'db3d').
 #@cli : Default value: 'is_double_sided=1'.
 #@cli : $ mode3d 1 repeat 2 torus3d 100,30 rotate3d[-1] 1,1,0,60 double3d $> snapshot3d[-1] 400 done
 
@@ -12830,11 +12830,11 @@ extrude3d : check "${1=16}>0 && ${2=1024}>0 && ${3=0.5%}>=0"
     isosurface3d 50% *3d 1,1,$fact rv3d
   nm $nm endl done v +
 
-#@cli f3d : eq. to '-focale3d'. : (+)
+#@cli f3d : eq. to 'focale3d'. : (+)
 
 #@cli focale3d : focale : (+)
 #@cli : Set 3d focale.
-#@cli : (eq. to '-f3d').\n
+#@cli : (eq. to 'f3d').\n
 #@cli : Set 'focale' to 0 to enable parallel projection (instead of perspective).
 #@cli : Set negative 'focale' will disable 3d sprite zooming.
 #@cli : Default value: 'focale=700'.
@@ -13169,11 +13169,11 @@ lathe3d : check "${1=128}>0 && ${2=0.5%}>=0 && ${3=361}>=0"
     expand_xyz 10,0 b $2 isosurface3d 50% rv3d
   endl done v +
 
-#@cli l3d : eq. to '-light3d'. : (+)
+#@cli l3d : eq. to 'light3d'. : (+)
 
 #@cli light3d : position_x,position_y,position_z : [texture] : (no arg) : (+)
 #@cli : Set the light coordinates or the light texture for 3d rendering.
-#@cli : (eq. to '-l3d').\n
+#@cli : (eq. to 'l3d').\n
 #@cli : (no arg) resets the 3d light to default.
 #@cli : $ torus3d 100,30 double3d 0 specs3d 1.2 repeat 5 light3d {$>*100},0,-300 --snapshot3d[0] 400 done remove[0]
 
@@ -13204,39 +13204,39 @@ lissajous3d : check ${1=1024}>1 skip ${2=2},${3=0},${4=1},${5=0},${6=0},${7=0}
   1,{3*($res-1)},1,1,200 1,{$res-1},1,1,1 a[-5--1] y nm. [3d\ lissajou]
   v +
 
-#@cli m3d : eq. to '-mode3d'. : (+)
+#@cli m3d : eq. to 'mode3d'. : (+)
 
 #@cli mode3d : _mode : (+)
 #@cli : Set static 3d rendering mode.
-#@cli : (eq. to '-m3d').\n
+#@cli : (eq. to 'm3d').\n
 #@cli : 'mode' can be { -1=bounding-box | 0=dots | 1=wireframe | 2=flat | 3=flat-shaded | 4=gouraud-shaded | 5=phong-shaded }.");
 #@cli : Bounding-box mode ('mode==-1') is active only for the interactive 3d viewer.
 #@cli : Default value: 'mode=4'.
 #@cli : $ (0,1,2,3,4,5) double3d 0 repeat {w} torus3d 100,30 rotate3d[-1] 1,1,0,60 mode3d {0,@$>} snapshot3d[-1] 300 done remove[0]
 
-#@cli md3d : eq. to '-moded3d'. : (+)
+#@cli md3d : eq. to 'moded3d'. : (+)
 
 #@cli moded3d : _mode : (+)
 #@cli : Set dynamic 3d rendering mode for interactive 3d viewer.
-#@cli : (eq. to '-md3d').\n
+#@cli : (eq. to 'md3d').\n
 #@cli : 'mode' can be { -1=bounding-box | 0=dots | 1=wireframe | 2=flat | 3=flat-shaded | 4=gouraud-shaded | 5=phong-shaded }.
 #@cli : Default value: 'mode=-1'.
 
-#@cli *3d : eq. to '-mul3d'. : (+)
+#@cli *3d : eq. to 'mul3d'. : (+)
 
 #@cli mul3d : factor : factor_x,factor_y,_factor_z : (+)
 #@cli : Scale selected 3d objects isotropically or anisotropically, with specified factors.
-#@cli : (eq. to '-*3d').
+#@cli : (eq. to '*3d').
 #@cli : Default value: 'factor_z=0'.
 #@cli : $ torus3d 5,2 repeat 5 --add3d[-1] 10,0,0 -mul3d[-1] 1.2 color3d[-1] ${-RGB} done add3d
 
-#@cli n3d : eq. to '-normalize3d'.
+#@cli n3d : eq. to 'normalize3d'.
 n3d :
   _normalize3d
 
 #@cli normalize3d
 #@cli : Normalize selected 3d objects to unit size.
-#@cli : (eq. to '-n3d').
+#@cli : (eq. to 'n3d').
 #@cli : $ repeat 100 circle3d {u(3)},{u(3)},{u(3)},0.1 done add3d color3d[-1] 255,0,0 --normalize3d[-1] color3d[-1] 0,255,0 add3d
 normalize3d :
   _$0
@@ -13251,11 +13251,11 @@ _normalize3d :
     endif
   endl done v +
 
-#@cli o3d : eq. to '-opacity3d'. : (+)
+#@cli o3d : eq. to 'opacity3d'. : (+)
 
 #@cli opacity3d : _opacity : (+)
 #@cli : Set opacity of selected 3d objects.
-#@cli : (eq. to '-o3d').
+#@cli : (eq. to 'o3d').
 #@cli : Default value: 'opacity=1'.
 #@cli : $ torus3d 100,10 double3d 0 repeat 7 --rotate3d[-1] 1,0,0,20 -opacity3d[-1] {u} done add3d
 
@@ -13398,11 +13398,11 @@ pose3d :
   else v + error "Command '$0': Image ["{$!-$>-1}"] does not represent a 3d object."
   endif endl done v +
 
-#@cli p3d : eq. to '-primitives3d'. : (+)
+#@cli p3d : eq. to 'primitives3d'. : (+)
 
 #@cli primitives3d : mode : (+)
 #@cli : Convert primitives of selected 3d objects.
-#@cli : (eq. to '-p3d').\n
+#@cli : (eq. to 'p3d').\n
 #@cli : 'mode' can be { 0=points | 1=segments | 2=non-textured }.
 #@cli : $ sphere3d 30 primitives3d 1 torus3d 50,10 color3d[-1] ${-RGB} add3d
 
@@ -13471,18 +13471,18 @@ random3d : check "$1>=0"
   nm. [3d\ random\ pointcloud]
   v +
 
-#@cli rv3d : eq. to '-reverse3d'. : (+)
+#@cli rv3d : eq. to 'reverse3d'. : (+)
 
 #@cli reverse3d : (+)
 #@cli : Reverse primitive orientations of selected 3d objects.
-#@cli : (eq. to '-rv3d').
+#@cli : (eq. to 'rv3d').
 #@cli : $ torus3d 100,40 double3d 0 --reverse3d
 
-#@cli r3d : eq. to '-rotate3d'. : (+)
+#@cli r3d : eq. to 'rotate3d'. : (+)
 
 #@cli rotate3d : u,v,w,angle : (+)
 #@cli : Rotate selected 3d objects around specified axis with specified angle (in deg.).
-#@cli : (eq. to '-r3d').
+#@cli : (eq. to 'r3d').
 #@cli : $ torus3d 100,10 double3d 0 repeat 7 --rotate3d[-1] 1,0,0,20 done add3d
 
 #@cli rotation3d : u,v,w,angle
@@ -13627,19 +13627,19 @@ snapshot3d : check "${2=1}>=0" skip ${1=512},${3=""}
    nm[1] {-2,n} rm[0]
   endl done rm. v +
 
-#@cli sl3d : eq. to '-specl3d'. : (+)
+#@cli sl3d : eq. to 'specl3d'. : (+)
 
 #@cli specl3d : value>=0 : (+)
 #@cli : Set lightness of 3d specular light.
-#@cli : (eq. to '-sl3d').
+#@cli : (eq. to 'sl3d').
 #@cli : Default value: 'value=0.15'.
 #@cli : $ (0,0.3,0.6,0.9,1.2) repeat {w} torus3d 100,30 rotate3d[-1] 1,1,0,60 color3d[-1] 255,0,0 specl3d {0,@$>} snapshot3d[-1] 400 done remove[0]
 
-#@cli ss3d : eq. to '-specs3d'. : (+)
+#@cli ss3d : eq. to 'specs3d'. : (+)
 
 #@cli specs3d : value>=0 : (+)
 #@cli : Set shininess of 3d specular light.
-#@cli : (eq. to '-ss3d').
+#@cli : (eq. to 'ss3d').
 #@cli : Default value: 'value=0.8'.
 #@cli : $ (0,0.3,0.6,0.9,1.2) repeat {w} torus3d 100,30 rotate3d[-1] 1,1,0,60 color3d[-1] 255,0,0 specs3d {0,@$>} snapshot3d[-1] 400 done remove[0]
 
@@ -13705,12 +13705,12 @@ spline3d : check ${13=128}>=2
   y[-3,-4,-6] a[-6--1] y
   v +
 
-#@cli s3d : eq. to '-split3d'. : (+)
+#@cli s3d : eq. to 'split3d'. : (+)
 
 #@cli split3d : _keep_shared_data={ 0 | 1 } : (+)
 #@cli : Split selected 3d objects into 6 feature vectors :
 #@cli : { header, sizes, vertices, primitives, colors, opacities }.
-#@cli : (eq. to '-s3d').\n
+#@cli : (eq. to 's3d').\n
 #@cli : To recreate the 3d object, append these 6 images along the y-axis.
 #@cli : Default value: 'keep_shared_data=1'.
 #@cli : $ box3d 100 --split3d
@@ -13784,11 +13784,11 @@ star3d : check "${1=5}>0 && ${2=0.38}>=0 && $2<=1"
 #@cli : Default values: 'dl=0.1', 'interpolation=2', 'is_backward=0' and 'is_oriented=0'.
 #@cli : $ 100,100,100,3 rand -10,10 blur 3 repeat 300 --streamline3d[0] {u(100)},{u(100)},{u(100)},1000,1,1 color3d[-1] ${-RGB} done remove[0] box3d 100 primitives3d[-1] 1 add3d
 
-#@cli -3d : eq. to '-sub3d'. : (+)
+#@cli -3d : eq. to 'sub3d'. : (+)
 
 #@cli sub3d : tx,_ty,_tz : (+)
 #@cli : Shift selected 3d objects with the opposite of specified displacement vector.
-#@cli : (eq. to '--3d').
+#@cli : (eq. to '-3d').
 #@cli : Default values: 'ty=tz=0'.
 #@cli : $ sphere3d 10 repeat 5 --sub3d[-1] 10,{u(-10,10)},0 color3d[-1] ${-RGB} done add3d
 
@@ -13916,11 +13916,11 @@ text3d : skip ${2=53},${3=10},${4=1.5}
   v - 0 t. "$1",0,0,$2,1,1 autocrop. 0 r. 100%,100%,$3 expand_xyz. 10,0
   b. $4 isosurface3d. 40% rv3d. nm. "[3d text '$1']" v +
 
-#@cli t3d : eq. to '-texturize3d'. : (+)
+#@cli t3d : eq. to 'texturize3d'. : (+)
 
 #@cli texturize3d : [ind_texture],_[ind_coords] : (+)
 #@cli : Texturize selected 3d objects with specified texture and coordinates.
-#@cli : (eq. to '-t3d').\n
+#@cli : (eq. to 't3d').\n
 #@cli : When '[ind_coords]' is omitted, default XY texture projection is performed.
 #@cli : Default value: 'ind_coords=(undefined)'.
 #@cli : $ image.jpg torus3d 100,30 texturize3d[-1] [-2] keep[-1]
@@ -13993,14 +13993,14 @@ weird3d : skip ${1=32}
 #
 #-------------------------------
 
-#@cli ap : eq. to '-apply_parallel'.
+#@cli ap : eq. to 'apply_parallel'.
 ap :
   v - _gmic_s="$?" v +
   _apply_parallel "$*"
 
 #@cli apply_parallel : "command"
 #@cli : Apply specified command on each of the selected images, by parallelizing it for all image of the list.
-#@cli : (eq. to '-ap').
+#@cli : (eq. to 'ap').
 #@cli : $ image.jpg --mirror x --mirror y apply_parallel "blur 3"
 apply_parallel :
   v - _gmic_s="$?" v +
@@ -14023,14 +14023,14 @@ _apply_parallel :
   endif
   v +
 
-#@cli apc : eq. to '-apply_parallel_channels'.
+#@cli apc : eq. to 'apply_parallel_channels'.
 apc :
   v - _gmic_s="$?" v +
   _apply_parallel_channels "$*"
 
 #@cli apply_parallel_channels : "command"
 #@cli : Apply specified command on each of the selected images, by parallelizing it for all channel of the images independently.
-#@cli : (eq. to '-apc').
+#@cli : (eq. to 'apc').
 #@cli : $ image.jpg apply_parallel_channels "blur 3"
 apply_parallel_channels :
   v - _gmic_s="$?" v +
@@ -14042,14 +14042,14 @@ _apply_parallel_channels :
   ap "$1"
   repeat $N a[$>-{$>+${s$>}-1}] c done v +
 
-#@cli apo : eq. to '-apply_parallel_overlap'.
+#@cli apo : eq. to 'apply_parallel_overlap'.
 apo : check "${2=0}>=0 && isint(${3=0}) && $3>=0"
   v - _gmic_s="$?" v +
   _apply_parallel_overlap "$1",${2--1}
 
 #@cli apply_parallel_overlap : "command",overlap[%],nb_threads={ 0=auto | 1 | 2 | 4 | 8 | 16 }
 #@cli : Apply specified command on each of the selected images, by parallelizing it on 'nb_threads' overlapped sub-images.
-#@cli : (eq. to '-apo').\n
+#@cli : (eq. to 'apo').\n
 #@cli : 'nb_threads' must be a power of 2.
 #@cli : Default values: 'overlap=0','nb_threads=0'.
 #@cli : $ image.jpg --apply_parallel_overlap "smooth 500,0,1",1
@@ -14168,11 +14168,11 @@ apply_timeout :
 #@cli endif : (+)
 #@cli : End a 'if...[elif]...[else]...endif' block.
 
-#@cli endl : eq. to '-endlocal'. : (+)
+#@cli endl : eq. to 'endlocal'. : (+)
 
 #@cli endlocal : (+)
 #@cli : End a 'local...endlocal' block.
-#@cli : (eq. to '-endl').
+#@cli : (eq. to 'endl').
 
 #@cli error : message : (+)
 #@cli : Print specified error message on the standard error (stderr) and exit interpreter, except
@@ -14185,12 +14185,12 @@ eval :
   e[^-1] "Evaluate math expression '$1'."
   v - u {"$*"} v +
 
-#@cli x : eq. to '-exec'. : (+)
+#@cli x : eq. to 'exec'. : (+)
 
 #@cli exec : command : (+)
 #@cli : Execute external command using a system call.
 #@cli : The status value is then set to the error code returned by the system call.
-#@cli : (eq. to '-x').
+#@cli : (eq. to 'x').
 
 #@cli for : condition : (+)
 #@cli : Start a 'for...done' block.
@@ -14202,11 +14202,11 @@ eval :
 #@cli : 'boolean' can be a float number standing for { 0=false | other=true }.
 #@cli : $ image.jpg if {ia<64} add 50% elif {ia<128} add 25% elif {ia<192} sub 25% else sub 50% endif cut 0,255
 
-#@cli l : eq. to '-local'. : (+)
+#@cli l : eq. to 'local'. : (+)
 
 #@cli local : (+)
 #@cli : Start a 'local...[onfail]...endlocal' block, with selected images.
-#@cli : (eq. to '-l').
+#@cli : (eq. to 'l').
 #@cli : $ image.jpg local[] 300,300,1,3 rand[0] 0,255 blur 4 sharpen 1000 endlocal
 #@cli : $ image.jpg --local repeat 3 deform 20 done endlocal
 #@cli : $$
@@ -14246,11 +14246,11 @@ parallel : skip "${1=},${2=},${3=},${4=},${5=},${6=},${7=},${8=},${9=},${10=},${
 #@cli : Set the progress indice of the current processing pipeline.
 #@cli : This command is useful only when G'MIC is used by an embedding application.
 
-#@cli q : eq. to '-quit'. : (+)
+#@cli q : eq. to 'quit'. : (+)
 
 #@cli quit : (+)
 #@cli : Quit G'MIC interpreter.
-#@cli : (eq. to '-q').
+#@cli : (eq. to 'q').
 
 #@cli repeat : nb_iterations,_variable_name : (+)
 #@cli : Start iterations of a 'repeat...done' block.
@@ -14287,11 +14287,11 @@ _rprogress : $*
 #@cli skip : item : (+)
 #@cli : Do nothing but skip specified item.
 
-#@cli u : eq. to '-status'. : (+)
+#@cli u : eq. to 'status'. : (+)
 
 #@cli status : status_string : (+)
 #@cli : Set the current status. Used to define a returning value from a function.
-#@cli : (eq. to '-u').
+#@cli : (eq. to 'u').
 #@cli : $ image.jpg command "foo : u0=Dark u1=Bright status ${u{ia>=128}}" text_outline ${-foo},2,2,23,2,1,255
 
 #@cli while : boolean : filename : (+)
@@ -14356,7 +14356,7 @@ array_random : skip ${2=$1},${3=$1},${4=$2}
     rm[0-{$1*$2-1}] append_tiles $3,$4
   nm $nm endl done v +
 
-#@cli frame : eq. to '-frame_xy'.
+#@cli frame : eq. to 'frame_xy'.
 frame : skip ${2=$1}>=0,${3=255},${4=$3},${5=$4},${6=255}
   v - _gmic_s="?" v +
   _frame_xy ${1--1}
@@ -14537,7 +14537,7 @@ frame_x : skip ${2=255},${3=$2},${4=$3},${5=255}
 #@cli frame_xy : size_x[%],_size_y[%],_col1,...,_colN
 #@cli : Insert colored frame along the x-axis in selected images.
 #@cli : Default values: 'size_y=size_x', 'col1=col2=col3=255' and 'col4=255'.
-#@cli : (eq. to '-frame').
+#@cli : (eq. to 'frame').
 #@cli : $ image.jpg frame_xy 1,1,0 frame_xy 20,10,255,0,255
 frame_xy : skip ${2=$1},${3=255},${4=$3},${5=$4},${6=255}
   v - _gmic_s="$?" v +
@@ -17399,8 +17399,8 @@ output_pink3d :
 #@cli : Pink wrapper name,p1,...,pn (requires the PINK library to be installed).
 #@cli : (http://pinkhq.com/)
 #@cli : prepares input, calls external "name input p1...pn output" and reads output (/tmp)
-#@cli : $ image.jpg --pink asfr,5 -pink[0] asf,5
-#@cli : $ image.jpg --blur 2 -pink maxima,4
+#@cli : $ image.jpg --pink asfr,5 pink[0] asf,5
+#@cli : $ image.jpg --blur 2 pink maxima,4
 pink : v -
   if {$#>1} ({"'${2--1}'"}) replace. {','},{"' '"} p={t} rm. else p=" " endif
   v + e[^-1] "Call pink package on image$? with cmd: \"$1 [img] "$p" [img]\"." v -
@@ -17455,7 +17455,7 @@ pink_htkern : skip ${1=4},${2=""}
 #@cli : (http://pinkhq.com/doxygen/lvkernu_8c.html)
 #@cli : Grayscale ultimate leveling thinning/thickening without condition (requires the PINK library to be installed).
 #@cli : Default values: 'connectivity=4' and 'type=""'.
-#@cli : $ image.jpg -pink_lvkern ,u
+#@cli : $ image.jpg pink_lvkern ,u
 pink_lvkern : skip ${1=4},${2=""}
   check "${1=4}==4 || $1==8 || $1==6 || $1==26"
   repeat $! l[$>] _xpinks lvkern${2},"null $1" endl done
@@ -17464,7 +17464,7 @@ pink_lvkern : skip ${1=4},${2=""}
 #@cli : (http://pinkhq.com/doxygen/minima_8c.html)
 #@cli : Regional minima (requires the PINK library to be installed).
 #@cli : Default values: 'connectivity=4'.
-#@cli : $ image.jpg --blur 2 -pink_reg_minima ,
+#@cli : $ image.jpg --blur 2 pink_reg_minima ,
 pink_reg_minima : check "${1=4}==4 || $1==8 || $1==6 || $1==26"
   e[^-1] "Compute regional minima exec with connectivity $1."
   v - repeat $! l[$>]
@@ -17511,7 +17511,7 @@ pink_skelpar : skip ${1=4},${2=-1},${3=""}
 #@cli : (http://pinkhq.com/doxygen/wshedtopo_8c.html)
 #@cli : Watershed (requires the PINK library to be installed).
 #@cli : Default values: 'connectivity=4', 'inverse=0' and 'height=0'.
-#@cli : $ image.jpg --pink_wshed ,1,5 -pink_wshed[0] ,,5
+#@cli : $ image.jpg --pink_wshed ,1,5 pink_wshed[0] ,,5
 pink_wshed : check "${1=4}==4 || $1==8 || $1==6 || $1==26" skip ${2=0},${3=0}
   e[^-1] "Compute wshedtopo exec with connectivity $1 inversion $2 height $3."
   v - repeat $! l[$>]
@@ -17521,8 +17521,8 @@ pink_wshed : check "${1=4}==4 || $1==8 || $1==6 || $1==26" skip ${2=0},${3=0}
       repeat $! l[$>]
         -f max(min(i,255),0)
         if {$2!=0} negate 255 endif
-        if {$3>=0} -pink heightminima,$1,$3 endif
-        -pink wshedtopo,$1
+        if {$3>=0} pink heightminima,$1,$3 endif
+        pink wshedtopo,$1
         if {$2!=0} negate 255 endif
       endl done
     else
@@ -17531,9 +17531,9 @@ pink_wshed : check "${1=4}==4 || $1==8 || $1==6 || $1==26" skip ${2=0},${3=0}
         -f max(min(i,255),0)
         if {$2!=0} negate 255 endif
         if {$3>=0}
-          -pink heightminima,$1,$3
+          pink heightminima,$1,$3
         endif
-        -pink wshedtopo,$1
+        pink wshedtopo,$1
         if {$2!=0} negate 255 endif
       endl done
     endif
@@ -20711,7 +20711,7 @@ x_life :
   # Start user-event loop.
   do
     (1,1,1;1,0,1;1,1,1) --correlate[0] .,0 rm..                # Count numbers of neighboring living cells.
-    --ir. 2,2 &. [0] -ir.. 3,3 -|[-2,-1]                       # Make the game evolve (kill or create cells).
+    --ir. 2,2 &. [0] ir.. 3,3 -|[-2,-1]                       # Make the game evolve (kill or create cells).
     rv[0,-1]                                                   # Update game state.
     if {{*,x}>0" && "{*,b}==1" && "$stock>0}                   # Add random cells to the game if user presses mouse button.
       nb={u*7}
@@ -24109,13 +24109,13 @@ _survey_choice :
       val={round(i[$>]*100)}
       0 t. $i." "${arg{3+$>}}"   ",0,0,20,1,${RGB$>},255
       0 t. [$val%],0,0,20,1,${RGB$>},255
-      r[-2,-1] 100%,${-max_h[-2,-1]},1,4,0,0,0,0.5
+      r[-2,-1] 100%,${max_h[-2,-1]},1,4,0,0,0,0.5
       mv[-2,-1] -3
       i+=1
     endif done
     rm.
-    r[0--1:2] ${-max_w[0--1:2]},100%,1,4,0,1
-    r[1--1:2] ${-max_w[1--1:2]},100%,1,4,0,1
+    r[0--1:2] ${max_w[0--1:2]},100%,1,4,0,1
+    r[1--1:2] ${max_w[1--1:2]},100%,1,4,0,1
     append_tiles 2
     if $-1 r {max($-1,w)},100%,1,4,0 endif
   endl
@@ -24131,8 +24131,8 @@ _survey_choice :
       else parg2=$parg2," ",{i[$>]},0,0,0 endif
       i+=1
     endif done
-    512,512,1,3,255 -piechart. $parg1
-    512,512,1,3 -piechart. $parg2
+    512,512,1,3,255 piechart. $parg1
+    512,512,1,3 piechart. $parg2
     max[-2,-1]
     to_rgba. replace_color. 0,0,255,255,255,255,255,255,255,0
     drop_shadow. 10,10,2
@@ -25673,7 +25673,7 @@ fx_charcoal :
     if $4 equalize. n. 0,255 endif
     sharpen {$1*3} cut 0,255
     if $6 --ir $7,$8 endif  # Add highlights layer if required.
-    -ir[0] $2,$3
+    ir[0] $2,$3
     if {!$15} ==[0] 0 endif
     -|
     --*[0] $10 --*[0] $11 *[0] $9
@@ -26545,7 +26545,7 @@ _fx_channel_processing :
   if {$5==1} c. $6%,$7%
   elif {$5==2} c. $6%,$7% n. 0,255
   elif {$5==3} n. $6%,$7%
-  elif {$5==4} -ir. $6%,$7% *. 255
+  elif {$5==4} ir. $6%,$7% *. 255
   endif
   if {$8!=256} quantize. $8,1,0 endif
   if $9 equalize. endif
@@ -28948,10 +28948,10 @@ _fx_pixelsort :
     elif {$4==2} --gradient_norm[0]
     else --rand. 0,100
     endif
-    b. $7% -ir. $5%,{$6+0.01}%
+    b. $7% ir. $5%,{$6+0.01}%
     if $8 ==. 0 endif
     if $9 k. * 255
-    else -pixelsort[0] {`$1?_'+':_'-'`},{`$2==0?'x':$2==1?'y':$2==2?'xy':'yx'`},[1],[2] k[0]
+    else pixelsort[0] {`$1?_'+':_'-'`},{`$2==0?'x':$2==1?'y':$2==2?'xy':'yx'`},[1],[2] k[0]
     endif
   endl done
 

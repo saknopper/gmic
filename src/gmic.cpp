@@ -12788,7 +12788,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
           }
           if (level && position>=commands_line.size())
             error(images,0,0,
-                  "Command '%s': Missing associated '-%s' command.",stb,ste);
+                  "Command '%s': Missing associated '%s' command.",stb,ste);
           if (is_continue || callstack_local) {
 	    if (callstack_ind<callstack.size() - 1) callstack.remove(callstack_ind + 1,callstack.size() - 1);
 	    --position;
@@ -14211,7 +14211,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                     }
                   if (misspelled)
                     error(images,0,0,
-                          "Unknown command or filename '%s' (did you mean '-%s%s' ?).",
+                          "Unknown command or filename '%s' (did you mean '%s%s' ?).",
                           gmic_argument_text(),foff>1?"-":"",misspelled);
                   else error(images,0,0,
                              "Unknown command or filename '%s'.",
@@ -14314,12 +14314,12 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
         unsigned int reference_line = ~0U;
         if (cimg_sscanf(s,"*%*[a-z]#%u",&reference_line)==1)
           error(images,0,0,
-                "A '-%s' command is missing (for '-%s', line #%u), before return point.",
+                "A '%s' command is missing (for '%s', line #%u), before return point.",
                 s[1]=='d'?"while":s[1]=='i'?"endif":s[1]=='r' || s[1]=='f'?"done":"endlocal",
                 s[1]=='d'?"do":s[1]=='i'?"if":s[1]=='r'?"repeat":s[1]=='f'?"for":"local",
                 reference_line);
         else error(images,0,0,
-              "A '-%s' command is missing, before return point.",
+              "A '%s' command is missing, before return point.",
               s[1]=='d'?"while":s[1]=='i'?"endif":s[1]=='r'?"done":s[1]=='f'?"for":"endlocal");
       }
     } else if (initial_callstack_size<callstack.size()) callstack.remove(initial_callstack_size,callstack.size() - 1);
