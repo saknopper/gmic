@@ -2281,7 +2281,7 @@ _document_gmic_description_bash :
 _document_gmic_example_bash :
 
 _document_gmic_declaration_bash :
-  _opts$_nbopts=-{0,t}" "--{0,t}
+  _opts$_nbopts={0,t}" "-{0,t}" "--{0,t}
   _nbopts+=1
 
   _coms$_nbcoms={0,t}
@@ -2316,13 +2316,13 @@ _document_gmic_footer_bash : skip $1
   e[] "\n\tcase \"${prev}\" in"
   repeat $_argcommand  # Regular commands with arguments.
     if {'${_command$>}'!='i'" && "'${_command$>}'!='o'" && "!same('${_command$>}','input',5)" && "!same('${_command$>}','output',6)}
-      e[] "\t\t\"-"${_command$>}"\" | \"--"${_command$>}"\")"
+      e[] "\t\t\""${_command$>}"\" | \"-"${_command$>}"\" | \"--"${_command$>}"\")"
       e[] "\t\tCOMPREPLY=( $(compgen -W \""${_argument$>}"\") )\n\t\treturn 0\n\t\t;;"
     endif
   done
   repeat $_shortcut # Shortcut commands (with arguments).
     if {['${_shortcut$>}']!='i'" && "['${_shortcut$>}']!='o'" && "narg(${_argumentlink${_shortcutlink$>}})}
-      e[] "\t\t\"-"${_shortcut$>}"\" | \"--"${_shortcut$>}"\")"
+      e[] "\t\t\""${_shortcut$>}"\" | \"-"${_shortcut$>}"\" | \"--"${_shortcut$>}"\")"
       e[] "\t\tCOMPREPLY=( $(compgen -W \""${_argumentlink${_shortcutlink$>}}"\") )\n\t\treturn 0\n\t\t;;"
     endif
   done
@@ -2335,7 +2335,7 @@ _document_gmic_footer_bash : skip $1
 \n
 \n}
 \n
-complete -F _"$_name" o filenames gmic"
+complete -F _"$_name" -o filenames gmic"
   v -
 
 # Define document_gmic commands for html output.
