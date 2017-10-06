@@ -4612,7 +4612,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
   // (prevents stack overflow on recursive calls while remaining thread-safe).
   CImg<char> _formula(4096), _color(4096), message(1024), _title(256), _indices(256),
     _argx(256), _argy(256), _argz(256), _argc(256), _current_command(256), argument_text(81),
-    _command(256), _restriction(256);
+    _command(256), _s_selection(256);
 
   char
     *const formula = _formula.data(),
@@ -4625,9 +4625,9 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
     *const argc = _argc.data(),
     *const current_command = _current_command.data(),
     *const command = _command.data(),
-    *const restriction = _restriction.data();
+    *const s_selection = _s_selection.data();
   *formula = *color = *title = *indices = *argx = *argy = *argz = *argc =
-    *current_command = *command = *restriction = 0;
+    *current_command = *command = *s_selection = 0;
 
   try {
 
@@ -4740,10 +4740,10 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
         }
       }
 
-      // Split command/restriction, if necessary.
-      *command = *restriction = 0;
+      // Split command/selection, if necessary.
+      *command = *s_selection = 0;
 
-      bool is_restriction = false;
+      bool is_selection = false;
       const unsigned int siz = images._width;
       CImg<unsigned int> selection;
       CImg<char> new_name;
@@ -4751,45 +4751,45 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
         sep0 = sep1 = 0;
         strreplace_fw(item);
         err = cimg_sscanf(item,"%255[^[]%c%255[a-zA-Z_0-9.eE%^,:+-]%c%c",
-                          command,&sep0,restriction,&sep1,&end);
+                          command,&sep0,s_selection,&sep1,&end);
 
         const unsigned int l_command = err==1?(unsigned int)std::strlen(command):0;
         if (err==1 && l_command>=2 && command[l_command - 1]=='.') { // Selection shortcut
-          err = 4; sep0 = '['; sep1 = ']'; *restriction = '-';
-          if (command[l_command - 2]!='.') { restriction[1] = '1'; command[l_command - 1] = 0; }
-          else if (l_command>=3 && command[l_command - 3]!='.') { restriction[1] = '2'; command[l_command - 2] = 0; }
-          else if (l_command>=4 && command[l_command - 4]!='.') { restriction[1] = '3'; command[l_command - 3] = 0; }
-          restriction[2] = 0;
+          err = 4; sep0 = '['; sep1 = ']'; *s_selection = '-';
+          if (command[l_command - 2]!='.') { s_selection[1] = '1'; command[l_command - 1] = 0; }
+          else if (l_command>=3 && command[l_command - 3]!='.') { s_selection[1] = '2'; command[l_command - 2] = 0; }
+          else if (l_command>=4 && command[l_command - 4]!='.') { s_selection[1] = '3'; command[l_command - 3] = 0; }
+          s_selection[2] = 0;
         }
         if (err==1) { // No selection -> all images
           selection.assign(1,siz);
           cimg_forY(selection,y) selection[y] = (unsigned int)y;
         } else if (err==2 && sep0=='[' && item[std::strlen(command) + 1]==']') { // Empty selection
-          selection.assign(); is_restriction = true;
+          selection.assign(); is_selection = true;
         } else if (err==4 && sep1==']') { // Other selections
-          is_restriction = true;
+          is_selection = true;
           if (!is_double_hyphen && (!std::strcmp("wait",command) ||
                                     !std::strcmp("cursor",command)))
-            selection2cimg(restriction,10,CImgList<char>::empty(),command).move_to(selection);
+            selection2cimg(s_selection,10,CImgList<char>::empty(),command).move_to(selection);
           else if (!is_double_hyphen && *command=='i' && (!command[1] || !std::strcmp("input",command)))
-            selection2cimg(restriction,siz + 1,images_names,command,true,&new_name).move_to(selection);
+            selection2cimg(s_selection,siz + 1,images_names,command,true,&new_name).move_to(selection);
           else if (!is_double_hyphen &&
                    ((*command=='e' && (!command[1] ||
                                        !std::strcmp("echo",command) ||
                                        !std::strcmp("error",command))) ||
                     !std::strcmp("warn",command)))
-            selection2cimg(restriction,callstack.size(),CImgList<char>::empty(),command).move_to(selection);
+            selection2cimg(s_selection,callstack.size(),CImgList<char>::empty(),command).move_to(selection);
           else if (!is_double_hyphen && !std::strcmp("pass",command))
-            selection2cimg(restriction,parent_images.size(),parent_images_names,command).move_to(selection);
+            selection2cimg(s_selection,parent_images.size(),parent_images_names,command).move_to(selection);
           else
-            selection2cimg(restriction,siz,images_names,command).move_to(selection);
+            selection2cimg(s_selection,siz,images_names,command).move_to(selection);
         } else {
           std::strncpy(command,item,_command.width() - 1);
-          command[_command.width() - 1] = *restriction = 0;
+          command[_command.width() - 1] = *s_selection = 0;
         }
       } else {
         std::strncpy(command,item,_command.width() - 1);
-        command[_command.width() - 1] = *restriction = 0;
+        command[_command.width() - 1] = *s_selection = 0;
       }
       position = position_argument;
 
@@ -4894,7 +4894,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             is_deiopwx = command0=='d' || command0=='e' || command0=='i' || command0=='o' || command0=='p' ||
                          command0=='w' || command0=='x';
           if ((unsigned int)command0<128 && onechar_shortcuts[(unsigned int)command0] &&
-              (!is_mquvx || (!is_double_hyphen && !is_restriction)) &&
+              (!is_mquvx || (!is_double_hyphen && !is_selection)) &&
               (!is_deiopwx || !is_double_hyphen)) {
             std::strcpy(command,onechar_shortcuts[(unsigned int)command0]);
             if (is_mquvx) { CImg<char>::string(command).move_to(_item); *command = 0; }
@@ -4922,13 +4922,13 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
           case 'j' : std::strcpy(command,"object3d"); break;
           case '+' : std::strcpy(command,"add3d"); break;
           case '/' : std::strcpy(command,"div3d"); break;
-          case 'f' : if (!is_double_hyphen && !is_restriction)
+          case 'f' : if (!is_double_hyphen && !is_selection)
               CImg<char>::string("focale3d").move_to(_item);
             break;
-          case 'l' : if (!is_double_hyphen && !is_restriction)
+          case 'l' : if (!is_double_hyphen && !is_selection)
               CImg<char>::string("light3d").move_to(_item);
             break;
-          case 'm' : if (!is_double_hyphen && !is_restriction)
+          case 'm' : if (!is_double_hyphen && !is_selection)
               CImg<char>::string("mode3d").move_to(_item);
           case '*' : std::strcpy(command,"mul3d"); break;
           case 'o' : std::strcpy(command,"opacity3d"); break;
@@ -4940,16 +4940,16 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
           } else if (!command4 && command2=='3' && command3=='d') {
           // Four-chars shortcuts (ending with '3d').
           if (command0=='d' && command1=='b') {
-            if (!is_double_hyphen && !is_restriction) CImg<char>::string("double3d").move_to(_item);
+            if (!is_double_hyphen && !is_selection) CImg<char>::string("double3d").move_to(_item);
           } else if (command0=='m' && command1=='d') {
-            if (!is_double_hyphen && !is_restriction) CImg<char>::string("moded3d").move_to(_item);
+            if (!is_double_hyphen && !is_selection) CImg<char>::string("moded3d").move_to(_item);
           }
           else if (command0=='r' && command1=='v') std::strcpy(command,"reverse3d");
           else if (command0=='s' && command1=='l') {
-            if (!is_double_hyphen && !is_restriction) CImg<char>::string("specl3d").move_to(_item);
+            if (!is_double_hyphen && !is_selection) CImg<char>::string("specl3d").move_to(_item);
           }
           else if (command0=='s' && command1=='s') {
-            if (!is_double_hyphen && !is_restriction) CImg<char>::string("specs3d").move_to(_item);
+            if (!is_double_hyphen && !is_selection) CImg<char>::string("specs3d").move_to(_item);
           }
         }
         if (item!=_item.data() + (is_double_hyphen?2:is_simple_hyphen?1:0)) item = _item;
@@ -6162,7 +6162,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
         // Show/hide mouse cursor.
         if (!is_double_hyphen && !std::strcmp("cursor",command)) {
           gmic_substitute_args(false);
-          if (!is_restriction)
+          if (!is_selection)
             CImg<unsigned int>::vector(0,1,2,3,4,5,6,7,8,9).move_to(selection);
           bool state = true;
           if (!argument[1] && (*argument=='0' || *argument=='1')) {
@@ -6744,7 +6744,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             gmic_substitute_args(false);
             name.assign(argument,(unsigned int)std::strlen(argument) + 1);
             cimg::strunescape(name);
-            if (is_restriction) print(images,&selection,"%s",name.data());
+            if (is_selection) print(images,&selection,"%s",name.data());
             else print(images,0,"%s",name.data());
           }
           ++position; continue;
@@ -6778,7 +6778,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
           gmic_substitute_args(false);
           name.assign(argument,(unsigned int)std::strlen(argument) + 1);
           cimg::strunescape(name);
-          if (is_restriction) error(images,&selection,0,"%s",name.data());
+          if (is_selection) error(images,&selection,0,"%s",name.data());
           else error(images,0,0,"%s",name.data());
         }
 
@@ -12323,7 +12323,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
           }
           name.assign(argument,(unsigned int)std::strlen(argument) + 1);
           cimg::strunescape(name);
-          if (is_restriction) warn(images,&selection,force_visible,"%s",name.data());
+          if (is_selection) warn(images,&selection,force_visible,"%s",name.data());
           else warn(images,0,force_visible,"%s",name.data());
           ++position; continue;
         }
@@ -12573,7 +12573,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
         // Wait for a given delay of for user events on display window.
         if (!is_double_hyphen && !std::strcmp("wait",command)) {
           gmic_substitute_args(false);
-          if (!is_restriction)
+          if (!is_selection)
             CImg<unsigned int>::vector(0,1,2,3,4,5,6,7,8,9).move_to(selection);
           float delay = 0;
           if (cimg_sscanf(argument,"%f%c",
@@ -13474,10 +13474,10 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
       else {
         std::strcpy(command,"input");
         argument = item - (is_double_hyphen?2:is_simple_hyphen?1:0);
-        *restriction = 0;
+        *s_selection = 0;
       }
       gmic_substitute_args(true);
-      if (!is_restriction || !selection) selection.assign(1,1,1,1,images.size());
+      if (!is_selection || !selection) selection.assign(1,1,1,1,images.size());
 
       CImg<char> indicesy(256), indicesz(256), indicesc(256);
       float dx = 0, dy = 1, dz = 1, dc = 1, nb = 1;
