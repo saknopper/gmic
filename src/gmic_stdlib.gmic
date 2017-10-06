@@ -4194,7 +4194,7 @@ update_server :
   _update_server_move[] "/Testing/Samj/Artistic/Anguish","/Artistic"
   _update_server_move[] "/Testing/Samj/Artistic/Chalk~it~up","/Artistic"
   _update_server_move[] "/Testing/Samj/Artistic/Paint~daub","/Artistic"
-  _update_server_move[] "/Testing/Samj/Artistic/Skeletik","/Artistic"
+#  _update_server_move[] "/Testing/Samj/Artistic/Skeletik","/Artistic"
   _update_server_move[] "/Testing/Samj/Patterns/Denim","/Patterns"
   _update_server_move[] "/Testing/Samj/Patterns/Soft~random~shades","/Patterns"
   _update_server_move[] "/Testing/Samj/Rendering/Pythagoras~tree","/Rendering"
