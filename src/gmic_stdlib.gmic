@@ -1952,7 +1952,7 @@ display_quiver :
   _$0 $*
 
 _display_quiver : check "${1=16}>0 && ${2=1.5}>=0 && isint(${3=2}) && $3>=0 && $3<=2"
-  e[0--3] "Render field of 2d arrows from image"$_gmic_s", with size factor $1, arrow size $2 in "${-arg\ 1+$3,monochrome,grayscale,color}" mode."
+  e[0--3] "Render field of 2d arrows from image"$_gmic_s", with size factor $1, arrow size $2 in "${arg\ 1+$3,monochrome,grayscale,color}" mode."
   v - repeat $! l[$>]
     --norm. /.. {max(1e-6,iM)} rm. # Normalize vector values.
     {$1*w},{$1*h},1,{"1<<cut($3,0,2)"}
@@ -2027,7 +2027,7 @@ display_tensors :
   _$0 $*
 
 _display_tensors : check "${1=16}>0 && ${2=1.5}>=0 && isint(${3=2}) && $3>=0 && $3<=2 && ${4=2}>=0"
-  e[0--3] "Render field of 2x2 tensors from image"$_gmic_s", with size factor $1, ellipse size $2 in "${-arg\ 1+$3,monochrome,grayscale,color}" mode and outline $4."
+  e[0--3] "Render field of 2x2 tensors from image"$_gmic_s", with size factor $1, ellipse size $2 in "${arg\ 1+$3,monochrome,grayscale,color}" mode and outline $4."
   v - repeat $! l[$>]
     * {($2*$1/2)/max(abs(im),abs(iM))} # Normalize tensor values.
     {$1*w},{$1*h},1,{"1<<cut($3,0,2)"}
@@ -2296,7 +2296,7 @@ _document_gmic_declaration_bash :
   if {$!==2" && "same([{^}],'"eq. to "',7)} # Command is a shortcut.
     rows. 7,100% autocrop. {'.'} autocrop. {'" "'} autocrop. 39 autocrop. {'-'}
     _shortcut$_shortcut={0,t}
-    _shortcutlink$_shortcut=${-str2hex\ {1,t}}
+    _shortcutlink$_shortcut=${str2hex\ {1,t}}
     rm.
     _shortcut+=1
   elif {$!>1} # Command is regular and has arguments.
@@ -2308,7 +2308,7 @@ _document_gmic_declaration_bash :
       discard[^0] {'" "'} i[2--2] ({'" "'}) a[^0] y
       _argument$_argcommand={1,t}
     endif
-    _argumentlink${-str2hex\ {0,t}}=${_argument$_argcommand}
+    _argumentlink${str2hex\ {0,t}}=${_argument$_argcommand}
     _argcommand+=1
   endif
 
@@ -3072,7 +3072,7 @@ output_cube :
    l={round((w*h*d)^(1/3))}
    if {w*h*d!=$l^3} v + error "Command '$0': CLUT '"{n}"' has invalid dimensions "({w},{h},{d},{s}). endif
    r $l,$l,$l,3,-1 permute cxyz / 255
-   if {$N>1} fn=${"-filename \"$1\",$>"} else fn="$1" endif
+   if {$N>1} fn=${"filename \"$1\",$>"} else fn="$1" endif
    o dlm:$fn rm i raw:$fn,uchar replace {','},32
    0 nm. $fn basename={b} rm.
    header="\# Created by: G'MIC (http://gmic.eu)\n"\
@@ -3107,7 +3107,7 @@ output_ggr : skip "${2=}"
       ({'$start" "$mid" "$end" "$r" "$g" "$b" "$a" "$r" "$g" "$b" "$a" 0 0\n"'})
     done
     rm[0] a x
-    if {$N>1} o raw:${"-filename \"$1\",$>"},char else o raw:"$1",char endif
+    if {$N>1} o raw:${"filename \"$1\",$>"},char else o raw:"$1",char endif
     rm
   endl done v +
 
@@ -3124,7 +3124,7 @@ outputn :
   _$0 $*
 
 _outputn :
-  v - filename=${-filename\ "$1",$>} v +
+  v - filename=${filename\ "$1",$>} v +
   e[0--3] "Output image"$_gmic_s" as file '"$filename"'."
   v - o $filename v +
 
@@ -3550,7 +3550,7 @@ _sample :
 
   # Check validity of given arguments.
   $=arg
-  M=${"-arg2var _sp_name,"\
+  M=${"arg2var _sp_name,"\
       apples,barbara,boats,bottles,butterfly,cameraman,car,cat,cliff,\
       david,dog,duck,eagle,elephant,earth,flower,fruits,greece,gummy,house,\
       inside,landscape,leaf,lena,leno,lion,mandrill,monalisa,monkey,parrots,\
@@ -3707,7 +3707,7 @@ update_film_emulation_html :
 
   nb_presets=0
   repeat {narg($categories)}
-    category=${-arg\ {1+$>},$categories}
+    category=${arg\ {1+$>},$categories}
     presets=${-_fx_emulate_film_$category}
     nb_presets+={narg({/$presets})}
   done
@@ -3749,7 +3749,7 @@ update_film_emulation_html :
   # Generate film emulation data and rendering on each input sample.
   ind_preset=0
   repeat {narg($categories)}
-    category=${-arg\ {1+$>},$categories}
+    category=${arg\ {1+$>},$categories}
     presets=${-_fx_emulate_film_$category}
 
     v + e[] "\n  * Category ""#"{1+$>}": "$category"\n" v -
@@ -3757,7 +3757,7 @@ update_film_emulation_html :
     if $category/clut else -x "mkdir "$category/clut endif
 
     repeat {narg({/$presets})}
-      preset=${-arg\ {1+$>},$presets}
+      preset=${arg\ {1+$>},$presets}
       v + e[] "    - "$preset v -
       clut $preset to_rgb. s={sqrt(w*h*d)}
       if {!isint($s)}
@@ -3774,7 +3774,7 @@ update_film_emulation_html :
         if $category/$basename/$preset.jpg else
           if $category/$basename else -x "mkdir \""$category/$basename"\"" endif
           --map_clut[^-1] .
-          to.. ${-_title\ $preset},4,{-2,h-28},20,2 frame.. 1,1,0
+          to.. ${_title\ $preset},4,{-2,h-28},20,2 frame.. 1,1,0
           o.. $category/$basename/$preset.jpg,$jpeg_quality
           _thumb. o. $category/$basename/thumb_$preset.jpg,$jpeg_quality
           rm[-2,-1]
@@ -3794,7 +3794,7 @@ update_film_emulation_html :
   v + e[] "\n  * Generate html code.\n" v -
 
   repeat {narg($categories)}
-    category=${-arg\ {1+$>},$categories}
+    category=${arg\ {1+$>},$categories}
     arg {1+$>},$category_names
     category_name=${}
     presets=${-_fx_emulate_film_$category}
@@ -3833,7 +3833,7 @@ with or endorsed by the companies that own the trademarks.</i></font></p>\n\n
 <td valign=\"top\" width=\"300\">Select film category:\n
 <ul>\n"
       repeat {narg($categories)}
-        _category=${-arg\ {1+$>},$categories}
+        _category=${arg\ {1+$>},$categories}
         arg {1+$>},$category_names
         _category_name=${}
 
@@ -3878,11 +3878,11 @@ with or endorsed by the companies that own the trademarks.</i></font></p>\n\n
 </td></tr>\n
 <tr><td align=\"center\"><b>Refence Image</b></td></tr>\n\n"
       repeat {narg({/$presets})}
-        preset=${-arg\ {1+$>},$presets}
+        preset=${arg\ {1+$>},$presets}
 
         ({'$preset'}) replace_seq. 39,"92,92,39" preset_esc={t} rm.
 
-        title=${-_title\ $preset}
+        title=${_title\ $preset}
         if {$>%4==0} if $> string "</tr>\n" endif string "<tr>" endif
 
         string "
@@ -3910,7 +3910,7 @@ with or endorsed by the companies that own the trademarks.</i></font></p>\n\n
 
   # All done, exiting.
   rm
-  category=${-arg\ 1,$categories}
+  category=${arg\ 1,$categories}
   -x "ln -fs "${category}_$basename0.shtml" index.shtml"
   v + e[] "\n > All done, for "$nb_presets" presets.\n"
 
@@ -4109,8 +4109,8 @@ update_gallery_html :
   repeat $_nb_coms
 
     ind={$>%$nb_imgs}
-    out_img=${"-filename "img/gallery.jpg,$>}
-    out_thumb=${"-filename "img/gallery_thumb.png,$>}
+    out_img=${"filename "img/gallery.jpg,$>}
+    out_thumb=${"filename "img/gallery_thumb.png,$>}
 
     # Start new row.
     if {!$ind} string "<tr>\n" endif
@@ -4359,7 +4359,7 @@ update_server :
           else # Found new folder (opt. parent(s)).
 
             if {i==_'_'} # Folder has parents before creating it.
-              do path=${"-parent[] "$path} shift 0,-1,0,0 while {i==_'_'}
+              do path=${"parent[] "$path} shift 0,-1,0,0 while {i==_'_'}
               autocrop 0
             endif
             autocrop 32
@@ -4425,21 +4425,21 @@ update_server :
   path=/
 
   repeat $! l[$>]
-    npath=${"-parent "{0,n}}
+    npath=${"parent "{0,n}}
     if {['$path']!=['$npath']} # Need to change the path.
-      nc=${"-nb_levels[] "$path}
-      nn=${"-nb_levels[] "$npath}
+      nc=${"nb_levels[] "$path}
+      nn=${"nb_levels[] "$npath}
 
       # Get the minimal basis path in common and the number of up/down operations.
       nb_up=0
       nb_down=0
       basis=$path nbasis=$npath
       do
-        nc=${"-nb_levels[] "$basis}
-        nn=${"-nb_levels[] "$nbasis}
-        if {$nc>$nn} basis=${"-parent[] "$basis} nb_up+=1
-        elif {$nn>$nc} nbasis=${"-parent[] "$nbasis} nb_down+=1
-        elif {['$nbasis']!=['$basis']} basis=${"-parent[] "$basis} nb_up+=1 nbasis=${"-parent[] "$nbasis} nb_down+=1
+        nc=${"nb_levels[] "$basis}
+        nn=${"nb_levels[] "$nbasis}
+        if {$nc>$nn} basis=${"parent[] "$basis} nb_up+=1
+        elif {$nn>$nc} nbasis=${"parent[] "$nbasis} nb_down+=1
+        elif {['$nbasis']!=['$basis']} basis=${"parent[] "$basis} nb_up+=1 nbasis=${"parent[] "$nbasis} nb_down+=1
         endif
       while {['$nbasis']!=['$basis']}
 
@@ -4448,7 +4448,7 @@ update_server :
       if $nb_up 1,$nb_up,1,1,{'_'} command="#@gui "{t}"\n" rm. endif
       if $nb_down l[]
         ({'$npath'}) s -,{'/'} k[-$nb_down--1] replace {'~'},32
-        level={${"-nb_levels "$path}-$nb_up}
+        level={${"nb_levels "$path}-$nb_up}
         balise=${"if "{$level<=0" && "['$npath']!='/About/'}" u b else u i endif"}
         repeat $!
           -varname {$>,t} locale=${locale_${}} # Retrieve locale of folder name
@@ -4575,8 +4575,8 @@ _update_server_move :
 
 _update_server_upload : skip "${2=""}"
   if {narg("$2")} out="$2" else basename "$1" out=${} endif
-  l[] GMIC_LOGIN=${-gmic_ftp\ 0} onfail GMIC_LOGIN="" endl
-  l[] GMIC_PASSWD=${-gmic_ftp\ 1} onfail GMIC_PASSWD="" endl
+  l[] GMIC_LOGIN=${gmic_ftp\ 0} onfail GMIC_LOGIN="" endl
+  l[] GMIC_PASSWD=${gmic_ftp\ 1} onfail GMIC_PASSWD="" endl
   if {narg($GMIC_LOGIN)}
     -x "lftp ftp://"$GMIC_LOGIN":"$GMIC_PASSWD"@ftp.gmic.eu -e \"put -O /www/gmic/ \\\"$1\\\" -o \\\""$out"\\\"; quit\" >/dev/null"
   endif
@@ -4586,7 +4586,7 @@ _update_server_upload : skip "${2=""}"
 _update_server_binaries :
   e[^-1] "Upload released binaries ($1) on the G'MIC web server."
   v -
-  is_pre=${"-strcontains $1,_pre"}
+  is_pre=${"strcontains $1,_pre"}
   N=0
   file$N=gmic_$1_debian_jessie_amd64.deb  N+=1
   file$N=gmic_$1_debian_jessie_i386.deb   N+=1
@@ -4635,7 +4635,7 @@ _update_server_binaries :
       if $file
         strreplace $file,_$1_,_
         file_short=${}
-        is_win=${-strcontains[]" "$file,win}
+        is_win=${strcontains[]" "$file,win}
         if $is_win folder="windows" else folder="linux" endif
 
         v + e[] "- Upload file '"$file"' to 'http://gmic.eu/files/prerelease/"$file_short"'." v -
@@ -4942,7 +4942,7 @@ _update_tutorial_html :
           rm[0] i[0] ({'$relink'}) y[0]
         else # Else try to relink to reference page if link to a command.
           ({'$relink'}) if {i==_'_'}
-            l. z 1,100% s -,{'.'} command=${-basename\ {0,t}} k[0] endl
+            l. z 1,100% s -,{'.'} command=${basename\ {0,t}} k[0] endl
             relink="http://gmic.eu/reference.shtml#"$command
             v + e[] "    > Local link '"$link$anchor"' relinked to '"$relink"' "${_gmic_g}"(reference command)."${_gmic_n} v -
             rm[0] i[0] ({'$relink'}) y[0]
@@ -4955,7 +4955,7 @@ _update_tutorial_html :
         endif
        else l # External link.
          0 nm. $link ext={x} rm.
-         if {narg($ext)} ext=${-strlowercase\ $ext} endif
+         if {narg($ext)} ext=${strlowercase\ $ext} endif
          if {s=['$ext'];s=='png'||s=='jpg'||s=='jpeg'}  # Check for an image link.
            basename $link relink=img/$5_${} 0 nm. $relink relink={f}{b}.jpg rm.
            if $relink v + e[] "    > External image link '"$link"' relinked to '"$relink"'." v -
@@ -4988,7 +4988,7 @@ _update_tutorial_html :
       s +,{'"src=\""'}
       l[2]
         s +,{'\"'} link={0,t}
-        relink=img/$5_${-basename\ $link} 0 nm. $relink relink={f}{b}.jpg rm.
+        relink=img/$5_${basename\ $link} 0 nm. $relink relink={f}{b}.jpg rm.
         if $relink v + e[] "    > Image '"$link"' relinked to '"$relink"'." v -
         else
           l[] i $link k[0] is_opaque=0
@@ -5180,8 +5180,8 @@ sort_list : skip ${1=+},${2=i}
         if {h>1} r. 2,{h-1},1,1,0 else rm. 0 endif
         pivot={{int(($lo+$hi)/2)},n}
         do if {$lo<=$hi}
-          do if ${-_sort_list_lexi\ \"{$lo,n}\",\"$pivot\",$op} lo+=1 else break endif while 1
-          do if ${-_sort_list_lexi\ \"$pivot\",\"{$hi,n}\",$op} hi-=1 else break endif while 1
+          do if ${_sort_list_lexi\ \"{$lo,n}\",\"$pivot\",$op} lo+=1 else break endif while 1
+          do if ${_sort_list_lexi\ \"$pivot\",\"{$hi,n}\",$op} hi-=1 else break endif while 1
           if {$lo<=$hi} rv[$lo,$hi] lo+=1 hi-=1 endif
         else break endif while 1
         if {$lo0<$hi} ($lo0,$hi) a[-2,-1] y endif
@@ -5460,8 +5460,8 @@ div_complex : check ${3=1e-8}>=0
 #@cli : or compute the pointwise product of selected images.
 #@cli : (eq. to '*').
 #@cli : $ image.jpg --mul 2 cut 0,255
-#@cli : $ image.jpg (1,2,3,4,5,6,7,8) resize[-1] [0] -mul[0] [-1]
-#@cli : $ image.jpg -mul '1-3*abs(x/w-0.5)' cut 0,255
+#@cli : $ image.jpg (1,2,3,4,5,6,7,8) resize[-1] [0] mul[0] [-1]
+#@cli : $ image.jpg mul '1-3*abs(x/w-0.5)' cut 0,255
 #@cli : $ image.jpg --luminance negate[-1] --mul
 
 #@cli mul_channels : value1,_value2,...,_valueN
@@ -5507,7 +5507,7 @@ mul_complex :
 #@cli : Raise selected image to the power of specified value, image or mathematical
 #@cli : expression, or compute the pointwise sequential powers of selected images.
 #@cli : (eq. to '^').
-#@cli : $ image.jpg div 255 --pow 0.5 -mul 255
+#@cli : $ image.jpg div 255 --pow 0.5 mul 255
 #@cli : $ image.jpg gradient pow 2 add pow 0.2
 
 #@cli rol : value[%] : [image] : 'formula' : (no arg) : (+)
@@ -5914,7 +5914,7 @@ int82float :
     s c repeat $! l[$>]
       sh. {h-1},{h-1},0,0 m={t} rm.
       rows 0,{h-2} s y,3 *... 65536 *.. 256 -|
-      skip ${-n\ $m}
+      skip ${n\ $m}
     endl done a c
   endl done v +
 
@@ -5965,7 +5965,7 @@ map_clut :
   v -
   if {!$!} v + return endif
   to_color
-  if ${"-is_image_arg $1"} passs$1 0 to_rgb. else clut "$1" endif
+  if ${"is_image_arg $1"} passs$1 0 to_rgb. else clut "$1" endif
   l={round((w*h*d)^(1/3))}
   if {w*h*d!=$l^3} v + error "Command '$0': Specified CLUT $1 has invalid dimensions "({w},{h},{d},{s}). endif
   r. $l,$l,$l,3,-1
@@ -6052,7 +6052,7 @@ not :
 
 #@cli orientation
 #@cli : Compute the pointwise orientation of vector-valued pixels in selected images.
-#@cli : $ image.jpg --orientation --norm[-2] negate[-1] -mul[-2] [-1] reverse[-2,-1]
+#@cli : $ image.jpg --orientation --norm[-2] negate[-1] mul[-2] [-1] reverse[-2,-1]
 #@cli : $$
 orientation :
   e[^-1] "Compute pointwise orientation vectors, in image$?."
@@ -6108,7 +6108,7 @@ polar2complex :
 #@cli : $ image.jpg luminance --quantize 3
 #@cli : $ 200,200,1,1,'cos(x/10)*sin(y/10)' --quantize[0] 6 --quantize[0] 4 --quantize[0] 3 --quantize[0] 2
 quantize : check "isint($1) && $1>=1" skip ${2=1},${3=0}
-  e[^-1] "Quantize image$? using $1 levels, "${-arg\ 1+!$2,with,without}" keeping value range."
+  e[^-1] "Quantize image$? using $1 levels, "${arg\ 1+!$2,with,without}" keeping value range."
   v - repeat $! l[$>]
     if $3 # Uniform quantization.
       if {s==1} # Greyscale image.
@@ -6178,7 +6178,7 @@ replace_str : skip "${2=}"
 #@cli : 'rounding_type' can be { -1=backward | 0=nearest | 1=forward }.
 #@cli : Default value: 'rounding_type=0'.
 #@cli : $ image.jpg --round 100
-#@cli : $ image.jpg -mul {pi/180} sin --round
+#@cli : $ image.jpg mul {pi/180} sin --round
 
 #@cli roundify : gamma>=0
 #@cli : Apply roundify transformation on float-valued data, with specified gamma.
@@ -6291,14 +6291,14 @@ apply_channels :
 _apply_channels : check "isint(${3=0}) && $3>=0 && $3<=2"
   v -
   if {isval("$2")} if {isint("$2")}
-    mode=${-arg\ 1+$2,all,rgba,rgb,rgb_r,rgb_g,rgb_b,rgba_a,\
-                      lrgb,lrgb_r,lrgb_g,lrgb_b,\
-                      ycbcr_y,ycbcr_cbcr,ycbcr_cb,ycbcr_cr,ycbcr_cg,\
-                      lab_l,lab_ab,lab_a,lab_b,\
-                      lch_ch,lch_c,lch_h,\
-                      hsv_h,hsv_s,hsv_v,hsi_i,hsl_l,\
-                      cmyk_c,cmyk_m,cmyk_y,cmyk_k,\
-                      yiq_y,yiq_iq}
+    mode=${arg\ 1+$2,all,rgba,rgb,rgb_r,rgb_g,rgb_b,rgba_a,\
+                     lrgb,lrgb_r,lrgb_g,lrgb_b,\
+                     ycbcr_y,ycbcr_cbcr,ycbcr_cb,ycbcr_cr,ycbcr_cg,\
+                     lab_l,lab_ab,lab_a,lab_b,\
+                     lch_ch,lch_c,lch_h,\
+                     hsv_h,hsv_s,hsv_v,hsi_i,hsl_l,\
+                     cmyk_c,cmyk_m,cmyk_y,cmyk_k,\
+                     yiq_y,yiq_iq}
   else mode="$2" endif else mode="$2" endif
   v + e[^-1] "Apply command '$1' on channel '"$mode"' of image"$_gmic_s"." v -
   _ac_$mode m _ac_precond:$_p m _ac_forward:$_f m _ac_backward:$_b
@@ -6393,7 +6393,7 @@ _ac_yiq_q : _p="to_color" _f="rgb2yiq8" _b="yiq82rgb" _s=2
 #@cli : $ image.jpg --autoindex[0] 4 --autoindex[0] 8 --autoindex[0] 16
 autoindex : check "isint($1) && $1>0 && ${2=0}>=0" skip ${3=1}
   e[^-1] "Index colors in images$? by adapted colormap with $1 entries, dithering level $2 and "\
-          ${-arg\ 1+!$3,k-means,median-cut}" method."
+          ${arg\ 1+!$3,k-means,median-cut}" method."
   v - repeat $! l[$>]
     if {w>h} if {w>256} --r2dx 256 else [0] endif
     else if {h>256} --r2dy 256 else [0] endif
@@ -6490,7 +6490,7 @@ colorblind : check "isint($1) && $1>=0 && $1<=7"
 #@cli : $ image.jpg --colormap[0] 4 --colormap[0] 8 --colormap[0] 16
 #@cli : $$
 colormap : check "isint($1) && $1>=0" skip ${2=1},${3=1}
-  if $1 e[0--3] "Estimate colormap with $1 entries for image$?, by "${-arg\ 1+!$2,k-means,median-cut}" method."
+  if $1 e[0--3] "Estimate colormap with $1 entries for image$?, by "${arg\ 1+!$2,k-means,median-cut}" method."
   else e[0--3] "Estimate full colormap for image$?."
   endif
   v - repeat $! l[$>] nm={b}
@@ -6789,7 +6789,7 @@ _retinex :
 #@cli : Default values: 'start_pattern=0' and 'color_grid=0'.
 #@cli : $ image.jpg --rgb2bayer 0
 rgb2bayer : skip ${1=0},${2=0}
-  e[^-1] "Transform image$? to a RGB-Bayer "${-arg\ 1+!$2,color,monochrome}" grid, starting from pattern '$1'."
+  e[^-1] "Transform image$? to a RGB-Bayer "${arg\ 1+!$2,color,monochrome}" grid, starting from pattern '$1'."
   v - to_rgb repeat $! l[$>]
     _rgb2bayer$1 r[1] [0],0,2 * if {!$2} s c + endif
   endl done v +
@@ -6887,7 +6887,7 @@ _rgb2hsx8 :
 #@cli rgb2lab : illuminant={ 0=D50 | 1=D65 } : (no arg) : (+)
 #@cli : Convert selected images from RGB to Lab colorbases.
 #@cli : $ image.jpg rgb2lab split c
-#@cli : $ image.jpg rgb2lab --split c -mul[-2,-1] 2.5 append[-3--1] c lab2rgb
+#@cli : $ image.jpg rgb2lab --split c mul[-2,-1] 2.5 append[-3--1] c lab2rgb
 
 #@cli rgb2lab8 : illuminant={ 0=D50 | 1=D65 } : (no arg)
 #@cli : Convert selected images from RGB to Lab8 color bases.
@@ -7218,8 +7218,8 @@ to_rgba :
 transfer_colors : skip ${1=0}
   e[^-1] "Transfer colors of image $1 to image$?."
   v - passs$1 0 mv. 0 to_rgb[0] to_colormode[^0] {max(3,${-max_s})} c 0,255   # Convert all images to RGB[A]
-  repeat $! l[$>] split_opacity rgb2ycbcr[0] a c endl done                  # Perform RGB[A] to YCbCr[A] conversion.
-  l[0] s c histogram_cumul 256,1,0,255 a c * 255 endl                        # Compute channel-by-channel cumulative histogram of target image.
+  repeat $! l[$>] split_opacity rgb2ycbcr[0] a c endl done                    # Perform RGB[A] to YCbCr[A] conversion.
+  l[0] s c histogram_cumul 256,1,0,255 a c * 255 endl                         # Compute channel-by-channel cumulative histogram of target image.
   repeat {$!-1} l[0,{$<+1}]
     if $1 repeat 3 sh[0,1] $> equalize. 256,0,255 index. ..,0,0 rm[-2,-1] done     # Transfer brightness + colors.
     else repeat 2 sh[0,1] {$>+1} equalize. 256,0,255 index. ..,0,0 rm[-2,-1] done  # Transfer colors only.
@@ -7546,8 +7546,8 @@ apply_scales : skip "${1=}" check "isint($2) && $2>0 && ${3=25%}>=0 && ${4=100%}
 #@cli : Default values: 'threshold=0%', 'min_area=0.1%', 'is_high_connectivity=0' and 'output_type=1'.
 #@cli : $ 256,256 noise 0.1,2 dilate_circ 20 label_fg 0,1 normalize 0,255 --neq 0 *[-1] 255 append c --autocrop_components ,
 autocrop_components : skip ${1=0%} check "${2=0.1%}>=0 && isbool(${3=0}) && isint(${4=1}) && $4>=0 && $4<=2"
-  e[^-1] "Autocrop connected components from image$?, with threshold $1, minimal area $2, "${-arg\ 1+$3,low,high}" connectivity "\
-          "and output type set to '"${-arg\ 1+$4,crop,segmentation,coordinates}"'.\n"
+  e[^-1] "Autocrop connected components from image$?, with threshold $1, minimal area $2, "${arg\ 1+$3,low,high}" connectivity "\
+          "and output type set to '"${arg\ 1+$4,crop,segmentation,coordinates}"'.\n"
   v - repeat $! l[$>]
     min_area={max(1,round(if(${is_percent\ $2},$2*w*h,$2)))}
     --channels 100% >. $1 area_fg. 0,$3 >=. $min_area  # Discard background and small objects.
@@ -7559,9 +7559,9 @@ autocrop_components : skip ${1=0%} check "${2=0.1%}>=0 && isbool(${3=0}) && isin
       v + e[] "\r  > "$n/$N v -
       rprogress {100*$n/$N}
       --==[1] $n --*[0,-1] rm..
-      if {$4==0} coords=${-autocrop_coords.\ auto} rm. --z[0] $coords
+      if {$4==0} coords=${autocrop_coords.\ auto} rm. --z[0] $coords
       elif {$4==1} autocrop.
-      else coords=${-autocrop_coords.\ auto} rm. ($coords) y.
+      else coords=${autocrop_coords.\ auto} rm. ($coords) y.
       endif
     done
     rm[0,1]
@@ -7579,7 +7579,7 @@ autocrop_seq : skip ${1=auto}
   if {!$!} return endif
   v -
   if {$!==1} _autocrop$is_auto ${1--1} v + return endif
-  coords=${-autocrop_coords.\ ${1--1}}
+  coords=${autocrop_coords.\ ${1--1}}
   x0={arg(1,$coords)} y0={arg(2,$coords)} z0={arg(3,$coords)}
   x1={arg(4,$coords)} y1={arg(5,$coords)} z1={arg(6,$coords)}
   if {$x0>$x1" || "$y0>$y1" || "$z0>$z1} i[0--2] 0 rm[1--1:2]
@@ -7639,7 +7639,7 @@ elevate : check "${1=64}>0" skip ${2=1},${3=1}
 #@cli : Default value: 'boundary_conditions=1'.
 #@cli : $ image.jpg expand_x 30,0
 expand_x : check "$1>=0 && ${2=1}>=0 && $2<=3"
-  e[^-1] "Expand image$? along the x-axis with size $1 and "${"-arg 1+$2,dirichlet,neumann,periodic,mirror"}" boundary conditions."
+  e[^-1] "Expand image$? along the x-axis with size $1 and "${"arg 1+$2,dirichlet,neumann,periodic,mirror"}" boundary conditions."
   v - repeat $! r[$>] {$>,w+2*$1},100%,100%,100%,0,$2,0.5,0.5,0.5 done v +
 
 #@cli expand_xy : size>=0,_boundary_conditions={ 0=dirichlet | 1=neumann | 2=periodic | 3=mirror }
@@ -7647,14 +7647,14 @@ expand_x : check "$1>=0 && ${2=1}>=0 && $2<=3"
 #@cli : Default value: 'boundary_conditions=1'.
 #@cli : $ image.jpg expand_xy 30,0
 expand_xy : check "$1>=0 && ${2=1}>=0 && $2<=3"
-  e[^-1] "Expand image$? along the xy-axes with size $1 and "${"-arg 1+$2,dirichlet,neumann,periodic,mirror"}" boundary conditions."
+  e[^-1] "Expand image$? along the xy-axes with size $1 and "${"arg 1+$2,dirichlet,neumann,periodic,mirror"}" boundary conditions."
   v - repeat $! r[$>] {$>,w+2*$1},{$>,h+2*$1},100%,100%,0,$2,0.5,0.5,0.5 done v +
 
 #@cli expand_xyz : size>=0,_boundary_conditions={ 0=dirichlet | 1=neumann | 2=periodic | 3=mirror }
 #@cli : Expand selected images along the xyz-axes.
 #@cli : Default value: 'boundary_conditions=1'.
 expand_xyz : check "$1>=0 && ${2=1}>=0 && $2<=3"
-  e[^-1] "Expand image$? along the xyz-axes with size $1 and "${"-arg 1+$2,dirichlet,neumann,periodic,mirror"}" boundary conditions."
+  e[^-1] "Expand image$? along the xyz-axes with size $1 and "${"arg 1+$2,dirichlet,neumann,periodic,mirror"}" boundary conditions."
   v - repeat $! r[$>] {$>,w+2*$1},{$>,h+2*$1},{$>,d+2*$1},100%,0,$2,0.5,0.5,0.5 done v +
 
 #@cli expand_y : size_y>=0,_boundary_conditions={ 0=dirichlet | 1=neumann | 2=periodic | 3=mirror }
@@ -7662,14 +7662,14 @@ expand_xyz : check "$1>=0 && ${2=1}>=0 && $2<=3"
 #@cli : Default value: 'boundary_conditions=1'.
 #@cli : $ image.jpg expand_y 30,0
 expand_y : check "$1>=0 && ${2=1}>=0 && $2<=3"
-  e[^-1] "Expand image$? along the y-axis with size $1 and "${"-arg 1+$2,dirichlet,neumann,periodic,mirror"}" boundary conditions."
+  e[^-1] "Expand image$? along the y-axis with size $1 and "${"arg 1+$2,dirichlet,neumann,periodic,mirror"}" boundary conditions."
   v - repeat $! r[$>] 100%,{$>,h+2*$1},100%,100%,0,$2,0.5,0.5,0.5 done v +
 
 #@cli expand_z : size_z>=0,_boundary_conditions={ 0=dirichlet | 1=neumann | 2=periodic | 3=mirror }
 #@cli : Expand selected images along the z-axis.
 #@cli : Default value: 'boundary_conditions=1'.
 expand_z : check "$1>=0 && ${2=1}>=0 && $2<=3"
-  e[^-1] "Expand image$? along the z-axis with size $1 and "${"-arg 1+$2,dirichlet,neumann,periodic,mirror"}" boundary conditions."
+  e[^-1] "Expand image$? along the z-axis with size $1 and "${"arg 1+$2,dirichlet,neumann,periodic,mirror"}" boundary conditions."
   v - repeat $! r[$>] 100%,100%,{$>,d+2*$1},100%,0,$2,0.5,0.5,0.5 done v +
 
 #@cli extract_region : [label_image],_extract_xyz_coordinates={ 0 | 1 },_label_1,...,_label_M
@@ -7677,8 +7677,8 @@ expand_z : check "$1>=0 && ${2=1}>=0 && $2<=3"
 #@cli : and output them as M column images.
 #@cli : Default value: 'extract_xyz_coordinates=0'.
 #@cli : $ image.jpg --blur 3 quantize. 4,0 --extract_region[0] [1],0,1,3
-extract_region : check ${"-is_image_arg $1"}" && isval(${2=0})"
-  e[^-1] "Extract pixels of image$N for labels (${3--1}) in $1, with"${"-arg 1+!!$2,out"}" coordinates."
+extract_region : check ${"is_image_arg $1"}" && isval(${2=0})"
+  e[^-1] "Extract pixels of image$N for labels (${3--1}) in $1, with"${"arg 1+!!$2,out"}" coordinates."
   v - $=arg passs$1 mv. 0 repeat {$!-1} l[0,{1+$<}]
     repeat {$#-2}
       {1,[1,whd,1,s+($2?3:0)]}
@@ -7769,7 +7769,7 @@ montage : check "isval(${2=2}) && $2>=0 && $2<=3" skip "${1=X}",${3=0},"${4=}"
     else
     m "__montage : if {$""7%2} mirror x endif if {$""8%2} mirror y endif rotate {90*$""6} r {max(1,round($""4,1,1))},{max(1,round($""5,1,1))},1,100%,3"
     endif
-    s=${-max_s[^-1]}
+    s=${max_s[^-1]}
     repeat {h}
       i={i(0,$>)} xi={i(1,$>)} yi={i(2,$>)} wi={i(3,$>)} hi={i(4,$>)} ai={i(5,$>)} mxi={i(6,$>)} myi={i(7,$>)}
       if {$3||!$>} i.. $w,$h,1,$s endif
@@ -7844,7 +7844,7 @@ _montage :
 #@cli : (set to '0' by default, must be defined in range [0,1]).
 #@cli : (no arg) runs interactive mode (uses the instant display window [0] if opened).
 #@cli : Default values: 'interpolation=1', 'boundary_conditions=0' and 'ax=ay=az=ac=0'.
-#@cli : $ image.jpg (0,1;0,1^0,0;1,1^1,1;1,1) resize[-1] [-2],3 -mul[-2] [-1]
+#@cli : $ image.jpg (0,1;0,1^0,0;1,1^1,1;1,1) resize[-1] [-2],3 mul[-2] [-1]
 #@cli : $ image.jpg --resize[-1] 256,128,1,3,2 --resize[-1] 120%,120%,1,3,0,1,0.5,0.5 --resize[-1] 120%,120%,1,3,0,0,0.2,0.2 --resize[-1] [0],[0],1,3,4
 
 #@cli resize_mn : width[%]>=0,_height[%]>=0,_depth[%]>=0,_B_value,_C_value
@@ -7911,7 +7911,7 @@ resize_ratio2d :
   _$0 $*
 
 _resize_ratio2d : check "$1>0 && $2>0 && ${3=0}>=0 && $3<=2 && ${4=6}>=0 && $4<=6"
-  e[0--3] "Resize 2d image"$_gmic_s" to $1x$2 with ratio-"${-arg\ 1+$3,inside,outside,padded}\
+  e[0--3] "Resize 2d image"$_gmic_s" to $1x$2 with ratio-"${arg\ 1+$3,inside,outside,padded}\
            " mode and interpolation type $4."
   v - repeat $!
     ratio={$>,if($3==1,max($1/w,$2/h),min($1/w,$2/h))}
@@ -8088,10 +8088,10 @@ rotate_tileable : check ${2=8}>=0
   repeat $! l[$>]
     # Compute width and height of tile.
     theta={atan2($p,$q)}
-    gcd=${-gcd" "{h*$q},{w*$p}}
+    gcd=${gcd" "{h*$q},{w*$p}}
     pw={h*$q/$gcd}
     nw={round($pw*w/cos($theta))}
-    gcd=${-gcd" "{h*$p},{w*$q}}
+    gcd=${gcd" "{h*$p},{w*$q}}
     qh={w*$q/$gcd}
     nh={round($qh*h/cos($theta))}
 
@@ -8256,7 +8256,7 @@ _scale_dcci2x_mask : skip ${1=1.15}
 #@cli : $ image.jpg --seamcarve 60%
 # The main code of this algorithm has been done by Andy (Garagecoder).
 seamcarve : check "${2=100%}>=0 && ${5=25%}>=0" skip ${3=0},${4=1}
-  e[^-1] "Resize image$? to $1x$2 using seam-carving algorithm, "${-arg\ 1+!$3,with,without}" priority channel, "${-arg\ 1+!$4,with,without}" anti-aliasing and maximum seams $5."
+  e[^-1] "Resize image$? to $1x$2 using seam-carving algorithm, "${arg\ 1+!$3,with,without}" priority channel, "${arg\ 1+!$4,with,without}" anti-aliasing and maximum seams $5."
   v - repeat $! l[$>]
     nw={max(1,round(if(${is_percent\ $1},$1*w,$1)))}
     nh={max(1,round(if(${is_percent\ $2},$2*h,$2)))}
@@ -8421,7 +8421,7 @@ split_tiles : skip ${2=$1},${3=0}
 #@cli : 'boundary_conditions' can be { 0=dirichlet | 1=neumann | 2=periodic | 3=mirror }.
 #@cli : Default values: 'amplitude=0.25', 'aspect_ratio=0', 'zoom=0', 'center_x=center_y=50%'  and 'boundary_conditions=0'.
 undistort : check "${1=0.1}>=-1 && $1<=1 && ${6=0}>=0 && $6<=3" skip ${2=0},${3=0},${4=50%},${5=50%}
-  e[^-1] "Undistort barrel/pincushion effect in image$?, with amplitude $1, aspect ratio $2, zoom factor $3, center ($4,$5) and "${"-arg 1+$6,dirichlet,neumann,periodic,mirror"}" boundary conditions."
+  e[^-1] "Undistort barrel/pincushion effect in image$?, with amplitude $1, aspect ratio $2, zoom factor $3, center ($4,$5) and "${"arg 1+$6,dirichlet,neumann,periodic,mirror"}" boundary conditions."
   v - repeat $! l[$>]
     center_x={${"is_percent $4"}?w*$4:$4}
     center_y={${"is_percent $5"}?h*$5:$5}
@@ -8539,7 +8539,7 @@ blur_angular : skip ${2=50%},${3=50%}
 #@cli : Reference: Masaki Kawase, “Practical Implementation of High Dynamic Range Rendering”, GDC 2004.
 #@cli : Default values: 'amplitude=1', 'ratio=2', 'nb_iter=5', 'blend_operator=+', 'kernel=0','normalize_scales=0' and 'axes=(all)'
 blur_bloom : check "${1=1}>=0 && ${2=2}>=0 && isint(${3=5}) && $3>=0 && isint(${5=0}) && $5>=0 && $5<=4 && isval(${6=0})" skip ${4=+},${7=}
-  e[^-1] "Apply bloom effect on image$?, with amplitude $1, ratio $2, $3 iterations, blend operator '$4' and "${"-arg 1+!$6,\"\",\"no \""}"scale normalization."
+  e[^-1] "Apply bloom effect on image$?, with amplitude $1, ratio $2, $3 iterations, blend operator '$4' and "${"arg 1+!$6,\"\",\"no \""}"scale normalization."
   v -
   if {narg("$7")} axes=$7, endif
   m "_bloom0 : b "$axes"$""1"
@@ -8602,7 +8602,7 @@ blur_selective : check "${1=5}>=0 && ${2=0.5}>=0 && isint(${3=5}) && $3>0"
 #@cli : $ image.jpg --blur_x 6
 #@cli : $$
 blur_x : skip ${2=1}
-  e[^-1] "Blur image$? along the x-axis, with sigma $1 and "${-arg\ 1+!$2,neumann,dirichlet}" boundary conditions."
+  e[^-1] "Blur image$? along the x-axis, with sigma $1 and "${arg\ 1+!$2,neumann,dirichlet}" boundary conditions."
   v - deriche $1,0,x,$2 v +
 
 #@cli blur_xy : amplitude_x[%],amplitude_y[%],_boundary_conditions={ 0=dirichlet | 1=neumann }
@@ -8611,7 +8611,7 @@ blur_x : skip ${2=1}
 #@cli : $ image.jpg --blur_xy 6
 #@cli : $$
 blur_xy : skip ${2=$1},${3=1}
-  e[^-1] "Blur image$? along the xy-axes, with sigma $1 and "${-arg\ 1+!$2,neumann,dirichlet}" boundary conditions."
+  e[^-1] "Blur image$? along the xy-axes, with sigma $1 and "${arg\ 1+!$2,neumann,dirichlet}" boundary conditions."
   v - deriche $1,0,x,$3 deriche $2,0,y,$3 v +
 
 #@cli blur_xyz : amplitude_x[%],amplitude_y[%],amplitude_z,_boundary_conditions={ 0=dirichlet | 1=neumann }
@@ -8619,7 +8619,7 @@ blur_xy : skip ${2=$1},${3=1}
 #@cli : Default value: 'boundary_conditions=1'.
 #@cli : $$
 blur_xyz : skip ${4=1}
-  e[^-1] "Blur image$? along the xyz-axes, with sigma $1 and "${-arg\ 1+!$2,neumann,dirichlet}" boundary conditions."
+  e[^-1] "Blur image$? along the xyz-axes, with sigma $1 and "${arg\ 1+!$2,neumann,dirichlet}" boundary conditions."
   v - deriche $1,0,x,$4 deriche $2,0,y,$4 deriche $3,0,z,$4 v +
 
 #@cli blur_y : amplitude[%]>=0,_boundary_conditions={ 0=dirichlet | 1=neumann }
@@ -8628,7 +8628,7 @@ blur_xyz : skip ${4=1}
 #@cli : $ image.jpg --blur_y 6
 #@cli : $$
 blur_y : skip ${2=1}
-  e[^-1] "Blur image$? along the y-axis, with sigma $1 and "${-arg\ 1+!$2,neumann,dirichlet}" boundary conditions."
+  e[^-1] "Blur image$? along the y-axis, with sigma $1 and "${arg\ 1+!$2,neumann,dirichlet}" boundary conditions."
   v - deriche $1,0,y,$2 v +
 
 #@cli blur_z : amplitude[%]>=0,_boundary_conditions={ 0=dirichlet | 1=neumann }
@@ -8636,7 +8636,7 @@ blur_y : skip ${2=1}
 #@cli : Default value: 'boundary_conditions=1'.
 #@cli : $$
 blur_z : skip ${2=1}
-  e[^-1] "Blur image$? along the z-axis, with sigma $1 and "${-arg\ 1+!$2,neumann,dirichlet}" boundary conditions."
+  e[^-1] "Blur image$? along the z-axis, with sigma $1 and "${arg\ 1+!$2,neumann,dirichlet}" boundary conditions."
   v - deriche $1,0,z,$2 v +
 
 #@cli boxfilter : size>=0[%],_order,_boundary_conditions,_nb_iter>=0 : axes,size>=0[%],_order,_boundary_conditions,_nb_iter>=0 : (+)
@@ -8784,7 +8784,7 @@ deblur : check "${2=10}>=0 && ${3=20}>=0 && ${4=0.7}>=0" skip ${5=1}
 #@cli : $ image.jpg --blur 1 --deblur_goldmeinel[-1] 1
 ###### : (contribution from Jérôme Boulanger).
 deblur_goldmeinel : check "$1>=0 && ${2=8}>=0 && ${3=1}>=0" skip ${4=1}
-  e[^-1] "Deblur image$? using Gold-Meinel algorithm, with sigma $1, $2 iterations, acceleration $3 and "${-arg\ 1+!$4,"",quasi-}"gaussian kernel."
+  e[^-1] "Deblur image$? using Gold-Meinel algorithm, with sigma $1, $2 iterations, acceleration $3 and "${arg\ 1+!$4,"",quasi-}"gaussian kernel."
   v - repeat $! l[$>]
     [0] repeat $2
       --b. $1,1,$4 --/[0,-1] rm.. ^. $3 *[-1,-2] # u *= f / Hu
@@ -8797,7 +8797,7 @@ deblur_goldmeinel : check "$1>=0 && ${2=8}>=0 && ${3=1}>=0" skip ${4=1}
 #@cli : $ image.jpg --blur 1 --deblur_richardsonlucy[-1] 1
 ###### : (contribution from Jérôme Boulanger).
 deblur_richardsonlucy : check "$1>=0 && ${2=50}>=0" skip ${3=1}
-  e[^-1] "Deblur image$? using Richardson-Lucy algorithm, with sigma $1, $2 iterations and "${-arg\ 1+!$3,"",quasi-}"gaussian kernel."
+  e[^-1] "Deblur image$? using Richardson-Lucy algorithm, with sigma $1, $2 iterations and "${arg\ 1+!$3,"",quasi-}"gaussian kernel."
   v - repeat $! l[$>]
     [0] repeat $2
       --b. $1,1,{$3!=0} max. 1e-6 --/[0,-1] rm.. b. $1,1,{$3!=0} *[-1,-2] # u *= H ( f / Hu )
@@ -8830,7 +8830,7 @@ deconvolve_fft : check ${is_image_arg\ $1}" && ${2=.001}>=0"
 #@cli : Default value: 'method=0'.
 #@cli : $ image.jpg --rotate 3,1,1,50%,50% resize 100%,50% resize 100%,200%,1,3,4 shift[-1] 0,1 add --deinterlace 1
 deinterlace : skip ${1=0}
-  e[^-1] "Deinterlace image$? with "${-arg\ 1+!$1,motion-compensated,standard}" method."
+  e[^-1] "Deinterlace image$? with "${arg\ 1+!$1,motion-compensated,standard}" method."
   v - repeat $! l[$>]
     wh={w},{h}
     s y a[0--1:2] y a[^0] y r.. .,0 r 100%,200%,1,100%,5
@@ -8850,7 +8850,7 @@ deinterlace : skip ${1=0}
 #@cli : $ image.jpg noise 20 cut 0,255 --denoise_haar[-1] 0.8
 denoise_haar : check "${1=1.4}>=0 && isint(${2=0}) && $2>=0 && isint(${3=10}) && $3>0"
   e[^-1] "Denoise image$? using haar-wavelet thresholding, with threshold $1, "\
-          ${-arg\ 1+($2>0),auto,$2}" scales and $3 spinning cycles."
+          ${arg\ 1+($2>0),auto,$2}" scales and $3 spinning cycles."
   v - repeat $! l[$>] nm={0,n}
     nb_scales={min(if($2,$2,32),int(log2(min(w,h))-1))}
     w={w} h={h} d={d} sigma=${-std_noise}
@@ -8990,7 +8990,7 @@ _jf_circle :
 #@cli : 'boundary_conditions' can be { 0=dirichlet | 1=neumann }.
 #@cli : Default values: 'size_y=size_x', 'size_z=1', 'threshold=255' and 'boundary_conditions=1'.
 dilate_threshold : check "isint($1) && $1>=1 && isint(${2=$1}) && $2>=1 && isint(${3=1}) && $3>=1 && ${4=255}>=0 && isint(${5=1}) && $5>=0"
-  e[^-1] "Erode image$? with mask $1x$2x$3, threshold $4 and "${-arg\ $5,dirichlet,neumann}" boundary conditions."
+  e[^-1] "Erode image$? with mask $1x$2x$3, threshold $4 and "${arg\ $5,dirichlet,neumann}" boundary conditions."
   v - l[]
     dx1={int($1/2)} dx2={$1-$dx1-1}
     dy1={int($2/2)} dy2={$2-$dy1-1}
@@ -9090,7 +9090,7 @@ erode_oct : check $1>=0 skip ${2=1},${3=0}
 #@cli : 'boundary_conditions' can be { 0=dirichlet | 1=neumann }.
 #@cli : Default values: 'size_y=size_x', 'size_z=1', 'threshold=255' and 'boundary_conditions=1'.
 erode_threshold : check "isint($1) && $1>=1 && isint(${2=$1}) && $2>=1 && isint(${3=1}) && $3>=1 && ${4=255}>=0 && isint(${5=1}) && $5>=0"
-  e[^-1] "Erode image$? with mask $1x$2x$3, threshold $4 and "${-arg\ $5,dirichlet,neumann}" boundary conditions."
+  e[^-1] "Erode image$? with mask $1x$2x$3, threshold $4 and "${arg\ $5,dirichlet,neumann}" boundary conditions."
   v - l[]
     dx1={int($1/2)} dx2={$1-$dx1-1}
     dy1={int($2/2)} dy2={$2-$dy1-1}
@@ -9354,7 +9354,7 @@ inpaint_flow : check ${is_image_arg\ $1}" && ${2=10}>=0 && ${3=100}>=0 && ${4=5}
 #@cli : Default values: 'maximal_area=4', 'tolerance=0' and 'is_high_connectivity=0'.
 #@cli : $ image.jpg noise 5%,2 --inpaint_holes 8,40
 inpaint_holes : check "${1=4}>=0 && ${2=0}>=0" skip ${3=0}
-  e[^-1] "Inpaint holes wih area less than $1 pixels in image$?, with tolerance $2 and "${-arg\ 1+!$3,high,low}" connectivity."
+  e[^-1] "Inpaint holes wih area less than $1 pixels in image$?, with tolerance $2 and "${arg\ 1+!$3,high,low}" connectivity."
   v - repeat $! l[$>]
     100%,100%,100%
     area={if(${is_percent\ $1},$1*w*h*d,$1)}
@@ -9614,7 +9614,7 @@ kuwahara : check $1>0
 laplacian :
   e[^-1] "Compute Laplacian of image $?."
   v - repeat $! l[$>]
-    -hessian ${-arg\ 1+(d==1),xxyyzz,xxyy} -+
+    -hessian ${arg\ 1+(d==1),xxyyzz,xxyy} -+
   endl done v +
 
 #@cli lic : _amplitude>0,_channels>0
@@ -9683,10 +9683,10 @@ meancurvature_flow : skip ${1=10},${2=30},${3=0}
 #@cli : The tonal kernel is exponential (exp(-d^2/_tonal_bandwidth^2))
 #@cli : with d the euclidiean distance between image patches.
 #@cli : Default values: 'patch_radius=4', 'spatial_bandwidth=4', 'tonal_bandwidth=10' and 'patch_measure_command=-norm'.
-#@cli : $ image.jpg --noise 10 -nlmeans[-1] 4,4,{0.6*${-std_noise}}
+#@cli : $ image.jpg --noise 10 nlmeans[-1] 4,4,{0.6*${-std_noise}}
 nlmeans:
   v -
-  if ${"-is_image_arg $1"}
+  if ${"is_image_arg $1"}
 
     # Guided-filtering
     check "${2=4}>0 && ${3=4}>0 && ${4=10}>0" skip "${5=-norm}"
@@ -9694,7 +9694,7 @@ nlmeans:
     pass$1 0 l. $5 k[0] endl # [1] preprocessed image used to compute weights.
     repeat {$!-1} l[$>,-1]
       100%,100%,100%,100%,{-1.0/($4*$4)} # [2] compute a scaling.
-      -nlmeans_core[0] [1],[2],$2,$3 rm. # Apply the NLM denoising with image 1 and 2 as parameter.
+      nlmeans_core[0] [1],[2],$2,$3 rm. # Apply the NLM denoising with image 1 and 2 as parameter.
     endl done
     rm.
 
@@ -9706,7 +9706,7 @@ nlmeans:
     repeat $! l[$>]
       --l $4 k[0] endl # [1] preprocessed image used to compute weights.
       100%,100%,100%,100%,{-1.0/($3*$3)} # [2] compute a scaling.
-      -nlmeans_core[0] [1],[2],$1,$2 k[0] # Apply the NLM denoising with image 1 and 2 as parameter.
+      nlmeans_core[0] [1],[2],$1,$2 k[0] # Apply the NLM denoising with image 1 and 2 as parameter.
     endl done
 
   endif v +
@@ -9962,7 +9962,7 @@ split_freq :
 #@cli : Default values: 'nb_iterations=60', 'dt=5' and 'nb_scales=0'.
 #@cli : $ image.jpg command "foo : gradient x" --solve_poisson foo --foo[0] --laplacian[1]
 solve_poisson : check "${2=60}>=0 && ${3=5}>0 && ${4=0}>=0"
-  e[^-1] "Solve Poisson equation for image$?, for laplacian command '$1', with $2 iterations, time step $3 and "${-arg\ 1+($4==0),$4,auto}" scales."
+  e[^-1] "Solve Poisson equation for image$?, for laplacian command '$1', with $2 iterations, time step $3 and "${arg\ 1+($4==0),$4,auto}" scales."
   v - repeat $! l[$>]
     [0]
     repeat {if($4,$4,int(max(log2(max(w,h))-1,1)))}
@@ -10048,7 +10048,7 @@ syntexturize : check "${1=100%}>0 && ${2=$1}>0"
     if {$nw>w||$nh>h} # Spot extension required when rendering on bigger image.
       periodize_poisson
       100%,100% rectangle. 5,5,{w-6},{h-6},1,1 b. 2 n. 0,1
-      $nw,$nh,1,{-2,s} fc. ${-average_color...}
+      $nw,$nh,1,{-2,s} fc. ${average_color...}
       j. ...,{(w-{-2,w})/2},{(h-{-2,h})/2},0,0,1,..
       rm[-3,-2]
     else
@@ -10245,7 +10245,7 @@ watermark_fourier : check ${2=33}>0
 #@cli watershed : [priority_image],_is_high_connectivity={ 0 | 1 } : (+)
 #@cli : Compute the watershed transform of selected images.
 #@cli : Default value: 'is_high_connectivity=1'.
-#@cli : $ 400,400 noise 0.2,2 --distance 1 -mul[-1] -1 label[-2] watershed[-2] [-1] mod[-2] 256 map[-2] 0 reverse
+#@cli : $ 400,400 noise 0.2,2 --distance 1 mul[-1] -1 label[-2] watershed[-2] [-1] mod[-2] 256 map[-2] 0 reverse
 
 #---------------------------------
 #
@@ -10259,7 +10259,7 @@ watermark_fourier : check ${2=33}>0
 #@cli : $ image.jpg luminance stencil[-1] 1 --area 0
 #@cli : $$
 area : check "$1>=0" skip ${2=0}
-  e[^-1] "Compute area of connected components in image$?, with tolerance $1 and "${-arg\ 1+!$2,high,low}" connectivity."
+  e[^-1] "Compute area of connected components in image$?, with tolerance $1 and "${arg\ 1+!$2,high,low}" connectivity."
   v - repeat $! l[$>] s c
     repeat $! label[$>] $1,$2 nb={$>,1+iM} --histogram[$>] $nb,0,{$nb-1} map[$>] . rm. done
   a c endl done v +
@@ -10270,7 +10270,7 @@ area : check "$1>=0" skip ${2=0}
 #@cli : Default values: 'is_high_connectivity=0'.
 #@cli : $ image.jpg luminance stencil[-1] 1 --area_fg 0
 area_fg : check "$1>=0" skip ${2=0}
-  e[^-1] "Compute area of foreground connected components in image$?, with tolerance $1 and "${-arg\ 1+!$2,high,low}" connectivity."
+  e[^-1] "Compute area of foreground connected components in image$?, with tolerance $1 and "${arg\ 1+!$2,high,low}" connectivity."
   v - repeat $! l[$>] s c
     repeat $! label_fg[$>] $1,$2 nb={$>,1+iM} --histogram[$>] $nb,0,{$nb-1} =. 0 map[$>] . rm. done
   a c endl done v +
@@ -10460,7 +10460,7 @@ histogram_pointwise : skip ${2=0%},${3=100%}
 #@cli : Default values: 'width=512', 'height=width' and 'gradient_norm_voting=1'.
 #@cli : $ image.jpg --blur 1.5 -hough[-1] 400,400 blur[-1] 0.5 add[-1] 1 log[-1]
 hough : check "${1=512}>0 && ${2=$1}>0" skip ${3=1}
-  e[^-1] "Compute $1x$2 hough transform of image$?, "${-arg\ 1+!$3,with,without}" gradient norm voting."
+  e[^-1] "Compute $1x$2 hough transform of image$?, "${arg\ 1+!$3,with,without}" gradient norm voting."
   v - slices 50% luminance repeat $! l[$>] nm={0,n}
     rhomax={sqrt(w^2+h^2)/2}
     g (0,{w-1}) (0;{{-2,h}-1}) r[-2,-1] {-3,w},{-3,h},1,1,3 -.. {w/2} -. {h/2}
@@ -10502,7 +10502,7 @@ isophotes : skip ${1=64}
 #@cli : Similar to '-label' except that 0-valued pixels are not labeled.
 #@cli : Default value: 'is_high_connectivity=0'.
 label_fg : check "$1>=0" skip ${2=0}
-  e[^-1] "Label foreground connected components on image [1], with tolerance $1 and "${-arg\ 1+!$2,high,low}" connectivity."
+  e[^-1] "Label foreground connected components on image [1], with tolerance $1 and "${arg\ 1+!$2,high,low}" connectivity."
   v - repeat $! l[$>]
     if {d>1} --z -1,-1,-1,{w-1},{h-1},{d-1} label. $1,$2 z. 1,1,1,{w-1},{h-1},{d-1}
     else --z -1,-1,{w-1},{h-1} label. $1,$2 z. 1,1,{w-1},{h-1}
@@ -10532,7 +10532,7 @@ min_patch : check "isint(${1=16}) && $1>=1"
 #@cli : Default value: 'is_high_connectivity=0'.
 #@cli : $ image.jpg --gradient_norm fill[-1] 1/(1+i) minimal_path[-1] 0,0,0,100%,100%,0 pointcloud[-1] 0 *[-1] 280 to_rgb[-1] resize[-1] [-2],0 -or
 minimal_path : check "$1>=0 && $2>=0 && $3>=0" skip ${7=0}
-  e[^-1] "Compute minimal path between points ($1,$2,$3) and ($4,$5,$6) for potential map$?, with "${-arg\ 1+$7,low,high}" connectivity."
+  e[^-1] "Compute minimal path between points ($1,$2,$3) and ($4,$5,$6) for potential map$?, with "${arg\ 1+$7,low,high}" connectivity."
   v - repeat $! l[$>] nm={0,n}
     - {im} + {iM/100}
     100%,100% = 1,${4-6} distance. 1,[0],{if($7,4,3)} k.
@@ -10609,7 +10609,7 @@ plot2value :
 #@cli : $ 3000,2 rand 0,400 --pointcloud 0 dilate[-1] 3
 #@cli : $ 3000,2 rand 0,400 {w} {w},3 rand[-1] 0,255 append y --pointcloud 0 dilate[-1] 3
 pointcloud : check "${1=0}<=2" skip ${2=0},${3=0},${4=0}
-  e[^-1] "Convert image$? to point clouds, in "${-arg\ 2+($1>=0)*$1-($1<0),{-$1}-opacity,binary,cumulative,labeling}" mode,"\
+  e[^-1] "Convert image$? to point clouds, in "${arg\ 2+($1>=0)*$1-($1<0),{-$1}-opacity,binary,cumulative,labeling}" mode,"\
           "with ($2,$3,$4) as maximal dimensions."
   v - repeat $! l[$>] nm={0,n}
     if {"d>1 || s>1"} v + error "Command '$0': Invalid input image "{w}x{h}x{d}x{s}". Should be NxMx1x1." endif
@@ -10686,7 +10686,7 @@ skeleton : check ${1=0}>=0
 #@cli : Default value: 'use_fourier=0' and 'boundary_conditions=0'.
 #@cli : $ image.jpg --crop 20%,20%,35%,35% --ssd_patch[0] [1],0,0
 ssd_patch : check ${is_image_arg\ $1} skip ${2=0},${3=0}
-  e[^-1] "Compute field of SSD between image$? and patch $1 using "${-arg\ 1+!$2,fourier,spatial}" mode."
+  e[^-1] "Compute field of SSD between image$? and patch $1 using "${arg\ 1+!$2,fourier,spatial}" mode."
   v - repeat $! pass$1 0 l[$>,-1]
     r 100%,100%,100%,${-max_s} s c
     repeat {$!/2} l[$>,{-1-$<}]
@@ -10811,7 +10811,7 @@ arrow : check "${5=1%}>=0 && ${6=10%}>=0 && ${7=3%}" skip ${8=1}
 #@cli : Default values: 'font_height=14', 'opacity=1', 'pattern=(undefined)' and 'color1=0'.
 #@cli : $ 400,400,1,3,255 axes -1,1,1,-1
 axes : check "isint(${5=14}) && $5>=0 && ${6=1}>=0" skip ${7=0},${8=0}
-  if ${"-is_pattern \"$7\""}
+  if ${"is_pattern \"$7\""}
     e[0--3] "Draw xy-axes on image$?, with x-range ($1,$2), y-range ($3,$4), font height $5, opacity $6, pattern $7 and color (${8--1})."
     v - pattern=$7 color=${8--1}
   else
@@ -10827,8 +10827,8 @@ axes : check "isint(${5=14}) && $5>=0 && ${6=1}>=0" skip ${7=0},${8=0}
     w1={0,w-1} h1={0,h-1}
 
     # Determine number of axes tick marks.
-    if {$1!=$2} u=${"-_axes[] $1,$2,{0.3*w/$5}"} offx={arg(1,$u)} deltax={arg(2,$u)} endif
-    if {$3!=$4} u=${"-_axes[] $3,$4,{0.3*h/$5}"} offy={arg(1,$u)} deltay={arg(2,$u)} endif
+    if {$1!=$2} u=${"_axes[] $1,$2,{0.3*w/$5}"} offx={arg(1,$u)} deltax={arg(2,$u)} endif
+    if {$3!=$4} u=${"_axes[] $3,$4,{0.3*h/$5}"} offy={arg(1,$u)} deltay={arg(2,$u)} endif
 
     # Draw x-axis.
     is_0x=0
@@ -10921,7 +10921,7 @@ ball : check "${1=64}>0 && ${5=0.8}>=0 && $5<=8 && ${6=1}>=0 && $6<=8 && ${7=1.5
 #@cli chessboard : size1>0,_size2>0,_offset1,_offset2,_angle,_opacity,_color1,...,_color2,...
 #@cli : Draw chessboard on selected images.
 #@cli : Default values: 'size2=size1', 'offset1=offset2=0', 'angle=0', 'opacity=1', 'color1=0' and 'color2=255'.
-#@cli : $ image.jpg -chessboard 32,32,0,0,25,0.3,255,128,0,0,128,255
+#@cli : $ image.jpg chessboard 32,32,0,0,25,0.3,255,128,0,0,128,255
 chessboard : check "$1>0 && ${2=$1}>0" skip ${3=0},${4=0},${5=0},${6=1},${7=0},${8=255}
   e[^-1] "Draw chessboard on image$?, with sizes ($1,$2), offsets ($3,$4), angle $5 deg., opacity $6 and colors (${7--1})."
   v - i[0] (${7--1}) r[0] {{0,w}/2},1,1,2,-1 permute[0] cyzx
@@ -10985,7 +10985,7 @@ cie1931 :
 #@cli : Default values: 'opacity=1', 'pattern=(undefined)' and 'color1=0'.
 #@cli : $ image.jpg repeat 300 circle {u(100)}%,{u(100)}%,{u(30)},0.3,${-RGB} done circle 50%,50%,100,0.7,255
 circle : skip ${4=1},${5=0},${6=0}
-  if ${"-is_pattern \"$5\""}
+  if ${"is_pattern \"$5\""}
     e[0--3] "Draw outlined circle at ($1,$2) with radius $3 on image$?, with opacity $4, pattern $5 and color (${6--1})."
   else
     e[0--3] "Draw filled circle at ($1,$2) with radius $3 on image$?, with opacity $4 and color (${5--1})."
@@ -11000,7 +11000,7 @@ close_binary :
   check "${1=85}>=0 && $1<=100 && ${2=2}>=0 && ${3=80}>=0 && ${4=20}>=0 && ${5=90}>=0 && $5<=180 && ${6=1}>=0 && ${7=100}>=0 && isval(${8=1})"
   check "${9=0}>=0 && $9<=1 && ${10=25}>=0 && $10<=180 && ${11=64}>=0 && ${12=5}>=0 && $12<=180 && ${13=0.2}>=0 && $13<=1"
   e[^-1] "Close open shapes in binary image$?, with endpoint rate $1, endpoint connectivity $2, spline max distance $3, segment max distance $4, spline max angle $5, "\
-          "spline roundness $6, area min $7 and self intersections "${"-arg 1+!$8,allowed,\"not allowed\""}"."
+          "spline roundness $6, area min $7 and self intersections "${"arg 1+!$8,allowed,\"not allowed\""}"."
 
   # Set algorithm parameters.
   v -
@@ -11688,7 +11688,7 @@ gaussian : skip ${1=3},${2=$1},${3=0}
 #@cli : $ image.jpg grid 10%,10%,0,0,0.5,255
 #@cli : $ 400,400,1,3,255 grid 10%,10%,0,0,0.3,0xCCCCCCCC,128,32,16
 grid : check "$1>=0 && $2>=0" skip ${3=0},${4=0},${5=1},${6=0},${7=$6}
-  if ${"-is_pattern \"$6\""}
+  if ${"is_pattern \"$6\""}
     e[0--3] "Draw xy-grid on image$?, with sizes ($1,$2), offsets ($3,$4), opacity $5, pattern $6 and color (${7--1})."
     v - pattern=$6 color=${7--1}
   else
@@ -11825,7 +11825,7 @@ _render_maze :
 #@cli maze_mask : _cellsize>0
 #@cli : Input maze according to size and shape of selected mask images.
 #@cli : Mask may contain disconnected shapes.
-#@cli : $ 0 text "G'MIC",0,0,53,1,1 dilate 3 autocrop 0 frame 1,1,0 maze_mask 8 dilate 3 negate -mul 255
+#@cli : $ 0 text "G'MIC",0,0,53,1,1 dilate 3 autocrop 0 frame 1,1,0 maze_mask 8 dilate 3 negate mul 255
 maze_mask : check "isint(${1=24}) && $1>0"
   e[^-1] "Input masked maze from image$? with cell size $1."
   v - norm >= 50% repeat $! l[$>]
@@ -11863,7 +11863,7 @@ maze_mask : check "isint(${1=24}) && $1>0"
 #@cli : Default values: 'nb_scales=5', 'min_scale=25', 'allow_rotation=3', 'spacing=1', 'precision=7' and 'max_iterations=256'.
 #@cli : $ 512,512,1,3,"min(255,y*c/2)" 100%,100% circle 50%,50%,100,1,255 append c image.jpg resize2dy[-1] 24 to_rgba pack_sprites 3,25
 pack_sprites : check "isint(${1=5}) && $1>=0 && ${2=25}>=0 && $2<=100 && isint(${3=3}) && $3>=0 && $3<=3 && isint(${4=1}) && isint(${5=7}) && $5>=0 && isint(${6=256}) && $6>=0"
-  e[^-1] "Randomly pack image$? with $1 scales, minimum scale $2%, "${-arg\ 1+$3,no,180\"\ \"deg.,90\"\ \"deg.,any}" rotation, spacing $4, precision $5 and $6 maximum iterations."
+  e[^-1] "Randomly pack image$? with $1 scales, minimum scale $2%, "${arg\ 1+$3,no,180\"\ \"deg.,90\"\ \"deg.,any}" rotation, spacing $4, precision $5 and $6 maximum iterations."
   v - N={$!-1} is_first_time=1
   repeat $! r[$>] 100%,100%,1,{$>,max(2,s)} done   # Ensure all images have a binary shape mask.
 
@@ -12042,9 +12042,9 @@ polka_dots : check $1>=0 skip ${2=20},${3=50},${4=50},${5=0},${6=10},${7=1},${8=
 #@cli : Default values: 'sampling=5%', 'factor=1', 'is_arrow=1', 'opacity=1', 'pattern=(undefined)'
 #@cli : and 'color1=0'.
 #@cli : $ 100,100,1,2,'if(c==0,x-w/2,y-h/2)' 500,500,1,3,255 quiver[-1] [-2],10
-#@cli : $ image.jpg --resize2dy 600 luminance[0] gradient[0] -mul[1] -1 reverse[0,1] append[0,1] c blur[0] 8 -orientation[0] quiver[1] [0],20,1,1,0.8,255
-quiver : check ${"-is_image_arg $1"}" && ${2=5%}>0 && ${3=1}>=0 && isbool(${4=1})" skip "${5=1},${6=0}"
-  e[^-1] "Draw 2d vector field $1 on image$?, with sampling $2, factor $3, arrows "${"-arg 1+$4,disabled,enabled"}", opacity $5 and color (${6--1})."
+#@cli : $ image.jpg --resize2dy 600 luminance[0] gradient[0] mul[1] -1 reverse[0,1] append[0,1] c blur[0] 8 -orientation[0] quiver[1] [0],20,1,1,0.8,255
+quiver : check ${"is_image_arg $1"}" && ${2=5%}>0 && ${3=1}>=0 && isbool(${4=1})" skip "${5=1},${6=0}"
+  e[^-1] "Draw 2d vector field $1 on image$?, with sampling $2, factor $3, arrows "${"arg 1+$4,disabled,enabled"}", opacity $5 and color (${6--1})."
   v - pass$1 repeat {$!-1} l[$>,-1]
     eval ${-math_lib}"
       s_sampling = ['$2'];
@@ -12073,7 +12073,7 @@ quiver : check ${"-is_image_arg $1"}" && ${2=5%}>0 && ${3=1}>=0 && isbool(${4=1}
 #@cli : Default values: 'opacity=1', 'pattern=(undefined)' and 'color1=0'.
 #@cli : $ image.jpg repeat 30 rectangle {u(100)}%,{u(100)}%,{u(100)}%,{u(100)}%,0.3,${-RGB} done
 rectangle : skip ${5=1},${6=0},${7=$6}
-  if ${"-is_pattern \"$5\""}
+  if ${"is_pattern \"$5\""}
     e[0--3] "Draw outlined rectangle from ($1,$2) to ($3,$4) on image$?, with opacity $5 and color (${7--1})."
   else
     e[0--3] "Draw filled rectangle from ($1,$2) to ($3,$4) on image$?, with opacity $5 and color (${6--1})."
@@ -12085,7 +12085,7 @@ rectangle : skip ${5=1},${6=0},${7=$6}
 #@cli : Default values: 'smoothness=5%' and 'mirroring=1'.
 #@cli : $ 400,400 rorschach 3%
 rorschach : check "${1=5%}>=0 && isint(${2=1}) && $2>=0 && $2<=3"
-  e[^-1] "Render rorschach-like inkblots on image$?, with smoothness $1 and "${-arg\ 1+$2,no,x,y,xy}"-mirroring."
+  e[^-1] "Render rorschach-like inkblots on image$?, with smoothness $1 and "${arg\ 1+$2,no,x,y,xy}"-mirroring."
   v -
   if {$2==0} # No mirroring.
    rand -1,1 b $1 >= 0
@@ -12267,7 +12267,7 @@ triangle_shade :
 #@cli : Default values: 'scale=32', 'radius=5' and 'pattern_type=1'.
 #@cli : $ 400,300 truchet ,
 truchet : check "isint(${1=32}) && $1>0 && ${2=3}>=0" skip ${3=1}
-  e[^-1] "Render "${-arg\ 1+!$3,curved,straight}" truchet patterns in image$?, with scale $1 and radius $2."
+  e[^-1] "Render "${arg\ 1+!$3,curved,straight}" truchet patterns in image$?, with scale $1 and radius $2."
   v - repeat $! l[$>] nm={0,n}
     w={w} h={h} s={s} rm
     $1,$1 = 1,0,0 = 1,100%,100% distance 1,{1+$3} M={int(iM/2)} # Generate truchet pattern and its mirrored version.
@@ -12380,7 +12380,7 @@ transpose :
 #@cli : (eq. to '+3d').
 #@cli : Default values: 'ty=tz=0'.
 #@cli : $ sphere3d 10 repeat 5 --add3d[-1] 10,{u(-10,10)},0 color3d[-1] ${-RGB} done add3d
-#@cli : $ repeat 20 torus3d 15,2 color3d[-1] ${-RGB} -mul3d[-1] 0.5,1 if {$>%2} rotate3d[-1] 0,1,0,90 endif add3d[-1] 70 add3d rotate3d[-1] 0,0,1,18 done double3d 0
+#@cli : $ repeat 20 torus3d 15,2 color3d[-1] ${-RGB} mul3d[-1] 0.5,1 if {$>%2} rotate3d[-1] 0,1,0,90 endif add3d[-1] 70 add3d rotate3d[-1] 0,0,1,18 done double3d 0
 
 #@cli animate3d : _width>0,_height>0,_angle_dx,_angle_dy,_angle_dz,_zoom_factor>=0,_filename
 #@cli : Animate selected 3d objects in a window.
@@ -12397,7 +12397,7 @@ animate3d : skip ${1=640},${2=480},${3=0},${4=1},${5=0},"${7=""}" check ${6=1}>=
        $1,$2,1,3,-1 j3d. ..,50%,50%,0,1
        if {narg("$7")}
          to_rgba. replace_color. 0,0,-1,-1,-1,255,64,64,64,0
-         if $is_multi filename=${-filename\ "$7",$>,$frame} else filename=${-filename\ "$7",$frame} endif
+         if $is_multi filename=${filename\ "$7",$>,$frame} else filename=${filename\ "$7",$frame} endif
          o. $filename frame+=1
        else
          replace. -1,64
@@ -12558,7 +12558,7 @@ center3d :
 
 _center3d :
   e[0--3] "Center 3d object$?."
-  v - -check3d 0 repeat $! l[$>]
+  v - check3d 0 repeat $! l[$>]
     if {i[6]}
       s3d r[2] 3,{2,h/3},1,1,-1 s[2] x
       -[2] {2,(iM+im)/2} -[3] {3,(iM+im)/2} -[4] {4,(iM+im)/2}
@@ -12587,7 +12587,7 @@ circle3d : skip ${1=0},${2=0},${3=0},${4=1}
 #@cli : Default values: 'radius=1' and 'is_filled=1'.
 #@cli : $ image.jpg luminance resize2dy 40 threshold 50% * 255 pointcloud3d color3d[-1] 255,255,255 circles3d 0.7
 circles3d : check ${1=1}>=0 skip ${2=1}
-  e[^-1] "Convert 3d object$? to sets of 3d "${-arg\ 1+$2,wireframe,filled}" circles with radius $1."
+  e[^-1] "Convert 3d object$? to sets of 3d "${arg\ 1+$2,wireframe,filled}" circles with radius $1."
   v - -p3d 0 repeat $! l[$>]
     nbv={@6} nbp={@7}
     if {$nbv&&$nbp}
@@ -13121,7 +13121,7 @@ imagesphere3d : check "${1=32}>=3 && ${2=16}>=3"
 #@cli isosurface3d : isovalue[%] : 'formula',value,_x0,_y0,_z0,_x1,_y1,_z1,_size_x>0[%],_size_y>0[%],_size_z>0[%] : (+)
 #@cli : Extract 3d isosurfaces with specified value from selected images or from specified formula.
 #@cli : Default values: 'x0=y0=z0=-3', 'x1=y1=z1=3' and 'size_x=size_y=size_z=32'.
-#@cli : $ image.jpg resize2dy 128 luminance threshold 50% expand_z 2,0 blur 1 isosurface3d 50% -mul3d 1,1,30
+#@cli : $ image.jpg resize2dy 128 luminance threshold 50% expand_z 2,0 blur 1 isosurface3d 50% mul3d 1,1,30
 #@cli : $ isosurface3d 'x^2+y^2+abs(z)^abs(4*cos(x*y*z*3))',3
 
 #@cli label3d : "text",font_height>=0,_opacity,_color1,...
@@ -13231,7 +13231,7 @@ lissajous3d : check ${1=1024}>1 skip ${2=2},${3=0},${4=1},${5=0},${6=0},${7=0}
 #@cli : Scale selected 3d objects isotropically or anisotropically, with specified factors.
 #@cli : (eq. to '*3d').
 #@cli : Default value: 'factor_z=0'.
-#@cli : $ torus3d 5,2 repeat 5 --add3d[-1] 10,0,0 -mul3d[-1] 1.2 color3d[-1] ${-RGB} done add3d
+#@cli : $ torus3d 5,2 repeat 5 --add3d[-1] 10,0,0 mul3d[-1] 1.2 color3d[-1] ${-RGB} done add3d
 
 #@cli n3d : eq. to 'normalize3d'.
 n3d :
@@ -13246,7 +13246,7 @@ normalize3d :
 
 _normalize3d :
   e[0--3] "Normalize size of 3d object$?."
-  v - -check3d 0 repeat $! l[$>]
+  v - check3d 0 repeat $! l[$>]
     if {i[6]}
       s3d r[2] 3,{2,h/3},1,1,-1 s[2] x
       factor={v=max({2,iM-im},{3,iM-im},{4,iM-im});if(v,v,1)}
@@ -13293,9 +13293,9 @@ parametric3d : skip "${1=(2+cos(b))*sin(a)}","${2=(2+cos(b))*cos(a)}","${3=sin(b
 #@cli : Default values: 'patch_size=7', 'M=1000', 'N=3000', 'normalize_input=1', 'normalize_output=0', and 'lambda_xy=0'.
 #@cli : $ image.jpg -pca_patch3d 7
 pca_patch3d : check "isint(${1=7}) && $1>0 && isint(${2=1000}) && $2>0 && isint(${3=3000}) && $3>0" skip ${4=1},${5=0},${6=0}
-  e[^-1] "Get 3d patch-pca representation"${-arg\ 1+($!>1),s,""}" of image$?, from $2 $1x$1 input patchs, "\
-          "with $3 output patchs, input normalization "${-arg\ 1+!$4,enabled,disabled}", output normalization "\
-          ${-arg\ 1+!$5,enabled,disabled}" and lambda_xy $6."
+  e[^-1] "Get 3d patch-pca representation"${arg\ 1+($!>1),s,""}" of image$?, from $2 $1x$1 input patchs, "\
+          "with $3 output patchs, input normalization "${arg\ 1+!$4,enabled,disabled}", output normalization "\
+          ${arg\ 1+!$5,enabled,disabled}" and lambda_xy $6."
   v -
   P1={int($1/2)}       # Backward half-patch size.
   P2={$1-$P1-1}        # Forward half-patch size.
@@ -13363,7 +13363,7 @@ point3d :
 
 #@cli pointcloud3d
 #@cli : Convert selected planar or volumetric images to 3d point clouds.
-#@cli : $ image.jpg luminance resize2dy 100 threshold 50% -mul 255 pointcloud3d color3d[-1] 255,255,255
+#@cli : $ image.jpg luminance resize2dy 100 threshold 50% mul 255 pointcloud3d color3d[-1] 255,255,255
 pointcloud3d :
   e[^-1] "Convert image$? to 3d point clouds."
   v - repeat $! l[$>] nm={0,n}
@@ -13563,8 +13563,8 @@ size3d :
 #@cli : Default values: 'metric=2', 'bones_type=3', 'skeleton_opacity=1' and 'frame_opacity=0.1'.
 #@cli : $ shape_cupid 480 --skeleton3d ,
 skeleton3d : check "isint(${1=2}) && $1>=0 && $1<=2 && isint(${2=3}) && $2>=0 && $2<=3" skip ${3=1},${4=0.1},${5=1}
-  e[^-1] "Build 3d skeletal structure object from image$?, with "${-arg\ 1+$1,chebyshev,manhattan,euclidean}" metric, "\
-          ${-arg\ 1+$2,squares,diamonds,circles,auto}" bones, skeleton opacity $3 and frame opacity $4 ."
+  e[^-1] "Build 3d skeletal structure object from image$?, with "${arg\ 1+$1,chebyshev,manhattan,euclidean}" metric, "\
+          ${arg\ 1+$2,squares,diamonds,circles,auto}" bones, skeleton opacity $3 and frame opacity $4 ."
   v - repeat $! l[$>] channels 0
 
     # Construct skeleton representation.
@@ -13609,7 +13609,7 @@ skeleton3d : check "isint(${1=2}) && $1>=0 && $1<=2 && isint(${2=3}) && $2>=0 &&
 #@cli : $ torus3d 100,20 rotate3d 1,1,0,60 snapshot3d 400,1.2,128,64,32
 #@cli : $ torus3d 100,20 rotate3d 1,1,0,60 sample ? --snapshot3d[0] [1],1.2
 snapshot3d : check "${2=1}>=0" skip ${1=512},${3=""}
-  if ${"-is_image_arg $1"} # Background image specified.
+  if ${"is_image_arg $1"} # Background image specified.
     e[0--3] "Take $1x$1 snapshot$? of 3d object$?, with zoom factor $2 and background image $3."
     v - pass$1 0 to_color.
   elif {isval($3)} # Background color specified.
@@ -13739,7 +13739,7 @@ sprite3d :
 #@cli : Default value: 'mask_has_alpha_channel=0'.
 #@cli : $ torus3d 100,20 image.jpg resize2dy[-1] 64 100%,100% gaussian[-1] 30%,30% *[-1] 255 append[-2,-1] c --sprites3d[0] [1],1 display_rgba[-2]
 sprites3d : check ${is_image_arg\ $1} skip ${2=0}
-  e[^-1] "Convert image$? as 3d sprites clouds, using sprite $1 ("${"-arg {1+!$2},with,without"}" alpha-channel)."
+  e[^-1] "Convert image$? as 3d sprites clouds, using sprite $1 ("${"arg {1+!$2},with,without"}" alpha-channel)."
   v - repeat $!
     if {!{$>,i(0,7)}} continue endif # Do nothing if 3d object is empty.
     pass$1 0
@@ -14437,13 +14437,13 @@ frame_painting :
           "vignette strength $8, defects contrast $9, defects density $10, defects size $11, defects smoothness $12 and serial number $13."
   v - repeat $! l[$>]
     if {!$1} return endif
-    $1,$1 s={max(w,h)} rm.                             # Determine size of the frame.
-    ({'${-dec2bin\ $13}'}) -. {'0'} r. $s             # Generate frame profile from serial number.
+    $1,$1 s={max(w,h)} rm.                             # Determine size of the frame
+    ({'${dec2bin\ $13}'}) -. {'0'} r. $s               # Generate frame profile from serial number
     transpose. b. $3 n. {1-$2},{1+$2}
-    --r. {{-2,w}+2*$s},100%,1,1                         # Upper frame.
-    --mirror. y                                         # Lower frame.
-    mv... $! transpose. r. 100%,{-4,h+2*$s},1,1      # Left frame.
-    --mirror. x                                         # Right frame.
+    --r. {{-2,w}+2*$s},100%,1,1                         # Upper frame
+    --mirror. y                                         # Lower frame
+    mv... $! transpose. r. 100%,{-4,h+2*$s},1,1         # Left frame
+    --mirror. x                                         # Right frame
     ...,...,1,1,1 polygon. 3,0,0,{$s-1},{$s-1},0,{$s-1},1,0 polygon. 3,100%,0,{w-$s},100%,100%,100%,1,0 # Upper/lower mask.
     ..,..,1,1,1 polygon. 3,1,0,100%,{$s-2},100%,0 polygon. 3,1,100%,100%,{h-$s+1},100%,100%,1,0 # Left/right mask.
     _frame_painting[-6--3] ${4-6},${9-12}                    # Add colors + defects.
@@ -14474,7 +14474,7 @@ _frame_painting : # Add color + texture to each frame part.
 #@cli : $ image.jpg frame_pattern 8
 frame_pattern : check $1>=3 skip ${2=0},${3=}
   v - to_colormode 0
-  if ${"-is_image_arg $2"} # Frame from specified image.
+  if ${"is_image_arg $2"} # Frame from specified image.
     v + e[^-1] "Insert $1x$1 pattern frame on image$?, using frame image$2." v -
     pass$2 0 repeat {$!-1} l[$>,-1]
       wh={0,w},{0,h}
@@ -14588,7 +14588,7 @@ img2ascii : skip "${1= !\042#$%&\047()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRS
   # Generate dictionnaries for image analysis and synthesis.
   l[]
     ({'"$1"'}) repeat {w}
-      C={`92`}${-dec2oct\ {0,@$>}}
+      C={`92`}${dec2oct\ {0,@$>}}
       0 t. $C,0,0,$2,1,1
       0 t. $C,0,0,$4,1,1
     done rm[0]
@@ -14620,7 +14620,7 @@ img2ascii : skip "${1= !\042#$%&\047()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRS
        ({'"$1"'}) map[0] . k[0]
        s y i[1-$!] ({'\n'})
        a x
-       if $is_multi filename=${-filename\ "$5",$>} else filename="$5" endif
+       if $is_multi filename=${filename\ "$5",$>} else filename="$5" endif
        o raw:$filename,char rm
     endl endif
 
@@ -14747,11 +14747,11 @@ linearize_tiles : check "$1>0 && ${2=$1}>0"
 #@cli map_sprites : _nb_sprites>=1,_allow_rotation={ 0=none | 1=90 deg. | 2=180 deg. }
 #@cli : Map set of sprites (defined as the 'nb_sprites' latest images of the selection) to other selected images,
 #@cli : according to the luminosity of their pixel values.
-#@cli : $ image.jpg resize2dy 48 repeat 16 ball {8+2*$>},${-RGB} -mul[-1] {(1+$>)/16} done map_sprites 16
+#@cli : $ image.jpg resize2dy 48 repeat 16 ball {8+2*$>},${-RGB} mul[-1] {(1+$>)/16} done map_sprites 16
 map_sprites : check "isint($1) && $1>0 && isint(${2=0}) && $2>=0 && $2<=2"
   e[^-1] "Map set of $1 sprites to image selection$?."
   v - norm[0--{$1+1}] quantize[0--{$1+1}] $1,0,1
-  slices[-$1--1] 0 r[-$1--1] ${-max_wh[-$1--1]},1,100%,0,0,0.5,0.5
+  slices[-$1--1] 0 r[-$1--1] ${max_wh[-$1--1]},1,100%,0,0,0.5,0.5
   if {$2==1}
     N={4*$1}
     repeat {$!-$1} *[$>] 4 --rand[$>] 0,3 round. +[$>,-1] done
@@ -14761,7 +14761,7 @@ map_sprites : check "isint($1) && $1>0 && isint(${2=0}) && $2>=0 && $2<=2"
     repeat {$!-$1} *[$>] 2 --rand[$>] 0,1 round. +[$>,-1] done
     repeat $1 l[{1+$<}] --mirror xy endl done
   else N=$1 endif
-  r[-$N--1] 100%,100%,1,${-max_s[-$N--1]} w={w} h={h} a[-$N--1] x
+  r[-$N--1] 100%,100%,1,${max_s[-$N--1]} w={w} h={h} a[-$N--1] x
   r[^-1] ${w}00%,${h}00%,1,1 *[^-1] $w
   (0,{$w-1};0,{$w-1}^0,0;{$h-1},{$h-1}) r. $w,$h,1,2,3 round.
   repeat {$!-2} --r. [$>],[$>],1,2,0,2 r[$>] 100%,100%,1,2,0 +[$>,-1] --warp.. [$>],0,0 rv[$>,-1] rm. done rm[-2,-1] v +
@@ -15009,7 +15009,7 @@ boxfitting : check "isint(${1=3}) && $1>=1 && isint(${2=0}) && $2>=0 && ${3=0.1}
 #@cli : 'brush_light_type' can be { 0=none | 1=flat | 2=darken | 3=lighten | 4=full }.
 #@cli : Default values: 'brush_nb_sizes=3', 'brush_min_size_factor=0.66', 'brush_nb_orientations=12', 'brush_light_type=0', 'brush_light_strength=0.25', 'brush_opacity=0.8', 'painting_density=20%', 'painting_contours_coherence=0.9', 'painting_orientation_coherence=0.9', 'painting_coherence_alpha=1', 'painting_coherence_sigma=1', 'painting_primary_angle=0', 'painting_angle_dispersion=0.2'
 #@cli : $ image.jpg 40,40 gaussian[-1] 8,2 spread[-1] 4,0 --brushify[0] [1]
-brushify : check ${"-is_image_arg $1"}" &&"\         # $1: [brush]
+brushify : check ${"is_image_arg $1"}" &&"\         # $1: [brush]
                     "isint(${2=4}) && $2>=1 &&"\      # $2: brush_nb_sizes
                     "${3=0.25}>=0 && $3<=1 &&"\       # $3: brush_min_size_factor
                     "isint(${4=12}) && $4>=1 &&"\     # $4: brush_nb_orientations
@@ -15181,7 +15181,7 @@ drop_shadow : check "${3=5}>=0 && ${4=0}>=0 && $4<=1" skip ${1=20},${2=$1},${5=1
     dx={if(${is_percent\ $1},w*$1,$1)}
     dy={if(${is_percent\ $2},h*$2,$2)}
     sigma={if(${is_percent\ $3},max(w,h)*$3,$3)}
-    w={w} h={h} s={s} --channels 100% coords=${-autocrop_coords.\ 0} rm. z $coords  # Crop part with opaque pixels.
+    w={w} h={h} s={s} --channels 100% coords=${autocrop_coords.\ 0} rm. z $coords  # Crop part with opaque pixels.
     r {w+abs($dx)},{h+abs($dy)},1,100%,0,0,{if($dx>0,0,1)},{if($dy>0,0,1)} r. {w+4*$sigma},{h+4*$sigma},1,100%,0,0,0.5,0.5
     --channels. 100%
     if {!$4} shift. $dx,$dy # Flat shadow.
@@ -15463,8 +15463,8 @@ pencilbw : skip ${1=0.3},${2=60}
 #@cli : $ image.jpg --norm --ge[-1] 30% --pixelsort[0] +,y,[1],[2]
 pixelsort : check "(str1='${1=+}'; str1=='+' || str1=='-') && "\
                    "(str2='${2=x}'; str2=='x' || str2=='y' || str2=='z' || str2=='xy' || str2=='yx') && "\
-                   "('${3=}'==0 || "${"-is_image_arg $3"}") && "\
-                   "('${4=}'==0 || "${"-is_image_arg $4"}")"
+                   "('${3=}'==0 || "${"is_image_arg $3"}") && "\
+                   "('${4=}'==0 || "${"is_image_arg $4"}")"
   v - s0="descending" s1="ascending" v +
   if {'$3'!=0" && "'$4'!=0}
     e[^-1] "Apply 'pixelsort' effect to image$? in "${s{['$1']=='+'}}" order, along axis $2, with sorting criterion $3 and mask $4."
@@ -15594,7 +15594,7 @@ poster_hope : check "${1=3}>=0"
 #@cli : $ image.jpg --rodilius 12,10,300,10 normalize_local[-1] 10,6
 rodilius : check "${1=10}>=0 && $1<=200 && ${2=10}>=0 && $2<=100 && ${3=400}>=0 && ${4=7}>0" skip ${5=0},${6=1}
   e[^-1] "Apply rodilius filter on image$? with amplitude $1, thickness $2, sharpness $3, $4 orientations, offset $5 and "\
-    ${-arg\ 1+!$6,brighter,darker}" color mode."
+    ${arg\ 1+!$6,brighter,darker}" color mode."
   v - repeat $! l[$>] split_opacity -rv
     if {!$6} negate. endif
     --f. 0 nm. {-2,n}
@@ -15610,7 +15610,7 @@ rodilius : check "${1=10}>=0 && $1<=200 && ${2=10}>=0 && $2<=100 && ${3=400}>=0 
 #@cli : Default values: 'edges=40%', 'shading=0.2' and 'is_precise=0'.
 #@cli : $ image.jpg --stained_glass ,
 stained_glass : check "${1=40%}>=0 && ${2=0.2}>=0" skip ${3=0}
-  e[^-1] "Apply stained glass effect on image$?, with edges $1, shading $2 and thin-separators "${-arg\ 1+!$3,enabled,disabled}"."
+  e[^-1] "Apply stained glass effect on image$?, with edges $1, shading $2 and thin-separators "${arg\ 1+!$3,enabled,disabled}"."
   v - repeat $! l[$>]
     im={im-1} - $im  # Ensure strict positiveness of image labels.
     --gradient_norm >=. $1 *.. .
@@ -15824,7 +15824,7 @@ deform : skip ${1=10},${2=1}
 #@cli : Default values: 'center_x=center_y=50%', 'stretch_factor=1' and 'boundary_conditions=1'.
 #@cli : $ image.jpg --euclidean2polar ,
 euclidean2polar : skip ${1=50%},${2=50%} check "${3=1}>0 && isint(${4=1}) && $4>=0 && $4<=3"
-  e[^-1] "Apply euclidean to polar transform on image$?, with center point ($1,$2), stretch factor $3 and "${"-arg 1+$4,dirichlet,neumann,periodic,mirror"}" boundary conditions."
+  e[^-1] "Apply euclidean to polar transform on image$?, with center point ($1,$2), stretch factor $3 and "${"arg 1+$4,dirichlet,neumann,periodic,mirror"}" boundary conditions."
   v - repeat $! l[$>]
     cx={if(${is_percent\ $1},$1*(w-1),$1)}
     cy={if(${is_percent\ $2},$2*(h-1),$2)}
@@ -15948,7 +15948,7 @@ nadirzenith2equirectangular :
 #@cli : Default values: 'center_x=center_y=50%', 'stretch_factor=1' and 'boundary_conditions=1'.
 #@cli : $ image.jpg --euclidean2polar ,
 polar2euclidean : skip ${1=50%},${2=50%} check "${3=1}>0 && isint(${4=1}) && $4>=0 && $4<=3"
-  e[^-1] "Apply polar to euclidean transform on image$?, with center point ($1,$2), stretch factor $3 and "${"-arg 1+$4,dirichlet,neumann,periodic,mirror"}" boundary conditions."
+  e[^-1] "Apply polar to euclidean transform on image$?, with center point ($1,$2), stretch factor $3 and "${"arg 1+$4,dirichlet,neumann,periodic,mirror"}" boundary conditions."
   v - repeat $! l[$>]
     cx={if(${is_percent\ $1},$1*(w-1),$1)}
     cy={if(${is_percent\ $2},$2*(h-1),$2)}
@@ -16009,7 +16009,7 @@ rotoidoscope : skip ${1=50%},${2=50%},${5=1} check "${3=10}>0 && ${4=3}>=0"
 #@cli : Default values: 'radius=50%', 'strength=1', 'smoothness=0', 'center_x=center_y=50%', 'ratio_x/y=1', 'angle=0' and 'interpolation=1'.
 #@cli : $ image.jpg grid 5%,5%,0,0,0.6,255 --spherize ,
 spherize : check "${1=50%}>=0 && ${3=0}>=0 && ${6=1}>0 && isint(${8=1}) && $8>=0 && $8<=2" skip "${2=1},${4=50%},${5=50%},${7=0}"
-  e[^-1] "Apply spherize effect on image$?, with radius $1, strength $2, smoothness $3, center ($4,$5), x/y-ratio $6, angle $7 and "${"-arg 1+$8,nearest-neighbor,linear,cubic"}" interpolation."
+  e[^-1] "Apply spherize effect on image$?, with radius $1, strength $2, smoothness $3, center ($4,$5), x/y-ratio $6, angle $7 and "${"arg 1+$8,nearest-neighbor,linear,cubic"}" interpolation."
   if {!$1||!$2} return endif
   v - repeat $! l[$>]
     rmax={${"is_percent $1"}?0.5*sqrt((w-1)^2+(h-1)^2)*$1:$1}
@@ -16246,7 +16246,7 @@ scanlines : skip ${1=60},${2=2},${3=0},${4=0},${5=0}
 #@cli : Default values: 'frequency=5', 'direction=1', 'darkness=0.8' and 'lightness=2'.
 #@cli : $ image.jpg --shade_stripes 30
 shade_stripes : skip ${1=5},${2=1},${3=0.8},${4=2}
-  e[^-1] "Add "${-arg\ 1+!$2,vertical,horizontal}" shaded stripes to image$?, with frequency $1, darkness $3 and lightness $4."
+  e[^-1] "Add "${arg\ 1+!$2,vertical,horizontal}" shaded stripes to image$?, with frequency $1, darkness $3 and lightness $4."
   v - n 0,255 repeat $! l[$>]
     {max(1,w*($2!=0))},{max(1,h*($2==0))} noise. $1,2 distance. 1 r. .. n. $3,$4 * c 0,255
   endl done v +
@@ -16329,7 +16329,7 @@ vignette : check "${1=100}>=0 && ${2=70}>=0 && $2<=100 && ${3=90}>=0 && $3<=100"
 #@cli : Default values: 'text=(c) G'MIC', 'opacity=0.3', 'size=53', 'angle=25', 'mode=1' and 'smoothness=0'.
 #@cli : $ image.jpg --watermark_visible ,0.7
 watermark_visible : skip "${1=\251\ G\47MIC}" check "${2=0.3}>0 && $2<1 && ${3=53}>0 && ${6=0.5}>=0" skip ${4=25},${5=1}
-  e[^-1] ${-arg\ 1+!$5,Add,Remove}" visible watermark '$1' on image$?, with opacity $2, size $3, angle $4 deg."
+  e[^-1] ${arg\ 1+!$5,Add,Remove}" visible watermark '$1' on image$?, with opacity $2, size $3, angle $4 deg."
   v - repeat $! l[$>]
     0 t. "$1",0,0,$3,1,255 rotate. $4,0,0 b. $6 n. 0,255
     r. ..,0,2 +. .. c. 0,255   # Generate opaque watermark image
@@ -16364,9 +16364,9 @@ watermark_visible : skip "${1=\251\ G\47MIC}" check "${2=0.3}>0 && $2<1 && ${3=5
 #@cli : $ command "ex : $""=arg repeat $""# --blend[0,1] ${arg{$>+1}} text_outline[-1] Mode:\" \"${arg{$>+1}},2,2,23,2,1,255 done" image.jpg testimage2d {w},{h} ex softdodge,softlight,stamp,subtract,value,vividlight,xor
 blend : skip ${1=alpha},${2=1},${3=1},${4=0}
   v -
-  if ${"-is_image_arg $1"}
-    n={narg($*)} mode=${-arg\ 1+($n>=2),alpha,$2}
-    v + e[^-1] "Blend image$? with "${-arg\ 1+$4,base,top}" layer $1, using '"$mode"' mode and opacity $3." v -
+  if ${"is_image_arg $1"}
+    n={narg($*)} mode=${arg\ 1+($n>=2),alpha,$2}
+    v + e[^-1] "Blend image$? with "${arg\ 1+$4,base,top}" layer $1, using '"$mode"' mode and opacity $3." v -
     repeat $! pass$1 l[$>,-1] if $4 rv endif blend $mode,$3 endl done v + return
   endif
   v + e[^-1] "Blend all image$? together, using '$1' mode and opacity $2." v -
@@ -16718,7 +16718,7 @@ fade_z : skip ${1=30},${2=70}
 #@cli : The alpha difference A-B is defined as the image having minimal opacity, such that alpha_blend(B,A-B) = A.
 #@cli : Default value: 'opacity_gain=1'.
 #@cli : $ image.jpg testimage2d {w},{h} --sub_alpha[0] [1] display_rgba
-sub_alpha : check "${2=1}>=1 && "${"-is_image_arg $1"}
+sub_alpha : check "${2=1}>=1 && "${"is_image_arg $1"}
   e[^-1] "Compute minimal alpha-channel difference between image$? and base image $1, with opacity gain $2."
   v - remove_opacity repeat $! pass$1 0 l[$>,-1]
     to_colormode 0 r ${-max_whd},100%,0,0,0.5,0.5  # Normalize image dimensions.
@@ -16787,7 +16787,7 @@ animate : skip ${1=30},${2=0},${3=""},${4=10},${5=1},"${6=}"
       v + e[] " > Animate image ["$>"]" v -
       repeat $4 --l[0,1]
         -$1. {0,@{$>*{0,w}}-{($>+1)*{0,w}-1}} rm[0]
-        if {narg("$6")} o ${-filename\ "$6",$u,$>} endif
+        if {narg("$6")} o ${filename\ "$6",$u,$>} endif
         if {!$5} rm endif
         rprogress {100*($>+1)/$4}
         v + e[] "\r > Animate image ["$u"] : Frame "{$>+1}"/$4    " v -
@@ -16803,7 +16803,7 @@ apply_camera : skip "${1=},${4=}" check "${2=0}>=0 && ${3=0}>=0"
   v - is_ext "$4",avi is_outavi=${}
   l[] i=0 do
     -camera $2,1,$3 $1 w. -1,-1,"[G'MIC] Camera ""#$2 ("{w}x{h}")"
-    if {narg("$4")} if $is_outavi z. 0,{w-(w%8)-1} o. "$4",25,mp4v,1 else o. ${-filename\ "$4",$i} i+=1 endif endif
+    if {narg("$4")} if $is_outavi z. 0,{w-(w%8)-1} o. "$4",25,mp4v,1 else o. ${filename\ "$4",$i} i+=1 endif endif
     if {*,S} o. gmic_camera.png endif
     if {({*,CTRLLEFT}" || "{*,CTRLRIGHT})" && "{*,D}} w[] {{*,w}*1.5},{{*,h}*1.5} wait -1 endif # Increase window size.
     if {({*,CTRLLEFT}" || "{*,CTRLRIGHT})" && "{*,C}} w[] {{*,w}/1.5},{{*,h}/1.5} wait -1 endif # Decrease window size.
@@ -16840,7 +16840,7 @@ _apply_stream : skip "${2=},${6=}"
       l $2 onfail error[0--5] "Command 'apply_stream': Specified command errored: "${} endl
       if {!$!} continue endif
       if {narg("$6")}
-        if $is_outavi z. 0,{w-(w%8)-1} o. "$6",25,mp4v,1 else o. ${-filename\ "$6",$i} i+=1 endif
+        if $is_outavi z. 0,{w-(w%8)-1} o. "$6",25,mp4v,1 else o. ${filename\ "$6",$i} i+=1 endif
       endif
       if {*}
         title="[G'MIC] Frame ""#"$frame
@@ -16887,7 +16887,7 @@ _average_stream : skip "${5=}"
       if {$!>1} + endif
       if {narg("$5")}
         --/. $N c. $imM
-        if $is_outavi z. 0,{w-(w%8)-1} o. "$5",25,mp4v,1 else o. ${-filename\ "$5",$i} i+=1 endif
+        if $is_outavi z. 0,{w-(w%8)-1} o. "$5",25,mp4v,1 else o. ${filename\ "$5",$i} i+=1 endif
         rm.
       endif
       if {*}
@@ -16966,12 +16966,12 @@ _fade_stream : skip "${6=}"
 #@cli : Default values: 'output_filename=output.avi', 'fps=25' and 'codec=mp4v'.
 files2video : check "isint(${3=25}) && $3>0" skip "${2=output.avi}",${4=mp4v}
   v -
-  files=${"-files \"$1\""} arg2var _file,$files nb_files=${}
+  files=${"files \"$1\""} arg2var _file,$files nb_files=${}
   ({'$files'}) if {w>128} z. 0,127 s_files={t}... else s_files=$files endif rm.
   v + e[^-1] "Convert image files '"$s_files"' into frames of output video '$2', with $3 fps and $4 codec.\n" v -
   repeat $nb_files l[]
     file=${_file{$>+1}}
-    _file=${-basename\ $file}
+    _file=${basename\ $file}
     v + e[] "\r - Image "{1+$>}/$nb_files" ["$_file"] -> [$2]                    " v -
     i $file o "$2",$3,$4,1
     rm
@@ -17333,7 +17333,7 @@ video2files : check "isint(${3=0}) && $3>=0 && isint(${4=-1}) && ($4>=0 || $4==-
   do l[]
     i "$1",$frame
     if $!
-      o ${"-filename \"$2\","$frame} rm
+      o ${"filename \"$2\","$frame} rm
       v + e[] "\r  > Frame ""#"$frame v -
       frame+=$5
     else stopflag=1
@@ -17349,7 +17349,7 @@ video2files : check "isint(${3=0}) && $3>=0 && isint(${4=-1}) && ($4>=0 || $4==-
 #------------------------------------
 
 _wrbytepnk :
-  -output_pink3d ${1}.pnk
+  output_pink3d ${1}.pnk
 
 _xpink :
   na={-1,n}
@@ -17362,9 +17362,9 @@ _xpink :
       -x "which "$1" >/dev/null 2>&1"
       if {${}!=0} v + error "Executable (pink.)"$1" not found in PATH, status = "${}"!! Returning!!\n" endif
     endif
-    -output_pink3d ${filename}.pnk -x ${prefix}${1}" "${filename}".pnk $2 "${filename}"_o.pnk >/dev/null 2>&1"
+    output_pink3d ${filename}.pnk -x ${prefix}${1}" "${filename}".pnk $2 "${filename}"_o.pnk >/dev/null 2>&1"
   else
-    -output_pink3d ${filename}.pnk -x $1" "${x_filename}".pnk $2 "${x_filename}"_o.pnk"
+    output_pink3d ${filename}.pnk -x $1" "${x_filename}".pnk $2 "${x_filename}"_o.pnk"
   endif
   status=${}
   file_rm ${x_filename}.pnk
@@ -17386,7 +17386,7 @@ _xframe :
 output_pink3d :
   e[^-1] "Output image$? as file '$1' (in 3d pink extension of P5-coded PPM format)."
   v - if {$!==1} filename0="$1"
-  else repeat $! filename$>=${-filename\ "\"$1\"",$>} done
+  else repeat $! filename$>=${filename\ "\"$1\"",$>} done
   endif
   repeat $! l[$>]
     if {d==1} o. ppm:${filename$>}  # 2d image, save as regular PPM format.
@@ -17480,7 +17480,7 @@ pink_reg_minima : check "${1=4}==4 || $1==8 || $1==6 || $1==26"
 #@cli : (http://pinkhq.com/doxygen/skelcurv_8c.html)
 #@cli : Curvilinear binary skeleton guided by a priority function or image (requires the PINK library to be installed).
 #@cli : Default values: 'prio=0', 'connectivity=4' and 'inhibit=""'.
-#@cli : $ image.jpg threshold 50% {w},{h} fill[-1] 'if(x>w/2,255,0)' tp=${-path_tmp} -output[-1] ${tp}/inhibit.pgm remove[-1] --pink_skelcurv[0] , --pink_skelcurv[0] ,,${tp}/inhibit.pgm exec "rm "${tp}"/inhibit.pgm"
+#@cli : $ image.jpg threshold 50% {w},{h} fill[-1] 'if(x>w/2,255,0)' tp=${-path_tmp} output[-1] ${tp}/inhibit.pgm remove[-1] --pink_skelcurv[0] , --pink_skelcurv[0] ,,${tp}/inhibit.pgm exec "rm "${tp}"/inhibit.pgm"
 #@cli : $ image.jpg threshold 50% --pink_skelcurv , --pink_skelcurv[-2] ,8
 pink_skelcurv : skip ${1=0},${2=4},${3=""}
   e[^-1] "Curvilinear binary skeleton guided by a priority function or image from image$?, prio=$1, connectivity=$2, inhibit=$3."
@@ -17579,7 +17579,7 @@ alert : skip "${1=[G"{`39`}"MIC Alert]},${2=This is an alert box.},${3=OK}"
     # Create buttons graphics.
     $=arg
     repeat {$#-2} label=${arg{$>+3}} 0 t. $label,0,0,16,1,-200 done
-    r[^0] {min(128,max(64,${-max_w[^0]}+12))},{min(48,max(24,${-max_h[^0]}+12))},1,1,0,0,0.5,0.5
+    r[^0] {min(128,max(64,${max_w[^0]}+12))},{min(48,max(24,${max_h[^0]}+12))},1,1,0,0,0.5,0.5
     +[^0] 200 to_rgb[^0]
     mv[0] $!
     [0],[0],1,1,'(y-h/2)' *. -2 c. -30,30 +[0--3] . rm. c[^-1] 0,255  # Add shading to buttons.
@@ -17721,17 +17721,17 @@ basename : skip ${2=unused}
 #@cli bin : binary_int1,...
 #@cli : Print specified binary integers into their octal, decimal, hexadecimal and string representations.
 bin :
-  v - dec=${-bin2dec\ ${^0}} v +
-  e[^-1] "Convert binary integer"${-arg\ 1+($#>1),"",s}" '${^0}' to octal '"${-dec2oct\ $dec}"',
-           decimal '"$dec"', hexadecimal '"${-dec2hex\ $dec}"' and string '"${-dec2str\ $dec}"'."
+  v - dec=${bin2dec\ ${^0}} v +
+  e[^-1] "Convert binary integer"${arg\ 1+($#>1),"",s}" '${^0}' to octal '"${dec2oct\ $dec}"',
+          decimal '"$dec"', hexadecimal '"${dec2hex\ $dec}"' and string '"${dec2str\ $dec}"'."
 
 #@cli bin2dec : binary_int1,...
 #@cli : Convert specified binary integers into their decimal representations.
 bin2dec :
-  v - res=${-_$0\ $1} repeat {$#-1} res=$res,${-_$0\ ${-arg\ $>+2,${^0}}} done u $res v +
+  v - res=${_$0\ $1} repeat {$#-1} res=$res,${_$0\ ${arg\ $>+2,${^0}}} done u $res v +
 
 _bin2dec :
-  ({'${-strlowercase\ $1}'})
+  ({'${strlowercase\ $1}'})
   is_negative=0
   if {i[0]==45} z. 1,100% is_negative=1 endif
   f. "if(i>=48 && i<=49,(i-48)*2^(w-1-x),nan)"
@@ -17795,8 +17795,8 @@ _compress_gmic_gui :
 #@cli dec : decimal_int1,...
 #@cli : Print specified decimal integers into their binary, octal, hexadecimal and string representations.
 dec :
-  e[^-1] "Convert decimal integer"${-arg\ 1+($#>1),"",s}" '${^0}' to binary '"${-dec2bin\ ${^0}}"',"\
-          " octal '"${-dec2oct\ ${^0}}"', hexadecimal '"${-dec2hex\ ${^0}}"' and string '"${-dec2str\ ${^0}}"'."
+  e[^-1] "Convert decimal integer"${arg\ 1+($#>1),"",s}" '${^0}' to binary '"${dec2bin\ ${^0}}"',"\
+          " octal '"${dec2oct\ ${^0}}"', hexadecimal '"${dec2hex\ ${^0}}"' and string '"${dec2str\ ${^0}}"'."
 
 #@cli dec2str : decimal_int1,...
 #@cli : Convert specifial decimal integers into its string representation.
@@ -17806,22 +17806,22 @@ dec2str :
 #@cli dec2bin : decimal_int1,...
 #@cli : Convert specified decimal integers into their binary representations.
 dec2bin :
-  v - res=${-_$0\ $1} repeat {$#-1} res=$res,${-_$0\ ${-arg\ $>+2,${^0}}} done u $res v +
+  v - res=${_$0\ $1} repeat {$#-1} res=$res,${_$0\ ${arg\ $>+2,${^0}}} done u $res v +
 
 _dec2bin : check isint($1)
   res="" r={abs($1)}
   do res={$r%2}$res r={int($r/2)} while $r
-  u ${-arg\ 1+($1>=0),-,""}$res
+  u ${arg\ 1+($1>=0),-,""}$res
 
 #@cli dec2hex : decimal_int1,...
 #@cli : Convert specified decimal integers into their hexadecimal representations.
 dec2hex :
-  v - res=${-_$0\ $1} repeat {$#-1} res=$res,${-_$0\ ${-arg\ $>+2,${^0}}} done u $res v +
+  v - res=${_$0\ $1} repeat {$#-1} res=$res,${_$0\ ${arg\ $>+2,${^0}}} done u $res v +
 
 _dec2hex : check isint($1)
   res="" r={abs($1)}
-  do res=${-_dec2hex_{$r%16}}$res r={int($r/16)} while $r
-  u ${-arg\ 1+($1>=0),-,""}$res
+  do res=${_dec2hex_{$r%16}}$res r={int($r/16)} while $r
+  u ${arg\ 1+($1>=0),-,""}$res
 
 _dec2hex_0 : u 0
 _dec2hex_1 : u 1
@@ -17843,12 +17843,12 @@ _dec2hex_15 : u f
 #@cli dec2oct : decimal_int1,...
 #@cli : Convert specified decimal integers into their octal representations.
 dec2oct :
-  v - res=${-_$0\ $1} repeat {$#-1} res=$res,${-_$0\ ${-arg\ $>+2,${^0}}} done u $res v +
+  v - res=${_$0\ $1} repeat {$#-1} res=$res,${_$0\ ${arg\ $>+2,${^0}}} done u $res v +
 
 _dec2oct : check isint($1)
   res="" r={abs($1)}
   do res={$r%8}$res r={int($r/8)} while $r
-  u ${-arg\ 1+($1>=0),-,""}$res
+  u ${arg\ 1+($1>=0),-,""}$res
 
 #@cli fact : value
 #@cli : Return the factorial of the specified value.
@@ -17960,22 +17960,22 @@ gcd : check "isint($1) && isint($2) && $1*$2!=0"
   v - _gcd {max(abs($1),abs($2))},{min(abs($1),abs($2))} v +
 
 _gcd :
-  r={$1%$2} if $r u ${-_gcd\ $2,$r} else u $2 endif
+  r={$1%$2} if $r u ${_gcd\ $2,$r} else u $2 endif
 
 #@cli hex : hexadecimal_int1,...
 #@cli : Print specified hexadecimal integers into their binary, octal, decimal and string representations.
 hex :
-  v - dec=${-hex2dec\ ${^0}} v +
-  e[^-1] "Convert hexadecimal integer"${-arg\ 1+($#>1),s,""}" '${^0}' to binary '"${-dec2bin\ $dec}"',
-           octal '"${-dec2oct\ $dec}"', decimal '"$dec"' and string '"${-dec2str\ $dec}"'."
+  v - dec=${hex2dec\ ${^0}} v +
+  e[^-1] "Convert hexadecimal integer"${arg\ 1+($#>1),s,""}" '${^0}' to binary '"${dec2bin\ $dec}"',
+           octal '"${dec2oct\ $dec}"', decimal '"$dec"' and string '"${dec2str\ $dec}"'."
 
 #@cli hex2dec : hexadecimal_int1,...
 #@cli : Convert specified hexadecimal integers into their decimal representations.
 hex2dec :
-  v - res=${-_$0\ $1} repeat {$#-1} res=$res,${-_$0\ ${-arg\ $>+2,${^0}}} done u $res v +
+  v - res=${_$0\ $1} repeat {$#-1} res=$res,${_$0\ ${arg\ $>+2,${^0}}} done u $res v +
 
 _hex2dec :
-  ({'${-strlowercase\ $1}'})
+  ({'${strlowercase\ $1}'})
   is_negative=0
   if {i[0]==45} z. 1,100% is_negative=1 endif
   f. "if(i>=48 && i<=57,i-48,if(i>=97 && i<=102,i-87,nan))*16^(w-1-x)"
@@ -18061,7 +18061,7 @@ hex2img8 :
 #@cli is_3d
 #@cli : Return 1 if all of the selected image are 3d objects, 0 otherwise.
 is_3d :
-  v - u 1 l -check3d 1 onfail u 0 endl v +
+  v - u 1 l check3d 1 onfail u 0 endl v +
 
 # Faster version.
 _is_3d :
@@ -18495,22 +18495,22 @@ mad :
 #@cli max_w
 #@cli : Return the maximal width between selected images.
 max_w :
-  v - u {arg(1,${-_max_whds\ 4})} v +
+  v - u {arg(1,${_max_whds\ 4})} v +
 
 #@cli max_h
 #@cli : Return the maximal height between selected images.
 max_h :
-  v - u {arg(2,${-_max_whds\ 4})} v +
+  v - u {arg(2,${_max_whds\ 4})} v +
 
 #@cli max_d
 #@cli : Return the maximal depth between selected images.
 max_d :
-  v - u {arg(3,${-_max_whds\ 4})} v +
+  v - u {arg(3,${_max_whds\ 4})} v +
 
 #@cli max_s
 #@cli : Return the maximal spectrum between selected images.
 max_s :
-  v - u {arg(4,${-_max_whds\ 4})} v +
+  v - u {arg(4,${_max_whds\ 4})} v +
 
 #@cli max_wh
 #@cli : Return the maximal wxh size of selected images.
@@ -18549,27 +18549,27 @@ med :
 #@cli median_color
 #@cli : Return the median color value of the last selected image.
 median_color :
-  v - u "" s="" repeat {s} --channels. $> u ${}$s${-med.} s=, rm. done v +
+  v - u "" s="" repeat {s} --channels. $> u ${}$s${med.} s=, rm. done v +
 
 #@cli min_w
 #@cli : Return the minimal width between selected images.
 min_w :
-  v - u {arg(1,${-_min_whds\ 4})} v +
+  v - u {arg(1,${_min_whds\ 4})} v +
 
 #@cli min_h
 #@cli : Return the minimal height between selected images.
 min_h :
-  v - u {arg(2,${-_min_whds\ 4})} v +
+  v - u {arg(2,${_min_whds\ 4})} v +
 
 #@cli min_d
 #@cli : Return the minimal depth between selected images.
 min_d :
-  v - u {arg(3,${-_min_whds\ 4})} v +
+  v - u {arg(3,${_min_whds\ 4})} v +
 
 #@cli min_s
 #@cli : Return the minimal s size of selected images.
 min_s :
-  v - _min_s ${-_min_whds\ 4} v +
+  v - _min_s ${_min_whds\ 4} v +
 
 _min_s :
   u $4
@@ -18611,17 +18611,17 @@ normalize_filename :
 #@cli oct : octal_int1,...
 #@cli : Print specified octal integers into their binary, decimal, hexadecimal and string representations.
 oct :
-  v - dec=${-oct2dec\ ${^0}} v +
-  e[^-1] "Convert octal integer"${-arg\ 1+($#>1),"",s}" '${^0}' to binary '"${-dec2bin\ $dec}"', decimal '"$dec"',
-           hexadecimal '"${-dec2hex\ $dec}"' and string '"${-dec2str\ $dec}"'."
+  v - dec=${oct2dec\ ${^0}} v +
+  e[^-1] "Convert octal integer"${arg\ 1+($#>1),"",s}" '${^0}' to binary '"${dec2bin\ $dec}"', decimal '"$dec"',
+           hexadecimal '"${dec2hex\ $dec}"' and string '"${dec2str\ $dec}"'."
 
 #@cli oct2dec : octal_int1,...
 #@cli : Convert specified octal integers into their decimal representations.
 oct2dec :
-  v - res=${-_$0\ $1} repeat {$#-1} res=$res,${-_$0\ ${-arg\ $>+2,${^0}}} done u $res v +
+  v - res=${_$0\ $1} repeat {$#-1} res=$res,${_$0\ ${arg\ $>+2,${^0}}} done u $res v +
 
 _oct2dec :
-  ({'${-strlowercase\ $1}'})
+  ({'${strlowercase\ $1}'})
   is_negative=0
   if {i[0]==45} z. 1,100% is_negative=1 endif
   f. "if(i>=48 && i<=55,(i-48)*8^(w-1-x),nan)"
@@ -18691,8 +18691,8 @@ std_noise :
 #@cli : Print specified string into its binary, octal, decimal and hexadecimal representations.
 str : skip $1
   v - dec={'$*'} v +
-  e[^-1] "Convert string '$*' to binary '"${-dec2bin\ $dec}"', octal '"${-dec2oct\ $dec}"', decimal '"$dec"' and
-           hexadecimal '"${-dec2hex\ $dec}"'."
+  e[^-1] "Convert string '$*' to binary '"${dec2bin\ $dec}"', octal '"${dec2oct\ $dec}"', decimal '"$dec"' and
+           hexadecimal '"${dec2hex\ $dec}"'."
 
 #@cli str2hex : string
 #@cli : Convert specified string into a sequence of hexadecimal values.
@@ -18735,8 +18735,8 @@ strlen : skip "${1=}"
 strreplace : skip "${3=}"
   v -
   if {narg("$3")}
-    ls=${-strlen\ "$2"}
-    lr={${-strlen\ "$3"}-1}
+    ls=${strlen\ "$2"}
+    lr={${strlen\ "$3"}-1}
     l[] ({'"$1"'}) s +,{'"$2"'} s y,-$ls
     repeat $! if {[{$>,^}]==['"$2"']} rows[$>] 0,$lr f[$>] {'"$3"'} endif done
     a y u {t} rm endl
@@ -18913,7 +18913,7 @@ demo : check "isint(${1=2}) && $1>=0 && $1<=2"
     if {({*,b}&1)&&$selected<0} selected=$y # Selection
     elif {!{*,b}}
       if {$selected>=0&&$y==$selected}
-      m "com : -v 0 "${-arg\ {1+$y},$commands} parallel $parallel_mode,"-l[] com v -1 rm endl" uncommand com
+      m "com : -v 0 "${arg\ {1+$y},$commands} parallel $parallel_mode,"-l[] com v -1 rm endl" uncommand com
       endif
       selected=-1
     endif
@@ -19445,19 +19445,19 @@ x_colorize : skip ${1=0},${3=0},${4=0},${5=0},${6=0} check "${2=1024}==0 || $2>=
   thread_main="-_x_colorize[0] ${1--1}"
   thread_color="-w[] 400,320,0,\"Palette: main\" -x_select_color[] __color,255,255,255"
 
-  is_palette1=${"-is_image_arg[] $4"}
+  is_palette1=${"is_image_arg[] $4"}
   if $is_palette1
     pass$4 1 ({'{b}'}) discard. {'~'} palette_title1={t} rm.
     thread_palette1="-w[] 400,400,0,\"Palette: "$palette_title1"\" -x_select_palette["{$!-1}"] __color"
   endif
 
-  is_palette2=${"-is_image_arg[] $5"}
+  is_palette2=${"is_image_arg[] $5"}
   if $is_palette2
     pass$5 1 ({'{b}'}) discard. {'~'} palette_title2={t} rm.
     thread_palette2="-w[] 400,400,0,\"Palette: "$palette_title2"\" -x_select_palette["{$!-1}"] __color"
   endif
 
-  is_grabber=${"-is_image_arg[] $6"}
+  is_grabber=${"is_image_arg[] $6"}
   if $is_grabber
     pass$6 1 ({'{b}'}) discard. {'~'} palette_grabber={t} rm.
     thread_grabber="-w[] ${\"fitscreen[] {w},{h},1,128,50%\"},0,\"Grabber: "$palette_grabber"\" -x_grab_color["{$!-1}"] __color"
@@ -19941,13 +19941,13 @@ x_fire : skip "${1=G\47MIC}"
   # Start animation loop.
   angle=0
   do
-    correlate[0] [2]                                     # Apply fire effect.
-    {0,w},1 rand. 128,256 j[0] .,0,{{0,h}-1} rm.       # Add new random values at the bottom line.
-    --r[0] 400,200,1,1,3 map. [1]                        # Map fire palette
-    --r3d[3] 0,1,0,$angle j3d.. .,50%,50%,0,1,5,0,0      # Draw 3d object.
+    correlate[0] [2]                                  # Apply fire effect.
+    {0,w},1 rand. 128,256 j[0] .,0,{{0,h}-1} rm.      # Add new random values at the bottom line.
+    --r[0] 400,200,1,1,3 map. [1]                     # Map fire palette
+    --r3d[3] 0,1,0,$angle j3d.. .,50%,50%,0,1,5,0,0   # Draw 3d object.
     *3d. 0.25,0.16,1 j3d[0] .,50%,50%,0,1,3,0,0
     rm.
-    angle+=3                                                 # Update 3d angle.
+    angle+=3                                          # Update 3d angle.
     fps=${-fps} if {$fps>0} to. $fps" fps",5,{h-22},16,1,0.2 endif
     w.
     if {{*,CTRLLEFT}&&{*,D}} w[] {1.5*w},{1.5*h} elif {{*,CTRLLEFT}&&{*,C}} w[] {w},{h} endif
@@ -20167,7 +20167,7 @@ x_grab_color : skip ${1=xgc_variable}
   if {!{*,u}} error[0--3] "Command '$0': No display available." return endif
   if {!$!} error[0--3] "Command '$0': Missing specified input image." endif
   v - l[0] nm={n} nm. img v +
-  e[^-1] "Open "${-arg\ {0,s},GRAY,GRAYA,RGB,RGBA}" color grabber widget for image$?, with variable name '$1'."
+  e[^-1] "Open "${arg\ {0,s},GRAY,GRAYA,RGB,RGBA}" color grabber widget for image$?, with variable name '$1'."
   v -
 
   if {!{*}} w[] ${fitscreen[]\ {w},{h},1,128,50%},0,0,-1,-1,"Grab a color" endif
@@ -22217,7 +22217,7 @@ x_select_color : skip ${1=xsc_variable}
   v - rm
   n={narg($$1)} if {!$n} $1=0,0,0 endif
   rgba_mode={$n>=4} R={arg(1,$$1)} G={arg(2,$$1)} B={arg(3,$$1)} A={if($rgba_mode,arg(4,$$1),255)}
-  v + e[^-1] "Open "${-arg\ 1+$rgba_mode,RGB,RGBA}" color selector widget, with variable '$1' and starting color "($$1)"." v -
+  v + e[^-1] "Open "${arg\ 1+$rgba_mode,RGB,RGBA}" color selector widget, with variable '$1' and starting color "($$1)"." v -
   if {!{*}} w[] {400+24*$rgba_mode},400,0,"Select a color" endif
   update_view=1 is_sv=0 is_h=0 is_a=0 colordb=0 is_thread_variable={arg(1,{'$1'})==_'_'" && "arg(2,{'$1'})==_'_'}
 
@@ -22284,7 +22284,7 @@ x_select_color : skip ${1=xsc_variable}
       if $rgba_mode t. "RGBA ("$R","$G","$B","{round($A)}")",{$x0+115},{$y1+8},14,1,0
       else t. "RGB ("$R","$G","$B")",{$x0+115},{$y1+8},14,1,0
       endif
-      ({'${-dec2hex\ {$R*65536+$G*256+$B}}'}) -. {'0'} r. 6,1,1,1,0,0,1,0 +. {'0'}
+      ({'${dec2hex\ {$R*65536+$G*256+$B}}'}) -. {'0'} r. 6,1,1,1,0,0,1,0 +. {'0'}
       f. if(i>=_'a'" && "i<=_'z',i+_'A'-_'a',i)
       t.. "HTML ""#"{t},{$x0+115},{$y1+40},14,1,0 rm.
       w. 100%,100%,0 rm.
@@ -22484,7 +22484,7 @@ x_select_palette : skip ${1=xsp_variable},${2=0}
   if {!{*,u}} error[0--3] "Command '$0': No display available." return endif
   if {!$!} error[0--3] "Command '$0': Missing specified palette image." endif
   v - k[0] --r {w*h*d},1,1,{s},-1 to_color. rgba_mode={s==4} to_rgba. nm. palette v +
-  e[^-1] "Open "${-arg\ 1+$rgba_mode,RGB,RGBA}" color selector widget for palette$?, with variable name '$1'."
+  e[^-1] "Open "${arg\ 1+$rgba_mode,RGB,RGBA}" color selector widget for palette$?, with variable name '$1'."
   v -
   if {w>1024} v + error[0--3] "Command '$0': Too much colors ("{w}") in selected palette." endif
   if {!{*}} w[] 400,400,0,0,-1,-1,"Palette: "{0,b} endif
@@ -22538,7 +22538,7 @@ x_select_palette : skip ${1=xsp_variable},${2=0}
         endif
         ($R^$G^$B) rgb2hsv. H={round(i[0])} S={round(i[1]*255)} V={round(i[2]*255)} rm.
         t.. "HSV ("$H","$S","$V")",8,{$wh-31},14,1,0
-        ({'${-dec2hex\ {$R*65536+$G*256+$B}}'}) -. {'0'} r. 6,1,1,1,0,0,1,0 +. {'0'}
+        ({'${dec2hex\ {$R*65536+$G*256+$B}}'}) -. {'0'} r. 6,1,1,1,0,0,1,0 +. {'0'}
         f. if(i>=_'a'" && "i<=_'z',i+_'A'-_'a',i)
         t... "HTML ""#"{t},8,{$wh-17},14,1,0 rm.
       endif
@@ -23108,19 +23108,19 @@ gui_preview :
 
 # Return name of a layer.
 gui_layer_name :
-  u ${"-_gui_merge_layers[0] name,[unnamed]"}
+  u ${"_gui_merge_layers[0] name,[unnamed]"}
 
 # Return blending mode of a layer.
 gui_layer_mode :
-  u ${"-_gui_merge_layers[0] mode,alpha"}
+  u ${"_gui_merge_layers[0] mode,alpha"}
 
 # Return opacity of a layer.
 gui_layer_opacity :
-  u ${"-_gui_merge_layers[0] opacity,100"}
+  u ${"_gui_merge_layers[0] opacity,100"}
 
 # Return (x,y) position of a layer.
 gui_layer_pos :
-  u ${"-_gui_merge_layers[0] pos,0,0"}
+  u ${"_gui_merge_layers[0] pos,0,0"}
 
 # Set name of a layer.
 gui_set_layer_name :
@@ -23153,18 +23153,18 @@ gui_set_layer_pos :
 # Flatten list of input layers according to their blending modes, opacities and positions,
 # set in each layer name by the G'MIC plug-in.
 gui_merge_layers :
-  mode0=${"-_gui_merge_layers. mode,alpha"}
-  opacity0=${"-_gui_merge_layers. opacity,100"}
-  pos0=${"-_gui_merge_layers. pos,0,0"}
+  mode0=${"_gui_merge_layers. mode,alpha"}
+  opacity0=${"_gui_merge_layers. opacity,100"}
+  pos0=${"_gui_merge_layers. pos,0,0"}
   if {$opacity0<100" || "['$pos0']!='0,0'} 100%,100%,1,4 endif
   wh0={w},{h}
   wh=${-max_wh} r. $wh,1,100%,0
   repeat {$!-1} l[-2,-1] -rv
-    mode=${"-_gui_merge_layers[1] mode,alpha"}
-    opacity=${"-_gui_merge_layers[1] opacity,100"}
-    pos=${"-_gui_merge_layers[1] pos,0,0"}
+    mode=${"_gui_merge_layers[1] mode,alpha"}
+    opacity=${"_gui_merge_layers[1] opacity,100"}
+    pos=${"_gui_merge_layers[1] pos,0,0"}
     to_a[1] r[1] $wh,1,100%,0
-    shift[1] ${-u\ $pos},0,0
+    shift[1] ${u\ $pos},0,0
     to_colormode[0,1] 0
     blend $mode,{max(0,min(1,$opacity/100))}
   endl done
@@ -23307,7 +23307,7 @@ gui_error_preview :
 
 gui_check_version :
   if {$_version<$1}
-    gui_error_preview "This filter requires at least version *"${"-strver $1"}"* of the G'MIC framework.\n\n"\
+    gui_error_preview "This filter requires at least version *"${"strver $1"}"* of the G'MIC framework.\n\n"\
                       "http://gmic.eu/download.shtml"
     u 0
   else u 1
@@ -23319,7 +23319,7 @@ gui_autocrop_layers :
     nm=${-gui_layer_name}
     mode=${-gui_layer_mode}
     opacity=${-gui_layer_opacity}
-    coords=${-autocrop_coords\ auto}
+    coords=${autocrop_coords\ auto}
     z $coords
     nm mode($mode),opacity($opacity),pos({arg(1,$coords)},{arg(2,$coords)}),name($nm)
   endl done
@@ -23416,7 +23416,7 @@ fx_logo_version1 : skip "${1=Universal plug-in}"
   230,120,1,3 j3d. ..,50%,30%,0,1,4 rm..
   0 t. "$1",0,0,13,1,255,255,255 j.. .,{({-2,w}-w)/2},75% rm.
   to_rgba replace_color 0,0,0,0,0,255,0,0,0,0 drop_shadow 6,6,2
-  i.. ${-fitratio_wh\ 230,120,$ratio},1,3
+  i.. ${fitratio_wh\ 230,120,$ratio},1,3
   rand.. 0,255 sh.. 0 /. 2 rm.
   blur_radial.. 20 sharpen.. 300
   r. ..,..,1,4,0,0,0.5,0.5 blend alpha
@@ -23624,7 +23624,7 @@ gui_download_all_data :
 
 _gui_download_all_data :
    repeat {narg(${_filenames_$1})}
-     filename=${-arg\ 1+$>,${_filenames_$1}}.cimgz
+     filename=${arg\ 1+$>,${_filenames_$1}}.cimgz
      v + e[] "Download "$filename v -
      if {$2" || "!isfile(${_path_rc}${_prefix_$1}$filename)} l[] ${_url_$1}/$filename o ${_path_rc}${_prefix_$1}$filename rm onfail endl endif
      progress {100*$_n/$_N}
@@ -23879,7 +23879,7 @@ fx_friends :
   rm _heart80x73 scale3x r 150%,150%,1,1,0,0,0.5,0.5
   --*. 70 --*.. 110 --*... 255 *[-4] 255 a c
   blur_radial 4 sharpen 300
-  i.. ${-fitratio_wh\ {w},{h},$ratio},1,3
+  i.. ${fitratio_wh\ {w},{h},$ratio},1,3
   rand.. 0,255 sh.. 1,2 /. 2 rm.
   blur_radial.. 20 sharpen.. 50
   r. ..,..,1,4,0,0,0.5,0.5 blend alpha
@@ -24012,7 +24012,7 @@ survey :
   # Get sequence of anwsers for each question.
   m "__survey : _survey $""1"
   N=0 repeat $! l[$>]
-    ({'${-hex2str\ {t}}'})
+    ({'${hex2str\ {t}}'})
     --replace. {'" "'},{'~'} z. 0,32 z.. 34,100%
     if {{@100%}==_'0'" || "{@100%}==_'1'}
       v + e[] "["{1+$N}"] "{-2,t} v -
@@ -24027,7 +24027,7 @@ survey :
   _back={u(240,255)},{u(240,255)},{u(240,255)}
   _survey_choice[] 0,"1. Who am I?","N.C.","A photographer","A painter","An illustrator","A graphic designer","A lover of image filters","An image processing expert","An open-source enthusiast","A scientist","Someone else",420
   _survey_bool[] 1,"I do graphics/image processing for a living."
-  r[-2,-1] ${-max_w[-2,-1]},100%,1,3,0,1 a[-2,-1] y
+  r[-2,-1] ${max_w[-2,-1]},100%,1,3,0,1 a[-2,-1] y
 
   _survey_choice[] 2,"2. How did I hear about G'MIC?","N.C.","A friend showed me","From a search engine","From a discussion forum","From a blog entry","From an online magazine","From a physical magazine",420
   _survey_choice[] 3,"3. How often am I using G'MIC?","N.C.","Several times a day","Almost everyday","Few times a week","Rarely","Never","I've just discovered G'MIC today",420
@@ -24041,22 +24041,22 @@ survey :
   _survey_bool[] 8,"The Flickr user group.",256
   _survey_bool[] 9,"The mailing list.",256
   _survey_bool[] 10,"I don't follow G'MIC news.",256
-  r[-7--1] ${-max_w[-7--1]},100%,1,3,0,1 a[-7--1] y
+  r[-7--1] ${max_w[-7--1]},100%,1,3,0,1 a[-7--1] y
 
   _survey_choice[] 11,"6. How do I rate the frequency\n    of G'MIC releases?","N.C.","Too fast","Just fine","Too slow",500
   _survey_bool[] 12,"A rolling release would be nice for G'MIC."
-  r[-2,-1] ${-max_w[-2,-1]},100%,1,3,0,1 a[-2,-1] y
+  r[-2,-1] ${max_w[-2,-1]},100%,1,3,0,1 a[-2,-1] y
 
   _survey_choice[] 13,"7. How do I judge the number of\n   available filters?","N.C.","Too many filters.\n   A pertinent subset should be kept","Fine. The more is the best","Just fine","Not enough useful filters","Not enough. I want more!",500
   _survey_bool[] 14,"I use the \"Faves\" feature of the plug-in"
-  r[-2,-1] ${-max_w[-2,-1]},100%,1,3,0,1 a[-2,-1] y
+  r[-2,-1] ${max_w[-2,-1]},100%,1,3,0,1 a[-2,-1] y
 
   _survey_choice[] 15,"8. How do I judge the amount and\n   quality of available documentation?","N.C.","Documentation in too many different places.","Enough but too much technical documentation","Enough but not technical enough documentation","Just fine","I miss technical documentation","I miss non-technical documentation",500
   _survey_bool[] 16,"It's hard to get support and/or feedback from the developers"
-  r[-2,-1] ${-max_w[-2,-1]},100%,1,3,0,1 a[-2,-1] y
+  r[-2,-1] ${max_w[-2,-1]},100%,1,3,0,1 a[-2,-1] y
 
-  r[0-3] ${-max_w[0-3]},100%,1,3,0,1
-  r[4-7] ${-max_w[4-7]},100%,1,3,0,1
+  r[0-3] ${max_w[0-3]},100%,1,3,0,1
+  r[4-7] ${max_w[4-7]},100%,1,3,0,1
   frame 1,1,0 drop_shadow 5,5,4
   a[4-7] y a[0-3] y a x,1
   i.. 100%,100%,1,3,255 blend[-2,-1] alpha
@@ -24069,8 +24069,8 @@ survey :
 
   # Save result.
   out=${-path_tmp}gmic_survey.png o $out
-  l[] GMIC_LOGIN=${-gmic_ftp\ 0} onfail GMIC_LOGIN="" endl
-  l[] GMIC_PASSWD=${-gmic_ftp\ 1} onfail GMIC_PASSWD="" endl
+  l[] GMIC_LOGIN=${gmic_ftp\ 0} onfail GMIC_LOGIN="" endl
+  l[] GMIC_PASSWD=${gmic_ftp\ 1} onfail GMIC_PASSWD="" endl
   if {narg($GMIC_LOGIN)}
     -x "lftp ftp://"$GMIC_LOGIN":"$GMIC_PASSWD"@ftp.gmic.eu -e \"put -O /www/gmic/ \\\""$out"\\\"; quit\" >/dev/null"
   endif
@@ -24301,7 +24301,7 @@ fx_asciiart_preview :
 #@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2010/29/12</i>.</small>")
 fx_chessboard :
-  to_rgba -chessboard ${1-14}
+  to_rgba chessboard ${1-14}
 
 fx_chessboard_preview :
   gui_split_preview "fx_chessboard $*",$-1
@@ -24450,7 +24450,7 @@ fx_imagegrid_triangular :
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2015/24/02</i>.</small>")
 fx_make_seamless :
   repeat $! l[$>]
-    if $1 --b {20.5-$1/50}% -[0] [1] fc. ${-average_color.} + endif
+    if $1 --b {20.5-$1/50}% -[0] [1] fc. ${average_color.} + endif
   endl done
   periodize_poisson c 0,255
 
@@ -24472,7 +24472,7 @@ fx_make_seamless_preview :
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2015/15/12</i>.</small>")
 fx_frame_seamless :
   repeat $! l[$>]
-    if $5 --b {20.5-$5/50}% -[0] [1] fc. ${-average_color.} + endif
+    if $5 --b {20.5-$5/50}% -[0] [1] fc. ${average_color.} + endif
   endl done
   frame_seamless ${1-4} c 0,255
 
@@ -24625,7 +24625,7 @@ fx_puzzle :
 
       repeat {iM+1}
         --==[1] $>
-        coords=${-autocrop_coords.\ 0}
+        coords=${autocrop_coords.\ 0}
         --z[0] $coords z.. $coords rv[-2,-1] *.. . *. 255 a[-2,-1] c
         x$>={arg(1,$coords)+round(w/2)} y$>={arg(2,$coords)+round(h/2)}
       done
@@ -25739,7 +25739,7 @@ fx_colorize_interactive : skip "${4=},${5=},${6=}"
   arg_grabber=0 l[] 0 nm. "$6" ext={x} rm i "$6" to_rgb arg_grabber=1 onfail rm endl if $arg_grabber arg_grabber=[{$!-1}] endif
 
   repeat $N
-    status=${-x_colorize[$>]\ $1,$resolution,$2,$arg_palette1,$arg_palette2,$arg_grabber}
+    status=${x_colorize[$>]\ $1,$resolution,$2,$arg_palette1,$arg_palette2,$arg_grabber}
   done
   k[0-{$N-1}]
 
@@ -25944,10 +25944,10 @@ _fx_colorize_lineart_smartcoloring :
   endif
   min_color_area={$15^2}
 
-  repeat {$1?1:$!} inds=${-arg\ 1+!!$1,$<,0--1} l[$inds]
+  repeat {$1?1:$!} inds=${arg\ 1+!!$1,$<,0--1} l[$inds]
 
     ind_lineart={$1==1?1:0}
-    nm=${-gui_layer_name[$ind_lineart]} nm[$ind_lineart] lineart
+    nm=${gui_layer_name[$ind_lineart]} nm[$ind_lineart] lineart
 
     if {$!>1} ind_colors={$1==1?0:1} nmc={$ind_colors,n} nm[$ind_colors] colors endif
     if {$!>=3} rm[2--1] endif # Delete old color and added contour layers if any
@@ -26682,7 +26682,7 @@ fx_mask_color :
   cs=rgb,rgb_r,rgb_g,rgb_b,lrgb,lrgb_r,lrgb_g,lrgb_b,ycbcr_y,ycbcr_cbcr,ycbcr_cb,ycbcr_cr,ycbcr_cg,lab,lab_l,lab_ab,lab_a,lab_b,lch,lch_c,lch_h,\
      hsv,hsv_h,hsv_s,hsv_v,hsi,hsi_i,hsl,hsl_l,cmyk_c,cmyk_m,cmyk_y,cmyk_k,yiq_y,yiq_iq
   repeat $! l[$<] to_rgb nm={n} nm ${-gui_layer_name}
-    --x_mask_color ${-arg\ 1+$1,$cs},$2,$3
+    --x_mask_color ${arg\ 1+$1,$cs},$2,$3
     if {$4==1} channels. 100% endif
     nm $nm -rv
   endl done
@@ -26719,9 +26719,9 @@ fx_curves_interactive :
   nm "Color curves"
   repeat 4 __xcc_C$>=0,0,100,100 done
   if {$4==$1} l[] (${5--1}) s -,-1 repeat $! __xcc_C$>={$>,^} done rm endl endif
-  if $3 _xcc_colorbase=${-arg\ {$4+1},rgb,cmy,cmyk,hsi,hsl,hsv,lab,lch,ycbcr} -x_color_curves last # Apply transformation from previously defined curves.
+  if $3 _xcc_colorbase=${arg\ {$4+1},rgb,cmy,cmyk,hsi,hsl,hsv,lab,lch,ycbcr} -x_color_curves last # Apply transformation from previously defined curves.
   else # Run interactive curve builder.
-    -x_color_curves ${-arg\ {$1+1},rgb,cmy,cmyk,hsi,hsl,hsv,lab,lch,ycbcr}
+    -x_color_curves ${arg\ {$1+1},rgb,cmy,cmyk,hsi,hsl,hsv,lab,lch,ycbcr}
     u "{$1}{$2}{$3}{$1}{"$__xcc_C0,-1,$__xcc_C1,-1,$__xcc_C2,-1,$__xcc_C3,-1,$__xcc_C4"}"
   endif
   if $2 # Add HaldCLUT layer.
@@ -27265,7 +27265,7 @@ fx_mix_ycbcr_preview :
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2016/13/09</i>.</small>")
 fx_retinex :
   repeat $! l[$>]
-    --retinex $2,${"-arg 1+$3,hsi,hsv,lab,lrgb,rgb,ycbcr"},$4,$5,${7--1}
+    --retinex $2,${"arg 1+$3,hsi,hsv,lab,lrgb,rgb,ycbcr"},$4,$5,${7--1}
     if $6 -guided. ..,$6,$6 endif
     j[0] .,0,0,0,0,{$1%} rm.
     c 0,255
@@ -27621,7 +27621,7 @@ fx_extract_foreground :
     nm=${-gui_layer_name}
     nm "[G"{`39`}"MIC] Interactive foreground extraction"
     if {$7==-1||$5!=w||$6!=h} _gui_control_points= else _gui_control_points=${7--1} endif
-    status=${-x_segment\ $resolution}
+    status=${x_segment\ $resolution}
     sh 3 b. $1% if {$2>0} dilate. {1+2*$2} elif {$2<0} erode. {1-2*$2} endif
     rm.
     if {$3==1} sh 3 max. 1 rm.
@@ -27632,7 +27632,7 @@ fx_extract_foreground :
       sh. 0,2 --channels.. 3,3 <=. {255-3} *[-2,-1] rm.
       sh. 3 *. -1 +. 255 rm.
       gui_autocrop_layers[0]
-      pos0=${-gui_layer_pos[0]} pos1=${-gui_layer_pos[1]}
+      pos0=${gui_layer_pos[0]} pos1=${gui_layer_pos[1]}
       nm[0] name($nm" [foreground]"),pos($pos0)
       nm[1] name($nm" [background]"),pos($pos1)
     endif
@@ -28537,7 +28537,7 @@ fx_blur_angular_preview :
 #@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2015/03/02</i>.</small>")
 fx_blur_bloom :
-  op=${"-arg 1+$4,+,max,min"}
+  op=${"arg 1+$4,+,max,min"}
   if {!$7} ac "blur_bloom ${1-3},"$op",${5-6},xy",$9
   else
     wh={[w,h]}
@@ -29457,7 +29457,7 @@ fx_map_tones_fast_preview :
 #@gui : Preview grain alone = bool()
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2016/02/08</i>.</small>")
 fx_emulate_grain :
-  __fx_emulate_grain ${-arg\ {1+$1},${-_fx_emulate_grain}},${2-10},0,0
+  __fx_emulate_grain ${arg\ {1+$1},${-_fx_emulate_grain}},${2-10},0,0
 
 _fx_emulate_grain :
   u grain_orwo_np20,grain_kodak_tmax400,grain_kodak_tmax3200,grain_kodak_trix1600,grain_unknown
@@ -29466,7 +29466,7 @@ fx_emulate_grain_preview :
   gui_split_preview "_fx_emulate_grain_preview $*",$-2
 
 _fx_emulate_grain_preview :
-  __fx_emulate_grain ${-arg\ {1+$1},${-_fx_emulate_grain}},${2-12}
+  __fx_emulate_grain ${arg\ {1+$1},${-_fx_emulate_grain}},${2-12}
 
 __fx_emulate_grain :
   bm0=alpha bm1=grainmerge bm2=hardlight bm3=overlay bm4=softlight bm5=alpha
@@ -29504,7 +29504,7 @@ __fx_emulate_grain :
 #@gui : url = link{"Film Emulation Presets in G'MIC","http://gmic.eu/film_emulation/index.shtml"}
 #@gui : sep = separator(), note = note("<small>Authors: <i>Patrick David</i> and <i>David Tschumperl&#233;</i>.      Latest update: <i>2016/02/08</i>.</small>")
 fx_emulate_film_bw :
-  _fx_emulate_film $1,${-arg\ {max(1,$1)},${-_$0}},${2--1}
+  _fx_emulate_film $1,${arg\ {max(1,$1)},${-_$0}},${2--1}
   if {$1" && "$9} to_pseudogray $9,1 endif
 
 _fx_emulate_film_bw :
@@ -29531,7 +29531,7 @@ fx_emulate_film_bw_preview :
 #@gui : url = link{"Fuji Film Simulation Profiles","http://blog.sowerby.me/fuji-film-simulation-profiles"}
 #@gui : sep = separator(), note = note("<small>Authors: <i>Stuart Sowerby</i> and <i>David Tschumperl&#233;</i>.      Latest update: <i>2017/13/01</i>.</small>")
 fx_emulate_film_fujixtransii :
-  _fx_emulate_film $1,${-arg\ {max(1,$1)},${-_$0}},${2--1}
+  _fx_emulate_film $1,${arg\ {max(1,$1)},${-_$0}},${2--1}
 
 _fx_emulate_film_fujixtransii :
   u fuji_xtrans_ii_astia_v2,fuji_xtrans_ii_classic_chrome_v1,fuji_xtrans_ii_pro_neg_hi_v2,fuji_xtrans_ii_pro_neg_std_v2,\
@@ -29565,7 +29565,7 @@ fx_emulate_film_fujixtransii_preview :
 #@gui : url = link{"Film Emulation Presets in G'MIC","http://gmic.eu/film_emulation/index.shtml"}
 #@gui : sep = separator(), note = note("<small>Authors: <i>Patrick David</i> and <i>David Tschumperl&#233;</i>.      Latest update: <i>2016/02/08</i>.</small>")
 fx_emulate_film_instant_consumer :
-  _fx_emulate_film $1,${-arg\ {max(1,$1)},${-_$0}},${2--1}
+  _fx_emulate_film $1,${arg\ {max(1,$1)},${-_$0}},${2--1}
 
 _fx_emulate_film_instant_consumer :
   u polaroid_px-100uv+_cold_--,polaroid_px-100uv+_cold_-,polaroid_px-100uv+_cold,polaroid_px-100uv+_cold_+,polaroid_px-100uv+_cold_++,polaroid_px-100uv+_cold_+++,\
@@ -29612,7 +29612,7 @@ fx_emulate_film_instant_consumer_preview :
 #@gui : url = link{"Film Emulation Presets in G'MIC","http://gmic.eu/film_emulation/index.shtml"}
 #@gui : sep = separator(), note = note("<small>Authors: <i>Patrick David</i> and <i>David Tschumperl&#233;</i>.      Latest update: <i>2016/02/08</i>.</small>")
 fx_emulate_film_instant_pro :
-  _fx_emulate_film $1,${-arg\ {max(1,$1)},${-_$0}},${2--1}
+  _fx_emulate_film $1,${arg\ {max(1,$1)},${-_$0}},${2--1}
 
 _fx_emulate_film_instant_pro :
   u fuji_fp-100c_--,fuji_fp-100c_-,fuji_fp-100c,fuji_fp-100c_+,fuji_fp-100c_++,fuji_fp-100c_++_alt,fuji_fp-100c_+++,\
@@ -29648,7 +29648,7 @@ fx_emulate_film_instant_pro_preview :
 #@gui : url = link{"Film Emulation Presets in G'MIC","http://gmic.eu/film_emulation/index.shtml"}
 #@gui : sep = separator(), note = note("<small>Authors: <i>Patrick David</i> and <i>David Tschumperl&#233;</i>.      Latest update: <i>2016/02/08</i>.</small>")
 fx_emulate_film_negative_color :
-  _fx_emulate_film $1,${-arg\ {max(1,$1)},${-_$0}},${2--1}
+  _fx_emulate_film $1,${arg\ {max(1,$1)},${-_$0}},${2--1}
 
 _fx_emulate_film_negative_color :
   u agfa_ultra_color_100,agfa_vista_200,fuji_superia_200,fuji_superia_hg_1600,fuji_superia_reala_100,fuji_superia_x-tra_800,\
@@ -29673,7 +29673,7 @@ fx_emulate_film_negative_color_preview :
 #@gui : url = link{"Film Emulation Presets in G'MIC","http://gmic.eu/film_emulation/index.shtml"}
 #@gui : sep = separator(), note = note("<small>Authors: <i>Patrick David</i> and <i>David Tschumperl&#233;</i>.      Latest update: <i>2016/02/08</i>.</small>")
 fx_emulate_film_negative_new :
-  _fx_emulate_film $1,${-arg\ {max(1,4*$1+$2-3)},${-_$0}},${3--1}
+  _fx_emulate_film $1,${arg\ {max(1,4*$1+$2-3)},${-_$0}},${3--1}
 
 _fx_emulate_film_negative_new :
   u fuji_160c_-,fuji_160c,fuji_160c_+,fuji_160c_++,\
@@ -29706,7 +29706,7 @@ fx_emulate_film_negative_new_preview :
 #@gui : url = link{"Film Emulation Presets in G'MIC","http://gmic.eu/film_emulation/index.shtml"}
 #@gui : sep = separator(), note = note("<small>Authors: <i>Patrick David</i> and <i>David Tschumperl&#233;</i>.      Latest update: <i>2016/02/08</i>.</small>")
 fx_emulate_film_negative_old :
-  _fx_emulate_film $1,${-arg\ {max(1,4*$1+$2-3)},${-_$0}},${3--1}
+  _fx_emulate_film $1,${arg\ {max(1,4*$1+$2-3)},${-_$0}},${3--1}
 
 _fx_emulate_film_negative_old :
   u fuji_ilford_delta_3200_-,fuji_ilford_delta_3200,fuji_ilford_delta_3200_+,fuji_ilford_delta_3200_++,\
@@ -29747,7 +29747,7 @@ fx_emulate_film_negative_old_preview :
 #@gui : url = link("PictureFX - a free HaldCLUT set","http://www.digicrea.be/haldclut-set-style-a-la-nik-software")
 #@gui : sep = separator(), note = note("<small>Authors: <i>Marc Roovers</i> and <i>David Tschumperl&#233;</i>.      Latest update: <i>2016/21/10</i>.</small>")
 fx_emulate_film_picturefx :
-  _fx_emulate_film $1,${-arg\ {max(1,$1)},${-_$0}},${2--1}
+  _fx_emulate_film $1,${arg\ {max(1,$1)},${-_$0}},${2--1}
 
 _fx_emulate_film_picturefx :
   u analogfx_anno_1870_color,\
@@ -29779,7 +29779,7 @@ fx_emulate_film_picturefx_preview :
 #@gui : url = link("Print Film Emulation LUTs For Download","http://juanmelara.com.au/print-film-emulation-luts-for-download/")
 #@gui : sep = separator(), note = note("<small>Authors: <i>Juan Melara</i> and <i>David Tschumperl&#233;</i>.      Latest update: <i>2016/02/08</i>.</small>")
 fx_emulate_film_print :
-  _fx_emulate_film $1,${-arg\ {max(1,$1)},${-_$0}},${2--1}
+  _fx_emulate_film $1,${arg\ {max(1,$1)},${-_$0}},${2--1}
 
 _fx_emulate_film_print :
   u fuji3510_constlclip,fuji3510_constlmap,fuji3510_cuspclip,\
@@ -29810,7 +29810,7 @@ fx_emulate_film_print_preview :
 #@gui : url = link{"Film Emulation Presets in G'MIC","http://gmic.eu/film_emulation/index.shtml"}
 #@gui : sep = separator(), note = note("<small>Authors: <i>Patrick David</i> and <i>David Tschumperl&#233;</i>.      Latest update: <i>2016/02/08</i>.</small>")
 fx_emulate_film_colorslide :
-  _fx_emulate_film $1,${-arg\ {max(1,$1)},${-_$0}},${2--1}
+  _fx_emulate_film $1,${arg\ {max(1,$1)},${-_$0}},${2--1}
 
 _fx_emulate_film_colorslide :
   u agfa_precisa_100,fuji_astia_100f,fuji_fp_100c,fuji_provia_100f,fuji_provia_400f,fuji_provia_400x,fuji_sensia_100,\
@@ -29879,7 +29879,7 @@ fx_emulate_film_userdefined_preview : skip "${2=}"
 #@gui : url = link{"Film Emulation Presets in G'MIC","http://gmic.eu/film_emulation/index.shtml"}
 #@gui : sep = separator(), note = note("<small>Authors: <i>David Tschumperl&#233;</i> and <i>Patrick David</i>.      Latest update: <i>2016/02/08</i>.</small>")
 fx_emulate_film_various :
-  _fx_emulate_film $1,${-arg\ {max(1,$1)},${-_$0}},${2--1}
+  _fx_emulate_film $1,${arg\ {max(1,$1)},${-_$0}},${2--1}
 
 _fx_emulate_film_various :
   u 60{`39`}s,60{`39`}s_faded,60{`39`}s_faded_alt,alien_green,black_and_white,bleach_bypass,blue_mono,\
@@ -30528,7 +30528,7 @@ fx_blend_seamless :
   -rv
   _gb_fwd $4
   to_a[^0] r[^0] [0],[0],1,100%,0
-  repeat $! pos=${-gui_layer_pos[$>]} shift[$>] ${-u\ $pos},0,0 done
+  repeat $! pos=${gui_layer_pos[$>]} shift[$>] ${u\ $pos},0,0 done
   if $5 # Output as separate layers
     --blend_seamless $1,$2%,$3%
     remove_opacity[0,-1] k[0,-1] rv sub_alpha[0] [1],1
@@ -30557,7 +30557,7 @@ fx_blend_seamless_preview :
 #@gui : url = link("Reference page for G'MIC blending modes","https://github.com/dtschump/gmic-community/wiki/Blending-modes")
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2017/03/08</i>.</small>")
 fx_blend :
-  mode=${-arg\ 1+$1,add,alpha,and,average,blue,burn,darken,difference,\
+  mode=${arg\ 1+$1,add,alpha,and,average,blue,burn,darken,difference,\
        divide,dodge,edges,exclusion,freeze,grainextract,grainmerge,green,hardlight,\
        hardmix,hue,interpolation,lighten,lightness,linearburn,linearlight,luminance,\
        multiply,negation,or,overlay,pinlight,red,reflect,saturation,\
@@ -30596,7 +30596,7 @@ fx_split_colors : skip ${2=0}
 fx_split_colors_preview :
   repeat $! l[$>]
     --fx_split_colors ${1-4} drgba
-    repeat $! l[$>] to ${-arg\ {1+!!$>},"Original","#"$>},1,1,43,7,1,255 endl done
+    repeat $! l[$>] to ${arg\ {1+!!$>},"Original","#"$>},1,1,43,7,1,255 endl done
     frame 1,1,0 frame 3,3,255 to_rgba append_tiles ,
   endl done
 
@@ -30706,7 +30706,7 @@ fx_apply_multiscale_preview :
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2015/11/05</i>.</small>")
 fx_pack : skip "${5=}"
   if $3 to_a endif
-  if $4 repeat $! nm$>=${-gui_layer_name[$>]} done endif
+  if $4 repeat $! nm$>=${gui_layer_name[$>]} done endif
   c0="w" c1="h" c2="max(w,h)" c3="w*h"
   pack $2,${c$1} coords=${}
   if $4
@@ -30929,7 +30929,7 @@ fx_equalize_shadow_preview :
 #@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2011/21/02</i>.</small>")
 _fx_lightglow :
-  mode=${-arg\ 1+$3,burn,dodge,freeze,grainmerge,hardlight,interpolation,lighten,multiply,overlay,reflect,softlight,stamp,value}
+  mode=${arg\ 1+$3,burn,dodge,freeze,grainmerge,hardlight,interpolation,lighten,multiply,overlay,reflect,softlight,stamp,value}
   repeat $!
     --gradient_norm. >=. {100-$1}% distance. 1 ^. $2 *. -1 n. 0,255 blend $mode,$4
   mv. 0 done
@@ -30954,11 +30954,11 @@ fx_lightglow_preview :
 #@gui : url = link{"Lomo Light Leaks","http://www.photoshoptutorials.ws/downloads/mockups-graphics/lomo-light-leaks/"}
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2015/01/07</i>.</small>")
 fx_light_leaks :
-  filename=lightleak_${"-padint $1",6}.cimgz
+  filename=lightleak_${"padint $1",6}.cimgz
   if ${_path_rc}$filename i ${_path_rc}$filename
   else i http://gmic.eu/data_lightleaks/$filename o. ${_path_rc}$filename
   endif
-  mode=${-arg\ 1+$7,normal,lighten,screen,dodge,add,darken,multiply,burn,overlay,softlight,hardlight,difference,subtract,grainextract,grainmerge,divide,hue,saturation,value}
+  mode=${arg\ 1+$7,normal,lighten,screen,dodge,add,darken,multiply,burn,overlay,softlight,hardlight,difference,subtract,grainextract,grainmerge,divide,hue,saturation,value}
   mv. 0
   repeat {$!-1} l[0,{1+$<}]
     --r[0] {1,w},{1,h},1,3,5
@@ -30967,7 +30967,7 @@ fx_light_leaks :
     c. 0,255
     if $5 rgb2hsv. sh. 0 +. $5 rm. hsv2rgb. endif
     if $8
-      nm=${-gui_layer_name[1]}
+      nm=${gui_layer_name[1]}
       nm. name($nm),opacity({$6*100}),mode($mode) rv[-2,-1]
     else blend[1,-1] $mode,$6 endif
   endl done
@@ -30977,7 +30977,7 @@ fx_light_leaks_preview :
   gui_split_preview "fx_light_leaks ${1--3},0",$-1,0,1
 
 _fx_light_leaks :
-  u="" repeat 71 if {narg($u)} u=$u, endif u=${u}lightleak_${"-padint "$>,6} done
+  u="" repeat 71 if {narg($u)} u=$u, endif u=${u}lightleak_${"padint "$>,6} done
   u $u
 
 #@gui Light patch : fx_light_patch, fx_light_patch(0)
@@ -31382,7 +31382,7 @@ fx_shapes :
     endl done
   else # Custom shapes.
     if {$!<=$2} error[] "Command '$0': Some layers are missing in 'Custom layers' mode ("{$2+1}" expected at least, "$!" provided)." endif
-    to_colormode[0-{$2-1}] ${-max_s[0-{$2-1}]} remove_opacity[$2--1]
+    to_colormode[0-{$2-1}] ${max_s[0-{$2-1}]} remove_opacity[$2--1]
     repeat {$!-$2} l[0-{$2-1},{$2+$>}]
       norm. w={w} h={h} r. $3%,$3%,1,1,2
       s={$4*max(round($w/w),round($h/h))}
@@ -31568,7 +31568,7 @@ fx_color_ellipses :
 #@gui : sep = separator(), note = note("<small>Authors: <i>David Tschumperl&#233;</i> and <i>J&#233;rome Boulanger</i>.      Latest update: <i>2014/09/04</i>.</small>")
 fx_syntexturize :
   repeat $! l[$>]
-    if $3 --b {20.5-$3/50}% -[0] [1] fc. ${-average_color.} + c 0,255 endif
+    if $3 --b {20.5-$3/50}% -[0] [1] fc. ${average_color.} + c 0,255 endif
     -syntexturize $1,$2
   endl done
 
@@ -31590,7 +31590,7 @@ fx_syntexturize_preview :
 #@gui : sep = separator(), note = note("<small>Authors: <i>David Tschumperl&#233;</i>.      Latest update: <i>2015/22/10</i>.</small>")
 _fx_syntexturize_patchmatch_preview :
   repeat $! l[$>]
-    if $7 --b {20.5-$7/50}% -[0] [1] fc. ${-average_color.} + c 0,255 endif
+    if $7 --b {20.5-$7/50}% -[0] [1] fc. ${average_color.} + c 0,255 endif
     w={w} h={h}
     -syntexturize_patchmatch 100%,100%,${3--1}
     to_rgba r $w,$h,1,4,0,0,0.5,0.5
@@ -32056,7 +32056,7 @@ fx_smooth_median_preview :
 #@gui : sep = separator(), note = note("<small>Author: <i>J&#233;r&#244;me Boulanger</i>.      Latest update: <i>2015/01/07</i>.</small>")
 fx_smooth_nlmeans:
   repeat $! l[$>]
-    if {s==1} -nlmeans $1,$2,$3,-_fx_smooth_nlmeans$4 # Handle separatly gray scale images.
+    if {s==1} nlmeans $1,$2,$3,-_fx_smooth_nlmeans$4 # Handle separatly gray scale images.
     else ac "gui_parallel_overlap \"-nlmeans $1,$2,$3,-_fx_smooth_nlmeans$4\",$6,$7",$5
     endif
   endl done
@@ -32393,7 +32393,7 @@ fx_render3d : skip ${14=1}
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2014/10/02</i>.</small>")
 fx_blocks3d :
   repeat $! l[$>]
-    nm=${"-gui_layer_name"}
+    nm=${"gui_layer_name"}
     W={w} H={h} M={max(w,h)}
     if {w>h} r2dx $1 else r2dy $1 endif
     w={w} h={h} m={max(w,h)}
@@ -32885,7 +32885,7 @@ fx_custom_gradient : skip "${15=}"
   _fx_custom_gradient0 ${1-14},"$15",${16--1}
   if {$-1>=0&&narg("$15")}
     dir_ggr=${-path_gimp}gradients
-    0 nm. ${"-normalize_filename \"$15\""} name_ggr={b} rm. -output_ggr. $dir_ggr/$name_ggr.ggr,"$15"
+    0 nm. ${"normalize_filename \"$15\""} name_ggr={b} rm. output_ggr. $dir_ggr/$name_ggr.ggr,"$15"
   endif
   i.. (0^0^0^0) a[-2,-1] x
   repeat {$!-1} l[$>,-1]
@@ -32961,7 +32961,7 @@ fx_line_gradient : skip "${10=}"
   _fx_line_gradient $*
   if {narg("$10")}
     dir_ggr=${-path_gimp}gradients
-    0 nm. ${"-normalize_filename \"$10\""} name_ggr={b} rm. -output_ggr. $dir_ggr/$name_ggr.ggr,"$10"
+    0 nm. ${"normalize_filename \"$10\""} name_ggr={b} rm. output_ggr. $dir_ggr/$name_ggr.ggr,"$10"
   endif
   repeat $! r[$>] 100%,64,1,100% done
 
@@ -34031,7 +34031,7 @@ fx_gmic_demos :
   coms=2048,blobs,bouncing,connect4,fire,fireworks,fisheye,fourier,histogram,hough,jawbreaker,landscape,life,light,\
        mandelbrot,metaballs3d,minesweeper,minimal_path,pacman,paint,plasma,quantize_rgb,reflection3d,\
        rubber3d,shadebobs,spline,tetris,tictactoe,waves,whirl
-  com=${-arg\ {1+$1},$coms}
+  com=${arg\ {1+$1},$coms}
   if {$!>0} sel=0 else sel= endif
   --l[$sel] m "foo : -x_"$com foo rm uncommand foo endl
 
@@ -34047,7 +34047,7 @@ fx_gmic_demos_preview :
 #@gui : sep = separator(), Channel(s) = choice("All","RGBA [all]","RGB [all]","RGB [red]","RGB [green]","RGB [blue]","RGBA [alpha]","Linear RGB [all]","Linear RGB [red]","Linear RGB [green]","Linear RGB [blue]","YCbCr [luminance]","YCbCr [blue-red chrominances]","YCbCr [blue chrominance]","YCbCr [red chrominance]","YCbCr [green chrominance]","Lab [lightness]","Lab [ab-chrominances]","Lab [a-chrominance]","Lab [b-chrominance]","Lch [ch-chrominances]","Lch [c-chrominance]","Lch [h-chrominance]","HSV [hue]","HSV [saturation]","HSV [value]","HSI [intensity]","HSL [lightness]","CMYK [cyan]","CMYK [magenta]","CMYK [yellow]","CMYK [key]","YIQ [luma]","YIQ [chromas]")
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2016/20/06</i>.</small>")
 fx_display_histogram :
-  mode=${-arg\ 1+$2,all,rgba,rgb,rgb_r,rgb_g,rgb_b,rgba_a,\
+  mode=${arg\ 1+$2,all,rgba,rgb,rgb_r,rgb_g,rgb_b,rgba_a,\
              lrgb,lrgb_r,lrgb_g,lrgb_b,\
              ycbcr_y,ycbcr_cbcr,ycbcr_cb,ycbcr_cr,ycbcr_cg,\
              lab_l,lab_ab,lab_a,lab_b,\
@@ -34092,7 +34092,7 @@ fx_import_image : skip "${1=}"
 #@gui : Preview progress (%) = float(100,0,100)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2015/09/07</i>.</small>")
 fx_intarsia :
-  to_rgb repeat $! nm=${-gui_layer_name[$>]} --l[$>]
+  to_rgb repeat $! nm=${gui_layer_name[$>]} --l[$>]
 
     # Constrain image for size and number of colors, and index it with colormap.
     if {max(w,h)>$3} -rr2d $3,$3,0 endif
@@ -34116,7 +34116,7 @@ fx_intarsia :
     repeat $nb_cols
       color={1,I($>)}
       R={arg(1,$color)} G={arg(2,$color)} B={arg(3,$color)}
-      ({'${-dec2hex\ {$R*65536+$G*256+$B}}'}) -. {'0'} r. 6,1,1,1,0,0,1,0 +. {'0'}
+      ({'${dec2hex\ {$R*65536+$G*256+$B}}'}) -. {'0'} r. 6,1,1,1,0,0,1,0 +. {'0'}
       f. if(i>=_'a'" && "i<=_'z',i+_'A'-_'a',i)
       hcolor={t} rm.
       48,32,1,4 fc. $color,255 frame. 1,1,0,0,0,255 o. "$1/"${image_name}_$>.png rm.
@@ -34125,8 +34125,8 @@ fx_intarsia :
     ({'"</table>\n</td><td>"'})
 
     # Render result and overview images.
-    starting=${"-arg {1+$5},\"Top left\",\"Top right\",\"Bottom left\",\"Bottom right\""}
-    label=${"-arg {1+$6},Row,Column"}
+    starting=${"arg {1+$5},\"Top left\",\"Top right\",\"Bottom left\",\"Bottom right\""}
+    label=${"arg {1+$6},Row,Column"}
     if $6 dir0="T &#8594; B" dir1="B &#8594; T" else dir0="L &#8594; R" dir1="R &#8594; L" endif
     dir={arg(1+2*$5+$6,0,0,1,0,0,1,1,1)}
 
