@@ -3035,7 +3035,7 @@ input_glob :
 _input_glob :
   e[0--3] "Input all files that match glob pattern '$*'."
   v -
-  -files 3,"$*"
+  files 3,"$*"
   N=$!
   m "_ig : $""=arg repeat $""# i ${arg{1+$>}} done"
   _ig ${} uncommand _ig
@@ -5889,9 +5889,9 @@ eigen2tensor :
 #@cli : Fill selected images with values read from the specified value list, existing image
 #@cli : or mathematical expression. Single quotes may be omitted in 'formula'.
 #@cli : (eq. to 'f').
-#@cli : $ 4,4 -fill 1,2,3,4,5,6,7
-#@cli : $ 4,4 (1,2,3,4,5,6,7) -fill[-2] [-1]
-#@cli : $ 400,400,1,3 -fill "X=x-w/2; Y=y-h/2; R=sqrt(X^2+Y^2); a=atan2(Y,X); if(R<=180,255*abs(cos(c+200*(x/w-0.5)*(y/h-0.5))),850*(a%(0.1*(c+1))))"
+#@cli : $ 4,4 fill 1,2,3,4,5,6,7
+#@cli : $ 4,4 (1,2,3,4,5,6,7) fill[-2] [-1]
+#@cli : $ 400,400,1,3 fill "X=x-w/2; Y=y-h/2; R=sqrt(X^2+Y^2); a=atan2(Y,X); if(R<=180,255*abs(cos(c+200*(x/w-0.5)*(y/h-0.5))),850*(a%(0.1*(c+1))))"
 #@cli : $$
 
 #@cli float2int8
@@ -6183,7 +6183,7 @@ replace_str : skip "${2=}"
 #@cli roundify : gamma>=0
 #@cli : Apply roundify transformation on float-valued data, with specified gamma.
 #@cli : Default value: 'gamma=0'.
-#@cli : $ 1000 -fill '4*x/w' repeat 5 --roundify[0] {$>*0.2} done append c display_graph 400,300
+#@cli : $ 1000 fill '4*x/w' repeat 5 --roundify[0] {$>*0.2} done append c display_graph 400,300
 roundify : check $1>=0
   e[^-1] "Roundify image$?, with gamma $1."
   if {$1==1} return endif
@@ -6267,7 +6267,7 @@ adjust_colors : check "${1=0}>=-100 && $1<=100 && ${2=0}>=-100 && $2<=100 && ${3
       -[0] 128 *[0] {exp($2/64)} +[0] 128
     endif
     +[0] {$1*2} # Adjust Brightness
-    /[0] $fact +[0] $m -c[0] $range # Renormalize values.
+    /[0] $fact +[0] $m c[0] $range # Renormalize values.
     a c
   endl done v +
 
@@ -6320,72 +6320,72 @@ _ac :
 
 _ac_all : _p="" _f="" _b="" _s=0,100%
 
-_ac_rgba : _p="-to_rgba" _f="" _b="" _s=0,3
-_ac_rgba_r : _p="-to_color" _f="" _b="" _s=0
-_ac_rgba_g : _p="-to_color" _f="" _b="" _s=1
-_ac_rgba_b : _p="-to_color" _f="" _b="" _s=2
-_ac_rgba_a : _p="-to_rgba" _f="" _b="" _s=3
+_ac_rgba : _p="to_rgba" _f="" _b="" _s=0,3
+_ac_rgba_r : _p="to_color" _f="" _b="" _s=0
+_ac_rgba_g : _p="to_color" _f="" _b="" _s=1
+_ac_rgba_b : _p="to_color" _f="" _b="" _s=2
+_ac_rgba_a : _p="to_rgba" _f="" _b="" _s=3
 
-_ac_rgb : _p="-to_color" _f="" _b="" _s=0,2
+_ac_rgb : _p="to_color" _f="" _b="" _s=0,2
 _ac_rgb_r : _ac_rgba_r
 _ac_rgb_g : _ac_rgba_g
 _ac_rgb_b : _ac_rgba_b
 
-_ac_lrgb : _p="-to_color" _f="-srgb2rgb" _b="-rgb2srgb" _s=0,2
-_ac_lrgb_r : _p="-to_color" _f="-srgb2rgb" _b="-rgb2srgb" _s=0
-_ac_lrgb_g : _p="-to_color" _f="-srgb2rgb" _b="-rgb2srgb" _s=1
-_ac_lrgb_b : _p="-to_color" _f="-srgb2rgb" _b="-rgb2srgb" _s=2
+_ac_lrgb : _p="to_color" _f="srgb2rgb" _b="rgb2srgb" _s=0,2
+_ac_lrgb_r : _p="to_color" _f="srgb2rgb" _b="rgb2srgb" _s=0
+_ac_lrgb_g : _p="to_color" _f="srgb2rgb" _b="rgb2srgb" _s=1
+_ac_lrgb_b : _p="to_color" _f="srgb2rgb" _b="rgb2srgb" _s=2
 
-_ac_ycbcr : _p="-to_color" _f="-rgb2ycbcr" _b="-ycbcr2rgb" _s=0,2
-_ac_ycbcr_y : _p="-to_color" _f="-rgb2ycbcr" _b="-ycbcr2rgb" _s=0
-_ac_ycbcr_cbcr : _p="-to_color" _f="-rgb2ycbcr" _b="-ycbcr2rgb" _s=1,2
-_ac_ycbcr_cb : _p="-to_color" _f="-rgb2ycbcr" _b="-ycbcr2rgb" _s=1
-_ac_ycbcr_cr : _p="-to_color" _f="-rgb2ycbcr" _b="-ycbcr2rgb" _s=2
-_ac_ycbcr_cg : _p="-to_color" _f="-sh 0,1 mirror. c rm. rgb2ycbcr" _b="-ycbcr2rgb sh 0,1 mirror. c rm." _s=2
+_ac_ycbcr : _p="to_color" _f="rgb2ycbcr" _b="ycbcr2rgb" _s=0,2
+_ac_ycbcr_y : _p="to_color" _f="rgb2ycbcr" _b="ycbcr2rgb" _s=0
+_ac_ycbcr_cbcr : _p="to_color" _f="rgb2ycbcr" _b="ycbcr2rgb" _s=1,2
+_ac_ycbcr_cb : _p="to_color" _f="rgb2ycbcr" _b="ycbcr2rgb" _s=1
+_ac_ycbcr_cr : _p="to_color" _f="rgb2ycbcr" _b="ycbcr2rgb" _s=2
+_ac_ycbcr_cg : _p="to_color" _f="sh 0,1 mirror. c rm. rgb2ycbcr" _b="ycbcr2rgb sh 0,1 mirror. c rm." _s=2
 
-_ac_lab : _p="-to_color" _f="-srgb2rgb rgb2lab8" _b="-lab82rgb rgb2srgb" _s=0,2
-_ac_lab_l : _p="-to_color" _f="-srgb2rgb rgb2lab8" _b="-lab82rgb rgb2srgb" _s=0
-_ac_lab_ab : _p="-to_color" _f="-srgb2rgb rgb2lab8" _b="-lab82rgb rgb2srgb" _s=1,2
-_ac_lab_a : _p="-to_color" _f="-srgb2rgb rgb2lab8" _b="-lab82rgb rgb2srgb" _s=1
-_ac_lab_b : _p="-to_color" _f="-srgb2rgb rgb2lab8" _b="-lab82rgb rgb2srgb" _s=2
+_ac_lab : _p="to_color" _f="srgb2rgb rgb2lab8" _b="lab82rgb rgb2srgb" _s=0,2
+_ac_lab_l : _p="to_color" _f="srgb2rgb rgb2lab8" _b="lab82rgb rgb2srgb" _s=0
+_ac_lab_ab : _p="to_color" _f="srgb2rgb rgb2lab8" _b="lab82rgb rgb2srgb" _s=1,2
+_ac_lab_a : _p="to_color" _f="srgb2rgb rgb2lab8" _b="lab82rgb rgb2srgb" _s=1
+_ac_lab_b : _p="to_color" _f="srgb2rgb rgb2lab8" _b="lab82rgb rgb2srgb" _s=2
 
-_ac_lch : _p="-to_color" _f="-srgb2rgb rgb2lch8" _b="-lch82rgb rgb2srgb" _s=0,2
+_ac_lch : _p="to_color" _f="srgb2rgb rgb2lch8" _b="lch82rgb rgb2srgb" _s=0,2
 _ac_lch_l : _ac_lab_l
-_ac_lch_ch : _p="-to_color" _f="-srgb2rgb rgb2lch8" _b="-lch82rgb rgb2srgb" _s=1,2
-_ac_lch_c : _p="-to_color" _f="-srgb2rgb rgb2lch8" _b="-lch82rgb rgb2srgb" _s=1
-_ac_lch_h : _p="-to_color" _f="-srgb2rgb rgb2lch8" _b="-lch82rgb rgb2srgb" _s=2
+_ac_lch_ch : _p="to_color" _f="srgb2rgb rgb2lch8" _b="lch82rgb rgb2srgb" _s=1,2
+_ac_lch_c : _p="to_color" _f="srgb2rgb rgb2lch8" _b="lch82rgb rgb2srgb" _s=1
+_ac_lch_h : _p="to_color" _f="srgb2rgb rgb2lch8" _b="lch82rgb rgb2srgb" _s=2
 
-_ac_hsv : _p="-to_color" _f="-rgb2hsv8" _b="-hsv82rgb" _s=0,2
-_ac_hsv_h : _p="-to_color" _f="-rgb2hsv8" _b="-hsv82rgb" _s=0
-_ac_hsv_s : _p="-to_color" _f="-rgb2hsv8" _b="-hsv82rgb" _s=1
-_ac_hsv_v : _p="-to_color" _f="-rgb2hsv8" _b="-hsv82rgb" _s=2
+_ac_hsv : _p="to_color" _f="rgb2hsv8" _b="hsv82rgb" _s=0,2
+_ac_hsv_h : _p="to_color" _f="rgb2hsv8" _b="hsv82rgb" _s=0
+_ac_hsv_s : _p="to_color" _f="rgb2hsv8" _b="hsv82rgb" _s=1
+_ac_hsv_v : _p="to_color" _f="rgb2hsv8" _b="hsv82rgb" _s=2
 
-_ac_hsi : _p="-to_color" _f="-rgb2hsi8" _b="-hsi82rgb" _s=0,2
-_ac_hsi_h : _p="-to_color" _f="-rgb2hsi8" _b="-hsi82rgb" _s=0
-_ac_hsi_s : _p="-to_color" _f="-rgb2hsi8" _b="-hsi82rgb" _s=1
-_ac_hsi_i : _p="-to_color" _f="-rgb2hsi8" _b="-hsi82rgb" _s=2
+_ac_hsi : _p="to_color" _f="rgb2hsi8" _b="hsi82rgb" _s=0,2
+_ac_hsi_h : _p="to_color" _f="rgb2hsi8" _b="hsi82rgb" _s=0
+_ac_hsi_s : _p="to_color" _f="rgb2hsi8" _b="hsi82rgb" _s=1
+_ac_hsi_i : _p="to_color" _f="rgb2hsi8" _b="hsi82rgb" _s=2
 
-_ac_hsl : _p="-to_color" _f="-rgb2hsl8" _b="-hsl82rgb" _s=0,2
-_ac_hsl_h : _p="-to_color" _f="-rgb2hsl8" _b="-hsl82rgb" _s=0
-_ac_hsl_s : _p="-to_color" _f="-rgb2hsl8" _b="-hsl82rgb" _s=1
-_ac_hsl_l : _p="-to_color" _f="-rgb2hsl8" _b="-hsl82rgb" _s=2
+_ac_hsl : _p="to_color" _f="rgb2hsl8" _b="hsl82rgb" _s=0,2
+_ac_hsl_h : _p="to_color" _f="rgb2hsl8" _b="hsl82rgb" _s=0
+_ac_hsl_s : _p="to_color" _f="rgb2hsl8" _b="hsl82rgb" _s=1
+_ac_hsl_l : _p="to_color" _f="rgb2hsl8" _b="hsl82rgb" _s=2
 
-_ac_cmy : _p="-to_color" _f="-rgb2cmy" _b="-cmy2rgb" _s=0,2
-_ac_cmy_c : _p="-to_color" _f="-rgb2cmy" _b="-cmy2rgb" _s=0
-_ac_cmy_m : _p="-to_color" _f="-rgb2cmy" _b="-cmy2rgb" _s=1
-_ac_cmy_y : _p="-to_color" _f="-rgb2cmy" _b="-cmy2rgb" _s=2
+_ac_cmy : _p="to_color" _f="rgb2cmy" _b="cmy2rgb" _s=0,2
+_ac_cmy_c : _p="to_color" _f="rgb2cmy" _b="cmy2rgb" _s=0
+_ac_cmy_m : _p="to_color" _f="rgb2cmy" _b="cmy2rgb" _s=1
+_ac_cmy_y : _p="to_color" _f="rgb2cmy" _b="cmy2rgb" _s=2
 
-_ac_cmyk : _p="-to_color" _f="-rgb2cmyk" _b="-cmyk2rgb" _s=0,3
-_ac_cmyk_c : _p="-to_color" _f="-rgb2cmyk" _b="-cmyk2rgb" _s=0
-_ac_cmyk_m : _p="-to_color" _f="-rgb2cmyk" _b="-cmyk2rgb" _s=1
-_ac_cmyk_y : _p="-to_color" _f="-rgb2cmyk" _b="-cmyk2rgb" _s=2
-_ac_cmyk_k : _p="-to_color" _f="-rgb2cmyk" _b="-cmyk2rgb" _s=3
+_ac_cmyk : _p="to_color" _f="rgb2cmyk" _b="cmyk2rgb" _s=0,3
+_ac_cmyk_c : _p="to_color" _f="rgb2cmyk" _b="cmyk2rgb" _s=0
+_ac_cmyk_m : _p="to_color" _f="rgb2cmyk" _b="cmyk2rgb" _s=1
+_ac_cmyk_y : _p="to_color" _f="rgb2cmyk" _b="cmyk2rgb" _s=2
+_ac_cmyk_k : _p="to_color" _f="rgb2cmyk" _b="cmyk2rgb" _s=3
 
-_ac_yiq : _p="-to_color" _f="-rgb2yiq8" _b="-yiq82rgb" _s=0,2
-_ac_yiq_y : _p="-to_color" _f="-rgb2yiq8" _b="-yiq82rgb" _s=0
-_ac_yiq_iq : _p="-to_color" _f="-rgb2yiq8" _b="-yiq82rgb" _s=1,2
-_ac_yiq_i : _p="-to_color" _f="-rgb2yiq8" _b="-yiq82rgb" _s=1
-_ac_yiq_q : _p="-to_color" _f="-rgb2yiq8" _b="-yiq82rgb" _s=2
+_ac_yiq : _p="to_color" _f="rgb2yiq8" _b="yiq82rgb" _s=0,2
+_ac_yiq_y : _p="to_color" _f="rgb2yiq8" _b="yiq82rgb" _s=0
+_ac_yiq_iq : _p="to_color" _f="rgb2yiq8" _b="yiq82rgb" _s=1,2
+_ac_yiq_i : _p="to_color" _f="rgb2yiq8" _b="yiq82rgb" _s=1
+_ac_yiq_q : _p="to_color" _f="rgb2yiq8" _b="yiq82rgb" _s=2
 
 #@cli autoindex : nb_colors>0,0<=_dithering<=1,_method={ 0=median-cut | 1=k-means }
 #@cli : Index selected vector-valued images by adapted colormaps.
@@ -6443,7 +6443,7 @@ bayer2rgb : skip ${1=1},${2=1},${3=0.5}
 
     # RGB reconstruction.
     a[-3--1] c
-    -mix_rgb. 1,-1,2,1,1,0,1,-1,-2
+    mix_rgb. 1,-1,2,1,1,0,1,-1,-2
 
     # Shrink to original image size.
     shrink_x {"2 + 4*$1"},0 shrink_y {"2 + 4*$1"},0
@@ -6463,7 +6463,7 @@ cmyk2rgb :
   e[^-1] "Convert image$? from CMYK to RGB color bases."
   v - repeat $! l[$>]
     s c --/. -255 +. 1 *[0-2] . rm. +[0-2] . rm.
-    a c -cmy2rgb
+    a c cmy2rgb
   endl done v +
 
 #@cli colorblind : type={ 0=protanopia | 1=protanomaly | 2=deuteranopia | 3=deuteranomaly | 4=tritanopia | 5=tritanomaly | 6=achromatopsia | 7=achromatomaly }
@@ -6480,7 +6480,7 @@ colorblind : check "isint($1) && $1>=0 && $1<=7"
   type5=(0.967,0.033,0;0,0.733,0.267;0,0.183,0.817)
   type6=(0.299,0.587,0.114;0.299,0.587,0.114;0.299,0.587,0.114)
   type7=(0.618,0.320,0.062;0.163,0.775,0.062;0.163,0.320,0.516)
-  repeat $! l[$>] split_opacity l[0] to_rgb -mix_channels ${type$1} endl a c endl done
+  repeat $! l[$>] split_opacity l[0] to_rgb mix_channels ${type$1} endl a c endl done
   v +
 
 #@cli colormap : nb_levels>=0,_method={ 0=median-cut | 1=k-means },_sort_vectors={ 0 | 1 }
@@ -6707,7 +6707,7 @@ luminance :
 #@cli : $$
 mix_rgb : skip ${1=1},${2=0},${3=0},${4=0},${5=1},${6=0},${7=0},${8=0},${9=1}
   e[^-1] "Apply matrix [ $1 $2 $3 ; $4 $5 $6 ; $7 $8 $9 ] to RGB colors of image$?."
-  v - r 100%,100%,100%,3,0,2 -mix_channels (${1-3};${4-6};${7-9}) v +
+  v - r 100%,100%,100%,3,0,2 mix_channels (${1-3};${4-6};${7-9}) v +
 
 #@cli pseudogray : _max_increment>=0,_JND_threshold>=0,_bits_depth>0
 #@cli : Generate pseudogray colormap with specified increment and perceptual threshold.
@@ -6809,7 +6809,7 @@ rgb2cmy :
 #@cli rgb2cmyk
 #@cli : Convert selected images from RGB to CMYK colorbases.
 #@cli : $ image.jpg rgb2cmyk split c
-#@cli : $ image.jpg rgb2cmyk split c -fill[3] 0 append c -cmyk2rgb
+#@cli : $ image.jpg rgb2cmyk split c fill[3] 0 append c cmyk2rgb
 rgb2cmyk :
   e[^-1] "Convert image$? from RGB to CMYK color bases."
   v - rgb2cmy repeat $! l[$>]
@@ -6954,13 +6954,13 @@ rgb2xyz : skip "${1=,}"
   v -
   / 255
   if $wp # D65
-    -mix_rgb 0.4124564,0.3575761,0.1804375,\
-             0.2126729,0.7151522,0.0721750,\
-             0.0193339,0.1191920,0.9503041
+    mix_rgb 0.4124564,0.3575761,0.1804375,\
+            0.2126729,0.7151522,0.0721750,\
+            0.0193339,0.1191920,0.9503041
   else # D50
-    -mix_rgb 0.43603516,0.38511658,0.14305115,\
-             0.22248840,0.71690369,0.06060791,\
-             0.01391602,0.09706116,0.71392822
+    mix_rgb 0.43603516,0.38511658,0.14305115,\
+            0.22248840,0.71690369,0.06060791,\
+            0.01391602,0.09706116,0.71392822
   endif v +
 
 #@cli rgb2xyz8 : illuminant={ 0=D50 | 1=D65 } : (no arg)
@@ -6981,9 +6981,9 @@ rgb2xyz8 : skip "${1=,}"
 rgb2yiq :
   e[^-1] "Convert image$? from RGB to YIQ color bases."
   v -
-  -mix_rgb 0.299,0.587,0.114,\
-           0.595716,-0.274453,-0.321263,\
-           0.211456,-0.522591,0.311135
+  mix_rgb 0.299,0.587,0.114,\
+          0.595716,-0.274453,-0.321263,\
+          0.211456,-0.522591,0.311135
   v +
 
 #@cli rgb2yiq8
@@ -7002,7 +7002,7 @@ rgb2yiq8 :
 #@cli : $ image.jpg rgb2ycbcr split c
 rgb2ycbcr :
   e[^-1] "Convert image$? from RGB to YCbCr color bases."
-  v - -mix_rgb 66,129,25,-38,-74,112,112,-94,-18 + 128 / 256
+  v - mix_rgb 66,129,25,-38,-74,112,112,-94,-18 + 128 / 256
   repeat $!
     sh[$>] 0 +. 16 rm.
     sh[$>] 1,2 +. 128 rm.
@@ -7014,9 +7014,9 @@ rgb2ycbcr :
 rgb2yuv :
   e[^-1] "Convert image$? from RGB to YUV color bases."
   v - / 255
-  -mix_rgb 0.299,0.587,0.114,\
-           -0.14713,-0.28886,0.436,\
-           0.615,-0.51498,-0.10001
+  mix_rgb 0.299,0.587,0.114,\
+          -0.14713,-0.28886,0.436,\
+          0.615,-0.51498,-0.10001
   v +
 
 #@cli rgb2yuv8
@@ -7183,7 +7183,7 @@ to_pseudogray : check "isint(${1=5}) && $1>=0 && isint(${3=8}) && $3>0" skip ${2
 
   # Map colormap to images, with lightness preservation.
   repeat {$!-1}
-    to_rgb[$>] rgb2lab[$>] channels[$>] 0 *[$>] {65535/100} round[$>] -c[$>] 0,65535
+    to_rgb[$>] rgb2lab[$>] channels[$>] 0 *[$>] {65535/100} round[$>] c[$>] 0,65535
     map[$>] .
   done rm. v +
 
@@ -7375,13 +7375,13 @@ xyz2rgb : skip "${1=,}"
   e[^-1] "Convert image$? from XYZ to RGB color bases."
   v -
   if $wp # D65
-    -mix_rgb 3.2404542,-1.5371385,-0.4985314,\
-             -0.9692660,1.8760108,0.0415560,\
-             0.0556434,-0.2040259,1.0572252
+    mix_rgb 3.2404542,-1.5371385,-0.4985314,\
+            -0.9692660,1.8760108,0.0415560,\
+            0.0556434,-0.2040259,1.0572252
   else # D50
-    -mix_rgb 3.134274799724,-1.617275708956,-0.490724283042,\
-             -0.978795575994,1.916161689117,0.033453331711,\
-             0.071976988401,-0.228984974402,1.405718224383
+    mix_rgb 3.134274799724,-1.617275708956,-0.490724283042,\
+            -0.978795575994,1.916161689117,0.033453331711,\
+            0.071976988401,-0.228984974402,1.405718224383
   endif
   * 255 c 0,255 v +
 
@@ -7401,9 +7401,9 @@ xyz82rgb : skip "${1=,}"
 ycbcr2rgb :
   e[^-1] "Convert image$? from YCbCr to RGB color bases."
   v - repeat $! l[$>] sh 0 -. 16 rm. sh 1,2 -. 128 rm. endl done
-  -mix_rgb 298,0,409,\
-           298,-100,-208,\
-           298,516,0
+  mix_rgb 298,0,409,\
+          298,-100,-208,\
+          298,516,0
   + 128 / 256 c 0,255
   v +
 
@@ -7412,9 +7412,9 @@ ycbcr2rgb :
 yiq2rgb :
   e[^-1] "Convert image$? from YIQ to RGB color bases."
   v -
-  -mix_rgb 1,0.9563,0.6210,\
-           1,-0.2721,-0.6474,\
-           1,-1.1070,1.7046
+  mix_rgb 1,0.9563,0.6210,\
+          1,-0.2721,-0.6474,\
+          1,-1.1070,1.7046
   c 0,255 v +
 
 #@cli yiq82rgb
@@ -7425,9 +7425,9 @@ yiq82rgb :
     sh[$>] 1 /. 0.8393238012481239 -. 151.908 rm.
     sh[$>] 2 /. 0.9567690472081104 -. 133.261 rm.
   done
-  -mix_rgb 1,0.9563,0.6210,\
-           1,-0.2721,-0.6474,\
-           1,-1.1070,1.7046
+  mix_rgb 1,0.9563,0.6210,\
+          1,-0.2721,-0.6474,\
+          1,-1.1070,1.7046
   c 0,255 v +
 
 #@cli yuv2rgb
@@ -7435,9 +7435,9 @@ yiq82rgb :
 yuv2rgb :
   e[^-1] "Convert image$? from YUV to RGB color bases."
   v -
-  -mix_rgb 1,0,1.13983,\
-           1,-0.39465,-0.5806,\
-           1,2.03211,0
+  mix_rgb 1,0,1.13983,\
+          1,-0.39465,-0.5806,\
+          1,2.03211,0
   * 255 c 0,255 v +
 
 #@cli yuv82rgb
@@ -7538,7 +7538,7 @@ apply_scales : skip "${1=}" check "isint($2) && $2>0 && ${3=25%}>=0 && ${4=100%}
 #@cli autocrop : value1,value2,... : (no arg) : (+)
 #@cli : Autocrop selected images by specified vector-valued intensity.
 #@cli : If no arguments are provided, cropping value is guessed.
-#@cli : $ 400,400,1,3 -fill_color 64,128,255 ellipse 50%,50%,120,120,0,1,255 --autocrop
+#@cli : $ 400,400,1,3 fill_color 64,128,255 ellipse 50%,50%,120,120,0,1,255 --autocrop
 
 #@cli autocrop_components : _threshold[%],_min_area[%]>=0,_is_high_connectivity={ 0 | 1 },_output_type={ 0=crop | 1=segmentation | 2=coordinates }
 #@cli : Autocrop and extract connected components in selected images, according to a mask given as the last channel of
@@ -8873,7 +8873,7 @@ denoise_haar : check "${1=1.4}>=0 && isint(${2=0}) && $2>=0 && isint(${3=10}) &&
 #@cli denoise_patchpca : _strength>=0,_patch_size>0,_lookup_size>0,_spatial_sampling>0
 #@cli : Denoise selected images using the patch-pca algorithm.
 #@cli : Default values: 'patch_size=7', 'lookup_size=11', 'details=1.8' and 'spatial_sampling=5'.
-#@cli : $ image.jpg --noise 20 -c[-1] 0,255 --denoise_patchpca[-1] ,
+#@cli : $ image.jpg --noise 20 c[-1] 0,255 --denoise_patchpca[-1] ,
 denoise_patchpca : check "${1=1.8} && $1>=0 && isint(${2=7}) && $2>0 && isint(${3=11}) && $3>0 && isint(${4=5}) && $4>0"
   e[^-1] "Denoise image$? using patch-pca, with strength $1, patch size $2, lookup size $3 and spatial sampling $4."
   v - repeat $! l[$>] nm={n}
@@ -10530,7 +10530,7 @@ min_patch : check "isint(${1=16}) && $1>=1"
 #@cli minimal_path : x0[%]>=0,y0[%]>=0,z0[%]>=0,x1[%]>=0,y1[%]>=0,z1[%]>=0,_is_high_connectivity={ 0 | 1 }
 #@cli : Compute minimal path between two points on selected potential maps.
 #@cli : Default value: 'is_high_connectivity=0'.
-#@cli : $ image.jpg --gradient_norm -fill[-1] 1/(1+i) minimal_path[-1] 0,0,0,100%,100%,0 pointcloud[-1] 0 *[-1] 280 to_rgb[-1] resize[-1] [-2],0 -or
+#@cli : $ image.jpg --gradient_norm fill[-1] 1/(1+i) minimal_path[-1] 0,0,0,100%,100%,0 pointcloud[-1] 0 *[-1] 280 to_rgb[-1] resize[-1] [-2],0 -or
 minimal_path : check "$1>=0 && $2>=0 && $3>=0" skip ${7=0}
   e[^-1] "Compute minimal path between points ($1,$2,$3) and ($4,$5,$6) for potential map$?, with "${-arg\ 1+$7,low,high}" connectivity."
   v - repeat $! l[$>] nm={0,n}
@@ -12306,7 +12306,7 @@ turbulence : check "${1=32}>0 && ${2=6}>0" skip ${3=3},${4=0},${5=0}
 
 #@cli yinyang
 #@cli : Draw a yin-yang symbol on selected images.
-#@cli : $ 400,400 -yinyang
+#@cli : $ 400,400 yinyang
 yinyang :
   e[^-1] "Draw yin-yang symbol on image$?."
   v - -f 0 repeat $! l[$>]
@@ -15226,7 +15226,7 @@ ellipsionism : check "${1=10}>0 && ${2=3}>0 && ${5=8}>0 && ${6=0.6}>0" skip ${3=
 #@cli fire_edges : _edges>=0,0<=_attenuation<=1,_smoothness>=0,_threshold>=0,_nb_frames>0,_starting_frame>=0,frame_skip>=0
 #@cli : Generate fire effect from edges of selected images.
 #@cli : Default values: 'edges=0.7', 'attenuation=0.25', 'smoothness=0.5', 'threshold=25', 'nb_frames=1', 'starting_frame=20' and 'frame_skip=0'.
-#@cli : $ image.jpg -fire_edges ,
+#@cli : $ image.jpg fire_edges ,
 fire_edges : check "${1=0.7}>=0 && ${2=0.25}>=0 && $2<=1 && ${3=0.5}>=0 && ${4=25}>=0 && ${5=1}>0 && ${6=20}>=0 && ${7=0}>=0"
   e[^-1] "Generate fire effect from edges of image$?, with edges $1, attenuation $2, smoothness $3, threshold $4, "\
           "$5 frames, starting frame $6 and frame skip $7."
@@ -15785,7 +15785,7 @@ weave : check "${1=6}>=0 && ${2=65}>=0 && $2<=100 && ${3=40}>=0 && $3<=100 && ${
     r[-4--1] $w,$h,1,100%,0,0,0.5,0.5
     f[-4] 'i(x+$amp_x*sin(y/h*pi),y,0,c,1,2)' f. 'i(x-$amp_x*sin(y/h*pi),y,0,c,1,2)'
     f... 'i(x,y+$amp_y*sin(x/w*pi),0,c,1,2)' f.. 'i(x,y-$amp_y*sin(x/w*pi),0,c,1,2)'
-    blend[-4,-3] alpha blend[-2,-1] alpha -c[-2,-1] 0,255
+    blend[-4,-3] alpha blend[-2,-1] alpha c[-2,-1] 0,255
 
     # Render full pattern and merge.
     /[-2,-1] 255 . ... a[-4,-2] x a[-2,-1] x a[-2,-1] y rotate_tileable. {$7*22.5} r. ..,..,1,1,0,2 *[-2,-1]
@@ -16404,42 +16404,42 @@ _blend_normal :
 _blend_and :
   &[1] [0]
 _blend_add :
-  +[1] [0] -c[1] 0,255
+  +[1] [0] c[1] 0,255
 _blend_average :
   +[1] [0] /[1] 2
 _blend_blue :
   sh[0] 0,1 j[1] [2] rm[2]
 _blend_burn :
-  ---[0] 255 +[1] 0.1 /[2] [1] rm[1] +[1] 1 *[1] 255 -c[1] 0,255
+  ---[0] 255 +[1] 0.1 /[2] [1] rm[1] +[1] 1 *[1] 255 c[1] 0,255
 _blend_darken :
   min[1] [0]
 _blend_difference :
   -[1] [0] abs[1]
 _blend_divide :
-  +[1] 0.1 ^[1] -1 *[1] [0] *[1] 255 -c[1] 0,255
+  +[1] 0.1 ^[1] -1 *[1] [0] *[1] 255 c[1] 0,255
 _blend_dodge :
-  -[1] 255.1 ^[1] -1 *[1] [0] *[1] -255 -c[1] 0,255
+  -[1] 255.1 ^[1] -1 *[1] [0] *[1] -255 c[1] 0,255
 _blend_edges :
   --blend_edges 0.5 rm[1]
 _blend_exclusion :
   --*[0,1] /[2] -127.5 +[1,2] +[1] [0]
 _blend_freeze :
-  *[1] -255 -[1] 0.1 ---[0] 255 sqr[2] /[2] [1] rm[1] +[1] 1 *[1] 255 -c[1] 0,255
+  *[1] -255 -[1] 0.1 ---[0] 255 sqr[2] /[2] [1] rm[1] +[1] 1 *[1] 255 c[1] 0,255
 _blend_grainextract :
-  -[1] [0] *[1] -1 +[1] 128 -c[1] 0,255
+  -[1] [0] *[1] -1 +[1] 128 c[1] 0,255
 _blend_grainmerge :
-  +[1] [0] -[1] 128 -c[1] 0,255
+  +[1] [0] -[1] 128 c[1] 0,255
 _blend_green :
   sh[0] 0 sh[0] 2 j[1] [2] j[1] [3],0,0,0,2 rm[2,3]
 _blend_hardlight :
   --*[0,1] /[2] 127.5 --+[0,1] *[3] 2 -[3] 255 -[3] [2] >[1] 128
-  j[2] [3],0,0,0,0,1,[1] rm[1,3] -c[1] 0,255
+  j[2] [3],0,0,0,0,1,[1] rm[1,3] c[1] 0,255
 _blend_hardmix :
   +[1] [0] >=[1] 255 *[1] 255
 _blend_hue :
   to_color sh 0,2 rgb2hsv[2,3] sh[2] 1,2 j[1] [4],0,0,0,1 rm[4] hsv2rgb[2,3] rm[2,3]
 _blend_interpolation :
-  --*[0] {pi/255} *[1] {pi/255} cos[1,2] +[1,2] -[1] 2 *[1] -63.75 -c[1] 0,255
+  --*[0] {pi/255} *[1] {pi/255} cos[1,2] +[1,2] -[1] 2 *[1] -63.75 c[1] 0,255
 _blend_lighten :
   max[1] [0]
 _blend_lightness :
@@ -16449,7 +16449,7 @@ _blend_luminance :
 _blend_linearburn :
   +[1] [0] -[1] 255 c. 0,255
 _blend_linearlight :
-  *[1] 2 +[1] [0] -[1] 255 -c[1] 0,255
+  *[1] 2 +[1] [0] -[1] 255 c[1] 0,255
 _blend_multiply :
   *[1] [0] /[1] 255
 _blend_negation :
@@ -16457,12 +16457,12 @@ _blend_negation :
 _blend_or :
   -|[1] [0]
 _blend_overlay :
-  --*[0,1] /[2] 127.5 +[1] [0] *[1] 2 -[1] 255 -[1] [2] --<[0] 128 j[1] [2],0,0,0,0,1,[3] rm[2,3] -c[1] 0,255
+  --*[0,1] /[2] 127.5 +[1] [0] *[1] 2 -[1] 255 -[1] [2] --<[0] 128 j[1] [2],0,0,0,0,1,[3] rm[2,3] c[1] 0,255
 _blend_pinlight :
   *[1] 2 --blend darken -[1] 256 --blend[0,1] lighten >=[1] 0
   j[2] [3],0,0,0,0,1,[1] rm[1,3]
 _blend_reflect :
-  -[1] 255.1 *[1] -1 --sqr[0] /[2] [1] rm[1] -c[1] 0,255
+  -[1] 255.1 *[1] -1 --sqr[0] /[2] [1] rm[1] c[1] 0,255
 _blend_red :
   sh[0] 1,100% j[1] [2],0,0,0,1 rm[2]
 _blend_seamless :
@@ -16537,16 +16537,16 @@ _blend_shapemax0 :
   point. 0,0,0,1,0 map[1] [2] rm.
 _blend_softburn :
   ---[0] 255.1 ^[2] -1 *[2] [1] *[2] -127.5 ---[0] 255 --+[1] 0.1 /[3,4] *[3] 127.5 +[3] 255 +[1] [0] >[1] 255
-  j[2] [3],0,0,0,0,1,[1] rm[1,3] -c[1] 0,255
+  j[2] [3],0,0,0,0,1,[1] rm[1,3] c[1] 0,255
 _blend_softdodge :
   ---[1] 255.1 ^[2] -1 *[2] [0] *[2] -127.5 ---[1] 255 --+[0] 0.1 /[3,4] *[3] 127.5 +[3] 255 +[1] [0] >[1] 255
-  j[2] [3],0,0,0,0,1,[1] rm[1,3] -c[1] 0,255
+  j[2] [3],0,0,0,0,1,[1] rm[1,3] c[1] 0,255
 _blend_softlight :
-  --/[0] 255 /[1] 255 --sqr. *[2] [1] *[1] [3] *[1] -2 *[2] 2 +[1-3] *[1] 255 -c[1] 0,255
+  --/[0] 255 /[1] 255 --sqr. *[2] [1] *[1] [3] *[1] -2 *[2] 2 +[1-3] *[1] 255 c[1] 0,255
 _blend_stamp :
-  *[1] 2 +[1] [0] -[1] 255 -c[1] 0,255
+  *[1] 2 +[1] [0] -[1] 255 c[1] 0,255
 _blend_subtract :
-  -[1] [0] *[1] -1 -c[1] 0,255
+  -[1] [0] *[1] -1 c[1] 0,255
 _blend_value :
   to_color sh 0,2 rgb2hsv[2,3] sh[2] 0,1 j[1] [4] rm[4] hsv2rgb[2,3] rm[2,3]
 _blend_vividlight :
@@ -16728,7 +16728,7 @@ sub_alpha : check "${2=1}>=1 && "${"-is_image_arg $1"}
     -[0,2] [1] replace[2] 0,1
     i[2] [0] /[2,3]
     compose_channels[2] max
-    *[2] $2 -c[2] 0,1
+    *[2] $2 c[2] 0,1
 
     # Synthetize alpha-difference image.
     --replace[2] 0,1 /[0,3] +[0,1] *[1] 255 a c
@@ -16818,7 +16818,7 @@ apply_camera : skip "${1=},${4=}" check "${2=0}>=0 && ${3=0}>=0"
 #@cli : Default values: 'command=(undefined)', 'first_frame=0', 'last_frame=-1', 'frame_step=1' and 'output_filename=(undefined)'.
 apply_files : check "isint(${3=0}) && $3>=0 && isint(${4=-1}) && ($4>=0 || $4==-1) && ${5=1}>=1" skip "${2=},${6=}"
   e[^-1] "Apply command '$2' on input image files '$1', with first frame $3, last frame $4, frame step $5 and output filename '$6'.\n"
-  v - -files 3,"$1" _N=/{narg(${})-1} arg2var _file,${} _apply_stream[] "${_file{$frame+1}}","$2",${3-5},"$6" v +
+  v - files 3,"$1" _N=/{narg(${})-1} arg2var _file,${} _apply_stream[] "${_file{$frame+1}}","$2",${3-5},"$6" v +
 
 #@cli apply_video : video_filename,_"command",_first_frame>=0,_last_frame={ >=0 | -1=last },_frame_step>=1,_output_filename
 #@cli : Apply a G'MIC command on all frames of the specified input video file, in a streamed way.
@@ -16863,7 +16863,7 @@ _apply_stream : skip "${2=},${6=}"
 #@cli : Default values: 'first_frame=0', 'last_frame=-1', 'frame_step=1' and 'output_filename=(undefined)'.
 average_files : check "isint(${2=0}) && $2>=0 && isint(${3=-1}) && ($3>=0 || $3==-1) && ${4=1}>=1" skip "${5=}"
   e[^-1] "Average input image files '$1', with first frame $2, last frame $3, frame step $4 and output filename '$5'.\n"
-  v - -files 3,"$1" _N=/{narg(${})-1} arg2var _file,${} _average_stream[] "${_file{$frame+1}}",${2-4},"$5" v +
+  v - files 3,"$1" _N=/{narg(${})-1} arg2var _file,${} _average_stream[] "${_file{$frame+1}}",${2-4},"$5" v +
 
 #@cli average_video : video_filename,_first_frame>=0,_last_frame={ >=0 | -1=last },_frame_step>=1,_output_filename
 #@cli : Average frames of specified input video file, in a streamed way.
@@ -16914,7 +16914,7 @@ _average_stream : skip "${5=}"
 #@cli : Default values: 'nb_inner_frames=10', 'first_frame=0', 'last_frame=-1', 'frame_step=1' and 'output_filename=(undefined)'.
 fade_files : check "isint(${2=10}) && $2>0 && isint(${3=0}) && $3>=0 && isint(${4=-1}) && ($4>=0 || $4==-1) && ${5=1}>=1" skip "${6=}"
   e[^-1] "Fade input image files '$1', with $2 inner frames, first frame $3, last frame $4, frame step $5 and output filename '$6'.\n"
-  v - -files 3,"$1" _N=/{narg(${})-1} arg2var _file,${} _fade_stream[] "${_file{$frame+1}}",${2-5},"$6" v +
+  v - files 3,"$1" _N=/{narg(${})-1} arg2var _file,${} _fade_stream[] "${_file{$frame+1}}",${2-5},"$6" v +
 
 #@cli fade_video : video_filename,_nb_inner_frames>0,_first_frame>=0,_last_frame={ >=0 | -1=last },_frame_step>=1,_output_filename
 #@cli : Create a temporal fading sequence from specified input video file, in a streamed way.
@@ -16942,7 +16942,7 @@ _fade_stream : skip "${6=}"
       v + e[] "\r  - "$title v -
       --j[0] [1],0,0,0,0,{$>/($2+1)}
       if {narg("$6")}
-        if $is_outavi z. 0,{w-(w%8)-1} o. "$6",25,mp4v,1 else -filename "$6",$i i+=1 o. ${} endif
+        if $is_outavi z. 0,{w-(w%8)-1} o. "$6",25,mp4v,1 else filename "$6",$i i+=1 o. ${} endif
       endif
       if {*}
         w. -1,-1,0,$title
@@ -16957,7 +16957,7 @@ _fade_stream : skip "${6=}"
 
   # Output last frame.
   if {narg("$6")}
-    if $is_outavi z. 0,{w-(w%8)-1} o[] "$6",25,mp4v,0 else -filename "$6",$i o. ${} endif
+    if $is_outavi z. 0,{w-(w%8)-1} o[] "$6",25,mp4v,0 else filename "$6",$i o. ${} endif
   endif
   rm
 
@@ -16986,7 +16986,7 @@ files2video : check "isint(${3=25}) && $3>0" skip "${2=output.avi}",${4=mp4v}
 median_files : check "isint(${2=0}) && $2>=0 && isint(${3=-1}) && ($3>=0 || $3==-1) && ${4=1}>=1 && ${5=20%}>0 && isval(${6=0})"
   v - s0="fast" s1="precise"
   v + e[^-1] "Compute median of input image files '$1', with first frame $2, last frame $3, frame step $4, frame rows $5, using "${s{!$6}}" algorithm." v -
-  -files 3,"$1" _N=/{narg(${})-1} arg2var _file,${}
+  files 3,"$1" _N=/{narg(${})-1} arg2var _file,${}
   l[]
     i[res] ${_file{$frame+1}} f. 0
     _median_stream "${_file{$frame+1}}",${2-6}
@@ -17159,7 +17159,7 @@ morph : check "$1>=0 && ${2=0.1}>=0 && ${3=4}>=0"
 #@cli : Default values: 'nb_inner_frames=10', 'smoothness=0.1', 'precision=4', 'first_frame=0', 'last_frame=-1', 'frame_step=1' and 'output_filename=(undefined)'.
 morph_files : check "isint(${2=10}) && $2>0 && ${3=0.1}>=0 && ${4=4}>=0 && isint(${5=0}) && $5>=0 && isint(${6=-1}) && ($6>=0 || $6==-1) && ${7=1}>=1" skip "${8=}"
   e[^-1] "Morph input image files '$1', with $2 inner frames, smoothness $3, precision $4, first frame $5, last frame $6, frame step $7 and output filename '$8'.\n"
-  v - -files 3,"$1" _N=/{narg(${})-1} arg2var _file,${} _morph_stream[] "${_file{$frame+1}}",${2-7},"$8" v +
+  v - files 3,"$1" _N=/{narg(${})-1} arg2var _file,${} _morph_stream[] "${_file{$frame+1}}",${2-7},"$8" v +
 
 #@cli morph_video : video_filename,_nb_inner_frames>0,_smoothness>=0,_precision>=0,_first_frame>=0,_last_frame={ >=0 | -1=last },_frame_step>=1,_output_filename
 #@cli : Generate a temporal morphing from specified input video file, in a streamed way.
@@ -17195,7 +17195,7 @@ _morph_stream : skip "${8=}"
       --*[3] {1-$t} --warp[1] .,1,1,1 rm.. *. $t
       +[-2,-1] c. $cutvals
       if {narg("$8")}
-        if $is_outavi z. 0,{w-(w%8)-1} o. "$8",25,mp4v,1 else -filename "$8",$i i+=1 o. ${} endif
+        if $is_outavi z. 0,{w-(w%8)-1} o. "$8",25,mp4v,1 else filename "$8",$i i+=1 o. ${} endif
       endif
       if {*}
         w. -1,-1,0,$title
@@ -17210,7 +17210,7 @@ _morph_stream : skip "${8=}"
 
   # Output last frame.
   if {narg("$8")}
-    if $is_outavi z. 0,{w-(w%8)-1} o[] "$8",25,mp4v,0 else -filename "$8",$i o. ${} endif
+    if $is_outavi z. 0,{w-(w%8)-1} o[] "$8",25,mp4v,0 else filename "$8",$i o. ${} endif
   endif
   rm
 
@@ -17367,9 +17367,9 @@ _xpink :
     -output_pink3d ${filename}.pnk -x $1" "${x_filename}".pnk $2 "${x_filename}"_o.pnk"
   endif
   status=${}
-  -file_rm ${x_filename}.pnk
+  file_rm ${x_filename}.pnk
   if {$status!=0" && "['"$1"']!='seuilauto'} v + error "Exec status is "${status}"."
-  elif ${filename}_o.pnk i ${filename}_o.pnk -file_rm ${x_filename}_o.pnk k. nm. $na
+  elif ${filename}_o.pnk i ${filename}_o.pnk file_rm ${x_filename}_o.pnk k. nm. $na
   else v + error "Exec error!!"
   endif
 
@@ -17480,7 +17480,7 @@ pink_reg_minima : check "${1=4}==4 || $1==8 || $1==6 || $1==26"
 #@cli : (http://pinkhq.com/doxygen/skelcurv_8c.html)
 #@cli : Curvilinear binary skeleton guided by a priority function or image (requires the PINK library to be installed).
 #@cli : Default values: 'prio=0', 'connectivity=4' and 'inhibit=""'.
-#@cli : $ image.jpg threshold 50% {w},{h} -fill[-1] 'if(x>w/2,255,0)' tp=${-path_tmp} -output[-1] ${tp}/inhibit.pgm remove[-1] --pink_skelcurv[0] , --pink_skelcurv[0] ,,${tp}/inhibit.pgm exec "rm "${tp}"/inhibit.pgm"
+#@cli : $ image.jpg threshold 50% {w},{h} fill[-1] 'if(x>w/2,255,0)' tp=${-path_tmp} -output[-1] ${tp}/inhibit.pgm remove[-1] --pink_skelcurv[0] , --pink_skelcurv[0] ,,${tp}/inhibit.pgm exec "rm "${tp}"/inhibit.pgm"
 #@cli : $ image.jpg threshold 50% --pink_skelcurv , --pink_skelcurv[-2] ,8
 pink_skelcurv : skip ${1=0},${2=4},${3=""}
   e[^-1] "Curvilinear binary skeleton guided by a priority function or image from image$?, prio=$1, connectivity=$2, inhibit=$3."
@@ -17582,7 +17582,7 @@ alert : skip "${1=[G"{`39`}"MIC Alert]},${2=This is an alert box.},${3=OK}"
     r[^0] {min(128,max(64,${-max_w[^0]}+12))},{min(48,max(24,${-max_h[^0]}+12))},1,1,0,0,0.5,0.5
     +[^0] 200 to_rgb[^0]
     mv[0] $!
-    [0],[0],1,1,'(y-h/2)' *. -2 c. -30,30 +[0--3] . rm. -c[^-1] 0,255  # Add shading to buttons.
+    [0],[0],1,1,'(y-h/2)' *. -2 c. -30,30 +[0--3] . rm. c[^-1] 0,255  # Add shading to buttons.
 
     repeat {$!-1} l[$<]
 
@@ -19370,12 +19370,12 @@ __x_color_curves :
       "a[0,-3] y a[1,-2] y a[2,-1] y"
   elif {['"$1"']=='cmy'}
     _color0="180,255,255" _color1="255,180,255" _color2="255,255,100" _color3="220,220,220" _title0=Cyan _title1=Magenta _title2=Yellow _title3=Alpha
-    m "xcc_goto: s c,-3 rgb2cmy[0] a c" m "xcc_backto: s c,-3 -cmy2rgb[0] a c"
+    m "xcc_goto: s c,-3 rgb2cmy[0] a c" m "xcc_backto: s c,-3 cmy2rgb[0] a c"
     m "xcc_info: (255,0;255,255;255,255) (255,255;255,0;255,255) (255,255;255,255;255,0) r[-3--1] 256,3,1,1,3 "\
       "a[0,-3] y a[1,-2] y a[2,-1] y"
   elif {['"$1"']=='cmyk'}
     _color0="180,255,255" _color1="255,180,255" _color2="255,255,100" _color3="180,180,180" _color4="220,220,220" _title0=Cyan _title1=Magenta _title2=Yellow _title3=Key _title4=Alpha
-    m "xcc_goto: s c,-3 rgb2cmyk[0] a c" m "xcc_backto: s c,-4 -cmyk2rgb[0] a c"
+    m "xcc_goto: s c,-3 rgb2cmyk[0] a c" m "xcc_backto: s c,-4 cmyk2rgb[0] a c"
     m "xcc_info: (255,0;255,255;255,255) (255,255;255,0;255,255) (255,255;255,255;255,0) (255,0) r[-4--1] 256,3,1,1,3 "\
       "a[0,-4] y a[1,-3] y a[2,-2] y a[3,-1] y"
   elif {['"$1"']=='hsi'}
@@ -20046,7 +20046,7 @@ x_fisheye :
     if {{*,b}==2} R={max(3,$R-8)} endif
     --j3d.. .,{50+30*cos($|*2.5)}%,{50+30*sin($|*1.6)}%,{80+230*sin($|*2.6)},0.7,3,0,0 r3d.. 1,0.2,0.6,3
     if {{*,x}>=0}
-    -fisheye. {{*,x}*100/{*,w}},{{*,y}*100/{*,h}},$R
+    fisheye. {{*,x}*100/{*,w}},{{*,y}*100/{*,h}},$R
     endif
     w.
     if {{*,CTRLLEFT}&&{*,D}} w[] {3*w},{3*h} elif {{*,CTRLLEFT}&&{*,C}} w[] {1.5*w},{1.5*h} endif
@@ -20606,7 +20606,7 @@ x_landscape :
   # Generate global map + colors.
   900,900 plasma. 1,1,6 b. 0.07% n. 0,255 nm. map
   --g. *. 0.5 +[-2,-1] n. 0,1 ^. 2 n. -150,330
-  equalize[map] 256 n[map] -400,160 -c[map] 0,100% # Add water.
+  equalize[map] 256 n[map] -400,160 c[map] 0,100% # Add water.
   (0,102,51;149,175,124;102,42,0;255,255,255) permute. yzcx srgb2rgb. r. 256,1,1,3,3 rgb2srgb. --n[map] 0,255 map. .. rm..
   +. .. rm.. c. 0,255 nm. colors # Colors.
 
@@ -20741,7 +20741,7 @@ x_life :
       rm[3] i[3] {u(3,12)},1,1,3,u(100,255)
       r[3] {u(100,300)}%,1,1,3,4
       point[3] 0,0,0,1,0
-      r[3] {u(100,600)}%,1,1,3,5 -c[3] 0,255
+      r[3] {u(100,600)}%,1,1,3,5 c[3] 0,255
     endif
 
     --r[1] {2,w},{2,h} &. 7 b. {1+$score*0.05}                # Render colored image of the game and display it.
@@ -21036,7 +21036,7 @@ x_metaballs3d :
 -----------------------------------------------------------"
   v - l[]
   100,100 noise. 100,1 plasma. 1,0,10 r. 512,320,1,3 n. 0,1 b. 4,0 n. 0,255
-  -mix_channels. (0.7,0,0;0,0.9,0;0,0,1.2) c. 0,255 l3d
+  mix_channels. (0.7,0,0;0,0.9,0;0,0,1.2) c. 0,255 l3d
   0
   24,24,24,1,'X=x-w/2;Y=y-h/2;Z=z-d/2;exp(-(X*X+Y*Y+Z*Z)/100)'
   72,72,72 M=8 mode=3
@@ -21866,7 +21866,7 @@ x_quantize_rgb : check "isint(${1=16}) && $1>1"
       -->>[colors] 8 channels. 0 histogram. {centroids,w},0,{centroids,w-1}
       cmax={xM}
       repeat {w} if {!i($>)} point[centroids] $>,0,0,1,{centroids,I($cmax)} point[centroids] $>,0,0,-0.001,${-RGB} endif done
-      rm. -c[centroids] 0,255
+      rm. c[centroids] 0,255
 
       if $visu_3d rm[visu_3d] endif
       if $visu_img rm[visu_img] endif
@@ -24675,7 +24675,7 @@ fx_puzzle_preview :
 #@gui : Random seed = int(0,0,65535)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2014/13/01</i>.</small>")
 fx_taquin :
-  to_a repeat $! l[$>] -srand $11 -taquin $1,$2,$3,$4,$5%,$6,${7-10} endl done
+  to_a repeat $! l[$>] srand $11 -taquin $1,$2,$3,$4,$5%,$6,${7-10} endl done
 
 #@gui Tileable rotation : fx_rotate_tileable, fx_rotate_tileable_preview(1)
 #@gui : Angle = float(45,0,360)
@@ -24784,7 +24784,7 @@ fx_isolate_tiles :
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2015/02/07</i>.</small>")
 fx_bokeh :
   _shape=$2
-  -srand $3
+  srand $3
   repeat $! l[$<] nm=${-gui_layer_name} pos=${-gui_layer_pos}
     100%,100%,1,3
     (${4-13};${14-23}) if {$1>2} r. 100%,$1,1,1,3 endif
@@ -25881,7 +25881,7 @@ fx_autofill_lineart :
       N={iM}
       if $N
         -. 1
-        -srand 0 {iM+1},1,1,3,">arg(1+c,j(-1) + u(135,225),u(0,0.7),u(0.4,0.9))"
+        srand 0 {iM+1},1,1,3,">arg(1+c,j(-1) + u(135,225),u(0,0.7),u(0.4,0.9))"
         hsv2rgb. round. point. $label_maxarea,0,0,1,255
         map.. . rm.
       endif
@@ -26020,7 +26020,7 @@ _fx_colorize_lineart_smartcoloring :
       if $min_color_area --area_fg[new_strokes] 0,0 xy_bg={[xM,yM]} >. $min_color_area *[new_strokes,-1] endif
       watershed[new_strokes] [strokes],0 rm[strokes]
       ind_bg={new_strokes,i($xy_bg)}
-      -srand 0 {new_strokes,iM+1},1,1,3,">arg(1+c,j(-1) + u(85,125),u(1,max(3,$6))/255,u(min(252,$7),255)/255)"
+      srand 0 {new_strokes,iM+1},1,1,3,">arg(1+c,j(-1) + u(85,125),u(1,max(3,$6))/255,u(min(252,$7),255)/255)"
       hsi2rgb. round. point. $ind_bg,0,0,1,255 point. 0,0,0,1,255
       map[new_strokes] . rm.
       nm[new_strokes] new_colors
@@ -26962,9 +26962,9 @@ _fx_recompose_channels5 : ycbcr2rgb
 _fx_recompose_channels6 : -xyz82rgb
 _fx_recompose_channels7 : lab82rgb
 _fx_recompose_channels8 : -lch82rgb
-_fx_recompose_channels9 : -cmy2rgb
-_fx_recompose_channels10 : -cmyk2rgb
-_fx_recompose_channels11 : -yiq82rgb
+_fx_recompose_channels9 : cmy2rgb
+_fx_recompose_channels10 : cmyk2rgb
+_fx_recompose_channels11 : yiq82rgb
 
 #@gui Detect skin : fx_detect_skin, fx_detect_skin_preview(1)
 #@gui : Skin estimation = choice(1,"Manual","Automatic")
@@ -27101,7 +27101,7 @@ fx_mix_cmyk :
     *... $4 +... $5 b... $6%
     *.. $7 +.. $8 b.. $9%
     *. $10 +. $11 b. $12%
-    a[-4--1] c -cmyk2rgb.
+    a[-4--1] c cmyk2rgb.
     fx_end_mix $13
   if {$!!=3} rv a c endif endl mv. 0 done
 
@@ -27132,7 +27132,7 @@ fx_mix_hsv :
     *... $1 +... $2 b... $3%
     *.. $4 +.. $5 b.. $6%
     *. $7 +. $8 b. $9%
-    %... 360 +[-2,-1] 0.5 -c[-2,-1] 0,1 a[-3--1] c hsv2rgb.
+    %... 360 +[-2,-1] 0.5 c[-2,-1] 0,1 a[-3--1] c hsv2rgb.
     fx_end_mix $10
   if {$!!=3} rv a c endif endl mv. 0 done
 
@@ -27353,7 +27353,7 @@ fx_selective_desaturation :
     if $4 *[1] -{max(0.01,$5)} +[1] 1
     else >=[1] {5*$5}%
     endif
-    -c[1] 0,1
+    c[1] 0,1
     rgb2hsl[0] s[0] c
     mM={[im,iM]} repeat $6 -guided. [2],1,0.1 done n. $mM # Regularization step.
     if {$7==0} *[1,-1]
@@ -28006,7 +28006,7 @@ fx_drop_water :
     nm img
 
     # Create binary shapes (i.e. opacity map).
-    -srand $5
+    srand $5
     if $1 # Shape from top layer.
       pass[0] 0 to_a. channels. 100% >=. 50%
       r. [0],[0],1,1,0,0,0.5,0.5
@@ -28036,11 +28036,11 @@ fx_drop_water :
     # Compute specular spots.
     --*[grad] -1 100%,100%,1,1,1 a[-2,-1] c -orientation.  # 3d normal map.
     a={$7*pi/180} ca={-cos($a)} sa={-sin($a)}
-    -mix_channels. ({(1-$10)*$ca},{(1-$10)*$sa},1) c. {100-$8}%,100% n. 0,1
+    mix_channels. ({(1-$10)*$ca},{(1-$10)*$sa},1) c. {100-$8}%,100% n. 0,1
     *. [shape] nm. spots
 
     # Compute ambiant light (gradient).
-    -mix_channels[grad] ($ca,$sa)
+    mix_channels[grad] ($ca,$sa)
     n[grad] 0,1 *[grad] [shape]
 
     # Drop shadow.
@@ -28718,13 +28718,13 @@ fx_chromatic_aberrations :
 
   # Shift images.
   repeat $! l[$>] to_color split_opacity l[0]
-    -mix_rgb $M
+    mix_rgb $M
     s c
     100%,100%,1,2 fc. {($9-$4)/2},{($10-$5)/2} warp[0] .,1,2,1 rm.
     100%,100%,1,2 fc. {($4-$9)/2},{($5-$10)/2} warp[1] .,1,2,1 rm.
     100%,100%,1,2 fc. {(-$4-$9)/2},{(-$5-$10)/2} warp[2] .,1,2,1 rm.
     a c
-    -mix_rgb $Minv
+    mix_rgb $Minv
   endl a c endl done
   c 0,255
 
@@ -29367,7 +29367,7 @@ fx_split_details_gaussian :
     nm=${-gui_layer_name}
     pos=${-gui_layer_pos}
     split_details $1,$2,$3
-    +[^0] 128 -c[^0] 0,255 round
+    +[^0] 128 c[^0] 0,255 round
     repeat {$!-1} nm[{1+$>}] "mode(grainmerge), name"($nm" [scale ""#"{1+$>}"]), pos("$pos")" done
     nm[0] "name"($nm" [residual]), pos("$pos")"
     -rv
@@ -29396,7 +29396,7 @@ fx_split_details_wavelets :
   remove_opacity repeat $! l[$>]
     nm=${-gui_layer_name}
     pos=${-gui_layer_pos}
-    split_details $1,0,0 rv +[^-1] 128 -c[^-1] 0,255 round
+    split_details $1,0,0 rv +[^-1] 128 c[^-1] 0,255 round
     if $2 to_a[^-1] endif
     repeat {$!-1} nm[$>] "mode(grainmerge), name"($nm" [scale ""#"{1+$>}"]), pos("$pos")" done
     nm. "name"($nm" [residual]), pos("$pos")"
@@ -30710,7 +30710,7 @@ fx_pack : skip "${5=}"
   c0="w" c1="h" c2="max(w,h)" c3="w*h"
   pack $2,${c$1} coords=${}
   if $4
-    repeat 256 -filename "$5/gmic_pack.txt",$> filename=${} if $filename else break endif done
+    repeat 256 filename "$5/gmic_pack.txt",$> filename=${} if $filename else break endif done
     if {!narg($filename)} filename="$5/gmic_pack.txt" endif
     l[] repeat {narg($coords)/2}
       x={arg(1+2*$>,$coords)} y={arg(2+2*$>,$coords)}
@@ -31230,7 +31230,7 @@ fx_crystal_background :
   repeat $! l[$>] split_opacity l[0]
     N={2*max(3,round((${"is_percent $2"}?4*wh*$2:$2)))}
     if $5 col="u([255,255,255])" else col="u(255)" endif
-    -srand $3 M={max(w,h)} 2,$N
+    srand $3 M={max(w,h)} 2,$N
     repeat $1 rand. {-$M/2},{3*$M/2} polygon.. $N,{^},{-$4%},{$col} done
     rm. n 0,255
   endl a c endl done
@@ -31842,7 +31842,7 @@ fx_inpaint_patchmatch :
       visu_size=${fitscreen[]" "{0,w},{0,h},1,25%,50%}
       w1.. $visu_size,0,"[Preview] G'MIC: Inpaint [multi-scale]"
     endif
-    -srand 0 inpaint_patchmatch.. [1],${1-5}
+    srand 0 inpaint_patchmatch.. [1],${1-5}
     rm.
   endl done
 
@@ -32900,7 +32900,7 @@ fx_custom_gradient : skip "${15=}"
 # Create colormap.
 _fx_custom_gradient0 :
   if $16 4,8,1,1,${18-56} permute. yzcx
-  else 8,1,1,3 -srand $17 rand. 0,255 to_rgba.
+  else 8,1,1,3 srand $17 rand. 0,255 to_rgba.
   endif
   z. 0,{$5-1}
   if $13
@@ -33043,7 +33043,7 @@ fx_radial_gradient : skip ${14=0}
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2016/08/04</i>.</small>")
 fx_random_gradient :
   repeat $! l[$>]
-    to_rgba 100%,100% -srand $2
+    to_rgba 100%,100% srand $2
     eval "for (n=0, n<$1, ++n,
             x = round(u(w-1));
             y = round(u(h-1));
@@ -33107,7 +33107,7 @@ fx_heart_preview :
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2014/27/11</i>.</small>")
 fx_lightning :
   repeat $! l[$<]
-    100%,100% l. fact={max(w,h)/$3*$2%} -srand $11
+    100%,100% l. fact={max(w,h)/$3*$2%} srand $11
     repeat $1
       if {$!<=1}
         i=0
@@ -33756,7 +33756,7 @@ fx_animate_edges_preview : skip "${4=}"
 #@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2011/06/07</i>.</small>")
 fx_fire_edges :
-  -fire_edges ${1-7} -rv
+  fire_edges ${1-7} -rv
 
 fx_fire_edges_preview :
   gui_split_preview "fire_edges $1,$2,$3,$4,1,$6,0",$-1
