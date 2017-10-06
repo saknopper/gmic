@@ -4448,7 +4448,7 @@ CImg<char> gmic::substitute_item(const char *const source,
         if (is_thread_global) cimg::mutex(30,0);
         nsource+=l_name;
 
-        // Substitute '${"-command"}' -> Status value after command execution.
+        // Substitute '${"command"}' -> Status value after command execution.
       } else if (is_braces) {
         nsource+=l_inbraces + 3;
         if (l_inbraces>0) {
