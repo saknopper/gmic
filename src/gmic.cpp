@@ -2865,7 +2865,7 @@ const char *gmic::set_variable(const char *const name, const char *const value,
     is_global = *name=='_',
     is_thread_global = is_global && name[1]=='_';
   if (is_thread_global) cimg::mutex(30);
-  const unsigned int hash = gmic::hashcode(name,true);
+  const unsigned int hash = hashcode(name,true);
   const int lind = is_global || !variables_sizes?0:(int)variables_sizes[hash];
   CImgList<char>
     &__variables = *variables[hash],
@@ -2930,7 +2930,7 @@ gmic& gmic::add_commands(const char *const data_commands,
   CImg<unsigned int> pos(512,1,1,1,0);
   unsigned int line_number = 1;
   bool is_last_slash = false, _is_last_slash = false, is_newline = false;
-  int ind = -1, l_debug_info = 0;
+  int hash = -1, l_debug_info = 0;
   char sep = 0;
   if (commands_file) CImg<char>::string(commands_file).move_to(commands_files);
 
@@ -2968,11 +2968,11 @@ gmic& gmic::add_commands(const char *const data_commands,
     if (!is_last_slash && std::strchr(lines,':') && // Check for a command definition.
         cimg_sscanf(lines,"%255[a-zA-Z0-9_] %c %262143[^\n]",mac.data(),&sep,com.data())>=2 &&
         (*lines<'0' || *lines>'9') && sep==':') {
-      ind = (int)hashcode(mac,false);
-      CImg<char>::string(mac).move_to(commands_names[ind],pos[ind]);
+      hash = (int)hashcode(mac,false);
+      CImg<char>::string(mac).move_to(commands_names[hash],pos[hash]);
       CImg<char> body = CImg<char>::string(com);
       CImg<char>::vector((char)command_has_arguments(body)).
-        move_to(commands_has_arguments[ind],pos[ind]);
+        move_to(commands_has_arguments[hash],pos[hash]);
       if (commands_file) { // Insert code with debug info.
         if (commands_files.width()<2)
           l_debug_info = cimg_snprintf(debug_info.data() + 1,debug_info.width() - 2,"%x",line_number);
@@ -2982,15 +2982,15 @@ gmic& gmic::add_commands(const char *const data_commands,
         if (l_debug_info>=debug_info.width() - 1) l_debug_info = debug_info.width() - 2;
         debug_info[0] = 1; debug_info[l_debug_info + 1] = ' ';
         ((CImg<char>(debug_info,l_debug_info + 2,1,1,1,true),body)>'x').
-          move_to(commands[ind],pos[ind]++);
-      } else body.move_to(commands[ind],pos[ind]++); // Insert code without debug info.
+          move_to(commands[hash],pos[hash]++);
+      } else body.move_to(commands[hash],pos[hash]++); // Insert code without debug info.
     } else { // Continuation of a previous line.
-      if (ind<0) error("Command 'command': Syntax error in expression '%s'.",lines);
-      const unsigned int p = pos[ind] - 1;
-      if (!is_last_slash) commands[ind][p].back() = ' ';
-      else --(commands[ind][p]._width);
+      if (hash<0) error("Command 'command': Syntax error in expression '%s'.",lines);
+      const unsigned int p = pos[hash] - 1;
+      if (!is_last_slash) commands[hash][p].back() = ' ';
+      else --(commands[hash][p]._width);
       const CImg<char> body = CImg<char>(lines,(unsigned int)(linee - lines + 2));
-      commands_has_arguments[ind](p,0) |= (char)command_has_arguments(body);
+      commands_has_arguments[hash](p,0) |= (char)command_has_arguments(body);
       if (commands_file && !is_last_slash) { // Insert code with debug info.
         if (commands_files.width()<2)
           l_debug_info = cimg_snprintf(debug_info.data() + 1,debug_info.width() - 2,"%x",line_number);
@@ -2999,9 +2999,9 @@ gmic& gmic::add_commands(const char *const data_commands,
                                        line_number,commands_files.width() - 1);
         if (l_debug_info>=debug_info.width() - 1) l_debug_info = debug_info.width() - 2;
         debug_info[0] = 1; debug_info[l_debug_info + 1] = ' ';
-        ((commands[ind][p],CImg<char>(debug_info,l_debug_info + 2,1,1,1,true),body)>'x').
-          move_to(commands[ind][p]);
-      } else commands[ind][p].append(body,'x'); // Insert code without debug info.
+        ((commands[hash][p],CImg<char>(debug_info,l_debug_info + 2,1,1,1,true),body)>'x').
+          move_to(commands[hash][p]);
+      } else commands[hash][p].append(body,'x'); // Insert code without debug info.
     }
   }
 
@@ -4392,16 +4392,16 @@ CImg<char> gmic::substitute_item(const char *const source,
                  (*substr<'0' || *substr>'9')) {
         const CImg<char>& name = is_braces?inbraces:substr;
         const unsigned int
-          hashcode = gmic::hashcode(name,true),
+          hash = hashcode(name,true),
           l_name = is_braces?l_inbraces + 3:(unsigned int)std::strlen(name) + 1;
         const bool
           is_global = *name=='_',
           is_thread_global = is_global && name[1]=='_';
-        const int lind = is_global?0:(int)variables_sizes[hashcode];
+        const int lind = is_global?0:(int)variables_sizes[hash];
         if (is_thread_global) cimg::mutex(30);
         const CImgList<char>
-          &__variables = *variables[hashcode],
-          &__variables_names = *variables_names[hashcode];
+          &__variables = *variables[hash],
+          &__variables_names = *variables_names[hash];
         bool is_name_found = false;
         for (int l = __variables.width() - 1; l>=lind; --l)
           if (!std::strcmp(__variables_names[l],name)) {
@@ -4721,7 +4721,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
               err = std::strcmp(native_commands_names[pos],command);
             };
             if (err) { // Look for a custom command
-              hash_custom_command = (int)hashcode(command,false);
+              hash_custom_command = hashcode(command,false);
               cimglist_for(commands_names[hash_custom_command],l)
                 if (!std::strcmp(commands_names[hash_custom_command][l],command)) { ind_custom_command = l; break; }
               is_command = (ind_custom_command!=~0U);
@@ -6198,20 +6198,20 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
           if (s[1]=='r') { // End a 'repeat...done' block
             *title = 0;
             unsigned int *const rd = repeatdones.data(0,nb_repeatdones - 1);
-            const unsigned int hashcode = rd[3], pos = rd[4];
+            const unsigned int hash = rd[3], pos = rd[4];
             ++rd[2];
             if (--rd[1]) {
               position = rd[0] + 1;
-              if (hashcode!=~0U) {
+              if (hash!=~0U) {
                 cimg_snprintf(argx,_argx.width(),"%u",rd[2]);
-                CImg<char>::string(argx).move_to((*variables[hashcode])[pos]);
+                CImg<char>::string(argx).move_to((*variables[hash])[pos]);
               }
               next_debug_line = debug_line; next_debug_filename = debug_filename;
             } else {
               if (is_very_verbose) print(images,0,"End 'repeat...done' block.");
-              if (hashcode!=~0U) {
-                variables[hashcode]->remove(pos);
-                variables_names[hashcode]->remove(pos);
+              if (hash!=~0U) {
+                variables[hash]->remove(pos);
+                variables_names[hash]->remove(pos);
               }
               --nb_repeatdones;
               callstack.remove();
@@ -10147,11 +10147,11 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
               unsigned int *const rd = repeatdones.data(0,nb_repeatdones++);
               rd[0] = position; rd[1] = nb; rd[2] = 0;
               if (l) {
-                const unsigned int hashcode = gmic::hashcode(title,true);
-                rd[3] = hashcode;
-                rd[4] = variables[hashcode]->_width;
-                CImg<char>::string(title).move_to(*variables_names[hashcode]);
-                CImg<char>::string("0").move_to(*variables[hashcode]);
+                const unsigned int hash = hashcode(title,true);
+                rd[3] = hash;
+                rd[4] = variables[hash]->_width;
+                CImg<char>::string(title).move_to(*variables_names[hash]);
+                CImg<char>::string("0").move_to(*variables[hash]);
               } else rd[3] = rd[4] = ~0U;
             } else {
               if (is_very_verbose) {
@@ -12146,12 +12146,12 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
               arg_command.resize(1,arg_command.height() + 1,1,1,0);
               strreplace_fw(arg_command);
               if (*arg_command) {
-                const int ind = (int)hashcode(arg_command,false);
-                cimglist_for(commands_names[ind],l)
-                  if (!std::strcmp(commands_names[ind][l],arg_command)) {
-                    commands_names[ind].remove(l);
-                    commands[ind].remove(l);
-                    commands_has_arguments[ind].remove(l);
+                const unsigned int hash = hashcode(arg_command,false);
+                cimglist_for(commands_names[hash],l)
+                  if (!std::strcmp(commands_names[hash][l],arg_command)) {
+                    commands_names[hash].remove(l);
+                    commands[hash].remove(l);
+                    commands_has_arguments[hash].remove(l);
                     ++nb_removed; break;
                   }
               }
