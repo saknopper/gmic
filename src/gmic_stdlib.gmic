@@ -17821,7 +17821,7 @@ dec2hex :
 
 _dec2hex : check isint($1)
   res="" r={abs($1)}
-  do res=${_dec2hex_{$r%16}}$res r={int($r/16)} while $r
+  do res=${-_dec2hex_{$r%16}}$res r={int($r/16)} while $r
   u ${arg\ 1+($1>=0),-,""}$res
 
 _dec2hex_0 : u 0
