@@ -4930,6 +4930,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             break;
           case 'm' : if (!is_double_hyphen && !is_selection)
               CImg<char>::string("mode3d").move_to(_item);
+            break;
           case '*' : std::strcpy(command,"mul3d"); break;
           case 'o' : std::strcpy(command,"opacity3d"); break;
           case 'p' : std::strcpy(command,"primitives3d"); break;
