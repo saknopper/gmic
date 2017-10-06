@@ -2238,7 +2238,7 @@ _document_gmic_footer_ascii : skip $1
   if $_shortcut # Document shortcuts.
     ({'"Command shortcuts"'}) _document_gmic_subsection_ascii. v + e[] "" v - rm.
     v + repeat $_shortcut
-      e[] "    "$_gmic_m$_gmic_b"-"${_shortcut$>}" "${_shortcutqualifier$>}":"$_gmic_n" eq. to '"$_gmic_g${_shortcutlink$>}$_gmic_n"'."
+      e[] "    "$_gmic_m${_gmic_b}${_shortcut$>}" "${_shortcutqualifier$>}":"$_gmic_n" eq. to '"$_gmic_g${_shortcutlink$>}$_gmic_n"'."
     done v -
   endif
   v + e[] "\n   "$_gmic_c"[ Total number of commands: "$_command" ]"$_gmic_n v -
@@ -2526,7 +2526,7 @@ _document_gmic_footer_html : skip $1
     ({'"Command shortcuts"'}) _document_gmic_subsection_html. rm.
     v + e[] "<p style=\"margin-left:20px\">"
     repeat $_shortcut
-      e[] "<font color=\"green\"><b>&nbsp;&nbsp;-"${_shortcut$>}" "${_shortcutqualifier$>}"</b>:</font>"
+      e[] "<font color=\"green\"><b>&nbsp;&nbsp;"${_shortcut$>}" "${_shortcutqualifier$>}"</b>:</font>"
       v - ({'${_shortcutlink$>}'}) z. 1,100% scl={t} rm. v +
       e[] "<font color=\"blue\"><i>Shortcut for command '<a href=\"#"$scl"\">"${_shortcutlink$>}"</a>'</i></font><br/>"
     done
@@ -2713,7 +2713,7 @@ _document_gmic_footer_latex :
   if $_shortcut # Document shortcuts.
     ({'"Command shortcuts"'}) _document_gmic_subsection_latex. rm.
     v + repeat $_shortcut
-      e[] "$\\bullet$~'\\texttt{\\Ca{-"${_shortcut$>}"}}' "${_shortcutqualifier$>}"~is equivalent to~~'\\texttt{\\Ca{"${_shortcutlink$>}"}}'.\\\\"
+      e[] "$\\bullet$~'\\texttt{\\Ca{"${_shortcut$>}"}}' "${_shortcutqualifier$>}"~is equivalent to~~'\\texttt{\\Ca{"${_shortcutlink$>}"}}'.\\\\"
     done v -
   endif
   if $1
@@ -8536,8 +8536,9 @@ blur_angular : skip ${2=50%},${3=50%}
 #@cli : resulting in a larger but sharper glare than a simple blur.
 #@cli : When specified, argument 'axes' is a sequence of { x | y | z | c }.
 #@cli : Specifying one axis multiple times apply also the blur multiple times.
-#@cli : Reference: Masaki Kawase, “Practical Implementation of High Dynamic Range Rendering”, GDC 2004.
+#@cli : Reference: Masaki Kawase, "Practical Implementation of High Dynamic Range Rendering", GDC 2004.
 #@cli : Default values: 'amplitude=1', 'ratio=2', 'nb_iter=5', 'blend_operator=+', 'kernel=0','normalize_scales=0' and 'axes=(all)'
+#@cli : $ image.jpg --blur_bloom ,
 blur_bloom : check "${1=1}>=0 && ${2=2}>=0 && isint(${3=5}) && $3>=0 && isint(${5=0}) && $5>=0 && $5<=4 && isval(${6=0})" skip ${4=+},${7=}
   e[^-1] "Apply bloom effect on image$?, with amplitude $1, ratio $2, $3 iterations, blend operator '$4' and "${"arg 1+!$6,\"\",\"no \""}"scale normalization."
   v -
