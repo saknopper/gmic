@@ -2159,7 +2159,7 @@ _document_gmic_declaration_ascii :
     _shortcutqualifier$_shortcut=$qualifier
     _shortcut+=1
   else                                     # Declaration of a regular command.
-    v + e[] "\n    "$_gmic_m${_gmic_b}"-"{0,t}${qualifier}":"$_gmic_n v - rm[0]
+    v + e[] "\n    "$_gmic_m${_gmic_b}{0,t}${qualifier}":"$_gmic_n v - rm[0]
     if $!
       s="                        "
       y x
@@ -2416,7 +2416,7 @@ _document_gmic_declaration_html :
   else                                         # Declaration of a regular command.
     _command_name={0,t}
     v +
-    e[] ${-eoff}${-doff}"<p style=\"margin-left:20px\"><a id=\""{0,t}"\"><font color=\"#005090\">&nbsp;&nbsp;<b>-"{0,t}$qualifier"</b>:</font></a>"
+    e[] ${-eoff}${-doff}"<p style=\"margin-left:20px\"><a id=\""{0,t}"\"><font color=\"#005090\">&nbsp;&nbsp;<b>"{0,t}$qualifier"</b>:</font></a>"
     if {$!>1}
       e[] "<p style=\"margin-left:120px\"><tt><i><font color=\"#900090\">"
       repeat {$!-1} l[{1+$>}]
@@ -2648,7 +2648,7 @@ _document_gmic_declaration_latex :
   else                                         # Declaration of a regular command.
     _document_gmic_replace_latex[0]
     _command_name={0,t}
-    v + e[] ${-eoff}"\n\n\\subsection{\\emph{-"{0,t}"\\index{-"{0,t}"}} "$qualifier"}\\vspace*{-0.7em}"
+    v + e[] ${-eoff}"\n\n\\subsection{\\emph{"{0,t}"\\index{"{0,t}"}} "$qualifier"}\\vspace*{-0.7em}"
     if {$!>1}
       e[] "~\\\\\\textbf{\\Cb{Arguments: }}\\begin{flushleft}"
       repeat {$!-1} l[{1+$>}]
