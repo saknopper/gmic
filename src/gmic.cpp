@@ -2865,11 +2865,11 @@ const char *gmic::set_variable(const char *const name, const char *const value,
     is_global = *name=='_',
     is_thread_global = is_global && name[1]=='_';
   if (is_thread_global) cimg::mutex(30);
-  const unsigned int hashcode = gmic::hashcode(name,true);
-  const int lind = is_global || !variables_sizes?0:(int)variables_sizes[hashcode];
+  const unsigned int hash = gmic::hashcode(name,true);
+  const int lind = is_global || !variables_sizes?0:(int)variables_sizes[hash];
   CImgList<char>
-    &__variables = *variables[hashcode],
-    &__variables_names = *variables_names[hashcode];
+    &__variables = *variables[hash],
+    &__variables_names = *variables_names[hash];
   if (operation) {
     // Retrieve index of current definition.
     for (int l = __variables.width() - 1; l>=lind; --l) if (!std::strcmp(__variables_names[l],name)) {
