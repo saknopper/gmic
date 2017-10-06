@@ -1986,7 +1986,7 @@ _display_quiver : check "${1=16}>0 && ${2=1.5}>=0 && isint(${3=2}) && $3>=0 && $
 drgba : skip "${1=none}"
   v - _gmic_s="$?" v +
   _display_rgba ${^0}
-  v - if {!${}} -noarg endif v +
+  v - if {!${}} noarg endif v +
 
 #@cli display_rgba : _background_RGB_color
 #@cli : Render selected RGBA images over a checkerboard background.
@@ -1996,7 +1996,7 @@ drgba : skip "${1=none}"
 display_rgba : skip "${1=none}"
   v - _gmic_s="$?" v +
   _$0 ${^0}
-  v - if {!${}} -noarg endif v +
+  v - if {!${}} noarg endif v +
 
 _display_rgba : skip "${1=}"
   v - l[] is_rgb={"isval($1)"} onfail is_rgb=0 endl v +
@@ -3528,7 +3528,7 @@ shape_star : check "${1=512}>=0 && ${2=5}>0 && ${3=0.5}>=0 && $3<=1"
 #@cli sp : eq. to 'sample'.
 sp : skip "${1=?}",${2=0}
   v - _sample[] "$1",${2--1}
-  if {!${}} -noarg endif v +
+  if {!${}} noarg endif v +
 
 #@cli sample : _name1={ ? | apples | barbara | boats | bottles | butterfly | cameraman | car | cat | cliff | david | dog | duck | eagle | elephant | earth | flower | fruits | greece | gummy | house | inside | landscape | leaf | lena | leno | lion | mandrill | monalisa | monkey | parrots | pencils | peppers | rooster | rose | square | teddy | tiger | wall | waterfall | zelda },_name2,...,_nameN,_width={ >=0 | 0 (auto) },_height = { >=0 | 0 (auto) } : (no arg)
 #@cli : Input a new sample RGB image (opt. with specified size).
@@ -3537,7 +3537,7 @@ sp : skip "${1=?}",${2=0}
 #@cli : $ repeat 6 sample done
 sample : skip "${1=?}",${2=0}
   v - _sample[] "$1",${2--1}
-  if {!${}} -noarg endif v +
+  if {!${}} noarg endif v +
 
 _sample :
   if {"$#>=3 && isval($-2) && isint($-2) && $-2>=0 && isval($-1) && isint($-1) && $-1>=0"} # W and H specified.
@@ -5994,7 +5994,7 @@ negate : skip "${1=,}"
   else
     e[0--3] "Negate values of image$?."
     v - repeat $! -[$>] {$>,iM} done * -1
-    if {;['"$1"']!=','} -noarg endif
+    if {;['"$1"']!=','} noarg endif
     v +
   endif
 
@@ -6656,7 +6656,7 @@ lab2lch :
 #@cli lab82rgb : illuminant={ 0=D50 | 1=D65 } : (no arg)
 #@cli : Convert selected images from Lab8 to RGB color bases.
 lab82rgb : skip "${1=,}"
-  v - if {isval("$1")} wp={"$1?1:0"} else if {["'$1'"]!=','} -noarg endif wp=1 endif v +
+  v - if {isval("$1")} wp={"$1?1:0"} else if {["'$1'"]!=','} noarg endif wp=1 endif v +
   e[^-1] "Convert image$? from Lab8 to RGB color bases."
   v - repeat $!
     sh[$>] 0 /. 2.55 rm.
@@ -6713,7 +6713,7 @@ mix_rgb : skip ${1=1},${2=0},${3=0},${4=0},${5=1},${6=0},${7=0},${8=0},${9=1}
 #@cli : Generate pseudogray colormap with specified increment and perceptual threshold.
 #@cli : If 'JND_threshold' is 0, no perceptual constraints are applied.
 #@cli : Default values: 'max_increment=5', 'JND_threshold=2.3' and 'bits_depth=8'.
-#@cli : $ -pseudogray 5
+#@cli : $ pseudogray 5
 pseudogray : check "isint(${1=5}) && $1>=0 && ${2=2.3}>=0 && isint(${3=8}) && $3>0"
   e[^-1] "Generate pseudogray colormap with increment $1, JND threshold $2 and $3 bits depth."
   v -
@@ -6893,7 +6893,7 @@ _rgb2hsx8 :
 #@cli : Convert selected images from RGB to Lab8 color bases.
 #@cli : $ image.jpg rgb2lab8 split c
 rgb2lab8 : skip "${1=,}"
-  v - if {isval("$1")} wp={"$1?1:0"} else if {["'$1'"]!=','} -noarg endif wp=1 endif v +
+  v - if {isval("$1")} wp={"$1?1:0"} else if {["'$1'"]!=','} noarg endif wp=1 endif v +
   e[^-1] "Convert image$? from RGB to Lab8 color bases."
   v - rgb2lab $wp repeat $!
     sh[$>] 0 *. 2.55 rm.
@@ -6949,7 +6949,7 @@ rgb2int :
 #@cli : Default value: 'illuminant=0'.
 #@cli : $ image.jpg rgb2xyz split c
 rgb2xyz : skip "${1=,}"
-  v - if {isval("$1")} wp={"$1?1:0"} else if {["'$1'"]!=','} -noarg endif wp=1 endif v +
+  v - if {isval("$1")} wp={"$1?1:0"} else if {["'$1'"]!=','} noarg endif wp=1 endif v +
   e[^-1] "Convert image$? from RGB to XYZ color bases, with D"{arg(1+$wp,50,65)}" illuminant."
   v -
   / 255
@@ -6967,7 +6967,7 @@ rgb2xyz : skip "${1=,}"
 #@cli : Convert selected images from RGB to XYZ8 color bases.
 #@cli : $ image.jpg rgb2xyz8 split c
 rgb2xyz8 : skip "${1=,}"
-  v - if {isval("$1")} wp={"$1?1:0"} else if {["'$1'"]!=','} -noarg endif wp=1 endif v +
+  v - if {isval("$1")} wp={"$1?1:0"} else if {["'$1'"]!=','} noarg endif wp=1 endif v +
   e[^-1] "Convert image$? from RGB to XYZ8 color bases."
   v - rgb2xyz $wp repeat $!
     sh[$>] 0 *. 255 rm.
@@ -7174,7 +7174,7 @@ to_graya :
 #@cli : Extension of this technique to arbitrary increments for more tones, has been done by David Tschumperle.
 to_pseudogray : check "isint(${1=5}) && $1>=0 && isint(${3=8}) && $3>0" skip ${2=1}
   e[^-1] "Convert scalar image$? to pseudo-gray color images, with steps $1."
-  v - channels 0 srgb2rgb -pseudogray $1,{2.3*$2},$3
+  v - channels 0 srgb2rgb pseudogray $1,{2.3*$2},$3
 
   # Compute colormap with 65336 entries, to have match corresponding lightness.
   --srgb2rgb. rgb2lab. channels. 0 *. {65535/100} round. rows. 0,2
@@ -7359,7 +7359,7 @@ transfer_rgb : check "${2=0.3}>=0 && ${3=8}>=0 && ${4=0.15}>=0 && ${5=64}>=0 && 
 
 # _transfer_rgb : _gamma>=0,_smoothness>=0,_resolution>0
 # Convert selected images into 3d volumetric scalar function for color matching.
-_transfer_rgb : v - l[] check "${1=0}>=0 && ${2=1.5}>=0 && ${3=128}>0" gamma=$1 smoothness=$2 res=$3 onfail -noarg gamma=0 smoothness=1.5 res=128 endl v +
+_transfer_rgb : v - l[] check "${1=0}>=0 && ${2=1.5}>=0 && ${3=128}>0" gamma=$1 smoothness=$2 res=$3 onfail noarg gamma=0 smoothness=1.5 res=128 endl v +
   e[^-1] "Convert image$? as 3d volumetric scalar functions for color matching, with gamma "$gamma", smoothness "$smoothness" and resolution "$res"."
   v - to_rgb repeat $! l[$>]
     b 0.3%
@@ -7371,7 +7371,7 @@ _transfer_rgb : v - l[] check "${1=0}>=0 && ${2=1.5}>=0 && ${3=128}>0" gamma=$1 
 #@cli : Convert selected images from XYZ to RGB colorbases.
 #@cli : Default value: 'illuminant=0'.
 xyz2rgb : skip "${1=,}"
-  v - if {isval("$1")} wp={"$1?1:0"} else if {["'$1'"]!=','} -noarg endif wp=1 endif v +
+  v - if {isval("$1")} wp={"$1?1:0"} else if {["'$1'"]!=','} noarg endif wp=1 endif v +
   e[^-1] "Convert image$? from XYZ to RGB color bases."
   v -
   if $wp # D65
@@ -7388,7 +7388,7 @@ xyz2rgb : skip "${1=,}"
 #@cli xyz82rgb : illuminant={ 0=D50 | 1=D65 } : (no arg)
 #@cli : Convert selected images from XYZ8 to RGB color bases.
 xyz82rgb : skip "${1=,}"
-  v - if {isval("$1")} wp={"$1?1:0"} else if {["'$1'"]!=','} -noarg endif wp=1 endif v +
+  v - if {isval("$1")} wp={"$1?1:0"} else if {["'$1'"]!=','} noarg endif wp=1 endif v +
   e[^-1] "Convert image$? from XYZ8 to RGB color bases."
   v - repeat $!
     sh[$>] 0 /. 255 rm.
@@ -8248,7 +8248,7 @@ _scale_dcci2x_smooth : skip ${3=5}
 _scale_dcci2x_mask : skip ${1=1.15}
   # combine edge mask with interp outputs
   --<. {1/$1} >.. $1 *[-4] .. *... .
-  or[-2,-1] -not. *[-4,-1] +[-3--1]
+  or[-2,-1] not. *[-4,-1] +[-3--1]
 
 #@cli seamcarve : _width[%]>=0,_height[%]>=0,_is_priority_channel={ 0 | 1 },_is_antialiasing={ 0 | 1 },_maximum_seams[%]>=0
 #@cli : Resize selected images with specified 2d geometry, using the seam-carving algorithm.
@@ -8735,7 +8735,7 @@ dct : skip ${1=0}
   else
     rm.
     v + e[0--3] "Compute discrete cosine transform of image$?." v -
-    -noarg
+    noarg
     repeat $! l[$>]
       if {w>1} _dct endif
       if {h>1} permute yxzc _dct permute yxzc endif
@@ -9222,7 +9222,7 @@ idct : skip ${1=0}
   else
     rm.
     v + e[0--3] "Compute inverse discrete cosine transform of image$?." v -
-    -noarg
+    noarg
     repeat $! l[$>]
       if {w>1} _idct endif
       if {h>1} permute yxzc _idct permute yxzc endif
@@ -10458,7 +10458,7 @@ histogram_pointwise : skip ${2=0%},${3=100%}
 #@cli hough : _width>0,_height>0,gradient_norm_voting={ 0 | 1 }
 #@cli : Compute hough transform (theta,rho) of selected images.
 #@cli : Default values: 'width=512', 'height=width' and 'gradient_norm_voting=1'.
-#@cli : $ image.jpg --blur 1.5 -hough[-1] 400,400 blur[-1] 0.5 add[-1] 1 log[-1]
+#@cli : $ image.jpg --blur 1.5 hough[-1] 400,400 blur[-1] 0.5 add[-1] 1 log[-1]
 hough : check "${1=512}>0 && ${2=$1}>0" skip ${3=1}
   e[^-1] "Compute $1x$2 hough transform of image$?, "${arg\ 1+!$3,with,without}" gradient norm voting."
   v - slices 50% luminance repeat $! l[$>] nm={0,n}
@@ -10640,14 +10640,14 @@ pointcloud : check "${1=0}<=2" skip ${2=0},${3=0},${4=0}
 #@cli psnr : _max_value
 #@cli : Compute PSNR (Peak Signal-to-Noise Ratio) matrix between selected images.
 #@cli : Default value: 'max_value=255'.
-#@cli : $ image.jpg --noise 30 --noise[0] 35 --noise[0] 38 cut[-1] 0,255 -psnr 255 replace_inf 0
+#@cli : $ image.jpg --noise 30 --noise[0] 35 --noise[0] 38 cut[-1] 0,255 psnr 255 replace_inf 0
 psnr : skip "${1=}"
   if {isval("$1")}
     e[0--3] "Compute the "$!x$!" matrix of PSNR values, from image$? with maximum value $1."
     v - -mse log10 - {log10(($1)^2)}
   else
     e[0--3] "Compute the "$!x$!" matrix of PSNR values, from image$?."
-    v - -noarg
+    v - noarg
     if {$!}
       $! repeat {$!-1} =. {$>,iM},$> done
       -mse[^-1] sqr. log10 -.. 'max(i[#-1,x],i[#-1,y])' rm.
@@ -15366,7 +15366,7 @@ houghsketchbw : check "${1=8}>=0 && ${2=5}>=0 && ${3=80}>=0 && $3<=100 && ${4=0.
 
     # Compute normalized Hough transform.
     res={round(if(${is_percent\ $5},$5*max(w,h),$5))} w={w} h={h} rhomax={sqrt(w^2+h^2)/2}
-    -hough $res,$res n 0,255
+    hough $res,$res n 0,255
 
     # Retrieve coordinates of maximas in hough space.
     normalize_local. $1,$2 >=. $3% pointcloud3d.
@@ -20388,7 +20388,7 @@ x_hough :
     endif
 
     rhomax={sqrt(w^2+h^2)/2}
-    --b. 1.5 -hough. 512,400 b. 0.5 +. 1 log. n. 0,255
+    --b. 1.5 hough. 512,400 b. 0.5 +. 1 log. n. 0,255
     w.. -1,-1,0,"[G"{`39`}"MIC] Image" w1. -1,-1,0,"[G"{`39`}"MIC] Hough transform"
 
     do
@@ -20427,7 +20427,7 @@ x_hough :
         w. rm.
 
       elif {{*,SPACE}" || "{*1,SPACE}}
-        rm. --b. 1.5 -hough. 512,400 b. 0.5 +. 1 log. n. 0,255
+        rm. --b. 1.5 hough. 512,400 b. 0.5 +. 1 log. n. 0,255
         w1. -1,-1,0,"Hough Transform"
 
       elif {*,r} w..
@@ -26317,7 +26317,7 @@ fx_hardsketchbw_preview :
 fx_houghsketchbw :
   b $1 n 0,255
   if {$6==4} repeat $! l[$>] --houghsketchbw ${2-5} blend hardlight endl done return endif
-  -houghsketchbw ${2-5}
+  houghsketchbw ${2-5}
   if {$6&1} negate endif
   if {$6==2} r 100%,100%,1,4 repeat $! sh[$>] 3 *. -2 +. {2*255} c. 0,255 rm. done
   elif {$6==3} r 100%,100%,1,4 repeat $! sh[$>] 3 *. 2 c. 0,255 rm. done
