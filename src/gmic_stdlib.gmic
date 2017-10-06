@@ -1946,7 +1946,7 @@ dq :
 #@cli : Render selected image of 2d vectors as a field of 2d arrows.
 #@cli : (eq. to 'dq').
 #@cli : Default values: 'size_factor=16', 'arrow_size=1.5' and 'color_mode=1'.
-#@cli : $ image.jpg --luminance gradient[-1] xy rv[-2,-1] *[-2] -1 a[-2,-1] c -crop 60,10,90,30 --display_quiver[1] ,
+#@cli : $ image.jpg --luminance gradient[-1] xy rv[-2,-1] *[-2] -1 a[-2,-1] c crop 60,10,90,30 --display_quiver[1] ,
 display_quiver :
   v - _gmic_s="$?" v +
   _$0 $*
@@ -4364,7 +4364,7 @@ update_server :
             endif
             autocrop 32
             if {w} # Folder name specified after the underscore(s).
-              -varname {0,t} locale_${}=$locale # Keep locale of each folder
+              varname {0,t} locale_${}=$locale # Keep locale of each folder
               -calibrate_name
               replace 32,{'~'}
               path=$path{0,t}/
@@ -4451,7 +4451,7 @@ update_server :
         level={${"nb_levels "$path}-$nb_up}
         balise=${"if "{$level<=0" && "['$npath']!='/About/'}" u b else u i endif"}
         repeat $!
-          -varname {$>,t} locale=${locale_${}} # Retrieve locale of folder name
+          varname {$>,t} locale=${locale_${}} # Retrieve locale of folder name
           command=$command"#@gui"$locale" <"$balise">"{$>,t}"</"$balise">\n"
           balise="i"
         done rm
@@ -7606,8 +7606,8 @@ autocrop_seq : skip ${1=auto}
 #@cli : 'boundary_conditions' can be { 0=dirichlet | 1=neumann | 2=periodic | 3=mirror }.
 #@cli : (no arg) runs interactive mode (uses the instant display window [0] if opened).
 #@cli : Default value: 'boundary_conditions=0'.
-#@cli : $ image.jpg --crop -230,-230,280,280,1 -crop[0] -230,-230,280,280,0
-#@cli : $ image.jpg -crop 25%,25%,75%,75%
+#@cli : $ image.jpg --crop -230,-230,280,280,1 crop[0] -230,-230,280,280,0
+#@cli : $ image.jpg crop 25%,25%,75%,75%
 
 #@cli diagonal
 #@cli : Transform selected vectors as diagonal matrices.
@@ -8702,15 +8702,15 @@ curvature :
   e[^-1] "Compute isophote curvatures on image$?."
   v - repeat $! l[$>]
     if {d==1}
-      --g xy,0 -hessian... xxxyyy                             # ixx ixy iyy ix iy
-      *... .. *[-4] . *[-4] -2                             # ixx -2iyixy ixiyy ix iy
-      +[-4,-3] *... ..                                      # ixx -2ixiyixy+ix^2iyy ix iy
-      sqr[-2,-1] *[-4] . +[-4,-3]                          # iy^2ixx-2ixiyixy+ix^2iyy ix^2 iy^2
-      +[-2,-1] +. 0.1 ^. 1.5 /                            # (iy^2ixx+2ixiyixy+ix^2iyy)/(ix^2+iy^2)
+      --g xy,0 -hessian... xxxyyy                        # ixx ixy iyy ix iy
+      *... .. *[-4] . *[-4] -2                           # ixx -2iyixy ixiyy ix iy
+      +[-4,-3] *... ..                                   # ixx -2ixiyixy+ix^2iyy ix iy
+      sqr[-2,-1] *[-4] . +[-4,-3]                        # iy^2ixx-2ixiyixy+ix^2iyy ix^2 iy^2
+      +[-2,-1] +. 0.1 ^. 1.5 /                           # (iy^2ixx+2ixiyixy+ix^2iyy)/(ix^2+iy^2)
     else
-      --inn --gradient_norm.. -laplacian...                   # inn+iee inn in
-      -[-3,-2] +. 0.1 /[-2,-1]                             # iee in
-      --inn. -laplacian.. -                                  # iee/in
+      --inn --gradient_norm.. laplacian...               # inn+iee inn in
+      -[-3,-2] +. 0.1 /[-2,-1]                           # iee in
+      --inn. laplacian.. -                               # iee/in
     endif
   endl done v +
 
@@ -9250,18 +9250,18 @@ _idct :
 
 #@cli iee
 #@cli : Compute gradient-orthogonal-directed 2nd derivative of image(s).
-#@cli : $ image.jpg -iee
+#@cli : $ image.jpg iee
 iee :
   e[^-1] "Compute gradient-orthogonal-directed 2nd derivative of image$?."
   v - repeat $! l[$>]
     if {d==1}
-      --g xy,0 -hessian... xxxyyy       # ixx ixy iyy ix iy
+      --g xy,0 -hessian... xxxyyy    # ixx ixy iyy ix iy
       *... .. *[-4] . *[-4] -2       # ixx -2iyixy ixiyy ix iy
-      +[-4,-3] *... ..                # ixx -2ixiyixy+ix^2iyy ix iy
+      +[-4,-3] *... ..               # ixx -2ixiyixy+ix^2iyy ix iy
       sqr[-2,-1] *[-4] . +[-4,-3]    # iy^2ixx-2ixiyixy+ix^2iyy ix^2 iy^2
       +[-2,-1] +. 1e-8 /             # (iy^2ixx+2ixiyixy+ix^2iyy)/(ix^2+iy^2)
     else
-      --inn -laplacian.. --
+      --inn laplacian.. --
     endif
   endl done v +
 
@@ -9610,7 +9610,7 @@ kuwahara : check $1>0
 
 #@cli laplacian
 #@cli : Compute Laplacian of selected images.
-#@cli : $ image.jpg -laplacian
+#@cli : $ image.jpg laplacian
 laplacian :
   e[^-1] "Compute Laplacian of image $?."
   v - repeat $! l[$>]
@@ -9834,7 +9834,7 @@ periodize_poisson :
   v - repeat $! l[$>]
     s c repeat $! l[$>]
       mM={[im,iM]} sum={0,is}
-      -laplacian fft.
+      laplacian fft.
       if {d==1} 100%,100%,1,1,'-(4-2*cos(2*x*pi/w)-2*cos(2*y*pi/h))' # 2d version.
       else 100%,100%,100%,1,'-(6-2*cos(2*x*pi/w)-2*cos(2*y*pi/h)-2*cos(2*z*pi/d))' # 3d version.
       endif
@@ -10034,7 +10034,7 @@ solidify : check "${1=75%}>=0 && isint(${2=1}) && $2>=0 && $2<=2 && ${3=20}>=0"
 #@cli : The texture synthesis algorithm is a straightforward implementation of the method described in :
 #@cli : http://www.ipol.im/pub/art/2011/ggm_rpn/
 #@cli : Default values: 'width=height=100%'.
-#@cli : $ image.jpg -crop 2,282,50,328 --syntexturize 320,320
+#@cli : $ image.jpg crop 2,282,50,328 --syntexturize 320,320
 syntexturize : check "${1=100%}>0 && ${2=$1}>0"
   e[^-1] "Resynthetize $1x$2 versions of texture$? by phase randomization."
   v - repeat $! l[$>]
@@ -10081,7 +10081,7 @@ syntexturize : check "${1=100%}>0 && ${2=$1}>0"
 #@cli : Resynthetize 'width'x'height' versions of selected micro-textures using a patch-matching algorithm.
 #@cli : If 'nbscales==0', the number of scales used is estimated from the image size.
 #@cli : Default values: 'width=height=100%', 'nb_scales=0', 'patch_size=7', 'blending_size=5' and 'precision=1'.
-#@cli : $ image.jpg -crop 2,282,50,328 --syntexturize_patchmatch 320,320
+#@cli : $ image.jpg crop 2,282,50,328 --syntexturize_patchmatch 320,320
 syntexturize_patchmatch : check "${1=100%}>0 && ${2=$1}>0 && isint(${3=0}) && $3>=0 && isint(${4=7}) && $4>0 && ${5=5}>=0 && ${6=1}>=0"
   e[^-1] "Resynthetize $1x$2 version(s) of texture$? using a patch-matching algorithm with "${"v - if $3 u \"$3 \" else u auto- endif v +"}"scales, $4x$4 patches, blending size $5 and precision $6."
   v - repeat $! l[$>]
@@ -10215,7 +10215,7 @@ unsharp_octave : check "${1=4}>0 && ${3=2}>=0" skip ${2=1},${4=0}
 #@cli : 'boundary_conditions' can be { 0=dirichlet | 1=neumann }.
 #@cli : Default value: 'boundary_conditions=1'.
 #@cli : $ image.jpg --vanvliet 3,1,x
-#@cli : $ image.jpg --vanvliet 30,0,x -vanvliet[-2] 30,0,y add
+#@cli : $ image.jpg --vanvliet 30,0,x vanvliet[-2] 30,0,y add
 
 #@cli watermark_fourier : text,_size>0
 #@cli : Add a textual watermark in the frequency domain of selected images.
@@ -12704,7 +12704,7 @@ cup3d : check ${1=128}>0
   ellipse. 0,0,35%,35%,0,1,0
   polygon. 4,0,45%,8%,45%,20%,90%,0,90%,1,1
   ellipse. 0%,100%,30%,10%,0,1,1 b. 0.1%
-  -lathe3d. $1,2 nm. [3d\ cup]
+  lathe3d. $1,2 nm. [3d\ cup]
   v +
 
 #@cli cylinder3d : _radius,_height,_nb_subdivisions>0
@@ -13157,7 +13157,7 @@ label_points3d : check ${1=13}>0 skip ${2=0.8}
 #@cli lathe3d : _resolution>0,_smoothness[%]>=0,_max_angle>=0
 #@cli : Generate 3d object from selected binary XY-profiles.
 #@cli : Default values: 'resolution=128', 'smoothness=0.5%' and 'max_angle=361'.
-#@cli : $ 300,300 rand -1,1 blur 40 sign normalize 0,255 -lathe3d ,
+#@cli : $ 300,300 rand -1,1 blur 40 sign normalize 0,255 lathe3d ,
 lathe3d : check "${1=128}>0 && ${2=0.5%}>=0 && ${3=361}>=0"
   e[^-1] "Generate lathed 3d object from XY-profile$?, with resolution $1, smoothness $2 and maximum angle $3 deg."
   v - tmax={($3-180)*pi/180} norm n 0,1 autocrop 0
@@ -27501,7 +27501,7 @@ fx_convolve_preview : skip "${3=1}"
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2010/29/12</i>.</small>")
 fx_curvature :
   repeat $! l[$>] split_opacity l[0]
-    b $1 -iee
+    b $1 iee
     if $4 abs endif
     c $2%,$3%
     if $5 negate endif
@@ -27698,7 +27698,7 @@ fx_isophotes_preview :
 #@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2010/29/12</i>.</small>")
 fx_laplacian :
-  b $1 -laplacian
+  b $1 laplacian
   if $4 abs endif
   c $2%,$3%
   if $5 negate endif
@@ -32623,7 +32623,7 @@ _fx_imageobject3d_preview_8 : imagerubik3d 3,3,5,5
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2010/29/12</i>.</small>")
 _fx_lathing3d :
   repeat {$!/2} l[$>,{min($>+1,$!-1)}]
-    -lathe3d. $1,$2%,$3
+    lathe3d. $1,$2%,$3
     if {$!==2} t3d. .. rm.. endif
   endl done
   db3d 0
