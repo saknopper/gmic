@@ -3211,7 +3211,7 @@ _outputx :
 #@cli : By default (adaptive shared state), selected images are inserted in a shared state if they do not belong to the context (selection) of the current custom command or local environment as well.
 #@cli : Typical use of command '-pass' concerns the design of custom commands that take images as arguments.
 #@cli : Default value: 'shared_state=2'.
-#@cli : $ command "average : -pass$""1 add[^-1] [-1] remove[-1] div 2" sample ? --mirror y --average[0] [1]
+#@cli : $ command "average : passs$""1 add[^-1] [-1] remove[-1] div 2" sample ? --mirror y --average[0] [1]
 
 #@cli plot : _plot_type,_vertex_type,_xmin,_xmax,_ymin,_ymax,_exit_on_anykey={ 0 | 1 } : 'formula',_resolution>=0,_plot_type,_vertex_type,_xmin,xmax,_ymin,_ymax,_exit_on_anykey={ 0 | 1 } : (+)
 #@cli : Display selected image or formula in an interactive viewer (use the instant display window [0] if opened).
@@ -3795,7 +3795,7 @@ update_film_emulation_html :
 
   repeat {narg($categories)}
     category=${-arg\ {1+$>},$categories}
-    -arg {1+$>},$category_names
+    arg {1+$>},$category_names
     category_name=${}
     presets=${-_fx_emulate_film_$category}
 
@@ -3834,15 +3834,15 @@ with or endorsed by the companies that own the trademarks.</i></font></p>\n\n
 <ul>\n"
       repeat {narg($categories)}
         _category=${-arg\ {1+$>},$categories}
-        -arg {1+$>},$category_names
+        arg {1+$>},$category_names
         _category_name=${}
 
-        -arg {1+$>},$category_authors_url
+        arg {1+$>},$category_authors_url
         if {isval(${})} _category_author_url_start= _category_author_url_end=
         else _category_author_url_start="<a href=\""${}"\">" _category_author_url_end="</a>"
         endif
 
-        -arg {1+$>},$category_authors
+        arg {1+$>},$category_authors
         if {isval(${})} _category_author=""
         else _category_author=$_category_author_url_start${}$_category_author_url_end
         endif
@@ -5345,7 +5345,7 @@ argmin :
 #@cli : Default value: 'epsilon=1e-8'.
 div_complex : check ${3=1e-8}>=0
   e[^-1] "Divide complex pair$? by complex pair $1,$2 (with epsilon $3)."
-  v - repeat {int($!/2)} -pass${1,2} 0 l[$>,{$>+1},-2,-1]
+  v - repeat {int($!/2)} passs${1,2} 0 l[$>,{$>+1},-2,-1]
     --*[1,2] --*[0,3] -[-2,-1] # bc-ad
     *[0] [2] *[1] [3] +[0,1] # ac+bd
     sqr[1,2] +[1,2] +[1] $3  # c^2+d^2
@@ -5479,7 +5479,7 @@ mul_channels :
 #@cli : In complex pairs, the real image must be always located before the imaginary image in the image list.
 mul_complex :
   e[^-1] "Multiply complex pair$? by complex pair $1,$2."
-  v - repeat {int($!/2)} -pass${1,2} 0 l[$>,{$>+1},-2,-1]
+  v - repeat {int($!/2)} passs${1,2} 0 l[$>,{$>+1},-2,-1]
     --*[0,3] --*[1,2] +[-2,-1] # ad+bc
     *[0,2] *[1,2] -[0,1] # ac-bd
   endl done v +
@@ -5965,7 +5965,7 @@ map_clut :
   v -
   if {!$!} v + return endif
   to_color
-  if ${"-is_image_arg $1"} -pass$1 0 to_rgb. else clut "$1" endif
+  if ${"-is_image_arg $1"} passs$1 0 to_rgb. else clut "$1" endif
   l={round((w*h*d)^(1/3))}
   if {w*h*d!=$l^3} v + error "Command '$0': Specified CLUT $1 has invalid dimensions "({w},{h},{d},{s}). endif
   r. $l,$l,$l,3,-1
@@ -6592,7 +6592,7 @@ _fill_color :
 #@cli : Default value: 'is_orientation=0'.
 #@cli : $ image.jpg --gradient2rgb 0 equalize[-1]
 gradient2rgb : check "isbool(${1=0})"
-  -arg 1+!$1,"orientation ",""
+  arg 1+!$1,"orientation ",""
   e[^-1] "Compute RGB representation of 2d gradient "${}"of image$?."
   v - norm repeat $! l[$>]
     if $1 gradient_orientation 2 else g xy endif
@@ -7075,7 +7075,7 @@ solarize :
 split_colors : check "${1=0}>=0 && isint(${2=256}) && $2>0 && ${3=8}>=1"
   e[^-1] "Split image$? as single color outputs, with tolerance $1, $2 maximal outputs and minimal color area $3."
   v - repeat $! l[$>]
-    --label 0,1 norm. -area. 0,1
+    --label 0,1 norm. area. 0,1
 
     # Loop over biggest color regions.
     repeat {$2-1}
@@ -7217,7 +7217,7 @@ to_rgba :
 #@cli : $ image.jpg --rand 0,255 --transfer_colors[0] [1],1
 transfer_colors : skip ${1=0}
   e[^-1] "Transfer colors of image $1 to image$?."
-  v - -pass$1 0 mv. 0 to_rgb[0] to_colormode[^0] {max(3,${-max_s})} c 0,255   # Convert all images to RGB[A]
+  v - passs$1 0 mv. 0 to_rgb[0] to_colormode[^0] {max(3,${-max_s})} c 0,255   # Convert all images to RGB[A]
   repeat $! l[$>] split_opacity rgb2ycbcr[0] a c endl done                  # Perform RGB[A] to YCbCr[A] conversion.
   l[0] s c histogram_cumul 256,1,0,255 a c * 255 endl                        # Compute channel-by-channel cumulative histogram of target image.
   repeat {$!-1} l[0,{$<+1}]
@@ -7242,7 +7242,7 @@ _transfer_colors :  # Check transfer_colors performance.
 transfer_rgb : check "${2=0.3}>=0 && ${3=8}>=0 && ${4=0.15}>=0 && ${5=64}>=0 && isint(${6=0})"
   sigma=1.5
 
-  repeat $! -pass$1 0 l[$>,-1]
+  repeat $! passs$1 0 l[$>,-1]
     nm_source={0,b} nm_target={1,b}
     nm[0] source nm[1] target
 
@@ -7550,7 +7550,7 @@ autocrop_components : skip ${1=0%} check "${2=0.1%}>=0 && isbool(${3=0}) && isin
           "and output type set to '"${-arg\ 1+$4,crop,segmentation,coordinates}"'.\n"
   v - repeat $! l[$>]
     min_area={max(1,round(if(${is_percent\ $2},$2*w*h,$2)))}
-    --channels 100% >. $1 -area_fg. 0,$3 >=. $min_area  # Discard background and small objects.
+    --channels 100% >. $1 area_fg. 0,$3 >=. $min_area  # Discard background and small objects.
     --area. 0,1 <. $min_area -|[-2,-1] label_fg. 0,1    # Fill small holes in objects.
 
     # Extract detected objects.
@@ -7679,7 +7679,7 @@ expand_z : check "$1>=0 && ${2=1}>=0 && $2<=3"
 #@cli : $ image.jpg --blur 3 quantize. 4,0 --extract_region[0] [1],0,1,3
 extract_region : check ${"-is_image_arg $1"}" && isval(${2=0})"
   e[^-1] "Extract pixels of image$N for labels (${3--1}) in $1, with"${"-arg 1+!!$2,out"}" coordinates."
-  v - $=arg -pass$1 mv. 0 repeat {$!-1} l[0,{1+$<}]
+  v - $=arg passs$1 mv. 0 repeat {$!-1} l[0,{1+$<}]
     repeat {$#-2}
       {1,[1,whd,1,s+($2?3:0)]}
       f[0] ">init(k = 0);
@@ -8243,7 +8243,7 @@ scale_dcci2x_old : check "${1=1.15}>=0 && ${2=5}>=0" skip ${3=0}
 _scale_dcci2x_smooth : skip ${3=5}
   # calculate interpolated output for smooth areas
   ^[0,1] $3 +[0,1] 1 --+[0,1] /[0,1] . rm. # weights
-  -pass$1 -pass$2 *[0,-2] *[1,-1] +[0,1] # smooth
+  passs$1 passs$2 *[0,-2] *[1,-1] +[0,1] # smooth
 
 _scale_dcci2x_mask : skip ${1=1.15}
   # combine edge mask with interp outputs
@@ -8571,7 +8571,7 @@ blur_linear : skip ${2=0},${3=0},${4=1}
   if {$stdM<=0} return endif
   repeat $! l[$>]
     expand_xy $stdM,{$4!=0}
-    {2*$stdM},{2*$stdM} -gaussian. $1,$2,$3 normalize_sum.
+    {2*$stdM},{2*$stdM} gaussian. $1,$2,$3 normalize_sum.
     convolve_fft[0] [1] rm. shrink_xy $stdM
   endl done v +
 
@@ -8666,10 +8666,10 @@ compose_freq :
 
 #@cli convolve_fft : [mask]
 #@cli : Convolve selected images with specified mask, in the fourier domain.
-#@cli : $ image.jpg 100%,100% -gaussian[-1] 20,1,45 --convolve_fft[0] [1]
-convolve_fft : check ${-is_image_arg\ $1}
+#@cli : $ image.jpg 100%,100% gaussian[-1] 20,1,45 --convolve_fft[0] [1]
+convolve_fft : check ${is_image_arg\ $1}
   e[^-1] "Convolve image$? with mask $1, in the fourier domain."
-  v - repeat $! -pass$1 0 l[$>,-1]
+  v - repeat $! passs$1 0 l[$>,-1]
     w2={0,int(w/2)} h2={0,int(h/2)} d2={0,int(d/2)}
     r[1] [0],[0],[0],1,0,0,0.5,0.5,0.5,0.5 shift[1] -$w2,-$h2,-$d2,0,2
     fft[0] fft[2]
@@ -8688,9 +8688,9 @@ convolve_fft : check ${-is_image_arg\ $1}
 #@cli cross_correlation : [mask]
 #@cli : Compute cross-correlation of selected images with specified mask.
 #@cli : $ image.jpg --shift -30,-20 --cross_correlation[0] [1]
-cross_correlation : check ${-is_image_arg\ $1}
+cross_correlation : check ${is_image_arg\ $1}
   e[^-1] "Compute cross-correlation of image$? with mask $1."
-  v - repeat $! -pass$1 0 l[$>,-1]
+  v - repeat $! passs$1 0 l[$>,-1]
     norm fft.. fft. [-2,-1] *.. [-5] *. [-6]
     -[-2,-1] *[-5,-3] *[-3,-2] +[-3,-2] ifft rm.
   endl done v +
@@ -8808,9 +8808,9 @@ deblur_richardsonlucy : check "$1>=0 && ${2=50}>=0" skip ${3=1}
 #@cli : Deconvolve selected images by specified mask in the fourier space.
 #@cli : Default value: 'regularization>=0'.
 #@cli : $ image.jpg --gaussian 5 --convolve_fft[0] [1] --deconvolve_fft[-1] [1]
-deconvolve_fft : check ${-is_image_arg\ $1}" && ${2=.001}>=0"
+deconvolve_fft : check ${is_image_arg\ $1}" && ${2=.001}>=0"
   e[^-1] "Deconvolve image$? with mask $1 and regularization $2, in the fourier domain."
-  v - repeat $! -pass$1 0 l[$>,-1]
+  v - repeat $! passs$1 0 l[$>,-1]
     w2={0,int(w/2)} h2={0,int(h/2)} d2={0,int(d/2)}
     r[1] [0],[0],[0],1,0,0,0.5,0.5,0.5,0.5 shift[1] -$w2,-$h2,-$d2,0,2
     fft[0] fft[2]                 # a b a' b'
@@ -9304,7 +9304,7 @@ _ihaar_z : # Inverse haar transform along the z-axis.
 
 #@cli inn
 #@cli : Compute gradient-directed 2nd derivative of image(s).
-#@cli : $ image.jpg -inn
+#@cli : $ image.jpg inn
 inn :
   e[^-1] "Compute gradient-directed 2nd derivative of image$?."
   v - repeat $! l[$>]
@@ -9337,11 +9337,11 @@ inn :
 #@cli inpaint_flow : [mask],_nb_global_iter>=0,_nb_local_iter>=0,_dt>0,_alpha>=0,_sigma>=0
 #@cli : Apply iteration of the inpainting flow on selected images.
 #@cli : Default values: 'nb_global_iter=4', 'nb_global_iter=15', 'dt=10', 'alpha=1' and 'sigma=3'.
-#@cli : $ image.jpg 100%,100% ellipse[-1] 30%,30%,40,30,0,1,255 -inpaint_flow[0] [1]
-inpaint_flow : check ${-is_image_arg\ $1}" && ${2=10}>=0 && ${3=100}>=0 && ${4=5}>0 && ${5=1}>=0 && ${6=3}>=0"
+#@cli : $ image.jpg 100%,100% ellipse[-1] 30%,30%,40,30,0,1,255 inpaint_flow[0] [1]
+inpaint_flow : check ${is_image_arg\ $1}" && ${2=10}>=0 && ${3=100}>=0 && ${4=5}>0 && ${5=1}>=0 && ${6=3}>=0"
   e[^-1] "Apply $2x$3 iterations of the inpainting flow on image$?, with mask $1, time step $4, alpha $5 and sigma $6."
-  v - repeat $! -pass$1 0 l[$>,-1]
-    r. [0],[0],[0],1,0 -inpaint.. [1]
+  v - repeat $! passs$1 0 l[$>,-1]
+    r. [0],[0],[0],1,0 inpaint.. [1]
     repeat $2
       progress {100*$>/($2-1)}
       --diffusiontensors.. 0,1,$5,$6,0 *. .. smooth... .,$3,$4,0 rm.
@@ -9360,15 +9360,15 @@ inpaint_holes : check "${1=4}>=0 && ${2=0}>=0" skip ${3=0}
     area={if(${is_percent\ $1},$1*w*h*d,$1)}
     repeat {0,s} sh[0] $> --area. $2,$3 <=. $1 -|[1,-1] rm. done
     if {im} k[0] whd={w},{h},{d} r 1,1,1,100%,2 r $whd,100%
-    else -inpaint[0] [1],0,{2*!$2+!!$3} k[0] endif
+    else inpaint[0] [1],0,{2*!$2+!!$3} k[0] endif
   endl done v +
 
 #@cli inpaint_morpho : [mask]
 #@cli : Inpaint selected images by specified mask using morphological operators.
 #@cli : $ image.jpg 100%,100% ellipse[-1] 30%,30%,40,30,0,1,255 --inpaint_morpho[0] [1]
-inpaint_morpho : check ${-is_image_arg\ $1}
+inpaint_morpho : check ${is_image_arg\ $1}
   e[^-1] "Inpaint image$? by mask $1, using morphological operators."
-  v - repeat $! -pass$1 0 l[$>,-1]
+  v - repeat $! passs$1 0 l[$>,-1]
     nm={0,n} im={0,im} iM={0,iM} im1={$im-1} iM1={$iM+1}
     channels. 0 ==. 0
     --f[0] $im1 j. [0],0,0,0,0,1,..
@@ -9387,17 +9387,17 @@ inpaint_morpho : check ${-is_image_arg\ $1}
 #@cli : Inpaint selected images by specified binary mask, using a multi-scale patchmatch algorithm.
 #@cli : Default values: 'nb_scales=0', 'patch_size=9', 'nb_iterations_per_scale=10', 'blend_size=5', 'allow_outer_blending=1' and 'is_already_initialized=0'.
 #@cli : $ image.jpg 100%,100% ellipse[-1] 30%,30%,40,30,0,1,255 --inpaint_patchmatch[0] [1]
-inpaint_patchmatch : check ${-is_image_arg\ $1}"&& ${2=0}>=0 && isint(${3=9}) && $3>0 && isint(${4=10}) && $4>0 && isint(${5=5}) && $5>=0" skip ${6=1},${7=0}
+inpaint_patchmatch : check ${is_image_arg\ $1}"&& ${2=0}>=0 && isint(${3=9}) && $3>0 && isint(${4=10}) && $4>0 && isint(${5=5}) && $5>=0" skip ${6=1},${7=0}
   e[^-1] "Inpaint image$? with mask $1, using a multiscale patchmatch algorithm with "${"v - if $2 u \"$2 \" else u auto- endif v +"}\
           "scales, $3x$3 patches, $4 iterations per scale and blending size $5."
-  v - repeat $! -pass$1 0 l[$>,-1]
+  v - repeat $! passs$1 0 l[$>,-1]
 
     # Init variables and images.
     nm={0,n} nms img,mask
     nb_scales={max(1,round(if($2,$2,log2(min(w,h)/16)),1,1))}
     visu_size=${fitscreen[]" "{0,w},{0,h},1,25%,50%}
     slices[img] 0 r[mask] [img],[img],1,1,0 !=[mask] 0
-    if {!$7} -inpaint_diffusion[img] [mask],75% endif # Quick first estimate.
+    if {!$7} inpaint_diffusion[img] [mask],75% endif # Quick first estimate.
     im={img,im} -[img] $im
 
     first_iter=1 iter=0
@@ -9423,7 +9423,7 @@ inpaint_patchmatch : check ${-is_image_arg\ $1}"&& ${2=0}>=0 && isint(${3=9}) &&
 
         # Estimate initial correspondence map.
         100%,100%,1,1,x --f. y mv[scaled_mask] $! a[-3--1] c
-        -patchmatch[scaled_img] [scaled_reference],$patch_size,$patch_size,1,4,4,0,.
+        patchmatch[scaled_img] [scaled_reference],$patch_size,$patch_size,1,4,4,0,.
         rm[scaled_reference,-1]
         nm. correspondence
         first_iter=0
@@ -9472,7 +9472,7 @@ inpaint_patchmatch : check ${-is_image_arg\ $1}"&& ${2=0}>=0 && isint(${3=9}) &&
 
 # _inpaint_patchmatch : [correspondence_map],[mask],blend_size>0,_allow_outer_blending={ 0 | 1 }
 _inpaint_patchmatch :
-  -pass$1 1 -pass$2 {!$3" || "!$4}
+  pass$1 1 pass$2 {!$3" || "!$4}
   if {!$3}
     warp[0] [1],0,0,1
   else
@@ -9514,10 +9514,10 @@ _inpaint_patchmatch :
 #@cli : If 'diffusion type==3', non-zero values of the mask (e.g. a distance function) are used to guide the diffusion process.
 #@cli : Default values: 'nb_scales=75%', 'diffusion_type=1' and 'diffusion_iter=20'.
 #@cli : $ image.jpg 100%,100% ellipse[-1] 30%,30%,40,30,0,1,255 --inpaint_diffusion[0] [1]
-inpaint_diffusion : check ${-is_image_arg\ $1}" && ${2=75%}>=0 && isint(${3=1}) && $3>=0 && $3<=3 && ${4=20}>=0"
+inpaint_diffusion : check ${is_image_arg\ $1}" && ${2=75%}>=0 && isint(${3=1}) && $3>=0 && $3<=3 && ${4=20}>=0"
   v - s0="isotropic" s1="delaunay-guided" s2="edge-guided" s3="mask_guided"
   v + e[^-1] "Inpaint image$? by mask $1, using a multiscale diffusion algorithm with $2 scales and $4 iterations of "${s$3}" diffusion." v -
-  repeat $! nm={n} -pass$1 l[$>,-1]
+  repeat $! nm={n} pass$1 l[$>,-1]
     nb_scalesM={round(log2(max(w,h,d)))}
     nb_scales={round(${"is_percent $2"}?$nb_scalesM*$2:$2)}
     nb_scales={max(1,min($nb_scales,$nb_scalesM))}
@@ -9691,7 +9691,7 @@ nlmeans:
     # Guided-filtering
     check "${2=4}>0 && ${3=4}>0 && ${4=10}>0" skip "${5=-norm}"
     e[^-1] "Apply non-local means denoising on image$?, with guide $1, patch size $2, spatial bandwidth $3, tonal bandwidth $4 and patch measure command '$5'."
-    -pass$1 0 l. $5 k[0] endl # [1] preprocessed image used to compute weights.
+    pass$1 0 l. $5 k[0] endl # [1] preprocessed image used to compute weights.
     repeat {$!-1} l[$>,-1]
       100%,100%,100%,100%,{-1.0/($4*$4)} # [2] compute a scaling.
       -nlmeans_core[0] [1],[2],$2,$3 rm. # Apply the NLM denoising with image 1 and 2 as parameter.
@@ -9713,9 +9713,9 @@ nlmeans:
 
 #@cli nlmeans_core: _reference_image,_scaling_map,_patch_radius>0,_spatial_bandwidth>0
 #@cli : Apply non local means denoising using a image for weigth and a map for scaling
-nlmeans_core : check ${-is_image_arg\ $1}" && "${-is_image_arg\ $2}" && $3>0 && $4>0"
+nlmeans_core : check ${is_image_arg\ $1}" && "${is_image_arg\ $2}" && $3>0 && $4>0"
   e[^-1] "Apply non-local means denoising using weight images $1, scaling map $2, patch size $3 and spatial bandwidth $4."
-  v - -pass$1 0 -pass$2 0
+  v - pass$1 0 pass$2 0
   repeat {$!-2} l[$>,-1,-2]
     # [0] original, [1] weights, [2] scaling [3] sum(weights * patch), [4] sum(weights), [5] max(weights)
     100%,100%,100%,{0,s},0 100%,100%,100%,{1,s},0 100%,100%,100%,{1,s},0
@@ -9766,9 +9766,9 @@ normalize_local :
 #@cli normalized_cross_correlation : [mask]
 #@cli : Compute normalized cross-correlation of selected images with specified mask.
 #@cli : $ image.jpg --shift -30,-20 --normalized_cross_correlation[0] [1]
-normalized_cross_correlation : check ${-is_image_arg\ $1}
+normalized_cross_correlation : check ${is_image_arg\ $1}
   e[^-1] "Compute normalized cross-correlation of image$? with mask $1."
-  v - -pass$1 0 norm repeat {$!-1} . l[$>,-1]
+  v - pass$1 0 norm repeat {$!-1} . l[$>,-1]
     fft.. fft. [-2,-1] *.. [-5] *. [-6]
     -[-2,-1] *[-5,-3] *[-3,-2] +[-3,-2] [-2,-1] a[-2,-1] c norm.
     /... . /[-2,-1] ifft rm.
@@ -9797,9 +9797,9 @@ peronamalik_flow : check "${1=20}>0 && ${2=5}>=0" skip ${3=5},${4=0}
 #@cli phase_correlation : [destination]
 #@cli : Estimate translation vector between selected source images and specified destination.
 #@cli : $ image.jpg --shift -30,-20 --phase_correlation[0] [1] -unroll[-1] y
-phase_correlation : check ${-is_image_arg\ $1}
+phase_correlation : check ${is_image_arg\ $1}
   e[^-1] "Estimate shift between source image$? and destination $1."
-  v - repeat $! -pass$1
+  v - repeat $! pass$1
     normalized_cross_correlation[$>] . rm.
     l[$>]
       ({[xM,yM,zM,cM]}) *. 2 s. x rm.
@@ -9828,7 +9828,7 @@ pde_flow : skip ${1=10},${2=30},${3=laplacian},${4=0}
 
 #@cli periodize_poisson
 #@cli : Periodize selected images using a Poisson solver in Fourier space.
-#@cli : $ image.jpg --periodize_poisson -array 2,2,2
+#@cli : $ image.jpg --periodize_poisson array 2,2,2
 periodize_poisson :
   e[^-1] "Periodize image$? using Poisson solver in Fourier space."
   v - repeat $! l[$>]
@@ -10026,7 +10026,7 @@ solidify : check "${1=75%}>=0 && isint(${2=1}) && $2>=0 && $2<=2 && ${3=20}>=0"
   v - s0="isotropic" s1="delaunay-oriented" s2="edge-oriented"
   v + e[^-1] "Solidify transparent image$? with smoothness $1 and $3 iterations of "${s$2}" diffusion." v -
   repeat $! l[$>] split_opacity
-    if {$!>1} <=. 128 -inpaint_diffusion.. [1],${1-3} rm. c 0,255 endif
+    if {$!>1} <=. 128 inpaint_diffusion.. [1],${1-3} rm. c 0,255 endif
   endl done v +
 
 #@cli syntexturize : _width[%]>0,_height[%]>0
@@ -10128,7 +10128,7 @@ syntexturize_patchmatch : check "${1=100%}>0 && ${2=$1}>0 && isint(${3=0}) && $3
       psize={-2,min(w,h,$4)}
       repeat {1+$6*$<}
         --_syntexturize_patchmatch.. .,{int(max(3,$5*$scale%))}
-        -patchmatch. ...,$psize,$psize,1,4,4,0,.. rm..
+        patchmatch. ...,$psize,$psize,1,4,4,0,.. rm..
       done
       rm..
 
@@ -10138,9 +10138,9 @@ syntexturize_patchmatch : check "${1=100%}>0 && ${2=$1}>0 && isint(${3=0}) && $3
   endl done v +
 
 # _syntexturize_patchmatch : [correspondence_map],blend_size>0
-_syntexturize_patchmatch : check ${-is_image_arg\ $1}" && isint(${2=3}) && $2>=0"
-  if {$2<=1} -pass$1 warp[^-1] .,0 rm.
-  else repeat $! -pass$1 l[$>,-1]
+_syntexturize_patchmatch : check ${is_image_arg\ $1}" && isint(${2=3}) && $2>=0"
+  if {$2<=1} pass$1 warp[^-1] .,0 rm.
+  else repeat $! pass$1 l[$>,-1]
     [1],[1],1,[0]
     f. "*init(
           boundary = 1;
@@ -10341,7 +10341,7 @@ detect_skin : check "${1=0.5}>=0 && $1<=1" skip ${2=-1},${3=-1},${4=-1}
       s[1] c
       m0={1,ia} -[1] $m0
       m1={2,ia} -[2] $m1
-      M={h} a[1,2] x --transpose[1] rv[1,2] m*[1,2] /[1] $M -invert[1]
+      M={h} a[1,2] x --transpose[1] rv[1,2] m*[1,2] /[1] $M invert[1]
       rv whd={w},{h},{d} r[1] {w*h*d},2,1,1,-1
       s[1] y -[1] $m0 -[2] $m1 a[1,2] y --m* rm[0]
       * s y + *. {$1-1} exp.
@@ -10379,7 +10379,7 @@ float2fft8 :
 fft82float :
   e[^-1] "Convert float-valued image$? to 8bits fourier representations."
   v - repeat $! l[$>]
-    s y,2 -int82float exp.. -.. 1 ifftpolar
+    s y,2 int82float exp.. -.. 1 ifftpolar
   endl done v +
 
 #@cli fftpolar
@@ -10429,7 +10429,7 @@ histogram_nd : check $1>0 skip ${2=0%},${3=100%}
 #@cli : Default values: 'nb_levels=256', 'is_normalized=0' and 'val0=val1=0'.
 #@cli : $ image.jpg --histogram_cumul 256 histogram[0] 256 display_graph 400,300,3
 histogram_cumul : check ${1=256}>0 skip ${2=0} skip ${3=0},${4=0}
-  -arg 1+!$2,"normalized ",""
+  arg 1+!$2,"normalized ",""
   e[^-1] "Compute "${}"cumulative histogram of image$?, using $1 levels."
   v - histogram $1,$3,$4 cumulate if $2 repeat $! /[$>] {$>,iM} done endif v +
 
@@ -10685,9 +10685,9 @@ skeleton : check ${1=0}>=0
 #@cli : Argument 'boundary_conditions' is valid only when 'use_fourier=0'.
 #@cli : Default value: 'use_fourier=0' and 'boundary_conditions=0'.
 #@cli : $ image.jpg --crop 20%,20%,35%,35% --ssd_patch[0] [1],0,0
-ssd_patch : check ${-is_image_arg\ $1} skip ${2=0},${3=0}
+ssd_patch : check ${is_image_arg\ $1} skip ${2=0},${3=0}
   e[^-1] "Compute field of SSD between image$? and patch $1 using "${-arg\ 1+!$2,fourier,spatial}" mode."
-  v - repeat $! -pass$1 0 l[$>,-1]
+  v - repeat $! pass$1 0 l[$>,-1]
     r 100%,100%,100%,${-max_s} s c
     repeat {$!/2} l[$>,{-1-$<}]
       --sqr[1] val={is} rm. # Sum J(p,q)^2
@@ -10782,7 +10782,7 @@ variance_patch : check "isint(${1=16}) && $1>=1"
 #@cli : even if a color is specified. If a pattern is specified, the arrow is
 #@cli : drawn outlined instead of filled.
 #@cli : Default values: 'thickness=1%', 'head_length=10%', 'head_thickness=3%', 'opacity=1', 'pattern=(undefined)' and 'color1=0'.
-#@cli : $ 400,400,1,3 repeat 100 -arrow 50%,50%,{u(100)}%,{u(100)}%,3,20,10,0.3,${-RGB} done
+#@cli : $ 400,400,1,3 repeat 100 arrow 50%,50%,{u(100)}%,{u(100)}%,3,20,10,0.3,${-RGB} done
 arrow : check "${5=1%}>=0 && ${6=10%}>=0 && ${7=3%}" skip ${8=1}
   e[^-1] "Draw arrow in image$?, from ($1,$2) to ($3,$4), with thickness $5, head length $6, head_thickness $7 and opacity $8."
   v - repeat $! l[$>]
@@ -11649,7 +11649,7 @@ _close_binary :
 #@cli gaussian : _sigma1[%],_sigma2[%],_angle
 #@cli : Draw a centered gaussian on selected images, with specified standard deviations and orientation.
 #@cli : Default values: 'sigma1=3', 'sigma2=sigma1' and 'angle=0'.
-#@cli : $ 400,400 -gaussian 100,30,45
+#@cli : $ 400,400 gaussian 100,30,45
 #@cli : $$
 gaussian : skip ${1=3},${2=$1},${3=0}
   e[^-1] "Draw centered gaussian on image$? with standard deviations ($1,$2) and angle $3 deg."
@@ -11861,7 +11861,7 @@ maze_mask : check "isint(${1=24}) && $1>0"
 #@cli : 'spacing' can be positive or negative.
 #@cli : 'precision' tells about the desired number of failed trials before ending the filling process.
 #@cli : Default values: 'nb_scales=5', 'min_scale=25', 'allow_rotation=3', 'spacing=1', 'precision=7' and 'max_iterations=256'.
-#@cli : $ 512,512,1,3,"min(255,y*c/2)" 100%,100% circle 50%,50%,100,1,255 append c image.jpg resize2dy[-1] 24 to_rgba -pack_sprites 3,25
+#@cli : $ 512,512,1,3,"min(255,y*c/2)" 100%,100% circle 50%,50%,100,1,255 append c image.jpg resize2dy[-1] 24 to_rgba pack_sprites 3,25
 pack_sprites : check "isint(${1=5}) && $1>=0 && ${2=25}>=0 && $2<=100 && isint(${3=3}) && $3>=0 && $3<=3 && isint(${4=1}) && isint(${5=7}) && $5>=0 && isint(${6=256}) && $6>=0"
   e[^-1] "Randomly pack image$? with $1 scales, minimum scale $2%, "${-arg\ 1+$3,no,180\"\ \"deg.,90\"\ \"deg.,any}" rotation, spacing $4, precision $5 and $6 maximum iterations."
   v - N={$!-1} is_first_time=1
@@ -11948,7 +11948,7 @@ pack_sprites : check "isint(${1=5}) && $1>=0 && ${2=25}>=0 && $2<=100 && isint($
       # Draw cloud and detect non-intersecting sprites.
       [0] sh. 100% f. 1 -. [-4]
       j3d.. ...,0,0,0,1,2,0,0 rm[-3,-1]
-      sh. 100% -area_fg. 0,1 ==. $area
+      sh. 100% area_fg. 0,1 ==. $area
       *. ... rm... sh.. 0,{-2,s-2} *. .. rm.
 
       # Draw selected sprites on rendering image.
@@ -12045,7 +12045,7 @@ polka_dots : check $1>=0 skip ${2=20},${3=50},${4=50},${5=0},${6=10},${7=1},${8=
 #@cli : $ image.jpg --resize2dy 600 luminance[0] gradient[0] -mul[1] -1 reverse[0,1] append[0,1] c blur[0] 8 -orientation[0] quiver[1] [0],20,1,1,0.8,255
 quiver : check ${"-is_image_arg $1"}" && ${2=5%}>0 && ${3=1}>=0 && isbool(${4=1})" skip "${5=1},${6=0}"
   e[^-1] "Draw 2d vector field $1 on image$?, with sampling $2, factor $3, arrows "${"-arg 1+$4,disabled,enabled"}", opacity $5 and color (${6--1})."
-  v - -pass$1 repeat {$!-1} l[$>,-1]
+  v - pass$1 repeat {$!-1} l[$>,-1]
     eval ${-math_lib}"
       s_sampling = ['$2'];
       sampling = s_sampling[size(s_sampling) - 1 ]==_'%'?min(w#0,h#0)*$2:$2;
@@ -12474,7 +12474,7 @@ array3d : check "isint($1) && $1>0 && isint(${2=1}) && $2>0 && isint(${3=1}) && 
 #@cli arrow3d : x0,y0,z0,x1,y1,z1,_radius[%]>=0,_head_length[%]>=0,_head_radius[%]>=0
 #@cli : Input 3d arrow with specified starting and ending 3d points.
 #@cli : Default values: 'radius=5%', 'head_length=25%' and 'head_radius=15%'.
-#@cli : $ repeat 10 a={$>*2*pi/10} -arrow3d 0,0,0,{cos($a)},{sin($a)},-0.5 done +3d
+#@cli : $ repeat 10 a={$>*2*pi/10} arrow3d 0,0,0,{cos($a)},{sin($a)},-0.5 done +3d
 arrow3d : check "${7=5%}>=0 && ${8=25%}>=0 && ${9=15%}>=0"
   e[^-1] "Input 3d arrow, from (${1-3}) to (${4-6}), with radius $7, head length $8 and head radius $9."
   v -
@@ -12845,12 +12845,12 @@ extrude3d : check "${1=16}>0 && ${2=1024}>0 && ${3=0.5%}>=0"
 
 #@cli gaussians3d : _size>0,_opacity
 #@cli : Convert selected 3d objects into set of 3d gaussian-shaped sprites.
-#@cli : $ image.jpg r2dy 32 distribution3d -gaussians3d 20 colorcube3d primitives3d[-1] 1 +3d
+#@cli : $ image.jpg r2dy 32 distribution3d gaussians3d 20 colorcube3d primitives3d[-1] 1 +3d
 gaussians3d : check "${1=32}>0" skip ${2=0.3}
   e[^-1] "Convert 3d object$? into sets of gaussian-shaped 3d sprites, with size $1 and opacity $2."
   v - -p3d 2 -p3d 0 repeat $! l[$>] nm={0,n} s3d
     nbv={h} rm. (-128;$1;$1;1)
-    $1,$1 -gaussian. 35%,35%,0 c. 30%,100% n. 0,$2 y. a[-2,-1] y      # First opacity is generated.
+    $1,$1 gaussian. 35%,35%,0 c. 30%,100% n. 0,$2 y. a[-2,-1] y      # First opacity is generated.
     if {$nbv>1} 4,{$nbv-1},1,1,-128,0,0,0 y[-2,-1] a[-2,-1] y endif   # Other ones are shared copies of the first one.
     a y
   nm $nm endl done v +
@@ -13266,7 +13266,7 @@ _normalize3d :
 #@cli : Input 3d object from specified parametric surface (x(a,b),y(a,b),z(a,b)).
 #@cli : Default values: 'x=(2+cos(b))*sin(a)', 'y=(2+cos(b))*cos(a)', 'c=sin(b)', 'amin=-pi', 'amax='pi', 'bmin=-pi', 'bmax='pi',
 #@cli : 'res_a=512', 'res_b=res_a', 'res_x=64', 'res_y=res_x', 'res_z=res_y', 'smoothness=2%' and 'isovalue=10%'.
-#@cli : $ -parametric3d ,
+#@cli : $ parametric3d ,
 parametric3d : skip "${1=(2+cos(b))*sin(a)}","${2=(2+cos(b))*cos(a)}","${3=sin(b)}"
                skip ${4={-pi}},${5={pi}},${6={-pi}},${7={pi}}
                check "${8=512}>0 && ${9=$8}>0 && ${10=64}>0 && ${11=$10}>0 && ${12=$11}>0 && \
@@ -13611,7 +13611,7 @@ skeleton3d : check "isint(${1=2}) && $1>=0 && $1<=2 && isint(${2=3}) && $2>=0 &&
 snapshot3d : check "${2=1}>=0" skip ${1=512},${3=""}
   if ${"-is_image_arg $1"} # Background image specified.
     e[0--3] "Take $1x$1 snapshot$? of 3d object$?, with zoom factor $2 and background image $3."
-    v - -pass$1 0 to_color.
+    v - pass$1 0 to_color.
   elif {isval($3)} # Background color specified.
     e[0--3] "Take $1x$1 snapshot$? of 3d object$?, with zoom factor $2 and background color ${3--1}."
     v - (${3--1}) y. c r. $1,$1 to_color.
@@ -13737,12 +13737,12 @@ sprite3d :
 #@cli : Convert selected 3d objects as a sprite cloud.
 #@cli : Set 'sprite_has_alpha_channel' to 1 to make the last channel of the selected sprite be a transparency mask.
 #@cli : Default value: 'mask_has_alpha_channel=0'.
-#@cli : $ torus3d 100,20 image.jpg resize2dy[-1] 64 100%,100% -gaussian[-1] 30%,30% *[-1] 255 append[-2,-1] c --sprites3d[0] [1],1 display_rgba[-2]
-sprites3d : check ${-is_image_arg\ $1} skip ${2=0}
+#@cli : $ torus3d 100,20 image.jpg resize2dy[-1] 64 100%,100% gaussian[-1] 30%,30% *[-1] 255 append[-2,-1] c --sprites3d[0] [1],1 display_rgba[-2]
+sprites3d : check ${is_image_arg\ $1} skip ${2=0}
   e[^-1] "Convert image$? as 3d sprites clouds, using sprite $1 ("${"-arg {1+!$2},with,without"}" alpha-channel)."
   v - repeat $!
     if {!{$>,i(0,7)}} continue endif # Do nothing if 3d object is empty.
-    -pass$1 0
+    pass$1 0
     if {!w} -empty3d rv[$>,-1] nm[$>] {n} rm. continue endif
     l[$>,-1]
     s3d[0] N={1,@0} =[1] $N,0,1
@@ -13965,7 +13965,7 @@ triangle3d :
 
 #@cli volume3d
 #@cli : Transform selected 3d volumetric images as 3d parallelepipedic objects.
-#@cli : $ image.jpg animate blur,0,5,30 append z -volume3d
+#@cli : $ image.jpg animate blur,0,5,30 append z volume3d
 volume3d :
   e[^-1] "Transform image$? as 3d parallelepipedic objects."
   v - repeat $! l[$>]
@@ -14311,7 +14311,7 @@ _rprogress : $*
 #@cli array : M>0,_N>0,_expand_type={ 0=min | 1=max | 2=all }
 #@cli : Create MxN array from selected images.
 #@cli : Default values: 'N=M' and 'expand_type=0'.
-#@cli : $ image.jpg -array 3,2,2
+#@cli : $ image.jpg array 3,2,2
 array : check "isint($1) && $1>0 && isint(${2=$1}) && $2>0" skip ${3=0}
   e[^-1] "Create $1x$2 array from image$?, with expand type $3."
   v - r0={100/max($1,$2)} r1={100/min($1,$2)} r2=100
@@ -14320,17 +14320,17 @@ array : check "isint($1) && $1>0 && isint(${2=$1}) && $2>0" skip ${3=0}
 #@cli array_fade : M>0,_N>0,0<=_fade_start<=100,0<=_fade_end<=100,_expand_type={0=min | 1=max | 2=all}
 #@cli : Create MxN array from selected images.
 #@cli : Default values: 'N=M', 'fade_start=60', 'fade_end=90' and 'expand_type=1'.
-#@cli : $ image.jpg -array_fade 3,2
+#@cli : $ image.jpg array_fade 3,2
 array_fade : skip ${2=$1},${3=60},${4=90},${5=1}
   e[^-1] "Create $1x$2 array of ($3%,$4%) faded tiles from image$?, with expand type $5."
   v - repeat $! l[$>] . shift.. {round(w/2)},{round(h/2)},1,1,2 fade_diamond $3,$4 endl done
-  -array $1,$2,$5
+  array $1,$2,$5
   v +
 
 #@cli array_mirror : N>=0,_dir={ 0=x | 1=y | 2=xy | 3=tri-xy },_expand_type={ 0 | 1 }
 #@cli : Create 2^Nx2^N array from selected images.
 #@cli : Default values: 'dir=2' and 'expand_type=0'.
-#@cli : $ image.jpg -array_mirror 2
+#@cli : $ image.jpg array_mirror 2
 array_mirror : skip ${2=2},${3=0}
   e[^-1] "Create a 2^$1x2^$1 mirrored-array from image$?, with expand type $2."
   v - repeat $1
@@ -14476,7 +14476,7 @@ frame_pattern : check $1>=3 skip ${2=0},${3=}
   v - to_colormode 0
   if ${"-is_image_arg $2"} # Frame from specified image.
     v + e[^-1] "Insert $1x$1 pattern frame on image$?, using frame image$2." v -
-    -pass$2 0 repeat {$!-1} l[$>,-1]
+    pass$2 0 repeat {$!-1} l[$>,-1]
       wh={0,w},{0,h}
       --r[1] {0,max(1,w/($1-2))},{0,max(1,h/($1-2))},1,100%,2
       r[0] {{0,w}+2*w},{{0,h}+2*h},1,100%,0,0,0.5,0.5
@@ -14511,7 +14511,7 @@ frame_round : skip ${1=10},${2=10},${3=0},${4=0},${5=255},${6=$5},${7=$6},${8=25
 #@cli frame_seamless : frame_size>=0,_patch_size>0,_blend_size>=0,_frame_direction={ 0=inner (preserve image size) | 1=outer }
 #@cli : Insert frame in selected images, so that tiling the resulting image makes less visible seams.
 #@cli : Default values: 'patch_size=7', 'blend_size=5' and 'frame_direction=1'.
-#@cli : $ image.jpg --frame_seamless 30 -array 2,2
+#@cli : $ image.jpg --frame_seamless 30 array 2,2
 frame_seamless : check "$1>=0 && isint(${2=7}) && $2>0 && isint(${3=5}) && $3>=0" skip ${4=1}
   v - s0="inner" s1="outer"
   v + e[^-1] "Insert "${s{!!$4}}" seamless frame in image$?, with size $1, patch size $2 and blend size $3." v -
@@ -14521,10 +14521,10 @@ frame_seamless : check "$1>=0 && isint(${2=7}) && $2>0 && isint(${3=5}) && $3>=0
     if {!$4} r {max(1,w-$1)},{max(1,h-$1)},1,100%,0,0,0.5,0.5 endif
     100%,100%,1,1,-1 r[-2,-1] {w+$1},{h+$1},1,100%,0,0,0.5,0.5 n. 0,1
     shift -$w2,-$h2,0,0,2
-    -inpaint_patchmatch.. [1],0,$2,10,$3
+    inpaint_patchmatch.. [1],0,$2,10,$3
     rectangle. $1,$1,{w-1-$1},{h-1-$1}
     shift -$w4,-$h4,0,0,2
-    -inpaint_patchmatch.. [1],0,$2,10,$3
+    inpaint_patchmatch.. [1],0,$2,10,$3
     rm.
     shift {$w4+$w2},{$h4+$h2},0,0,2
   endl done v +
@@ -14665,7 +14665,7 @@ imagegrid_hexagonal : check "isint(${1=32}) && $1>0 && ${2=0.1}>=0 && $2<=1"
     # Duplicate it to get a grid with correct size.
     ny={1+round(0.5*$1,1,1)}
     nx={0,1+round($1*w/h*3/(sqrt(3)*4),1,1)}
-    -array3d. $nx,$ny,1,{4*sqrt(3)/3},2
+    array3d. $nx,$ny,1,{4*sqrt(3)/3},2
     c3d. *3d. {0,h/$1}
 
     # Fill grid with image colors.
@@ -14771,7 +14771,7 @@ map_sprites : check "isint($1) && $1>0 && isint(${2=0}) && $2>=0 && $2<=2"
 #@cli : The returned status contains the list of new (x,y) offsets for each input image.
 #@cli : Parameter 'is_ratio_constraint' tells if the resulting image must tend to a square image.
 #@cli : Default values: 'is_ratio_constraint=0' and 'sort_criterion=max(w,h)'.
-#@cli : $ image.jpg repeat 10 --resize2dx[-1] 75% balance_gamma[-1] ${-RGB} done -pack 0
+#@cli : $ image.jpg repeat 10 --resize2dx[-1] 75% balance_gamma[-1] ${-RGB} done pack 0
 pack : skip ${1=0},${2=max(w,h)}
   e[^-1] "Pack image$? into a single image."
   if {$!<2} return endif
@@ -14987,15 +14987,15 @@ boxfitting : check "isint(${1=3}) && $1>=1 && isint(${2=0}) && $2>=0 && ${3=0.1}
       endif
 
       # Discard new squares that intersect something.
-      dilate. $min_size -area_fg. 0,1 ==. {($min_size)^2}
-      --dilate.. 3 ==. 0 *[-2,-1] -area_fg. 0,1 ==. {($min_size)^2}
+      dilate. $min_size area_fg. 0,1 ==. {($min_size)^2}
+      --dilate.. 3 ==. 0 *[-2,-1] area_fg. 0,1 ==. {($min_size)^2}
       if {!iM} nb_attempts+=1 if {$nb_attempts>$4} rm. break endif # If no new squares have been placed.
       else nb_attempts=0 endif
       +[-2,-1]
 
       # Make current squares grown until max square size is reached.
       repeat {int(($max_size-$min_size)/2)}
-        --dilate. 3 -area_fg. 0,1 ==. {($min_size+2*$>+2)^2}
+        --dilate. 3 area_fg. 0,1 ==. {($min_size+2*$>+2)^2}
         if {!iM} rm. break endif  # No more squares to grow.
         -|[-2,-1]
       done
@@ -15008,7 +15008,7 @@ boxfitting : check "isint(${1=3}) && $1>=1 && isint(${2=0}) && $2>=0 && ${3=0.1}
 #@cli : Apply specified brush to create painterly versions of specified images.
 #@cli : 'brush_light_type' can be { 0=none | 1=flat | 2=darken | 3=lighten | 4=full }.
 #@cli : Default values: 'brush_nb_sizes=3', 'brush_min_size_factor=0.66', 'brush_nb_orientations=12', 'brush_light_type=0', 'brush_light_strength=0.25', 'brush_opacity=0.8', 'painting_density=20%', 'painting_contours_coherence=0.9', 'painting_orientation_coherence=0.9', 'painting_coherence_alpha=1', 'painting_coherence_sigma=1', 'painting_primary_angle=0', 'painting_angle_dispersion=0.2'
-#@cli : $ image.jpg 40,40 -gaussian[-1] 8,2 spread[-1] 4,0 --brushify[0] [1]
+#@cli : $ image.jpg 40,40 gaussian[-1] 8,2 spread[-1] 4,0 --brushify[0] [1]
 brushify : check ${"-is_image_arg $1"}" &&"\         # $1: [brush]
                     "isint(${2=4}) && $2>=1 &&"\      # $2: brush_nb_sizes
                     "${3=0.25}>=0 && $3<=1 &&"\       # $3: brush_min_size_factor
@@ -15026,7 +15026,7 @@ brushify : check ${"-is_image_arg $1"}" &&"\         # $1: [brush]
   v -
 
   # Precompute the set of oriented/resized brushes.
-  -pass$1 0 l.
+  pass$1 0 l.
     slices 0 norm n 0,1 threshold 0.1,1 autocrop.
     repeat $4 --rotate[0] {360*$>/$4} done
     rm[0] n 0,1 threshold 0.1,1 autocrop r ${-max_wh},1,1,0,0,0.5,0.5
@@ -15268,7 +15268,7 @@ fractalize : check "${1=0.8}>=0 && $1<=1"
     x1={$xc+$dx/2}
     y1={$yc+$dy/2}
     mandelbrot. $x0,$y0,$x1,$y1,256,1,$c0r,$c0i
-    --==. 0 -inpaint.. . rm.
+    --==. 0 inpaint.. . rm.
     n. 0,256
     16,1,1,3 rand. 0,255 r. 256,1,1,3,3 map.. . rm.
     s. c
@@ -15476,8 +15476,8 @@ pixelsort : check "(str1='${1=+}'; str1=='+' || str1=='-') && "\
     e[^-1] "Apply 'pixelsort' effect to image$? in "${s{['$1']=='+'}}" order, along axis $2."
   endif
   v - repeat $!
-    if {'$3'!=0} -pass$3 0 else --compose_channels[$>] + endif
-    if {'$4'!=0} -pass$4 0 else [$>],[$>],[$>],1,1 endif
+    if {'$3'!=0} pass$3 0 else --compose_channels[$>] + endif
+    if {'$4'!=0} pass$4 0 else [$>],[$>],[$>],1,1 endif
     l[$>,-2,-1]
       nm={0,n} >=. 50% mv.. 0 a c
       order={`";'$1'=='+'?'<':'>'"`}
@@ -15680,7 +15680,7 @@ sketchbw :
   endl done v +
 
 _sketchbw1 : # Curved lines.
-  -pass[^]
+  pass[^]
   repeat {$-1,w}
     xy={$-1,i($>,0)},{$-1,i($>,1)}
     if {{-5,i($xy)}+{-3,i($xy)}<$5} opac=$6 else opac={$7*$6} endif
@@ -15692,7 +15692,7 @@ _sketchbw1 : # Curved lines.
   rm
 
 _sketchbw0 : # Straight lines.
-  -pass[^]
+  pass[^]
   repeat {$-1,w}
     x={$-1,i($>,0)} y={$-1,i($>,1)}
     if {{-5,i($x,$y)}+{-3,i($x,$y)}<$5} opac=$6 else opac={$7*$6} endif
@@ -16367,7 +16367,7 @@ blend : skip ${1=alpha},${2=1},${3=1},${4=0}
   if ${"-is_image_arg $1"}
     n={narg($*)} mode=${-arg\ 1+($n>=2),alpha,$2}
     v + e[^-1] "Blend image$? with "${-arg\ 1+$4,base,top}" layer $1, using '"$mode"' mode and opacity $3." v -
-    repeat $! -pass$1 l[$>,-1] if $4 rv endif blend $mode,$3 endl done v + return
+    repeat $! pass$1 l[$>,-1] if $4 rv endif blend $mode,$3 endl done v + return
   endif
   v + e[^-1] "Blend all image$? together, using '$1' mode and opacity $2." v -
   repeat {$!-1} l[0,1]
@@ -16476,25 +16476,25 @@ _blend_screen :
 
 _blend_shapeareamax :
   f[1] "init(A = resize([ 0,(s-1)/s ],s,3));I+A" norm[1] label[1] 0
-  --f[0] "init(A = resize([ 0,(s-1)/s ],s,3));I+A" norm[2] -area[2] 0,0
+  --f[0] "init(A = resize([ 0,(s-1)/s ],s,3));I+A" norm[2] area[2] 0,0
   {1,iM+1},1,1,{0,s+1}
   f[1] ">area = i(#2); best = I[#3,i]; if (area>best[size(best) - 1], I[#3,i] = [ I(#0),area ]);i"
   rm[2] channels[2] 0,{s-2} map[1] [2] rm[2]
 _blend_shapeareamax0 :
   f[1] "init(A = resize([ 0,(s-1)/s ],s,3));I!=0?I+A:I" norm[1] label_fg[1] 0
-  --f[0] "init(A = resize([ 0,(s-1)/s ],s,3));I+A" norm[2] -area[2] 0,0
+  --f[0] "init(A = resize([ 0,(s-1)/s ],s,3));I+A" norm[2] area[2] 0,0
   {1,iM+1},1,1,{0,s+1}
   f[1] ">area = i(#2); best = I[#3,i]; if (area>best[size(best) - 1], I[#3,i] = [ I(#0),area ]);i"
   rm[2] channels[2] 0,{s-2} point[2] 0,0,0,1,0 map[1] [2] rm[2]
 _blend_shapeareamin :
   f[1] "init(A = resize([ 0,(s-1)/s ],s,3));I+A" norm[1] label[1] 0
-  --f[0] "init(A = resize([ 0,(s-1)/s ],s,3));I+A" norm[2] -area[2] 0,0
+  --f[0] "init(A = resize([ 0,(s-1)/s ],s,3));I+A" norm[2] area[2] 0,0
   {1,iM+1},1,1,{0,s+1},inf
   f[1] ">area = i(#2); best = I[#3,i]; if (area<best[size(best) - 1], I[#3,i] = [ I(#0),area ]);i"
   rm[2] channels[2] 0,{s-2} map[1] [2] rm[2]
 _blend_shapeareamin0 :
   f[1] "init(A = resize([ 0,(s-1)/s ],s,3));I!=0?I+A:I" norm[1] label_fg[1] 0
-  --f[0] "init(A = resize([ 0,(s-1)/s ],s,3));I+A" norm[2] -area[2] 0,0
+  --f[0] "init(A = resize([ 0,(s-1)/s ],s,3));I+A" norm[2] area[2] 0,0
   {1,iM+1},1,1,{0,s+1},inf
   f[1] ">area = i(#2); best = I[#3,i]; if (area<best[size(best) - 1], I[#3,i] = [ I(#0),area ]);i"
   rm[2] channels[2] 0,{s-2} point[2] 0,0,0,1,0 map[1] [2] rm[2]
@@ -16570,7 +16570,7 @@ blend_edges : check {$1>=0}
 blend_fade :
   e[^-1] "Blend image$? together using fading pattern $1."
   v - r ${-max_whds},0
-  -pass$1 0 r. [0],[0],[0],100%,1 max. 0 min. {$!-2}
+  pass$1 0 r. [0],[0],[0],100%,1 max. 0 min. {$!-2}
   repeat {$!-1} ---. $> abs. -. 1 *. -1 max. 0 *[$>,-1] done rm.
   + v +
 
@@ -16720,7 +16720,7 @@ fade_z : skip ${1=30},${2=70}
 #@cli : $ image.jpg testimage2d {w},{h} --sub_alpha[0] [1] display_rgba
 sub_alpha : check "${2=1}>=1 && "${"-is_image_arg $1"}
   e[^-1] "Compute minimal alpha-channel difference between image$? and base image $1, with opacity gain $2."
-  v - remove_opacity repeat $! -pass$1 0 l[$>,-1]
+  v - remove_opacity repeat $! pass$1 0 l[$>,-1]
     to_colormode 0 r ${-max_whd},100%,0,0,0.5,0.5  # Normalize image dimensions.
 
     # Estimate minimal alpha-channel.
@@ -16818,7 +16818,7 @@ apply_camera : skip "${1=},${4=}" check "${2=0}>=0 && ${3=0}>=0"
 #@cli : Default values: 'command=(undefined)', 'first_frame=0', 'last_frame=-1', 'frame_step=1' and 'output_filename=(undefined)'.
 apply_files : check "isint(${3=0}) && $3>=0 && isint(${4=-1}) && ($4>=0 || $4==-1) && ${5=1}>=1" skip "${2=},${6=}"
   e[^-1] "Apply command '$2' on input image files '$1', with first frame $3, last frame $4, frame step $5 and output filename '$6'.\n"
-  v - -files 3,"$1" _N=/{narg(${})-1} -arg2var _file,${} _apply_stream[] "${_file{$frame+1}}","$2",${3-5},"$6" v +
+  v - -files 3,"$1" _N=/{narg(${})-1} arg2var _file,${} _apply_stream[] "${_file{$frame+1}}","$2",${3-5},"$6" v +
 
 #@cli apply_video : video_filename,_"command",_first_frame>=0,_last_frame={ >=0 | -1=last },_frame_step>=1,_output_filename
 #@cli : Apply a G'MIC command on all frames of the specified input video file, in a streamed way.
@@ -16863,7 +16863,7 @@ _apply_stream : skip "${2=},${6=}"
 #@cli : Default values: 'first_frame=0', 'last_frame=-1', 'frame_step=1' and 'output_filename=(undefined)'.
 average_files : check "isint(${2=0}) && $2>=0 && isint(${3=-1}) && ($3>=0 || $3==-1) && ${4=1}>=1" skip "${5=}"
   e[^-1] "Average input image files '$1', with first frame $2, last frame $3, frame step $4 and output filename '$5'.\n"
-  v - -files 3,"$1" _N=/{narg(${})-1} -arg2var _file,${} _average_stream[] "${_file{$frame+1}}",${2-4},"$5" v +
+  v - -files 3,"$1" _N=/{narg(${})-1} arg2var _file,${} _average_stream[] "${_file{$frame+1}}",${2-4},"$5" v +
 
 #@cli average_video : video_filename,_first_frame>=0,_last_frame={ >=0 | -1=last },_frame_step>=1,_output_filename
 #@cli : Average frames of specified input video file, in a streamed way.
@@ -16914,7 +16914,7 @@ _average_stream : skip "${5=}"
 #@cli : Default values: 'nb_inner_frames=10', 'first_frame=0', 'last_frame=-1', 'frame_step=1' and 'output_filename=(undefined)'.
 fade_files : check "isint(${2=10}) && $2>0 && isint(${3=0}) && $3>=0 && isint(${4=-1}) && ($4>=0 || $4==-1) && ${5=1}>=1" skip "${6=}"
   e[^-1] "Fade input image files '$1', with $2 inner frames, first frame $3, last frame $4, frame step $5 and output filename '$6'.\n"
-  v - -files 3,"$1" _N=/{narg(${})-1} -arg2var _file,${} _fade_stream[] "${_file{$frame+1}}",${2-5},"$6" v +
+  v - -files 3,"$1" _N=/{narg(${})-1} arg2var _file,${} _fade_stream[] "${_file{$frame+1}}",${2-5},"$6" v +
 
 #@cli fade_video : video_filename,_nb_inner_frames>0,_first_frame>=0,_last_frame={ >=0 | -1=last },_frame_step>=1,_output_filename
 #@cli : Create a temporal fading sequence from specified input video file, in a streamed way.
@@ -16966,7 +16966,7 @@ _fade_stream : skip "${6=}"
 #@cli : Default values: 'output_filename=output.avi', 'fps=25' and 'codec=mp4v'.
 files2video : check "isint(${3=25}) && $3>0" skip "${2=output.avi}",${4=mp4v}
   v -
-  files=${"-files \"$1\""} -arg2var _file,$files nb_files=${}
+  files=${"-files \"$1\""} arg2var _file,$files nb_files=${}
   ({'$files'}) if {w>128} z. 0,127 s_files={t}... else s_files=$files endif rm.
   v + e[^-1] "Convert image files '"$s_files"' into frames of output video '$2', with $3 fps and $4 codec.\n" v -
   repeat $nb_files l[]
@@ -16986,7 +16986,7 @@ files2video : check "isint(${3=25}) && $3>0" skip "${2=output.avi}",${4=mp4v}
 median_files : check "isint(${2=0}) && $2>=0 && isint(${3=-1}) && ($3>=0 || $3==-1) && ${4=1}>=1 && ${5=20%}>0 && isval(${6=0})"
   v - s0="fast" s1="precise"
   v + e[^-1] "Compute median of input image files '$1', with first frame $2, last frame $3, frame step $4, frame rows $5, using "${s{!$6}}" algorithm." v -
-  -files 3,"$1" _N=/{narg(${})-1} -arg2var _file,${}
+  -files 3,"$1" _N=/{narg(${})-1} arg2var _file,${}
   l[]
     i[res] ${_file{$frame+1}} f. 0
     _median_stream "${_file{$frame+1}}",${2-6}
@@ -17159,7 +17159,7 @@ morph : check "$1>=0 && ${2=0.1}>=0 && ${3=4}>=0"
 #@cli : Default values: 'nb_inner_frames=10', 'smoothness=0.1', 'precision=4', 'first_frame=0', 'last_frame=-1', 'frame_step=1' and 'output_filename=(undefined)'.
 morph_files : check "isint(${2=10}) && $2>0 && ${3=0.1}>=0 && ${4=4}>=0 && isint(${5=0}) && $5>=0 && isint(${6=-1}) && ($6>=0 || $6==-1) && ${7=1}>=1" skip "${8=}"
   e[^-1] "Morph input image files '$1', with $2 inner frames, smoothness $3, precision $4, first frame $5, last frame $6, frame step $7 and output filename '$8'.\n"
-  v - -files 3,"$1" _N=/{narg(${})-1} -arg2var _file,${} _morph_stream[] "${_file{$frame+1}}",${2-7},"$8" v +
+  v - -files 3,"$1" _N=/{narg(${})-1} arg2var _file,${} _morph_stream[] "${_file{$frame+1}}",${2-7},"$8" v +
 
 #@cli morph_video : video_filename,_nb_inner_frames>0,_smoothness>=0,_precision>=0,_first_frame>=0,_last_frame={ >=0 | -1=last },_frame_step>=1,_output_filename
 #@cli : Generate a temporal morphing from specified input video file, in a streamed way.
@@ -17218,9 +17218,9 @@ _morph_stream : skip "${8=}"
 #@cli : Register selected source images with specified destination image, using non-rigid warp.
 #@cli : Default values: 'smoothness=0.2', 'precision=6' and 'nb_scale=0(auto)'.
 #@cli : $ image.jpg --rotate 20,1,1,50%,50% --register_nonrigid[0] [1]
-register_nonrigid : check ${-is_image_arg\ $1}" && ${2=0.2}>=0 && ${3=5}>0 && ${4=0}>=0"
+register_nonrigid : check ${is_image_arg\ $1}" && ${2=0.2}>=0 && ${3=5}>0 && ${4=0}>=0"
   e[^-1] "Register source image$? with destination image $1, using non-rigid warp with smoothness $1, precision $2 and $3 scale(s)."
-  v - -pass$1 0 equalize. n. 0,255
+  v - pass$1 0 equalize. n. 0,255
   repeat {$!-1}
     --equalize[$>] n. 0,255 --displacement.. .,$2,$3,$4 rm..
     warp[$>] .,1,1,1 rm.
@@ -17230,9 +17230,9 @@ register_nonrigid : check ${-is_image_arg\ $1}" && ${2=0.2}>=0 && ${3=5}>0 && ${
 #@cli : Register selected source images with specified destination image, using rigid warp (shift).
 #@cli : Default values: 'smoothness=1' and 'boundary_conditions=0'.
 #@cli : $ image.jpg --shift 30,20 --register_rigid[0] [1]
-register_rigid : check ${-is_image_arg\ $1}" && ${2=1}>=0 && isint(${3=0}) && $3>=0 && $3<=3"
+register_rigid : check ${is_image_arg\ $1}" && ${2=1}>=0 && isint(${3=0}) && $3>=0 && $3<=3"
   e[^-1] "Register source image$? with destination image $1, using rigid warp with smoothness $2."
-  v - -pass$1 0 equalize. b. $2 n. 0,255
+  v - pass$1 0 equalize. b. $2 n. 0,255
   repeat {$!-1}
     --equalize[$>] b. $2 n. 0,255
     --phase_correlation. .. rm..
@@ -17243,12 +17243,12 @@ register_rigid : check ${-is_image_arg\ $1}" && ${2=1}>=0 && isint(${3=0}) && $3
 #@cli : Generate a transition sequence between selected images.
 #@cli : Default values: 'shading=0' and 'single_frame_only=-1'.
 #@cli : $ image.jpg --mirror c 100%,100% plasma[-1] 1,1,6 transition[0,1] [2],5
-transition : check ${-is_image_arg\ $1}" && $2>=0 && ${3=0}>=0 && $3<=100" skip ${4=-1}
+transition : check ${is_image_arg\ $1}" && $2>=0 && ${3=0}>=0 && $3<=100" skip ${4=-1}
   v - frame={round($4)} s0=" and shading $3" s1=", shading $3 and single-frame-only "$frame v +
   e[^-1] "Create transition sequence between image$? with $2 added frames, transition shape $1"${s{$4>0}}"."
   if {$!<2" || "!$2} return endif
   v - to_colormode 0 r ${-max_whd},100%,0,0,0.5,0.5
-  -pass$1 0 norm. r. [0],[0],[0],1,3 n. 0,1 mv. 0
+  pass$1 0 norm. r. [0],[0],[0],1,3 n. 0,1 mv. 0
   repeat {$!-2} l[0,{$<+1},{$<+2}]
     nm0={1,n}
     if $3 repeat $2 if {$4<0" || "$>==$frame}
@@ -19447,19 +19447,19 @@ x_colorize : skip ${1=0},${3=0},${4=0},${5=0},${6=0} check "${2=1024}==0 || $2>=
 
   is_palette1=${"-is_image_arg[] $4"}
   if $is_palette1
-    -pass$4 1 ({'{b}'}) discard. {'~'} palette_title1={t} rm.
+    pass$4 1 ({'{b}'}) discard. {'~'} palette_title1={t} rm.
     thread_palette1="-w[] 400,400,0,\"Palette: "$palette_title1"\" -x_select_palette["{$!-1}"] __color"
   endif
 
   is_palette2=${"-is_image_arg[] $5"}
   if $is_palette2
-    -pass$5 1 ({'{b}'}) discard. {'~'} palette_title2={t} rm.
+    pass$5 1 ({'{b}'}) discard. {'~'} palette_title2={t} rm.
     thread_palette2="-w[] 400,400,0,\"Palette: "$palette_title2"\" -x_select_palette["{$!-1}"] __color"
   endif
 
   is_grabber=${"-is_image_arg[] $6"}
   if $is_grabber
-    -pass$6 1 ({'{b}'}) discard. {'~'} palette_grabber={t} rm.
+    pass$6 1 ({'{b}'}) discard. {'~'} palette_grabber={t} rm.
     thread_grabber="-w[] ${\"fitscreen[] {w},{h},1,128,50%\"},0,\"Grabber: "$palette_grabber"\" -x_grab_color["{$!-1}"] __color"
   endif
 
@@ -20797,7 +20797,7 @@ x_light :
 
   # Create a large light image.
   light=70
-  640,640 -gaussian. $light n. 0,255
+  640,640 gaussian. $light n. 0,255
   t=0
 
   # Start animation.
@@ -20812,8 +20812,8 @@ x_light :
       Y={round((h-{-2,h}*(1+sin(2.5*$t)))/2)}
       t+=0.02
     endif
-    if {{*,b}&1} light={min(200,$light+10)} -gaussian. $light n. 0,255 endif
-    if {{*,b}&2} light={max(10,$light-10)} -gaussian. $light n. 0,255 endif
+    if {{*,b}&1} light={min(200,$light+10)} gaussian. $light n. 0,255 endif
+    if {{*,b}&2} light={max(10,$light-10)} gaussian. $light n. 0,255 endif
 
     # Render lightened image.
     --z. $X,$Y,{$X+{-2,w}-1},{$Y+{-2,h}-1}
@@ -21564,7 +21564,7 @@ x_paint :
 _x_paint :
 
   # Init variables.
-  -pass[-2,-1] 1 ({'{-2,n}'}) discard. {'~'} nm... {t} rm.
+  pass[-2,-1] 1 ({'{-2,n}'}) discard. {'~'} nm... {t} rm.
   __color={0,if(ia<128,vector3(255),vector3(0))}
   brushsize=1
   brushopacity=0
@@ -24166,7 +24166,7 @@ _survey_choice :
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2010/29/12</i>.</small>")
 fx_array_fade :
   if {$7&1} mirror x endif if {$7>1} mirror y endif
-  -array_fade $1,$2,$5,$6,$8
+  array_fade $1,$2,$5,$6,$8
   shift -$3%,-$4%,0,0,2
 
 fx_array_fade_preview :
@@ -24196,7 +24196,7 @@ fx_array_mirror : skip ${7=0}
     endif
   endif
   shift -$2%,-$3%,0,0,2
-  -array_mirror $1,$4,$6
+  array_mirror $1,$4,$6
 
 fx_array_mirror_preview :
   fx_array_mirror $1,$2,$3,$4,$5,0,$7
@@ -24229,7 +24229,7 @@ fx_array_color :
 fx_array :
   shift -$3%,-$4%,0,0,2
   if {$5&1} mirror x endif if {$5>1} mirror y endif
-  -array $1,$2,$6
+  array $1,$2,$6
 
 fx_array_preview :
   fx_array $1,$2,$3,$4,$5,0
@@ -24456,7 +24456,7 @@ fx_make_seamless :
 
 fx_make_seamless_preview :
   u={arg($3,2,1,2,3,4)} v={arg($3,1,2,2,3,4)}
-  gui_split_preview "if {!$2} fx_make_seamless $* endif if $3 -array "$u","$v" endif",$-1
+  gui_split_preview "if {!$2} fx_make_seamless $* endif if $3 array "$u","$v" endif",$-1
 
 #@gui Make seamless [patch-based] : fx_frame_seamless, fx_frame_seamless_preview(0)
 #@gui : Frame size = int(32,0,256)
@@ -24478,7 +24478,7 @@ fx_frame_seamless :
 
 fx_frame_seamless_preview :
   u={arg($7,2,1,2,3,4)} v={arg($7,1,2,2,3,4)}
-  gui_split_preview "if {!$6} fx_frame_seamless $* endif if $7 -array "$u","$v" endif",$-1
+  gui_split_preview "if {!$6} fx_frame_seamless $* endif if $7 array "$u","$v" endif",$-1
 
 #@gui Ministeck : fx_ministeck, fx_ministeck_preview(1)
 #@gui : Number of colors = int(8,2,24)
@@ -24685,7 +24685,7 @@ fx_taquin :
 #@gui : url = link("[Peter Yu] Create rotated tileable patterns","http://www.peteryu.ca/tutorials/gimp/rotate_tileable_patterns")
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2011/26/05</i>.</small>")
 fx_rotate_tileable :
-  if $3 -array_mirror 1,{$3-1},1 endif
+  if $3 array_mirror 1,{$3-1},1 endif
   rotate_tileable $1,{if($3==0,$2,$2/2)}
 
 fx_rotate_tileable_preview :
@@ -24875,7 +24875,7 @@ _fx_brushify : # Insert brush at the end of the list
   elif {$1==5} shape_polygon $N,6
   elif {$1==6} shape_polygon $N,8
   elif {$1==7} shape_circle. $N
-  elif {$1==8} $4,$4 -gaussian. 30%,30%,0
+  elif {$1==8} $4,$4 gaussian. 30%,30%,0
   elif {$1==9} shape_star $N
   elif {$1==10} shape_heart $N
   endif
@@ -24946,7 +24946,7 @@ fx_circle_abstraction :
       endif
     done
     k[2]
-    if $6 --channels 3 <. 1 -inpaint[0] [1],0,1 rm. channels. 0,2 endif
+    if $6 --channels 3 <. 1 inpaint[0] [1],0,1 rm. channels. 0,2 endif
     if $7 n 0,255 endif
     rprogress 100
   endl done
@@ -24981,7 +24981,7 @@ fx_cutout :
     median {10-$3}
     quantize $1
     --area. 0,1 med=${-med} rm.
-    -inpaint_holes {$med*$2%},0,1
+    inpaint_holes {$med*$2%},0,1
     if $4 n 0,255 endif
   endl a c endl done
 
@@ -25278,7 +25278,7 @@ fx_posterize :
     bilateral.. .,5,10 rm.
     srgb2rgb --colormap $4 rgb2srgb
     index.. .,0,0
-    if $5 --area.. 0,0 <. $5 -inpaint... .,0,3 rm. endif
+    if $5 --area.. 0,0 <. $5 inpaint... .,0,3 rm. endif
     map.. . rm.
     if $6 --norm (0,1,0;1,1,1;0,1,0) --dilate.. . rm.. -[-2,-1] !=. 0 100%,100%,1,{0,s} j... .,0,0,0,0,{$6%},.. rm[-2,-1] endif
     if $7 n 0,255 endif
@@ -25534,7 +25534,7 @@ fx_smooth_abstract :
   repeat $! l[$>] split_opacity l[0]
     srgb2rgb
     mM={[im,iM]} --b $4 n. $mM gradient_norm. <=. {50-$5}
-    -inpaint_diffusion[0] [1],$1%,$2,$3 rm.
+    inpaint_diffusion[0] [1],$1%,$2,$3 rm.
     rgb2srgb c 0,255
   endl a c endl done
 
@@ -25734,9 +25734,9 @@ fx_colorize_interactive : skip "${4=},${5=},${6=}"
   if {$9==-1" || "$8!=w" || "$9!=h} _gui_control_points= else _gui_control_points=${10--1} endif
   N=$!
 
-  arg_palette1=0 l[] 0 nm. "$4" ext={x} rm if {same(['$ext'],'gpl',-1,0)} -input_gpl "$4" arg_palette1=1 endif onfail rm endl if $arg_palette1 arg_palette1=[{$!-1}] endif
-  arg_palette2=0 l[] 0 nm. "$5" ext={x} rm if {same(['$ext'],'gpl',-1,0)} -input_gpl "$5" arg_palette2=1 endif onfail rm endl if $arg_palette2 arg_palette2=[{$!-1}] endif
-  arg_grabber=0 l[] 0 nm. "$6" ext={x} rm -input "$6" to_rgb arg_grabber=1 onfail rm endl if $arg_grabber arg_grabber=[{$!-1}] endif
+  arg_palette1=0 l[] 0 nm. "$4" ext={x} rm if {same(['$ext'],'gpl',-1,0)} input_gpl "$4" arg_palette1=1 endif onfail rm endl if $arg_palette1 arg_palette1=[{$!-1}] endif
+  arg_palette2=0 l[] 0 nm. "$5" ext={x} rm if {same(['$ext'],'gpl',-1,0)} input_gpl "$5" arg_palette2=1 endif onfail rm endl if $arg_palette2 arg_palette2=[{$!-1}] endif
+  arg_grabber=0 l[] 0 nm. "$6" ext={x} rm i "$6" to_rgb arg_grabber=1 onfail rm endl if $arg_grabber arg_grabber=[{$!-1}] endif
 
   repeat $N
     status=${-x_colorize[$>]\ $1,$resolution,$2,$arg_palette1,$arg_palette2,$arg_grabber}
@@ -25971,7 +25971,7 @@ _fx_colorize_lineart_smartcoloring :
       rm[-3--1]
     endif
     if $erode_size erode[strokes] {2*$erode_size} endif
-    -area_fg[strokes] 0,1 >[strokes] 4
+    area_fg[strokes] 0,1 >[strokes] 4
 
     # Retrieve closed binary shape.
     _keep_keycoords={$-1==0}
@@ -26196,8 +26196,8 @@ fx_engrave :
       if {$7>0} # Flat region removal.
         gradient_norm[1] b[1] $3 <[1] $7 max[0,1]
       endif
-      if {$6<0} -area_fg 0,0 > {$f*$6*$6}
-      elif {$6>0} == 0 -area_fg 0,0 > {$f*$6*$6} == 0
+      if {$6<0} area_fg 0,0 > {$f*$6*$6}
+      elif {$6>0} == 0 area_fg 0,0 > {$f*$6*$6} == 0
       endif
       * 255
       if $14 r $wh,1,1,2 endif
@@ -26468,7 +26468,7 @@ fx_stamp_preview :
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2011/19/10</i>.</small>")
 fx_color_abstraction :
   repeat $! l[$>] split_opacity l[0] to_rgb
-    b $1 s c quantize $2,1,0 -area 0 ^ $3 n 0,255
+    b $1 s c quantize $2,1,0 area 0 ^ $3 n 0,255
   endl a c endl done
 
 fx_color_abstraction_preview :
@@ -26829,7 +26829,7 @@ fx_customize_clut :
     if $1 ^. {1/(0.05+4*$1%)} else f. 0 endif
     n. 0,1 nm. influence mv. -3
   endif
-  eq. 0 -inpaint_diffusion.. .,100%,1,20 rm. c. 0,255
+  eq. 0 inpaint_diffusion.. .,100%,1,20 rm. c. 0,255
 
   if $influence
     100%,100%,100%,3,[x,y,z] n. 0,255
@@ -27323,7 +27323,7 @@ fx_select_color :
   repeat $! l[$>] to_rgba
     --_fx_select_color $1
     -select_color[1] $2%,$color
-    if $4 --area. 0,0 <=. {round($4^1.5)} -inpaint.. .,0,3 rm. endif # Fill holes.
+    if $4 --area. 0,0 <=. {round($4^1.5)} inpaint.. .,0,3 rm. endif # Fill holes.
     b[1] $3 n[1] 0,255
     if {$9==0} sh[0] 100% &. [1]                        # Selected colors.
     elif {$9==1} rm[0]                                   # Selected mask.
@@ -28008,7 +28008,7 @@ fx_drop_water :
     # Create binary shapes (i.e. opacity map).
     -srand $5
     if $1 # Shape from top layer.
-      -pass[0] 0 to_a. channels. 100% >=. 50%
+      pass[0] 0 to_a. channels. 100% >=. 50%
       r. [0],[0],1,1,0,0,0.5,0.5
     else # Procedural shape.
       100%,100%
@@ -28075,7 +28075,7 @@ fx_drop_water_preview :
   if {$N<=0} gui_warning_preview "At least two layers are required in this mode." return endif
   if $1
     repeat $N l[{$!-$>-1}]
-      -pass[0] 0 mv. 0
+      pass[0] 0 mv. 0
       fx_drop_water $* gui_merge_layers
     endl done
     rm[0]
@@ -28300,7 +28300,7 @@ fx_map_sphere :
   if $6
     repeat $!
       shift. {round(w/2)},0,0,0,2 --columns. {(1-$7/100)*w/2},{(1+$7/100)*w/2}
-      100% -gaussian. {0.1*w},{h},0 100% 100% a[-3--1] c r. ..,..,1,3
+      100% gaussian. {0.1*w},{h},0 100% 100% a[-3--1] c r. ..,..,1,3
       smooth.. .,$6,5,0 rm.
       j.. .,{(1-$7/100)*{-2,w}/2} rm. shift. -{round(w/2)},0,0,0,2
     mv. 0 done
@@ -28946,7 +28946,7 @@ _fx_pixelsort :
     elif {$3==9} --compose_channels max           # Maximum
     else 100%,100%,1,1 rand. 0,100               # Random
     endif
-    if {$4==0} -pass. 0 norm.
+    if {$4==0} pass. 0 norm.
     elif {$4==1} .
     elif {$4==2} --gradient_norm[0]
     else --rand. 0,100
@@ -29845,8 +29845,8 @@ fx_emulate_film_userdefined : skip "${2=}"
   else
     -l
       0 nm. "$2" ext={x} rm.
-      if {['$ext']=='cube'} -input_cube "$2"
-      else -input "$2"
+      if {['$ext']=='cube'} input_cube "$2"
+      else i "$2"
       endif
     onfail gui_warning_preview "Specified HaldCLUT filename not found" return
     endl
@@ -30291,7 +30291,7 @@ fx_frame_smooth :
        v={min(i(w/2,0),i(w-1,h/2),i(w/2,h-1),i(0,h/2))} <=. $v
      endif
      frame $sx,$sy,1
-     -inpaint_diffusion[0] [1],100%,1,15
+     inpaint_diffusion[0] [1],100%,1,15
      rm.
   endl done c 0,255
 
@@ -30708,7 +30708,7 @@ fx_pack : skip "${5=}"
   if $3 to_a endif
   if $4 repeat $! nm$>=${-gui_layer_name[$>]} done endif
   c0="w" c1="h" c2="max(w,h)" c3="w*h"
-  -pack $2,${c$1} coords=${}
+  pack $2,${c$1} coords=${}
   if $4
     repeat 256 -filename "$5/gmic_pack.txt",$> filename=${} if $filename else break endif done
     if {!narg($filename)} filename="$5/gmic_pack.txt" endif
@@ -31143,7 +31143,7 @@ fx_camouflage :
     channels 0 r {w+16},{h+16},1,1,0 rand 0,16
     amp=$3 do smooth {min(50,$amp)},0,1 amp-=50 while {$amp>0}
     shrink_xy. 8 n 1,$2 round
-    repeat $1 --area 0,0 <. {1+2^$>} -inpaint[0] [1],0,3 rm. done
+    repeat $1 --area 0,0 <. {1+2^$>} inpaint[0] [1],0,3 rm. done
     --colormap 0 n.. 0,{w-1}
     4,1,1,3,"col=[${4-15}];col[3*x,3]"
     r. ..,..,1,3,3 rm.. map.. . rm.
@@ -31333,7 +31333,7 @@ fx_maze :
 fx_mineral_mosaic :
   repeat $! l[$>] to_rgb
     --b $3 -segment_watershed. $1 --norm.
-    -area. 0 --<=. {$2^2} -inpaint.. . rm. label.
+    area. 0 --<=. {$2^2} inpaint.. . rm. label.
     --f[0] 'if(c==0,x,y)' rv[-2,-1] --blend[-2,-1] shapeaverage,1,1
     -[-3,-1] rm[0,-2] channels. 0,1
     alpha={$5*pi/180} sh. 0 *. {cos($alpha)} rm. sh. 1 *. {sin($alpha)} rm. compose_channels. +
@@ -31447,7 +31447,7 @@ _fx_shapes8 :
   shape_star $1
 
 _fx_shapes9 :
-  -arrow3d 0,0,0,1,0,0,15%,40%,30% col3d 1 *3d $1 c3d
+  arrow3d 0,0,0,1,0,0,15%,40%,30% col3d 1 *3d $1 c3d
   $2,$2 j3d. ..,50%,50%,0,1,2,0,0
   rm.. --mirror y max
 
@@ -31496,10 +31496,10 @@ fx_pack_sprites :
     if {$!<2} error[] "Command '$0': Masking requires at least two input layers ! (please check that 'Input Layers' is correctly set)." endif
     repeat {$!-1} l[$>] to_rgba split_opacity --!=[1] 0 *[0] . a c autocrop 0 endl done
     remove_empty[0--2] --channels. 100% channels. -4,0 mv. 0
-    -pack_sprites[0--2] ${1-5}
+    pack_sprites[0--2] ${1-5}
   else # No masking
     repeat $! l[$>] to_rgba split_opacity --!=[1] 0 *[0] . a c autocrop 0 endl done
-    remove_empty i[0] $7,$8,1,5 -pack_sprites ${1-5}
+    remove_empty i[0] $7,$8,1,5 pack_sprites ${1-5}
   endif
   channels[0] 0,{0,s-2}
 
@@ -31800,7 +31800,7 @@ fx_deinterlace_preview :
 #@gui : Connectivity = choice(1,"Low","High")
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2014/27/05</i>.</small>")
 fx_inpaint_holes :
-  -inpaint_holes {$1^1.5},$2,$3
+  inpaint_holes {$1^1.5},$2,$3
 
 #@gui Inpaint [morphological] : fx_inpaint_morpho, fx_inpaint_morpho_preview(1)
 #@gui : Mask color = _color(255,0,0,255)
@@ -31813,7 +31813,7 @@ fx_inpaint_morpho :
     if {!$A" && "(s==2" || "s==4)} split_opacity --!=. 0 *[0,-1] a c R=0 G=0 B=0 endif # Purely transparent color.
     --select_color 0,$R,$G,$B,$A
     if $5 dilate. {1+2*$5} endif
-    -inpaint_morpho.. [1]
+    inpaint_morpho.. [1]
     rm.
   endl done
 
@@ -31842,7 +31842,7 @@ fx_inpaint_patchmatch :
       visu_size=${fitscreen[]" "{0,w},{0,h},1,25%,50%}
       w1.. $visu_size,0,"[Preview] G'MIC: Inpaint [multi-scale]"
     endif
-    -srand 0 -inpaint_patchmatch.. [1],${1-5}
+    -srand 0 inpaint_patchmatch.. [1],${1-5}
     rm.
   endl done
 
@@ -31867,7 +31867,7 @@ fx_inpaint_patch :
   repeat $! l[$>]
     --select_color 0,${9-12}
     if $13 dilate. {1+2*$13} endif
-    -inpaint.. [1],$1,{$1*$2},$3,1,{$4*$1},${5-8}
+    inpaint.. [1],$1,{$1*$2},$3,1,{$4*$1},${5-8}
     rm.
   endl done
 
@@ -31887,7 +31887,7 @@ fx_inpaint_diffusion :
     if {!$A" && "(s==2" || "s==4)} split_opacity --!=. 0 *[0,-1] a c R=0 G=0 B=0 endif # Purely transparent color.
     --select_color 0,$R,$G,$B,$A
     if {$8} dilate. {1+2*$8} endif
-    -inpaint_diffusion.. [1],$1%,$2,$3
+    inpaint_diffusion.. [1],$1%,$2,$3
     rm.
   endl done c 0,255
 
@@ -33056,7 +33056,7 @@ fx_random_gradient :
     if {$7!=1} sh.. 100% n. 0,255 rm. endif
     eq. 0
     sh.. 0,2 srgb2rgb. rm.
-    -inpaint_diffusion.. [1],100%,1 rm.
+    inpaint_diffusion.. [1],100%,1 rm.
     b $3% n 0,255
     sh 0,2 rgb2srgb. balance_gamma. ${4-6} rm.
   endl done
@@ -34195,7 +34195,7 @@ fx_intarsia_preview :
     expand_xy 16,0
 
     100%,100% circle. 16,16,1%,1,1
-    -arrow3d. 0,0,0,{w/4},0,0,2%,15%,10% col3d. 1 j3d.. .,16,16,0,1,2,0,0 rm.
+    arrow3d. 0,0,0,{w/4},0,0,2%,15%,10% col3d. 1 j3d.. .,16,16,0,1,2,0,0 rm.
     --dilate. 3 r.. 100%,100%,1,3,0,0,0,0,0,0.5 a[-2,-1] c *. 255
     blend alpha
 
