@@ -2329,6 +2329,25 @@ const char *gmic::native_commands_names[] = {
   "x","xor","y","z","^","|",
   0 };
 
+// Perform a dichotomic search in a lexicographic ordered 'CImgList<char>' or 'char**'.
+// Return false or true if search succeeded.
+template<typename T>
+bool gmic::search_sorted(const char *const str, const T& list, const unsigned int length, unsigned int &out_ind) {
+  if (!length) return false;
+  unsigned int
+    posm = 0,
+    posM = length - 1,
+    pos = (posm + posM)/2;
+  int err = std::strcmp(list[pos],str);
+  while (err && posm<posM) {
+    if (err>0) posM = pos - 1; else posm = pos + 1;
+    pos = (posm + posM)/2;
+    err = std::strcmp(list[pos],str);
+  };
+  out_ind = err?posM:pos;
+  return !err;
+}
+
 // Return Levenshtein distance between two strings.
 // (adapted from http://rosettacode.org/wiki/Levenshtein_distance#C)
 int gmic::_levenshtein(const char *const s, const char *const t,
@@ -4709,18 +4728,9 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
           err = cimg_sscanf(item,"%255[a-zA-Z_0-9]%c%c",command,&sep0,&sep1);
           is_command = err==1 || (err==2 && sep0=='.') || (err==3 && (sep0=='[' || (sep0=='.' && sep1=='.')));
           is_command&=*item<'0' || *item>'9';
-          if (is_command) { // Look for a native command
-            unsigned int
-              posm = 0,
-              posM = sizeof(native_commands_names)/sizeof(char*) - 1,
-              pos = (posm + posM)/2;
-            err = std::strcmp(native_commands_names[pos],command);
-            while (err && posm<posM) { // Dichotomic search
-              if (err>0) posM = pos - 1; else posm = pos + 1;
-              pos = (posm + posM)/2;
-              err = std::strcmp(native_commands_names[pos],command);
-            };
-            if (err) { // Look for a custom command
+          if (is_command) {
+            is_command = search_sorted(command,native_commands_names,sizeof(native_commands_names)/sizeof(char*),__ind);
+            if (!is_command) { // Look for a custom command
               hash_custom = hashcode(command,false);
               cimglist_for(commands_names[hash_custom],l)
                 if (!std::strcmp(commands_names[hash_custom][l],command)) { ind_custom = l; break; }

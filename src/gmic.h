@@ -235,6 +235,8 @@ struct gmic {
 
   // Functions below should be considered as *private*, and should not be
   // used in user's code.
+  template<typename T>
+  static bool search_sorted(const char *const str, const T& list, const unsigned int length, unsigned int &out_ind);
   static int _levenshtein(const char *const s, const char *const t,
                           gmic_image<int>& d, const int i, const int j);
   static int levenshtein(const char *const s, const char *const t);
