@@ -13460,7 +13460,12 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
       }
 
       // Input.
-      if (is_input_command) ++position; else { std::strcpy(command,"input"); argument = item; *restriction = 0; }
+      if (is_input_command) ++position;
+      else {
+        std::strcpy(command,"input");
+        argument = item - (is_double_hyphen?2:is_simple_hyphen?1:0);
+        *restriction = 0;
+      }
       gmic_substitute_args(true);
       if (!is_restriction || !selection) selection.assign(1,1,1,1,images.size());
 
@@ -14190,47 +14195,39 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
           } catch (CImgException&) {
             std::FILE *file = 0;
             if (!(file=std::fopen(filename,"r"))) {
-              if (cimg::type<T>::string()==cimg::type<float>::string() || *ext || *filename!='-') {
-                if (*filename=='-' && filename[1]) { // Check for command misspelling.
-                  CImg<char>::string(filename).move_to(name);
-                  char *const posb = std::strchr(name,'[');
-                  if (posb) *posb = 0;  // Discard selection from the command name.
-                  const char *misspelled = 0;
-                  const unsigned int foff = name[1]=='-'?2U:1U;
-                  int dmin = 4;
-                  for (unsigned int l = 0; native_commands_names[l]; ++l) {
-                    // Look for a native command.
-                    const char *const c = native_commands_names[l];
-                    const int d = levenshtein(c,name.data() + foff);
-                    if (d<dmin) { dmin = d; misspelled = native_commands_names[l]; }
-                  }
-                  for (unsigned int i = 0; i<512; ++i)
-                    // Look for a custom command.
-                    cimglist_for(commands_names[i],l) {
-                      const char *const c = commands_names[i][l].data();
-                      const int d = levenshtein(c,name.data() + foff);
-                      if (d<dmin) { dmin = d; misspelled = commands_names[i][l].data(); }
-                    }
-                  if (misspelled)
-                    error(images,0,0,
-                          "Unknown command or filename '%s' (did you mean '%s%s' ?).",
-                          gmic_argument_text(),foff>1?"-":"",misspelled);
-                  else error(images,0,0,
-                             "Unknown command or filename '%s'.",
-                             gmic_argument_text());
-                } else error(images,0,0,
-                             "Unknown %s '%s'.",
-                             *filename=='-'?"command or filename":"filename",
-                             gmic_argument_text());
-              } else
+              if (is_input_command)
                 error(images,0,0,
-                      "Unknown command '%s' in '%s' type mode "
-                      "(command defined only in 'float' type mode ?).",
-                      gmic_argument_text(),cimg::type<T>::string());
+                      "Unknown filename '%s'.",
+                      gmic_argument_text());
+              else {
+                CImg<char>::string(filename).move_to(name);
+                const unsigned int foff = (*name=='-') + (name[1]=='-');
+                const char *misspelled = 0;
+                char *const posb = std::strchr(name,'[');
+                if (posb) *posb = 0; // Discard selection from the command name
+                int dmin = 4;
+                for (unsigned int l = 0; native_commands_names[l]; ++l) { // Look for a native command
+                  const char *const c = native_commands_names[l];
+                  const int d = levenshtein(c,name.data() + foff);
+                  if (d<dmin) { dmin = d; misspelled = native_commands_names[l]; }
+                }
+                for (unsigned int i = 0; i<512; ++i) // Look for a custom command
+                  cimglist_for(commands_names[i],l) {
+                    const char *const c = commands_names[i][l].data();
+                    const int d = levenshtein(c,name.data() + foff);
+                    if (d<dmin) { dmin = d; misspelled = commands_names[i][l].data(); }
+                  }
+                if (misspelled)
+                  error(images,0,0,
+                        "Unknown command or filename '%s' (did you mean '%s%s' ?).",
+                        gmic_argument_text(),foff==2?"--":foff==1?"-":"",misspelled);
+                else error(images,0,0,
+                           "Unknown command or filename '%s'.",
+                           gmic_argument_text());
+              }
             } else throw;
           }
         }
-
         if (*filename_tmp) std::remove(filename_tmp); // Clean temporary file if used.
         if (is_network_file) std::remove(_filename);  // Clean temporary file if network input.
       }
