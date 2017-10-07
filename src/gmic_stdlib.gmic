@@ -3619,7 +3619,7 @@ testimage2d : check "${1=512}>0 && ${2=$1}>0 && ${3=3}>0"
   v +
 
 #@cli uncommand : command_name[,_command_name2,...] : * : (+)
-#@cli : Discard last definition of specified custom commands.
+#@cli : Discard definition of specified custom commands.
 #@cli : Set argument to '*' for discarding all existing custom commands.
 
 #@cli uniform_distribution : nb_levels>=1,spectrum>=1

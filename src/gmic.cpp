@@ -2950,7 +2950,7 @@ const char *gmic::set_variable(const char *const name, const char *const value,
 gmic& gmic::add_commands(const char *const data_commands,
                          const char *const commands_file) {
   if (!data_commands || !*data_commands) return *this;
-  CImg<char> com(256*1024), line(256*1024), mac(256), debug_info(32);
+  CImg<char> s_body(256*1024), s_line(256*1024), s_name(256), debug_info(32);
   unsigned int line_number = 1, pos = 0;
   bool is_last_slash = false, _is_last_slash = false, is_newline = false;
   int hash = -1, l_debug_info = 0;
@@ -2961,24 +2961,24 @@ gmic& gmic::add_commands(const char *const data_commands,
          line_number+=is_newline?1:0) {
 
     // Read new line.
-    char *_line = line, *const line_end = line.end();
+    char *_line = s_line, *const line_end = s_line.end();
     while (*data!='\n' && *data && _line<line_end) *(_line++) = *(data++);
     if (_line<line_end) *_line = 0; else *(line_end - 1) = 0;
     if (*data=='\n') { is_newline = true; ++data; } else is_newline = false; // Skip next '\n'
 
     // Replace/remove unusual characters.
-    char *__line = line;
-    for (_line = line; *_line; ++_line) if (*_line!=13) *(__line++) = (unsigned char)*_line<' '?' ':*_line;
+    char *__line = s_line;
+    for (_line = s_line; *_line; ++_line) if (*_line!=13) *(__line++) = (unsigned char)*_line<' '?' ':*_line;
     *__line = 0;
-    _line = line; if (*_line=='#') *_line = 0; else do { // Remove comments
+    _line = s_line; if (*_line=='#') *_line = 0; else do { // Remove comments
         if ((_line=std::strchr(_line,'#')) && *(_line - 1)==' ') { *--_line = 0; break; }
       } while (_line++);
 
     // Remove useless trailing spaces.
-    char *linee = line.data() + std::strlen(line) - 1;
-    while (linee>=line && *linee==' ') --linee;
+    char *linee = s_line.data() + std::strlen(s_line) - 1;
+    while (linee>=s_line && *linee==' ') --linee;
     *(linee + 1) = 0;
-    char *lines = line; while (*lines==' ') ++lines; // Remove useless leading spaces
+    char *lines = s_line; while (*lines==' ') ++lines; // Remove useless leading spaces
     if (!*lines) continue; // Empty line.
 
     // Check if last character is a '\'...
@@ -2986,13 +2986,13 @@ gmic& gmic::add_commands(const char *const data_commands,
     for (_line = linee; *_line=='\\' && _line>=lines; --_line) _is_last_slash = !_is_last_slash;
     if (_is_last_slash) *(linee--) = 0; // ... and remove it if necessary
     if (!*lines) continue; // Empty line found
-    *mac = *com = 0;
+    *s_name = *s_body = 0;
 
     if (!is_last_slash && std::strchr(lines,':') && // Check for a command definition
-        cimg_sscanf(lines,"%255[a-zA-Z0-9_] %c %262143[^\n]",mac.data(),&sep,com.data())>=2 &&
+        cimg_sscanf(lines,"%255[a-zA-Z0-9_] %c %262143[^\n]",s_name.data(),&sep,s_body.data())>=2 &&
         (*lines<'0' || *lines>'9') && sep==':') {
-      hash = (int)hashcode(mac,false);
-      CImg<char> body = CImg<char>::string(com);
+      hash = (int)hashcode(s_name,false);
+      CImg<char> body = CImg<char>::string(s_body);
       if (commands_file) { // Insert debug info code in body
         if (commands_files.width()<2)
           l_debug_info = cimg_snprintf(debug_info.data() + 1,debug_info.width() - 2,"%x",line_number);
@@ -3003,12 +3003,12 @@ gmic& gmic::add_commands(const char *const data_commands,
         debug_info[0] = 1; debug_info[l_debug_info + 1] = ' ';
         ((CImg<char>(debug_info,l_debug_info + 2,1,1,1,true),body)>'x').move_to(body);
       }
-      if (!search_sorted(mac,commands_names[hash],commands_names[hash].size(),pos)) {
+      if (!search_sorted(s_name,commands_names[hash],commands_names[hash].size(),pos)) {
         commands_names[hash].insert(1,pos);
         commands[hash].insert(1,pos);
         commands_has_arguments[hash].insert(1,pos);
       }
-      CImg<char>::string(mac).move_to(commands_names[hash][pos]);
+      CImg<char>::string(s_name).move_to(commands_names[hash][pos]);
       CImg<char>::vector((char)command_has_arguments(body)).
         move_to(commands_has_arguments[hash][pos]);
       body.move_to(commands[hash][pos]);
@@ -3037,12 +3037,12 @@ gmic& gmic::add_commands(const char *const data_commands,
     CImg<unsigned int> hdist(gmic_comslots);
     cimg_forX(hdist,i) hdist[i] = commands[i].size();
     const CImg<double> st = hdist.get_stats();
-    cimg_snprintf(com,com.width(),
+    cimg_snprintf(s_body,s_body.width(),
                   "Distribution of command hashes: [ %s ], min = %u, max = %u, mean = %g, std = %g.",
                   hdist.value_string().data(),(unsigned int)st[0],(unsigned int)st[1],st[2],
                   std::sqrt(st[3]));
-    cimg::strellipsize(com,512,false);
-    debug("%s",com.data());
+    cimg::strellipsize(s_body,512,false);
+    debug("%s",s_body.data());
   }
   return *this;
 }
