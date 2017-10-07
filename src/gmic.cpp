@@ -4733,7 +4733,8 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             is_command = search_sorted(command,native_commands_names,sizeof(native_commands_names)/sizeof(char*),__ind);
             if (!is_command) { // Look for a custom command
               hash_custom = hashcode(command,false);
-              is_command = search_sorted(command,commands_names[hash_custom],commands_names[hash_custom].size(),ind_custom);
+              is_command = search_sorted(command,commands_names[hash_custom],
+                                         commands_names[hash_custom].size(),ind_custom);
             }
           }
         }
@@ -12943,12 +12944,10 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
 
         // Execute custom command.
         if (!is_input_command && is_command) {
-
           if (hash_custom==~0U) { // A --native_command not supporting double hyphen (e.g. --v)
             hash_custom = hashcode(command,false);
-            cimglist_for(commands_names[hash_custom],l)
-              if (!std::strcmp(commands_names[hash_custom][l],command)) { ind_custom = l; break; }
-            is_command = (ind_custom!=~0U);
+            is_command = search_sorted(command,commands_names[hash_custom],
+                                       commands_names[hash_custom].size(),ind_custom);
           }
 
           if (is_command) {
