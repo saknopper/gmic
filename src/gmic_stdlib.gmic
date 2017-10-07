@@ -333,7 +333,7 @@ _help_usage :
 \n     space character ' '. Such items are interpreted and executed from the left to the right.
 \n     For instance, the expression:
 \n
-\n       "${c}"filename.jpg blur 3,0 sharpen 10 resize 200%,200% output out_filename.jpg"$n"
+\n       "${c}"filename.jpg blur 3,0 sharpen 10 resize 200%,200% output file_out.jpg"$n"
 \n
 \n     defines a valid pipeline composed of nine "${-GMIC}" items.
 \n
