@@ -2030,10 +2030,10 @@ using namespace cimg_library;
 
 // Define number of hash slots to store variables and commands.
 #ifndef gmic_varslots
-#define gmic_varslots 64
+#define gmic_varslots 128
 #endif
 #ifndef gmic_comslots
-#define gmic_comslots 64
+#define gmic_comslots 128
 #endif
 
 // Define default pixel type.
