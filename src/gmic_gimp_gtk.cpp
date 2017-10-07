@@ -1354,7 +1354,7 @@ CImgList<char> update_filters(const bool try_net_update, const bool is_silent=fa
   CImg<char> command(1024);
   cimg_snprintf(command,command.width(),
                 "%s_host=gimp_gtk -gui_filter_sources %d",
-                get_verbosity_mode()>5?"-debug ":get_verbosity_mode()>3?"":"-v -99 ",
+                get_verbosity_mode()>5?"debug ":get_verbosity_mode()>3?"":"v -99 ",
                 try_net_update?1:0);
   try { gmic(command,_sources,_names,gmic_additional_commands,true); } catch (...) { }
   CImgList<char> sources;
@@ -2050,9 +2050,9 @@ CImg<char> get_command_line(const bool is_preview) {
   if (!filter) return res;
   CImgList<char> lres;
   switch (get_verbosity_mode()) {
-  case 0: case 1: case 2: case 3: CImg<char>("-v -99 -",8).move_to(lres); break;  // Quiet or Verbose.
-  case 4: case 5 : CImg<char>("-v 0 -",6).move_to(lres); break;                   // Very verbose.
-  default: CImg<char>("-debug -",8).move_to(lres);                                // Debug.
+  case 0: case 1: case 2: case 3: CImg<char>("v -99 -",8).move_to(lres); break;  // Quiet or Verbose.
+  case 4: case 5 : CImg<char>("v 0 -",6).move_to(lres); break;                   // Very verbose.
+  default: CImg<char>("debug -",8).move_to(lres);                                // Debug.
   }
   const CImg<char> &command_item = (is_preview?gmic_preview_commands[filter]:gmic_commands[filter]);
   if (command_item) {
@@ -2127,7 +2127,7 @@ struct st_process_thread {
   void set_env() { // Must be called from main thread to avoid crash when doing 'gimp_get_data()'.
     env.assign(256);
     cimg_snprintf(env,env.width(),
-                  "-v - "
+                  "v - "
                   "_host=gimp_gtk "
                   "_input_layers=%u "
                   "_output_mode=%u "
@@ -2857,9 +2857,9 @@ void process_image(const char *const command_line, const bool is_apply) {
     CImg<char>::string(gtk_label_get_text(GTK_LABEL(markup2ascii))).move_to(progress_label);
     gimp_progress_init_printf(" G'MIC: %s...",progress_label.data());
     const char *const cl = _command_line.data() +
-      (!std::strncmp(_command_line,"-v -99 ",7)?7:
-       !std::strncmp(_command_line,"-v 0 ",5)?5:
-       !std::strncmp(_command_line,"-debug ",7)?7:0);
+      (!std::strncmp(_command_line,"v -99 ",7)?7:
+       !std::strncmp(_command_line,"v 0 ",5)?5:
+       !std::strncmp(_command_line,"debug ",7)?7:0);
     cimg_snprintf(new_label,new_label.width(),"[G'MIC] %s: %s",gtk_label_get_text(GTK_LABEL(markup2ascii)),cl);
     cimg::strellipsize(new_label,240,false);
   } else {
@@ -3483,7 +3483,7 @@ void process_preview() {
       original_preview.move_to(spt.images);
       CImg<char> command(1024);
       cimg_snprintf(command,command.width(),"%s_host=gimp_gtk -gui_error_preview \"%s\"",
-                    get_verbosity_mode()>5?"-debug ":get_verbosity_mode()>3?"":"-v -99 ",
+                    get_verbosity_mode()>5?"debug ":get_verbosity_mode()>3?"":"v -99 ",
                     spt.error_message.data());
       try {
         gmic(command,spt.images,spt.images_names,gmic_additional_commands,true);
