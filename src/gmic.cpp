@@ -2333,20 +2333,31 @@ const char *gmic::native_commands_names[] = {
 // Return false or true if search succeeded.
 template<typename T>
 bool gmic::search_sorted(const char *const str, const T& list, const unsigned int length, unsigned int &out_ind) {
-  if (!length) return false;
-  unsigned int
-    posm = 0,
-    posM = length - 1,
-    pos = (posm + posM)/2;
-  int err = std::strcmp(list[pos],str);
-  while (err && posm<posM) {
-    if (err>0) posM = pos - 1; else posm = pos + 1;
+  if (!length) { out_ind = 0; return false; }
+  int err, pos, posm = 0, posM = length - 1;
+  do {
     pos = (posm + posM)/2;
     err = std::strcmp(list[pos],str);
-  };
-  out_ind = err?posM:pos;
+    if (!err) { posm = pos; break; }
+    if (err>0) posM = pos - 1; else posm = pos + 1;
+  } while (posm<=posM);
+  out_ind = posm;
   return !err;
 }
+
+//   std::fprintf(stderr,"\nDEBUG0 : str='%s', pos = %d, list[pos] = '%s', err = %d, posm= %d, posM = %d, length = %u\n",str,pos,(const char*)(list[pos]),err,posm,posM,length);
+
+//   while (err && posm<posM) {
+//     if (err>0) posM = pos - 1; else posm = pos + 1;
+
+//     pos = (posm + posM)/2;
+
+//     std::fprintf(stderr,"\nDEBUG : str='%s', pos = %d, posm= %d, posM = %d, length = %u\n",str,pos,posm,posM,length);
+//     err = std::strcmp(list[pos],str);
+//   };
+//   out_ind = err?std::min(posm,posM):pos;
+//   return !err;
+// }
 
 // Return Levenshtein distance between two strings.
 // (adapted from http://rosettacode.org/wiki/Levenshtein_distance#C)
@@ -2946,8 +2957,7 @@ gmic& gmic::add_commands(const char *const data_commands,
                          const char *const commands_file) {
   if (!data_commands || !*data_commands) return *this;
   CImg<char> com(256*1024), line(256*1024), mac(256), debug_info(32);
-  CImg<unsigned int> pos(512,1,1,1,0);
-  unsigned int line_number = 1;
+  unsigned int line_number = 1, pos = 0;
   bool is_last_slash = false, _is_last_slash = false, is_newline = false;
   int hash = -1, l_debug_info = 0;
   char sep = 0;
@@ -2960,13 +2970,13 @@ gmic& gmic::add_commands(const char *const data_commands,
     char *_line = line, *const line_end = line.end();
     while (*data!='\n' && *data && _line<line_end) *(_line++) = *(data++);
     if (_line<line_end) *_line = 0; else *(line_end - 1) = 0;
-    if (*data=='\n') { is_newline = true; ++data; } else is_newline = false; // Skip next '\n'.
+    if (*data=='\n') { is_newline = true; ++data; } else is_newline = false; // Skip next '\n'
 
     // Replace/remove unusual characters.
     char *__line = line;
     for (_line = line; *_line; ++_line) if (*_line!=13) *(__line++) = (unsigned char)*_line<' '?' ':*_line;
     *__line = 0;
-    _line = line; if (*_line=='#') *_line = 0; else do { // Remove comments.
+    _line = line; if (*_line=='#') *_line = 0; else do { // Remove comments
         if ((_line=std::strchr(_line,'#')) && *(_line - 1)==' ') { *--_line = 0; break; }
       } while (_line++);
 
@@ -2974,25 +2984,22 @@ gmic& gmic::add_commands(const char *const data_commands,
     char *linee = line.data() + std::strlen(line) - 1;
     while (linee>=line && *linee==' ') --linee;
     *(linee + 1) = 0;
-    char *lines = line; while (*lines==' ') ++lines; // Remove useless leading spaces.
+    char *lines = line; while (*lines==' ') ++lines; // Remove useless leading spaces
     if (!*lines) continue; // Empty line.
 
     // Check if last character is a '\'...
     _is_last_slash = false;
     for (_line = linee; *_line=='\\' && _line>=lines; --_line) _is_last_slash = !_is_last_slash;
-    if (_is_last_slash) *(linee--) = 0; // ... and remove it if necessary.
-    if (!*lines) continue; // Empty line found.
+    if (_is_last_slash) *(linee--) = 0; // ... and remove it if necessary
+    if (!*lines) continue; // Empty line found
     *mac = *com = 0;
 
-    if (!is_last_slash && std::strchr(lines,':') && // Check for a command definition.
+    if (!is_last_slash && std::strchr(lines,':') && // Check for a command definition
         cimg_sscanf(lines,"%255[a-zA-Z0-9_] %c %262143[^\n]",mac.data(),&sep,com.data())>=2 &&
         (*lines<'0' || *lines>'9') && sep==':') {
       hash = (int)hashcode(mac,false);
-      CImg<char>::string(mac).move_to(commands_names[hash],pos[hash]);
       CImg<char> body = CImg<char>::string(com);
-      CImg<char>::vector((char)command_has_arguments(body)).
-        move_to(commands_has_arguments[hash],pos[hash]);
-      if (commands_file) { // Insert code with debug info.
+      if (commands_file) { // Insert debug info code in body
         if (commands_files.width()<2)
           l_debug_info = cimg_snprintf(debug_info.data() + 1,debug_info.width() - 2,"%x",line_number);
         else
@@ -3000,17 +3007,25 @@ gmic& gmic::add_commands(const char *const data_commands,
                                             line_number,commands_files.width() - 1);
         if (l_debug_info>=debug_info.width() - 1) l_debug_info = debug_info.width() - 2;
         debug_info[0] = 1; debug_info[l_debug_info + 1] = ' ';
-        ((CImg<char>(debug_info,l_debug_info + 2,1,1,1,true),body)>'x').
-          move_to(commands[hash],pos[hash]++);
-      } else body.move_to(commands[hash],pos[hash]++); // Insert code without debug info.
+        ((CImg<char>(debug_info,l_debug_info + 2,1,1,1,true),body)>'x').move_to(body);
+      }
+      if (!search_sorted(mac,commands_names[hash],commands_names[hash].size(),pos)) {
+        commands_names[hash].insert(1,pos);
+        commands[hash].insert(1,pos);
+        commands_has_arguments[hash].insert(1,pos);
+      }
+      CImg<char>::string(mac).move_to(commands_names[hash][pos]);
+      CImg<char>::vector((char)command_has_arguments(body)).
+        move_to(commands_has_arguments[hash][pos]);
+      body.move_to(commands[hash][pos]);
+
     } else { // Continuation of a previous line.
       if (hash<0) error("Command 'command': Syntax error in expression '%s'.",lines);
-      const unsigned int p = pos[hash] - 1;
-      if (!is_last_slash) commands[hash][p].back() = ' ';
-      else --(commands[hash][p]._width);
+      if (!is_last_slash) commands[hash][pos].back() = ' ';
+      else --(commands[hash][pos]._width);
       const CImg<char> body = CImg<char>(lines,(unsigned int)(linee - lines + 2));
-      commands_has_arguments[hash](p,0) |= (char)command_has_arguments(body);
-      if (commands_file && !is_last_slash) { // Insert code with debug info.
+      commands_has_arguments[hash](pos,0) |= (char)command_has_arguments(body);
+      if (commands_file && !is_last_slash) { // Insert code with debug info
         if (commands_files.width()<2)
           l_debug_info = cimg_snprintf(debug_info.data() + 1,debug_info.width() - 2,"%x",line_number);
         else
@@ -3018,9 +3033,9 @@ gmic& gmic::add_commands(const char *const data_commands,
                                        line_number,commands_files.width() - 1);
         if (l_debug_info>=debug_info.width() - 1) l_debug_info = debug_info.width() - 2;
         debug_info[0] = 1; debug_info[l_debug_info + 1] = ' ';
-        ((commands[hash][p],CImg<char>(debug_info,l_debug_info + 2,1,1,1,true),body)>'x').
-          move_to(commands[hash][p]);
-      } else commands[hash][p].append(body,'x'); // Insert code without debug info.
+        ((commands[hash][pos],CImg<char>(debug_info,l_debug_info + 2,1,1,1,true),body)>'x').
+          move_to(commands[hash][pos]);
+      } else commands[hash][pos].append(body,'x'); // Insert code without debug info
     }
   }
 
