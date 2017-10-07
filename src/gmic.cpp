@@ -4729,13 +4729,11 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
           err = cimg_sscanf(item,"%255[a-zA-Z_0-9]%c%c",command,&sep0,&sep1);
           is_command = err==1 || (err==2 && sep0=='.') || (err==3 && (sep0=='[' || (sep0=='.' && sep1=='.')));
           is_command&=*item<'0' || *item>'9';
-          if (is_command) {
+          if (is_command) { // Look for a native command
             is_command = search_sorted(command,native_commands_names,sizeof(native_commands_names)/sizeof(char*),__ind);
             if (!is_command) { // Look for a custom command
               hash_custom = hashcode(command,false);
-              cimglist_for(commands_names[hash_custom],l)
-                if (!std::strcmp(commands_names[hash_custom][l],command)) { ind_custom = l; break; }
-              is_command = (ind_custom!=~0U);
+              is_command = search_sorted(command,commands_names[hash_custom],commands_names[hash_custom].size(),ind_custom);
             }
           }
         }
@@ -8984,7 +8982,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
 
           if (cimg_sscanf(argument,"%11[a-zA-Z]:%4095[^,],%255s",  // Detect forced file format.
                           cext,_filename.data(),options.data())<2 ||
-              !cext[1]) {  // length of preprend 'ext' must be >=2 (avoid case 'C:\\...' on Windows).
+              !cext[1]) { // Length of preprend 'ext' must be >=2 (avoid case 'C:\\...' on Windows).
             *cext = *_filename = *options = 0;
             if (cimg_sscanf(argument,"%4095[^,],%255s",_filename.data(),options.data())!=2) {
               std::strncpy(_filename,argument,_filename.width() - 1);
