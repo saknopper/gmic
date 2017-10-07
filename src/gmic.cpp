@@ -12161,13 +12161,13 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
               strreplace_fw(arg_command);
               if (*arg_command) {
                 const unsigned int hash = hashcode(arg_command,false);
-                cimglist_for(commands_names[hash],l)
-                  if (!std::strcmp(commands_names[hash][l],arg_command)) {
-                    commands_names[hash].remove(l);
-                    commands[hash].remove(l);
-                    commands_has_arguments[hash].remove(l);
-                    ++nb_removed; break;
-                  }
+                unsigned int ind;
+                if (search_sorted(arg_command,commands_names[hash],commands_names[hash].size(),ind)) {
+                  commands_names[hash].remove(ind);
+                  commands[hash].remove(ind);
+                  commands_has_arguments[hash].remove(ind);
+                  ++nb_removed;
+                }
               }
             }
             if (is_verbose) {
