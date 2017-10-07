@@ -2345,20 +2345,6 @@ bool gmic::search_sorted(const char *const str, const T& list, const unsigned in
   return !err;
 }
 
-//   std::fprintf(stderr,"\nDEBUG0 : str='%s', pos = %d, list[pos] = '%s', err = %d, posm= %d, posM = %d, length = %u\n",str,pos,(const char*)(list[pos]),err,posm,posM,length);
-
-//   while (err && posm<posM) {
-//     if (err>0) posM = pos - 1; else posm = pos + 1;
-
-//     pos = (posm + posM)/2;
-
-//     std::fprintf(stderr,"\nDEBUG : str='%s', pos = %d, posm= %d, posM = %d, length = %u\n",str,pos,posm,posM,length);
-//     err = std::strcmp(list[pos],str);
-//   };
-//   out_ind = err?std::min(posm,posM):pos;
-//   return !err;
-// }
-
 // Return Levenshtein distance between two strings.
 // (adapted from http://rosettacode.org/wiki/Levenshtein_distance#C)
 int gmic::_levenshtein(const char *const s, const char *const t,
