@@ -2396,7 +2396,7 @@ unsigned int gmic::hashcode(const char *const str, const bool is_variable) {
     return hash%510;
   }
   for (const char *s = str; *s; ++s) (hash*=31)+=*s;
-  return hash&511;
+  return hash&255;
 }
 
 // Tells if the the implementation of a G'MIC command contains arguments.
@@ -2475,14 +2475,14 @@ unsigned int gmic::strescape(const char *const str, char *const res) {
 // Constructors / destructors.
 //----------------------------
 #if cimg_display!=0
-#define gmic_new_attr commands(new CImgList<char>[512]), commands_names(new CImgList<char>[512]), \
-    commands_has_arguments(new CImgList<char>[512]), \
+#define gmic_new_attr commands(new CImgList<char>[256]), commands_names(new CImgList<char>[256]), \
+    commands_has_arguments(new CImgList<char>[256]), \
     _variables(new CImgList<char>[512]), _variables_names(new CImgList<char>[512]), \
     variables(new CImgList<char>*[512]), variables_names(new CImgList<char>*[512]), \
     display_windows(new CImgDisplay[10]), is_running(false)
 #else
-#define gmic_new_attr commands(new CImgList<char>[512]), commands_names(new CImgList<char>[512]), \
-    commands_has_arguments(new CImgList<char>[512]), \
+#define gmic_new_attr commands(new CImgList<char>[256]), commands_names(new CImgList<char>[256]), \
+    commands_has_arguments(new CImgList<char>[256]), \
     _variables(new CImgList<char>[512]), _variables_names(new CImgList<char>[512]), \
     variables(new CImgList<char>*[512]), variables_names(new CImgList<char>*[512]), \
     display_windows(0), is_running(false)
@@ -3026,7 +3026,7 @@ gmic& gmic::add_commands(const char *const data_commands,
   }
 
   if (is_debug) {
-    CImg<unsigned int> hdist(512);
+    CImg<unsigned int> hdist(256);
     cimg_forX(hdist,i) hdist[i] = commands[i].size();
     const CImg<double> st = hdist.get_stats();
     cimg_snprintf(com,com.width(),
@@ -3537,10 +3537,12 @@ void gmic::_gmic(const char *const commands_line,
   specular_shininess3d = 0.8f;
   starting_commands_line = commands_line;
   reference_time = (unsigned long)cimg::time();
-  for (unsigned int l = 0; l<512; ++l) {
+  for (unsigned int l = 0; l<256; ++l) {
     commands_names[l].assign();
     commands[l].assign();
     commands_has_arguments[l].assign();
+  }
+  for (unsigned int l = 0; l<512; ++l) {
     _variables[l].assign();
     variables[l] = &_variables[l];
     _variables_names[l].assign();
@@ -4730,7 +4732,8 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
           is_command = err==1 || (err==2 && sep0=='.') || (err==3 && (sep0=='[' || (sep0=='.' && sep1=='.')));
           is_command&=*item<'0' || *item>'9';
           if (is_command) { // Look for a native command
-            is_command = search_sorted(command,native_commands_names,sizeof(native_commands_names)/sizeof(char*),__ind);
+            is_command = search_sorted(command,native_commands_names,
+                                       sizeof(native_commands_names)/sizeof(char*),__ind);
             if (!is_command) { // Look for a custom command
               hash_custom = hashcode(command,false);
               is_command = search_sorted(command,commands_names[hash_custom],
@@ -5877,7 +5880,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
           strreplace_fw(arg_command);
 
           unsigned int siz = 0;
-          for (unsigned int l = 0; l<512; ++l) siz+=commands[l].size();
+          for (unsigned int l = 0; l<256; ++l) siz+=commands[l].size();
 
           bool add_debug_info = true;
           if ((*arg_command=='0' || *arg_command=='1') && arg_command[1]==',') {
@@ -5931,7 +5934,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
           }
           if (is_verbose) {
             unsigned int nb_added = 0;
-            for (unsigned int l = 0; l<512; ++l) nb_added+=commands[l].size();
+            for (unsigned int l = 0; l<256; ++l) nb_added+=commands[l].size();
             nb_added-=siz;
             cimg::mutex(29);
             std::fprintf(cimg::output()," (added %u command%s, total %u).",
@@ -9625,11 +9628,12 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
           // Prepare thread structures.
           cimg_forY(_threads_data,l) {
             gmic &gi = _threads_data[l].gmic_instance;
-            for (unsigned int i = 0; i<512; ++i) {
+            for (unsigned int i = 0; i<256; ++i) {
               gi.commands[i].assign(commands[i],true);
               gi.commands_names[i].assign(commands_names[i],true);
               gi.commands_has_arguments[i].assign(commands_has_arguments[i],true);
-
+            }
+            for (unsigned int i = 0; i<512; ++i) {
               if (i==511) { // Share inter-thread global variables.
                 gi.variables[i] = variables[i];
                 gi.variables_names[i] = variables_names[i];
@@ -9643,7 +9647,6 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                 gi.variables_names[i] = &gi._variables_names[i];
               }
             }
-
             gi.callstack.assign(callstack);
             gi.commands_files.assign(commands_files,true);
             cimg_snprintf(title,_title.width(),"*thread%d",l);
@@ -12140,7 +12143,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
           gmic_substitute_args(false);
           if (argument[0]=='*' && !argument[1]) { // Discard all custom commands.
             unsigned int nb_commands = 0;
-            for (unsigned int i = 0; i<512; ++i) {
+            for (unsigned int i = 0; i<256; ++i) {
               nb_commands+=commands[i].size();
               commands[i].assign();
               commands_names[i].assign();
@@ -12172,7 +12175,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             if (is_verbose) {
               cimg::mutex(29);
               unsigned int siz = 0;
-              for (unsigned int l = 0; l<512; ++l) siz+=commands[l].size();
+              for (unsigned int l = 0; l<256; ++l) siz+=commands[l].size();
               std::fprintf(cimg::output()," (%u found, %u command%s left).",
                            nb_removed,siz,siz>1?"s":"");
               std::fflush(cimg::output());
@@ -14116,7 +14119,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
           print(images,0,"Input custom command file '%s'%s",
                 _filename0,!add_debug_info?" without debug info":"");
           unsigned int siz = 0;
-          for (unsigned int l = 0; l<512; ++l) siz+=commands[l].size();
+          for (unsigned int l = 0; l<256; ++l) siz+=commands[l].size();
           std::FILE *const file = cimg::fopen(filename,"rb");
 
           bool is_command_error = false;
@@ -14145,7 +14148,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
           cimg::fclose(file);
           if (is_verbose) {
             unsigned int nb_added = 0;
-            for (unsigned int l = 0; l<512; ++l) nb_added+=commands[l].size();
+            for (unsigned int l = 0; l<256; ++l) nb_added+=commands[l].size();
             nb_added-=siz;
             cimg::mutex(29);
             std::fprintf(cimg::output()," (added %u command%s, total %u).",
@@ -14220,7 +14223,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                   const int d = levenshtein(c,name.data() + foff);
                   if (d<dmin) { dmin = d; misspelled = native_commands_names[l]; }
                 }
-                for (unsigned int i = 0; i<512; ++i) // Look for a custom command
+                for (unsigned int i = 0; i<256; ++i) // Look for a custom command
                   cimglist_for(commands_names[i],l) {
                     const char *const c = commands_names[i][l].data();
                     const int d = levenshtein(c,name.data() + foff);
