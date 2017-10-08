@@ -2950,6 +2950,7 @@ const char *gmic::set_variable(const char *const name, const char *const value,
 gmic& gmic::add_commands(const char *const data_commands,
                          const char *const commands_file) {
   if (!data_commands || !*data_commands) return *this;
+  cimg::mutex(23);
   CImg<char> s_body(256*1024), s_line(256*1024), s_name(256), debug_info(32);
   unsigned int line_number = 1, pos = 0;
   bool is_last_slash = false, _is_last_slash = false, is_newline = false;
@@ -3044,6 +3045,7 @@ gmic& gmic::add_commands(const char *const data_commands,
     cimg::strellipsize(s_body,512,false);
     debug("%s",s_body.data());
   }
+  cimg::mutex(23,0);
   return *this;
 }
 
@@ -12150,6 +12152,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
         if (!std::strcmp("uncommand",item)) {
           gmic_substitute_args(false);
           if (argument[0]=='*' && !argument[1]) { // Discard all custom commands.
+            cimg::mutex(23);
             unsigned int nb_commands = 0;
             for (unsigned int i = 0; i<gmic_comslots; ++i) {
               nb_commands+=commands[i].size();
@@ -12159,7 +12162,9 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             }
             print(images,0,"Discard definitions of all custom commmands (%u command%s discarded).",
                   nb_commands,nb_commands>1?"s":"");
+            cimg::mutex(23,0);
           } else { // Discard one or several custom command.
+            cimg::mutex(23);
             g_list_c = CImg<char>::string(argument).get_split(CImg<char>::vector(','),0,false);
             print(images,0,"Discard last definition of custom command%s '%s'",
                   g_list_c.width()>1?"s":"",
@@ -12190,6 +12195,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
               cimg::mutex(29,0);
             }
             g_list_c.assign();
+            cimg::mutex(23,0);
           }
           ++position; continue;
         }
