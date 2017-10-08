@@ -2539,14 +2539,15 @@ _document_gmic_footer_html : skip $1
 
 # Define document_gmic commands for images-only output.
 _document_gmic_header_images : skip $1
+  use_vt100
   v +
-  e[] "\n - Generate example images from set of commands '"$_name"'.\n"
+  e[] "\n - Generate example images from set of commands '"${_gmic_c}$_name${gmic_n}"'.\n"
   if image.jpg else l[] sp pencils onfail testimage2d 400 endl o. image.jpg rm. endif
   v -
 
 _document_gmic_subsection_images :
   v +
-  e[] "\n ** Section ""#"$_subsection": "{0,t}".\n"
+  e[] "\n "${_gmic_r}"** Section ""#"$_subsection": "{0,t}"."${_gmic_n}"\n"
   v -
 _document_gmic_declaration_images : _command_name={0,t}
 _document_gmic_description_images :
@@ -2554,7 +2555,7 @@ _document_gmic_description_images :
 _document_gmic_example_images :
   if {i==_'$'} return endif
   v +
-  e[] "    ["$_example"] Command '"$_command_name"': $ "{t}
+  e[] "    "${_gmic_c}"["$_example"]"${_gmic_n}" Command '"${_gmic_g}$_command_name${_gmic_n}"': $ "{t}
   v -
   if $_filename else # Generate picture only if the file doesn't yet exist.
     m "foo"$_example" : "{t}
