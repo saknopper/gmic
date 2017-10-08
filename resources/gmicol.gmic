@@ -59,7 +59,7 @@
 #@web : note = link{"The G'MIC plug-in for GIMP","http://gmic.eu/gimp.shtml"}
 #@web : sep = separator(), note = note("<small>Authors: <i>S&#233;bastien Fourey</i> and <i>David Tschumperl&#233;</i>.      Latest update: <i>10/11/2012</i>.</small>")
 gmicol_logo_en :
-  -fx_logo_version{round(u(0.5,3.49))} "- Online -\n"[" "${-strver}" "]
+  fx_logo_version{round(u(0.5,3.49))} "- Online -\n"[" "${-strver}" "]
 
 #@web clone("Contributors")
 
@@ -142,7 +142,7 @@ gmicol_logo_en :
 #@web : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
 #@web : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>07/02/2015</i>.</small>")
 gmicol_bokeh :
-  -repeat $! -l[$>] -fx_bokeh $* -gui_merge_layers -endl -done
+  repeat $! l[$>] fx_bokeh $* gui_merge_layers endl done
 
 #@web Brushify : gmicol_brushify, gmicol_brushify_preview(0)
 #@web : note = note("<small><b>Brush parameters:</b></small>")
@@ -170,10 +170,10 @@ gmicol_bokeh :
 #@web : Preview brush = bool(1)
 #@web : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>04/22/2016</i>.</small>")
 gmicol_brushify :
-  -fx_brushify {2+$1},${2--1}
+  fx_brushify {2+$1},${2--1}
 
 gmicol_brushify_preview :
-  -fx_brushify_preview {2+$1},${2--1}
+  fx_brushify_preview {2+$1},${2--1}
 
 #@web clone("Cartoon")
 #@web clone("Circle abstraction")
@@ -217,41 +217,41 @@ gmicol_brushify_preview :
 #@web : Bottom coordinate = float(75,0,100)
 #@web : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>10/18/2012</i>.</small>")
 gmicol_crop :
-  -z $1%,$2%,$3%,$4%
+  z $1%,$2%,$3%,$4%
 
 gmicol_crop_preview :
-  -rectangle $1%,$2%,$3%,$4%,0.5,128
-  -rectangle $1%,$2%,$3%,$4%,1,0xFFFFFFFF,0
-  -circle $1%,$2%,3,1,0,255,0 -circle $1%,$2%,3,1,0xFFFFFFFF,0
-  -circle $3%,$2%,3,1,0,255,0 -circle $3%,$2%,3,1,0xFFFFFFFF,0
-  -circle $3%,$4%,3,1,0,255,0 -circle $3%,$4%,3,1,0xFFFFFFFF,0
-  -circle $1%,$4%,3,1,0,255,0 -circle $1%,$4%,3,1,0xFFFFFFFF,0
+  rectangle $1%,$2%,$3%,$4%,0.5,128
+  rectangle $1%,$2%,$3%,$4%,1,0xFFFFFFFF,0
+  circle $1%,$2%,3,1,0,255,0 circle $1%,$2%,3,1,0xFFFFFFFF,0
+  circle $3%,$2%,3,1,0,255,0 circle $3%,$2%,3,1,0xFFFFFFFF,0
+  circle $3%,$4%,3,1,0,255,0 circle $3%,$4%,3,1,0xFFFFFFFF,0
+  circle $1%,$4%,3,1,0,255,0 circle $1%,$4%,3,1,0xFFFFFFFF,0
 
 #@web Equalize : gmicol_equalize, gmicol_equalize_preview
 #@web : Channel(s) = choice(11,"All","RGBA [all]","RGB [all]","RGB [red]","RGB [green]","RGB [blue]","RGBA [alpha]","Linear RGB [all]","Linear RGB [red]","Linear RGB [green]","Linear RGB [blue]","YCbCr [luminance]","YCbCr [blue-red chrominances]","YCbCr [blue chrominance]","YCbCr [red chrominance]","YCbCr [green chrominance]","Lab [lightness]","Lab [ab-chrominances]","Lab [a-chrominance]","Lab [b-chrominance]","Lch [ch-chrominances]","Lch [c-chrominance]","Lch [h-chrominance]","HSV [hue]","HSV [saturation]","HSV [value]","HSI [intensity]","HSL [lightness]","CMYK [cyan]","CMYK [magenta]","CMYK [yellow]","CMYK [key]","YIQ [luma]","YIQ [chromas]")
 #@web : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
 #@web : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>10/18/2012</i>.</small>")
 gmicol_equalize :
-  -apply_channels "-equalize 256,0,255",$1,2
+  apply_channels "equalize 256,0,255",$1,2
 
 gmicol_equalize_preview :
-  -gui_split_preview "-gmicol_equalize $*",$-1
+  gui_split_preview "gmicol_equalize $*",$-1
 
 #@web Flip : gmicol_flip, gmicol_flip
 #@web : Type = choice("Horizontal","Vertical")
 #@web : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>10/23/2012</i>.</small>")
 gmicol_flip :
-  -if $1 -mirror y -else -mirror x -endif
+  if $1 mirror y else mirror x endif
 
 #@web Histogram : gmicol_histogram, gmicol_histogram_preview
 #@web : Levels = int(128,1,256)
 #@web : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>10/18/2012</i>.</small>")
 #@web : thumbnail_parameters = 32
 gmicol_histogram :
-  -to_rgb -dh 640,480,$1
+  to_rgb dh 640,480,$1
 
 gmicol_histogram_preview :
-  -to_rgb -dh 320,240,$1
+  to_rgb dh 320,240,$1
 
 #@web Negative : negate, negate
 #@web : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>10/23/2012</i>.</small>")
@@ -263,14 +263,14 @@ gmicol_histogram_preview :
 #@web : Prescribed height = int(256,8,1280)
 #@web : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>10/23/2012</i>.</small>")
 gmicol_resize :
-  -if {$1==0}
-    -r $2%,$2%,1,100%,6
-  -elif {$1==1}
-    -resize2dx $3,6
-  -else
-    -resize2dy $4,6
-  -endif
-  -c 0,255
+  if {$1==0}
+    r $2%,$2%,1,100%,6
+  elif {$1==1}
+    resize2dx $3,6
+  else
+    resize2dy $4,6
+  endif
+  c 0,255
 
 #@web Rotate : gmicol_rotate, gmicol_rotate
 #@web : Angle = float(30,0,359)
@@ -278,11 +278,11 @@ gmicol_resize :
 #@web : Boundary = choice("Transparent","Nearest","Repeat")
 #@web : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>10/23/2012</i>.</small>")
 gmicol_rotate :
-  -if $2
-    -rotate {90*round($1/90)},0,0
-  -else
-    -to_rgba -rotate $1,1,$3
-  -endif
+  if $2
+    rotate {90*round($1/90)},0,0
+  else
+    to_rgba -rotate $1,1,$3
+  endif
 
 #@web _<b>Black &amp; white</b>
 #---------------------------------
@@ -578,10 +578,10 @@ gmicol_rotate :
 #@web : link = link{"Lomo Light Leaks","http://www.photoshoptutorials.ws/downloads/mockups-graphics/lomo-light-leaks/"}
 #@web : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>07/01/2015</i>.</small>")
 gmicol_light_leaks :
-  -fx_light_leaks ${1--2},0,$-1
+  fx_light_leaks ${1--2},0,$-1
 
 gmicol_light_leaks_preview :
-  -fx_light_leaks_preview ${1--2},0,$-1
+  fx_light_leaks_preview ${1--2},0,$-1
 
 #@web clone("Light patch")
 #@web clone("Light rays")
@@ -670,19 +670,19 @@ gmicol_light_leaks_preview :
 #@web RGB distribution : gmicol_rgb_distribution, gmicol_rgb_distribution_preview
 #@web : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>10/19/2012</i>.</small>")
 _gmicol_rgb_distribution :
-  -distribution3d -colorcube3d -p3d. 1 -+3d
-  -repeat 4
+  distribution3d colorcube3d p3d. 1 +3d
+  repeat 4
     --snapshot3d[0] $1,0.9,255
-    -r3d[0] 0,1,0.2,90
-  -done
-  -rm[0] -autocrop -- 255
-  -r ${-max_wh},1,3,0,0,0.5,0.5 -+ 255 -frame 5,5,255 -frame 1,1,0 -append_tiles ,
+    r3d[0] 0,1,0.2,90
+  done
+  rm[0] autocrop - 255
+  r ${-max_wh},1,3,0,0,0.5,0.5 + 255 frame 5,5,255 frame 1,1,0 append_tiles ,
 
 gmicol_rgb_distribution :
-  -_gmicol_rgb_distribution 512
+  _gmicol_rgb_distribution 512
 
 gmicol_rgb_distribution_preview :
-  -_gmicol_rgb_distribution 320
+  _gmicol_rgb_distribution 320
 
 #@web clone("Rorschach")
 #@web clone("Shade bobs")
@@ -744,21 +744,21 @@ gmicol_rgb_distribution_preview :
 #@web : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
 #@web : sep = separator(), note = note("<small>Authors: <i>David Tschumperl&#233;</i>, <i>S&#233;bastien Fourey</i> and <i>Laurette Chardon</i>.      Latest update: <i>02/13/2017</i>.</small>")
 fx_skeletonization :
-  -norm -b $2 ->= {$1*255%}
+  norm b $2 >= {$1*255%}
   filename_in=${-file_rand}.pan
   filename_out=${-file_rand}.pan
-  -o $filename_in,uchar -rm
+  o $filename_in,uchar rm
 
-  -e "DEBUG : LD_LIBRARY_PATH=../bin ../bin/pskeletonization "{4*(1+$3)}" "$filename_in" "$filename_out
+  e "DEBUG : LD_LIBRARY_PATH=../bin ../bin/pskeletonization "{4*(1+$3)}" "$filename_in" "$filename_out
 
-  -x "LD_LIBRARY_PATH=../bin ../bin/pskeletonization "{4*(1+$3)}" "$filename_in" "$filename_out
-  -i $filename_out
-  -x "rm -f "$filename_in
-  -x "rm -f "$filename_out
-  -n 0,255
+  x "LD_LIBRARY_PATH=../bin ../bin/pskeletonization "{4*(1+$3)}" "$filename_in" "$filename_out
+  i $filename_out
+  x "rm -f "$filename_in
+  x "rm -f "$filename_out
+  n 0,255
 
 fx_skeletonization_preview :
-  -gui_split_preview "-fx_skeletonization $*",$-1
+  gui_split_preview "-fx_skeletonization $*",$-1
 
 #@web Toy filter : fx_toy, fx_toy_preview(0)
 #@web : Smoothness = float(2,0,10)
@@ -771,13 +771,13 @@ fx_skeletonization_preview :
 #@web : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>02/06/2017</i>.</small>")
 fx_toy :
   filename=${-file_rand}.cimg
-  -o $filename -rm
-  -x "../bin/toy_filter -i "$filename" -o "$filename" -s $1 -a $2"
-  -i $filename
-  -x "rm -f "$filename
+  o $filename rm
+  x "../bin/toy_filter -i "$filename" -o "$filename" -s $1 -a $2"
+  i $filename
+  x "rm -f "$filename
 
 fx_toy_preview :
-  -gui_split_preview "-fx_toy $*",$-1
+  gui_split_preview "fx_toy $*",$-1
 
 # Local Variables:
 # mode: sh
