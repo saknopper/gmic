@@ -2952,7 +2952,6 @@ input_cube : skip ${2=1}
     i raw:"$1",uchar
     f "i<_' ' && i!=10?_' ':i"
     i[0] 0
-    stov=stov if {$_version<204} stov=stod endif
     range={"
       line = vector512();
       dmin = [ 0,0,0 ];
@@ -2969,39 +2968,39 @@ input_cube : skip ${2=1}
         line[l] = 0;
         if (same(line,'LUT_1D_SIZE ',12),
           copy(line[0],line[12],size(line) - 12);
-          size = "$stov"(line);
+          size = stov(line);
           dim = 1;
           resize(#0,3,size,1,1,0);
         ,_(else); if (same(line,'LUT_3D_SIZE ',12),
           copy(line[0],line[12],size(line) - 12);
-          size = "$stov"(line);
+          size = stov(line);
           dim = 3;
           resize(#0,3,size,size,size,0);
         ,_(else); if (same(line,'DOMAIN_MIN ',11),
           copy(line[0],line[11],size(line) - 11);
-          dmin[0] = "$stov"(line);
+          dmin[0] = stov(line);
           ind = find(line,_' ');
           copy(line[0],line[ind + 1],size(line) - ind);
-          dmin[1] = "$stov"(line);
+          dmin[1] = stov(line);
           ind = find(line,_' ');
           copy(line[0],line[ind + 1],size(line) - ind);
-          dmin[2] = "$stov"(line);
+          dmin[2] = stov(line);
         ,_(else); if (same(line,'DOMAIN_MAX ',11),
           copy(line[0],line[11],size(line) - 11);
-          dmax[0] = "$stov"(line);
+          dmax[0] = stov(line);
           ind = find(line,_' ');
           copy(line[0],line[ind + 1],size(line) - ind);
-          dmax[1] = "$stov"(line);
+          dmax[1] = stov(line);
           ind = find(line,_' ');
           copy(line[0],line[ind + 1],size(line) - ind);
-          dmax[2] = "$stov"(line);
-        ,_(else); val = "$stov"(line); if (val>=0,
+          dmax[2] = stov(line);
+        ,_(else); val = stov(line); if (val>=0,
           do (
             i[#0,target++] = val;
             ind = find(line,_' ');
             if (ind<0, break());
             copy(line[0],line[ind + 1],size(line) - ind);
-            val = "$stov"(line);
+            val = stov(line);
           ,_(while); val>=0);
         )))));
         pos = ++npos;
@@ -5817,7 +5816,7 @@ decompress_rle :
       -->= 0 abs[0] a x
     else # Decode for arbitrary data
       --<. 0
-      if {$_version<179} (1;1;0) else (0;1;1) endif
+      (0;1;1)
       erode.. .,0 rm. -. 1 a x discard -1  # Get back compressed '0' (minimum) values.
       --< 0 (0;1;1) dilate.. . rm. *. -2 +. 1 # Get back singletons.
       rv abs. a x discard -1
@@ -11481,7 +11480,6 @@ _close_binary :
   channels[keycoords] 0,1
   i[vote] {keycoords,[w,w]},1,2
 
-  critical=critical if {$_version<205} critical=single endif
   f[e_normals] $_edgel_lib${-math_lib}"
     const ang_th = cos("$hd_angle"*pi/180);
     if (i>=0,
@@ -11517,7 +11515,7 @@ _close_binary :
 
         if (Kf && Kb && Kf!=Kb,
           --Kf; --Kb;
-          "$critical"(
+          critical(
             i(#"$vote",Kf,Kb,0,0)+=(Vf + Vb)/(Lf + Lb);
             ++i(#"$vote",Kf,Kb,0,1);
           );
@@ -24000,11 +23998,10 @@ fx_gmicky_preview :
 #@gui : - <b>2014/08/20</b> : version <i>1.6.0</i>.\n
 #@gui : - <b>2016/03/25</b> : version <i>1.7.0</i>.\n
 #@gui : - <b>2017/05/29</b> : version <i>2.0.0</i>.\n
-#@gui : - <span foreground="purple"><b>2017/08/21</b> : version <i>2.0.4</i> (Current stable).</span>\n
-#@gui : - <b>2017/09/20</b> : version <i>2.1.0_pre</i> (Current development).\n
+#@gui : - <span foreground="purple"><b>2017/10/09</b> : version <i>2.1.0</i> (Current stable).</span>\n
 #@gui : "}
 #@gui : sep = separator()
-#@gui : url = link{"View latest minor changelog (2.0.4)","https://discuss.pixls.us/t/release-of-gmic-2-0-4"}
+#@gui : url = link{"View latest minor changelog (2.1.0)","https://discuss.pixls.us/t/release-of-gmic-2-1-0"}
 #@gui : url = link{"View latest major changelog (2.0.0)","https://discuss.pixls.us/t/release-of-gmic-2-0-0"}
 
 #@gui User satisfaction survey : gui_survey, gui_survey_preview
