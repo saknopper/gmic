@@ -24559,8 +24559,8 @@ fx_montage : skip "${2=A}"
     "frame $6,$6,${7-10} "\
     "r {w+2*$5},{h+2*$5},1,100%,0,0,0.5,0.5 "\
     "else r $""4,$""5,1,100%,2 endif "
-#  if $15 gui_autocrop_layers endif
-  nm pos(0,0),name(Montage)
+  if $15 gui_autocrop_layers endif
+  gui_set_layer_name "[Montage]"
 
 fx_montage_preview : skip "${2=A}"
   if {!$!} return endif
