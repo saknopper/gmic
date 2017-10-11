@@ -441,6 +441,7 @@ gmicol_rotate :
 #@web clone("Kaleidoscope [symmetry]")
 #@web clone("Perspective")
 #@web clone("Polar transform")
+#@web clone("Quadrangle")
 #@web clone("Raindrops")
 #@web clone("Random")
 #@web clone("Ripple")
