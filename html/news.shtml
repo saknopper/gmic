@@ -6,8 +6,12 @@
 <div id="bloc_option"><div id="top_bleu"><div id="text_top">Latest News</div></div>
   <div id="center"><div id="text_centre_intro">
 
+      <table align="center" width="50%"><tr><td>
 
       <a class="twitter-timeline" href="https://twitter.com/gmic_ip?ref_src=twsrc%5Etfw">Tweets by gmic_ip</a> <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+      </td></tr></table>
+
 
 
   </div></div><div id="footer"><img alt="" src="images/footer.jpg" /></div></div>
