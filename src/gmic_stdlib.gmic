@@ -24044,7 +24044,8 @@ fx_gmicky_preview :
 #@gui : - <span foreground="purple"><b>2017/10/11</b> : version <i>2.1.1</i> (Current stable).</span>\n
 #@gui : "}
 #@gui : sep = separator()
-#@gui : url = link{"View latest minor changelog (2.1.x)","https://discuss.pixls.us/t/release-of-gmic-2-1-0"}
+#@gui : url = link{"View latest micro changelog (2.1.1)","https://discuss.pixls.us/t/release-of-gmic-2-1-1"}
+#@gui : url = link{"View latest minor changelog (2.1.0)","https://discuss.pixls.us/t/release-of-gmic-2-1-0"}
 #@gui : url = link{"View latest major changelog (2.0.0)","https://discuss.pixls.us/t/release-of-gmic-2-0-0"}
 
 #@gui User satisfaction survey : gui_survey, gui_survey_preview
