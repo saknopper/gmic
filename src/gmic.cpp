@@ -5900,14 +5900,14 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
 
           std::FILE *file = std::fopen(arg_command,"rb");
           if (file) {
-            print(images,0,"Import custom commands from file '%s'%s",
+            print(images,0,"Import commands from file '%s'%s",
                   arg_command_text,
                   !add_debug_info?" without debug info":"");
             add_commands(file,add_debug_info?arg_command:0);
             std::fclose(file);
           } else if (!cimg::strncasecmp(arg_command,"http://",7) ||
                      !cimg::strncasecmp(arg_command,"https://",8)) { // Try to read from network.
-            print(images,0,"Import custom commands from URL '%s'%s",
+            print(images,0,"Import commands from URL '%s'%s",
                   arg_command_text,
                   !add_debug_info?" without debug info":"");
             try {
@@ -12160,13 +12160,14 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
               commands_names[i].assign();
               commands_has_arguments[i].assign();
             }
-            print(images,0,"Discard definitions of all custom commmands (%u command%s discarded).",
+            print(images,0,"Discard definitions of all custom commmands (%u command%s).",
                   nb_commands,nb_commands>1?"s":"");
             cimg::mutex(23,0);
           } else { // Discard one or several custom command.
             cimg::mutex(23);
             g_list_c = CImg<char>::string(argument).get_split(CImg<char>::vector(','),0,false);
-            print(images,0,"Discard last definition of custom command%s '%s'",
+            print(images,0,"Discard definition%s of custom command%s '%s'",
+                  g_list_c.width()>1?"s":"",
                   g_list_c.width()>1?"s":"",
                   gmic_argument_text_printed());
             unsigned int nb_removed = 0;
