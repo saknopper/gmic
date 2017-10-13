@@ -6301,18 +6301,19 @@ _apply_channels : check "isint(${3=0}) && $3>=0 && $3<=2"
                      yiq_y,yiq_iq}
   else mode="$2" endif else mode="$2" endif
   v + e[^-1] "Apply command '$1' on channel '"$mode"' of image"$_gmic_s"." v -
-  _ac_$mode m _ac_precond:$_p m _ac_forward:$_f m _ac_backward:$_b
+  id={round(($|+u)*100000)}
+  _ac_$mode m _ac_precond$id:$_p m _ac_forward$id:$_f m _ac_backward$id:$_b
   repeat $! l[$>]
-    _ac_precond is_alpha={s==2" || "s==4}
+    _ac_precond$id is_alpha={s==2" || "s==4}
     if $is_alpha s c,{1-s} endif
-    _ac_forward[0] a c
+    _ac_forward$id[0] a c
     sh $_s _ac. "$1"
     if {$3==1} c. 0,255 elif {$3==2} n. 0,255 endif
     rm.
     if $is_alpha s c,{1-s} endif
-    _ac_backward[0] a c
+    _ac_backward$id[0] a c
   endl done
-  uncommand _ac_precond,_ac_forward,_ac_backward
+  uncommand _ac_precond$id,_ac_forward$id,_ac_backward$id
   v +
 
 _ac :
