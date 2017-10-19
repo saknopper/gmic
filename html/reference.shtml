@@ -56,7 +56,7 @@
 <a id="section0"><h2>Version</h2></a> 
 <pre><font color="blue"><b>gmic:</b> GREYC's Magic for Image Computing.</font> 
  
-       Version <font color="brown"><b>2.1.1</b></font>, Copyright (c) 2008-2017, David Tschumperl&eacute; 
+       Version <font color="brown"><b>2.1.2 (pre-release #171019)</b></font>, Copyright (c) 2008-2017, David Tschumperl&eacute; 
        (<a href="http://gmic.eu">http://gmic.eu</a>) 
 </pre> 
 <h2><a href="#toc"><img alt="" border="0" src="img/back_top.png" />&nbsp;&nbsp;</a><a id="section1">Usage</a></h2>
@@ -363,7 +363,7 @@
        . '<b><font color="#005090">$_prerelease</font></b>': For pre-releases only, the date of the pre-release as '<b><font color="#009000">mmddyy</font></b>'. 
           For stable releases, this variable is not defined. 
        . '<b><font color="#005090">$_version</font></b>': A 3-digits number telling about the current version of the <b><font color="#009000">G'MIC</font></b> interpreter 
-          (currently '<b><font color="#009000">211</font></b>'). 
+          (currently '<b><font color="#009000">212</font></b>'). 
        . '<b><font color="#005090">$_vt100</font></b>': Set to <b><font color="#009000">1</font></b> (default value) if colored text output is allowed on the console. 
        . '<b><font color="#005090">$_path_rc</font></b>': The path to the <b><font color="#009000">G'MIC</font></b> folder used to store resources and configuration files 
          (its value is OS-dependent). 
