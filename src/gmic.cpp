@@ -3932,7 +3932,7 @@ CImg<char> gmic::substitute_item(const char *const source,
       CImg<char>(nsource0,(unsigned int)(nsource - nsource0),1,1,1,true).
         append_string_to(substituted_items,ptr_sub);
     } else { // '{...}', '...' or '${...}' expression found.
-      bool is_braces = false, is_substituted = false;
+      bool is_2dollars = false, is_braces = false, is_substituted = false;
       int ind = 0, l_inbraces = 0;
       char sep = 0;
       _ind.assign();
@@ -4346,9 +4346,10 @@ CImg<char> gmic::substitute_item(const char *const source,
             append_string_to(substituted_items,ptr_sub);
         continue;
 
-        //  '${...}' expressions.
-      } else if (nsource[1]=='{') {
-        const char *const ptr_beg = nsource + 2, *ptr_end = ptr_beg; unsigned int p = 0;
+        //  '${...}' and '$${...}' expressions.
+      } else if (nsource[1]=='{' || (nsource[1]=='$' && nsource[2]=='{')) {
+        is_2dollars = nsource[1]=='$';
+        const char *const ptr_beg = nsource + 2 + (is_2dollars?1:0), *ptr_end = ptr_beg; unsigned int p = 0;
         for (p = 1; p>0 && *ptr_end; ++ptr_end) { if (*ptr_end=='{') ++p; if (*ptr_end=='}') --p; }
         if (p) {
           CImg<char>::append_string_to(*(nsource++),substituted_items,ptr_sub);
@@ -4415,6 +4416,26 @@ CImg<char> gmic::substitute_item(const char *const source,
         CImg<char>(substr.data(),(unsigned int)std::strlen(substr),1,1,1,true).
           append_string_to(substituted_items,ptr_sub);
         nsource+=2;
+
+        // Substitute '$$command' and '$${command}' -> Source of custom command.
+      } else if (nsource[1]=='$' &&
+                 (((is_braces && cimg_sscanf(inbraces,"%255[a-zA-Z0-9_]",
+                                             substr.assign(256).data())==1) &&
+                   !inbraces[std::strlen(substr)]) ||
+                  (cimg_sscanf(nsource + 2,"%255[a-zA-Z0-9_]",substr.assign(256).data())==1)) &&
+                 (*substr<'0' || *substr>'9')) {
+        const CImg<char>& name = is_braces?inbraces:substr;
+        const unsigned int
+          hash = hashcode(name,false),
+          l_name = is_braces?l_inbraces + 4:(unsigned int)std::strlen(name) + 2;
+        unsigned int uind = 0;
+        if (search_sorted(name,commands_names[hash],commands_names[hash].size(),uind)) {
+          CImgList<char> sc = CImg<char>::string(commands[hash][uind],false,true).get_split(CImg<char>::vector(' '));
+          cimglist_for(sc,l) if (sc(l,0)==1) sc.remove(l--); // Discard debug info
+          (sc>'y').autocrop(' ').unroll('x').move_to(inbraces);
+          inbraces.append_string_to(substituted_items,ptr_sub);
+        }
+        nsource+=l_name;
 
         // Substitute '$name' and '${name}' -> Variable, image indice or environment variable.
       } else if ((((is_braces && cimg_sscanf(inbraces,"%255[a-zA-Z0-9_]",
