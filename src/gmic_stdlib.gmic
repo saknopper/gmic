@@ -582,6 +582,9 @@ _help_usage :
 \n       . '"$c"$_path_user"$n"': The path to the "${-GMIC}" user file "${g}".gmic"$n" or "${g}"user.gmic"$n" (its value is
 \n          OS-dependent).
 \n
+\n  - '"$c"$$name"$n"' and '"$c"$${name}"$n"' are both substituted by the G'MIC script code of the specified named
+\n     "${g}"custom command"$n", or by an empty string if no custom command with specified name exists.
+\n
 \n  - '"$c"${\"command line\"}"$n"' is substituted by the "${g}"status value"$n" set by the execution of the specified
 \n     command line (see command '"${c}"status"$n"' to learn more about status). Expression '"$c"${}"$n"' thus stands
 \n     for the "${g}"current status value"$n".
