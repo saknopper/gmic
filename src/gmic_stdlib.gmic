@@ -20296,6 +20296,123 @@ _x_grab_color :
   frame. 10,10,0
   r2dx. 24
 
+#@cli x_hanoi
+#@cli : Launch the Tower of Hanoi game.
+x_hanoi :
+  if {!{*,u}} error[0--3] "Command '$0': No display available." return endif
+  v - use_vt100 g=$_gmic_g c=$_gmic_c n=$_gmic_n r=$_gmic_r v +
+  e[] "\n
+------ "${g}"Tower of Hanoi"$n" ----------------------\n
+----\n
+---- "${c}"Left button"$n" and "${c}"mouse"$n" to move a disk.\n
+---- "${c}"Right button"$n" to rotate 3d view.\n
+---- Keys '"${c}"CTRL+D"$n"' to increase window size.\n
+---- Keys '"${c}"CTRL+C"$n"' to reset window size.\n
+---- Keys '"${c}"ESC"$n"' or '"${c}"Q"$n"' to exit.\n
+----\n
+-------------------------------------------"
+  l[] v -
+  l[] # Create 3d rods
+    cylinder3d 1,10 r3d 1,0,0,90
+    --+3d 10,0,0  ---3d.. 10,0,0 col3d 190,151,91
+    box3d 30,1,10 -3d. 15,0,5 col3d. 150,111,51
+    +3d nm rods3d
+  endl
+
+  l[] # Create 3d disks
+    6,1,1,3,'[360*x/w,1,1]' hsv2rgb.
+    ytop0=0
+    repeat {0,w}
+      R={3-0.3*$>}
+      r={1.6-0.22*$>}
+      torus3d $R,$r,36,20
+      /3d. 1,1,{0.3+$r}
+      r3d. 1,0,0,90 -3d. 0,0.8,0
+      col3d. {0,I[$>]} nm. disk3d$>
+      a$>=0
+      x$>=0
+      y$>=$ytop0
+      h$>={1.8*$r/(0.3+$r)}
+      ytop0+=${h$>}
+    done
+    rm[0]
+  endl
+
+  w[] 640,400,0,"[G"{`39`}"MIC] Tower of Hanoi"
+  1,3,1,3,'y==0?[32,100,128]:y==1?[64,0,0]:[0,0,0]' r. {*,w},{*,h},1,3,3 nm. background
+  buttons,motion3d_x,motion3d_y=0
+  x,rod,rod_source,rod_target,selected=-1
+  do
+
+    # Display 3d view for current game state.
+    repeat 6 --r3d[disk3d$>] 1,1,1,${a$>} +3d. {10*(${x$>}-1)},-${y$>},0 done +3d[-6--1] +3d. [rods3d]
+    r3d. 1,0,0,20
+    r3d. 0,1,0.3,{5*cos(1.5*$|)}
+    r3d. 0.3,0,1,{3*sin(0.8*$|)}
+    r3d. 1,0,0,$motion3d_y
+    r3d. 0,-1,0,$motion3d_x
+    *3d. 20
+    [background] j3d. ..,50%,70%,10,1,5,0,1,800,200,0,-3000,0.15,0.2
+    w. wait 40
+    if {{*,CTRLLEFT}&&{*,D}} w[] {w*1.5},{h*1.5} elif {{*,CTRLLEFT}&&{*,C}} w[] {w},{h} endif
+    rm[-2,-1]
+
+    # Get top disks for each rod.
+    top0,top1,top2,ytop0,ytop1,ytop2=-1
+    repeat 6
+      rod={round(${x$>})}
+      if {$selected!=$>" && "${y$>}+${h$>}>${ytop$rod}} ytop$rod={${y$>}+${h$>}} top$rod=$> endif
+    done
+
+    # Manage user events.
+    prev_buttons=$buttons
+    mouse_x,mouse_y,buttons={*,x},{*,y},{*,b}
+    if {$mouse_x>=0} x={2*$mouse_x/{*,w}} rod={round($x)} endif
+
+    if {$mouse_x>=0" && "$buttons&2} # Right mouse button
+      motion3d_x={0.2*($mouse_x-{*,w}/2)}
+      motion3d_y={0.2*($mouse_y-{*,h}/2)}
+
+    elif {$mouse_x>=0" && "$buttons&1} # Left mouse button
+
+      if {$selected<0} # Select a disk
+        selected=${top$rod}
+        rod_source={$selected<0?-1:$rod}
+      endif
+
+      if {$selected>=0" && "$rod>=0} # Move a selected disk
+        if {${y$selected}<11} y$selected={min(11,${y$selected}+3)}
+        else
+          x$selected+={d=$rod-${x$selected};sign(d)*min(0.3,abs(d))}
+          y$selected={x=${x$selected};11+1.5*sin(pi*abs(x-round(x)))}
+          a$selected={x=${x$selected};45*sin(pi*abs(x-round(x)))}
+        endif
+      endif
+
+    elif {!$buttons} # No mouse button
+
+      if {$rod>=0" && "$selected>=0}
+        if {$rod_target<0} rod_target=$rod endif
+
+        x$selected=$rod_target
+        a$selected=0
+        ytop={max(0,${ytop$rod_target})}
+        if {${y$selected}>$ytop} y$selected={max($ytop,${y$selected}-3)}
+        else x,rod,rod_source,rod_target,selected=-1
+        endif
+      endif
+
+    endif
+
+    if {!($buttons&2)} # Slowly go back to initial 3d view
+      motion3d_x-={sign($motion3d_x)*min(1,abs($motion3d_x))}
+      motion3d_y-={sign($motion3d_y)*min(1,abs($motion3d_y))}
+    endif
+
+  while {{*}" && "!{*,ESC}" && "!{*,Q}}
+  w[] 0
+  rm endl v +
+
 #@cli x_histogram
 #@cli : Launch the histogram demo.
 x_histogram :
