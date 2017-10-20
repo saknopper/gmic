@@ -20352,11 +20352,8 @@ x_hanoi :
     # Display 3d view for current game state.
     repeat 6 --r3d[disk3d$>] 1,1,1,${a$>} +3d. {10*(${x$>}-1)},-${y$>},0 done +3d[-6--1] +3d. [rods3d]
     r3d. 1,0,0,20
-    r3d. 0,1,0.3,{5*cos(1.5*$|)}
-    r3d. 0.3,0,1,{3*sin(0.8*$|)}
-    r3d. 1,0,0,$motion3d_y
-    r3d. 0,-1,0,$motion3d_x
-    *3d. 20
+    if {!($buttons&2)} r3d. 0,1,0.3,{5*cos(1.5*$|)} r3d. 0.3,0,1,{3*sin(0.8*$|)} endif
+    r3d. 1,0,0,$motion3d_y r3d. 0,-1,0,$motion3d_x *3d. 20
     [background] j3d. ..,50%,70%,10,1,5,0,1,800,200,0,-3000,0.15,0.2
     t. "#Moves: "$nb_moves,2%,92%,20,1,255
     w. wait 40
