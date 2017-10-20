@@ -20314,10 +20314,9 @@ x_hanoi :
   l[] v -
   l[] # Create 3d rods
     cylinder3d 1,10 r3d 1,0,0,90
-    --+3d 10,0,0  ---3d.. 10,0,0 col3d 190,151,91
-    box3d 30,1,10 -3d. 15,0,5 col3d. 150,111,51
+    --+3d 10,0,0  ---3d.. 10,0,0
+    box3d 30,1,10 -3d. 15,0,5
     +3d nm rods3d
-
     400,400 noise. 1 fftpolar. f.. 'r=sqrt((x-w/2)^2+.01*(y-h/2)^2);i/(1+r)' ifftpolar[-2,-1] n. 0,31
     (86,50,50;132,36,12;218,109,66;231,207,180;255,193,140) permute. yzcx r. 32,1,1,3,3
     map.. . rm. b. 2% b. x,1% sharpen. 100 c. 0,255
@@ -20325,7 +20324,7 @@ x_hanoi :
   endl
 
   l[] # Create 3d disks
-    6,1,1,3,'[360*x/w,1,1]' hsv2rgb.
+    6,1,1,3,'[360*x/w,0.5,0.6]' hsi2rgb.
     ytop0=0
     repeat {0,w}
       R={3-0.3*$>}
@@ -20347,7 +20346,7 @@ x_hanoi :
   1,3,1,3,'y==0?[32,100,128]:y==1?[64,0,0]:[0,0,0]' r. {*,w},{*,h},1,3,3 nm. background
   nb_moves,buttons,motion3d_x,motion3d_y=0
   x,rod,rod_source,rod_target,selected=-1
-  fading=$|
+  fading=$| error=0
   do
 
     # Display 3d view for current game state.
@@ -20357,6 +20356,8 @@ x_hanoi :
     r3d. 1,0,0,$motion3d_y r3d. 0,-1,0,$motion3d_x *3d. 20
     [background] j3d. ..,50%,70%,10,1,5,0,1,800,200,0,-3000,0.15,0.2
     t. "#Moves: "$nb_moves,2%,92%,20,1,255
+
+    if $error (255^0^0) r. .. j.. .,0,0,0,0,$error error={max(0,$error-0.2)} rm. endif
     if {$|-$fading<1}  *. {$|-$fading} endif
     w. wait 40
     if {{*,CTRLLEFT}&&{*,D}} w[] {w*1.5},{h*1.5} elif {{*,CTRLLEFT}&&{*,C}} w[] {w},{h} endif
@@ -20399,7 +20400,7 @@ x_hanoi :
       if {$rod>=0" && "$selected>=0}
         if {$rod_target<0}
           if {${top$rod}<$selected} rod_target=$rod nb_moves+={$rod_target!=$rod_source} # Allowed move
-          else rod_target=$rod_source # Forbidden move
+          else rod_target=$rod_source error=0.8 # Forbidden move
           endif
         endif
 
