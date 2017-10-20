@@ -370,6 +370,9 @@
        . '<b><font color="#005090">$_path_user</font></b>': The path to the <b><font color="#009000">G'MIC</font></b> user file <b><font color="#009000">.gmic</font></b> or <b><font color="#009000">user.gmic</font></b> (its value is 
           OS-dependent). 
  
+  - '<b><font color="#005090">$$name</font></b>' and '<b><font color="#005090">$${name}</font></b>' are both substituted by the G'MIC script code of the specified named 
+     <b><font color="#009000">custom command</font></b>, or by an empty string if no custom command with specified name exists. 
+ 
   - '<b><font color="#005090">${"command line"}</font></b>' is substituted by the <b><font color="#009000">status value</font></b> set by the execution of the specified 
      command line (see command '<b><font color="#005090">status</font></b>' to learn more about status). Expression '<b><font color="#005090">${}</font></b>' thus stands 
      for the <b><font color="#009000">current status value</font></b>. 
