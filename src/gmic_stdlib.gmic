@@ -20312,7 +20312,7 @@ x_hanoi :
 ---- Keys '"${c}"ESC"$n"' or '"${c}"Q"$n"' to exit.\n
 ----\n
 -------------------------------------------"
-  l[] v -
+  v - l[]
   l[] # Create 3d rods
     cylinder3d 1,10 r3d 1,0,0,90
     --+3d 10,0,0  ---3d.. 10,0,0
@@ -20413,8 +20413,7 @@ x_hanoi :
     endif
 
   while {{*}" && "!{*,ESC}" && "!{*,Q}}
-  w[] 0
-  rm endl v +
+  w[] 0 rm endl v +
 
 #@cli x_histogram
 #@cli : Launch the histogram demo.
