@@ -582,6 +582,9 @@ _help_usage :
 \n       . '"$c"$_path_user"$n"': The path to the "${-GMIC}" user file "${g}".gmic"$n" or "${g}"user.gmic"$n" (its value is
 \n          OS-dependent).
 \n
+\n  - '"$c"$$name"$n"' and '"$c"$${name}"$n"' are both substituted by the G'MIC script code of the specified named
+\n     "${g}"custom command"$n", or by an empty string if no custom command with specified name exists.
+\n
 \n  - '"$c"${\"command line\"}"$n"' is substituted by the "${g}"status value"$n" set by the execution of the specified
 \n     command line (see command '"${c}"status"$n"' to learn more about status). Expression '"$c"${}"$n"' thus stands
 \n     for the "${g}"current status value"$n".
@@ -4517,7 +4520,7 @@ update_server :
     replace_str "<i>David Tschumperl&#233;</i>","<i><a href=\""$url"\">David Tschumperl&#233;</a></i>"
     o cimgz:/tmp/update$_version.gmic,uchar
 
-    (210,211)
+    (210,211,212)
     repeat {w}
       v={i[$>]}
       _update_server_upload[] ${_path_rc}update$_version.gmic,plain_update$v.gmic
@@ -8992,7 +8995,7 @@ _jf_circle :
 #@cli : 'boundary_conditions' can be { 0=dirichlet | 1=neumann }.
 #@cli : Default values: 'size_y=size_x', 'size_z=1', 'threshold=255' and 'boundary_conditions=1'.
 dilate_threshold : check "isint($1) && $1>=1 && isint(${2=$1}) && $2>=1 && isint(${3=1}) && $3>=1 && ${4=255}>=0 && isint(${5=1}) && $5>=0"
-  e[^-1] "Erode image$? with mask $1x$2x$3, threshold $4 and "${arg\ $5,dirichlet,neumann}" boundary conditions."
+  e[^-1] "Dilate image$? with mask $1x$2x$3, threshold $4 and "${arg\ $5,dirichlet,neumann}" boundary conditions."
   v - l[]
     dx1={int($1/2)} dx2={$1-$dx1-1}
     dy1={int($2/2)} dy2={$2-$dy1-1}
@@ -18851,7 +18854,7 @@ demo : check "isint(${1=2}) && $1>=0 && $1<=2"
 -------------------------------------"
   v - l[]
   parallel_mode={1-if($1!=2,$1,$_cpus>=2)}
-  400,772,1,3 --plasma. 1,1,5 n. 0,230 water. 100
+  400,790,1,3 --plasma. 1,1,5 n. 0,230 water. 100
   (0.1;0.03^0;0.1^0.2;0.1) r. ..,3 *[-2,-1]
   (0;1) r. ..,..,1,1,3 pow. 1.5 n. 0.2,1.15 *[-2,-1] c. 0,255
 
@@ -18864,31 +18867,32 @@ demo : check "isint(${1=2}) && $1>=0 && $1<=2"
        "6- Fireworks\n"\
        "7- Fish-eye effect\n"\
        "8- Fourier filtering\n"\
-       "9- Histogram demo\n"\
-       "10- Hough transform\n"\
-       "11- Jawbreaker\n"\
-       "12- Virtual landscape\n"\
-       "13- The game of life\n"\
-       "14- Light effect\n"\
-       "15- Mandelbrot explorer\n"\
-       "16- 3d metaballs\n"\
-       "17- Minesweeper\n"\
-       "18- Minimal path\n"\
-       "19- Pacman\n"\
-       "20- Paint\n"\
-       "21- Plasma effect\n"\
-       "22- RGB quantization\n"\
-       "23- 3d reflection\n"\
-       "24- 3d rubber object\n"\
-       "25- Shade bobs\n"\
-       "26- Spline editor\n"\
-       "27- 3d starfield\n"\
-       "28- Tetris\n"\
-       "29- Tic-tac-toe\n"\
-       "30- Image waves\n"\
-       "31- Fractal whirls\n"\
-       "32- Color curves\n",0,0,22,1,255,255,255
-  commands=-x_2048,-x_blobs,-x_bouncing,-x_connect4,-x_fire,-x_fireworks,-x_fisheye,-x_fourier,-x_histogram,-x_hough,\
+       "9- Tower of Hanoi\n"\
+       "10- Histogram demo\n"\
+       "11- Hough transform\n"\
+       "12- Jawbreaker\n"\
+       "13- Virtual landscape\n"\
+       "14- The game of life\n"\
+       "15- Light effect\n"\
+       "16- Mandelbrot explorer\n"\
+       "17- 3d metaballs\n"\
+       "18- Minesweeper\n"\
+       "19- Minimal path\n"\
+       "20- Pacman\n"\
+       "21- Paint\n"\
+       "22- Plasma effect\n"\
+       "23- RGB quantization\n"\
+       "24- 3d reflection\n"\
+       "25- 3d rubber object\n"\
+       "26- Shade bobs\n"\
+       "27- Spline editor\n"\
+       "28- 3d starfield\n"\
+       "29- Tetris\n"\
+       "30- Tic-tac-toe\n"\
+       "31- Image waves\n"\
+       "32- Fractal whirls\n"\
+       "33- Color curves\n",0,0,22,1,255,255,255
+  commands=-x_2048,-x_blobs,-x_bouncing,-x_connect4,-x_fire,-x_fireworks,-x_fisheye,-x_fourier,-x_hanoi,-x_histogram,-x_hough,\
            -x_jawbreaker,-x_landscape,-x_life,-x_light,-x_mandelbrot,-x_metaballs3d,-x_minesweeper,-x_minimal_path,\
            -x_pacman,-x_paint,-x_plasma,-x_quantize_rgb,-x_reflection3d,-x_rubber3d,-x_shadebobs,\
            -x_spline,-x_starfield3d,-x_tetris,-x_tictactoe,-x_waves,-x_whirl,-_demo_color_curves
@@ -20292,6 +20296,124 @@ _x_grab_color :
   unserialize. -. 127 decompress_rle.
   frame. 10,10,0
   r2dx. 24
+
+#@cli x_hanoi
+#@cli : Launch the Tower of Hanoi game.
+x_hanoi :
+  if {!{*,u}} error[0--3] "Command '$0': No display available." return endif
+  v - use_vt100 g=$_gmic_g c=$_gmic_c n=$_gmic_n r=$_gmic_r v +
+  e[] "\n
+------ "${g}"Tower of Hanoi"$n" ---------------------\n
+----\n
+---- "${c}"Left button"$n" and "${c}"mouse"$n" to move a disk.\n
+---- "${c}"Right button"$n" to rotate 3d view.\n
+---- Keys '"${c}"CTRL+D"$n"' to increase window size.\n
+---- Keys '"${c}"CTRL+C"$n"' to reset window size.\n
+---- Keys '"${c}"ESC"$n"' or '"${c}"Q"$n"' to exit.\n
+----\n
+-------------------------------------------"
+  v - l[]
+  l[] # Create 3d rods
+    cylinder3d 1,10 r3d 1,0,0,90
+    --+3d 10,0,0  ---3d.. 10,0,0
+    box3d 30,1,10 -3d. 15,0,5
+    +3d nm rods3d
+    400,400 noise. 1 fftpolar. f.. 'r=sqrt((x-w/2)^2+.01*(y-h/2)^2);i/(1+r)' ifftpolar[-2,-1] n. 0,31
+    (86,50,50;132,36,12;218,109,66;231,207,180;255,193,140) permute. yzcx r. 32,1,1,3,3
+    map.. . rm. b. 2% b. x,1% sharpen. 100 c. 0,255
+    r3d.. 1,0,0,-90 texturize3d.. . r3d.. 1,0,0,90 rm.
+  endl
+
+  l[] # Create 3d disks
+    6,1,1,3,'[360*x/w,0.9,0.6]' hsi2rgb.
+    ytop0=0
+    repeat {0,w}
+      R,r={3-0.3*$>},{1.6-0.22*$>}
+      torus3d $R,$r,36,10
+      300,300 plasma. 1,1,3 b. 3 sharpen. 10 n. 150,255 1,1,1,3,{0,I[$>]} r. ..,..,1,3 rv[-2,-1] blend[-2,-1] lightness # Marble texture
+      texturize3d.. . rm.
+      /3d. 1,1,{0.3+$r} r3d. 1,0,0,90 -3d. 0,0.8,0
+      a$>,x$>,y$>,h$>=0,0,$ytop0,{1.8*$r/(0.3+$r)}
+      ytop0+=${h$>}
+      nm. disk3d$>
+    done
+    rm[0]
+  endl
+
+  w[] 640,400,0,"[G"{`39`}"MIC] Tower of Hanoi"
+  1,3,1,3,'y==0?[32,100,128]:y==1?[64,0,64]:[0,0,0]' r. {*,w},{*,h},1,3,3 nm. background
+  nb_moves,buttons,motion3d_x,motion3d_y=0
+  x,rod,rod_source,rod_target,selected=-1
+  fading=$| error=0
+  do
+
+    # Display 3d view for current game state.
+    repeat 6 --r3d[disk3d$>] 1,1,1,${a$>} +3d. {10*(${x$>}-1)},-${y$>},0 done +3d[-6--1] +3d. [rods3d]
+    r3d. 1,0,0,20
+    if {!($buttons&2)} r3d. 0,1,0.3,{5*cos(1.5*$|)} r3d. 0.3,0,1,{3*sin(0.8*$|)} endif
+    r3d. 1,0,0,$motion3d_y r3d. 0,-1,0,$motion3d_x *3d. 20
+    [background] j3d. ..,50%,70%,10,1,5,0,1,800,200,0,-3000,0.15,0.2
+    t. "#Moves: "$nb_moves,2%,92%,20,1,255
+
+    if $error (255^0^0) r. .. j.. .,0,0,0,0,$error error={max(0,$error-0.2)} rm. endif
+    if {$|-$fading<1}  *. {$|-$fading} endif
+    w. wait 40
+    if {{*,CTRLLEFT}&&{*,D}} w[] {w*1.5},{h*1.5} elif {{*,CTRLLEFT}&&{*,C}} w[] {w},{h} endif
+    rm[-2,-1]
+
+    # Get indice of top disk for each rod.
+    top0,top1,top2,ytop0,ytop1,ytop2=-1
+    repeat 6
+      rod={round(${x$>})}
+      if {$selected!=$>" && "${y$>}+${h$>}>${ytop$rod}} ytop$rod={${y$>}+${h$>}} top$rod=$> endif
+    done
+
+    # Manage user events.
+    prev_buttons=$buttons
+    mouse_x,mouse_y,buttons={*,x},{*,y},{*,b}
+    if {$mouse_x>=0} x={2.6*($mouse_x/{*,w}-0.5)+1} rod={round($x)} endif
+
+    if {$mouse_x>=0" && "$buttons&2} # Right mouse button
+      motion3d_x={0.2*($mouse_x-{*,w}/2)}
+      motion3d_y={0.2*($mouse_y-{*,h}/2)}
+
+    elif {$mouse_x>=0" && "$buttons&1} # Left mouse button
+      if {$selected<0} # Select a disk
+        selected=${top$rod}
+        rod_source={$selected<0?-1:$rod}
+      endif
+      if {$selected>=0" && "$rod>=0} # Move a selected disk
+        if {${y$selected}<11} y$selected={min(11,${y$selected}+3)}
+        else
+          x$selected+={d=$rod-${x$selected};sign(d)*min(0.3,abs(d))}
+          y$selected={x=${x$selected};11+1.5*sin(pi*abs(x-round(x)))}
+          a$selected={x=${x$selected};45*sin(pi*abs(x-round(x)))}
+        endif
+      endif
+
+    elif {!$buttons} # No mouse button
+      if {$rod>=0" && "$selected>=0}
+        if {$rod_target<0}
+          if {${top$rod}<$selected} rod_target=$rod nb_moves+={$rod_target!=$rod_source} # Allowed move
+          else rod_target=$rod_source error=0.8 # Forbidden move
+          endif
+        endif
+        x$selected=$rod_target
+        a$selected=0
+        ytop={max(0,${ytop$rod_target})}
+        if {${y$selected}>$ytop} y$selected={max($ytop,${y$selected}-3)}
+        else x,rod,rod_source,rod_target,selected=-1
+        endif
+      endif
+    endif
+
+    if {!($buttons&2)} # Slowly go back to initial 3d view
+      motion3d_x-={sign($motion3d_x)*min(1,abs($motion3d_x))}
+      motion3d_y-={sign($motion3d_y)*min(1,abs($motion3d_y))}
+    endif
+
+  while {{*}" && "!{*,ESC}" && "!{*,Q}}
+  w[] 0 rm endl v +
 
 #@cli x_histogram
 #@cli : Launch the histogram demo.
@@ -24044,6 +24166,7 @@ fx_gmicky_preview :
 #@gui : - <b>2017/05/29</b> : version <i>2.0.0</i>.\n
 #@gui : - <b>2017/10/09</b> : version <i>2.1.0</i>.\n
 #@gui : - <span foreground="purple"><b>2017/10/11</b> : version <i>2.1.1</i> (Current stable).</span>\n
+#@gui : - <b>2017/10/19</b> : version <i>2.1.2</i> (Current development).\n
 #@gui : "}
 #@gui : sep = separator()
 #@gui : url = link{"View latest micro changelog (2.1.1)","https://discuss.pixls.us/t/release-of-gmic-2-1-1"}
@@ -34164,7 +34287,7 @@ fx_custom_code_preview : skip "${1=-skip ,}"
   endif
 
 #@gui Games &amp; demos : fx_gmic_demos, fx_gmic_demos_preview
-#@gui : Selection = choice("2048","Blobs editor","Bouncing balls","Connect-4","Fire effect","Fireworks","Fish-eye effect","Fourier filtering",
+#@gui : Selection = choice("2048","Blobs editor","Bouncing balls","Connect-4","Fire effect","Fireworks","Fish-eye effect","Fourier filtering","Hanoi tower",
 #@gui : "Histogram","Hough transform","Jawbreaker","Virtual landscape","The game of life","Light effect","Mandelbrot explorer","3d metaballs","Minesweeper",
 #@gui : "Minimal path","Pacman","Paint","Plasma effect","RGB quantization","3d reflection","3d rubber object","Shadebobs","Spline editor",
 #@gui : "3d starfield","Tetris","Tic-tac-toe","3d waves","Fractal whirl")
@@ -34176,7 +34299,7 @@ fx_custom_code_preview : skip "${1=-skip ,}"
 #@gui : </small>"}
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2014/10/09</i>.</small>")
 fx_gmic_demos :
-  coms=2048,blobs,bouncing,connect4,fire,fireworks,fisheye,fourier,histogram,hough,jawbreaker,landscape,life,light,\
+  coms=2048,blobs,bouncing,connect4,fire,fireworks,fisheye,fourier,hanoi,histogram,hough,jawbreaker,landscape,life,light,\
        mandelbrot,metaballs3d,minesweeper,minimal_path,pacman,paint,plasma,quantize_rgb,reflection3d,\
        rubber3d,shadebobs,spline,starfield3d,tetris,tictactoe,waves,whirl
   com=${arg\ {1+$1},$coms}
