@@ -18854,7 +18854,7 @@ demo : check "isint(${1=2}) && $1>=0 && $1<=2"
 -------------------------------------"
   v - l[]
   parallel_mode={1-if($1!=2,$1,$_cpus>=2)}
-  400,772,1,3 --plasma. 1,1,5 n. 0,230 water. 100
+  400,790,1,3 --plasma. 1,1,5 n. 0,230 water. 100
   (0.1;0.03^0;0.1^0.2;0.1) r. ..,3 *[-2,-1]
   (0;1) r. ..,..,1,1,3 pow. 1.5 n. 0.2,1.15 *[-2,-1] c. 0,255
 
@@ -18867,31 +18867,32 @@ demo : check "isint(${1=2}) && $1>=0 && $1<=2"
        "6- Fireworks\n"\
        "7- Fish-eye effect\n"\
        "8- Fourier filtering\n"\
-       "9- Histogram demo\n"\
-       "10- Hough transform\n"\
-       "11- Jawbreaker\n"\
-       "12- Virtual landscape\n"\
-       "13- The game of life\n"\
-       "14- Light effect\n"\
-       "15- Mandelbrot explorer\n"\
-       "16- 3d metaballs\n"\
-       "17- Minesweeper\n"\
-       "18- Minimal path\n"\
-       "19- Pacman\n"\
-       "20- Paint\n"\
-       "21- Plasma effect\n"\
-       "22- RGB quantization\n"\
-       "23- 3d reflection\n"\
-       "24- 3d rubber object\n"\
-       "25- Shade bobs\n"\
-       "26- Spline editor\n"\
-       "27- 3d starfield\n"\
-       "28- Tetris\n"\
-       "29- Tic-tac-toe\n"\
-       "30- Image waves\n"\
-       "31- Fractal whirls\n"\
-       "32- Color curves\n",0,0,22,1,255,255,255
-  commands=-x_2048,-x_blobs,-x_bouncing,-x_connect4,-x_fire,-x_fireworks,-x_fisheye,-x_fourier,-x_histogram,-x_hough,\
+       "9- Tower of Hanoi\n"\
+       "10- Histogram demo\n"\
+       "11- Hough transform\n"\
+       "12- Jawbreaker\n"\
+       "13- Virtual landscape\n"\
+       "14- The game of life\n"\
+       "15- Light effect\n"\
+       "16- Mandelbrot explorer\n"\
+       "17- 3d metaballs\n"\
+       "18- Minesweeper\n"\
+       "19- Minimal path\n"\
+       "20- Pacman\n"\
+       "21- Paint\n"\
+       "22- Plasma effect\n"\
+       "23- RGB quantization\n"\
+       "24- 3d reflection\n"\
+       "25- 3d rubber object\n"\
+       "26- Shade bobs\n"\
+       "27- Spline editor\n"\
+       "28- 3d starfield\n"\
+       "29- Tetris\n"\
+       "30- Tic-tac-toe\n"\
+       "31- Image waves\n"\
+       "32- Fractal whirls\n"\
+       "33- Color curves\n",0,0,22,1,255,255,255
+  commands=-x_2048,-x_blobs,-x_bouncing,-x_connect4,-x_fire,-x_fireworks,-x_fisheye,-x_fourier,-x_hanoi,-x_histogram,-x_hough,\
            -x_jawbreaker,-x_landscape,-x_life,-x_light,-x_mandelbrot,-x_metaballs3d,-x_minesweeper,-x_minimal_path,\
            -x_pacman,-x_paint,-x_plasma,-x_quantize_rgb,-x_reflection3d,-x_rubber3d,-x_shadebobs,\
            -x_spline,-x_starfield3d,-x_tetris,-x_tictactoe,-x_waves,-x_whirl,-_demo_color_curves
