@@ -20399,7 +20399,7 @@ x_hanoi :
 
       if {$rod>=0" && "$selected>=0}
         if {$rod_target<0}
-          if {${top$rod}<$selected} rod_target=$rod nb_moves+=1 # Allowed move
+          if {${top$rod}<$selected} rod_target=$rod nb_moves+={$rod_target!=$rod_source} # Allowed move
           else rod_target=$rod_source # Forbidden move
           endif
         endif
