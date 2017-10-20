@@ -20324,26 +20324,23 @@ x_hanoi :
   endl
 
   l[] # Create 3d disks
-    6,1,1,3,'[360*x/w,0.5,0.6]' hsi2rgb.
+    6,1,1,3,'[360*x/w,0.9,0.6]' hsi2rgb.
     ytop0=0
     repeat {0,w}
-      R={3-0.3*$>}
-      r={1.6-0.22*$>}
-      torus3d $R,$r,36,20
-      /3d. 1,1,{0.3+$r}
-      r3d. 1,0,0,90 -3d. 0,0.8,0
-      col3d. {0,I[$>]} nm. disk3d$>
-      a$>=0
-      x$>=0
-      y$>=$ytop0
-      h$>={1.8*$r/(0.3+$r)}
+      R,r={3-0.3*$>},{1.6-0.22*$>}
+      torus3d $R,$r,36,10
+      300,300 plasma. 1,1,3 b. 3 sharpen. 10 n. 150,255 1,1,1,3,{0,I[$>]} r. ..,..,1,3 rv[-2,-1] blend[-2,-1] lightness # Marble texture
+      texturize3d.. . rm.
+      /3d. 1,1,{0.3+$r} r3d. 1,0,0,90 -3d. 0,0.8,0
+      a$>,x$>,y$>,h$>=0,0,$ytop0,{1.8*$r/(0.3+$r)}
       ytop0+=${h$>}
+      nm. disk3d$>
     done
     rm[0]
   endl
 
   w[] 640,400,0,"[G"{`39`}"MIC] Tower of Hanoi"
-  1,3,1,3,'y==0?[32,100,128]:y==1?[64,0,0]:[0,0,0]' r. {*,w},{*,h},1,3,3 nm. background
+  1,3,1,3,'y==0?[32,100,128]:y==1?[64,0,64]:[0,0,0]' r. {*,w},{*,h},1,3,3 nm. background
   nb_moves,buttons,motion3d_x,motion3d_y=0
   x,rod,rod_source,rod_target,selected=-1
   fading=$| error=0
@@ -20380,12 +20377,10 @@ x_hanoi :
       motion3d_y={0.2*($mouse_y-{*,h}/2)}
 
     elif {$mouse_x>=0" && "$buttons&1} # Left mouse button
-
       if {$selected<0} # Select a disk
         selected=${top$rod}
         rod_source={$selected<0?-1:$rod}
       endif
-
       if {$selected>=0" && "$rod>=0} # Move a selected disk
         if {${y$selected}<11} y$selected={min(11,${y$selected}+3)}
         else
@@ -20396,14 +20391,12 @@ x_hanoi :
       endif
 
     elif {!$buttons} # No mouse button
-
       if {$rod>=0" && "$selected>=0}
         if {$rod_target<0}
           if {${top$rod}<$selected} rod_target=$rod nb_moves+={$rod_target!=$rod_source} # Allowed move
           else rod_target=$rod_source error=0.8 # Forbidden move
           endif
         endif
-
         x$selected=$rod_target
         a$selected=0
         ytop={max(0,${ytop$rod_target})}
@@ -20411,7 +20404,6 @@ x_hanoi :
         else x,rod,rod_source,rod_target,selected=-1
         endif
       endif
-
     endif
 
     if {!($buttons&2)} # Slowly go back to initial 3d view
