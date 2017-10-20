@@ -20302,7 +20302,7 @@ x_hanoi :
   if {!{*,u}} error[0--3] "Command '$0': No display available." return endif
   v - use_vt100 g=$_gmic_g c=$_gmic_c n=$_gmic_n r=$_gmic_r v +
   e[] "\n
------- "${g}"Tower of Hanoi"$n" ----------------------\n
+------ "${g}"Tower of Hanoi"$n" ---------------------\n
 ----\n
 ---- "${c}"Left button"$n" and "${c}"mouse"$n" to move a disk.\n
 ---- "${c}"Right button"$n" to rotate 3d view.\n
@@ -20340,7 +20340,7 @@ x_hanoi :
 
   w[] 640,400,0,"[G"{`39`}"MIC] Tower of Hanoi"
   1,3,1,3,'y==0?[32,100,128]:y==1?[64,0,0]:[0,0,0]' r. {*,w},{*,h},1,3,3 nm. background
-  buttons,motion3d_x,motion3d_y=0
+  nb_moves,buttons,motion3d_x,motion3d_y=0
   x,rod,rod_source,rod_target,selected=-1
   do
 
@@ -20353,6 +20353,7 @@ x_hanoi :
     r3d. 0,-1,0,$motion3d_x
     *3d. 20
     [background] j3d. ..,50%,70%,10,1,5,0,1,800,200,0,-3000,0.15,0.2
+    t. "#Moves: "$nb_moves,2%,92%,20,1,255
     w. wait 40
     if {{*,CTRLLEFT}&&{*,D}} w[] {w*1.5},{h*1.5} elif {{*,CTRLLEFT}&&{*,C}} w[] {w},{h} endif
     rm[-2,-1]
@@ -20392,7 +20393,11 @@ x_hanoi :
     elif {!$buttons} # No mouse button
 
       if {$rod>=0" && "$selected>=0}
-        if {$rod_target<0} rod_target=$rod endif
+        if {$rod_target<0}
+          if {${top$rod}<$selected} rod_target=$rod nb_moves+=1 # Allowed move
+          else rod_target=$rod_source # Forbidden move
+          endif
+        endif
 
         x$selected=$rod_target
         a$selected=0
