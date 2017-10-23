@@ -20325,7 +20325,7 @@ x_hanoi :
   endl
 
   l[] # Create 3d disks
-    6,1,1,3,'[360*x/w,0.9*(1-(x/w)^0.5),0.6]' hsi2rgb.
+    6,1,1,3,'[360*x/w,0.9*(1-(x/w)^0.5),0.9]' hsi2rgb.
     ytop0=0
     repeat {0,w}
       R,r={3-0.3*$>},{1.6-0.22*$>}
@@ -20341,7 +20341,7 @@ x_hanoi :
   endl
 
   w[] 640,400,0,"[G"{`39`}"MIC] Tower of Hanoi"
-  1,3,1,3,'y==0?[32,100,128]:y==1?[64,0,64]:[0,0,0]' r. {*,w},{*,h},1,3,3 nm. background
+  1,3,1,3,'y==0?[32,128,100]:y==1?[64,16,0]:[0,0,0]' r. {*,w},{*,h},1,3,3 nm. background
   nb_moves,buttons,motion3d_x,motion3d_y=0
   x,rod,rod_source,rod_target,selected=-1
   fading=$| error=0
