@@ -901,7 +901,7 @@ _help_usage :
 \n          without the specification of an initializing expression.
 \n       . '"${c}"break()"$n"' and '"${c}"continue()"$n"' respectively breaks and continues the current running bloc
 \n          (loop, init or main environment).
-\n       . '"${c}"date(attr,path)"$n"' returns the date attribute for the given 'path' (file or directory),
+\n       . '"${c}"date(_attr,path)"$n"' returns the date attribute for the given 'path' (file or directory),
 \n          with '"${g}"attr"$n"' being "$g"{ 0=year | 1=month | 2=day | 3=day of week | 4=hour | 5=minute |
 \n          6=second }"$n".
 \n       . '"${c}"date(_attr)"$n" returns the specified attribute for the current (locale) date.
@@ -4532,10 +4532,7 @@ update_server :
 
   # Display list of filters (sorted alphabetically) on stdout.
   v + e[] "> Output list of filters in stdout.\n" v -
-  -x "date +%Y,%m,%d,%H >"${-path_tmp}date.dlm
-  ${-path_tmp}date.dlm
-  echo_stdout "*** List of filters in the G\47MIC plug-in ("$nb_filters" filters, on "{i}/{i(1)}/{i(2)}" "{i[3]}:00") ***\n"
-  rm.
+  echo_stdout "*** List of filters in the G\47MIC plug-in ("$nb_filters" filters, on "{date(0)}/{date(1)}/{date(2)}" "{date(4)}:{date(5)}") ***\n"
   echo_stdout "* List of filters, sorted by path:\n"
   repeat $! l[$>]
     ({'{0,n}'}) if {i!=_'!'}
@@ -34532,18 +34529,6 @@ fx_solve_maze_preview :
   ellipse $1%,$2%,3,3,0,1,0x1,0
   ellipse $3%,$4%,3,3,0,1,${7-9}
   ellipse $3%,$4%,3,3,0,1,0x1,0
-
-
-xdog : skip ${1=2},${2=2},${3=30}
-  s,k,p=$1,$2,$3
-  repeat $! l[$>]
-    --b {$k*$s} *. $p
-    b.. $s *.. {1+$p}
-    -
-  endl done
-
-
-
 
 
 # Local Variables:
