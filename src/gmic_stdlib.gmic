@@ -903,7 +903,7 @@ _help_usage :
 \n          (loop, init or main environment).
 \n       . '"${c}"date(_attr,path)"$n"' returns the date attribute for the given 'path' (file or directory),
 \n          with '"${g}"attr"$n"' being "$g"{ 0=year | 1=month | 2=day | 3=day of week | 4=hour | 5=minute |
-\n          6=second }"$n".
+\n          6=second }"$n", or a vector of those values.
 \n       . '"${c}"date(_attr)"$n" returns the specified attribute for the current (locale) date.
 \n       . '"${c}"print(expr1,expr2,...)"$n" or '"${c}"print(#ind)"$n" prints the value of the specified expressions
 \n          (or image information) on the console, and returns the value of the last expression
