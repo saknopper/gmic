@@ -20374,8 +20374,7 @@ x_hanoi :
     if {$mouse_x>=0} x={2.6*($mouse_x/{*,w}-0.5)+1} rod={round($x)} endif
 
     if {$mouse_x>=0" && "$buttons&2} # Right mouse button
-      motion3d_x={0.2*($mouse_x-{*,w}/2)}
-      motion3d_y={0.2*($mouse_y-{*,h}/2)}
+      motion3d_x,motion3d_y={([$mouse_x,$mouse_y]/[{*,w},{*,h}]-0.5)*90}
 
     elif {$mouse_x>=0" && "$buttons&1} # Left mouse button
       if {$selected<0} # Select a disk
