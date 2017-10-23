@@ -20325,12 +20325,12 @@ x_hanoi :
   endl
 
   l[] # Create 3d disks
-    6,1,1,3,'[360*x/w,0.9,0.6]' hsi2rgb.
+    6,1,1,3,'[360*x/w,0.9*(1-(x/w)^0.5),0.6]' hsi2rgb.
     ytop0=0
     repeat {0,w}
       R,r={3-0.3*$>},{1.6-0.22*$>}
       torus3d $R,$r,36,10
-      300,300 plasma. 1,1,3 b. 3 sharpen. 10 n. 150,255 1,1,1,3,{0,I[$>]} r. ..,..,1,3 rv[-2,-1] blend[-2,-1] lightness # Marble texture
+      300,300 plasma. 1,1,3 b. 20 sharpen. 300 n. 150,255 1,1,1,3,{0,I[$>]} r. ..,..,1,3 rv[-2,-1] blend[-2,-1] lightness,0.75 # Marble texture
       texturize3d.. . rm.
       /3d. 1,1,{0.3+$r} r3d. 1,0,0,90 -3d. 0,0.8,0
       a$>,x$>,y$>,h$>=0,0,$ytop0,{1.8*$r/(0.3+$r)}
