@@ -25,7 +25,7 @@
 \newcommand{\Cb}[1]{\textcolor{cb}{#1}} 
 \newcommand{\Cc}[1]{\textcolor{cc}{#1}} 
 \newcommand{\Cd}[1]{\textcolor{cd}{#1}} 
-\title{\fbox{\parbox{\textwidth}{\begin{center}\vspace*{2cm}\includegraphics[width=12cm]{gmic_banner.jpg}\\\vspace*{1cm}{\Huge \textbf{The Handbook}\\{\small Version 2.1.2 (pre-release \#171019)}\\\vspace*{1cm}}\end{center}}}} 
+\title{\fbox{\parbox{\textwidth}{\begin{center}\vspace*{2cm}\includegraphics[width=12cm]{gmic_banner.jpg}\\\vspace*{1cm}{\Huge \textbf{The Handbook}\\{\small Version 2.1.2 (pre-release \#171023)}\\\vspace*{1cm}}\end{center}}}} 
 \author{\Large \bf David Tschumperl\'e} 
 \renewcommand\indexname{Index of commands} 
 \makeindex 
@@ -63,7 +63,7 @@ In this setting, \Cc{G'MIC} may be seen as a direct (and friendly) competitor of
  
  \Ca{\textbf{gmic:} GREYC's Magic for Image Computing.}\\ 
  
-        \Cb{Version \textbf{2.1.2 (pre-release \#171019)}, Copyright (c) 2008-2017, David Tschumperl\'e}\\ 
+        \Cb{Version \textbf{2.1.2 (pre-release \#171023)}, Copyright (c) 2008-2017, David Tschumperl\'e}\\ 
         \Cb{(\url{http://gmic.eu})} 
 \chapter{Usage} 
 \small
@@ -727,9 +727,9 @@ In this setting, \Cc{G'MIC} may be seen as a direct (and friendly) competitor of
           without the specification of an initializing expression. 
        . '§\aftergroup\Ccb§break()§\aftergroup\Ccn§' and '§\aftergroup\Ccb§continue()§\aftergroup\Ccn§' respectively breaks and continues the current running bloc 
           (loop, init or main environment). 
-       . '§\aftergroup\Ccb§date(attr,path)§\aftergroup\Ccn§' returns the date attribute for the given 'path' (file or directory), 
+       . '§\aftergroup\Ccb§date(_attr,path)§\aftergroup\Ccn§' returns the date attribute for the given 'path' (file or directory), 
           with '§\aftergroup\Ccg§attr§\aftergroup\Ccn§' being §\aftergroup\Ccg§{ 0=year | 1=month | 2=day | 3=day of week | 4=hour | 5=minute | 
-          6=second }§\aftergroup\Ccn§. 
+          6=second }§\aftergroup\Ccn§, or a vector of those values. 
        . '§\aftergroup\Ccb§date(_attr)§\aftergroup\Ccn§ returns the specified attribute for the current (locale) date. 
        . '§\aftergroup\Ccb§print(expr1,expr2,...)§\aftergroup\Ccn§ or '§\aftergroup\Ccb§print(#ind)§\aftergroup\Ccn§ prints the value of the specified expressions 
           (or image information) on the console, and returns the value of the last expression 
@@ -8297,6 +8297,10 @@ Open a color grabber widget from the first selected image.
 ~\\Argument 'variable\_name' specifies the variable that contains the selected color values at any time.
 ~\\Assigning '-1' to it forces the interactive window to close.
 \begin{flushleft}\Cc{\textbf{Default values}:\\~\\\hspace*{0.5cm}{\small $\bullet$~~\texttt{'variable\_name=xgc\_variable'.}}}\end{flushleft}
+
+
+\subsection{\emph{x\_hanoi\index{x\_hanoi}} }\vspace*{-0.7em}
+Launch the Tower of Hanoi game.
 
 
 \subsection{\emph{x\_histogram\index{x\_histogram}} }\vspace*{-0.7em}

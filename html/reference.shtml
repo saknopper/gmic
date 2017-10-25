@@ -56,7 +56,7 @@
 <a id="section0"><h2>Version</h2></a> 
 <pre><font color="blue"><b>gmic:</b> GREYC's Magic for Image Computing.</font> 
  
-       Version <font color="brown"><b>2.1.2 (pre-release #171019)</b></font>, Copyright (c) 2008-2017, David Tschumperl&eacute; 
+       Version <font color="brown"><b>2.1.2 (pre-release #171023)</b></font>, Copyright (c) 2008-2017, David Tschumperl&eacute; 
        (<a href="http://gmic.eu">http://gmic.eu</a>) 
 </pre> 
 <h2><a href="#toc"><img alt="" border="0" src="img/back_top.png" />&nbsp;&nbsp;</a><a id="section1">Usage</a></h2>
@@ -687,9 +687,9 @@
           without the specification of an initializing expression. 
        . '<b><font color="#005090">break()</font></b>' and '<b><font color="#005090">continue()</font></b>' respectively breaks and continues the current running bloc 
           (loop, init or main environment). 
-       . '<b><font color="#005090">date(attr,path)</font></b>' returns the date attribute for the given 'path' (file or directory), 
+       . '<b><font color="#005090">date(_attr,path)</font></b>' returns the date attribute for the given 'path' (file or directory), 
           with '<b><font color="#009000">attr</font></b>' being <b><font color="#009000">{ 0=year | 1=month | 2=day | 3=day of week | 4=hour | 5=minute | 
-          6=second }</font></b>. 
+          6=second }</font></b>, or a vector of those values. 
        . '<b><font color="#005090">date(_attr)</font></b> returns the specified attribute for the current (locale) date. 
        . '<b><font color="#005090">print(expr1,expr2,...)</font></b> or '<b><font color="#005090">print(#ind)</font></b> prints the value of the specified expressions 
           (or image information) on the console, and returns the value of the last expression 
@@ -7202,6 +7202,9 @@ _variable_name
 <br/>Argument '<font color="#005090">variable_name</font>' specifies the variable that contains the selected color values at any time.
 <br/>Assigning '<font color="#005090">-1</font>' to it forces the interactive window to close.
 <br/><br/><b>Default values</b>: '<font color="#005090">variable_name=xgc_variable</font>'.
+</tt></p><p style="margin-left:20px"><a id="x_hanoi"><font color="#005090">&nbsp;&nbsp;<b>x_hanoi</b>:</font></a>
+
+<p style="margin-left:100px"><tt>Launch the Tower of Hanoi game.
 </tt></p><p style="margin-left:20px"><a id="x_histogram"><font color="#005090">&nbsp;&nbsp;<b>x_histogram</b>:</font></a>
 
 <p style="margin-left:100px"><tt>Launch the histogram demo.
@@ -7550,7 +7553,7 @@ _opacity>=0
 <font color="green"><b>&nbsp;&nbsp;frame </b>:</font>
 <font color="blue"><i>Shortcut for command '<a href="#rame_xy">frame_xy</a>'</i></font><br/>
 </p>
-<p style="margin-left:100px"><font color="blue"><b>[ Total number of commands: 970 ]</b></font>
+<p style="margin-left:100px"><font color="blue"><b>[ Total number of commands: 971 ]</b></font>
 <h2><a href="#toc"><img alt="" border="0" src="img/back_top.png" />&nbsp;&nbsp;</a><a id="section13">Examples of use</a></h2>
 <pre> '<b><font color="#009000">gmic</font></b>' is a generic image processing tool which can be used in a wide variety of situations. 
  The few examples below illustrate possible uses of this tool: 
