@@ -61,7 +61,7 @@ hello :
   # Create text sprites (normal and mirrored versions).
   input[text_color] 0 text. " Hello\nWorld !",0,0,54,1,128,255,64,1 # RGBA text sprite
   split. c,-3 dilate. 5 name. text_mask  # Divide into two images : RGB (text_color) and dilated A (text_mask)
-  --mirror. y name. text_mask_shadow       # Get mirrored version of the text mask for the shadow
+  +mirror. y name. text_mask_shadow       # Get mirrored version of the text mask for the shadow
   input[text_color_shadow] 100%,100%,1,3   # RGB sprite for shadow sprite (with default color: black)
 
   # Initialize motion variables.
@@ -72,7 +72,7 @@ hello :
 
   # Start animation loop.
   do
-    --image[background] [text_color],$x,$y,0,0,1,[text_mask]             # Draw text in background and returns it as a new image
+    +image[background] [text_color],$x,$y,0,0,1,[text_mask]             # Draw text in background and returns it as a new image
     y_shadow={1.5*h-$y-h#$text_color_shadow}                             # Compute the location for drawing the shadow
     image. [text_color_shadow],$x,$y_shadow,0,0,0.3,[text_mask_shadow]  # Draw shadow of the text sprite as well
     window. -1,-1,0,"Hello World Demo"                                  # Update window content with created frame
