@@ -56,7 +56,7 @@
 <a id="section0"><h2>Version</h2></a> 
 <pre><font color="blue"><b>gmic:</b> GREYC's Magic for Image Computing.</font> 
  
-       Version <font color="brown"><b>2.1.2 (pre-release #171023)</b></font>, Copyright (c) 2008-2017, David Tschumperl&eacute; 
+       Version <font color="brown"><b>2.1.2 (pre-release #171025)</b></font>, Copyright (c) 2008-2017, David Tschumperl&eacute; 
        (<a href="http://gmic.eu">http://gmic.eu</a>) 
 </pre> 
 <h2><a href="#toc"><img alt="" border="0" src="img/back_top.png" />&nbsp;&nbsp;</a><a id="section1">Usage</a></h2>
@@ -687,7 +687,7 @@
           without the specification of an initializing expression. 
        . '<b><font color="#005090">break()</font></b>' and '<b><font color="#005090">continue()</font></b>' respectively breaks and continues the current running bloc 
           (loop, init or main environment). 
-       . '<b><font color="#005090">date(_attr,path)</font></b>' returns the date attribute for the given 'path' (file or directory), 
+       . '<b><font color="#005090">date(attr,path)</font></b>' returns the date attribute for the given 'path' (file or directory), 
           with '<b><font color="#009000">attr</font></b>' being <b><font color="#009000">{ 0=year | 1=month | 2=day | 3=day of week | 4=hour | 5=minute | 
           6=second }</font></b>, or a vector of those values. 
        . '<b><font color="#005090">date(_attr)</font></b> returns the specified attribute for the current (locale) date. 
