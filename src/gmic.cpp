@@ -2087,7 +2087,7 @@ inline char *_gmic_argument_text(const char *const argument, CImg<char>& argumen
 #define gmic_apply(function) { \
     __ind = (unsigned int)selection[l]; \
     gmic_check(images[__ind]); \
-    if (is_double_hyphen) { \
+    if (is_get) { \
       images[__ind].get_##function.move_to(images); \
       images_names[__ind].get_copymark().move_to(images_names); \
     } else images[__ind].function; \
@@ -2121,7 +2121,7 @@ inline char *_gmic_argument_text(const char *const argument, CImg<char>& argumen
          vmax = (double)img.max_min(vmin); \
          nvalue = vmin + (vmax - vmin)*value/100; \
        } \
-       if (is_double_hyphen) { \
+       if (is_get) { \
          g_img.assign(img,false).function1((value_type1)nvalue).move_to(images); \
          images_names.insert(images_names[selection[l]].get_copymark()); \
        } else img.function1((value_type1)nvalue); \
@@ -2133,7 +2133,7 @@ inline char *_gmic_argument_text(const char *const argument, CImg<char>& argumen
      const CImg<T> img0 = gmic_image_arg(*ind); \
      cimg_forY(selection,l) { \
        CImg<T>& img = gmic_check(images[selection[l]]); \
-       if (is_double_hyphen) { \
+       if (is_get) { \
          g_img.assign(img,false).function2(img0).move_to(images); \
          images_names.insert(images_names[selection[l]].get_copymark()); \
        } else img.function2(img0); \
@@ -2143,7 +2143,7 @@ inline char *_gmic_argument_text(const char *const argument, CImg<char>& argumen
      strreplace_fw(formula); print(images,0,description3 ".",arg3_1,arg3_2); \
      cimg_forY(selection,l) { \
        CImg<T>& img = gmic_check(images[selection[l]]); \
-       if (is_double_hyphen) { \
+       if (is_get) { \
          g_img.assign(img,false).function3((const char*)formula,images).move_to(images); \
          images_names.insert(images_names[selection[l]].get_copymark()); \
        } else img.function3((const char*)formula,images); \
@@ -2152,7 +2152,7 @@ inline char *_gmic_argument_text(const char *const argument, CImg<char>& argumen
    } else { \
      print(images,0,description4 ".",gmic_selection.data()); \
      if (images && selection) { \
-       if (is_double_hyphen) { \
+       if (is_get) { \
          g_img.assign(gmic_check(images[selection[0]]),false); \
          for (unsigned int l = 1; l<(unsigned int)selection.height(); ++l) \
            g_img.function2(gmic_check(images[selection[l]])); \
@@ -4741,9 +4741,12 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
       const bool
         is_simple_hyphen = *item=='-' && item[1] &&
         item[1]!='[' && item[1]!='.' && (item[1]!='3' || item[2]!='d'),
+        is_plus = *item=='+' && item[1] &&
+        item[1]!='[' && item[1]!='.' && (item[1]!='3' || item[2]!='d'),
         is_double_hyphen = *item=='-' && item[1]=='-' &&
         item[2] && item[2]!='[' && item[2]!='.' && (item[2]!='3' || item[3]!='d');
-      item+=is_double_hyphen?2:is_simple_hyphen?1:0;
+      item+=is_double_hyphen?2:is_simple_hyphen || is_plus?1:0;
+      const bool is_get = is_double_hyphen || is_plus;
 
       unsigned int hash_custom = ~0U, ind_custom = ~0U;
       bool is_command = *item>='a' && *item<='z' && _gmic_eok(1); // Alphabetical shortcut commands
@@ -4802,18 +4805,18 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
           selection.assign(); is_selection = true;
         } else if (err==4 && sep1==']') { // Other selections
           is_selection = true;
-          if (!is_double_hyphen && (!std::strcmp("wait",command) ||
-                                    !std::strcmp("cursor",command)))
+          if (!is_get && (!std::strcmp("wait",command) ||
+                          !std::strcmp("cursor",command)))
             selection2cimg(s_selection,10,CImgList<char>::empty(),command).move_to(selection);
-          else if (!is_double_hyphen && *command=='i' && (!command[1] || !std::strcmp("input",command)))
+          else if (!is_get && *command=='i' && (!command[1] || !std::strcmp("input",command)))
             selection2cimg(s_selection,siz + 1,images_names,command,true,&new_name).move_to(selection);
-          else if (!is_double_hyphen &&
+          else if (!is_get &&
                    ((*command=='e' && (!command[1] ||
                                        !std::strcmp("echo",command) ||
                                        !std::strcmp("error",command))) ||
                     !std::strcmp("warn",command)))
             selection2cimg(s_selection,callstack.size(),CImgList<char>::empty(),command).move_to(selection);
-          else if (!is_double_hyphen && !std::strcmp("pass",command))
+          else if (!is_get && !std::strcmp("pass",command))
             selection2cimg(s_selection,parent_images.size(),parent_images_names,command).move_to(selection);
           else
             selection2cimg(s_selection,siz,images_names,command).move_to(selection);
@@ -4833,17 +4836,17 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
       } else *current_command = 0;
 
       const bool
-        is_verbose_command = is_double_hyphen?false:
+        is_verbose_command = is_get?false:
           is_command && *item=='v' && (!item[1] || !std::strcmp(item,"verbose")),
-        is_echo_command = is_double_hyphen || is_verbose_command?false:
+        is_echo_command = is_get || is_verbose_command?false:
           is_command && *command=='e' && (!command[1] || !std::strcmp(command,"echo")),
-        is_input_command = is_double_hyphen || is_verbose_command || is_echo_command?false:
+        is_input_command = is_get || is_verbose_command || is_echo_command?false:
           is_command && *command=='i' && (!command[1] || !std::strcmp(command,"input")),
-        is_check_command = is_double_hyphen || is_verbose_command || is_echo_command || is_input_command?false:
+        is_check_command = is_get || is_verbose_command || is_echo_command || is_input_command?false:
           !std::strcmp(item,"check"),
-        is_skip_command = is_double_hyphen || is_verbose_command || is_echo_command || is_input_command ||
+        is_skip_command = is_get || is_verbose_command || is_echo_command || is_input_command ||
           is_check_command?false:!std::strcmp(item,"skip"),
-        is_eval_command = is_double_hyphen || is_verbose_command || is_echo_command || is_input_command ||
+        is_eval_command = is_get || is_verbose_command || is_echo_command || is_input_command ||
           is_check_command || is_skip_command?false:!std::strcmp(item,"eval");
 
       // Check for verbosity command, prior to the first output of a log message.
@@ -4928,17 +4931,17 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             is_deiopwx = command0=='d' || command0=='e' || command0=='i' || command0=='o' || command0=='p' ||
                          command0=='w' || command0=='x';
           if ((unsigned int)command0<128 && onechar_shortcuts[(unsigned int)command0] &&
-              (!is_mquvx || (!is_double_hyphen && !is_selection)) &&
-              (!is_deiopwx || !is_double_hyphen)) {
+              (!is_mquvx || (!is_get && !is_selection)) &&
+              (!is_deiopwx || !is_get)) {
             std::strcpy(command,onechar_shortcuts[(unsigned int)command0]);
             if (is_mquvx) { CImg<char>::string(command).move_to(_item); *command = 0; }
             else *item = 0;
           }
 
         } else if (!command2) { // Two-chars shortcuts.
-          if (command0=='s' && command1=='h' && !is_double_hyphen) std::strcpy(command,"shared");
+          if (command0=='s' && command1=='h' && !is_get) std::strcpy(command,"shared");
           else if (command0=='m' && command1=='v') std::strcpy(command,"move");
-          else if (command0=='n' && command1=='m' && !is_double_hyphen) std::strcpy(command,"name");
+          else if (command0=='n' && command1=='m' && !is_get) std::strcpy(command,"name");
           else if (command0=='r' && command1=='m') std::strcpy(command,"remove");
           else if (command0=='r' && command1=='v') std::strcpy(command,"reverse");
           else if (command0=='<' && command1=='<') std::strcpy(command,"bsl");
@@ -4952,17 +4955,17 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
 
         } else if (!command3 && command1=='3' && command2=='d') switch (command0) {
             // Three-chars shortcuts (ending with '3d').
-          case 'd' : if (!is_double_hyphen) std::strcpy(command,"display3d"); break;
+          case 'd' : if (!is_get) std::strcpy(command,"display3d"); break;
           case 'j' : std::strcpy(command,"object3d"); break;
           case '+' : std::strcpy(command,"add3d"); break;
           case '/' : std::strcpy(command,"div3d"); break;
-          case 'f' : if (!is_double_hyphen && !is_selection)
+          case 'f' : if (!is_get && !is_selection)
               CImg<char>::string("focale3d").move_to(_item);
             break;
-          case 'l' : if (!is_double_hyphen && !is_selection)
+          case 'l' : if (!is_get && !is_selection)
               CImg<char>::string("light3d").move_to(_item);
             break;
-          case 'm' : if (!is_double_hyphen && !is_selection)
+          case 'm' : if (!is_get && !is_selection)
               CImg<char>::string("mode3d").move_to(_item);
             break;
           case '*' : std::strcpy(command,"mul3d"); break;
@@ -4975,23 +4978,23 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
           } else if (!command4 && command2=='3' && command3=='d') {
           // Four-chars shortcuts (ending with '3d').
           if (command0=='d' && command1=='b') {
-            if (!is_double_hyphen && !is_selection) CImg<char>::string("double3d").move_to(_item);
+            if (!is_get && !is_selection) CImg<char>::string("double3d").move_to(_item);
           } else if (command0=='m' && command1=='d') {
-            if (!is_double_hyphen && !is_selection) CImg<char>::string("moded3d").move_to(_item);
+            if (!is_get && !is_selection) CImg<char>::string("moded3d").move_to(_item);
           }
           else if (command0=='r' && command1=='v') std::strcpy(command,"reverse3d");
           else if (command0=='s' && command1=='l') {
-            if (!is_double_hyphen && !is_selection) CImg<char>::string("specl3d").move_to(_item);
+            if (!is_get && !is_selection) CImg<char>::string("specl3d").move_to(_item);
           }
           else if (command0=='s' && command1=='s') {
-            if (!is_double_hyphen && !is_selection) CImg<char>::string("specs3d").move_to(_item);
+            if (!is_get && !is_selection) CImg<char>::string("specs3d").move_to(_item);
           }
         }
-        if (item!=_item.data() + (is_double_hyphen?2:is_simple_hyphen?1:0)) item = _item;
+        if (item!=_item.data() + (is_double_hyphen?2:is_simple_hyphen || is_plus?1:0)) item = _item;
         command0 = *command?*command:*item;
 
         // Check if a new name has been requested for a command that does not allow that.
-        if (new_name && !is_double_hyphen && !is_input_command)
+        if (new_name && !is_get && !is_input_command)
           error(images,0,0,
                 "Item '%s %s': Unknow name '%s'.",
                 initial_item,initial_argument,new_name.data());
@@ -5050,7 +5053,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                 g_list.insert(gmic_check(images[selection[l]]),~0U,true);
               CImg<T> img = g_list.get_append(axis,align);
               name = images_names[selection[0]];
-              if (is_double_hyphen) {
+              if (is_get) {
                 img.move_to(images);
                 images_names.insert(name.copymark());
               } else if (selection.height()>=2) {
@@ -5165,7 +5168,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                         _ind,gmic_selection_err.data(),message.data());
                 else throw;
               }
-              if (is_double_hyphen) {
+              if (is_get) {
                 res.move_to(images);
                 images_names[_ind].get_copymark().move_to(images_names);
               } else res.move_to(images[_ind].assign());
@@ -5191,7 +5194,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                 throw;
               }
               name = images_names[selection[0]];
-              if (is_double_hyphen) {
+              if (is_get) {
                 img.move_to(images);
                 images_names.insert(name.copymark());
               } else if (selection.height()>=2) {
@@ -5977,7 +5980,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
         }
 
         // Check validity of 3d object.
-        if (!is_double_hyphen && !std::strcmp("check3d",command)) {
+        if (!is_get && !std::strcmp("check3d",command)) {
           gmic_substitute_args(false);
           bool is_full_check = true;
           if (!argument[1] && (*argument=='0' || *argument=='1')) {
@@ -6195,7 +6198,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
         }
 
         // Show/hide mouse cursor.
-        if (!is_double_hyphen && !std::strcmp("cursor",command)) {
+        if (!is_get && !std::strcmp("cursor",command)) {
           gmic_substitute_args(false);
           if (!is_selection)
             CImg<unsigned int>::vector(0,1,2,3,4,5,6,7,8,9).move_to(selection);
@@ -6427,7 +6430,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                 name = images_names[uind];
                 CImg<T> path(1),
                   dist = img.get_distance_dijkstra((T)nvalue,custom_metric,algorithm==4,path);
-                if (is_double_hyphen) {
+                if (is_get) {
                   images_names.insert(2,name.copymark());
                   dist.move_to(images,~0U);
                   path.move_to(images,~0U);
@@ -6583,7 +6586,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             cimg_forY(selection,l) {
               const unsigned int uind = selection[l] + off;
               name = images_names[uind];
-              if (is_double_hyphen) {
+              if (is_get) {
                 CImg<T> path, dist = gmic_check(images[uind]).get_dijkstra((unsigned int)snode,
                                                                            (unsigned int)enode,
                                                                            path);
@@ -6655,7 +6658,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
         }
 
         // Display.
-        if (!is_double_hyphen && !std::strcmp("display",command)) {
+        if (!is_get && !std::strcmp("display",command)) {
           gmic_substitute_args(false);
           unsigned int XYZ[3];
           bool is_args = false;
@@ -6674,7 +6677,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
         }
 
         // Display 3d object.
-        if (!is_double_hyphen && !std::strcmp("display3d",command)) {
+        if (!is_get && !std::strcmp("display3d",command)) {
           gmic_substitute_args(true);
           exit_on_anykey = 0;
           sep = *indices = 0;
@@ -6774,7 +6777,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
         }
 
         // Echo.
-        if (!is_double_hyphen && is_echo_command) {
+        if (!is_get && is_echo_command) {
           if (is_verbose) {
             gmic_substitute_args(false);
             name.assign(argument,(unsigned int)std::strlen(argument) + 1);
@@ -6809,7 +6812,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
         }
 
         // Error.
-        if (!is_double_hyphen && !std::strcmp("error",command)) {
+        if (!is_get && !std::strcmp("error",command)) {
           gmic_substitute_args(false);
           name.assign(argument,(unsigned int)std::strlen(argument) + 1);
           cimg::strunescape(name);
@@ -7104,7 +7107,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             name = images_names[uind];
             CImg<float> val, vec;
             gmic_check(images[uind]).gmic_symmetric_eigen(val,vec);
-            if (is_double_hyphen) {
+            if (is_get) {
               images_names.insert(name.copymark());
               name.move_to(images_names);
               val.move_to(images);
@@ -7363,7 +7366,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             CImg<T>& img = gmic_check(images[uind]);
             g_list = img.get_gradient(*argx?argx:0,scheme);
             name = images_names[uind];
-            if (is_double_hyphen) {
+            if (is_get) {
               images_names.insert(g_list.size(),name.copymark());
               g_list.move_to(images,~0U);
             } else {
@@ -7631,7 +7634,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             CImg<T>& img = gmic_check(images[uind]);
             g_list = img.get_hessian(*argx?argx:0);
             name = images_names[uind];
-            if (is_double_hyphen) {
+            if (is_get) {
               images_names.insert(g_list.size(),name.copymark());
               g_list.move_to(images,~0U);
             } else {
@@ -8083,7 +8086,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                 gmic_selection.data());
           g_list.assign(selection.height());
           g_list_c.assign(selection.height());
-          if (is_double_hyphen) {
+          if (is_get) {
             cimg_forY(selection,l) {
               const unsigned int uind = selection[l];
               g_list[l].assign(images[uind]);
@@ -8131,7 +8134,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
           g_list_c.assign(selection.height());
           gmic_exception exception;
 
-          if (is_double_hyphen) cimg_forY(selection,l) {
+          if (is_get) cimg_forY(selection,l) {
               const unsigned int uind = selection[l];
               g_list[l].assign(images[uind]);
               g_list_c[l].assign(images_names[uind]).copymark();
@@ -8196,7 +8199,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             }
           }
           callstack.remove();
-          if (is_double_hyphen) {
+          if (is_get) {
             g_list.move_to(images,~0U);
             g_list_c.move_to(images_names,~0U);
           } else {
@@ -8402,7 +8405,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                   iind0);
             CImgList<T> _images, nimages;
             CImgList<char> _images_names, nimages_names;
-            if (is_double_hyphen) {
+            if (is_get) {
               _images.insert(images.size());
               // Copy original list while preserving shared state of each item.
               cimglist_for(_images,l) _images[l].assign(images[l],images[l].is_shared());
@@ -8411,7 +8414,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             nimages.insert(selection.height());
             cimg_forY(selection,l) {
               const unsigned int uind = selection[l];
-              if (is_double_hyphen) images[uind].move_to(nimages[l]);
+              if (is_get) images[uind].move_to(nimages[l]);
               else images[uind].swap(nimages[l]);
               // Empty shared image as a special item to be removed later.
               images[uind]._is_shared = true;
@@ -8423,7 +8426,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             cimglist_for(images,l) if (!images[l] && images[l].is_shared()) {
               images.remove(l); images_names.remove(l--); // Remove special items.
             }
-            if (is_double_hyphen) {
+            if (is_get) {
               cimglist_for(images,l) // Replace shared items by non-shared one for a get version.
                 if (images[l].is_shared()) {
                   CImg<T> tmp; (images[l].move_to(tmp)).swap(images[l]);
@@ -8648,7 +8651,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             CImg<T> img(g_list.size(),g_list.size(),1,1,(T)0);
             cimg_forXY(img,x,y) if (x>y) img(x,y) = img(y,x) = (T)g_list[x].MSE(g_list[y]);
             CImg<char>::string("[MSE]").move_to(name);
-            if (is_double_hyphen) {
+            if (is_get) {
               img.move_to(images);
               name.move_to(images_names);
             } else {
@@ -8704,7 +8707,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
       gmic_commands_n :
 
         // Set image name.
-        if (!is_double_hyphen && !std::strcmp("name",command)) {
+        if (!is_get && !std::strcmp("name",command)) {
           gmic_substitute_args(false);
           print(images,0,"Set name of image%s to '%s'.",
                 gmic_selection.data(),gmic_argument_text_printed());
@@ -9005,7 +9008,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
         }
 
         // Output.
-        if (!is_double_hyphen && !std::strcmp("output",command)) {
+        if (!is_get && !std::strcmp("output",command)) {
           gmic_substitute_args(false);
 
           // Set good alias for shared variables.
@@ -9594,7 +9597,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
       gmic_commands_p :
 
         // Pass image from parent context.
-        if (!is_double_hyphen && !std::strcmp("pass",command)) {
+        if (!is_get && !std::strcmp("pass",command)) {
           gmic_substitute_args(false);
           unsigned int shared_state = 2;
           if (cimg_sscanf(argument,"%u%c",&shared_state,&end)==1 && shared_state<=2) ++position;
@@ -9811,7 +9814,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
         }
 
         // Print.
-        if (!is_double_hyphen && !std::strcmp("print",command)) {
+        if (!is_get && !std::strcmp("print",command)) {
           print_images(images,images_names,selection);
           is_released = true; continue;
         }
@@ -10058,7 +10061,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
         }
 
         // Display as a graph plot.
-        if (!is_double_hyphen && !std::strcmp("plot",command)) {
+        if (!is_get && !std::strcmp("plot",command)) {
           gmic_substitute_args(false);
           double ymin = 0, ymax = 0, xmin = 0, xmax = 0;
           unsigned int plot_type = 1, vertex_type = 1;
@@ -10151,9 +10154,9 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
         if (!std::strcmp("remove",command)) {
           print(images,0,"Remove image%s",
                 gmic_selection.data());
-          if (is_double_hyphen) { g_list.assign(images); g_list_c.assign(images_names); }
+          if (is_get) { g_list.assign(images); g_list_c.assign(images_names); }
           remove_images(images,images_names,selection,0,selection.height() - 1);
-          if (is_double_hyphen) {
+          if (is_get) {
             g_list.move_to(images,0);
             g_list_c.move_to(images_names,0);
           }
@@ -10401,7 +10404,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
         if (!std::strcmp("reverse",command)) {
           print(images,0,"Reverse positions of image%s.",
                 gmic_selection.data());
-          if (is_double_hyphen) cimg_forY(selection,l) {
+          if (is_get) cimg_forY(selection,l) {
               const unsigned int i = selection[selection.height() - 1 - l];
               images.insert(images[i]);
               images_names.insert(images_names[i]);
@@ -10840,7 +10843,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
               const unsigned int uind = selection[l] + off;
               const CImg<T>& img = gmic_check(images[uind]);
               if (!img) {
-                if (!is_double_hyphen) { images.remove(uind); images_names.remove(uind); off-=1; }
+                if (!is_get) { images.remove(uind); images_names.remove(uind); off-=1; }
               } else {
                 g_list.assign(img,true);
                 name = images_names[uind];
@@ -10851,7 +10854,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                     g_list.remove(0);
                   }
                 }
-                if (is_double_hyphen) {
+                if (is_get) {
                   images_names.insert(g_list.size(),name.copymark());
                   g_list.move_to(images,~0U);
                 } else {
@@ -10894,7 +10897,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                 const unsigned int uind = selection[l] + off;
                 const CImg<T>& img = gmic_check(images[uind]);
                 if (!img) {
-                  if (!is_double_hyphen) { images.remove(uind); images_names.remove(uind); off-=1; }
+                  if (!is_get) { images.remove(uind); images_names.remove(uind); off-=1; }
                 } else {
                   name = images_names[uind];
 
@@ -10910,7 +10913,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                   } else // Without axes.
                     img.get_split(values,0,pm=='+').move_to(g_list);
 
-                  if (is_double_hyphen) {
+                  if (is_get) {
                     if (g_list) {
                       images_names.insert(g_list.size(),name.copymark());
                       g_list.move_to(images,~0U);
@@ -10944,11 +10947,11 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
               const unsigned int uind = selection[l] + off;
               CImg<T>& img = gmic_check(images[uind]);
               if (!img) {
-                if (!is_double_hyphen) { images.remove(uind); images_names.remove(uind); off-=1; }
+                if (!is_get) { images.remove(uind); images_names.remove(uind); off-=1; }
               } else {
                 g_list = CImg<T>(img.data(),1,(unsigned int)img.size(),1,1,true).get_split('y',0);
                 name = images_names[uind];
-                if (is_double_hyphen) {
+                if (is_get) {
                   images_names.insert(g_list.size(),name.copymark());
                   g_list.move_to(images,~0U);
                 } else {
@@ -11490,7 +11493,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                       uind - off,gmic_selection_err.data(),message.data());
               else throw;
             }
-            if (is_double_hyphen) {
+            if (is_get) {
               images_names.insert(g_list.size(),name.copymark());
               g_list.move_to(images,~0U);
             } else {
@@ -11556,7 +11559,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             const CImg<T>& img = gmic_check(images[uind]);
             name = images_names[uind];
             img.SVD(U,S,V,true,100);
-            if (is_double_hyphen) {
+            if (is_get) {
               images_names.insert(2,name.copymark());
               name.move_to(images_names);
               U.move_to(images);
@@ -11811,7 +11814,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                                     (bool)exit_on_anykey));
               }
             }
-            if (is_double_hyphen) images.back().value_string().move_to(status);
+            if (is_get) images.back().value_string().move_to(status);
             else images[selection.back()].value_string().move_to(status);
 #endif // #if cimg_display==0
           } else arg_error("select");
@@ -11889,7 +11892,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                                                  "Command 'serialize': Invalid "
                                                  "specified pixel type '%s'.",
                                                  argx);
-            if (is_double_hyphen) {
+            if (is_get) {
               serialized.move_to(images);
               images_names[selection[0]].get_copymark().move_to(images_names);
             } else {
@@ -12248,7 +12251,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                 g_list_c.remove(g_list.width(),g_list_c.width() - 1);
               else if (g_list_c.width()<g_list.width())
                 g_list_c.insert(g_list.width() - g_list_c.width(),CImg<char>::string("[unnamed]"));
-              if (is_double_hyphen) {
+              if (is_get) {
                 g_list.move_to(images,~0U);
                 g_list_c.move_to(images_names,~0U);
               } else {
@@ -12355,7 +12358,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
         }
 
         // Warning.
-        if (!is_double_hyphen && !std::strcmp("warn",command)) {
+        if (!is_get && !std::strcmp("warn",command)) {
           gmic_substitute_args(false);
           bool force_visible = false;
           if ((*argument=='0' || *argument=='1') && argument[1]==',') {
@@ -12370,7 +12373,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
 
         // Display images in display window.
         wind = 0;
-        if (!is_double_hyphen &&
+        if (!is_get &&
             (!std::strcmp("window",command) ||
              cimg_sscanf(command,"window%u%c",&wind,&end)==1 ||
              cimg_sscanf(command,"w%u%c",&wind,&end)==1) &&
@@ -12575,7 +12578,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                 cimglist_for(g_list,t)
                   g_list[t] = img.get_warp(warping_field*((t + 1.0f)/nb_frames),mode,
                                            interpolation,boundary);
-                if (is_double_hyphen) {
+                if (is_get) {
                   images_names.insert((int)nb_frames,name.copymark());
                   g_list.move_to(images,~0U);
                 } else {
@@ -12611,7 +12614,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
         }
 
         // Wait for a given delay of for user events on display window.
-        if (!is_double_hyphen && !std::strcmp("wait",command)) {
+        if (!is_get && !std::strcmp("wait",command)) {
           gmic_substitute_args(false);
           if (!is_selection)
             CImg<unsigned int>::vector(0,1,2,3,4,5,6,7,8,9).move_to(selection);
@@ -12892,7 +12895,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                 std::fflush(cimg::output());
                 cimg::mutex(29,0);
               }
-              if (is_double_hyphen) {
+              if (is_get) {
                 g_list.assign(img0,img1);
                 if (is_valid_argument) for (const char *s = argument; *s; ++s) g_list.FFT(*s,inv_fft);
                 else g_list.FFT(inv_fft);
@@ -12918,7 +12921,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                 std::fflush(cimg::output());
                 cimg::mutex(29,0);
               }
-              if (is_double_hyphen) {
+              if (is_get) {
                 g_list.assign(img0);
                 CImg<T>(g_list[0].width(),g_list[0].height(),g_list[0].depth(),g_list[0].spectrum(),(T)0).
                   move_to(g_list);
@@ -13300,7 +13303,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
               previous_debug_filename = debug_filename,
               previous_debug_line = debug_line;
             CImg<char>::string(command).move_to(callstack);
-            if (is_double_hyphen) {
+            if (is_get) {
               cimg_forY(selection,l) {
                 const unsigned int uind = selection[l];
                 g_list[l] = images[uind];
@@ -13511,7 +13514,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
       if (is_input_command) ++position;
       else {
         std::strcpy(command,"input");
-        argument = item - (is_double_hyphen?2:is_simple_hyphen?1:0);
+        argument = item - (is_double_hyphen?2:is_simple_hyphen || is_plus?1:0);
         *s_selection = 0;
       }
       gmic_substitute_args(true);
