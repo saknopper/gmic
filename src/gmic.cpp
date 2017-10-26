@@ -8175,12 +8175,12 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                   cimg_sscanf(commands_line[position].data() + 1,"%x,%x",&_debug_line,&(_debug_filename=0))>0) {
                 is_debug_info = true; next_debug_line = _debug_line; next_debug_filename = _debug_filename;
               } else {
-                const bool is_dhyphen = *it=='-' && it[1]=='-';
-                it+=*it=='-'; it+=*it=='-';
+                const bool _is_get = *it=='+' || (*it=='-' && it[1]=='-');
+                if (*it=='+') ++it; else { it+=*it=='-'; it+=*it=='-'; }
                 if (!std::strcmp("local",it) || !std::strcmp("l",it) ||
                     !std::strncmp("local[",it,6) || !std::strncmp("l[",it,2)) ++nb_locals;
-                else if (!is_dhyphen && (!std::strcmp("endlocal",it) || !std::strcmp("endl",it))) --nb_locals;
-                else if (!is_dhyphen && nb_locals==1 && !std::strcmp("onfail",it)) break;
+                else if (!_is_get && (!std::strcmp("endlocal",it) || !std::strcmp("endl",it))) --nb_locals;
+                else if (!_is_get && nb_locals==1 && !std::strcmp("onfail",it)) break;
               }
             }
             if (callstack.size()>local_callstack_size) callstack.remove(local_callstack_size,callstack.size() - 1);
@@ -8834,11 +8834,11 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                 cimg_sscanf(commands_line[position].data() + 1,"%x,%x",&_debug_line,&(_debug_filename=0))>0) {
               is_debug_info = true; next_debug_line = _debug_line; next_debug_filename = _debug_filename;
             } else {
-              const bool is_dhyphen = *it=='-' && it[1]=='-';
-              it+=*it=='-'; it+=*it=='-';
+              const bool _is_get = *it=='+' || (*it=='-' && it[1]=='-');
+              if (*it=='+') ++it; else { it+=*it=='-'; it+=*it=='-'; }
               if (!std::strcmp("local",it) || !std::strcmp("l",it) ||
                   !std::strncmp("local[",it,6) || !std::strncmp("l[",it,2)) ++nb_locals;
-              else if (!is_dhyphen && (!std::strcmp("endlocal",it) || !std::strcmp("endl",it))) {
+              else if (!_is_get && (!std::strcmp("endlocal",it) || !std::strcmp("endl",it))) {
                 --nb_locals; if (!nb_locals) --position;
               }
             }
@@ -12829,11 +12829,11 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                   Com,is_continue?"to end of ":"");
             for (level = 1; level && position<commands_line.size(); ++position) {
               const char *it = commands_line[position].data();
-              const bool is_dhyphen = *it=='-' && it[1]=='-';
-              it+=*it=='-'; it+=*it=='-';
+              const bool _is_get = *it=='+' || (*it=='-' && it[1]=='-');
+              if (*it=='+') ++it; else { it+=*it=='-'; it+=*it=='-'; }
               if (!std::strcmp("local",it) || !std::strcmp("l",it) ||
                   !std::strncmp("local[",it,6) || !std::strncmp("l[",it,2)) ++level;
-              else if (!is_dhyphen && (!std::strcmp("endlocal",it) || !std::strcmp("endl",it))) --level;
+              else if (!_is_get && (!std::strcmp("endlocal",it) || !std::strcmp("endl",it))) --level;
             }
             callstack_ind = callstack_local;
             stb = "local"; ste = "endlocal";
