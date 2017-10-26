@@ -2322,13 +2322,13 @@ _document_gmic_footer_bash : skip $1
   e[] "\n\tcase \"${prev}\" in"
   repeat $_argcommand  # Regular commands with arguments.
     if {'${_command$>}'!='i'" && "'${_command$>}'!='o'" && "!same('${_command$>}','input',5)" && "!same('${_command$>}','output',6)}
-      e[] "\t\t\""${_command$>}"\" | \"-"${_command$>}"\" | \"--"${_command$>}"\")"
+      e[] "\t\t\""${_command$>}"\" | \"-"${_command$>}"\" | \"--"${_command$>}"\" | \"+"${_command$>}"\")"
       e[] "\t\tCOMPREPLY=( $(compgen -W \""${_argument$>}"\") )\n\t\treturn 0\n\t\t;;"
     endif
   done
   repeat $_shortcut # Shortcut commands (with arguments).
     if {['${_shortcut$>}']!='i'" && "['${_shortcut$>}']!='o'" && "narg(${_argumentlink${_shortcutlink$>}})}
-      e[] "\t\t\""${_shortcut$>}"\" | \"-"${_shortcut$>}"\" | \"--"${_shortcut$>}"\")"
+      e[] "\t\t\""${_shortcut$>}"\" | \"-"${_shortcut$>}"\" | \"--"${_shortcut$>}"\" | \"+"${_shortcut$>}"\")"
       e[] "\t\tCOMPREPLY=( $(compgen -W \""${_argumentlink${_shortcutlink$>}}"\") )\n\t\treturn 0\n\t\t;;"
     endif
   done
