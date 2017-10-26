@@ -22920,7 +22920,7 @@ x_starfield3d :
     expand_xy 6,0 dilate_circ 5 b 0.5 expand_z 1,0 isosurface3d 10% *3d 1,1,5 rv3d
     repeat $N col3d[$>] ${-RGB} done
     0 t. "Version "${-strver},0,0,48,1,1 r2dy. 18 +f. 255 to_rgb.
-    random3d 2500 col3d. 255 *3d. 320,200,1000 +3d. 160,100
+    random3d 2500 col3d. 255 *3d. 320,200,1000 --3d. 160,100
     l3d 0,0,-600
     w[] 640,400,0,"[G"{`39`}"MIC] 3d starfield"
     t0=0 t=0
@@ -22935,7 +22935,7 @@ x_starfield3d :
         a[2-4] x
         y -a y
       endl
-      j3d. ..,50%,50%,-600,1,0,0,0,240 +3d.. 0,0,{min(12,$t0/10-4)}
+      j3d. ..,50%,50%,-600,1,0,0,0,240 --3d.. 0,0,{min(12,$t0/10-4)}
 
       # Torus.
       torus3d 100,30 col3d. 255,64,255
