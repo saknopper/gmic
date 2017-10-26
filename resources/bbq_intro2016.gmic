@@ -243,7 +243,7 @@ bbq_intro2 :
     -+.. {360*sin($rz*$t)} -*.. {pi/180}
     --sin[-2,-1] -cos[-4,-3] -*[-4,-2] $r -*[-3,-1] $rcx -+[-4,-3] -+[-2,-1]
     -*.. {{*,w}/4} -*. {{*,h}/4} -a[-2,-1] x
-    --+. $R --.. $R -a[-2,-1] y -z. 0,2 -y. -j[obj3d] [-1],0,8 -rm.
+    --+. $R -.. $R -a[-2,-1] y -z. 0,2 -y. -j[obj3d] [-1],0,8 -rm.
 
     # Draw bobs, map colors and display.
     -j3d[img] [obj3d],50%,50%,0,-1,2,0,0
@@ -320,7 +320,7 @@ bbq_intro3 :
     # Keep only visible primitives.
     -->[y0] 0 -*. [offsets] -discard. 0
     -if {h} # There is something to display (ground).
-      --. 1 --warp[x] [-1],0,0,0 -nm. lx
+      -. 1 --warp[x] [-1],0,0,0 -nm. lx
       -warp[lcolors,y0,y1] [-2],0,0,0 -rm..
 
       # Generate 3d object.
@@ -582,7 +582,7 @@ bbq_intro8 :
   t=0
   -do
     dt={$t/20}
-    --convolve. [3],1 --. [-3] -rm... -b. 0.8 --. {ia} # Update height map.
+    --convolve. [3],1 -. [-3] -rm... -b. 0.8 -. {ia} # Update height map.
     -r. 1,{$w*$w},1,1,-1 -j[2] [-1],2,0 -r. $w,$w,1,1,-1      # Set 3d object coordinates.
     [1]
     -if {5,h} --l[5] -rows 0,2
@@ -598,7 +598,7 @@ bbq_intro8 :
     -r. 320,200,1,4,0,0,0.5,0.5 -i.. 100%,100%,1,1,200 -blend[-2,-1] alpha
 
     -if {$t>400}
-      --. 200 -rotate. {$t-400},1,0,{50-2*($t-400)}%,50% -+. 200
+      -. 200 -rotate. {$t-400},1,0,{50-2*($t-400)}%,50% -+. 200
     -endif
 
     0 -t. "Arkham",0,0,24,1,1 -rotate. -90 100%,100%,1,3,0 -j... [-1],2,{-3,max(5,h-7*$t)},0,0,1,[-2] -rm[-2,-1]
@@ -613,7 +613,7 @@ bbq_intro8 :
     -rm[-2,-1]
     -if {($dt-$time0)>0.3} ({u*$w};{u*$w};70;0) -a[5,-1] x time0={$dt-u} -endif # Insert new ball.
     -if {5,h} -l[5,-1] # Manage ball motion and collision.
-      -sh[0] 2,2,0,0 -sh[0] 3,3,0,0 --.. [-1] -+. 0.2 -rm[-2,-1]
+      -sh[0] 2,2,0,0 -sh[0] 3,3,0,0 -.. [-1] -+. 0.2 -rm[-2,-1]
       -s[0] x -repeat {$!-1} coords={$<,@0-1} -if {{$<,@2}<i($coords)} -=. {80+{i($coords)}},$coords -rm[$<] -endif -done
       -if {$!==1} -i[0] 0 -else -a[0--2] x -endif
       -endl
