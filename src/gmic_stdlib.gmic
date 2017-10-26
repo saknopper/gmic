@@ -282,7 +282,7 @@ _help_usage :
 \n
 \n  - A named image may be also indicated by '"$c"[name]"$n"', if '"${g}"name"$n"' uses the character set "$g"[a-zA-Z0-9_]"$n"
 \n     and does not start with a number. Image names can be set or reassigned at any moment during
-\n     the processing pipeline (see command '"$c"-name"$n"' for this purpose).
+\n     the processing pipeline (see command '"$c"name"$n"' for this purpose).
 \n
 \n  - "${-GMIC}" defines a set of various commands and substitution mechanisms to allow the design of
 \n     complex pipelines and operators managing this list of images, in a very flexible way:
@@ -4123,7 +4123,7 @@ update_gallery_html :
     v + e[] " - Image "{$>+1}/$_nb_coms" : $ "$com v -
 
     displayed_com$ind=$com
-    if {!narg($com)} com="-skip ," endif
+    if {!narg($com)} com="skip ," endif
     +__update_gallery_html[$ind] $com
 
     iind={$ind%5}
@@ -4217,7 +4217,7 @@ update_server :
   m "parent : l[] ({'$""1'}) s -,{'/'} if $! rm. endif i[0--1] (47) a y u {0,t} rm endl" # Command to return parent of a path
   m "varname : ({'\"$""1\"'}) f. if((i>=48&&i<=57)||(i>=65&&i<=90)||(i>=97&&i<=122),i,95) u {t} rm." # Convert string to a valid variable name
   m "load_gmic : "\
-    "_nb_sources+=1 filename=${\"-basename $""1\"} "\
+    "_nb_sources+=1 filename=${\"basename $""1\"} "\
     "v + e[] $_gmic_c\"  \"$_nb_sources\". \"$_gmic_n$filename\"  \" v - "\
     "l[] "\
     "  i raw:$""1,char nm {0,b} v + e[] $_gmic_g\"      [retrieved from source '$""1']\"$_gmic_n v - "\
@@ -10304,14 +10304,14 @@ at_quadrangle : check "$#>=8 && $#<=14 && $#!=11"
 
 _at_quadrangle2 : check "${9=1}>=0 && $9<=2 && ${10=0}>=0 && $10<=3"
   repeat $! l[$>]
-    x0={round(${"-is_percent $1"}?(w-1)*$1:$1)}
-    y0={round(${"-is_percent $2"}?(h-1)*$2:$2)}
-    x1={round(${"-is_percent $3"}?(w-1)*$3:$3)}
-    y1={round(${"-is_percent $4"}?(h-1)*$4:$4)}
-    x2={round(${"-is_percent $5"}?(w-1)*$5:$5)}
-    y2={round(${"-is_percent $6"}?(h-1)*$6:$6)}
-    x3={round(${"-is_percent $7"}?(w-1)*$7:$7)}
-    y3={round(${"-is_percent $8"}?(h-1)*$8:$8)}
+    x0={round(${"is_percent $1"}?(w-1)*$1:$1)}
+    y0={round(${"is_percent $2"}?(h-1)*$2:$2)}
+    x1={round(${"is_percent $3"}?(w-1)*$3:$3)}
+    y1={round(${"is_percent $4"}?(h-1)*$4:$4)}
+    x2={round(${"is_percent $5"}?(w-1)*$5:$5)}
+    y2={round(${"is_percent $6"}?(h-1)*$6:$6)}
+    x3={round(${"is_percent $7"}?(w-1)*$7:$7)}
+    y3={round(${"is_percent $8"}?(h-1)*$8:$8)}
     ($x0,$x1;$x3,$x2^$y0,$y1;$y3,$y2)
     r. {P0=[$x0,$y0];P1=[$x1,$y1];P2=[$x2,$y2];P3=[$x3,$y3];1+round([max(norm(P1-P0),norm(P3-P2)),max(norm(P3-P0),norm(P2-P1))])},1,2,3
     warp.. .,0,$9,$10 rm.
@@ -10319,18 +10319,18 @@ _at_quadrangle2 : check "${9=1}>=0 && $9<=2 && ${10=0}>=0 && $10<=3"
 
 _at_quadrangle3 : check "${13=1}>=0 && $13<=2 && ${14=0}>=0 && $14<=3"
   repeat $! l[$>]
-    x0={round(${"-is_percent $1"}?(w-1)*$1:$1)}
-    y0={round(${"-is_percent $2"}?(h-1)*$2:$2)}
-    z0={round(${"-is_percent $3"}?(h-1)*$3:$3)}
-    x1={round(${"-is_percent $4"}?(w-1)*$4:$4)}
-    y1={round(${"-is_percent $5"}?(h-1)*$5:$5)}
-    z1={round(${"-is_percent $6"}?(h-1)*$6:$6)}
-    x2={round(${"-is_percent $7"}?(w-1)*$7:$7)}
-    y2={round(${"-is_percent $8"}?(h-1)*$8:$8)}
-    z2={round(${"-is_percent $9"}?(h-1)*$9:$9)}
-    x3={round(${"-is_percent $10"}?(w-1)*$10:$10)}
-    y3={round(${"-is_percent $11"}?(h-1)*$11:$11)}
-    z3={round(${"-is_percent $12"}?(h-1)*$12:$12)}
+    x0={round(${"is_percent $1"}?(w-1)*$1:$1)}
+    y0={round(${"is_percent $2"}?(h-1)*$2:$2)}
+    z0={round(${"is_percent $3"}?(h-1)*$3:$3)}
+    x1={round(${"is_percent $4"}?(w-1)*$4:$4)}
+    y1={round(${"is_percent $5"}?(h-1)*$5:$5)}
+    z1={round(${"is_percent $6"}?(h-1)*$6:$6)}
+    x2={round(${"is_percent $7"}?(w-1)*$7:$7)}
+    y2={round(${"is_percent $8"}?(h-1)*$8:$8)}
+    z2={round(${"is_percent $9"}?(h-1)*$9:$9)}
+    x3={round(${"is_percent $10"}?(w-1)*$10:$10)}
+    y3={round(${"is_percent $11"}?(h-1)*$11:$11)}
+    z3={round(${"is_percent $12"}?(h-1)*$12:$12)}
     ($x0,$x1;$x3,$x2^$y0,$y1;$y3,$y2^$z0,$z1;$z3,$z2)
     r. {P0=[$x0,$y0,$z0];P1=[$x1,$y1,$z1];P2=[$x2,$y2,$z2];P3=[$x3,$y3,$z2];1+round([max(norm(P1-P0),norm(P3-P2)),max(norm(P3-P0),norm(P2-P1))])},1,3,3
     warp.. .,0,$13,$14 rm.
@@ -15708,7 +15708,7 @@ sketchbw :
     {$8*w*h/($1*sqrt($4))}          # Create set of random coordinates.
     +rand. 0,{{-2,h}-1} rand.. 0,{{-3,w}-1} a[-2,-1] y mv. 0
     if {0,w>=$_cpus} s[0] x,$_cpus endif
-    com=-skip repeat {$!-4} com=$com,"-_sketchbw$14[] ${1--1},"$> done # String used to parallelize.
+    com=-skip repeat {$!-4} com=$com,"_sketchbw$14[] ${1--1},"$> done # String used to parallelize.
     repeat $1
       alpha={($2+$>*$3/$1)*pi/180}
       +*[-4] {cos($alpha)} +*[-4] {sin($alpha)} +[-2,-1]
@@ -18889,10 +18889,10 @@ demo : check "isint(${1=2}) && $1>=0 && $1<=2"
        "31- Image waves\n"\
        "32- Fractal whirls\n"\
        "33- Color curves\n",0,0,22,1,255,255,255
-  commands=-x_2048,-x_blobs,-x_bouncing,-x_connect4,-x_fire,-x_fireworks,-x_fisheye,-x_fourier,-x_hanoi,-x_histogram,-x_hough,\
-           -x_jawbreaker,-x_landscape,-x_life,-x_light,-x_mandelbrot,-x_metaballs3d,-x_minesweeper,-x_minimal_path,\
-           -x_pacman,-x_paint,-x_plasma,-x_quantize_rgb,-x_reflection3d,-x_rubber3d,-x_shadebobs,\
-           -x_spline,-x_starfield3d,-x_tetris,-x_tictactoe,-x_waves,-x_whirl,-_demo_color_curves
+  commands=x_2048,x_blobs,x_bouncing,x_connect4,x_fire,x_fireworks,x_fisheye,x_fourier,x_hanoi,x_histogram,x_hough,\
+           x_jawbreaker,x_landscape,x_life,x_light,x_mandelbrot,x_metaballs3d,x_minesweeper,x_minimal_path,\
+           x_pacman,x_paint,x_plasma,x_quantize_rgb,x_reflection3d,x_rubber3d,x_shadebobs,\
+           x_spline,x_starfield3d,x_tetris,x_tictactoe,x_waves,x_whirl,_demo_color_curves
   nb_demos={narg($commands)}
   y0=59
   j.. .,20,$y0,0,0 rm.
@@ -18958,7 +18958,7 @@ demo : check "isint(${1=2}) && $1>=0 && $1<=2"
     if {({*,b}&1)&&$selected<0} selected=$y # Selection
     elif {!{*,b}}
       if {$selected>=0&&$y==$selected}
-      m "com : -v 0 "${arg\ {1+$y},$commands} parallel $parallel_mode,"-l[] com v -1 rm endl" uncommand com
+      m "com : -v 0 "${arg\ {1+$y},$commands} parallel $parallel_mode,"l[] com v -1 rm endl" uncommand com
       endif
       selected=-1
     endif
@@ -18986,7 +18986,7 @@ _demo_color_curves :
 ---- Keys '"${c}"ESC"$n"', '"${c}"Q"$n"' or '"${c}"ENTER"$n"' close the current window.\n
 ----\n
 ------------------------------------------------------------------------------------------------"
-    v - __demo_color_curve=1 l[] do rm sp ? while {s!=3} endl -x_color_curves rgb __demo_color_curve= v +
+    v - __demo_color_curve=1 l[] do rm sp ? while {s!=3} endl x_color_curves rgb __demo_color_curve= v +
   else
     e[] "\n
 ------ "${g}"Color curves"$n" ----------------------------------------------------------------------------\n
@@ -19319,7 +19319,7 @@ x_color_curves : skip ${1=rgb}
 
     if {['"$1"']!='last'} # Open interactive windows to set color curves.
       +r[0] ${fitscreen[]\ {0,w},{0,h},1,128,70%},1,100%,3
-      +l. -xcc_goto s c histogram 256,0,255 -xcc_info endl # Compute additional info for each image channel (histogram and color axis).
+      +l. xcc_goto s c histogram 256,0,255 xcc_info endl # Compute additional info for each image channel (histogram and color axis).
       __C0= __C1= __C2= __C3= __C4=
       if {narg($__xcc_C0)} __C0=$__xcc_C0 endif
       if {narg($__xcc_C1)} __C1=$__xcc_C1 endif
@@ -19351,9 +19351,9 @@ x_color_curves : skip ${1=rgb}
     endif
 
     # Apply color curves on fullres image.
-    -xcc_goto
+    xcc_goto
     repeat {s} function1d[] 1,${__xcc_C$>} *. {255%} r. 256,1,1,1,5 c. 0,255 sh[0] $> map. .. rm[-2,-1] done
-    -xcc_backto
+    xcc_backto
 
   endl done
   uncommand xcc_goto,xcc_backto,xcc_info v +
@@ -19361,7 +19361,7 @@ x_color_curves : skip ${1=rgb}
 _x_color_curves :
   title={0,b} if {narg({'{0,x}'})} title=$title.{0,x} endif ({'$title'}) discard. {'~'} title={t} rm.
   +drgba. w. 100%,100%,0,"[G"{`39`}"MIC] Image: "$title rm.
-  -xcc_goto. .
+  xcc_goto. .
 
   oC0= oC1= oC2= oC3= oC4= viewmode=0
   do
@@ -19395,7 +19395,7 @@ _x_color_curves :
         +xcc_backto[1]
       elif {$viewmode%2} # Split view.
         w2={0,int(w/2)} b={$viewmode==1} +z[{!$b}] 0,{$w2-1} +z[$b] $w2,100%
-        -xcc_backto.. -xcc_backto. a[-2,-1] x line. 50%,0,50%,100%,1,0
+        xcc_backto.. xcc_backto. a[-2,-1] x line. 50%,0,50%,100%,1,0
       else # Original view.
         +xcc_backto[0]
       endif
@@ -19487,25 +19487,25 @@ x_colorize : skip ${1=0},${3=0},${4=0},${5=0},${6=0} check "${2=1024}==0 || $2>=
 --------------------------------------------------------------------------------------"
   v -
   N=$!
-  thread_main="-_x_colorize[0] ${1--1}"
-  thread_color="-w[] 400,320,0,\"Palette: main\" -x_select_color[] __color,255,255,255"
+  thread_main="_x_colorize[0] ${1--1}"
+  thread_color="w[] 400,320,0,\"Palette: main\" x_select_color[] __color,255,255,255"
 
   is_palette1=${"is_image_arg[] $4"}
   if $is_palette1
     pass$4 1 ({'{b}'}) discard. {'~'} palette_title1={t} rm.
-    thread_palette1="-w[] 400,400,0,\"Palette: "$palette_title1"\" -x_select_palette["{$!-1}"] __color"
+    thread_palette1="w[] 400,400,0,\"Palette: "$palette_title1"\" x_select_palette["{$!-1}"] __color"
   endif
 
   is_palette2=${"is_image_arg[] $5"}
   if $is_palette2
     pass$5 1 ({'{b}'}) discard. {'~'} palette_title2={t} rm.
-    thread_palette2="-w[] 400,400,0,\"Palette: "$palette_title2"\" -x_select_palette["{$!-1}"] __color"
+    thread_palette2="w[] 400,400,0,\"Palette: "$palette_title2"\" x_select_palette["{$!-1}"] __color"
   endif
 
   is_grabber=${"is_image_arg[] $6"}
   if $is_grabber
     pass$6 1 ({'{b}'}) discard. {'~'} palette_grabber={t} rm.
-    thread_grabber="-w[] ${\"fitscreen[] {w},{h},1,128,50%\"},0,\"Grabber: "$palette_grabber"\" -x_grab_color["{$!-1}"] __color"
+    thread_grabber="w[] ${\"fitscreen[] {w},{h},1,128,50%\"},0,\"Grabber: "$palette_grabber"\" x_grab_color["{$!-1}"] __color"
   endif
 
   __color=255,255,255
@@ -20140,7 +20140,7 @@ x_fourier :
 
     -l
     if {!narg($first_time)}
-      parallel 0,"-alert[thumb] \"[G"{`39`}"MIC Fourier filtering]\",\
+      parallel 0,"alert[thumb] \"[G"{`39`}"MIC Fourier filtering]\",\
             \"The G\47MIC Fourier filtering demo illustrates the effect\n\
             of bandpass frequency filtering on an image. Use your mouse\n\
             buttons to select low and high bounds for the frequencies\n\
@@ -24298,7 +24298,7 @@ survey :
   l[] GMIC_LOGIN=${gmic_ftp\ 0} onfail GMIC_LOGIN="" endl
   l[] GMIC_PASSWD=${gmic_ftp\ 1} onfail GMIC_PASSWD="" endl
   if {narg($GMIC_LOGIN)}
-    -x "lftp ftp://"$GMIC_LOGIN":"$GMIC_PASSWD"@ftp.gmic.eu -e \"put -O /www/gmic/ \\\""$out"\\\"; quit\" >/dev/null"
+    x "lftp ftp://"$GMIC_LOGIN":"$GMIC_PASSWD"@ftp.gmic.eu -e \"put -O /www/gmic/ \\\""$out"\\\"; quit\" >/dev/null"
   endif
   endl v +
 
@@ -26945,9 +26945,9 @@ fx_curves_interactive :
   nm "Color curves"
   repeat 4 __xcc_C$>=0,0,100,100 done
   if {$4==$1} l[] (${5--1}) s -,-1 repeat $! __xcc_C$>={$>,^} done rm endl endif
-  if $3 _xcc_colorbase=${arg\ {$4+1},rgb,cmy,cmyk,hsi,hsl,hsv,lab,lch,ycbcr} -x_color_curves last # Apply transformation from previously defined curves.
+  if $3 _xcc_colorbase=${arg\ {$4+1},rgb,cmy,cmyk,hsi,hsl,hsv,lab,lch,ycbcr} x_color_curves last # Apply transformation from previously defined curves.
   else # Run interactive curve builder.
-    -x_color_curves ${arg\ {$1+1},rgb,cmy,cmyk,hsi,hsl,hsv,lab,lch,ycbcr}
+    x_color_curves ${arg\ {$1+1},rgb,cmy,cmyk,hsi,hsl,hsv,lab,lch,ycbcr}
     u "{$1}{$2}{$3}{$1}{"$__xcc_C0,-1,$__xcc_C1,-1,$__xcc_C2,-1,$__xcc_C3,-1,$__xcc_C4"}"
   endif
   if $2 # Add HaldCLUT layer.
@@ -26955,7 +26955,7 @@ fx_curves_interactive :
     if {$2==2} r. 256,256,256,3,3 r. 4096,4096,1,3,-1 # High-res HaldCLUT.
     else r. 64,64,64,3,3 r. 512,512,1,3,-1 # Low-res HaldCLUT.
     endif
-    -x_color_curves. last
+    x_color_curves. last
   endif
 
 fx_curves_interactive_preview :
@@ -27185,7 +27185,7 @@ _fx_recompose_channels2 : hsl82rgb
 _fx_recompose_channels3 : hsi82rgb
 _fx_recompose_channels4 : yuv82rgb
 _fx_recompose_channels5 : ycbcr2rgb
-_fx_recompose_channels6 : -xyz82rgb
+_fx_recompose_channels6 : xyz82rgb
 _fx_recompose_channels7 : lab82rgb
 _fx_recompose_channels8 : lch82rgb
 _fx_recompose_channels9 : cmy2rgb
@@ -29375,7 +29375,7 @@ __fx_equalize_details :
   * {10^$4}
 
 fx_equalize_details :
-  ac "gui_parallel_overlap \"-_fx_equalize_details ${1-18}\",$21,$22",$19,$20
+  ac "gui_parallel_overlap \"_fx_equalize_details ${1-18}\",$21,$22",$19,$20
 
 fx_equalize_details_preview :
   gui_split_preview "fx_equalize_details $*",$-1
@@ -29400,7 +29400,7 @@ _fx_freaky_details :
   endl done
 
 fx_freaky_details :
-  ac "gui_parallel_overlap \"-_fx_freaky_details ${1-3}\",$5,$6",$4
+  ac "gui_parallel_overlap \"_fx_freaky_details ${1-3}\",$5,$6",$4
   n 0,255
 
 fx_freaky_details_preview :
@@ -29456,7 +29456,7 @@ fx_mighty_details_preview :
 #@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2010/29/12</i>.</small>")
 fx_deblur :
-  ac "gui_parallel_overlap \"-deblur ${1-5} c 0,255\",$7,$8",$6,1
+  ac "gui_parallel_overlap \"deblur ${1-5} c 0,255\",$7,$8",$6,1
 
 fx_deblur_preview :
   gui_split_preview "fx_deblur $*",$-1
@@ -29472,7 +29472,7 @@ fx_deblur_preview :
 #@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
 #@gui : sep = separator(), note = note("<small>Author: <i>J&#233;r&#244;me Boulanger</i>.      Latest update: <i>2013/29/03</i>.</small>")
 fx_unsharp_goldmeinel:
-   ac "gui_parallel_overlap \"-_fx_unsharp_goldmeinel $*\",$7,$8",$6,1
+   ac "gui_parallel_overlap \"_fx_unsharp_goldmeinel $*\",$7,$8",$6,1
 
 _fx_unsharp_goldmeinel :
   deblur_goldmeinel $*
@@ -29504,7 +29504,7 @@ fx_sharpen_inversediff_preview :
 #@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2010/29/12</i>.</small>")
 fx_unsharp_octave :
-  ac "gui_parallel_overlap \"-unsharp_octave $1,$2,$3,$4\",$6,$7",$5,1
+  ac "gui_parallel_overlap \"unsharp_octave $1,$2,$3,$4\",$6,$7",$5,1
 
 fx_unsharp_octave_preview :
   gui_split_preview "fx_unsharp_octave $*",$-1
@@ -32281,7 +32281,7 @@ fx_smooth_guided_preview :
 #@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2013/27/08</i>.</small>")
 fx_smooth_diffusion :
-  ac "gui_parallel_overlap \"-smooth $6,$1,$2,$3,$4,$5,0 c 0,255\",$8,$9",$7
+  ac "gui_parallel_overlap \"smooth $6,$1,$2,$3,$4,$5,0 c 0,255\",$8,$9",$7
 
 fx_smooth_diffusion_preview :
   gui_split_preview "fx_smooth_diffusion $*",$-1,{if(isval($GMIC_GUI_TIMEOUT),0$GMIC_GUI_TIMEOUT,8)}
@@ -32295,7 +32295,7 @@ fx_smooth_diffusion_preview :
 #@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2013/27/08</i>.</small>")
 fx_smooth_meancurvature :
-  ac "gui_parallel_overlap \"-meancurvature_flow $2,$1,$3 c 0,255\",$5,$6",$4
+  ac "gui_parallel_overlap \"meancurvature_flow $2,$1,$3 c 0,255\",$5,$6",$4
 
 fx_smooth_meancurvature_preview :
   gui_split_preview "fx_smooth_meancurvature $*",$-1,{if(isval($GMIC_GUI_TIMEOUT),0$GMIC_GUI_TIMEOUT,8)}
@@ -32324,7 +32324,7 @@ fx_smooth_median_preview :
 fx_smooth_nlmeans:
   repeat $! l[$>]
     if {s==1} nlmeans $1,$2,$3,-_fx_smooth_nlmeans$4 # Handle separatly gray scale images.
-    else ac "gui_parallel_overlap \"-nlmeans $1,$2,$3,-_fx_smooth_nlmeans$4\",$6,$7",$5
+    else ac "gui_parallel_overlap \"nlmeans $1,$2,$3,-_fx_smooth_nlmeans$4\",$6,$7",$5
     endif
   endl done
 
@@ -32383,7 +32383,7 @@ fx_smooth_patchpca_preview :
 #@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2014/26/11</i>.</small>")
 fx_smooth_peronamalik :
-  ac "gui_parallel_overlap \"-peronamalik_flow $1,$3,$2,$4 c 0,255\",$6,$7",$5
+  ac "gui_parallel_overlap \"peronamalik_flow $1,$3,$2,$4 c 0,255\",$6,$7",$5
 
 fx_smooth_peronamalik_preview :
   gui_split_preview "fx_smooth_peronamalik $*",$-1,{if(isval($GMIC_GUI_TIMEOUT),0$GMIC_GUI_TIMEOUT,8)}
@@ -32503,7 +32503,7 @@ fx_smooth_skin_preview :
 #@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2013/27/08</i>.</small>")
 fx_smooth_tv :
-  ac "gui_parallel_overlap \"-tv_flow $2,$1,$3 c 0,255\",$5,$6",$4
+  ac "gui_parallel_overlap \"tv_flow $2,$1,$3 c 0,255\",$5,$6",$4
 
 fx_smooth_tv_preview :
   gui_split_preview "fx_smooth_tv $*",$-1,{if(isval($GMIC_GUI_TIMEOUT),0$GMIC_GUI_TIMEOUT,8)}
@@ -32518,7 +32518,7 @@ fx_smooth_tv_preview :
 #@gui : sep = separator(), note = note("<small>Author: <i>J&#233;rome Boulanger and David Tschumperl&#233;</i>.      Latest update: <i>2013/27/08</i>.</small>")
 fx_smooth_haar :
   remove_opacity
-  ac "gui_parallel_overlap \"-denoise_haar $1,$3,$2 c 0,255\",$5,$6",$4
+  ac "gui_parallel_overlap \"denoise_haar $1,$3,$2 c 0,255\",$5,$6",$4
 
 fx_smooth_haar_preview :
   gui_split_preview "fx_smooth_haar $*",$-1,{if(isval($GMIC_GUI_TIMEOUT),0$GMIC_GUI_TIMEOUT,8)}
@@ -34300,7 +34300,7 @@ fx_gmic_demos :
        rubber3d,shadebobs,spline,starfield3d,tetris,tictactoe,waves,whirl
   com=${arg\ {1+$1},$coms}
   if {$!>0} sel=0 else sel= endif
-  +l[$sel] m "foo : -x_"$com foo rm uncommand foo endl
+  +l[$sel] m "foo : x_"$com foo rm uncommand foo endl
 
 fx_gmic_demos_preview :
   rm filename=${-path_tmp}gmic_demos.cimgz
