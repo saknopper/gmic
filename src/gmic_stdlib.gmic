@@ -43,7 +43,7 @@
 #
 #*** General syntax :
 #
-# - Each line starting with 'command_name :' starts a new definition of the G'MIC custom command '-command_name'.
+# - Each line starting with 'command_name :' starts a new definition of the G'MIC custom command 'command_name'.
 # - Each line starting with '#' is a comment line.
 # - Any other line is considered as the continuation of a previously started G'MIC custom command.
 #
@@ -585,7 +585,7 @@ _help_usage :
 \n  - '"$c"$$name"$n"' and '"$c"$${name}"$n"' are both substituted by the G'MIC script code of the specified named
 \n     "${g}"custom command"$n", or by an empty string if no custom command with specified name exists.
 \n
-\n  - '"$c"${\"command line\"}"$n"' is substituted by the "${g}"status value"$n" set by the execution of the specified
+\n  - '"$c"${\"-command line\"}"$n"' is substituted by the "${g}"status value"$n" set by the execution of the specified
 \n     command line (see command '"${c}"status"$n"' to learn more about status). Expression '"$c"${}"$n"' thus stands
 \n     for the "${g}"current status value"$n".
 \n
@@ -1475,7 +1475,7 @@ clut : check "isval(${2=64}) && $2>0"
 #@cli command : _add_debug_info={ 0 | 1 },{ filename | http[s]://URL | "string" } : (+)
 #@cli : Import G'MIC custom commands from specified file, URL or string.
 #@cli : (eq. to 'm').\n
-#@cli : Imported commands are available directly after the '-command' invocation.
+#@cli : Imported commands are available directly after the 'command' invocation.
 #@cli : Default value: 'add_debug_info=1'.
 #@cli : $ image.jpg command "foo : mirror y deform $""1" +foo[0] 5 +foo[0] 15
 
