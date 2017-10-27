@@ -2530,7 +2530,7 @@ _document_gmic_footer_html : skip $1
     v + e[] "<p style=\"margin-left:20px\">"
     repeat $_shortcut
       e[] "<font color=\"green\"><b>&nbsp;&nbsp;"${_shortcut$>}" "${_shortcutqualifier$>}"</b>:</font>"
-      v - ({'${_shortcutlink$>}'}) z. 1,100% scl={t} rm. v +
+      v - ({'${_shortcutlink$>}'}) scl={t} rm. v +
       e[] "<font color=\"blue\"><i>Shortcut for command '<a href=\"#"$scl"\">"${_shortcutlink$>}"</a>'</i></font><br/>"
     done
     e[] "</p>" v -
