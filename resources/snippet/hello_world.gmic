@@ -44,10 +44,10 @@
 #
 # On a terminal, type :
 #
-# $ gmic http://gmic.eu/snippet/hello_world.gmic -hello
+# $ gmic http://gmic.eu/snippet/hello_world.gmic run
 #
 #-------------------------------------------------------
-hello :
+run :
   verbose -  # Make console output silent
   local[]    # Start a new empty environment
 

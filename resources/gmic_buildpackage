@@ -385,7 +385,9 @@ lftp ftp://$GMIC_LOGIN:$GMIC_PASSWD@ftp.gmic.eu -e "mirror -RL . /www/gmic/ ; qu
 lftp ftp://$GMIC_LOGIN:$GMIC_PASSWD@ftp.gmic.eu -e "put -O \"/www/gmic/tutorial\" header.html; quit"
 rm -f gmic_stdlib.gmic gmic_stdlib.$SVERSION
 cd ..
-#exit
+cd resources/snippet
+lftp ftp://$GMIC_LOGIN:$GMIC_PASSWD@ftp.gmic.eu -e "mirror -RL . /www/gmic/snippet/ ; quit"
+cd ../..
 
 # Construct a clean version of the G'MIC folder.
 #------------------------------------------------
