@@ -48,7 +48,7 @@
 
 <span style='color:#200080; font-weight:bold; '>int</span> <span style='color:#400000; '>main</span><span style='color:#308080; '>(</span><span style='color:#308080; '>)</span> <span style='color:#406080; '>{</span>
     <span style='color:#200080; font-weight:bold; '>try</span> <span style='color:#406080; '>{</span>
-        gmic<span style='color:#308080; '>(</span><span style='color:#800000; '>"</span><span style='color:#1060b6; '>-testimage2d 512 -output gmic_test.png</span><span style='color:#800000; '>"</span><span style='color:#308080; '>)</span><span style='color:#406080; '>;</span>
+        gmic<span style='color:#308080; '>(</span><span style='color:#800000; '>"</span><span style='color:#1060b6; '>testimage2d 512 output gmic_test.png</span><span style='color:#800000; '>"</span><span style='color:#308080; '>)</span><span style='color:#406080; '>;</span>
     <span style='color:#406080; '>}</span> <span style='color:#200080; font-weight:bold; '>catch</span> <span style='color:#308080; '>(</span>gmic_exception<span style='color:#308080; '>&amp;</span> e<span style='color:#308080; '>)</span> <span style='color:#406080; '>{</span> <span style='color:#595979; '>// In case something went wrong:</span>
         <span style='color:#0066ee; '>std</span><span style='color:#406080; '>::</span><span style='color:#003060; '>fprintf</span><span style='color:#308080; '>(</span><span style='color:#003060; '>stderr</span><span style='color:#308080; '>,</span><span style='color:#800000; '>"</span><span style='color:#1060b6; '>ERROR : </span><span style='color:#007997; '>%s</span><span style='color:#0f69ff; '>\n</span><span style='color:#800000; '>"</span><span style='color:#308080; '>,</span>e<span style='color:#308080; '>.</span>what<span style='color:#308080; '>(</span><span style='color:#308080; '>)</span><span style='color:#308080; '>)</span><span style='color:#406080; '>;</span>
         <span style='color:#200080; font-weight:bold; '>return</span> <span style='color:#308080; '>-</span><span style='color:#008c00; '>1</span><span style='color:#406080; '>;</span>
@@ -90,7 +90,7 @@
           to be able to use <b>libgmic</b> as its full potential. Fortunately, this is a pretty straightforward language,
           and you can read <a href="tutorial/">very detailed tutorial pages</a> which explain it, so this should not be a big deal.</li>
         <li>In the sample file <tt style="font-family:monospace;">foo.cpp</tt> above, we have just asked <b><font color="#000066">G'MIC</font></b> to generate a new <i>512x512</i> color image
-          from scratch (with command <tt style="font-family:monospace;">-testimage2d 512</tt>)
+          from scratch (with command <tt style="font-family:monospace;">testimage2d 512</tt>)
           and save it as the image file <tt style="font-family:monospace;">gmic_test.png</tt> in the current folder<br/>
           (with <tt style="font-family:monospace;">-output gmic_test.png</tt>).</li>
       </ul>
@@ -148,7 +148,7 @@
 
   gmic_list<span style='color:#406080; '>&lt;</span><span style='color:#200080; font-weight:bold; '>char</span><span style='color:#406080; '>></span> image_names<span style='color:#406080; '>;</span> <span style='color:#595979; '>// We don't care about image names here, let this empty.</span>
   <span style='color:#200080; font-weight:bold; '>try</span> <span style='color:#406080; '>{</span>
-    gmic<span style='color:#308080; '>(</span><span style='color:#800000; '>"</span><span style='color:#1060b6; '>-water[0] 20 -flower[1] 20 -blend vividlight</span><span style='color:#800000; '>"</span><span style='color:#308080; '>,
+    gmic<span style='color:#308080; '>(</span><span style='color:#800000; '>"</span><span style='color:#1060b6; '>water[0] 20 flower[1] 20 blend vividlight</span><span style='color:#800000; '>"</span><span style='color:#308080; '>,
          </span>image_list<span style='color:#308080; '>,</span>image_names<span style='color:#308080; '>)</span><span style='color:#406080; '>;</span>
   <span style='color:#406080; '>}</span> <span style='color:#200080; font-weight:bold; '>catch</span> <span style='color:#308080; '>(</span>gmic_exception <span style='color:#308080; '>&amp;</span>e<span style='color:#308080; '>)</span> <span style='color:#406080; '>{</span> <span style='color:#595979; '>// In case something went wrong.</span>
     <span style='color:#0066ee; '>std</span><span style='color:#406080; '>::</span><span style='color:#003060; '>fprintf</span><span style='color:#308080; '>(</span><span style='color:#003060; '>stderr</span><span style='color:#308080; '>,</span><span style='color:#800000; '>"</span><span style='color:#1060b6; '>ERROR : </span><span style='color:#007997; '>%s</span><span style='color:#0f69ff; '>\n</span><span style='color:#800000; '>"</span><span style='color:#308080; '>,</span>e<span style='color:#308080; '>.</span>what<span style='color:#308080; '>(</span><span style='color:#308080; '>)</span><span style='color:#308080; '>)</span><span style='color:#406080; '>;</span>
@@ -176,9 +176,9 @@
       Then, the <b><font color="#000066">G'MIC</font></b> invokation creates this single output image buffer (but without saving the image into a file in this case):
       <center><td><div><a href="img/gmic_libgmic_sample3.jpg" class="highslide" onclick="return hs.expand(this)"><img alt="" border="0" src="img/gmic_libgmic_sample3_thumb.jpg"/></a></div></td></center>
       This is the result of the following <b><font color="#000066">G'MIC</font></b> pipeline:
-      <b>1.</b> Apply a water effect on the first image (command <tt style="font-family:monospace;">-water[0] 20</tt>),
-      <b>2.</b> Apply a flower effect on the second image (command <tt style="font-family:monospace;">-flower[1] 20</tt>),
-      and <b>3.</b> Blend the resulting images together, using the <i>Vivid light</i> mode (command <tt style="font-family:monospace;">-blend vividlight</tt>).
+      <b>1.</b> Apply a water effect on the first image (command <tt style="font-family:monospace;">water[0] 20</tt>),
+      <b>2.</b> Apply a flower effect on the second image (command <tt style="font-family:monospace;">flower[1] 20</tt>),
+      and <b>3.</b> Blend the resulting images together, using the <i>Vivid light</i> mode (command <tt style="font-family:monospace;">blend vividlight</tt>).
       Easy, isn't it ?
 
       <p>At this stage, you already know the most complex things about the use of the <b>libgmic</b> <i>API</i> :).</p>
@@ -215,10 +215,10 @@ R<span style='color:#308080; '>(</span><span style='color:#008c00; '>0</span><sp
           <hr noshade="noshade" size="1" width="100%"/>
 <pre style='color:#000020;background:#f6f8ff;font-family:monospace;'>
 gmic g_instance<span style='color:#406080; '>;</span>
-g_instance<span style='color:#308080; '>.</span>run<span style='color:#308080; '>(</span><span style='color:#800000; '>"</span><span style='color:#1060b6; '>-water[0] 20</span><span style='color:#800000; '>"</span><span style='color:#308080; '>,</span>image_list<span style='color:#308080; '>,</span>image_names<span style='color:#308080; '>)</span><span style='color:#406080; '>;</span>
-g_instance<span style='color:#308080; '>.</span>run<span style='color:#308080; '>(</span><span style='color:#800000; '>"</span><span style='color:#1060b6; '>-flower[1] 20</span><span style='color:#800000; '>"</span><span style='color:#308080; '>,</span>image_list<span style='color:#308080; '>,</span>image_names<span style='color:#308080; '>)</span><span style='color:#406080; '>;</span>
-g_instance<span style='color:#308080; '>.</span>run<span style='color:#308080; '>(</span><span style='color:#800000; '>"</span><span style='color:#1060b6; '>-blend vividlight</span><span style='color:#800000; '>"</span><span style='color:#308080; '>,</span>image_list<span style='color:#308080; '>,</span>image_names<span style='color:#308080; '>)</span><span style='color:#406080; '>;</span>
-g_instance<span style='color:#308080; '>.</span>run<span style='color:#308080; '>(</span><span style='color:#800000; '>"</span><span style='color:#1060b6; '>-output gmic_test.png</span><span style='color:#800000; '>"</span><span style='color:#308080; '>,</span>image_list<span style='color:#308080; '>,</span>image_names<span style='color:#308080; '>)</span><span style='color:#406080; '>;</span>
+g_instance<span style='color:#308080; '>.</span>run<span style='color:#308080; '>(</span><span style='color:#800000; '>"</span><span style='color:#1060b6; '>water[0] 20</span><span style='color:#800000; '>"</span><span style='color:#308080; '>,</span>image_list<span style='color:#308080; '>,</span>image_names<span style='color:#308080; '>)</span><span style='color:#406080; '>;</span>
+g_instance<span style='color:#308080; '>.</span>run<span style='color:#308080; '>(</span><span style='color:#800000; '>"</span><span style='color:#1060b6; '>flower[1] 20</span><span style='color:#800000; '>"</span><span style='color:#308080; '>,</span>image_list<span style='color:#308080; '>,</span>image_names<span style='color:#308080; '>)</span><span style='color:#406080; '>;</span>
+g_instance<span style='color:#308080; '>.</span>run<span style='color:#308080; '>(</span><span style='color:#800000; '>"</span><span style='color:#1060b6; '>blend vividlight</span><span style='color:#800000; '>"</span><span style='color:#308080; '>,</span>image_list<span style='color:#308080; '>,</span>image_names<span style='color:#308080; '>)</span><span style='color:#406080; '>;</span>
+g_instance<span style='color:#308080; '>.</span>run<span style='color:#308080; '>(</span><span style='color:#800000; '>"</span><span style='color:#1060b6; '>output gmic_test.png</span><span style='color:#800000; '>"</span><span style='color:#308080; '>,</span>image_list<span style='color:#308080; '>,</span>image_names<span style='color:#308080; '>)</span><span style='color:#406080; '>;</span>
 </pre>
 <hr noshade="noshade" size="1" width="100%"/>
 
@@ -285,12 +285,12 @@ Setting image names is generally useless, except if one of the commands you invo
   CImg<span style='color:#406080; '>&lt;</span><span style='color:#200080; font-weight:bold; '>char</span><span style='color:#406080; '>></span><span style='color:#406080; '>::</span><span style='color:#003060; '>string</span><span style='color:#308080; '>(</span><span style='color:#800000; '>"</span><span style='color:#1060b6; '>Second image</span><span style='color:#800000; '>"</span><span style='color:#308080; '>)</span><span style='color:#308080; '>.</span>move_to<span style='color:#308080; '>(</span>image_names<span style='color:#308080; '>)</span><span style='color:#406080; '>;</span>
 
   <span style='color:#595979; '>// Invoke libgmic to execute a G'MIC pipeline.</span>
-  gmic<span style='color:#308080; '>(</span><span style='color:#800000; '>"</span><span style='color:#1060b6; '>-water[0] 15 -wave[1] 15 </span><span style='color:#800000; '>"</span>
-       <span style='color:#800000; '>"</span><span style='color:#1060b6; '>320,256 -mandelbrot[-1] -0.6918,-0.4831,-0.6375,-0.4338,256 </span><span style='color:#800000; '>"</span>
-       <span style='color:#800000; '>"</span><span style='color:#1060b6; '>64,1,1,3,?(255) -r[-1] 256,1,1,3,3 -point[-1] 0 -map[-2] [-1] -rm[-1] </span><span style='color:#800000; '>"</span>
-       <span style='color:#800000; '>"</span><span style='color:#1060b6; '>-frame 2,2,0 -to_rgba -drop_shadow 3,3 -montage X </span><span style='color:#800000; '>"</span>
-       <span style='color:#800000; '>"</span><span style='color:#1060b6; '>-i[0] 100%,100%,1,3,255 -blend alpha </span><span style='color:#800000; '>"</span>
-       <span style='color:#800000; '>"</span><span style='color:#1060b6; '>-name </span><span style='color:#0f69ff; '>\"</span><span style='color:#1060b6; '>Result image</span><span style='color:#0f69ff; '>\"</span><span style='color:#800000; '>"</span><span style='color:#308080; '>,</span>
+  gmic<span style='color:#308080; '>(</span><span style='color:#800000; '>"</span><span style='color:#1060b6; '>water[0] 15 wave[1] 15 </span><span style='color:#800000; '>"</span>
+       <span style='color:#800000; '>"</span><span style='color:#1060b6; '>320,256 mandelbrot. -0.6918,-0.4831,-0.6375,-0.4338,256 </span><span style='color:#800000; '>"</span>
+       <span style='color:#800000; '>"</span><span style='color:#1060b6; '>64,1,1,3,?(255) r. 256,1,1,3,3 point. 0 map.. . rm. </span><span style='color:#800000; '>"</span>
+       <span style='color:#800000; '>"</span><span style='color:#1060b6; '>frame 2,2,0 to_rgba drop_shadow 3,3 montage X </span><span style='color:#800000; '>"</span>
+       <span style='color:#800000; '>"</span><span style='color:#1060b6; '>i[0] 100%,100%,1,3,255 blend alpha </span><span style='color:#800000; '>"</span>
+       <span style='color:#800000; '>"</span><span style='color:#1060b6; '>name </span><span style='color:#0f69ff; '>\"</span><span style='color:#1060b6; '>Result image</span><span style='color:#0f69ff; '>\"</span><span style='color:#800000; '>"</span><span style='color:#308080; '>,</span>
        image_list<span style='color:#308080; '>,</span>image_names<span style='color:#308080; '>)</span><span style='color:#406080; '>;</span>
 
   <span style='color:#595979; '>// Display resulting image.</span>

@@ -111,7 +111,7 @@ int main() {
     // several times.
     gmic_instance.run("blur 5 sharpen 1000 normalize 0,255 output foo2.bmp",images,images_names);
     std::fputc('\n',stderr);
-    gmic_instance.run("--resize 50%,50% to_rgba[-1] rotate[-1] 30 drop_shadow[-1] 0,13 "
+    gmic_instance.run("+resize 50%,50% to_rgba[-1] rotate[-1] 30 drop_shadow[-1] 0,13 "
                       "blur_radial[0] 10% blend alpha output foo3.bmp",images,images_names);
 
   } catch (gmic_exception &e) { // Catch exception, if an error occured in the interpreter.
