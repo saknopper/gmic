@@ -198,14 +198,15 @@ ifneq ($(OS),Darwin)
 X11_CFLAGS = -Dcimg_display=1 `pkg-config --cflags x11 || echo -I/usr/X11R6/include` #-Dcimg_use_xrandr
 X11_LIBS = `pkg-config --libs x11 || echo -L/usr/X11R6/lib -lX11` -lpthread #`pkg-config --libs xrandr || echo -lXrandr`
 else
-ifeq (,$(wildcard /usr/X11R6))
+ifeq (,$(wildcard /usr/X11))
 X11_CFLAGS = -Dcimg_display=0 #-Dcimg_use_xrandr
 X11_LIBS = -lpthread #`pkg-config --libs xrandr || echo -lXrandr`
 else
 X11_CFLAGS = -Dcimg_display=1 `pkg-config --cflags x11 || echo -I/usr/X11R6/include` #-Dcimg_use_xrandr
-X11_LIBS = -L/usr/X11R6/lib -lX11 -lpthread #`pkg-config --libs xrandr || echo -lXrandr`
+X11_LIBS = `pkg-config --libs x11 || echo -L/usr/X11/lib` -lpthread #`pkg-config --libs xrandr || echo -lXrandr`
 endif
 endif
+
 # Flags to enable fast display, using XShm.
 # This requires the presence of the X11 extension include and library files.
 XSHM_CFLAGS = -Dcimg_use_xshm `pkg-config --cflags xcb-shm`
