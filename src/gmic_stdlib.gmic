@@ -282,7 +282,7 @@ _help_usage :
 \n
 \n  - A named image may be also indicated by '"$c"[name]"$n"', if '"${g}"name"$n"' uses the character set "$g"[a-zA-Z0-9_]"$n"
 \n     and does not start with a number. Image names can be set or reassigned at any moment during
-\n     the processing pipeline (see command '"$c"name"$n"' for this purpose).
+\n     the processing pipeline (see command '"${c}"name"$n"' for this purpose).
 \n
 \n  - "${-GMIC}" defines a set of various commands and substitution mechanisms to allow the design of
 \n     complex pipelines and operators managing this list of images, in a very flexible way:
