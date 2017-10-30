@@ -28595,19 +28595,23 @@ fx_map_sphere_preview :
 #@gui : Smoothness (%) = float(0,0,4)
 #@gui : X-center (%) = float(50,0,100)
 #@gui : Y-center (%) = float(50,0,100)
+#@gui : Select center (interactive) = button()
 #@gui : Ratio = float(0,-2,2)
 #@gui : Angle = float(0,-90,90)
 #@gui : Interpolation = choice(2,"Nearest neighbor","Linear","Cubic")
 #@gui : Preview grid = bool(0)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2017/10/03</i>.</small>")
 fx_spherize :
-  ratio={10^$6}
-  spherize $1%,$2,$3%,$4%,$5%,$ratio,$7,$8
+  ratio={10^$7}
+  spherize $1%,$2,$3%,$4%,$5%,$ratio,$8,$9
   cut 0,255
 
 fx_spherize_preview :
-  if $9 grid 5%,5%,50%,50%,0.6,255 endif
-  fx_spherize $*
+  cx,cy=${4,5}
+  if $6 wh=${fitscreen\ {0,[w,h]}} w $wh,0,"[G'MIC] Select center" +select 0 cx,cy={[I[0],I[1]]/[w#0,h#0]*100} rm. endif
+  if $10 grid 5%,5%,50%,50%,0.6,255 endif
+  fx_spherize ${1-3},$cx,$cy,${6--1}
+  u "{$1}{$2}{$3}{"$cx"}{"$cy"}{0}{$7}{$8}{$9}{$10}"
 
 #@gui Square to circle : fx_square_circle, fx_square_circle_preview
 #@gui : Mode = choice(0,"Square to circle","Circle to square")
@@ -28621,7 +28625,7 @@ fx_spherize_preview :
 #@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
 #@gui : sep = separator(), note = note("<small>This filter implements the mapping functions described in this page, by <i>C. Fong</i>:</small>")
 #@gui : url = link("http://squircular.blogspot.com/2015/09/mapping-circle-to-square.html")
-#@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2017/08/16</i>.</small>")
+#@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2017/10/30</i>.</small>")
 fx_square_circle :
   mode,interp,boundary,factx,facty,offx,offy,pmode=$*
   if {!$boundary} to_a endif
