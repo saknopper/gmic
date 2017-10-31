@@ -32187,6 +32187,7 @@ fx_remove_hotpixels_preview :
 #@gui : Regularization = choice(1,"Isotropic","Delaunay-oriented","Edge-oriented")
 #@gui : Regularization iterations = int(20,0,100)
 #@gui : Dilation / erosion = int(0,-20,20)
+#@gui : Colorspace = choice(1,"sRGB","Linear RGB")
 #@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
 #@gui : sep = separator()
 #@gui : note = note{"<small><b>Note:</b>
@@ -32195,14 +32196,15 @@ fx_remove_hotpixels_preview :
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2016/07/04</i>.</small>")
 fx_solidify_td :
   repeat $! l[$>]
-    to_a sh 0,{s-2} srgb2rgb. rm.
+    to_rgba sh 0,{s-2} if $5 srgb2rgb. endif rm.
     if $4
       . sh. 100% if {$4>0} erode. {1+2*$4} else dilate. {1-2*$4} endif rm.
       solidify. $1%,$2,$3
-      rv blend alpha rgb2srgb
+      rv blend alpha
     else
-      solidify $1%,$2,$3 rgb2srgb.
+      solidify $1%,$2,$3
     endif
+    if $5 rgb2srgb. endif
   endl done
 
 fx_solidify_td_preview :
