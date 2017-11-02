@@ -26134,7 +26134,8 @@ fx_autofill_lineart_preview :
 #@gui : note = note{"<small>Add strokes with a saturated color having value 255 (e.g. pure red) on your lineart allows to guide the colorization algorithm with virtual contours.</small>"}
 #@gui : Output region delimiters = _bool(0)
 #@gui : sep = separator(), note = note{"<small><b>For <i>Random colors</i> mode only:</b></small>"}
-#@gui : Maximal color saturation = int(32,0,255)
+#@gui : Dependence to region areas = float(0.5,0,1)
+#@gui : Maximal color saturation = int(24,0,255)
 #@gui : Minimal color intensity = int(200,0,255)
 #@gui : sep = separator(), note = note{"<small><b>For <i>color spots</i> mode only:</b></small>"}
 #@gui : Color shading (%) = int(0,0,100)
@@ -26168,7 +26169,7 @@ _fx_colorize_lineart_smartcoloring :
   if {$1==1" && "$!<2} error "A top layer with color strokes is missing, for this colorization mode."
   elif {$1==2" && "$!<2} error "A bottom color layer is missing, for this colorization mode."
   endif
-  min_color_area={$15^2}
+  min_color_area={$16^2}
 
   repeat {$1?1:$!} inds=${arg\ 1+!!$1,$<,0--1} l[$inds]
 
@@ -26201,7 +26202,7 @@ _fx_colorize_lineart_smartcoloring :
 
     # Retrieve closed binary shape.
     _keep_keycoords={$-1==0}
-    [strokes] close_binary. ${9-14},$min_color_area,$16,${17-21} nm. new_strokes
+    [strokes] close_binary. ${10-15},$min_color_area,$17,${18-22} nm. new_strokes
 
     if {$-1==0} # Render estimated geometry
       +negate[strokes] *. 255 to_rgb.
@@ -26221,13 +26222,13 @@ _fx_colorize_lineart_smartcoloring :
       +l[new_strokes] * -1 + 1 +b 1% b.. 1 min endl
       watershed... .,0 rm. map.. . rm.
 
-      if {!$8} rm[strokes] # No color shading
+      if {!$9} rm[strokes] # No color shading
       else # Shade colors
         j[strokes] [new_strokes] distance[strokes] 0 *[strokes] -1
         eq[new_strokes] 0 label_fg[new_strokes] 0,0
         if $min_color_area +area_fg[new_strokes] 0,0 >. $min_color_area *[new_strokes,-1] endif
         watershed[new_strokes] [strokes],0 rm[strokes]
-        srgb2rgb. -guided. [new_strokes],{1+$8/5},0 rgb2srgb.
+        srgb2rgb. -guided. [new_strokes],{1+$9/5},0 rgb2srgb.
       endif
       rm[new_strokes]
       nm. new_colors
@@ -26249,8 +26250,10 @@ _fx_colorize_lineart_smartcoloring :
       +histogram[new_strokes] {new_strokes,[iM+1,0,iM]}
       sqrt. *. {240/100} c. 0,240
       ind_bg={xM}
-      channels. 0,2 f. "[i,u(1,max(3,$6))/255,u(min(252,$7),255)/255]"
-      hsi2rgb. round.
+      channels. 0,2 srand 0
+      f. "[i,u(1,max(3,$7))/255,u(min(252,$8),255)/255]"
+      . sh. 0 rand. 0,360 rm.
+      hsi2rgb[-2,-1] *.. $6 *. {1-$6} -+[-2,-1] round.
       point. $ind_bg,0,0,1,255 point. 0,0,0,1,255
 
       map[new_strokes] . rm.
