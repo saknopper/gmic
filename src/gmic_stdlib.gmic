@@ -26134,7 +26134,7 @@ fx_autofill_lineart_preview :
 #@gui : note = note{"<small>Add strokes with a saturated color having value 255 (e.g. pure red) on your lineart allows to guide the colorization algorithm with virtual contours.</small>"}
 #@gui : Output region delimiters = _bool(0)
 #@gui : sep = separator(), note = note{"<small><b>For <i>Random colors</i> mode only:</b></small>"}
-#@gui : Dependence to region areas = float(0.5,0,1)
+#@gui : Dependence to region areas = float(1,0,1)
 #@gui : Maximal color saturation = int(24,0,255)
 #@gui : Minimal color intensity = int(200,0,255)
 #@gui : sep = separator(), note = note{"<small><b>For <i>color spots</i> mode only:</b></small>"}
