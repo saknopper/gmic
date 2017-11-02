@@ -26246,7 +26246,8 @@ _fx_colorize_lineart_smartcoloring :
       if $min_color_area +area_fg[new_strokes] 0,0 xy_bg={[xM,yM]} >. $min_color_area *[new_strokes,-1] endif
       watershed[new_strokes] [strokes],0 rm[strokes]
       label[new_strokes] 0,0
-      +histogram[new_strokes] {new_strokes,[iM+1,0,iM]} -. {im} *. {20/ic} c. 0,240
+      +histogram[new_strokes] {new_strokes,[iM+1,0,iM]}
+      sqrt. *. {240/100} c. 0,240
       ind_bg={xM}
       channels. 0,2 f. "[i,u(1,max(3,$6))/255,u(min(252,$7),255)/255]"
       hsi2rgb. round.
@@ -26290,9 +26291,7 @@ _fx_colorize_lineart_smartcoloring :
       k[$ind_colors]
     else # Preview : Colored lineart
       if {$is_alpha} channels[$ind_lineart] 100% negate[$ind_lineart] endif to_rgb[$ind_lineart]
-
       if $4 l[$ind_lineart] s={s} to_rgb rgb2hsv channels 2 * 255 to_colormode $s endl endif
-
       blend[$ind_lineart,$ind_colors] multiply k[$ind_lineart]
     endif
 
