@@ -14213,8 +14213,8 @@ apply_timeout :
 
 #@cli fi : eq. to 'fi'. : (+)
 
-#@cli fi : (+)
-#@cli : End a 'if...[elif]...[else]...fi' block.
+#@cli endif : (+)
+#@cli : End a 'if...[elif]...[else]...endif' block.
 #@cli : (eq. to 'fi').\n
 
 #@cli endl : eq. to 'endlocal'. : (+)
