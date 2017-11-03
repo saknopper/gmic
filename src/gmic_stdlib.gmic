@@ -5106,7 +5106,7 @@ _update_tutorial_html :
 #@cli name : "name" : (+)
 #@cli : Set name of selected images.
 #@cli : (eq. to 'nm').
-#@cli : $ image.jpg -name image blur[image] 2
+#@cli : $ image.jpg name image blur[image] 2
 #@cli : $$
 
 #@cli nms : eq. to 'names'.
@@ -5284,7 +5284,7 @@ argmin :
 
 #@cli asin : (+)
 #@cli : Compute the pointwise arc-sine of selected images.
-#@cli : $ image.jpg +normalize -1,1 -asin[-1]
+#@cli : $ image.jpg +normalize -1,1 asin[-1]
 #@cli : $ 300,1,1,1,'x/w+0.1*u' +asin display_graph 400,300
 #@cli : $$ trigometric-and-inverse-trigometric-commands
 
@@ -12423,7 +12423,7 @@ transpose :
 #@cli : (eq. to '+3d').
 #@cli : Default values: 'ty=tz=0'.
 #@cli : $ sphere3d 10 repeat 5 +add3d[-1] 10,{u(-10,10)},0 color3d[-1] ${-RGB} done add3d
-#@cli : $ repeat 20 torus3d 15,2 color3d[-1] ${-RGB} mul3d[-1] 0.5,1 if {$>%2} rotate3d[-1] 0,1,0,90 fi add3d[-1] 70 add3d rotate3d[-1] 0,0,1,18 done double3d 0
+#@cli : $ repeat 20 torus3d 15,2 color3d[-1] ${-RGB} mul3d[-1] 0.5,1 if {$>%2} rotate3d[-1] 0,1,0,90 endif add3d[-1] 70 add3d rotate3d[-1] 0,0,1,18 done double3d 0
 
 #@cli animate3d : _width>0,_height>0,_angle_dx,_angle_dy,_angle_dz,_zoom_factor>=0,_filename
 #@cli : Animate selected 3d objects in a window.
@@ -14190,11 +14190,11 @@ apply_timeout :
 
 #@cli continue : (+)
 #@cli : Go to end of current 'repeat...done', 'do...while' or 'local...endlocal' block.
-#@cli : $ image.jpg repeat 10 blur 1 if {1==1} continue fi deform 10 done
+#@cli : $ image.jpg repeat 10 blur 1 if {1==1} continue endif deform 10 done
 
 #@cli break : (+)
 #@cli : Break current 'repeat...done', 'do...while' or 'local...endlocal' block.
-#@cli : $ image.jpg repeat 10 blur 1 if {1==1} break fi deform 10 done
+#@cli : $ image.jpg repeat 10 blur 1 if {1==1} break endif deform 10 done
 
 #@cli do : (+)
 #@cli : Start a 'do...while' block.
@@ -14249,7 +14249,7 @@ eval :
 #@cli : Start a 'if...[elif]...[else]...fi' block and test if specified boolean is true,
 #@cli : or if specified filename exists.
 #@cli : 'boolean' can be a float number standing for { 0=false | other=true }.
-#@cli : $ image.jpg if {ia<64} add 50% elif {ia<128} add 25% elif {ia<192} sub 25% else sub 50% fi cut 0,255
+#@cli : $ image.jpg if {ia<64} add 50% elif {ia<128} add 25% elif {ia<192} sub 25% else sub 50% endif cut 0,255
 
 #@cli l : eq. to 'local'. : (+)
 
@@ -15950,7 +15950,7 @@ map_sphere : check "${1=512}>0 && ${2=512}>0 && ${5=0}>=0 && ${6=0.5}>=0" skip $
      i.. 100%,1,1,100%,0 nm[0] {1,n} a y # Add one border line to have a sphere exterior.
      ({-$1/2},{$1/2}) ({-$2/2};{$2/2}) r[-2,-1] $1,$2,1,1,3 atan2. .. rm.. # Compute theta angle.
      $1,$2 =. 1,50%,50% distance. 1,3 /. $r2 sqrt. c. 0,1
-     -asin. # Compute phi angle.
+     asin. # Compute phi angle.
      +.. {pi} *.. {({-3,w}-1)/(2*pi)} # Normalize theta to X-coordinates
      *. {2/pi} ^. $4 *. {{-3,h}-1} *. -1 +. {{-3,h}-1} # Normalize phi to Y-coordinates
      if $5 +>=. 1 distance. 1 c. 0,$5% n. 0,1 ^. $6 c.. 1,100% -[-2,-1] fi
