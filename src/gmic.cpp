@@ -2311,7 +2311,7 @@ const char *gmic::native_commands_names[] = {
     "distance","div","div3d","divide","do","done","double3d",
   "e","echo","eigen","eikonal","elevation3d","elif","ellipse","else","endian","endif","endl","endlocal","eq",
     "equalize","erode","error","exec","exp",
-  "f","f3d","fft","files","fill","flood","focale3d","for",
+  "f","f3d","fft","fi","files","fill","flood","focale3d","for",
   "g","ge","gradient","graph","gt","guided",
   "h","hessian","histogram","hsi2rgb","hsl2rgb","hsv2rgb",
   "i","if","ifft","image","index","inpaint","input","invert","isoline3d","isosurface3d",
@@ -4751,6 +4751,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
       unsigned int hash_custom = ~0U, ind_custom = ~0U;
       bool is_command = *item>='a' && *item<='z' && _gmic_eok(1); // Alphabetical shortcut commands
       is_command|= *item=='m' && (item[1]=='*' || item[1]=='/') && _gmic_eok(2); // Shortcuts 'm*' and 'm/'
+      is_command|= *item=='f' && item[1]=='i' && _gmic_eok(2); // Shortcuts 'fi'
       if (!is_command) {
         *command = sep0 = sep1 = 0;
         switch (*item) {
@@ -5007,11 +5008,13 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
         case 'c' : goto gmic_commands_c;
         case 'd' : goto gmic_commands_d;
         case 'e' : goto gmic_commands_e;
-        case 'f' : goto gmic_commands_f;
+        case 'f' :
+          if (command[1]=='i' && !command[2]) goto gmic_commands_e; // (Skip for 'fi').
+          goto gmic_commands_f;
         case 'g' : goto gmic_commands_g;
         case 'h' : goto gmic_commands_h;
         case 'i' :
-          if (command[1]=='f' && !command[2]) goto gmic_commands_others; // (Skip for '-if').
+          if (command[1]=='f' && !command[2]) goto gmic_commands_others; // (Skip for 'if').
           goto gmic_commands_i;
         case 'k' : goto gmic_commands_k;
         case 'l' : goto gmic_commands_l;
@@ -6234,7 +6237,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
         goto gmic_commands_others;
 
         //-----------------------------
-        // Commands starting by '-d...'
+        // Commands starting by 'd...'
         //-----------------------------
       gmic_commands_d :
 
@@ -6705,7 +6708,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
       gmic_commands_e :
 
         // Endif.
-        if (!std::strcmp("endif",item)) {
+        if (!std::strcmp("endif",item) || !std::strcmp("fi",item)) {
           const CImg<char> &s = callstack.back();
           if (s[0]!='*' || s[1]!='i')
             error(images,0,0,
@@ -6733,7 +6736,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             } else {
               it+=*it=='-';
               if (!std::strcmp("if",it)) ++nb_ifs;
-              else if (!std::strcmp("endif",it)) { if (!--nb_ifs) --position; }
+              else if (!std::strcmp("endif",it) || !std::strcmp("fi",it)) { if (!--nb_ifs) --position; }
             }
           }
           continue;
@@ -12760,7 +12763,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
               } else {
                 it+=*it=='-';
                 if (!std::strcmp("if",it)) ++nb_ifs;
-                else if (!std::strcmp("endif",it)) { --nb_ifs; if (!nb_ifs) --position; }
+                else if (!std::strcmp("endif",it) || !std::strcmp("fi",it)) { --nb_ifs; if (!nb_ifs) --position; }
                 else if (nb_ifs==1) {
                   if (!std::strcmp("else",it)) --nb_ifs;
                   else if (!std::strcmp("elif",it)) { --nb_ifs; check_elif = true; --position; }
