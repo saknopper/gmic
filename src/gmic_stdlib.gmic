@@ -14211,7 +14211,7 @@ apply_timeout :
 #@cli else : (+)
 #@cli : Execute following commands if previous 'if' or 'elif' conditions failed.
 
-#@cli fi : eq. to 'fi'. : (+)
+#@cli fi : eq. to 'endif'. : (+)
 
 #@cli endif : (+)
 #@cli : End a 'if...[elif]...[else]...endif' block.
