@@ -6654,7 +6654,7 @@ lab2lch :
 #@cli : Convert selected images from Lab to RGB colorbases.
 #@cli : $ (50,50;50,50^-3,3;-3,3^-3,-3;3,3) resize 400,400,1,3,3 lab2rgb
 lab2rgb : skip "${1=,}"
-  v - if {isval("$1")} wp={"$1?1:0"} else if {["'$1'"]!=','} noarg fi wp=1 fi v +
+  v - l[] if {isval("$1")} wp={"$1?1:0"} else if {["'$1'"]!=','} noarg fi wp=1 fi onfail noarg wp=1 endl v +
   e[^-1] "Convert image$? from Lab to RGB color bases."
   v - lab2xyz $wp xyz2rgb $wp v +
 
@@ -6664,7 +6664,7 @@ lab2rgb : skip "${1=,}"
 #@cli lab82rgb : illuminant={ 0=D50 | 1=D65 } : (no arg)
 #@cli : Convert selected images from Lab8 to RGB color bases.
 lab82rgb : skip "${1=,}"
-  v - if {isval("$1")} wp={"$1?1:0"} else if {["'$1'"]!=','} noarg fi wp=1 fi v +
+  v - l[] if {isval("$1")} wp={"$1?1:0"} else if {["'$1'"]!=','} noarg fi wp=1 fi onfail noarg wp=1 endl v +
   e[^-1] "Convert image$? from Lab8 to RGB color bases."
   v - repeat $!
     sh[$>] 0 /. 2.55 rm.
@@ -6897,7 +6897,7 @@ _rgb2hsx8 :
 #@cli : $ image.jpg rgb2lab split c
 #@cli : $ image.jpg rgb2lab +split c mul[-2,-1] 2.5 append[-3--1] c lab2rgb
 rgb2lab : skip "${1=,}"
-  v - if {isval("$1")} wp={"$1?1:0"} else if {["'$1'"]!=','} noarg fi wp=1 fi v +
+  v - l[] if {isval("$1")} wp={"$1?1:0"} else if {["'$1'"]!=','} noarg fi wp=1 fi onfail noarg wp=1 endl v +
   e[^-1] "Convert image$? from RGB to Lab color bases."
   v - rgb2xyz $wp xyz2lab v +
 
@@ -6909,7 +6909,7 @@ rgb2lab : skip "${1=,}"
 #@cli : Convert selected images from RGB to Lab8 color bases.
 #@cli : $ image.jpg rgb2lab8 split c
 rgb2lab8 : skip "${1=,}"
-  v - if {isval("$1")} wp={"$1?1:0"} else if {["'$1'"]!=','} noarg fi wp=1 fi v +
+  v - l[] if {isval("$1")} wp={"$1?1:0"} else if {["'$1'"]!=','} noarg fi wp=1 fi onfail noarg wp=1 endl v +
   e[^-1] "Convert image$? from RGB to Lab8 color bases."
   v - rgb2lab $wp repeat $!
     sh[$>] 0 *. 2.55 rm.
@@ -6972,7 +6972,7 @@ rgb2srgb_ :
 #@cli : Default value: 'illuminant=0'.
 #@cli : $ image.jpg rgb2xyz split c
 rgb2xyz : skip "${1=,}"
-  v - if {isval("$1")} wp={"$1?1:0"} else if {["'$1'"]!=','} noarg fi wp=1 fi v +
+  v - l[] if {isval("$1")} wp={"$1?1:0"} else if {["'$1'"]!=','} noarg fi wp=1 fi onfail noarg wp=1 endl v +
   e[^-1] "Convert image$? from RGB to XYZ color bases, with D"{arg(1+$wp,50,65)}" illuminant."
   v -
   / 255
@@ -6990,7 +6990,7 @@ rgb2xyz : skip "${1=,}"
 #@cli : Convert selected images from RGB to XYZ8 color bases.
 #@cli : $ image.jpg rgb2xyz8 split c
 rgb2xyz8 : skip "${1=,}"
-  v - if {isval("$1")} wp={"$1?1:0"} else if {["'$1'"]!=','} noarg fi wp=1 fi v +
+  v - l[] if {isval("$1")} wp={"$1?1:0"} else if {["'$1'"]!=','} noarg fi wp=1 fi onfail noarg wp=1 endl v +
   e[^-1] "Convert image$? from RGB to XYZ8 color bases."
   v - rgb2xyz $wp repeat $!
     sh[$>] 0 *. 255 rm.
@@ -7401,7 +7401,7 @@ _transfer_rgb : v - l[] check "${1=0}>=0 && ${2=1.5}>=0 && ${3=128}>0" gamma=$1 
 #@cli : Convert selected images from XYZ to RGB colorbases.
 #@cli : Default value: 'illuminant=0'.
 xyz2rgb : skip "${1=,}"
-  v - if {isval("$1")} wp={"$1?1:0"} else if {["'$1'"]!=','} noarg fi wp=1 fi v +
+  v - l[] if {isval("$1")} wp={"$1?1:0"} else if {["'$1'"]!=','} noarg fi wp=1 fi onfail noarg wp=1 endl v +
   e[^-1] "Convert image$? from XYZ to RGB color bases."
   v -
   if $wp # D65
@@ -7418,7 +7418,7 @@ xyz2rgb : skip "${1=,}"
 #@cli xyz82rgb : illuminant={ 0=D50 | 1=D65 } : (no arg)
 #@cli : Convert selected images from XYZ8 to RGB color bases.
 xyz82rgb : skip "${1=,}"
-  v - if {isval("$1")} wp={"$1?1:0"} else if {["'$1'"]!=','} noarg fi wp=1 fi v +
+  v - l[] if {isval("$1")} wp={"$1?1:0"} else if {["'$1'"]!=','} noarg fi wp=1 fi onfail noarg wp=1 endl v +
   e[^-1] "Convert image$? from XYZ8 to RGB color bases."
   v - repeat $!
     sh[$>] 0 /. 255 rm.
