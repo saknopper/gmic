@@ -6601,31 +6601,31 @@ gradient2rgb : check "isbool(${1=0})"
   endl done v +
 
 #@cli hsi2rgb : (+)
-#@cli : Convert selected images from HSI to RGB color representations.
+#@cli : Convert selected images from HSI to RGB color bases.
 
 #@cli hsi82rgb
-#@cli : Convert selected images from HSI8 to RGB color representations.
+#@cli : Convert selected images from HSI8 to RGB color bases.
 hsi82rgb :
-  e[^-1] "Convert image$? from HSI8 to RGB color representations."
+  e[^-1] "Convert image$? from HSI8 to RGB color bases."
   v - _hsx82rgb hsi2rgb v +
 
 #@cli hsl2rgb : (+)
-#@cli : Convert selected images from HSL to RGB color representations.
+#@cli : Convert selected images from HSL to RGB color bases.
 
 #@cli hsl82rgb
-#@cli : Convert selected images from HSL8 to RGB color representations.
+#@cli : Convert selected images from HSL8 to RGB color bases.
 hsl82rgb :
-  e[^-1] "Convert image$? from HSL8 to RGB color representations."
+  e[^-1] "Convert image$? from HSL8 to RGB color bases."
   v - _hsx82rgb hsl2rgb v +
 
 #@cli hsv2rgb : (+)
-#@cli : Convert selected images from HSV to RGB color representations.
+#@cli : Convert selected images from HSV to RGB color bases.
 #@cli : $ (0,360;0,360^0,0;1,1^1,1;1,1) resize 400,400,1,3,3 hsv2rgb
 
 #@cli hsv82rgb
-#@cli : Convert selected images from HSV8 to RGB color representations.
+#@cli : Convert selected images from HSV8 to RGB color bases.
 hsv82rgb :
-  e[^-1] "Convert image$? from HSV8 to RGB color representations."
+  e[^-1] "Convert image$? from HSV8 to RGB color bases."
   v - _hsx82rgb hsv2rgb v +
 
 _hsx82rgb :
@@ -6650,9 +6650,16 @@ lab2lch :
     s c complex2polar[-2,-1] a c
   endl done v +
 
-#@cli lab2rgb : illuminant={ 0=D50 | 1=D65 } : (no arg) : (+)
+#@cli lab2rgb : illuminant={ 0=D50 | 1=D65 } : (no arg)
 #@cli : Convert selected images from Lab to RGB colorbases.
 #@cli : $ (50,50;50,50^-3,3;-3,3^-3,-3;3,3) resize 400,400,1,3,3 lab2rgb
+lab2rgb : skip "${1=,}"
+  v - if {isval("$1")} wp={"$1?1:0"} else if {["'$1'"]!=','} noarg fi wp=1 fi v +
+  e[^-1] "Convert image$? from Lab to RGB color bases."
+  v - lab2xyz $wp xyz2rgb $wp v +
+
+#@cli lab2xyz : illuminant={ 0=D50 | 1=D65 } : (no arg) : (+)
+#@cli : Convert selected images from Lab to XYZ colorbases.
 
 #@cli lab82rgb : illuminant={ 0=D50 | 1=D65 } : (no arg)
 #@cli : Convert selected images from Lab8 to RGB color bases.
@@ -6845,38 +6852,38 @@ hcy2rgb :
   v +
 
 #@cli rgb2hsi : (+)
-#@cli : Convert selected images from RGB to HSI color representations.
+#@cli : Convert selected images from RGB to HSI color bases.
 #@cli : $ image.jpg rgb2hsi split c
 
 #@cli rgb2hsi8
-#@cli : Convert selected images from RGB to HSI8 color representations.
+#@cli : Convert selected images from RGB to HSI8 color bases.
 #@cli : $ image.jpg rgb2hsi8 split c
 rgb2hsi8 :
-  e[^-1] "Convert image$? from RGB to HSI8 color representations."
+  e[^-1] "Convert image$? from RGB to HSI8 color bases."
   v - rgb2hsi _rgb2hsx8 v +
 
 #@cli rgb2hsl : (+)
-#@cli : Convert selected images from RGB to HSL color representations.
+#@cli : Convert selected images from RGB to HSL color bases.
 #@cli : $ image.jpg rgb2hsl split c
 #@cli : $ image.jpg rgb2hsl +split c add[-3] 100 mod[-3] 360 append[-3--1] c hsl2rgb
 
 #@cli rgb2hsl8
-#@cli : Convert selected images from RGB to HSL8 color representations.
+#@cli : Convert selected images from RGB to HSL8 color bases.
 #@cli : $ image.jpg rgb2hsl8 split c
 rgb2hsl8 :
-  e[^-1] "Convert image$? from RGB to HSL8 color representations."
+  e[^-1] "Convert image$? from RGB to HSL8 color bases."
   v - rgb2hsl _rgb2hsx8 v +
 
 #@cli rgb2hsv : (+)
-#@cli : Convert selected images from RGB to HSV color representations.
+#@cli : Convert selected images from RGB to HSV color bases.
 #@cli : $ image.jpg rgb2hsv split c
 #@cli : $ image.jpg rgb2hsv +split c add[-2] 0.3 cut[-2] 0,1 append[-3--1] c hsv2rgb
 
 #@cli rgb2hsv8
-#@cli : Convert selected images from RGB to HSV8 color representations.
+#@cli : Convert selected images from RGB to HSV8 color bases.
 #@cli : $ image.jpg rgb2hsv8 split c
 rgb2hsv8 :
-  e[^-1] "Convert image$? from RGB to HSV8 color representations."
+  e[^-1] "Convert image$? from RGB to HSV8 color bases."
   v - rgb2hsv _rgb2hsx8 v +
 
 _rgb2hsx8 :
@@ -6885,10 +6892,18 @@ _rgb2hsx8 :
     sh[$>] 1,2 *. 255 rm.
   done
 
-#@cli rgb2lab : illuminant={ 0=D50 | 1=D65 } : (no arg) : (+)
+#@cli rgb2lab : illuminant={ 0=D50 | 1=D65 } : (no arg)
 #@cli : Convert selected images from RGB to Lab colorbases.
 #@cli : $ image.jpg rgb2lab split c
 #@cli : $ image.jpg rgb2lab +split c mul[-2,-1] 2.5 append[-3--1] c lab2rgb
+rgb2lab : skip "${1=,}"
+  v - if {isval("$1")} wp={"$1?1:0"} else if {["'$1'"]!=','} noarg fi wp=1 fi v +
+  e[^-1] "Convert image$? from RGB to Lab color bases."
+  v - rgb2xyz $wp xyz2lab v +
+
+#@cli rgb2xyz : illuminant={ 0=D50 | 1=D65 } : (no arg) : (+)
+#@cli : Convert selected images from RGB to XYZ colorbases.
+#@cli : $ image.jpg rgb2xyz split c
 
 #@cli rgb2lab8 : illuminant={ 0=D50 | 1=D65 } : (no arg)
 #@cli : Convert selected images from RGB to Lab8 color bases.

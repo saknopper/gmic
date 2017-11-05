@@ -2317,7 +2317,7 @@ const char *gmic::native_commands_names[] = {
   "i","if","ifft","image","index","inpaint","input","invert","isoline3d","isosurface3d",
   "j","j3d",
   "k","keep",
-  "l","l3d","lab2rgb","label","le","light3d","line","local","log","log10","log2","lt",
+  "l","l3d","lab2xyz","label","le","light3d","line","local","log","log10","log2","lt",
   "m","m*","m/","m3d","mandelbrot","map","max","md3d","mdiv","median","min","mirror","mmul","mod","mode3d","moded3d",
     "move","mse","mul","mul3d","mutex","mv",
   "n","name","neq","nm","noarg","noise","normalize",
@@ -2325,7 +2325,7 @@ const char *gmic::native_commands_names[] = {
   "p","p3d","parallel","pass","patchmatch","permute","plasma","plot","point","polygon","pow","primitives3d","print",
     "progress",
   "q","quit",
-  "r","r3d","rand","remove","repeat","resize","return","reverse","reverse3d","rgb2hsi","rgb2hsl","rgb2hsv","rgb2lab",
+  "r","r3d","rand","remove","repeat","resize","return","reverse","reverse3d","rgb2hsi","rgb2hsl","rgb2hsv",
     "rgb2srgb","rm","rol","ror","rotate","rotate3d","round","rows","rv","rv3d",
   "s","s3d","screen","select","serialize","set","sh","shared","sharpen","shift","sign","sin","sinc","sinh","skip",
     "sl3d","slices","smooth","solve","sort","specl3d","specs3d","sphere3d","split","split3d","sqr","sqrt","srand",
@@ -2334,7 +2334,7 @@ const char *gmic::native_commands_names[] = {
   "u","uncommand","unroll","unserialize",
   "v","vanvliet","verbose",
   "w","w0","w1","w2","w3","w4","w5","w6","w7","w8","w9","wait","warn","warp","watershed","while","window",
-  "x","xor","y","z","^","|",
+  "x","xor","xyz2lab","y","z","^","|",
   0 };
 
 // Perform a dichotomic search in a lexicographic ordered 'CImgList<char>' or 'char**'.
@@ -8324,17 +8324,17 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
           is_released = false; ++position; continue;
         }
 
-        // Lab to RGB
-        if (!std::strcmp("lab2rgb",command)) {
+        // Lab to XYZ
+        if (!std::strcmp("lab2xyz",command)) {
           gmic_substitute_args(false);
           bool use_D65 = true;
           if ((*argument=='0' || *argument=='1') && !argument[1]) {
             use_D65 = *argument=='1';
             ++position;
           }
-          print(images,0,"Convert image%s from Lab to RGB color bases, with D%u illuminant.",
+          print(images,0,"Convert image%s from Lab to XYZ color bases, with D%u illuminant.",
                 gmic_selection.data(),use_D65?65:50);
-          cimg_forY(selection,l) gmic_apply(LabtoRGB(use_D65));
+          cimg_forY(selection,l) gmic_apply(LabtoXYZ(use_D65));
           is_released = false; continue;
         }
 
@@ -10672,19 +10672,6 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
         gmic_simple_command("rgb2hsv",RGBtoHSV,"Convert image%s from RGB to HSV color bases.");
         gmic_simple_command("rgb2srgb",RGBtosRGB,"Convert image%s from RGB to sRGB color bases.");
 
-        if (!std::strcmp("rgb2lab",command)) {
-          gmic_substitute_args(false);
-          bool use_D65 = true;
-          if ((*argument=='0' || *argument=='1') && !argument[1]) {
-            use_D65 = *argument=='1';
-            ++position;
-          }
-          print(images,0,"Convert image%s from RGB to Lab color bases, with D%u illuminant.",
-                gmic_selection.data(),use_D65?65:50);
-          cimg_forY(selection,l) gmic_apply(RGBtoLab(use_D65));
-          is_released = false; continue;
-        }
-
         // Bitwise left rotation.
         gmic_arithmetic_command("rol",
                                 rol,
@@ -12704,6 +12691,20 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
         // Commands starting by 'x...'
         //-----------------------------
       gmic_commands_x :
+
+        // XYZ to Lab.
+        if (!std::strcmp("xyz2lab",command)) {
+          gmic_substitute_args(false);
+          bool use_D65 = true;
+          if ((*argument=='0' || *argument=='1') && !argument[1]) {
+            use_D65 = *argument=='1';
+            ++position;
+          }
+          print(images,0,"Convert image%s from XYZ to Lab color bases, with D%u illuminant.",
+                gmic_selection.data(),use_D65?65:50);
+          cimg_forY(selection,l) gmic_apply(XYZtoLab(use_D65));
+          is_released = false; continue;
+        }
 
         // Bitwise xor.
         gmic_arithmetic_command("xor",
