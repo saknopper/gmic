@@ -54,11 +54,11 @@ run : skip ${1=0}
       v + e[] "  > ... done!" v -
     onfail
       v + e[] "  > ... failed!" v -
-    endl endif
+    endl fi
     v + e[] "\n  > Run 'BBQ Intro 2016' demo, by ARKHAM (live mode)." v -
     rm
     parallel "x \"cvlc "${-path_tmp}"bbq_intro2016.mp3\"","_run $""1"
-  endif
+  fi
 
 _run :
   v -
@@ -74,7 +74,7 @@ _run :
   bbq_intro7
   bbq_intro8
   bbq_intro_final
-  if $1 o[] "bbq_intro2016.avi",25,mp4v,0 endif
+  if $1 o[] "bbq_intro2016.avi",25,mp4v,0 fi
   v +
 
 outvideo :
@@ -89,8 +89,8 @@ outvideo :
       o "bbq_intro2016.avi",25,mp4v,1
     else
     w. wait 40
-    endif
-    if {!{*}} v + quit endif
+    fi
+    if {!{*}} v + quit fi
   rm endl
 
 # Notice.
@@ -113,7 +113,7 @@ bbq_intro_notice :
   repeat 220
     if {$><150} +f. 'y<1.8*$>' b. y,12% -*. ..
     elif {$>>170} +*. {max(0,1-($>-170)/20)}
-    else . endif
+    else . fi
     outvideo. rm.
   done
   rm
@@ -160,7 +160,7 @@ bbq_intro_intro :
     # Presents.
     if {$t<280} op={max(0,min(1,($t-200)/20))}
     else op={max(0,1-($t-280)/20)}
-    endif
+    fi
     j. ...,{(w-{-3,w})/2},120,0,0,$op,[-4]
 
     -*. {if($t<330,min(1,$t/30),max(0,1-($t-330)/30))} # Fade from/to black.
@@ -227,13 +227,13 @@ bbq_intro2 :
     if {$t>pi} # Reset motions variables if necessary.
       rx={u(-1,1)} ry={u(-1,1)} rz={u(-1,1)} rt={u(-1,1)} rcx={u(-0.6*0.6)} t=0
       N={120+round(u(80))} R={(2+round(u(10)))*min({*,w},{*,h})/300}
-      if $obj3d rm[colormap,img,obj3d] endif
+      if $obj3d rm[colormap,img,obj3d] fi
       {10+round(u(12))},1,1,3 noise[0] 255,2 r[0] 256,1,1,3,3 -*[0] 255 shift[0] 1 nm. colormap
       (67.5;73.5;109.5;103.5;51.5;100.5;{2*$N};$N) 3,{2*$N},1,1,0
       1,$N,1,1,5 2,$N,1,1,'y+x*$N' a[-2--1] x -z. 0,5
       4,$N,1,1,1 y[-3--1] a[-4--1] y nm. obj3d
       {{*,w}/2},{{*,h}/2} nm. img
-    endif
+    fi
 
     # Compute bobs coordinates.
     r={$ry+$rx*cos(6*$rz*$t)+(1-$rx)*sin(6*$rt*$t)}
@@ -246,7 +246,7 @@ bbq_intro2 :
     # Draw bobs, map colors and display.
     j3d[img] [obj3d],50%,50%,0,-1,2,0,0
     -&[img] 255 +map[img] [colormap]
-    if {$_t<100} -*. {min(1,$_t/30)} endif
+    if {$_t<100} -*. {min(1,$_t/30)} fi
 
     plane3d 320,26,1,1 ++3d. 0,25,0
     d={max(0,1.6*(545-$_t))}
@@ -257,7 +257,7 @@ bbq_intro2 :
     r3d. 0,0,1,{-$_t}
     j3d.. .,50%,50%,-320,1,2,0,0 rm.
 
-    if {!($_t%2)} outvideo. endif
+    if {!($_t%2)} outvideo. fi
     rm.
     _t={$_t+1}
   while {$_t<550}
@@ -332,7 +332,7 @@ bbq_intro3 :
 
     else # Case of nothing to display (only water).
       rm[-5--1] [background]
-    endif
+    fi
 
     r. {*,w},{*,h},1,3
     r. 320,200,1,3,2
@@ -379,15 +379,15 @@ bbq_intro4 :
       bw={$>,w} bh={$>,h}
       y={${h$>}*abs(cos(${t$>}*pi/60))-$bh/2}
       dt=1
-      if {$y<0} d={-$y} y=0 bh={$bh-$d} bw={$bw+$d} dt={max(0.2,1-($d/$bh)^2)} else dt=1 endif
+      if {$y<0} d={-$y} y=0 bh={$bh-$d} bw={$bw+$d} dt={max(0.2,1-($d/$bh)^2)} else dt=1 fi
       if {${x$>}+$bw/2>w}
         d={${x$>}+$bw/2-w} bw={$bw-$d} bh={$bh+0.5*$d}
-        if {${x$>}+$bw/4>w} vx$>={-${vx$>}} endif
-      endif
+        if {${x$>}+$bw/4>w} vx$>={-${vx$>}} fi
+      fi
       if {${x$>}-$bw/2<0}
         d={$bw/2-${x$>}} bw={$bw-$d} bh={$bh+0.5*$d}
-        if {${x$>}-$bw/4<0} vx$>={-${vx$>}} endif
-      endif
+        if {${x$>}-$bw/4<0} vx$>={-${vx$>}} fi
+      fi
       +r[$>] $bw,$bh,1,4,3 s. c,-3
       j... ..,{max(0,min({$N,w-$bw},${x$>}-$bw/2))},{{$N,h}-{h}-$y-70},0,0,1,.,255 rm[-2,-1]
       t$>={${t$>}+$dt}
@@ -401,15 +401,15 @@ bbq_intro4 :
     if {$_t<90}
       box3d. 30 c3d. col3d. 255 r3d. 1,0,1,{-5*$_t} j3d.. .,{40+$_t}%,50%,{-650+4*$_t},1,3,0,0 rm.
       -*. {min(1,$_t/10)}
-    endif
+    fi
     if {$_t>430} l.
       s y,8 s={$_t-430}
       repeat $! shift[$>] {if($>%2,1,-1)*2*$s}%,0,0,0,0 done
       a y
       water $s
-    endl endif
+    endl fi
 
-    if {!($_t%2)} outvideo. endif
+    if {!($_t%2)} outvideo. fi
     rm.
     _t={$_t+1}
   while {$_t<500}
@@ -447,7 +447,7 @@ bbq_intro5 :
 
     shift[$a21] 0,${dir$a},0,0,2  # Animate plasma background.
     shift[$b21] 0,${dir$b},0,0,2
-    if {int($t+0.005)>int($t)} dir$a={if(u<0.5,-1,1)*round(u(1,3))} endif
+    if {int($t+0.005)>int($t)} dir$a={if(u<0.5,-1,1)*round(u(1,3))} fi
     t={($t+max(0.005,($dt-$tic))%$N)}
 
     # Render text scrolling.
@@ -461,8 +461,8 @@ bbq_intro5 :
 
     # Display rendered frame.
     r. 320,200,1,3,2
-    if {$_t<100} -*. {min(1,$_t/100)} endif
-    if {$_t>850} -*. {max(0,1-($_t-850)/40)} endif
+    if {$_t<100} -*. {min(1,$_t/100)} fi
+    if {$_t>850} -*. {max(0,1-($_t-850)/40)} fi
 
     outvideo.
     rm.
@@ -491,19 +491,19 @@ bbq_intro6 :
     +r[3] 24,24,24,1,2 isosurface3d. 0.4 --3d. 12,12,12 -*3d. 13 rv3d.
     r3d. 1,2,1,{-50*$dt}
     N={i[7]} (255,255,150;200,96,164;50,150,230) r. 3,$N,1,1,3 y. j.. .,0,{{-2,h}-4*$N} # Do some color tweaks.
-    if {!$mode} circles3d.. 4 endif
+    if {!$mode} circles3d.. 4 fi
     if {!{1,w}}
       0 t. "Flat-Shading\nRules The\nWorld!",5,185,43,0.5,255,255,255 b. 0.7 n. 0,255
       +dilate. 3 +j[0] ..,5,3,0,0,0.75,.,255 mv. 1 rm[2,-2,-1]
-    endif
+    fi
     +j3d[1] ..,50%,50%,0,1,{if(!$mode,3,$mode)},0,0,300,0,0,-500,0.1,1.5
     r. 320,200,1,3,2
 
-    if {$t<100} -*. {min(1,$t/15)} endif
+    if {$t<100} -*. {min(1,$t/15)} fi
     if {$t>400}
       rotate. {(($t-400)/3)^2},0,0,{50+($t-400)}%,{50-($t-400)/3}%
       -*. {max(0,1-($t-400)/50)}
-    endif
+    fi
 
     outvideo.
     rm[-3--1]
@@ -545,11 +545,11 @@ bbq_intro7 :
     r. 100%,100%,1,3 -+. [-4] c. 0,255
     r. 320,200,1,3,2
 
-    if {$_t<100} -*. {min(1,$_t/100)} endif
-    if {$_t>450} -*. {max(0,1-($_t-450)/20)} endif
+    if {$_t<100} -*. {min(1,$_t/100)} fi
+    if {$_t>450} -*. {max(0,1-($_t-450)/20)} fi
 
     zoom={1.6+1.2*sin($_t/20)}
-    if {$_t>450} zoom={$zoom/(1+0.3*($_t-450))} endif
+    if {$_t>450} zoom={$zoom/(1+0.3*($_t-450))} fi
     f. "
       init( R=rot(-(180+1.7*"$_t"))/"$zoom"; C=[(50+"$_t"/5)*w/100,0.5*h]);
       I((R*([x,y]-=C))+=C,0,2)"
@@ -568,7 +568,7 @@ bbq_intro8 :
     16,1,1,3,u r. 256,1,1,3,3 shift. 1
     map[0] . rm. r2dx 100
     +mirror y +mirror x -+ n 0,255
-  endl else k[0] r[0] 100,100,1,3,2 endif
+  endl else k[0] r[0] 100,100,1,3,2 fi
   i[0] (20;80;0^20;80;0^20;80;0) r[0] 400,300,1,3,3 water[0] 100,2
   w={w} elevation3d. 0 rv3d.
   sh. 8,{7+3*i[6]},0,0 r. 3,{h/3},1,1,-1
@@ -587,7 +587,7 @@ bbq_intro8 :
       i[0] ({'CImg3d'}) i[1] ($nb,$nb) transpose[2]
       (1,0;1,{$nb-1}) r. 2,$nb,1,1,3 round.
       1,{4*$nb},1,1,1 y a y
-    endl [4] sprites3d.. .,1 rm. -+3d[-2,-1] endif
+    endl [4] sprites3d.. .,1 rm. -+3d[-2,-1] fi
     --3d. {$w/2},{$w/2} -*3d. {0,0.9*max(w,h)/$w} # Center and scale 3d object.
     r3d. 0,0,1,{if({*,b}&2,{*,x}*360/{*,w},$dt*30)} r3d. 1,0,0,120 # Get rotated 3d object.
     +j3d[0] .,50%,65%,30,1,3,0,0
@@ -596,25 +596,25 @@ bbq_intro8 :
 
     if {$t>400}
       -. 200 rotate. {$t-400},1,0,{50-2*($t-400)}%,50% -+. 200
-    endif
+    fi
 
     0 t. "Arkham",0,0,24,1,1 rotate. -90 100%,100%,1,3,0 j... .,2,{-3,max(5,h-7*$t)},0,0,1,.. rm[-2,-1]
     0 t. "BBQ Party - 2016",0,0,24,1,1 rotate. 90 100%,100%,1,3,0 fc. 128,32,16 j... .,292,{-3,min(h-180,7*$t-200)},0,0,1,.. rm[-2,-1]
 
-    if {$t>400} -*. {max(0,1-($t-400)/40)} endif
-    if {$t<100} -*. {min(1,$t/40)} endif
+    if {$t>400} -*. {max(0,1-($t-400)/40)} fi
+    if {$t<100} -*. {min(1,$t/40)} fi
     to_rgb.
 
     outvideo.
 
     rm[-2,-1]
-    if {($dt-$time0)>0.3} ({u*$w};{u*$w};70;0) a[5,-1] x time0={$dt-u} endif # Insert new ball.
+    if {($dt-$time0)>0.3} ({u*$w};{u*$w};70;0) a[5,-1] x time0={$dt-u} fi # Insert new ball.
     if {5,h} l[5,-1] # Manage ball motion and collision.
       sh[0] 2,2,0,0 sh[0] 3,3,0,0 -.. . -+. 0.2 rm[-2,-1]
-      s[0] x repeat {$!-1} coords={$<,@0-1} if {{$<,@2}<i($coords)} -=. {80+{i($coords)}},$coords rm[$<] endif done
-      if {$!==1} i[0] 0 else a[0--2] x endif
+      s[0] x repeat {$!-1} coords={$<,@0-1} if {{$<,@2}<i($coords)} -=. {80+{i($coords)}},$coords rm[$<] fi done
+      if {$!==1} i[0] 0 else a[0--2] x fi
       endl
-    endif
+    fi
     t={$t+1}
   while {$t<450}
 
@@ -725,12 +725,12 @@ bbq_intro_final :
 
     # Add text scrolling.
     j. [1],203,0,0,0,1,[0]
-    if {!($t%3)} shift[0] 0,-1,0,0,0 endif
+    if {!($t%3)} shift[0] 0,-1,0,0,0 fi
 
     -*. {min(1,$t/40)} # Fade in
-    if {$t>2620} -*. {max(0,1-($t-2620)/30)} endif # Fade out.
+    if {$t>2620} -*. {max(0,1-($t-2620)/30)} fi # Fade out.
 
-    if {!($t%2)} outvideo. endif
+    if {!($t%2)} outvideo. fi
     rm.
 
     xb={($xb+3)&255}
