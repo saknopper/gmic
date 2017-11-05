@@ -2326,10 +2326,10 @@ const char *gmic::native_commands_names[] = {
     "progress",
   "q","quit",
   "r","r3d","rand","remove","repeat","resize","return","reverse","reverse3d","rgb2hsi","rgb2hsl","rgb2hsv",
-    "rgb2srgb","rm","rol","ror","rotate","rotate3d","round","rows","rv","rv3d",
+    "rm","rol","ror","rotate","rotate3d","round","rows","rv","rv3d",
   "s","s3d","screen","select","serialize","set","sh","shared","sharpen","shift","sign","sin","sinc","sinh","skip",
     "sl3d","slices","smooth","solve","sort","specl3d","specs3d","sphere3d","split","split3d","sqr","sqrt","srand",
-    "srgb2rgb","ss3d","status","streamline3d","structuretensors","sub","sub3d","svd",
+    "ss3d","status","streamline3d","structuretensors","sub","sub3d","svd",
   "t","t3d","tan","tanh","text","texturize3d","threshold","trisolve",
   "u","uncommand","unroll","unserialize",
   "v","vanvliet","verbose",
@@ -10670,7 +10670,6 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
         gmic_simple_command("rgb2hsi",RGBtoHSI,"Convert image%s from RGB to HSI color bases.");
         gmic_simple_command("rgb2hsl",RGBtoHSL,"Convert image%s from RGB to HSL color bases.");
         gmic_simple_command("rgb2hsv",RGBtoHSV,"Convert image%s from RGB to HSV color bases.");
-        gmic_simple_command("rgb2srgb",RGBtosRGB,"Convert image%s from RGB to sRGB color bases.");
 
         // Bitwise left rotation.
         gmic_arithmetic_command("rol",
@@ -11618,9 +11617,6 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
 
         // Hyperbolic sine.
         gmic_simple_command("sinh",sinh,"Compute pointwise hyperpolic sine of image%s.");
-
-        // sRGB to RGB.
-        gmic_simple_command("srgb2rgb",sRGBtoRGB,"Convert image%s from sRGB to RGB color bases.");
 
         // Extract 3d streamline.
         if (!std::strcmp("streamline3d",command)) {

@@ -6332,10 +6332,10 @@ _ac_rgb_r : _ac_rgba_r
 _ac_rgb_g : _ac_rgba_g
 _ac_rgb_b : _ac_rgba_b
 
-_ac_lrgb : _p="to_color" _f="srgb2rgb_" _b="rgb2srgb_" _s=0,2
-_ac_lrgb_r : _p="to_color" _f="srgb2rgb_" _b="rgb2srgb_" _s=0
-_ac_lrgb_g : _p="to_color" _f="srgb2rgb_" _b="rgb2srgb_" _s=1
-_ac_lrgb_b : _p="to_color" _f="srgb2rgb_" _b="rgb2srgb_" _s=2
+_ac_lrgb : _p="to_color" _f="srgb2rgb" _b="rgb2srgb" _s=0,2
+_ac_lrgb_r : _p="to_color" _f="srgb2rgb" _b="rgb2srgb" _s=0
+_ac_lrgb_g : _p="to_color" _f="srgb2rgb" _b="rgb2srgb" _s=1
+_ac_lrgb_b : _p="to_color" _f="srgb2rgb" _b="rgb2srgb" _s=2
 
 _ac_ycbcr : _p="to_color" _f="rgb2ycbcr" _b="ycbcr2rgb" _s=0,2
 _ac_ycbcr_y : _p="to_color" _f="rgb2ycbcr" _b="ycbcr2rgb" _s=0
@@ -6344,17 +6344,17 @@ _ac_ycbcr_cb : _p="to_color" _f="rgb2ycbcr" _b="ycbcr2rgb" _s=1
 _ac_ycbcr_cr : _p="to_color" _f="rgb2ycbcr" _b="ycbcr2rgb" _s=2
 _ac_ycbcr_cg : _p="to_color" _f="sh 0,1 mirror. c rm. rgb2ycbcr" _b="ycbcr2rgb sh 0,1 mirror. c rm." _s=2
 
-_ac_lab : _p="to_color" _f="srgb2rgb_ rgb2lab8" _b="lab82rgb rgb2srgb_" _s=0,2
-_ac_lab_l : _p="to_color" _f="srgb2rgb_ rgb2lab8" _b="lab82rgb rgb2srgb_" _s=0
-_ac_lab_ab : _p="to_color" _f="srgb2rgb_ rgb2lab8" _b="lab82rgb rgb2srgb_" _s=1,2
-_ac_lab_a : _p="to_color" _f="srgb2rgb_ rgb2lab8" _b="lab82rgb rgb2srgb_" _s=1
-_ac_lab_b : _p="to_color" _f="srgb2rgb_ rgb2lab8" _b="lab82rgb rgb2srgb_" _s=2
+_ac_lab : _p="to_color" _f="srgb2rgb rgb2lab8" _b="lab82rgb rgb2srgb" _s=0,2
+_ac_lab_l : _p="to_color" _f="srgb2rgb rgb2lab8" _b="lab82rgb rgb2srgb" _s=0
+_ac_lab_ab : _p="to_color" _f="srgb2rgb rgb2lab8" _b="lab82rgb rgb2srgb" _s=1,2
+_ac_lab_a : _p="to_color" _f="srgb2rgb rgb2lab8" _b="lab82rgb rgb2srgb" _s=1
+_ac_lab_b : _p="to_color" _f="srgb2rgb rgb2lab8" _b="lab82rgb rgb2srgb" _s=2
 
-_ac_lch : _p="to_color" _f="srgb2rgb_ rgb2lch8" _b="lch82rgb rgb2srgb_" _s=0,2
+_ac_lch : _p="to_color" _f="srgb2rgb rgb2lch8" _b="lch82rgb rgb2srgb" _s=0,2
 _ac_lch_l : _ac_lab_l
-_ac_lch_ch : _p="to_color" _f="srgb2rgb_ rgb2lch8" _b="lch82rgb rgb2srgb_" _s=1,2
-_ac_lch_c : _p="to_color" _f="srgb2rgb_ rgb2lch8" _b="lch82rgb rgb2srgb_" _s=1
-_ac_lch_h : _p="to_color" _f="srgb2rgb_ rgb2lch8" _b="lch82rgb rgb2srgb_" _s=2
+_ac_lch_ch : _p="to_color" _f="srgb2rgb rgb2lch8" _b="lch82rgb rgb2srgb" _s=1,2
+_ac_lch_c : _p="to_color" _f="srgb2rgb rgb2lch8" _b="lch82rgb rgb2srgb" _s=1
+_ac_lch_h : _p="to_color" _f="srgb2rgb rgb2lch8" _b="lch82rgb rgb2srgb" _s=2
 
 _ac_hsv : _p="to_color" _f="rgb2hsv8" _b="hsv82rgb" _s=0,2
 _ac_hsv_h : _p="to_color" _f="rgb2hsv8" _b="hsv82rgb" _s=0
@@ -6453,13 +6453,13 @@ bayer2rgb : skip ${1=1},${2=1},${3=0.5}
   endl done v +
 
 #@cli cmy2rgb
-#@cli : Convert selected images from CMY to RGB colorbases.
+#@cli : Convert selected images from CMY to RGB color bases.
 cmy2rgb :
   e[^-1] "Convert image$? from CMY to RGB color bases."
   v - rgb2cmy v +
 
 #@cli cmyk2rgb
-#@cli : Convert selected images from CMYK to RGB colorbases.
+#@cli : Convert selected images from CMYK to RGB color bases.
 cmyk2rgb :
   e[^-1] "Convert image$? from CMYK to RGB color bases."
   v - repeat $! l[$>]
@@ -6651,7 +6651,7 @@ lab2lch :
   endl done v +
 
 #@cli lab2rgb : illuminant={ 0=D50 | 1=D65 } : (no arg)
-#@cli : Convert selected images from Lab to RGB colorbases.
+#@cli : Convert selected images from Lab to RGB color bases.
 #@cli : $ (50,50;50,50^-3,3;-3,3^-3,-3;3,3) resize 400,400,1,3,3 lab2rgb
 lab2rgb : skip "${1=,}"
   v - l[] if {isval("$1")} wp={"$1?1:0"} else if {["'$1'"]!=','} noarg fi wp=1 fi onfail noarg wp=1 endl v +
@@ -6659,7 +6659,7 @@ lab2rgb : skip "${1=,}"
   v - lab2xyz $wp xyz2rgb $wp v +
 
 #@cli lab2xyz : illuminant={ 0=D50 | 1=D65 } : (no arg) : (+)
-#@cli : Convert selected images from Lab to XYZ colorbases.
+#@cli : Convert selected images from Lab to XYZ color bases.
 
 #@cli lab82rgb : illuminant={ 0=D50 | 1=D65 } : (no arg)
 #@cli : Convert selected images from Lab8 to RGB color bases.
@@ -6701,12 +6701,12 @@ lch82rgb :
 #@cli : $ image.jpg +luminance
 luminance :
   e[^-1] "Compute luminance of image$?."
-  v - remove_opacity srgb2rgb_
+  v - remove_opacity srgb2rgb
   repeat $! l[$>]
   if {s==3} sh 0 sh[0] 1 sh[0] 2 *[1] 0.22248840 *[2] 0.71690369 *[3] 0.06060791 +[1-3] rm[1]
   elif {s!=1} norm n 0,255
   fi endl done
-  channels 0 rgb2srgb_ v +
+  channels 0 rgb2srgb v +
 
 #@cli mix_rgb : a11,a12,a13,a21,a22,a23,a31,a32,a33
 #@cli : Apply 3x3 specified matrix to RGB colors of selected images.
@@ -6736,7 +6736,7 @@ pseudogray : check "isint(${1=5}) && $1>=0 && ${2=2.3}>=0 && isint(${3=8}) && $3
   f. 'R=i(x,0,0,0);G=i(x,0,0,1);B=i(x,0,0,2);if(max(R,G,B)>2^$3-1,-1,i)'
   permute. cxyz discard. -1 r. 3,{h/3},1,1,-1 permute. yzcx
   n. 0,255
-  +srgb2rgb_. rgb2lab. rv[-2,-1] a[-2,-1] y sort. +,x  # Sort by increasing lightness.
+  +srgb2rgb. rgb2lab. rv[-2,-1] a[-2,-1] y sort. +,x  # Sort by increasing lightness.
   if {!$2} rows. 1
   else # Add perceptual constraint if requested.
 
@@ -6746,7 +6746,7 @@ pseudogray : check "isint(${1=5}) && $1>=0 && ${2=2.3}>=0 && isint(${3=8}) && $3
 
     # Constraint 2 : remove neighboring colors that are above the JND.
     repeat 10000
-      +srgb2rgb_. rgb2lab. +shift. 0,{1-2*($>%2)},0,0,1 -[-2,-1] norm.
+      +srgb2rgb. rgb2lab. +shift. 0,{1-2*($>%2)},0,0,1 -[-2,-1] norm.
       <=. $2
       if {im} rm. break fi
       *. 'y+1' discard. 0 -. 1 map. .. rm..
@@ -6808,14 +6808,14 @@ _rgb2bayer2 : (0,1;0,0^1,0;0,1^0,0;1,0)
 _rgb2bayer3 : (0,0;1,0^1,0;0,1^0,1;0,0)
 
 #@cli rgb2cmy
-#@cli : Convert selected images from RGB to CMY colorbases.
+#@cli : Convert selected images from RGB to CMY color bases.
 #@cli : $ image.jpg rgb2cmy split c
 rgb2cmy :
   e[^-1] "Convert image$? from RGB to CMY color bases."
   v - to_rgb * -1 + 255 c 0,255 v +
 
 #@cli rgb2cmyk
-#@cli : Convert selected images from RGB to CMYK colorbases.
+#@cli : Convert selected images from RGB to CMYK color bases.
 #@cli : $ image.jpg rgb2cmyk split c
 #@cli : $ image.jpg rgb2cmyk split c fill[3] 0 append c cmyk2rgb
 rgb2cmyk :
@@ -6826,7 +6826,7 @@ rgb2cmyk :
   endl done v +
 
 #@cli rgb2hcy
-#@cli : Convert selected images from RGB to HCY colorbases.
+#@cli : Convert selected images from RGB to HCY color bases.
 #@cli : $ image.jpg rgb2hcy split c
 rgb2hcy :
   e[^-1] "Convert image$? from RGB to HCY color bases."
@@ -6840,7 +6840,7 @@ rgb2hcy :
   v +
 
 #@cli hcy2rgb :
-#@cli : Convert selected images from HCY to RGB colorbases.
+#@cli : Convert selected images from HCY to RGB color bases.
 hcy2rgb :
   e[^-1] "Convert image$? from HCY to RGB color bases."
   v - to_color f "
@@ -6893,7 +6893,7 @@ _rgb2hsx8 :
   done
 
 #@cli rgb2lab : illuminant={ 0=D50 | 1=D65 } : (no arg)
-#@cli : Convert selected images from RGB to Lab colorbases.
+#@cli : Convert selected images from RGB to Lab color bases.
 #@cli : $ image.jpg rgb2lab split c
 #@cli : $ image.jpg rgb2lab +split c mul[-2,-1] 2.5 append[-3--1] c lab2rgb
 rgb2lab : skip "${1=,}"
@@ -6902,7 +6902,7 @@ rgb2lab : skip "${1=,}"
   v - rgb2xyz $wp xyz2lab v +
 
 #@cli rgb2xyz : illuminant={ 0=D50 | 1=D65 } : (no arg) : (+)
-#@cli : Convert selected images from RGB to XYZ colorbases.
+#@cli : Convert selected images from RGB to XYZ color bases.
 #@cli : $ image.jpg rgb2xyz split c
 
 #@cli rgb2lab8 : illuminant={ 0=D50 | 1=D65 } : (no arg)
@@ -6957,18 +6957,14 @@ rgb2int :
     s c <<[0] 16 <<[1] 8 -+
   endl done v +
 
-#@cli rgb2srgb : (+)
-#@cli : Convert selected images from RGB to sRGB colorbases.
-
-#@cli rgb2srgb_ :
-#@cli : Convert selected images from RGB to sRGB colorbases.
-#@cli : Custom command version used in the stdlib, intended to be redefined by the user
-#@cli : if the default (native) conversion does not suit his needs.
-rgb2srgb_ :
-  rgb2srgb
+#@cli rgb2srgb
+#@cli : Convert color representation of selected images from linear RGB to sRGB.
+rgb2srgb :
+  e[^-1] "Convert color representation of image$? from linear RGB to sRGB."
+  v - f "val = i/255; sval = val<=0.0031308?val*12.92:1.055*val^0.416667 - 0.055; cut(255*sval,0,255)" v +
 
 #@cli rgb2xyz : illuminant={ 0=D50 | 1=D65 } : (no arg)
-#@cli : Convert selected images from RGB to XYZ colorbases.
+#@cli : Convert selected images from RGB to XYZ color bases.
 #@cli : Default value: 'illuminant=0'.
 #@cli : $ image.jpg rgb2xyz split c
 rgb2xyz : skip "${1=,}"
@@ -6999,7 +6995,7 @@ rgb2xyz8 : skip "${1=,}"
   done v +
 
 #@cli rgb2yiq
-#@cli : Convert selected images from RGB to YIQ colorbases.
+#@cli : Convert selected images from RGB to YIQ color bases.
 #@cli : $ image.jpg rgb2yiq split c
 rgb2yiq :
   e[^-1] "Convert image$? from RGB to YIQ color bases."
@@ -7010,7 +7006,7 @@ rgb2yiq :
   v +
 
 #@cli rgb2yiq8
-#@cli : Convert selected images from RGB to YIQ8 colorbases.
+#@cli : Convert selected images from RGB to YIQ8 color bases.
 #@cli : $ image.jpg rgb2yiq8 split c
 rgb2yiq8 :
   e[^-1] "Convert image$? from RGB to YIQ color bases."
@@ -7021,7 +7017,7 @@ rgb2yiq8 :
   done v +
 
 #@cli rgb2ycbcr
-#@cli : Convert selected images from RGB to YCbCr colorbases.
+#@cli : Convert selected images from RGB to YCbCr color bases.
 #@cli : $ image.jpg rgb2ycbcr split c
 rgb2ycbcr :
   e[^-1] "Convert image$? from RGB to YCbCr color bases."
@@ -7032,7 +7028,7 @@ rgb2ycbcr :
   done v +
 
 #@cli rgb2yuv
-#@cli : Convert selected images from RGB to YUV colorbases.
+#@cli : Convert selected images from RGB to YUV color bases.
 #@cli : $ image.jpg rgb2yuv split c
 rgb2yuv :
   e[^-1] "Convert image$? from RGB to YUV color bases."
@@ -7123,15 +7119,11 @@ split_opacity :
   e[^-1] "Split color and opacity parts of image$?."
   v - repeat $! l[$<] s c,{if(s==4,-3,if(s==2,-1,-s))} endl done v +
 
-#@cli srgb2rgb : (+)
-#@cli : Convert selected images from sRGB to RGB colorbases.
-
-#@cli srgb2rgb_ :
-#@cli : Convert selected images from sRGB to RGB colorbases.
-#@cli : Custom command version used in the stdlib, intended to be redefined by the user
-#@cli : if the default (native) conversion does not suit his needs.
-srgb2rgb_ :
-  srgb2rgb
+#@cli srgb2rgb
+#@cli : Convert color representation of selected images from sRGB to linear RGB.
+srgb2rgb :
+  e[^-1] "Convert color representation of image$? from sRGB to linear RGB."
+  v - f "sval = i/255; val = sval<=0.04045?sval/12.92:((sval + 0.055)/(1.055))^2.4; cut(255*val,0,255)" v +
 
 #@cli to_a
 #@cli : Force selected images to have an alpha channel.
@@ -7204,10 +7196,10 @@ to_graya :
 #@cli : Extension of this technique to arbitrary increments for more tones, has been done by David Tschumperle.
 to_pseudogray : check "isint(${1=5}) && $1>=0 && isint(${3=8}) && $3>0" skip ${2=1}
   e[^-1] "Convert scalar image$? to pseudo-gray color images, with steps $1."
-  v - channels 0 srgb2rgb_ pseudogray $1,{2.3*$2},$3
+  v - channels 0 srgb2rgb pseudogray $1,{2.3*$2},$3
 
   # Compute colormap with 65336 entries, to have match corresponding lightness.
-  +srgb2rgb_. rgb2lab. channels. 0 *. {65535/100} round. rows. 0,2
+  +srgb2rgb. rgb2lab. channels. 0 *. {65535/100} round. rows. 0,2
   rv[-2,-1] permute. xcyz +. 1 a[-2,-1] y pointcloud. 0
   +norm. !=. 0 distance. 1 *. -1 watershed.. . rm. -. 1
 
@@ -7398,7 +7390,7 @@ _transfer_rgb : v - l[] check "${1=0}>=0 && ${2=1.5}>=0 && ${3=128}>0" gamma=$1 
   endl done v +
 
 #@cli xyz2rgb : illuminant={ 0=D50 | 1=D65 } : (no arg)
-#@cli : Convert selected images from XYZ to RGB colorbases.
+#@cli : Convert selected images from XYZ to RGB color bases.
 #@cli : Default value: 'illuminant=0'.
 xyz2rgb : skip "${1=,}"
   v - l[] if {isval("$1")} wp={"$1?1:0"} else if {["'$1'"]!=','} noarg fi wp=1 fi onfail noarg wp=1 endl v +
@@ -7427,7 +7419,7 @@ xyz82rgb : skip "${1=,}"
   done -xyz2rgb $wp v +
 
 #@cli ycbcr2rgb
-#@cli : Convert selected images from YCbCr to RGB colorbases.
+#@cli : Convert selected images from YCbCr to RGB color bases.
 ycbcr2rgb :
   e[^-1] "Convert image$? from YCbCr to RGB color bases."
   v - repeat $! l[$>] sh 0 -. 16 rm. sh 1,2 -. 128 rm. endl done
@@ -7438,7 +7430,7 @@ ycbcr2rgb :
   v +
 
 #@cli yiq2rgb
-#@cli : Convert selected images from YIQ to RGB colorbases.
+#@cli : Convert selected images from YIQ to RGB color bases.
 yiq2rgb :
   e[^-1] "Convert image$? from YIQ to RGB color bases."
   v -
@@ -7448,7 +7440,7 @@ yiq2rgb :
   c 0,255 v +
 
 #@cli yiq82rgb
-#@cli : Convert selected images from YIQ8 to RGB colorbases.
+#@cli : Convert selected images from YIQ8 to RGB color bases.
 yiq82rgb :
   e[^-1] "Convert image$? from YIQ8 to RGB color bases."
   v - repeat $!
@@ -7461,7 +7453,7 @@ yiq82rgb :
   c 0,255 v +
 
 #@cli yuv2rgb
-#@cli : Convert selected images from YUV to RGB colorbases.
+#@cli : Convert selected images from YUV to RGB color bases.
 yuv2rgb :
   e[^-1] "Convert image$? from YUV to RGB color bases."
   v -
@@ -10396,7 +10388,7 @@ detect_skin : check "${1=0.5}>=0 && $1<=1" skip ${2=-1},${3=-1},${4=-1}
     A=0.09749985486268997
     B=0.06388871371746063
     C=0.05250053107738495
-    to_rgb srgb2rgb_ rgb2ycbcr channels 1,2
+    to_rgb srgb2rgb rgb2ycbcr channels 1,2
     repeat $! l[$>]
       whd={w},{h},{d} r {w*h*d},2,1,1,-1
       s y -[0] $m0 -[1] $m1 a y
@@ -10407,7 +10399,7 @@ detect_skin : check "${1=0.5}>=0 && $1<=1" skip ${2=-1},${3=-1},${4=-1}
   else
     e[0--3] "Detect skin in image$?, using tolerance $1 and target circle at ($2,$3) with radius $4."
     v -
-    to_rgb srgb2rgb_ rgb2ycbcr channels 1,2
+    to_rgb srgb2rgb rgb2ycbcr channels 1,2
     repeat $! l[$>]
       100%,100% circle[1] $2,$3,$4,1,1 +f[1] 'if(i,y,-1)' f[1] 'if(i,x,-1)' discard[1,2] -1 a[1,2] c
       +warp[0] [1],0,0 rm[1]
@@ -11028,7 +11020,7 @@ cie1931 :
 
   # Generate RGB triangle of displayable colors.
   xR=636 yR=504 xG=297 yG=234 xB=147 yB=774
-  512,512,1,3 triangle_shade. 0,0,{w-1},0,0,{h-1},""255,0,0,""0,255,0,""0,0,255 rgb2srgb_.
+  512,512,1,3 triangle_shade. 0,0,{w-1},0,0,{h-1},""255,0,0,""0,255,0,""0,0,255 rgb2srgb.
   +compose_channels. max +. 1e-8 /[-2,-1] *. 255
   i.. (67.5;73.5;109.5;103.5;51.5;100.5;3;1;$xR;$yR;-0.01;$xG;$yG;-0.01;$xB;$yB;-0.01;9;0;1;2;0;0;511;0;0;511;-128;512;512;3)
   y. (1) a[-3--1] y mv. 1
@@ -19472,12 +19464,12 @@ __x_color_curves :
       "a[0,-3] y a[1,-2] y a[2,-1] y"
   elif {['"$1"']=='lab'}
     _color0="180,180,180" _color1="220,180,220" _color2="220,220,180" _color3="220,220,220" _title0=Lightness _title1=Chroma-A _title2=Chroma-B _title3=Alpha
-    m "xcc_goto: s c,-3 srgb2rgb_[0] apo[0] rgb2lab8,0,4 a c" m "xcc_backto: s c,-3 apo[0] lab82rgb,0,4 rgb2srgb_[0] a c"
+    m "xcc_goto: s c,-3 srgb2rgb[0] apo[0] rgb2lab8,0,4 a c" m "xcc_backto: s c,-3 apo[0] lab82rgb,0,4 rgb2srgb[0] a c"
     m "xcc_info: 256,1,1,3,if(!c,x,128) 256,1,1,3,if(!c,240,if(c==1,x,128)) 256,1,1,3,if(!c,240,if(c==1,128,x)) lab82rgb[-3--1] permute[-3--1] xcyz "\
       "a[0,-3] y a[1,-2] y a[2,-1] y"
   elif {['"$1"']=='lch'}
     _color0="180,180,180" _color1="220,180,220" _color2="255,220,220" _color3="220,220,220" _title0=Lightness _title1=Chroma _title2=Hue _title3=Alpha
-    m "xcc_goto: s c,-3 srgb2rgb_[0] apo[0] rgb2lch8[0],0,4 a c" m "xcc_backto: s c,-3 apo[0] lch82rgb[0],0,4 rgb2srgb_[0] a c"
+    m "xcc_goto: s c,-3 srgb2rgb[0] apo[0] rgb2lch8[0],0,4 a c" m "xcc_backto: s c,-3 apo[0] lch82rgb[0],0,4 rgb2srgb[0] a c"
     m "xcc_info: 256,1,1,3,if(!c,x,0) 256,1,1,3,if(!c,255,if(c==1,x,128)) 256,1,1,3,if(!c,220,if(c==1,128,x)) lch82rgb[-3--1] permute[-3--1] xcyz "\
       "a[0,-3] y a[1,-2] y a[2,-1] y"
   elif {['"$1"']=='ycbcr'}
@@ -20801,7 +20793,7 @@ x_landscape :
   900,900 plasma. 1,1,6 b. 0.07% n. 0,255 nm. map
   +g. *. 0.5 +[-2,-1] n. 0,1 ^. 2 n. -150,330
   equalize[map] 256 n[map] -400,160 c[map] 0,100% # Add water.
-  (0,102,51;149,175,124;102,42,0;255,255,255) permute. yzcx srgb2rgb_. r. 256,1,1,3,3 rgb2srgb_. +n[map] 0,255 map. .. rm..
+  (0,102,51;149,175,124;102,42,0;255,255,255) permute. yzcx srgb2rgb. r. 256,1,1,3,3 rgb2srgb. +n[map] 0,255 map. .. rm..
   +. .. rm.. c. 0,255 nm. colors # Colors.
 
   # Pre-compute some images used on each frame.
@@ -25535,7 +25527,7 @@ fx_posterize :
   repeat $! l[$>] split_opacity l[0]
     . amp=$1 do smooth. {min(50,$amp)},{$2%},1,$3,{2*$3} amp-=50 while {$amp>0}
     bilateral.. .,5,10 rm.
-    srgb2rgb_ +colormap $4 rgb2srgb_
+    srgb2rgb +colormap $4 rgb2srgb
     index.. .,0,0
     if $5 +area.. 0,0 <. $5 inpaint... .,0,3 rm. fi
     map.. . rm.
@@ -25791,10 +25783,10 @@ fx_sharp_abstract_preview :
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2016/06/04</i>.</small>")
 fx_smooth_abstract :
   repeat $! l[$>] split_opacity l[0]
-    srgb2rgb_
+    srgb2rgb
     mM={[im,iM]} +b $4 n. $mM gradient_norm. <=. {50-$5}
     inpaint_diffusion[0] [1],$1%,$2,$3 rm.
-    rgb2srgb_ c 0,255
+    rgb2srgb c 0,255
   endl a c endl done
 
 fx_smooth_abstract_preview :
@@ -26036,11 +26028,11 @@ fx_recolorize :
     l[$s] rv[0,1]
       channels[0] 0 to_rgb.. # Convert to pure gray.
       to_rgba. split_opacity. !=. 0  # Retrieve mask of color patchs.
-      srgb2rgb_[-3,-2] rgb2lab8[-3,-2] channels... 0 channels.. 1,2 # Now, list is [0]=lightness / [1]=chroma / [2]=mask.
+      srgb2rgb[-3,-2] rgb2lab8[-3,-2] channels... 0 channels.. 1,2 # Now, list is [0]=lightness / [1]=chroma / [2]=mask.
       +.. 1 *.. . +gradient_norm... *. -1 watershed... . rm. -.. 1 # Get first estimate for the color interpolation.
       +diffusiontensors... $2,1,0.5,0.5 ==.. 0 *. .. rm..
       smooth.. .,{$1*80},0.8,60 rm.
-      a[-2,-1] c lab82rgb. rgb2srgb_.
+      a[-2,-1] c lab82rgb. rgb2srgb.
       if $3 rgb2hsv. s. c i[2] 100%,100%,1,1,1 i[3] 100%,100%,1,2,0 a[0-2] c a[^0] c hsv2rgb rv fi
     endl
   done
@@ -26261,7 +26253,7 @@ _fx_colorize_lineart_smartcoloring :
         eq[new_strokes] 0 label_fg[new_strokes] 0,0
         if $min_color_area +area_fg[new_strokes] 0,0 >. $min_color_area *[new_strokes,-1] fi
         watershed[new_strokes] [strokes],0 rm[strokes]
-        srgb2rgb_. -guided. [new_strokes],{1+$9/5},0 rgb2srgb_.
+        srgb2rgb. -guided. [new_strokes],{1+$9/5},0 rgb2srgb.
       fi
       rm[new_strokes]
       nm. new_colors
@@ -26771,11 +26763,11 @@ fx_boost_chroma :
   repeat $! l[$>] split_opacity l[0]
     +to_rgb
     if {$2>=2}
-      srgb2rgb_ rgb2lab.
+      srgb2rgb rgb2lab.
       if {$2==2} sh. 1 sh.. 2 equalize[-2,-1] rm[-2,-1]
       else sh. 1,2 equalize. rm.
       fi
-      lab2rgb. rgb2srgb_
+      lab2rgb. rgb2srgb
     else
       rgb2ycbcr.
       if {$2==0} sh. 1 sh.. 2 equalize[-2,-1] rm[-2,-1]
@@ -30741,14 +30733,14 @@ fx_blend_average_all :
 
 _gb_fwd :
   to_color
-  if {$1==1} repeat $! l[$>] sh 0,2 srgb2rgb_. rm. endl done
-  elif {$1==2} repeat $! l[$>] sh 0,2 srgb2rgb_. rgb2lab. rm. endl done
+  if {$1==1} repeat $! l[$>] sh 0,2 srgb2rgb. rm. endl done
+  elif {$1==2} repeat $! l[$>] sh 0,2 srgb2rgb. rgb2lab. rm. endl done
   fi
 
 _gb_bwd :
   to_color
-  if {$1==1} repeat $! l[$>] sh 0,2 rgb2srgb_. rm. endl done
-  elif {$1==2} repeat $! l[$>] sh 0,2 lab2rgb. rgb2srgb_. rm. endl done
+  if {$1==1} repeat $! l[$>] sh 0,2 rgb2srgb. rm. endl done
+  elif {$1==2} repeat $! l[$>] sh 0,2 lab2rgb. rgb2srgb. rm. endl done
   fi
 
 #@gui Blend [edges] : fx_blend_edges, fx_blend_edges(0)
@@ -31404,7 +31396,7 @@ fx_slice_luminosity_preview :
 _fx_slice_luminosity :
   if {$1==0} +compose_channels + /. 3
   elif {$1==1} +luminance
-  elif {$1==2} +srgb2rgb_ rgb2lab8. channels. 0
+  elif {$1==2} +srgb2rgb rgb2lab8. channels. 0
   else +compose_channels max
   fi
   if $4 +apply_curve[1] 0,{$5-$7-0.1},0,$5,255,$6,255,{$6+$8+0.1},0,512,0 fi
@@ -32234,7 +32226,7 @@ fx_remove_hotpixels_preview :
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2016/07/04</i>.</small>")
 fx_solidify_td :
   repeat $! l[$>]
-    to_rgba sh 0,{s-2} if $5 srgb2rgb_. fi rm.
+    to_rgba sh 0,{s-2} if $5 srgb2rgb. fi rm.
     if $4
       . sh. 100% if {$4>0} erode. {1+2*$4} else dilate. {1-2*$4} fi rm.
       solidify. $1%,$2,$3
@@ -32242,7 +32234,7 @@ fx_solidify_td :
     else
       solidify $1%,$2,$3
     fi
-    if $5 rgb2srgb_. fi
+    if $5 rgb2srgb. fi
   endl done
 
 fx_solidify_td_preview :
@@ -32376,7 +32368,7 @@ _fx_smooth_nlmeans0 : s c abs max
 _fx_smooth_nlmeans1 : s c abs -+
 _fx_smooth_nlmeans2 : norm
 _fx_smooth_nlmeans3 : if {s>=3} channels 0,2 luminance else norm fi
-_fx_smooth_nlmeans4 : if {s>=3} channels 0,2 srgb2rgb_ rgb2lab channels 0 else norm fi
+_fx_smooth_nlmeans4 : if {s>=3} channels 0,2 srgb2rgb rgb2lab channels 0 else norm fi
 _fx_smooth_nlmeans5 :
 
 fx_smooth_nlmeans_preview:
@@ -33225,11 +33217,11 @@ _fx_custom_gradient0 :
 
 __fx_custom_gradient0 :
   if {$1==1} sh. 0,2 rgb2hsv. rm.
-  elif {$1==2} sh. 0,2 srgb2rgb_. rgb2lab. rm.
+  elif {$1==2} sh. 0,2 srgb2rgb. rgb2lab. rm.
   fi
   r. {$2*w},1,1,4,3
   if {$1==1} sh. 0,2 hsv2rgb. rm.
-  elif {$1==2} sh. 0,2 lab2rgb. rgb2srgb_. rm.
+  elif {$1==2} sh. 0,2 lab2rgb. rgb2srgb. rm.
   fi
 
 # Extract shape from image.
@@ -33299,7 +33291,7 @@ _fx_line_gradient :
   m "feature4 : to_rgb luminance"
   m "feature5 : to_rgb rgb2ycbcr channels 1"
   m "feature6 : to_rgb rgb2ycbcr channels 2"
-  m "feature7 : to_rgb srgb2rgb_ rgb2lab channels 0"
+  m "feature7 : to_rgb srgb2rgb rgb2lab channels 0"
   if $7 repeat $! l[$>] +feature$7 rv a y sort +,x rows 1 endl done fi
   if $6 r $6,1,1,100%,3 fi
   if $8 mirror x fi
@@ -33366,10 +33358,10 @@ fx_random_gradient :
           )"
     if {$7!=1} sh.. 100% n. 0,255 rm. fi
     eq. 0
-    sh.. 0,2 srgb2rgb_. rm.
+    sh.. 0,2 srgb2rgb. rm.
     inpaint_diffusion.. [1],100%,1 rm.
     b $3% n 0,255
-    sh 0,2 rgb2srgb_. balance_gamma. ${4-6} rm.
+    sh 0,2 rgb2srgb. balance_gamma. ${4-6} rm.
   endl done
 
 #@gui Heart : fx_heart, fx_heart_preview
