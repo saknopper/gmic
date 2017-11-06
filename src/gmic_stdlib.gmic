@@ -4593,7 +4593,8 @@ _update_server_binaries :
   file$N=gmic_$1_debian_jessie_i386.deb   N+=1
   file$N=gmic_$1_debian_wheezy_amd64.deb  N+=1
   file$N=gmic_$1_debian_wheezy_i386.deb   N+=1
-  file$N=gmic_$1_debian_stretch_ame64.deb N+=1
+  file$N=gmic_$1_debian_stretch_i386.deb  N+=1
+  file$N=gmic_$1_debian_stretch_amd64.deb N+=1
 
 #  file$N=gmic_$1_ubuntu_zesty_amd64.deb   N+=1
 #  file$N=gmic_$1_ubuntu_yakkety_amd64.deb N+=1
