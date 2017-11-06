@@ -117,8 +117,8 @@
                   <td><img alt="" src="img/download_ubuntu64.png" border="0"></img></td><td>&nbsp;&nbsp;</td>
                   <td><font size="3"><b><font color="#000066">G'MIC</font></b> for Ubuntu <i>64 bits</i> - All interfaces</font><br/>
                     <ul>
-                      <!-- <li>Ubuntu 17.04 <i>Zesty</i>: <a href="http://gmic.eu/files/prerelease_linux/gmic_ubuntu_zesty_amd64.deb">.deb package</a></li> -->
-                      <li>Ubuntu 16.04 <i>Xenial</i>: <a href="http://gmic.eu/files/prerelease_linux/gmic_ubuntu_xenial_amd64.deb">.deb package</a></li>
+                      <li>Ubuntu 17.10 <i>Artful</i>: <a href="http://gmic.eu/files/prerelease_linux/gmic_ubuntu_artful_amd64.deb">.deb package</a></li>
+                      <li>Ubuntu 16.04 LTS <i>Xenial</i>: <a href="http://gmic.eu/files/prerelease_linux/gmic_ubuntu_xenial_amd64.deb">.deb package</a></li>
                       <!-- <li>Ubuntu 15.04 <i>Vivid</i>: <a href="http://gmic.eu/files/prerelease_linux/gmic_ubuntu_vivid_amd64.deb">.deb package</a></li> -->
                       <!-- <li>Ubuntu 16.10 <i>Yakkety</i>: <a href="http://gmic.eu/files/prerelease_linux/gmic_ubuntu_yakkety_amd64.deb">.deb package</a></li> -->
                     </ul>
