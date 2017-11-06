@@ -1419,8 +1419,9 @@ use_vt100 :
 version :
   v -
   m "_e : echo_stdout[] \"$""*\""
-  if {$^==-1} _e "" fi
+  if {$^>=-1} _e "" fi
   __help_header_ascii[]
+  if {$^<=-2} _e "" fi
   uncommand _e
   v +
 
