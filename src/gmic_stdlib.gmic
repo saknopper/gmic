@@ -6989,7 +6989,6 @@ rgb2hsv :
   f "
     m = min(R,G,B);
     M = max(R,G,B);
-    H = S = 0;
     C = M - m;
     H = 60*(C==0?0:M==R?((G-B)/C)%6:M==G?(B-R)/C+2:(R-G)/C+4);
     S = (M - m)/M;
