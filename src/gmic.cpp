@@ -2947,8 +2947,8 @@ const char *gmic::set_variable(const char *const name, const char *const value,
 
 // Add custom commands from a char* buffer.
 //------------------------------------------
-gmic& gmic::add_commands(const char *const data_commands,
-                         const char *const commands_file) {
+gmic& gmic::add_commands(const char *const data_commands, const char *const commands_file,
+                         unsigned int *count_new, unsigned int *count_replaced) {
   if (!data_commands || !*data_commands) return *this;
   cimg::mutex(23);
   CImg<char> s_body(256*1024), s_line(256*1024), s_name(256), debug_info(32);
@@ -2957,6 +2957,8 @@ gmic& gmic::add_commands(const char *const data_commands,
   int hash = -1, l_debug_info = 0;
   char sep = 0;
   if (commands_file) CImg<char>::string(commands_file).move_to(commands_files);
+  if (count_new) *count_new = 0;
+  if (count_replaced) *count_replaced = 0;
 
   for (const char *data = data_commands; *data; is_last_slash = _is_last_slash,
          line_number+=is_newline?1:0) {
@@ -3008,7 +3010,8 @@ gmic& gmic::add_commands(const char *const data_commands,
         commands_names[hash].insert(1,pos);
         commands[hash].insert(1,pos);
         commands_has_arguments[hash].insert(1,pos);
-      }
+        if (count_new) ++*count_new;
+      } else if (count_replaced) ++*count_replaced;
       CImg<char>::string(s_name).move_to(commands_names[hash][pos]);
       CImg<char>::vector((char)command_has_arguments(body)).
         move_to(commands_has_arguments[hash][pos]);
@@ -3051,8 +3054,8 @@ gmic& gmic::add_commands(const char *const data_commands,
 
 // Add commands from a file.
 //---------------------------
-gmic& gmic::add_commands(std::FILE *const file,
-                         const char *const filename) {
+gmic& gmic::add_commands(std::FILE *const file, const char *const filename,
+                         unsigned int *count_new, unsigned int *count_replaced) {
   if (!file) return *this;
 
   // Try reading it first as a .cimg file.
@@ -3060,7 +3063,7 @@ gmic& gmic::add_commands(std::FILE *const file,
     CImg<char> buffer;
     buffer.load_cimg(file).unroll('x');
     buffer.resize(buffer.width() + 1,1,1,1,0);
-    add_commands(buffer.data(),filename);
+    add_commands(buffer.data(),filename,count_new,count_replaced);
   } catch (...) {
     std::rewind(file);
     std::fseek(file,0,SEEK_END);
@@ -3070,7 +3073,7 @@ gmic& gmic::add_commands(std::FILE *const file,
       CImg<char> buffer((unsigned int)siz + 1);
       if (std::fread(buffer.data(),sizeof(char),siz,file)) {
         buffer[siz] = 0;
-        add_commands(buffer.data(),filename);
+        add_commands(buffer.data(),filename,count_new,count_replaced);
       }
     }
   }
@@ -5912,12 +5915,9 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
           gmic_substitute_args(false);
           name.assign(argument,(unsigned int)std::strlen(argument) + 1);
           const char *arg_command_text = gmic_argument_text_printed();
-          unsigned int offset_argument_text = 0;
+          unsigned int offset_argument_text = 0, count_new = 0, count_replaced = 0;
           char *arg_command = name;
           strreplace_fw(arg_command);
-
-          unsigned int siz = 0;
-          for (unsigned int l = 0; l<gmic_comslots; ++l) siz+=commands[l].size();
 
           bool add_debug_info = true;
           if ((*arg_command=='0' || *arg_command=='1') && arg_command[1]==',') {
@@ -5930,7 +5930,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             print(images,0,"Import commands from file '%s'%s",
                   arg_command_text,
                   !add_debug_info?" without debug info":"");
-            add_commands(file,add_debug_info?arg_command:0);
+            add_commands(file,add_debug_info?arg_command:0,&count_new,&count_replaced);
             std::fclose(file);
           } else if (!cimg::strncasecmp(arg_command,"http://",7) ||
                      !cimg::strncasecmp(arg_command,"https://",8)) { // Try to read from network.
@@ -5949,7 +5949,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
               const bool _is_debug = is_debug;
               verbosity = -1; is_debug = false;
               try {
-                add_commands(file,add_debug_info?arg_command:0);
+                add_commands(file,add_debug_info?arg_command:0,&count_new,&count_replaced);
                 std::fclose(file);
               } catch (...) {
                 std::fclose(file);
@@ -5967,15 +5967,21 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
           } else {
             print(images,0,"Import custom commands from expression '%s'",
                   arg_command_text);
-            add_commands(arg_command);
+            add_commands(arg_command,0,&count_new,&count_replaced);
           }
           if (is_verbose) {
-            unsigned int nb_added = 0;
-            for (unsigned int l = 0; l<gmic_comslots; ++l) nb_added+=commands[l].size();
-            nb_added-=siz;
+            unsigned int count_total = 0;
+            for (unsigned int l = 0; l<gmic_comslots; ++l) count_total+=commands[l].size();
             cimg::mutex(29);
-            std::fprintf(cimg::output()," (added %u command%s, total %u).",
-                         nb_added,nb_added>1?"s":"",siz + nb_added);
+            if (count_new && count_replaced)
+              std::fprintf(cimg::output()," (%u new, %u replaced, total: %u).",
+                           count_new,count_replaced,count_total);
+            else if (count_new)
+              std::fprintf(cimg::output()," (%u new, total: %u).",
+                           count_new,count_total);
+            else
+              std::fprintf(cimg::output()," (%u replaced, total: %u).",
+                           count_replaced,count_total);
             std::fflush(cimg::output());
             cimg::mutex(29,0);
           }
@@ -14115,8 +14121,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
           const bool add_debug_info = (*options!='0');
           print(images,0,"Input custom command file '%s'%s",
                 _filename0,!add_debug_info?" without debug info":"");
-          unsigned int siz = 0;
-          for (unsigned int l = 0; l<gmic_comslots; ++l) siz+=commands[l].size();
+          unsigned int count_new = 0, count_replaced = 0;
           std::FILE *const file = cimg::fopen(filename,"rb");
 
           bool is_command_error = false;
@@ -14126,7 +14131,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
           const bool _is_debug = is_debug;
           verbosity = -1; is_debug = false;
           try {
-            add_commands(file,add_debug_info?filename:0);
+            add_commands(file,add_debug_info?filename:0,&count_new,&count_replaced);
           } catch (...) {
             is_command_error = true;
           }
@@ -14144,12 +14149,17 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
           }
           cimg::fclose(file);
           if (is_verbose) {
-            unsigned int nb_added = 0;
-            for (unsigned int l = 0; l<gmic_comslots; ++l) nb_added+=commands[l].size();
-            nb_added-=siz;
-            cimg::mutex(29);
-            std::fprintf(cimg::output()," (added %u command%s, total %u).",
-                         nb_added,nb_added>1?"s":"",siz + nb_added);
+            unsigned int count_total = 0;
+            for (unsigned int l = 0; l<gmic_comslots; ++l) count_total+=commands[l].size();
+            if (count_new && count_replaced)
+              std::fprintf(cimg::output()," (%u new, %u replaced, total: %u).",
+                           count_new,count_replaced,count_total);
+            else if (count_new)
+              std::fprintf(cimg::output()," (%u new, total: %u).",
+                           count_new,count_total);
+            else
+              std::fprintf(cimg::output()," (%u replaced, total: %u).",
+                           count_replaced,count_total);
             std::fflush(cimg::output());
             cimg::mutex(29,0);
           }
