@@ -93,6 +93,7 @@
                   <td><img alt="" src="img/download_debian64.png" border="0"></img></td><td>&nbsp;&nbsp;</td>
                   <td><font size="3"><b><font color="#000066">G'MIC</font></b> for Debian <i>64 bits</i> - All interfaces</font><br/>
                     <ul>
+                      <li>Debian 9 <i>Stretch</i>: <a href="http://gmic.eu/files/prerelease_linux/gmic_debian_stretch_amd64.deb">.deb package</a></li>
                       <li>Debian 8 <i>Jessie</i>: <a href="http://gmic.eu/files/prerelease_linux/gmic_debian_jessie_amd64.deb">.deb package</a></li>
                       <li>Debian 7 <i>Wheezy</i>: <a href="http://gmic.eu/files/prerelease_linux/gmic_debian_wheezy_amd64.deb">.deb package</a></li>
                     </ul>
@@ -104,6 +105,7 @@
                   <td><img alt="" src="img/download_debian32.png" border="0"></img></td><td>&nbsp;&nbsp;</td>
                   <td><font size="3"><b><font color="#000066">G'MIC</font></b> for Debian <i>32 bits</i> - All interfaces</font><br/>
                     <ul>
+                      <li>Debian 9 <i>Stretch</i>: <a href="http://gmic.eu/files/prerelease_linux/gmic_debian_stretch_i386.deb">.deb package</a></li>
                       <li>Debian 8 <i>Jessie</i>: <a href="http://gmic.eu/files/prerelease_linux/gmic_debian_jessie_i386.deb">.deb package</a></li>
                       <li>Debian 7 <i>Wheezy</i>: <a href="http://gmic.eu/files/prerelease_linux/gmic_debian_wheezy_i386.deb">.deb package</a></li>
                     </ul>
