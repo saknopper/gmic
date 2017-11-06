@@ -6990,13 +6990,9 @@ rgb2hsv :
     m = min(R,G,B);
     M = max(R,G,B);
     H = S = 0;
-    if (M!=m,
-      f = R==m?G - B:G==m?B - R:R - G;
-      i = R==m?3:G==m?5:1;
-      H = i - f/(M - m);
-      (H%=6)*=60;
-      S = (M - m)/M;
-    );
+    C = M - m;
+    H = 60*(C==0?0:M==R?((G-B)/C)%6:M==G?(B-R)/C+2:(R-G)/C+4);
+    S = (M - m)/M;
     [ cut(H,0,360), cut(S,0,1), cut(M/255,0,1) ];
   "
   v +
