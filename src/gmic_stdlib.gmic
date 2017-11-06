@@ -6984,7 +6984,7 @@ rgb2hsv :
     M = max(R,G,B);
     C = M - min(R,G,B);
     H = 60*(C==0?0:M==R?((G-B)/C)%6:M==G?(B-R)/C+2:(R-G)/C+4);
-    S = C/M;
+    S = M<=0?0:C/M;
     [ cut(H,0,360), cut(S,0,1), cut(M/255,0,1) ];
   "
   v +
