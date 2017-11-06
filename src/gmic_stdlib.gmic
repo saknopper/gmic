@@ -6761,21 +6761,25 @@ lch2lab :
     s c polar2complex[-2,-1] a c
   endl done v +
 
-#@cli lch2rgb
+#@cli lch2rgb : illuminant={ 0=D50 | 1=D65 } : (no arg)
 #@cli : Convert color representation of selected images from Lch to RGB.
-lch2rgb :
-  e[^-1] "Convert color representation of image$? from Lch to RGB."
-  v - lch2lab lab2rgb v +
+#@cli : Default value: 'illuminant=1'.
+lch2rgb : skip "${1=,}"
+  v - l[] if {isval("$1")} wp={"$1?1:0"} else if {["'$1'"]!=','} noarg fi wp=1 fi onfail noarg wp=1 endl v +
+  e[^-1] "Convert color representation of image$? from Lch to RGB, using the D"{arg(1+$wp,50,65)}" illuminant."
+  v - lch2lab lab2rgb $wp v +
 
-#@cli lch82rgb
+#@cli lch82rgb : illuminant={ 0=D50 | 1=D65 } : (no arg)
 #@cli : Convert color representation of selected images from Lch8 to RGB.
-lch82rgb :
-  e[^-1] "Convert color representation of image$? from Lch8 to RGB."
+#@cli : Default value: 'illuminant=1'.
+lch82rgb : skip "${1=,}"
+  v - l[] if {isval("$1")} wp={"$1?1:0"} else if {["'$1'"]!=','} noarg fi wp=1 fi onfail noarg wp=1 endl v +
+  e[^-1] "Convert color representation of image$? from Lch8 to RGB, using the D"{arg(1+$wp,50,65)}" illuminant."
   v - repeat $!
     sh[$>] 0 /. 2.55 rm.
     sh[$>] 1 /. 1.88889 rm.
     sh[$>] 2 /. 40.5845 -. 3.14159 rm.
-  done lch2rgb v +
+  done lch2rgb $wp v +
 
 #@cli luminance
 #@cli : Compute luminance of selected sRGB images.
@@ -7033,19 +7037,23 @@ rgb2lab8 : skip "${1=,}"
     sh[$>] 2 +. 110 *. 1.15909 rm.
   done v +
 
-#@cli rgb2lch
+#@cli rgb2lch : illuminant={ 0=D50 | 1=D65 } : (no arg)
 #@cli : Convert color representation of selected images from RGB to Lch.
+#@cli : Default value: 'illuminant=1'.
 #@cli : $ image.jpg rgb2lch split c
-rgb2lch :
-  e[^-1] "Convert color representation of image$? from RGB to Lch."
-  v - rgb2lab lab2lch v +
+rgb2lch : skip "${1=,}"
+  v - l[] if {isval("$1")} wp={"$1?1:0"} else if {["'$1'"]!=','} noarg fi wp=1 fi onfail noarg wp=1 endl v +
+  e[^-1] "Convert color representation of image$? from RGB to Lch, using the D"{arg(1+$wp,50,65)}" illuminant."
+  v - rgb2lab $wp lab2lch v +
 
-#@cli rgb2lch8
+#@cli rgb2lch8 : illuminant={ 0=D50 | 1=D65 } : (no arg)
 #@cli : Convert color representation of selected images from RGB to Lch8.
+#@cli : Default value: 'illuminant=1'.
 #@cli : $ image.jpg rgb2lch8 split c
-rgb2lch8 :
-  e[^-1] "Convert color representation of image$? from RGB to Lch8."
-  v - rgb2lch repeat $!
+rgb2lch8 : skip "${1=,}"
+  v - l[] if {isval("$1")} wp={"$1?1:0"} else if {["'$1'"]!=','} noarg fi wp=1 fi onfail noarg wp=1 endl v +
+  e[^-1] "Convert color representation of image$? from RGB to Lch8, using the D"{arg(1+$wp,50,65)}" illuminant."
+  v - rgb2lch $wp repeat $!
     sh[$>] 0 *. 2.55 rm.
     sh[$>] 1 *. 1.88889 rm.
     sh[$>] 2 +. 3.14159 *. 40.5845 rm.
