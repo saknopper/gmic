@@ -242,7 +242,7 @@ if [ "$HOSTNAME" != "elara" ] ; then
     sleep 10
     cp deb_${TARFILE}.gz /tmp/ &&
         cd /tmp/ &&
-        rm -rf $OUTDIR $OUTPAK $OUTZIP_GIMP_GTK $OUTZIP_GIMP_GTK2 $OUTZIP_GIMP_QT $OUTZIP_KRITA_QT &&
+        rm -rf $OUTDIR $OUTPAK $OUTZIP_GIMP_GTK $OUTZIP_GIMP_QT $OUTZIP_KRITA_QT &&
         touch deb_${TARFILE}.gz &&
         tar zxvf deb_${TARFILE}.gz &&
         find gmic-${VERSION}${SUFFIX} -exec touch {} ;
@@ -252,7 +252,6 @@ if [ "$HOSTNAME" != "elara" ] ; then
     else
         sed "s/\$(MAKE) cli lib gimp_gtk gimp_qt krita_qt gmic_qt libc zart/\$(MAKE) cli lib gimp_gtk libc zart/g" Makefile > /tmp/Makefile && mv /tmp/Makefile Makefile
     fi
-    cd ../..
 
     cd $OUTDIR &&
         dpkg-buildpackage -d -j3 -rfakeroot;
@@ -269,6 +268,7 @@ if [ "$HOSTNAME" != "elara" ] ; then
         cp -f ../$OUTZIP_GIMP_GTK $SF_HOME/work/src/$GENERIC_OUTZIP_GIMP_GTK
     elif [ "$CODENAME" == "debian_jessie" ]; then
         cp -f ../$OUTZIP_GIMP_QT $SF_HOME/work/src/$GENERIC_OUTZIP_GIMP_QT
+        cp -f ../$OUTZIP_KRITA_QT $SF_HOME/work/src/$GENERIC_OUTZIP_KRITA_QT
     fi
 
     echo VIRTUALBOX_DONE
@@ -325,7 +325,7 @@ fi
 #---------------------------------------------
 echo " - Create list of filters."
 rm -f /tmp/gui_filters.txt
-\gmic gmic_stdlib.gmic -update_server > /tmp/gui_filters.txt
+gmic gmic_stdlib.gmic update_server > /tmp/gui_filters.txt
 size=`du -b /tmp/gui_filters.txt | head -c 1`
 if [ "$size" != "0" ]; then
     cp -f /tmp/gui_filters.txt ../html/
@@ -344,15 +344,15 @@ echo " - Create HTML reference page."
 cd html
 rm -f img/gmic_stdlib*.jpg image.jpg gimp.shtml
 ln -s download.shtml gimp.shtml
-\gmic -sp tiger -r2dy 320 -o image.jpg
-\gmic -v - ../src/gmic_stdlib.gmic raw:../src/gmic_stdlib.gmic,uchar -document_gmic images,img/
+gmic sp tiger r2dy 320 o image.jpg
+gmic v - ../src/gmic_stdlib.gmic raw:../src/gmic_stdlib.gmic,uchar document_gmic images,img/
 if [ "$1" == "final" ]; then
-    \gmic -v - ../src/gmic_stdlib.gmic raw:../src/gmic_stdlib.gmic,uchar _prerelease= -__help html >& reference.shtml;
+    gmic v - ../src/gmic_stdlib.gmic raw:../src/gmic_stdlib.gmic,uchar _prerelease= __help html >& reference.shtml;
 else
-    \gmic -v - ../src/gmic_stdlib.gmic raw:../src/gmic_stdlib.gmic,uchar _prerelease=`date +%y%m%d` -__help html >& reference.shtml;
+    gmic v - ../src/gmic_stdlib.gmic raw:../src/gmic_stdlib.gmic,uchar _prerelease=`date +%y%m%d` __help html >& reference.shtml;
 fi
 rm -f image.jpg
-\gmic ../src/gmic_stdlib.gmic -update_gallery_html
+gmic ../src/gmic_stdlib.gmic update_gallery_html
 cd ..
 
 # Create .pdf handbook.
@@ -360,9 +360,9 @@ cd ..
 echo " - Create PDF reference handbook."
 cd html
 if [ "$1" == "final" ]; then
-    \gmic -v - ../src/gmic_stdlib.gmic raw:../src/gmic_stdlib.gmic,uchar _version=$SVERSION _prerelease= -__help latex >& reference.tex;
+    gmic v - ../src/gmic_stdlib.gmic raw:../src/gmic_stdlib.gmic,uchar _version=$SVERSION _prerelease= __help latex >& reference.tex;
 else
-    \gmic -v - ../src/gmic_stdlib.gmic raw:../src/gmic_stdlib.gmic,uchar _version=$SVERSION _prerelease=`date +%y%m%d` -__help latex >& reference.tex;
+    gmic v - ../src/gmic_stdlib.gmic raw:../src/gmic_stdlib.gmic,uchar _version=$SVERSION _prerelease=`date +%y%m%d` __help latex >& reference.tex;
 fi
 pdflatex reference.tex
 makeindex reference
@@ -486,8 +486,11 @@ echo " - Create debian packages."
 cp ${HOME}/work/src/deb_${TARFILE}.gz /tmp/ &&
     cd /tmp/ &&
     OUTPAK=gmic_${VERSION}${SUFFIX}_${CODENAME}_${ARCH}.deb &&
+    OUTZIP_GIMP_GTK=gmic_gimp_gtk_${VERSION}${SUFFIX}_${CODENAME}_${ARCH}.zip &&
+    OUTZIP_GIMP_QT=gmic_gimp_qt_${VERSION}${SUFFIX}_${CODENAME}_${ARCH}.zip &&
+    OUTZIP_KRITA_QT=gmic_krita_qt_${VERSION}${SUFFIX}_${CODENAME}_${ARCH}.zip &&
     OUTDIR=gmic-${VERSION}${SUFFIX} &&
-    rm -rf $OUTPAK &&
+    rm -rf $OUTPAK $OUTZIP_GIMP_GTK $OUTZIP_GIMP_QT $OUTZIP_KRITA_QT &&
     touch deb_${TARFILE}.gz &&
     tar zxvf deb_${TARFILE}.gz &&
     find gmic-${VERSION}${SUFFIX} -exec touch {} \; &&
@@ -497,15 +500,19 @@ cp ${HOME}/work/src/deb_${TARFILE}.gz /tmp/ &&
 cd $OUTDIR &&
     dpkg-buildpackage -d -j3 -rfakeroot;
 mv ../gmic_${VERSION}_amd64.deb ../$OUTPAK &&
-    cp -f ../$OUTPAK $HOME/work/src/ &&
-    echo ELARA_DONE
+    zip -j -r -9 ../$OUTZIP_GIMP_GTK src/gmic_gimp_gtk README &&
+    zip -j -r -9 ../$OUTZIP_GIMP_QT gmic-qt/gmic_gimp_qt README &&
+    zip -j -r -9 ../$OUTZIP_KRITA_QT gmic-qt/gmic_krita_qt README &&
+    cp -f ../$OUTPAK ../$OUTZIP_GIMP_GTK ../$OUTZIP_GIMP_QT ../$OUTZIP_KRITA_QT $HOME/work/src/
+
+echo ELARA_DONE
 
 # Wait for packages to be generated from Virtual machines, and copy them to G'MIC server.
 #----------------------------------------------------------------------------------------
 echo " - Waiting for all packages.".
 
 cd ${HOME}/work/src/
-gmic -_update_server_binaries ${VERSION}${SUFFIX}
+gmic _update_server_binaries ${VERSION}${SUFFIX}
 
 #
 # End of file.
