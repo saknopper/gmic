@@ -36,6 +36,7 @@
                       </li>
                       <li>Linux <i>64 bits</i>: <a href="http://gmic.eu/files/prerelease_linux/gmic_gimp_qt_linux64.zip">.zip archive</a></li>
                       <li>Linux <i>32 bits</i>: <a href="http://gmic.eu/files/prerelease_linux/gmic_gimp_qt_linux32.zip">.zip archive</a></li>
+                      <li>Linux <i>32/64 bits</i>: <a href="http://gmic.eu/files/prerelease_linux">.zip archive for specific distros</a></li>
                       <li><i>GTK</i> version (<i>less features!</i>):
                         Linux <i>64 bits</i>: <a href="http://gmic.eu/files/prerelease_linux/gmic_gimp_gtk_linux64.zip">.zip archive</a>,
                         Linux <i>32 bits</i>: <a href="http://gmic.eu/files/prerelease_linux/gmic_gimp_gtk_linux32.zip">.zip archive</a>,
@@ -57,6 +58,7 @@
                     <ul>
                       <li>Windows <i>64 bits</i>: <a href="http://gmic.eu/files/prerelease_windows/gmic_krita_qt_win64.zip">.zip archive</a></li>
                       <li>Windows <i>32 bits</i>: <a href="http://gmic.eu/files/prerelease_windows/gmic_krita_qt_win32.zip">.zip archive</a></li>
+                      <li>Linux <i>32/64 bits</i>: <a href="http://gmic.eu/files/prerelease_linux">.zip archive for specific distro</a></li>
                     </ul>
                     <br/></td>
                 </tr>
