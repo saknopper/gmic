@@ -235,14 +235,16 @@ if [ "$HOSTNAME" != "elara" ] ; then
     OUTZIP_GIMP_GTK=gmic_gimp_gtk_${VERSION}${SUFFIX}_${CODENAME}_${ARCH}.zip
     OUTZIP_GIMP_QT=gmic_gimp_qt_${VERSION}${SUFFIX}_${CODENAME}_${ARCH}.zip
     OUTZIP_KRITA_QT=gmic_krita_qt_${VERSION}${SUFFIX}_${CODENAME}_${ARCH}.zip
-    GENERIC_OUTZIP_GIMP_GTK=gmic_gimp_gtk_linux${BITS}.zip
-    GENERIC_OUTZIP_GIMP_QT=gmic_gimp_qt_linux${BITS}.zip
+    GENERIC_OUTZIP_GIMP_GTK=gmic_gimp_gtk_${VERSION}${SUFFIX}_linux${BITS}.zip
+    GENERIC_OUTZIP_GIMP_QT=gmic_gimp_qt_${VERSION}${SUFFIX}_linux${BITS}.zip
+    GENERIC_OUTZIP_GIMP_GTK_SHORT=gmic_gimp_gtk_linux${BITS}.zip
+    GENERIC_OUTZIP_GIMP_QT_SHORT=gmic_gimp_qt_linux${BITS}.zip
 
     while [ ! -f deb_${TARFILE}.gz ]; do sleep 10; done
     sleep 10
     cp deb_${TARFILE}.gz /tmp/ &&
         cd /tmp/ &&
-        rm -rf $OUTDIR $OUTPAK $OUTZIP_GIMP_GTK $OUTZIP_GIMP_QT $OUTZIP_KRITA_QT $GENERIC_OUTZIP_GIMP_GTK $GENERIC_OUTZIP_GIMP_QT &&
+        rm -rf $OUTDIR $OUTPAK $OUTZIP_GIMP_GTK $OUTZIP_GIMP_QT $OUTZIP_KRITA_QT $GENERIC_OUTZIP_GIMP_GTK $GENERIC_OUTZIP_GIMP_QT $GENERIC_OUTZIP_GIMP_GTK2 $GENERIC_OUTZIP_GIMP_QT2 &&
         touch deb_${TARFILE}.gz &&
         tar zxvf deb_${TARFILE}.gz &&
         find gmic-${VERSION}${SUFFIX} -exec touch {} ;
@@ -267,8 +269,10 @@ if [ "$HOSTNAME" != "elara" ] ; then
     fi
     if [ "$CODENAME" == "debian_wheezy" ]; then
         cp -f ../$OUTZIP_GIMP_GTK $SF_HOME/work/src/$GENERIC_OUTZIP_GIMP_GTK
+        cp -f ../$OUTZIP_GIMP_GTK $SF_HOME/work/src/$GENERIC_OUTZIP_GIMP_GTK_SHORT
     elif [ "$CODENAME" == "debian_jessie" ]; then
         cp -f ../$OUTZIP_GIMP_QT $SF_HOME/work/src/$GENERIC_OUTZIP_GIMP_QT
+        cp -f ../$OUTZIP_GIMP_QT $SF_HOME/work/src/$GENERIC_OUTZIP_GIMP_QT_SHORT
     fi
 
     echo VIRTUALBOX_DONE

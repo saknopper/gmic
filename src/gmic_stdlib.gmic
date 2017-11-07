@@ -4598,6 +4598,8 @@ _update_server_binaries :
   file$N=gmic_$1_ubuntu_xenial_amd64.deb           N+=1
   file$N=gmic_$1_ubuntu_artful_amd64.deb           N+=1
 
+  file$N=gmic_gimp_gtk_linux32.zip                 N+=1
+  file$N=gmic_gimp_gtk_linux64.zip                 N+=1
   file$N=gmic_gimp_gtk_$1_linux32.zip              N+=1
   file$N=gmic_gimp_gtk_$1_linux64.zip              N+=1
   file$N=gmic_gimp_gtk_$1_debian_wheezy_i386.zip   N+=1
@@ -4609,6 +4611,8 @@ _update_server_binaries :
   file$N=gmic_gimp_gtk_$1_ubuntu_xenial_amd64.zip  N+=1
   file$N=gmic_gimp_gtk_$1_ubuntu_artful_amd64.zip  N+=1
 
+  file$N=gmic_gimp_qt_linux32.zip                  N+=1
+  file$N=gmic_gimp_qt_linux64.zip                  N+=1
   file$N=gmic_gimp_qt_$1_linux32.zip               N+=1
   file$N=gmic_gimp_qt_$1_linux64.zip               N+=1
   file$N=gmic_gimp_qt_$1_debian_jessie_i386.zip    N+=1
