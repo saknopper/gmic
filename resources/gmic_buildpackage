@@ -246,6 +246,7 @@ if [ "$HOSTNAME" != "elara" ] ; then
         touch deb_${TARFILE}.gz &&
         tar zxvf deb_${TARFILE}.gz &&
         find gmic-${VERSION}${SUFFIX} -exec touch {} ;
+
     cd $OUTDIR/src
     if [ -f $HOME/is_qt5 ]; then
         sed "s/\$(MAKE) cli lib gimp_gtk gmic_qt krita_qt gmic_qt libc zart/\$(MAKE) cli lib gimp_qt krita_qt gmic_qt libc zart/g" Makefile > /tmp/Makefile && mv /tmp/Makefile Makefile;
@@ -253,7 +254,7 @@ if [ "$HOSTNAME" != "elara" ] ; then
         sed "s/\$(MAKE) cli lib gimp_gtk gimp_qt krita_qt gmic_qt libc zart/\$(MAKE) cli lib gimp_gtk libc zart/g" Makefile > /tmp/Makefile && mv /tmp/Makefile Makefile
     fi
 
-    cd $OUTDIR &&
+    cd /tmp/$OUTDIR &&
         dpkg-buildpackage -d -j3 -rfakeroot;
     mv ../gmic_${VERSION}_${ARCH}.deb ../$OUTPAK
 
