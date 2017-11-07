@@ -23737,17 +23737,8 @@ gui_autocrop_layers :
 # Do not forget to ucomment this entry for a deprecated version of the G'MIC plug-in!
 # #@gui <span foreground="red"><b>  UPDATE INFORMATION</b></span> : _none_, fx_logo_en
 # #@gui : note = note{"A <b>new version</b> of the G'MIC plug-in is available!
-# #@gui : You are strongly encouraged to download and install this updated version, by clicking on one of the following urls :"}
-# #@gui : note = note{"\n<span foreground="purple"><u>Windows version :</u></span>"}
-# #@gui : url = link{"Download G'MIC plug-in for Windows (64 bits)","http://gmic.eu/files/windows/gmic_gimp_win64.exe"}
-# #@gui : url = link{"Download G'MIC plug-in for Windows (32 bits)","http://gmic.eu/files/windows/gmic_gimp_win32.exe"}
-# #@gui : note = note{"<b>Installation </b>: unzip the archive files and copy them into folder\n
-# #@gui :              <i>C:\\Program Files\\GIMP\\lib\\gimp\\2.0\\plug-ins\</i>"}
-# #@gui : note = note{"\n<span foreground="purple"><u>Linux version :</u></span>"}
-# #@gui : url = link{"Download plug-in for Linux (64 bits)","http://gmic.eu/files/linux/gmic_gimp_linux64.zip"}
-# #@gui : url = link{"Download plug-in for Linux (32 bits)","http://gmic.eu/files/linux/gmic_gimp_linux32.zip"}
-# #@gui : note = note{"<b>Installation </b>: unzip the archive files and copy them in folder\n
-# #@gui :              <i>/usr/lib/gimp/2.0/plug-ins/</i>"}
+# #@gui : You are strongly encouraged to upgrade to the latest version, by visiting our Download page :"}
+# #@gui : url = link{"Download G'MIC plug-in","http://gmic.eu/download.shtml"}
 # #@gui : note = note{"\nNote that there will be no updated filters anymore for your current plug-in version.
 # #@gui : Installing the G'MIC plug-in for GIMP is easy and fast, so there are no reasons not for doing it :).\n\n
 # #@gui : Best regards,\n\n <i>The G'MIC team.</i>"}
