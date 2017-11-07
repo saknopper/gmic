@@ -265,9 +265,9 @@ if [ "$HOSTNAME" != "elara" ] ; then
         zip -j -r -9 ../$OUTZIP_KRITA_QT gmic-qt/gmic_krita_qt README
         cp -f ../$OUTZIP_GIMP_QT ../$OUTZIP_KRITA_QT $SF_HOME/work/src/
     fi
-    if [ "$CODENAME" == "debian_jessie" ]; then
+    if [ "$CODENAME" == "debian_wheezy" ]; then
         cp -f ../$OUTZIP_GIMP_GTK $SF_HOME/work/src/$GENERIC_OUTZIP_GIMP_GTK
-    elif [ "$CODENAME" == "debian_wheezy" ]; then
+    elif [ "$CODENAME" == "debian_jessie" ]; then
         cp -f ../$OUTZIP_GIMP_QT $SF_HOME/work/src/$GENERIC_OUTZIP_GIMP_QT
     fi
 
