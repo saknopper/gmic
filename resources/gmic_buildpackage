@@ -242,7 +242,7 @@ if [ "$HOSTNAME" != "elara" ] ; then
     sleep 10
     cp deb_${TARFILE}.gz /tmp/ &&
         cd /tmp/ &&
-        rm -rf $OUTDIR $OUTPAK $OUTZIP_GIMP_GTK $OUTZIP_GIMP_QT $OUTZIP_KRITA_QT &&
+        rm -rf $OUTDIR $OUTPAK $OUTZIP_GIMP_GTK $OUTZIP_GIMP_QT $OUTZIP_KRITA_QT $GENERIC_OUTZIP_GIMP_GTK $GENERIC_OUTZIP_GIMP_QT &&
         touch deb_${TARFILE}.gz &&
         tar zxvf deb_${TARFILE}.gz &&
         find gmic-${VERSION}${SUFFIX} -exec touch {} ;
