@@ -232,10 +232,9 @@ if [ "$HOSTNAME" != "elara" ] ; then
     TARFILE=gmic_${VERSION}${SUFFIX}.tar
     OUTDIR=gmic-${VERSION}${SUFFIX}
     OUTPAK=gmic_${VERSION}${SUFFIX}_${CODENAME}_${ARCH}.deb
-    OUTZIP_GIMP_GTK=gmic_gimp_gtk_${VERSION}${SUFFIX}_linux${BITS}.zip
-    OUTZIP_GIMP_GTK2=gmic_gimp_gtk_${VERSION}${SUFFIX}_yakkety${BITS}.zip
-    OUTZIP_GIMP_QT=gmic_gimp_qt_${VERSION}${SUFFIX}_linux${BITS}.zip
-    OUTZIP_KRITA_QT=gmic_krita_qt_${VERSION}${SUFFIX}_linux${BITS}.zip
+    OUTZIP_GIMP_GTK=gmic_gimp_gtk_${VERSION}${SUFFIX}_${CODENAME}_${ARCH}.zip
+    OUTZIP_GIMP_QT=gmic_gimp_qt_${VERSION}${SUFFIX}_${CODENAME}_${ARCH}.zip
+    OUTZIP_KRITA_QT=gmic_krita_qt_${VERSION}${SUFFIX}_${CODENAME}_${ARCH}.zip
     OUTZIP_STATIC=gmic_static_${VERSION}${SUFFIX}_linux${BITS}.zip
 
     while [ ! -f deb_${TARFILE}.gz ]; do sleep 10; done
@@ -258,25 +257,30 @@ if [ "$HOSTNAME" != "elara" ] ; then
         dpkg-buildpackage -d -j3 -rfakeroot;
     mv ../gmic_${VERSION}_${ARCH}.deb ../$OUTPAK
 
-    if [ "$CODENAME" == "ubuntu_yakkety" ]; then
-        zip -j -r -9 ../$OUTZIP_GIMP_GTK2 src/gmic_gimp_gtk README &&
-            cd .. &&
-            cp -f $OUTZIP_GIMP_GTK2 $OUTPAK $SF_HOME/work/src/
-    elif [ "$CODENAME" == "debian_wheezy" ]; then
-        zip -j -r -9 ../$OUTZIP_GIMP_GTK src/gmic_gimp_gtk README &&
-            cd src && make clean && make GMIC_STATIC_CLI_PATH=/usr/lib/${PARCH}-linux-gnu static && mv gmic ../ &&
-            cd .. && rm -rf man src zart debian && cd .. &&
-            zip -r -9 $OUTZIP_STATIC $OUTDIR &&
-            cp -f $OUTPAK $OUTZIP_GIMP_GTK $OUTZIP_STATIC $SF_HOME/work/src/
-    elif [ "$CODENAME" == "debian_jessie" ]; then
-        zip -j -r -9 ../$OUTZIP_GIMP_QT gmic-qt/gmic_gimp_qt README &&
-        zip -j -r -9 ../$OUTZIP_KRITA_QT gmic-qt/gmic_krita_qt README &&
-            cd .. &&
-            cp -f $OUTPAK $OUTZIP_GIMP_QT $OUTZIP_KRITA_QT $SF_HOME/work/src/
-    else
-        cd .. &&
-            cp -f $OUTPAK $SF_HOME/work/src/
+    zip -j -r -9 ../$OUTZIP_GIMP_GTK src/gmic_gimp_gtk README
+    cp -f ../$OUTPAK ../$OUTZIP_GIMP_GTK $SF_HOME/work/src/
+    if [ -f $HOME/is_qt5 ]; then
+      zip -j -r -9 ../$OUTZIP_GIMP_QT gmic-qt/gmic_gimp_qt README
+      zip -j -r -9 ../$OUTZIP_KRITA_QT gmic-qt/gmic_krita_qt README
+      cp -f ../$OUTZIP_GIMP_QT ../$OUTZIP_KRITA_QT $SF_HOME/work/src/
     fi
+
+    #if [ "$CODENAME" == "debian_wheezy" ]; then
+    # elif [ "$CODENAME" == "debian_wheezy" ]; then
+    #     cd src && make clean && make GMIC_STATIC_CLI_PATH=/usr/lib/${PARCH}-linux-gnu static && mv gmic ../ &&
+    #         cd .. && rm -rf man src zart debian && cd .. &&
+    #         zip -r -9 $OUTZIP_STATIC $OUTDIR &&
+    #         cp -f $OUTPAK $OUTZIP_GIMP_GTK $OUTZIP_STATIC $SF_HOME/work/src/
+    # elif [ "$CODENAME" == "debian_jessie" ]; then
+    #     zip -j -r -9 ../$OUTZIP_GIMP_QT gmic-qt/gmic_gimp_qt README &&
+    #     zip -j -r -9 ../$OUTZIP_KRITA_QT gmic-qt/gmic_krita_qt README &&
+    #         cd .. &&
+    #         cp -f $OUTPAK $OUTZIP_GIMP_QT $OUTZIP_KRITA_QT $SF_HOME/work/src/
+    # else
+    #     cd .. &&
+    #         cp -f $OUTPAK $SF_HOME/work/src/
+    # fi
+
     echo VIRTUALBOX_DONE
     return;
 fi

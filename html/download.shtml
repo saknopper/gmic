@@ -136,26 +136,26 @@
                 <!-- </tr> -->
 
                 <!-- G'MIC Static 64 bits -->
-                <tr>
-                  <td><img alt="" src="img/download_linux64.png" border="0"></img></td><td>&nbsp;&nbsp;</td>
-                  <td><font size="3"><b><font color="#000066">G'MIC</font></b> for Linux <i>64 bits</i> - Command-line interface</font><br/>
-                    <ul>
-                      <li>Static version: <a href="http://gmic.eu/files/prerelease_linux/gmic_static_linux64.zip">.zip archive</a>
-                        <i>(beware: without display capabilities!)</i></li>
-                    </ul>
-                    <br/></td>
-                </tr>
+                <!-- <tr> -->
+                <!--   <td><img alt="" src="img/download_linux64.png" border="0"></img></td><td>&nbsp;&nbsp;</td> -->
+                <!--   <td><font size="3"><b><font color="#000066">G'MIC</font></b> for Linux <i>64 bits</i> - Command-line interface</font><br/> -->
+                <!--     <ul> -->
+                <!--       <li>Static version: <a href="http://gmic.eu/files/prerelease_linux/gmic_static_linux64.zip">.zip archive</a> -->
+                <!--         <i>(beware: without display capabilities!)</i></li> -->
+                <!--     </ul> -->
+                <!--     <br/></td> -->
+                <!-- </tr> -->
 
                 <!-- G'MIC Static 32 bits -->
-                <tr>
-                  <td><img alt="" src="img/download_linux32.png" border="0"></img></td><td>&nbsp;&nbsp;</td>
-                  <td><font size="3"><b><font color="#000066">G'MIC</font></b> for Linux <i>32 bits</i> - Command-line interface</font><br/>
-                    <ul>
-                      <li>Static version: <a href="http://gmic.eu/files/prerelease_linux/gmic_static_linux32.zip">.zip archive</a>
-                        <i>(beware: without display capabilities!)</i></li>
-                    </ul>
-                    <br/></td>
-                </tr>
+                <!-- <tr> -->
+                <!--   <td><img alt="" src="img/download_linux32.png" border="0"></img></td><td>&nbsp;&nbsp;</td> -->
+                <!--   <td><font size="3"><b><font color="#000066">G'MIC</font></b> for Linux <i>32 bits</i> - Command-line interface</font><br/> -->
+                <!--     <ul> -->
+                <!--       <li>Static version: <a href="http://gmic.eu/files/prerelease_linux/gmic_static_linux32.zip">.zip archive</a> -->
+                <!--         <i>(beware: without display capabilities!)</i></li> -->
+                <!--     </ul> -->
+                <!--     <br/></td> -->
+                <!-- </tr> -->
 
                 <!-- G'MIC for MacOSX -->
                 <tr>
