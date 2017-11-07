@@ -4618,8 +4618,6 @@ _update_server_binaries :
   file$N=gmic_gimp_qt_$1_ubuntu_xenial_amd64.zip   N+=1
   file$N=gmic_gimp_qt_$1_ubuntu_artful_amd64.zip   N+=1
 
-  file$N=gmic_krita_qt_$1_linux32.zip              N+=1
-  file$N=gmic_krita_qt_$1_linux64.zip              N+=1
   file$N=gmic_krita_qt_$1_debian_jessie_i386.zip   N+=1
   file$N=gmic_krita_qt_$1_debian_jessie_amd64.zip  N+=1
   file$N=gmic_krita_qt_$1_debian_stretch_i386.zip  N+=1
