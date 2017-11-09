@@ -4521,7 +4521,7 @@ update_server :
     replace_str "<i>David Tschumperl&#233;</i>","<i><a href=\""$url"\">David Tschumperl&#233;</a></i>"
     o cimgz:/tmp/update$_version.gmic,uchar
 
-    (215)
+    (215,216)
     repeat {w}
       v={i[$>]}
       _update_server_upload[] ${_path_rc}update$_version.gmic,plain_update$v.gmic
@@ -24330,7 +24330,7 @@ fx_gmicky_preview :
 #@gui : - <b>2017/05/29</b> : version <i>2.0.0</i>.\n
 #@gui : - <b>2017/10/09</b> : version <i>2.1.0</i>.\n
 #@gui : - <span foreground="purple"><b>2017/11/07</b> : version <i>2.1.5</i> (Current stable).</span>\n
-##@gui : - <b>2017/11/XX</b> : version <i>2.1.6_pre</i> (Current development).\n
+#@gui : - <b>2017/11/09</b> : version <i>2.1.6_pre</i> (Current development).\n
 #@gui : "}
 #@gui : sep = separator()
 #@gui : url = link{"View latest micro changelog (2.1.5)","https://discuss.pixls.us/t/release-of-gmic-2-1-5"}
