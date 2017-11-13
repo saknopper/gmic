@@ -14498,13 +14498,11 @@ rprogress : skip ${2=""}
     nm={min($2,$-1)} nM={max($2,$-1)}
     v + e[0--3] "Call command '$1' with progress bounds ["$nm,$nM"]." v -
     progress $m _progress_bounds=$_progress_bounds,{$m+$nm*($M-$m)/100},{$m+$nM*($M-$m)/100}  # Push new bounds.
-    _rprogress "$1"
+    run "$1"
     progress $M ($_progress_bounds) _progress_bounds={@0--3} rm. # Pop bounds.
   else v + error[0--3] "Command '$0': Invalid argument '$*'."
   fi
   v +
-
-_rprogress : $*
 
 #@cli run : "G'MIC pipeline"
 #@cli : Run specified G'MIC pipeline.
