@@ -60,8 +60,18 @@ PIC = -fPIC
 EXE =
 WGET = wget --no-check-certificate --quiet -O
 PLUGINDIR = `gimptool-2.0 --gimpplugindir`/plug-ins
-VERSION = `grep 'gmic_version\ ' gmic.h | tail -c4 | head -c3`
-VERSION1 = `grep 'gmic_version\ ' gmic.h | tail -c4 | head -c1`
+VERSION = $(shell grep 'gmic_version\ ' gmic.h | tail -c4 | head -c3)
+VERSION1 = $(shell grep 'gmic_version\ ' gmic.h | tail -c4 | head -c1)
+
+# Check that versions of files 'CImg.h' and 'gmic.h' match.
+ifneq (,$(wildcard CImg.h))
+CIMG_VERSION = $(shell grep 'cimg_version\ ' CImg.h | tail -c4 | head -c3)
+else
+CIMG_VERSION = $(VERSION)
+endif
+ifneq ($(VERSION),$(CIMG_VERSION))
+$(error	Version numbers of files 'gmic.h' ($(VERSION)) and 'CImg.h' ($(CIMG_VERSION)) mismatch)
+endif
 
 ifeq ($(OS),Linux)
 OS = Unix
