@@ -70,8 +70,11 @@ else
 CIMG_VERSION = $(VERSION)
 endif
 ifneq ($(VERSION),$(CIMG_VERSION))
-$(error	Version numbers of files 'gmic.h' (v.$(VERSION)) and 'CImg.h' (v.$(CIMG_VERSION)) do not match. \
-Try 'make clean' to ensure you get the latest version of CImg)
+define ERROR_MESSAGE
+Version numbers of files 'gmic.h' (v.$(VERSION)) and 'CImg.h' (v.$(CIMG_VERSION)) do not match.
+Try 'make clean' to ensure you get the latest version of CImg
+endef
+$(error	$(ERROR_MESSAGE))
 endif
 
 ifeq ($(OS),Linux)
