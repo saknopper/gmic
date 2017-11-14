@@ -6357,11 +6357,11 @@ _ac_ycbcr_cb : _p="to_color" _f="rgb2ycbcr" _b="ycbcr2rgb" _s=1
 _ac_ycbcr_cr : _p="to_color" _f="rgb2ycbcr" _b="ycbcr2rgb" _s=2
 _ac_ycbcr_cg : _p="to_color" _f="sh 0,1 mirror. c rm. rgb2ycbcr" _b="ycbcr2rgb sh 0,1 mirror. c rm." _s=2
 
-_ac_lab : _p="to_color" _f="srgb2rgb rgb2lab8" _b="lab82rgb rgb2srgb" _s=0,2
-_ac_lab_l : _p="to_color" _f="srgb2rgb rgb2lab8" _b="lab82rgb rgb2srgb" _s=0
-_ac_lab_ab : _p="to_color" _f="srgb2rgb rgb2lab8" _b="lab82rgb rgb2srgb" _s=1,2
-_ac_lab_a : _p="to_color" _f="srgb2rgb rgb2lab8" _b="lab82rgb rgb2srgb" _s=1
-_ac_lab_b : _p="to_color" _f="srgb2rgb rgb2lab8" _b="lab82rgb rgb2srgb" _s=2
+_ac_lab : _p="to_color" _f="srgb2lab8" _b="lab82srgb" _s=0,2
+_ac_lab_l : _p="to_color" _f="srgb2lab8" _b="lab82srgb" _s=0
+_ac_lab_ab : _p="to_color" _f="srgb2lab8" _b="lab82srgb" _s=1,2
+_ac_lab_a : _p="to_color" _f="srgb2lab8" _b="lab82srgb" _s=1
+_ac_lab_b : _p="to_color" _f="srgb2lab8" _b="lab82srgb" _s=2
 
 _ac_lch : _p="to_color" _f="srgb2rgb rgb2lch8" _b="lch82rgb rgb2srgb" _s=0,2
 _ac_lch_l : _ac_lab_l
@@ -6727,6 +6727,24 @@ lab2rgb : skip "${1=,}"
   e[^-1] "Convert color representation of image$? from Lab to RGB, using the D"{arg(1+$illu,50,65)}" illuminant."
   v - lab2xyz $illu xyz2rgb $illu v +
 
+#@cli lab2srgb : illuminant={ 0=D50 | 1=D65 } : (no arg)
+#@cli : Convert color representation of selected images from Lab to sRGB.
+#@cli : Default value: 'illuminant=1'.
+#@cli : $ (50,50;50,50^-3,3;-3,3^-3,-3;3,3) resize 400,400,1,3,3 lab2rgb
+lab2srgb : skip "${1=,}"
+  v - l[] if {isval("$1")} illu={"$1?1:0"} else if {["'$1'"]!=','} noarg fi illu=1 fi onfail noarg illu=1 endl v +
+  e[^-1] "Convert color representation of image$? from Lab to sRGB, using the D"{arg(1+$illu,50,65)}" illuminant."
+  v - lab2rgb $illu rgb2srgb v +
+
+#@cli lab82srgb : illuminant={ 0=D50 | 1=D65 } : (no arg)
+#@cli : Convert color representation of selected images from Lab8 to sRGB.
+#@cli : Default value: 'illuminant=1'.
+#@cli : $ (50,50;50,50^-3,3;-3,3^-3,-3;3,3) resize 400,400,1,3,3 lab2rgb
+lab82srgb : skip "${1=,}"
+  v - l[] if {isval("$1")} illu={"$1?1:0"} else if {["'$1'"]!=','} noarg fi illu=1 fi onfail noarg illu=1 endl v +
+  e[^-1] "Convert color representation of image$? from Lab8 to sRGB, using the D"{arg(1+$illu,50,65)}" illuminant."
+  v - lab82rgb $illu rgb2srgb v +
+
 #@cli lab2xyz : illuminant={ 0=D50 | 1=D65 } : (no arg)
 #@cli : Convert color representation of selected images from Lab to XYZ.
 #@cli : Default value: 'illuminant=1'.
@@ -6834,7 +6852,7 @@ pseudogray : check "isint(${1=5}) && $1>=0 && ${2=2.3}>=0 && isint(${3=8}) && $3
   f. 'R=i(x,0,0,0);G=i(x,0,0,1);B=i(x,0,0,2);if(max(R,G,B)>2^$3-1,-1,i)'
   permute. cxyz discard. -1 r. 3,{h/3},1,1,-1 permute. yzcx
   n. 0,255
-  +srgb2rgb. rgb2lab. rv[-2,-1] a[-2,-1] y sort. +,x  # Sort by increasing lightness.
+  +srgb2lab. rv[-2,-1] a[-2,-1] y sort. +,x  # Sort by increasing lightness.
   if {!$2} rows. 1
   else # Add perceptual constraint if requested.
 
@@ -6844,7 +6862,7 @@ pseudogray : check "isint(${1=5}) && $1>=0 && ${2=2.3}>=0 && isint(${3=8}) && $3
 
     # Constraint 2 : remove neighboring colors that are above the JND.
     repeat 10000
-      +srgb2rgb. rgb2lab. +shift. 0,{1-2*($>%2)},0,0,1 -[-2,-1] norm.
+      +srgb2lab. +shift. 0,{1-2*($>%2)},0,0,1 -[-2,-1] norm.
       <=. $2
       if {im} rm. break fi
       *. 'y+1' discard. 0 -. 1 map. .. rm..
@@ -7018,8 +7036,6 @@ _rgb2hsx8 :
 #@cli rgb2lab : illuminant={ 0=D50 | 1=D65 } : (no arg)
 #@cli : Convert color representation of selected images from RGB to Lab.
 #@cli : Default value: 'illuminant=1'.
-#@cli : $ image.jpg rgb2lab split c
-#@cli : $ image.jpg rgb2lab +split c mul[-2,-1] 2.5 append[-3--1] c lab2rgb
 rgb2lab : skip "${1=,}"
   v - l[] if {isval("$1")} illu={"$1?1:0"} else if {["'$1'"]!=','} noarg fi illu=1 fi onfail noarg illu=1 endl v +
   e[^-1] "Convert color representation of image$? from RGB to Lab, using the D"{arg(1+$illu,50,65)}" illuminant."
@@ -7245,6 +7261,24 @@ split_opacity :
   e[^-1] "Split color and opacity parts of image$?."
   v - repeat $! l[$<] s c,{if(s==4,-3,if(s==2,-1,-s))} endl done v +
 
+#@cli srgb2lab : illuminant={ 0=D50 | 1=D65 } : (no arg)
+#@cli : Convert color representation of selected images from sRGB to Lab.
+#@cli : Default value: 'illuminant=1'.
+#@cli : $ image.jpg srgb2lab split c
+#@cli : $ image.jpg srgb2lab +split c mul[-2,-1] 2.5 append[-3--1] c lab2srgb
+srgb2lab : skip "${1=,}"
+  v - l[] if {isval("$1")} illu={"$1?1:0"} else if {["'$1'"]!=','} noarg fi illu=1 fi onfail noarg illu=1 endl v +
+  e[^-1] "Convert color representation of image$? from sRGB to Lab, using the D"{arg(1+$illu,50,65)}" illuminant."
+  v - srgb2rgb rgb2lab $illu v +
+
+#@cli srgb2lab8 : illuminant={ 0=D50 | 1=D65 } : (no arg)
+#@cli : Convert color representation of selected images from sRGB to Lab8.
+#@cli : Default value: 'illuminant=1'.
+srgb2lab8 : skip "${1=,}"
+  v - l[] if {isval("$1")} illu={"$1?1:0"} else if {["'$1'"]!=','} noarg fi illu=1 fi onfail noarg illu=1 endl v +
+  e[^-1] "Convert color representation of image$? from sRGB to Lab8, using the D"{arg(1+$illu,50,65)}" illuminant."
+  v - srgb2rgb rgb2lab8 $illu v +
+
 #@cli srgb2rgb
 #@cli : Convert color representation of selected images from sRGB to linear RGB.
 srgb2rgb :
@@ -7325,7 +7359,7 @@ to_pseudogray : check "isint(${1=5}) && $1>=0 && isint(${3=8}) && $3>0" skip ${2
   v - channels 0 srgb2rgb pseudogray $1,{2.3*$2},$3
 
   # Compute colormap with 65336 entries, to have match corresponding lightness.
-  +srgb2rgb. rgb2lab. channels. 0 *. {65535/100} round. rows. 0,2
+  +srgb2lab. channels. 0 *. {65535/100} round. rows. 0,2
   rv[-2,-1] permute. xcyz +. 1 a[-2,-1] y pointcloud. 0
   +norm. !=. 0 distance. 1 *. -1 watershed.. . rm. -. 1
 
@@ -31543,7 +31577,7 @@ fx_slice_luminosity_preview :
 _fx_slice_luminosity :
   if {$1==0} +compose_channels + /. 3
   elif {$1==1} +luminance
-  elif {$1==2} +srgb2rgb rgb2lab8. channels. 0
+  elif {$1==2} +srgb2lab8. channels. 0
   else +compose_channels max
   fi
   if $4 +apply_curve[1] 0,{$5-$7-0.1},0,$5,255,$6,255,{$6+$8+0.1},0,512,0 fi
