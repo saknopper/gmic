@@ -10938,7 +10938,7 @@ skeleton : check ${1=0}>=0
 #@cli : Scalar images of increasingly labeled pixels are returned.
 #@cli : Reference paper: Achanta, R., Shaji, A., Smith, K., Lucchi, A., Fua, P., & Süsstrunk, S. (2010). Slic superpixels (No. EPFL-REPORT-149300).
 #@cli : Default values: 'size=16', 'regularity=10' and 'nb_iterations=10'.
-#@cli : $ image.jpg +srgb2lab slic[-1] 16 +blend shapeaverage map[-2] 2,2
+#@cli : $ image.jpg +srgb2lab slic[-1] 16 +blend shapeaverage f[-2] "j(1,0)==i && j(0,1)==i" *[-1] [-2]
 slic : check "${1=16}>0 && ${2=10}>=0 && ${3=10}>0"
   e[^-1] "Segment image$? using SLIC superpixels, with size $1, regularity $2 and $3 iterations."
   v -
@@ -10949,14 +10949,16 @@ slic : check "${1=16}>0 && ${2=10}>=0 && ${3=10}>0"
     {[max(1,round(w/$S)),max(1,round(h/$S))]},1,2,"round(([x,y]+=0.5)*="$S")"
 
     # Pertub the Ck towards low gradient positions.
-    +b[0] 0.7 g. xy,1 a[-2,-1] c norm. # Gradient norm with forward differences
-    f.. "
-      const n = round("$S"/3);
-      const n1 = int(n/2);
-      pos = argmin(crop(#-1,i0 - n1,i1 - n1,n,n,1));
-      dxy = [pos%n,int(pos/n)] - n1;
-      [ cut(i0 + dxy[0],0,w#0-1), cut(i1 + dxy[1],0,h#0-1) ]"
-    rm.
+    if {$S>=3}
+      +b[0] 0.7 g. xy,1 a[-2,-1] c norm. # Gradient norm with forward differences
+      f.. "
+        const n = round("$S"/3);
+        const n1 = int(n/2);
+        pos = argmin(crop(#-1,i0 - n1,i1 - n1,n,n,1));
+        dxy = [pos%n,int(pos/n)] - n1;
+        [ cut(i0 + dxy[0],0,w#0-1), cut(i1 + dxy[1],0,h#0-1) ]"
+      rm.
+    endif
     r. {wh},1,1,2,-1
     100%,1,1,{0,s},"I(#0,I#1)" a[-2,-1] c # Add superpixels colors
     [0],[0],1,2 f.. "I(#-1,i0,i1) = [ x + 1,1 ];I" s. c distance. 1 *. -1 watershed.. . rm. channels. 0,1
