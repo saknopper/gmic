@@ -10933,6 +10933,91 @@ skeleton : check ${1=0}>=0
   v - distance 0 b $1 sharpen 1e10 >= 100%
   repeat $! +erode[$>] 2 -[$>,-1] done v +
 
+#@cli slic : size>0,_regularity>=0,_nb_iterations>0
+#@cli : Segment selected images with superpixels, using the SLIC algorithm (Simple Linear Iterative Clustering).
+#@cli : Scalar images of increasingly labeled pixels are returned.
+#@cli : Reference paper: Achanta, R., Shaji, A., Smith, K., Lucchi, A., Fua, P., & Süsstrunk, S. (2010). Slic superpixels (No. EPFL-REPORT-149300).
+#@cli : Default values: 'size=16', 'regularity=10' and 'nb_iterations=10'.
+#@cli : $ image.jpg +srgb2lab slic[-1] 16 +blend shapeaverage map[-2] 2,2
+slic : check "${1=16}>0 && ${2=10}>=0 && ${3=10}>0"
+  e[^-1] "Segment image$? using SLIC superpixels, with size $1, regularity $2 and $3 iterations."
+  v -
+  S,m,nb_iter=${1-3}
+  repeat $! l[$>] slices 50%
+
+    # Initialize superpixel centers Ck.
+    {[max(1,round(w/$S)),max(1,round(h/$S))]},1,2,"round(([x,y]+=0.5)*="$S")"
+
+    # Pertub the Ck towards low gradient positions.
+    +b[0] 0.7 g. xy,1 a[-2,-1] c norm. # Gradient norm with forward differences
+    f.. "
+      const n = round("$S"/3);
+      const n1 = int(n/2);
+      pos = argmin(crop(#-1,i0 - n1,i1 - n1,n,n,1));
+      dxy = [pos%n,int(pos/n)] - n1;
+      [ cut(i0 + dxy[0],0,w#0-1), cut(i1 + dxy[1],0,h#0-1) ]"
+    rm.
+    r. {wh},1,1,2,-1
+    100%,1,1,{0,s},"I(#0,I#1)" a[-2,-1] c # Add superpixels colors
+    [0],[0],1,2 f.. "I(#-1,i0,i1) = [ x + 1,1 ];I" s. c distance. 1 *. -1 watershed.. . rm. channels. 0,1
+
+    # Start iteration loop.
+    repeat $nb_iter
+
+      # Assign best superpixel to each pixel.
+      sh[2] 1 f. inf rm.
+      f[1] "
+        const m = "$m";
+        const S = "$S";
+        k = x;
+        xk = i0;
+        yk = i1;
+        Ik = (I)[2,s#0];
+        x0 = max(xk - S,0);
+        x1 = min(xk + S,w#0 - 1);
+        y0 = max(yk - S,0);
+        y1 = min(yk + S,h#0 - 1);
+        for (y = y0, y<=y1, ++y,
+          for (x = x0, x<=x1, ++x,
+            delta_c = norm(I(#0,x,y) - Ik);
+            delta_s = norm(x - xk, y - yk);
+            delta = delta_c + m/S*delta_s;
+            if (delta<i(#-1,x,y,0,1),
+              I(#-1,x,y) = [ k,delta ];
+            );
+          )
+        );
+      I"
+
+      # Update superpixels.
+      f[1] 0 channels[1] 0,{-2,s}
+      f[2] "I[#1,i0]+=[ x,y,I#0,1 ];I"
+      s[1] c,-{1,s-1} max[2] 1 /[1,2]
+
+    done
+
+    # Remove small and isolated regions (surrounded by pixels all having the same label).
+    k[2] channels 0 label. 0,0
+    +area 0,0 <. {$S^2/8}
+    {0,iM+1},1,1,1,x
+    f[0] ">
+      const boundary = 1;
+      if (i[#-1,i]>=0,
+        N = [ j(-1,0),j(0,-1),j(1,0),j(0,1) ];
+        for (k = 0, k<size(N), ++k,
+          if (N[k]!=i,
+            i[#-1,i] = i[#-1,i]==i || i[#-1,i]==N[k]?N[k]:-1
+          );
+        );
+      );
+    i"
+    f. "i<0?0:1" +map[0] . rm.. or[-2,-1]
+
+    +[0] 1 100%,100% j[0] .,0,0,0,0,1,.. rm.
+    distance. 0 *. -1 watershed.. . rm.
+    label. 0,0
+  endl done v +
+
 #@cli ssd_patch : [patch],_use_fourier={ 0 | 1 },_boundary_conditions={ 0=dirichlet | 1=neumann }
 #@cli : Compute fields of SSD between selected images and specified patch.
 #@cli : Argument 'boundary_conditions' is valid only when 'use_fourier=0'.
