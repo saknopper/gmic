@@ -28349,7 +28349,7 @@ fx_skeleton_preview :
 
 #@gui Super-pixels : fx_superpixels, fx_superpixels_preview(0)
 #@gui : Size = int(16,4,64)
-#@gui : Regularity = float(10,0,30)
+#@gui : Regularity = float(10,0,128)
 #@gui : Iterations = int(5,1,16)
 #@gui : Colors = choice(1,"Random","Average")
 #@gui : Display borders = bool(1)
