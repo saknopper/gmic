@@ -398,6 +398,7 @@ gmicol_rotate :
 #@web clone("Morphological filter")
 #@web clone("Segmentation")
 #@web clone("Skeleton")
+#@web clone("Super-pixels")
 #@web clone("Thin edges")
 
 #@web _<b>Deformations</b>
