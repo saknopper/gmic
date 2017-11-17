@@ -28353,7 +28353,7 @@ fx_skeleton_preview :
 #@gui : Iterations = int(5,1,16)
 #@gui : Colors = choice(1,"Random","Average")
 #@gui : Border opacity = float(1,0,1)
-#@gui : Border color = color(0,0,0,128)
+#@gui : Border color = color(0,0,0,255)
 #@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2017/11/16</i>.</small>")
 fx_superpixels :
