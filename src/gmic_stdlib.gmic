@@ -15792,7 +15792,7 @@ linify : check "${1=50}>=0 && $1<=100 && ${2=2}>=0 && ${3=33%}>0 && ${4=8}>=0 &&
     eval "
       is_in(ind,P) = (P[0]>=0 && P[0]<w#ind && P[1]>=0 && P[1]<h#ind);
       const density = $1;
-      const variability = $2;
+      const variability = max(0.1,$2);
       const opacity = $4;
       const precision = $5;
       const add = $6;
@@ -25715,8 +25715,8 @@ fx_kuwahara_preview :
 
 #@gui Linify : fx_linify, fx_linify_preview(0)
 #@gui : Density = float(50,0,100)
-#@gui : Variability = float(1,0,10)
-#@gui : Resolution [%] = float(40,0,100)
+#@gui : Variability = float(2,0,10)
+#@gui : Resolution [%] = float(33,0,100)
 #@gui : Line opacity = float(8,0,20)
 #@gui : Line precision = int(16,1,128)
 #@gui : Color mode = choice(0,"Subtractive","Additive")
@@ -25724,8 +25724,10 @@ fx_kuwahara_preview :
 #@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2017/11/20</i>.</small>")
 fx_linify :
-  if $7 _debug=1 fi
-  linify $*
+  repeat $! l[$>]
+    if $7 _debug=1 w ${-fitscreen\ {[w,h]}},0,"[Preview] G'MIC: Linify" fi
+    linify $1,$2,$3%,$4,$5,$6
+  endl done
 
 fx_linify_preview :
   gui_split_preview "fx_linify ${1-6},0",$-1
