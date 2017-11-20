@@ -15781,9 +15781,9 @@ light_relief : skip ${1=0.3},${2=0.5},${3=0.2},${4=0},${5=0.2},${6=0.5},${7=0.5}
 #@cli linify : 0<=_density<=100,_variability>=0,_resolution[%]>0,_line_opacity>=0,_line_precision>0,_mode={ 0=subtractive | 1=additive }
 #@cli : Apply linify effect on selected images.
 #@cli : The algorithm is inspired from the one described on the webpage 'http://linify.me/about'.
-#@cli : Default values: 'density=50', 'variability=2', 'resolution=40%', 'line_opacity=8', 'line_precision=16' and 'mode=0'
+#@cli : Default values: 'density=50', 'variability=2', 'resolution=33%', 'line_opacity=8', 'line_precision=16' and 'mode=0'.
 #@cli : $ image.jpg +linify 50 equalize[-1] 256
-linify : check "${1=50}>=0 && $1<=100 && ${2=1}>=0 && ${3=40%}>0 && ${4=8}>=0 && isint(${5=16}) && $5>0 && isbool(${6=0})"
+linify : check "${1=50}>=0 && $1<=100 && ${2=2}>=0 && ${3=33%}>0 && ${4=8}>=0 && isint(${5=16}) && $5>0 && isbool(${6=0})"
   e[^-1] "Apply linify effect on image$?, with density $1, variability $2, resolution $3, line opacity $4, line precision $5 and "${"-arg 1+$6,subtractive,additive"}" mode."
   v - repeat $! l[$>] remove_opacity nm={n}
     100%,100%,1,{s},$6?0:255
@@ -15825,7 +15825,7 @@ linify : check "${1=50}>=0 && $1<=100 && ${2=1}>=0 && ${3=40%}>0 && ${4=8}>=0 &&
         if (!(nb_lines%250),
           progress = round(100*(ref - ref0)/max(1,density - ref0));
           ext('progress ',vtos(progress));
-          if (narg("$_debug"),ext('+c[1] 0,255 w. -1,-1,0 rm.'));
+          if (narg("$_debug"),ext('+c[1] 0,255 to. ',vtos(progress),'%,1%,1%,5%,1 w. -1,-1,0 rm.'));
         );
         ++nb_lines;
         breakpoint();
@@ -25718,15 +25718,17 @@ fx_kuwahara_preview :
 #@gui : Variability = float(1,0,10)
 #@gui : Resolution [%] = float(40,0,100)
 #@gui : Line opacity = float(8,0,20)
-#@gui : Line precision = int(16,1 128)
-#@gui : Color mode = choice("Subtractive","Additive")
+#@gui : Line precision = int(16,1,128)
+#@gui : Color mode = choice(0,"Subtractive","Additive")
+#@gui : sep = separator(), Preview progression while running = _bool(1)
 #@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2017/11/20</i>.</small>")
 fx_linify :
+  if $7 _debug=1 fi
   linify $*
 
 fx_linify_preview :
-  gui_split_preview "fx_linify $*",$-1
+  gui_split_preview "fx_linify ${1-6},0",$-1
 
 #@gui Lylejk's painting : fx_lylejk_painting, fx_lylejk_painting_preview(0)
 #@gui : Iterations = int(10,1,20)
