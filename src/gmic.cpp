@@ -14420,8 +14420,11 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
     for (char *str = std::strstr(error_message,"cimg:"); str; str = std::strstr(str,"cimg:")) {
       str[0] = 'g'; str[1] = 'm'; str[2] = 'i'; str[3] = 'c';
     }
-    if (*current_command && current_command[1])
-      error(images,0,current_command + 1,"Command '%s': %s",current_command,error_message.data());
+    if (*current_command && current_command[1]) {
+      const char *cc = current_command;
+      while (*cc=='-' || *cc=='+') ++cc;
+      error(images,0,cc,"Command '%s': %s",current_command,error_message.data());
+    }
     else
       error(images,0,0,"%s",error_message.data());
   }
