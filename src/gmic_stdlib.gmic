@@ -725,8 +725,8 @@ _help_usage :
 \n       . All these variables are considered as "${g}"constant values"$n" by the math parser (for optimization
 \n          purposes) which is indeed the case most of the time. Anyway, this might not be the case,
 \n          if function '"${c}"resize(#ind,..)"$n"' is used in the math expression.
-\n          If so, it is safer to invoke functions '"${c}"l()"$n"', '"${c}"w(_#ind)"$n"', '"${c}"h(_#ind)"$n"', ... '"${c}"cm(_#ind)"$n"'
-\n          and '"${c}"cM(_#ind)"$n"' instead of the corresponding named variables.
+\n          If so, it is safer to invoke functions '"${c}"l()"$n"', '"${c}"w(_#ind)"$n"', '"${c}"h(_#ind)"$n"', ... '"${c}"s(_#ind)"$n"'
+\n          and '"${c}"ic(_#ind)"$n"' instead of the corresponding named variables.
 \n       . '"${c}"i"$n"': current processed pixel value (i.e. value located at "$g"(x,y,z,c)"$n") in the associated
 \n          image, if any ("${g}"0"$n" otherwise).
 \n       . '"${c}"iN"$n"': Nth channel value of current processed pixel (i.e. value located at "$g"(x,y,z,N)"$n") in
@@ -922,6 +922,8 @@ _help_usage :
 \n          elements starting from a source value '"${c}"src"$n"' to a specified destination '"${c}"dest"$n"', with
 \n          increments defined by '"${c}"inc_d"$n"' and '"${c}"inc_s"$n"' respectively for the destination and source
 \n          pointers.
+\n       . '"${c}"stats(_#ind)"$n" returns the statistics vector of the running image '"${c}"[ind]"$n"', i.e the vector
+\n          "${g}"[ im,iM,ia,iv,xm,ym,zm,cm,xM,yM,zM,cM,is,ip ]"$n" (14 values).
 \n       . '"${c}"unref(a,b,...)"$n" destroys references to the named variable given as arguments.
 \n       . '"${c}"breakpoint()"$n" inserts a possible computation breakpoint (not supported by the cli interface).
 \n       . '"${c}"_(expr)"$n" just ignores its arguments (mainly useful for debugging).
