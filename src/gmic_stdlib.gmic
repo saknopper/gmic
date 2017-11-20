@@ -15789,7 +15789,7 @@ linify : check "${1=50}>=0 && $1<=100 && ${2=2}>=0 && ${3=33%}>0 && ${4=8}>=0 &&
     100%,100%,1,{s},$6?0:255
     if {0,w>h} r2dx[0] $3 else r2dy[0] $3 fi
     n[0] 0,100
-    if {narg($_debug)" && "!{*,w}} w[0] ${-fitscreen[]\ {1,[w,h]}} fi
+    if {narg($_debug)" && "!{*,w}} w[] ${-fitscreen[]\ {1,[w,h]}} fi
     eval "
       is_in(ind,P) = (P[0]>=0 && P[0]<w#ind && P[1]>=0 && P[1]<h#ind);
       const add = $6;
