@@ -14462,7 +14462,7 @@ apply_timeout :
     v -
     l[] ({'$/'}) id={is} rm endl
     __done$id=0 __is_timeout$id=0
-    -l
+    l
     parallel "$1 __done"$id"=1",\
               "do if {$|>$2} __is_timeout"$id"=1 error \"\" fi wait 500 while {!$__done"$id"}"
     onfail
@@ -20481,7 +20481,7 @@ x_fourier :
     +r2dy. 128 frame. 1,1,0 nm. thumb
     w[0,-2] -1,-1,0,"[G"{`39`}"MIC] Fourier filtering"
 
-    -l
+    l
     if {!narg($first_time)}
       parallel 0,"alert[thumb] \"[G"{`39`}"MIC Fourier filtering]\",\
             \"The G\47MIC Fourier filtering demo illustrates the effect\n\
@@ -24551,7 +24551,7 @@ gui_survey_preview :
     if $lockname gui_print_preview "Your answers have been sent.",20,"Thank you!",16
     else
       str2hex $"*",$_version
-      -l
+      l
         m "http://gmic.eu/gmic_survey.cgi?"${}
         gmic_survey_check
         1 o. raw:$lockname,char rm.
@@ -30476,7 +30476,7 @@ fx_emulate_film_userdefined : skip "${2=}"
     if {$!<2} gui_warning_preview "Input layer with HaldCLUT is missing" return fi
     ind={if($1,-1,0)} map_clut[^$ind] [$ind] rm[$ind]
   else
-    -l
+    l
       0 nm. "$2" ext={x} rm.
       if {['$ext']=='cube'} input_cube "$2"
       else i "$2"
@@ -31004,7 +31004,7 @@ fx_display_fft :
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2014/11/08</i>.</small>")
 fx_fourier : skip ${2=0}
   if $2 remove_opacity fi
-  if $1 repeat $! -l
+  if $1 repeat $! l
       fft82float c 0,255
       onfail error "Image ["$>"] does not seem to be a FFT transform."
     endl done
@@ -34624,7 +34624,7 @@ fx_custom_code : skip "${1=-skip ,}"
 
 fx_custom_code_preview : skip "${1=-skip ,}"
   w={w} h={h}
-  -l
+  l
     _gcp_arg="$1"
      if $6 gui_split_preview "fx_custom_code $_gcp_arg,${2--2}",$-1
      else fx_custom_code $_gcp_arg,${2--2}
