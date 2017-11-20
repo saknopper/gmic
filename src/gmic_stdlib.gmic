@@ -15781,9 +15781,9 @@ light_relief : skip ${1=0.3},${2=0.5},${3=0.2},${4=0},${5=0.2},${6=0.5},${7=0.5}
 #@cli linify : 0<=_density<=100,_variability>=0,_resolution[%]>0,_line_opacity>=0,_line_precision>0,_mode={ 0=subtractive | 1=additive }
 #@cli : Apply linify effect on selected images.
 #@cli : The algorithm is inspired from the one described on the webpage 'http://linify.me/about'.
-#@cli : Default values: 'density=60', 'variability=2', 'resolution=33%', 'line_opacity=8', 'line_precision=16' and 'mode=0'.
+#@cli : Default values: 'density=50', 'variability=2', 'resolution=33%', 'line_opacity=8', 'line_precision=16' and 'mode=0'.
 #@cli : $ image.jpg +linify 50 equalize[-1] 256
-linify : check "${1=60}>=0 && $1<=100 && ${2=2}>=0 && ${3=33%}>0 && ${4=8}>=0 && isint(${5=16}) && $5>0 && isbool(${6=0})"
+linify : check "${1=50}>=0 && $1<=100 && ${2=2}>=0 && ${3=33%}>0 && ${4=8}>=0 && isint(${5=16}) && $5>0 && isbool(${6=0})"
   e[^-1] "Apply linify effect on image$?, with density $1, variability $2, resolution $3, line opacity $4, line precision $5 and "${"-arg 1+$6,subtractive,additive"}" mode."
   v - repeat $! l[$>] remove_opacity nm={n}
     100%,100%,1,{s},$6?0:255
@@ -15801,11 +15801,11 @@ linify : check "${1=60}>=0 && $1<=100 && ${2=2}>=0 && ${3=33%}>0 && ${4=8}>=0 &&
 
       fact = [ w/w#0, h/h#0,1,1 ];
       nb_lines = 0;
-      ref0 = ia#0;
+      ref0 = add?iM#0:im#0;
       do (
         S = stats(#0);
         P0 = add?[ S[8],S[9],0,S[11] ]:[ S[4],S[5],0,S[7] ];
-        ref = S[2];
+        ref = S[add];
         best_ang = best_avg = add?0:inf;
         for (k = 0, k<precision, ++k,
           ang = u(360)*pi/180;
@@ -25715,7 +25715,7 @@ fx_kuwahara_preview :
   gui_split_preview "fx_kuwahara $*",$-1
 
 #@gui Linify : fx_linify, fx_linify_preview(0)
-#@gui : Density = float(60,0,100)
+#@gui : Density = float(50,0,100)
 #@gui : Variability = float(2,0,10)
 #@gui : Resolution [%] = float(33,0,100)
 #@gui : Line opacity = float(8,0,20)
