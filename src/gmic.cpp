@@ -6179,6 +6179,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
               cam_index>=0 && nb_frames>=0 && skip_frames>=0 &&
               ((!capture_width && !capture_height) || (capture_width>0 && capture_height>0)))
             ++position;
+          else { cam_index = skip_frames = capture_width = capture_height = 0; nb_frames = 1; }
           cam_index = cimg::round(cam_index);
           nb_frames = cimg::round(nb_frames);
           skip_frames = cimg::round(skip_frames);
