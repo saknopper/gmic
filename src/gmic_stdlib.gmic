@@ -15794,9 +15794,11 @@ linify : check "${1=50}>=0 && $1<=100 && ${2=50%}>0 && ${3=5}>=0 && $3<=100 && $
       const opacity = $3*255%;
       const precision = $4;
       fact = [ w/w#0, h/h#0,1,1 ];
+      nb_lines = 0;
       do (
-        P0 = [ xm(#0),ym(#0),0,cm(#0) ];
-        im = i(#0,P0);
+        S = stats(#0);
+        P0 = [ S[4],S[5],0,S[7] ];
+        im = S[0];
         best_ang = best_avg = inf;
         for (k = 0, k<precision, ++k,
           ang = u(360)*pi/180;
@@ -15814,7 +15816,8 @@ linify : check "${1=50}>=0 && $1<=100 && ${2=50%}>0 && ${3=5}>=0 && $3<=100 && $
         P = P0; while (is_in(#0,P), i(#0,P)+=opacity; P-=dP);
         P = P0*fact; while (is_in(#1,P), i(#1,P)-=opacity; P+=dP);
         P = P0*fact; while (is_in(#1,P), i(#1,P)-=opacity; P-=dP);
-        if (narg("$_debug"),ext('w[1] -1,-1,0'));
+        if (narg("$_debug") && !(nb_lines%100),ext('w[1] -1,-1,0'));
+        ++nb_lines;
       _(while), im<$1)"
     k.
   endl done v +
