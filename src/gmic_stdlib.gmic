@@ -1149,7 +1149,7 @@ __help_header_ascii :
 \n
 \n        "$_gmic_g${_gmic_b}"Version "${-strver}$strprerelease$_gmic_n", Copyright (c) 2008-2017, David Tschumperle.
 \n        "$_gmic_g"(http://gmic.eu)"$_gmic_n
-  if {['$$_e']==0} m "_e : e[] \"$""*\"" endif
+  if {['$$_e']==0} m "_e : e[] \"$""*\"" fi
   v + _e[] $str v -
 
 _help_section_ascii :
@@ -10960,7 +10960,7 @@ slic : check "${1=16}>0 && ${2=10}>=0 && ${3=10}>0"
         dxy = [pos%n,int(pos/n)] - n1;
         [ cut(i0 + dxy[0],0,w#0-1), cut(i1 + dxy[1],0,h#0-1) ]"
       rm.
-    endif
+    fi
     r. {wh},1,1,2,-1
     100%,1,1,{0,s},"I(#0,I#1)" a[-2,-1] c # Add superpixels colors
     [0],[0],1,2 f.. "I(#-1,i0,i1) = [ x + 1,1 ];I" s. c distance. 1 *. -1 watershed.. . rm. channels. 0,1
@@ -15778,31 +15778,35 @@ light_relief : skip ${1=0.3},${2=0.5},${3=0.2},${4=0},${5=0.2},${6=0.5},${7=0.5}
     split_opacity[0] +[0,-1] a c c 0,255
   endl done v +
 
-#@cli linify : 0<=_density<=100,_variability>=0,_resolution[%]>0,0<=_line_opacity<=1,_line_precision>0
+#@cli linify : 0<=_density<=100,_variability>=0,_resolution[%]>0,_line_opacity>=0,_line_precision>0,_mode={ 0=subtractive | 1=additive }
 #@cli : Apply linify effect on selected images.
 #@cli : The algorithm is inspired from the one described on the webpage 'http://linify.me/about'.
-#@cli : Default values: 'density=50', 'variability=2', 'resolution=40%', 'line_opacity=8' and 'line_precision=16'.
+#@cli : Default values: 'density=50', 'variability=2', 'resolution=33%', 'line_opacity=8', 'line_precision=16' and 'mode=0'.
 #@cli : $ image.jpg +linify 50 equalize[-1] 256
-linify : check "${1=50}>=0 && $1<=100 && ${2=2}>=0 && ${3=40%}>0 && ${4=8}>=0 && ${5=32}>0"
-  e[^-1] "Apply linify effect on image$?, with density $1, variability $2, resolution $3, line opacity $4 and line precision $5."
+linify : check "${1=50}>=0 && $1<=100 && ${2=2}>=0 && ${3=33%}>0 && ${4=8}>=0 && isint(${5=16}) && $5>0 && isbool(${6=0})"
+  e[^-1] "Apply linify effect on image$?, with density $1, variability $2, resolution $3, line opacity $4, line precision $5 and "${"-arg 1+$6,subtractive,additive"}" mode."
   v - repeat $! l[$>] remove_opacity nm={n}
-    100%,100%,1,{s},255
+    100%,100%,1,{s},$6?0:255
     if {0,w>h} r2dx[0] $3 else r2dy[0] $3 fi
     n[0] 0,100
+    if {narg($_debug)" && "!{*,w}} w[0] ${-fitscreen[]\ {1,[w,h]}} fi
     eval "
       is_in(ind,P) = (P[0]>=0 && P[0]<w#ind && P[1]>=0 && P[1]<h#ind);
-      const density = $1;
-      const variability = $2;
+      const add = $6;
+      const density = add?100 - $1:$1;
+      const variability = max(0.1,$2);
       const opacity = $4;
       const precision = $5;
+      const om2add = 1 - 2*add;
+
       fact = [ w/w#0, h/h#0,1,1 ];
       nb_lines = 0;
-      im0 = im#0;
+      ref0 = add?iM#0:im#0;
       do (
         S = stats(#0);
-        P0 = [ S[4],S[5],0,S[7] ];
-        im = S[0];
-        best_ang = best_avg = inf;
+        P0 = add?[ S[8],S[9],0,S[11] ]:[ S[4],S[5],0,S[7] ];
+        ref = S[add];
+        best_ang = best_avg = add?0:inf;
         for (k = 0, k<precision, ++k,
           ang = u(360)*pi/180;
           dP = [ cos(ang), sin(ang),0,0 ];
@@ -15811,21 +15815,22 @@ linify : check "${1=50}>=0 && $1<=100 && ${2=2}>=0 && ${3=40%}>0 && ${4=8}>=0 &&
           P = P0; while (is_in(#0,P), avg+=i(#0,P); ++N; P+=dP);
           P = P0; while (is_in(#0,P), avg+=i(#0,P); ++N; P-=dP);
           avg/=N;
-          if (avg<best_avg, best_avg = avg; best_ang = ang);
+          if (add?(avg>best_avg):(avg<best_avg), best_avg = avg; best_ang = ang);
         );
         dP = [ cos(best_ang), sin(best_ang),0,0 ];
         dP/=max(abs(dP));
-        P = P0; while (is_in(#0,P), i(#0,P)+=variability; P+=dP);
-        P = P0; while (is_in(#0,P), i(#0,P)+=variability; P-=dP);
-        P = P0*fact; while (is_in(#1,P), i(#1,P)-=opacity*variability; P+=dP);
-        P = P0*fact; while (is_in(#1,P), i(#1,P)-=opacity*variability; P-=dP);
+        P = P0; while (is_in(#0,P), i(#0,P)+=om2add*variability; P+=dP);
+        P = P0; while (is_in(#0,P), i(#0,P)+=om2add*variability; P-=dP);
+        P = P0*fact; while (is_in(#1,P), i(#1,P)-=om2add*opacity*variability; P+=dP);
+        P = P0*fact; while (is_in(#1,P), i(#1,P)-=om2add*opacity*variability; P-=dP);
         if (!(nb_lines%250),
-          progress = round(100*(im - im0)/max(1,density - im0));
+          progress = density==ref0?100:round(100*(ref - ref0)/(density - ref0));
           ext('progress ',vtos(progress));
-          if (narg("$_debug"),ext('+c[1] 0,255 w. -1,-1,0 rm.'));
+          if (narg("$_debug"),ext('+c[1] 0,255 r. {*,w},{*,h},1,3,2 to. ',vtos(progress),'%,1%,1%,5%,1 w. -1,-1,0 rm.'));
         );
         ++nb_lines;
-      _(while), im<density)"
+        breakpoint();
+      _(while), add?(ref>density):(ref<density))"
     k. c 0,255 nm $nm
   endl done v +
 
@@ -25709,6 +25714,27 @@ fx_kuwahara :
 fx_kuwahara_preview :
   gui_split_preview "fx_kuwahara $*",$-1
 
+#@gui Linify : fx_linify, fx_linify_preview(0)
+#@gui : Density = float(50,0,100)
+#@gui : Variability = float(2,0,10)
+#@gui : Resolution [%] = float(33,0,100)
+#@gui : Line opacity = float(8,0,20)
+#@gui : Line precision = int(16,1,128)
+#@gui : Color mode = choice(0,"Subtractive","Additive")
+#@gui : sep = separator(), Preview progression while running = _bool(1)
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
+#@gui : sep = separator(), note = note{"This filter is our own implementation of the nice algorithm proposed on this webpage:"}
+#@gui : link = link("http://linify.me");
+#@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2017/11/20</i>.</small>")
+fx_linify :
+  repeat $! l[$>]
+    if $7 _debug=1 w ${-fitscreen\ {[w,h]}},0,"[Preview] G'MIC: Linify" fi
+    linify $1,$2,$3%,$4,$5,$6
+  endl done
+
+fx_linify_preview :
+  gui_split_preview "fx_linify ${1-6},0",$-1
+
 #@gui Lylejk's painting : fx_lylejk_painting, fx_lylejk_painting_preview(0)
 #@gui : Iterations = int(10,1,20)
 #@gui : Abstraction = int(2,1,20)
@@ -28413,10 +28439,10 @@ fx_skeleton_preview :
 fx_superpixels :
   repeat $! l[$>]
     +srgb2lab slic. ${1-3}
-    if $4 +blend shapeaverage else +map. 2,2 endif
+    if $4 +blend shapeaverage else +map. 2,2 fi
     if $5 f[1] "i!=j(1,0) || i!=j(0,1)" [0],[0],1,4 fc. ${6-9} to_rgba.. j.. .,0,0,0,0,$5,... k..
     else k.
-    endif
+    fi
   endl done
 
 fx_superpixels_preview :
