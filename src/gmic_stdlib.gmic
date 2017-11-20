@@ -34632,7 +34632,7 @@ fx_custom_code_preview : skip "${1=-skip ,}"
   onfail
     error_msg=${}
     rr2d $w,$h,2,1
-    gui_print_preview "Syntax error:",,$error_msg,15,40
+    gui_print_preview "Syntax error:",,{``$error_msg},15,40
   endl
   if $4 # Display debug infos on preview
     if {!$3} % 256 fi
