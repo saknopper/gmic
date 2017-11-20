@@ -15778,23 +15778,26 @@ light_relief : skip ${1=0.3},${2=0.5},${3=0.2},${4=0},${5=0.2},${6=0.5},${7=0.5}
     split_opacity[0] +[0,-1] a c c 0,255
   endl done v +
 
-#@cli linify : 0<=_strength<=100,_resolution[%]>0,0<=_line_opacity<=100,_line_precision>0
+#@cli linify : 0<=_density<=100,_variability>=0,_resolution[%]>0,0<=_line_opacity<=1,_line_precision>0
 #@cli : Apply linify effect on selected images.
 #@cli : The algorithm is inspired from the one described on the webpage 'http://linify.me/about'.
-#@cli : Default values: 'strength=50', 'resolution=50%', 'line_opacity=5' and 'line_precision=16'.
+#@cli : Default values: 'density=50', 'variability=1', 'resolution=40%', 'line_opacity=8' and 'line_precision=16'.
 #@cli : $ image.jpg +linify 50 equalize[-1] 256
-linify : check "${1=50}>=0 && $1<=100 && ${2=50%}>0 && ${3=5}>=0 && $3<=100 && ${4=16}>0"
-  e[^-1] "Apply linify effect on image$?, with strength $1, resolution $2, line opacity $3 and line precision $4."
-  v - repeat $! l[$>]
-    100%,100%,1,3,255
-    if {0,w>h} r2dx[0] $2 else r2dy[0] $2 fi
+linify : check "${1=50}>=0 && $1<=100 && ${2=1}>=0 && ${3=40%}>0 && ${4=8}>=0 && ${5=32}>0"
+  e[^-1] "Apply linify effect on image$?, with density $1, variability $2, resolution $3, line opacity $4 and line precision $5."
+  v - repeat $! l[$>] remove_opacity nm={n}
+    100%,100%,1,{s},255
+    if {0,w>h} r2dx[0] $3 else r2dy[0] $3 fi
     n[0] 0,100
     eval "
       is_in(ind,P) = (P[0]>=0 && P[0]<w#ind && P[1]>=0 && P[1]<h#ind);
-      const opacity = $3*255%;
-      const precision = $4;
+      const density = $1;
+      const variability = $2;
+      const opacity = $4;
+      const precision = $5;
       fact = [ w/w#0, h/h#0,1,1 ];
       nb_lines = 0;
+      im0 = im#0;
       do (
         S = stats(#0);
         P0 = [ S[4],S[5],0,S[7] ];
@@ -15812,14 +15815,18 @@ linify : check "${1=50}>=0 && $1<=100 && ${2=50%}>0 && ${3=5}>=0 && $3<=100 && $
         );
         dP = [ cos(best_ang), sin(best_ang),0,0 ];
         dP/=max(abs(dP));
-        P = P0; while (is_in(#0,P), i(#0,P)+=opacity; P+=dP);
-        P = P0; while (is_in(#0,P), i(#0,P)+=opacity; P-=dP);
-        P = P0*fact; while (is_in(#1,P), i(#1,P)-=opacity; P+=dP);
-        P = P0*fact; while (is_in(#1,P), i(#1,P)-=opacity; P-=dP);
-        if (narg("$_debug") && !(nb_lines%100),ext('w[1] -1,-1,0'));
+        P = P0; while (is_in(#0,P), i(#0,P)+=variability; P+=dP);
+        P = P0; while (is_in(#0,P), i(#0,P)+=variability; P-=dP);
+        P = P0*fact; while (is_in(#1,P), i(#1,P)-=opacity*variability; P+=dP);
+        P = P0*fact; while (is_in(#1,P), i(#1,P)-=opacity*variability; P-=dP);
+        if (!(nb_lines%250),
+          progress = round(100*(im - im0)/max(1,density - im0));
+          ext('progress ',vtos(progress));
+          if (narg("$_debug"),ext('+c[1] 0,255 w. -1,-1,0 rm.'));
+        );
         ++nb_lines;
-      _(while), im<$1)"
-    k.
+      _(while), im<density)"
+    k. c 0,255 nm $nm
   endl done v +
 
 #@cli mosaic : 0<=_density<=100
