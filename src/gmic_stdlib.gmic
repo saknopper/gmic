@@ -23760,7 +23760,7 @@ _after :
   0 t. "After",1,-1,13,1,1 r. {w+4},{h+4},1,1,0,0,0.5,0.5
 
 gui_split_preview : skip ${3=0},${4=0}
-  m "_gsp : repeat $! l[$>] m={max(w,h,256)} if {$m==256} -rr2d $m,$m,0,1 fi endl done"
+  m "_gsp : repeat $! l[$>] m={max(w,h,256)} if {$m==256} rr2d $m,$m,0,1 fi endl done"
   if $3
     m "gsp : w={w} h={h} s={s} l apply_timeout \"$1\",$3 onfail gui_timeout_preview endl if {!$!} $w,$h,1,4 drgba to_colormode $s fi k[0] if {s>4} channels 0,3 fi"
   else
@@ -25429,8 +25429,8 @@ fx_brushify :
 
 _fx_brushify : # Insert brush at the end of the list
   N={0.9*$4}
-  if {$1==0} +autocrop. i.. 100%,100%,1,3,1 blend[-2,-1] alpha -rr2d. $N,$N,0,3
-  elif {$1==1} +autocrop[0] i.. 100%,100%,1,3,1 blend[-2,-1] alpha -rr2d. $N,$N,0,3
+  if {$1==0} +autocrop. i.. 100%,100%,1,3,1 blend[-2,-1] alpha rr2d. $N,$N,0,3
+  elif {$1==1} +autocrop[0] i.. 100%,100%,1,3,1 blend[-2,-1] alpha rr2d. $N,$N,0,3
   elif {$1==2} $4,$4 rectangle. 10%,10%,90%,90%,1,1
   elif {$1==3} shape_diamond. $N
   elif {$1==4} shape_polygon $N,5
@@ -25453,7 +25453,7 @@ fx_brushify_preview :
   if $19
     _fx_brushify $*
     if {$1==0} rm.. elif {$1==1} rm[0] fi
-    -rr2d. {0,max(1,w/5)},{0,max(1,h/5)},0,2 n. 0,255
+    rr2d. {0,max(1,w/5)},{0,max(1,h/5)},0,2 n. 0,255
     frame. 3,3,0 frame. 1,1,255 frame. 1,1,0
     to_rgb. to. "Brush",4,2,13,2,1,255,255,0 to_a.
     j[^-1] .,2,2 rm.
@@ -28314,7 +28314,7 @@ fx_morpho_v2 :
 fx_morpho_v2_preview :
   gui_split_preview "fx_morpho_v2 ${1-3},\"$4\",${5--1}",$-1
   if {$2==3}
-    ({'"$4"'}) f. "(i>=_'0' && i<=_'9') || i==_',' || i==_';'?i:-1" discard. -1 ({t}) -rr2d. {0,max(24,w/6)},{0,max(24,h/6)},0,1 >. 0 *. 255
+    ({'"$4"'}) f. "(i>=_'0' && i<=_'9') || i==_',' || i==_';'?i:-1" discard. -1 ({t}) rr2d. {0,max(24,w/6)},{0,max(24,h/6)},0,1 >. 0 *. 255
     to_rgba. frame. 1,1,0,0,0,0,255 frame. 1,1,255 frame. 1,1,0,0,0,0,255
     j[^-1] .,2,2,0,0,0.75 rm.
   else
@@ -31358,7 +31358,7 @@ fx_pack_preview :
   filled=0 repeat $! filled={$>,$filled+w*h} done
   fx_pack $1,$2,$3,0
   area={w*h}
-  to_rgba -rr2d $w,$h,0
+  to_rgba rr2d $w,$h,0
   i[0] $w,16,1,4,255 t[0] "Filled: "{round(100*$filled/$area)}%,3,1,14,1,0,0,0,255
   a y,0.5
 
@@ -34631,7 +34631,7 @@ fx_custom_code_preview : skip "${1=-skip ,}"
      fi
   onfail
     error_msg=${}
-    -rr2d $w,$h,2,1
+    rr2d $w,$h,2,1
     gui_print_preview "Syntax error:",,$error_msg,15,40
   endl
   if $4 # Display debug infos on preview
@@ -34645,7 +34645,7 @@ fx_custom_code_preview : skip "${1=-skip ,}"
          $_dim_out"\n\n"\
          "Output status: "$_status_out
     0 t. {``$info},0,0,${siz$5},1,255 expand_xy. 5,0 +dilate. 3 a[-2,-1] c
-    -rr2d[^-1] ${-max_wh},2,2
+    rr2d[^-1] ${-max_wh},2,2
     r. ..,..,1,100%,0 drgba[^-1]
     /[^-1] 2 blend[^-1] .,alpha rm.
   fi
@@ -34730,7 +34730,7 @@ fx_intarsia :
   to_rgb repeat $! nm=${gui_layer_name[$>]} +l[$>]
 
     # Constrain image for size and number of colors, and index it with colormap.
-    if {max(w,h)>$3} -rr2d $3,$3,0 fi
+    if {max(w,h)>$3} rr2d $3,$3,0 fi
     +colormap 0
     if {w>$4} rm. +colormap $4,1 fi
     round[1] index[0] [1]
@@ -34767,7 +34767,7 @@ fx_intarsia :
 
     +map[0] [1]
     +fx_intarsia_preview. ${1-7},63 drgba.
-    -rr2d.. 200,200,1,1
+    rr2d.. 200,200,1,1
     to_rgba[-2,-1] frame[-2,-1] 1,1,0,0,0,255 frame[-2,-1] 0,20,0,0,0,0
     t.. "Result",0,0,16,1,0,0,0,255
     t. "Ordering overview",0,0,16,1,0,0,0,255
@@ -34822,11 +34822,11 @@ fx_intarsia :
 
 fx_intarsia_preview :
   to_rgb repeat $! l[$>]
-    if {max(w,h)>$3} -rr2d $3,$3,0 fi
+    if {max(w,h)>$3} rr2d $3,$3,0 fi
     to_rgba
     _fx_intarsia $5,$6,0
     100%,100%,1,1,'if(y%2,y*w+w-1-x,y*w+x)<$8*wh/100' *
-    if {min(w,h)<140} -rr2d 140,140,1,1 fi
+    if {min(w,h)<140} rr2d 140,140,1,1 fi
     expand_xy 16,0
 
     100%,100% circle. 16,16,1%,1,1
