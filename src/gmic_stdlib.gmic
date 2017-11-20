@@ -15791,11 +15791,11 @@ linify : check "${1=50}>=0 && $1<=100 && ${2=2}>=0 && ${3=33%}>0 && ${4=8}>=0 &&
     n[0] 0,100
     eval "
       is_in(ind,P) = (P[0]>=0 && P[0]<w#ind && P[1]>=0 && P[1]<h#ind);
-      const density = $1;
+      const add = $6;
+      const density = add?100 - $1:$1;
       const variability = max(0.1,$2);
       const opacity = $4;
       const precision = $5;
-      const add = $6;
       const om2add = 1 - 2*add;
 
       fact = [ w/w#0, h/h#0,1,1 ];
