@@ -9668,7 +9668,6 @@ inpaint_patchmatch : check ${is_image_arg\ $1}"&& ${2=0}>=0 && isint(${3=9}) && 
           if {*2} w2[correspondence] $visu_size,1 fi
         done
         rm[scaled_img,scaled_mask,scaled_reference] channels[correspondence] 0,1
-
       fi
 
     done
