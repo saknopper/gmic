@@ -185,6 +185,7 @@ gmicol_brushify_preview :
 #@web clone("Highlight bloom")
 #@web clone("Illustration look")
 #@web clone("Kuwahara")
+#@web clone("Linify")
 #@web clone("Lylejk's painting")
 #@web clone("Painting")
 #@web clone("Pen drawing")
