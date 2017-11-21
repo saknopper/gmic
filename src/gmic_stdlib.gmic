@@ -25738,6 +25738,7 @@ fx_linify :
   endl done
 
 fx_linify_preview :
+  if {!${"-gui_check_version 216"}} return fi
   gui_split_preview "fx_linify ${1-6},0",$-1,{if(isval($GMIC_GUI_TIMEOUT),0$GMIC_GUI_TIMEOUT,16)}
 
 #@gui Lylejk's painting : fx_lylejk_painting, fx_lylejk_painting_preview(0)
