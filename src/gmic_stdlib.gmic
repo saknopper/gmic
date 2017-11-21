@@ -15781,9 +15781,9 @@ light_relief : skip ${1=0.3},${2=0.5},${3=0.2},${4=0},${5=0.2},${6=0.5},${7=0.5}
 #@cli linify : 0<=_density<=100,_spreading>=0,_resolution[%]>0,_line_opacity>=0,_line_precision>0,_mode={ 0=subtractive | 1=additive }
 #@cli : Apply linify effect on selected images.
 #@cli : The algorithm is inspired from the one described on the webpage 'http://linify.me/about'.
-#@cli : Default values: 'density=50', 'spreading=2', 'resolution=256', 'line_opacity=8', 'line_precision=24' and 'mode=0'.
+#@cli : Default values: 'density=50', 'spreading=2', 'resolution=40%', 'line_opacity=10', 'line_precision=24' and 'mode=0'.
 #@cli : $ image.jpg +linify 40
-linify : check "${1=40}>=0 && $1<=100 && ${2=2}>=0 && ${3=256}>0 && ${4=8}>=0 && isint(${5=24}) && $5>0 && isbool(${6=0})"
+linify : check "${1=40}>=0 && $1<=100 && ${2=2}>=0 && ${3=40%}>0 && ${4=10}>=0 && isint(${5=24}) && $5>0 && isbool(${6=0})"
   e[^-1] "Apply linify effect on image$?, with density $1, spreading $2, resolution $3, line opacity $4, line precision $5 and "${"-arg 1+$6,subtractive,additive"}" mode."
   v - repeat $! l[$>] remove_opacity nm={n}
     100%,100%,1,{s},$6?0:255
@@ -25719,25 +25719,26 @@ fx_kuwahara_preview :
 #@gui Linify : fx_linify, fx_linify_preview(0)
 #@gui : Density = float(40,0,100)
 #@gui : Spreading = float(2,0,10)
-#@gui : Resolution = float(256,16,1024)
-#@gui : Line opacity = float(8,0,20)
+#@gui : Resolution (%) = float(40,0,100)
+#@gui : Line opacity = float(10,0,30)
 #@gui : Line precision = int(24,1,128)
 #@gui : Color mode = choice(0,"Subtractive","Additive")
 #@gui : sep = separator(), Preview progression while running = _bool(1)
 #@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
 #@gui : sep = separator(), note = note{"<b>Note:</b>\n\n
 #@gui : - This filter is our own implementation of the nice algorithm proposed on this webpage: <a href="http://linify.me">http://linify.me</a>.\n
-#@gui : - This is a quite resource-demanding filter, so please be patient when running it.
+#@gui : - This is a quite resource-demanding filter, so please be patient when running it.\n
+#@gui : - It actually renders better when applied on small images (&lt;1024).
 #@gui : "}
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2017/11/21</i>.</small>")
 fx_linify :
   repeat $! l[$>]
     if $7 _debug=1 w ${-fitscreen\ {[w,h]}},0,"[Preview] G'MIC: Linify" fi
-    linify $1,$2,$3,$4,$5,$6
+    linify $1,$2,$3%,$4,$5,$6
   endl done
 
 fx_linify_preview :
-  gui_split_preview "fx_linify $1,$2,{$3/2},${4-6},0",$-1,{if(isval($GMIC_GUI_TIMEOUT),0$GMIC_GUI_TIMEOUT,16)}
+  gui_split_preview "fx_linify ${1-6},0",$-1,{if(isval($GMIC_GUI_TIMEOUT),0$GMIC_GUI_TIMEOUT,16)}
 
 #@gui Lylejk's painting : fx_lylejk_painting, fx_lylejk_painting_preview(0)
 #@gui : Iterations = int(10,1,20)
