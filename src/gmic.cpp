@@ -2026,7 +2026,7 @@ using namespace cimg_library;
 #define gmic_pixel_type float
 #endif
 
-#ifndef gmic_main
+#ifndef gmic_cli
 #include "gmic_stdlib.h"
 
 // Define convenience macros, variables and functions.
@@ -14488,7 +14488,7 @@ template CImgList<char>::~CImgList();
 //----------------------
 // Start CLI interface.
 //----------------------
-#else // #ifndef gmic_main
+#else // #ifndef gmic_cli
 
 // Fallback function for segfault signals.
 #if cimg_OS==1
@@ -14747,5 +14747,5 @@ int main(int argc, char **argv) {
   return 0;
 }
 
-#endif // #ifndef gmic_main
+#endif // #ifndef gmic_cli
 #endif // #ifdef cimg_plugin
