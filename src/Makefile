@@ -65,18 +65,10 @@ PLUGINDIR = `gimptool-2.0 --gimpplugindir`/plug-ins
 VERSION = $(shell grep 'gmic_version\ ' gmic.h | tail -c4 | head -c3)
 VERSION1 = $(shell grep 'gmic_version\ ' gmic.h | tail -c4 | head -c1)
 
-# Check that versions of files 'CImg.h' and 'gmic.h' match.
 ifneq (,$(wildcard CImg.h))
 CIMG_VERSION = $(shell grep 'cimg_version\ ' CImg.h | tail -c4 | head -c3)
 else
 CIMG_VERSION = $(VERSION)
-endif
-ifneq ($(VERSION),$(CIMG_VERSION))
-define ERROR_MESSAGE
-Version numbers of files 'gmic.h' (v.$(VERSION)) and 'CImg.h' (v.$(CIMG_VERSION)) do not match.
-Try 'make clean' to ensure you get the latest version of CImg
-endef
-$(error	$(ERROR_MESSAGE))
 endif
 
 ifeq ($(OS),Linux)
@@ -652,6 +644,15 @@ CImg.h:
           touch CImg.h; \
         fi
 	@echo " done!"
+
+	# Check that versions of files 'CImg.h' and 'gmic.h' match.
+ifneq ($(VERSION),$(CIMG_VERSION))
+define ERROR_MESSAGE
+Version numbers of files 'gmic.h' (v.$(VERSION)) and 'CImg.h' (v.$(CIMG_VERSION)) do not match.
+Try 'make clean' to ensure you get the latest version of CImg
+endef
+$(error	$(ERROR_MESSAGE))
+endif
 
 stdlib:
 	@echo "/*\n\
