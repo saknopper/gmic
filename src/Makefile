@@ -72,11 +72,9 @@ else
 CIMG_VERSION = $(VERSION)
 endif
 ifneq ($(VERSION),$(CIMG_VERSION))
-define ERROR_MESSAGE
-Version numbers of files 'gmic.h' (v.$(VERSION)) and 'CImg.h' (v.$(CIMG_VERSION)) do not match.
-Try removing file 'CImg.h' and try again
-endef
-$(error	$(ERROR_MESSAGE))
+MISMATCH_VERSIONS=1
+else
+MISMATCH_VERSIONS=0
 endif
 
 ifeq ($(OS),Linux)
@@ -302,7 +300,7 @@ BOARD_LIBS = -lboard
 
 # Multi-targets
 #--------------
-all: CImg.h gmic_stdlib.h
+all:
 	@echo "**"
 ifeq ($(OS),Unix)
 	@echo "** Start building G'MIC with default Unix configuration."
@@ -349,7 +347,7 @@ endif
 debug:
 	$(MAKE) "CFLAGS+=$(GMIC_CLI_CFLAGS) $(DEBUG_CFLAGS)" "LIBS+=$(GMIC_CLI_LIBS)" _cli
 
-_cli: gmic.cpp gmic.h gmic_stdlib.h CImg.h
+_cli: check_versions gmic.cpp gmic.h gmic_stdlib.h CImg.h
 	$(CXX) -o gmic_cli.o -c gmic.cpp $(CFLAGS)
 	$(CXX) -o gmic gmic.cpp gmic_cli.o -Dgmic_cli $(CFLAGS) $(LIBS)
 
@@ -405,7 +403,7 @@ else
 endif
 	$(STRIP) gmic_gimp_gtk$(EXE)
 
-gmic_gimp_gtk.o: gmic.cpp gmic.h gmic_stdlib.h CImg.h
+gmic_gimp_gtk.o: check_versions gmic.cpp gmic.h gmic_stdlib.h CImg.h
 	$(CXX) -o gmic_gimp_gtk.o -c gmic.cpp $(CFLAGS)
 
 # Libgmic
@@ -437,7 +435,7 @@ else
 	$(CXX) -o use_libgmic use_libgmic.cpp -L. -lgmic $(LIBS)
 endif
 
-libgmic.o: gmic.cpp gmic.h gmic_stdlib.h CImg.h
+libgmic.o: check_versions gmic.cpp gmic.h gmic_stdlib.h CImg.h
 	$(CXX) -o libgmic.o -c gmic.cpp $(PIC) $(CFLAGS)
 
 # LibCgmic (standard)
@@ -473,7 +471,7 @@ endif
 endif
 	$(CC) -std=c99 -o use_libcgmic use_libcgmic.c -L. -lcgmic
 
-libcgmic.o: gmic.cpp gmic.h gmic_stdlib.h CImg.h
+libcgmic.o: check_versions gmic.cpp gmic.h gmic_stdlib.h CImg.h
 	$(CXX) -o libcgmic.o -c gmic_libc.cpp $(PIC) $(CFLAGS)
 
 libcgmic_files:
@@ -529,7 +527,7 @@ endif
 endif
 	$(CC) -std=c99 -o use_libcgmic_static use_libcgmic.c -L. -lcgmicstatic
 
-libcgmicstatic.o: gmic.cpp gmic.h gmic_stdlib.h CImg.h
+libcgmicstatic.o: check_versions gmic.cpp gmic.h gmic_stdlib.h CImg.h
 	$(CXX) -o libcgmicstatic.o -c gmic_libc.cpp $(PIC) $(CFLAGS)
 
 # All interfaces, sharing the same dynamic library
@@ -548,7 +546,7 @@ _allshared: libgmic_shared.o
 	$(CXX) -o gmic_gimp_gtk gmic_gimp_gtk.cpp `gimptool-2.0$(EXE) --cflags` `gimptool-2.0$(EXE) --libs` $(CFLAGS) -lgmic_shared $(LIBS)
 	$(STRIP) gmic_gimp_gtk$(EXE)
 
-libgmic_shared.o: CImg.h gmic_stdlib.h
+libgmic_shared.o: check_versions CImg.h gmic_stdlib.h
 	$(CXX) -o libgmic_shared.o -c gmic.cpp $(PIC) $(CFLAGS)
 
 # G'MIC Online
@@ -565,17 +563,17 @@ gmicol:
 #---------
 gimp : gimp_qt
 
-gimp_qt: gmic_qt_files CImg.h gmic_stdlib.h
+gimp_qt: check_versions gmic_qt_files CImg.h gmic_stdlib.h
 	cd ../gmic-qt && qmake CONFIG+=release GMIC_PATH=$(QT_GMIC_PATH) PRERELEASE=$(PRERELEASE) HOST=gimp gmic_qt.pro && $(MAKE)
 	@echo "Executable 'gmic_gimp_qt' has been successfully compiled in '../gmic-qt/'."
 
 krita : krita_qt
 
-krita_qt: gmic_qt_files CImg.h gmic_stdlib.h
+krita_qt: check_versions gmic_qt_files CImg.h gmic_stdlib.h
 	cd ../gmic-qt && qmake CONFIG+=release GMIC_PATH=$(QT_GMIC_PATH) PRERELEASE=$(PRERELEASE) HOST=krita gmic_qt.pro && $(MAKE)
 	@echo "Executable 'gmic_krita_qt' has been successfully compiled in '../gmic-qt/'."
 
-gmic_qt: gmic_qt_files CImg.h gmic_stdlib.h
+gmic_qt: check_versions gmic_qt_files CImg.h gmic_stdlib.h
 	cd ../gmic-qt && qmake CONFIG+=release GMIC_PATH=$(QT_GMIC_PATH) PRERELEASE=$(PRERELEASE) HOST=none gmic_qt.pro && $(MAKE)
 	@echo "Executable 'gmic_qt' has been successfully compiled in '../gmic-qt/'."
 
@@ -603,7 +601,7 @@ gmic_qt_files:
 
 # ZArt
 #-----
-zart: zart_files CImg.h gmic_stdlib.h
+zart: check_versions zart_files CImg.h gmic_stdlib.h
 	@if [ ! -d ../zart ]; then ln -fs ../gmic-community/zart ..; fi
 ifeq ($(OS),Darwin)
 	cd ../zart && qmake CONFIG+=release GMIC_PATH=$(ZART_GMIC_PATH) zart.pro && $(MAKE) && $(STRIP) zart.app/Contents/MacOS/zart
@@ -652,6 +650,13 @@ CImg.h:
           touch CImg.h; \
         fi
 	@echo " done!"
+
+check_versions:
+	@if [ $(MISMATCH_VERSIONS) = 1 ]; then \
+	  echo >&2 "make: *** Version numbers of files 'gmic.h' (v.$(VERSION)) and 'CImg.h' (v.$(CIMG_VERSION)) do not match."; \
+	  echo >&2 "make: *** Try make 'clean' to ensure you get the latest version of the CImg library."; \
+          false; \
+        fi
 
 stdlib:
 	@echo "/*\n\
