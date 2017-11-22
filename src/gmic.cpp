@@ -4488,7 +4488,7 @@ CImg<char> gmic::substitute_item(const char *const source,
             cimg_snprintf(substr,substr.width(),"%d",ind);
             CImg<char>(substr.data(),(unsigned int)std::strlen(substr),1,1,1,true).
               append_string_to(substituted_items,ptr_sub);
-          } else { // ENvironment variable
+          } else { // Environment variable
             const char *const s_env = std::getenv(name);
             if (s_env) CImg<char>(s_env,(unsigned int)std::strlen(s_env),1,1,1,true).
                          append_string_to(substituted_items,ptr_sub);
@@ -14363,29 +14363,38 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
 
     // Display or print result, if not 'released' before.
     if (!is_released && callstack.size()==1 && images) {
-#ifdef gmic_main
+
+      bool is_host_cli = false;
+      const CImgList<char>
+        &__variables = *variables[gmic_varslots - 2],
+        &__variables_names = *variables_names[gmic_varslots - 2];
+      cimglist_for(__variables_names,l) if (!std::strcmp(__variables_names[l],"_host") && !std::strcmp(__variables[l],"cli")) {
+        is_host_cli = true; break;
+      }
+
+      if (is_host_cli) {
 #if cimg_display!=0
-      CImgList<unsigned int> lselection, lselection3d;
-      bool is_first3d = false;
-      _display_windows[0].assign();
-      cimglist_for(images,l) {
-        const bool is_3d = images[l].is_CImg3d(false);
-        if (!l) is_first3d = is_3d;
-        CImg<unsigned int>::vector(l).move_to(is_3d?lselection3d:lselection);
-      }
-      if (is_first3d) {
-        display_objects3d(images,images_names,lselection3d>'y',CImg<unsigned char>::empty(),false);
-        if (lselection) display_images(images,images_names,lselection>'y',0,false);
-      } else {
-        if (lselection) display_images(images,images_names,lselection>'y',0,false);
-        if (lselection3d) display_objects3d(images,images_names,lselection3d>'y',CImg<unsigned char>::empty(),false);
-      }
+        CImgList<unsigned int> lselection, lselection3d;
+        bool is_first3d = false;
+        _display_windows[0].assign();
+        cimglist_for(images,l) {
+          const bool is_3d = images[l].is_CImg3d(false);
+          if (!l) is_first3d = is_3d;
+          CImg<unsigned int>::vector(l).move_to(is_3d?lselection3d:lselection);
+        }
+        if (is_first3d) {
+          display_objects3d(images,images_names,lselection3d>'y',CImg<unsigned char>::empty(),false);
+          if (lselection) display_images(images,images_names,lselection>'y',0,false);
+        } else {
+          if (lselection) display_images(images,images_names,lselection>'y',0,false);
+          if (lselection3d) display_objects3d(images,images_names,lselection3d>'y',CImg<unsigned char>::empty(),false);
+        }
 #else
-      CImg<unsigned int> seq(1,images.width());
-      cimg_forY(seq,y) seq[y] = y;
-      print_images(images,images_names,seq,true);
+        CImg<unsigned int> seq(1,images.width());
+        cimg_forY(seq,y) seq[y] = y;
+        print_images(images,images_names,seq,true);
 #endif // #if cimg_display!=0
-#endif // #ifdef gmic_main
+      }
       is_released = true;
     }
 
