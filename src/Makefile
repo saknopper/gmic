@@ -537,9 +537,7 @@ libcgmicstatic.o: gmic.cpp gmic.h gmic_stdlib.h CImg.h
 allshared:
 	$(MAKE) "CFLAGS+=$(GMIC_CLI_CFLAGS) $(OPT_CFLAGS)" "LIBS+=$(GMIC_CLI_LIBS)" _allshared
 
-_allshared: CImg.h gmic_stdlib.h
-	$(CXX) -o gmic_allshared.o -c gmic.cpp $(PIC) $(CFLAGS)
-
+_allshared: CImg.h gmic_stdlib.h gmic_allshared.o
 	ar rcs libgmic.a gmic_allshared.o
 	$(CXX) -shared -Wl,-soname,libgmic.so.1 -o libgmic.so gmic_allshared.o $(LIBS)
 	$(CXX) -o use_libgmic use_libgmic.cpp -L. -lgmic $(LIBS)
@@ -547,6 +545,9 @@ _allshared: CImg.h gmic_stdlib.h
 	$(STRIP) gmic$(EXE)
 	$(CXX) -o gmic_gimp_gtk gmic_gimp_gtk.cpp `gimptool-2.0$(EXE) --cflags` `gimptool-2.0$(EXE) --libs` $(CFLAGS) -lgmic $(LIBS)
 	$(STRIP) gmic_gimp_gtk$(EXE)
+
+gmic_allshared.o:
+	$(CXX) -o gmic_allshared.o -c gmic.cpp $(PIC) $(CFLAGS)
 
 # G'MIC Online
 #-------------
