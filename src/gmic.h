@@ -377,10 +377,10 @@ struct gmic {
   float focale3d, light3d_x, light3d_y, light3d_z, specular_lightness3d, specular_shininess3d, _progress, *progress;
   unsigned long reference_time;
   unsigned int nb_dowhiles, nb_fordones, nb_repeatdones, nb_carriages, debug_filename, debug_line, cimg_exception_mode;
-  int verbosity, render3d, renderd3d;
-  bool is_released, is_debug, is_running, is_start, is_return, is_quit, is_double3d, is_debug_info, check_elif;
+  int verbosity,render3d, renderd3d;
+  bool is_released, is_debug, is_running, is_start, is_return, is_quit, is_double3d, is_debug_info, is_host_cli,
+    check_elif, _is_abort, *is_abort, is_abort_thread;
   const char *starting_commands_line;
-  bool _is_abort, *is_abort, is_abort_thread;
 };
 
 // Class 'gmic_exception'.

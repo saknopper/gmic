@@ -2488,13 +2488,13 @@ unsigned int gmic::strescape(const char *const str, char *const res) {
     commands_has_arguments(new CImgList<char>[gmic_comslots]), \
     _variables(new CImgList<char>[gmic_varslots]), _variables_names(new CImgList<char>[gmic_varslots]), \
     variables(new CImgList<char>*[gmic_varslots]), variables_names(new CImgList<char>*[gmic_varslots]), \
-    display_windows(new CImgDisplay[10]), is_running(false)
+    display_windows(new CImgDisplay[10]), is_running(false), is_host_cli(false)
 #else
 #define gmic_new_attr commands(new CImgList<char>[gmic_comslots]), commands_names(new CImgList<char>[gmic_comslots]), \
     commands_has_arguments(new CImgList<char>[gmic_comslots]), \
     _variables(new CImgList<char>[gmic_varslots]), _variables_names(new CImgList<char>[gmic_varslots]), \
     variables(new CImgList<char>*[gmic_varslots]), variables_names(new CImgList<char>*[gmic_varslots]), \
-    display_windows(0), is_running(false)
+    display_windows(0), is_running(false), is_host_cli(false)
 #endif // #if cimg_display!=0
 
 CImg<char> gmic::stdlib = CImg<char>::empty();
@@ -14363,15 +14363,6 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
 
     // Display or print result, if not 'released' before.
     if (!is_released && callstack.size()==1 && images) {
-
-      bool is_host_cli = false;
-      const CImgList<char>
-        &__variables = *variables[gmic_varslots - 2],
-        &__variables_names = *variables_names[gmic_varslots - 2];
-      cimglist_for(__variables_names,l) if (!std::strcmp(__variables_names[l],"_host") && !std::strcmp(__variables[l],"cli")) {
-        is_host_cli = true; break;
-      }
-
       if (is_host_cli) {
 #if cimg_display!=0
         CImgList<unsigned int> lselection, lselection3d;
@@ -14520,6 +14511,7 @@ int main(int argc, char **argv) {
   // Declare main G'MIC instance.
   gmic gmic_instance;
   gmic_instance.set_variable("_host","cli",0);
+  gmic_instance.is_host_cli = true;
   gmic_instance.add_commands("cli_start : ");
 
   // Load startup command files.
