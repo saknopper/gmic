@@ -318,7 +318,6 @@ endif
 
 native:
 	$(MAKE) "CFLAGS+=$(GMIC_CLI_CFLAGS) -Ofast -march=native" "LIBS+=$(GMIC_CLI_LIBS)" cli gimp_gtk
-	$(STRIP) gmic$(EXE)
 
 # CLI (standard)
 #---------------
@@ -344,7 +343,7 @@ cli:
 cli_s:
 ifeq ($(OS),Darwin)
 	c++ -o gmic gmic.cpp -Dgmic_main -Dgmic_build -Dcimg_use_zlib -I/opt/local/include  -Dgmic_prerelease=\"$(PRERELEASE_CFLAGS)\" -std=c++11 -stdlib=libc++ -Dcimg_use_abort -Dcimg_use_png -Dcimg_use_jpeg -Dcimg_use_tiff -I/opt/local/include  -Dcimg_use_curl -I/opt/local/include  -Dcimg_use_fftw3 -I/opt/local/include  -Dgmic_is_parallel -Dcimg_display=1 -I/opt/local/include -O2 -mmacosx-version-min=10.7 -L/tmp/skl/Gimp.app/Contents/Resources/lib -lpng -lz -ljpeg  -ltiff -lcurl -lfftw3  -lfftw3_threads -lpthread -lHalf -L/usr/X11R6/lib -lX11 -lpthread
-	$(STRIP) gmic
+	$(STRIP) gmic$(EXE)
 endif
 
 debug:
@@ -397,17 +396,17 @@ gimp_gtk:
 _gimp_gtk: gmic_gimp_gtk.o gmic_gimp_gtk.cpp
 ifeq ($(OS),Darwin)
 ifeq (,$(wildcard /tmp/skl))
-	$(CXX) -o gmic_gimp_gtk gmic_gimp_gtk.cpp gmic_gimp_gtk.o -Dgmic_gui `gimptool-2.0$(EXE) --cflags` `gimptool-2.0$(EXE) --libs` $(CFLAGS) $(LIBS)
+	$(CXX) -o gmic_gimp_gtk gmic_gimp_gtk.cpp gmic_gimp_gtk.o `gimptool-2.0$(EXE) --cflags` `gimptool-2.0$(EXE) --libs` $(CFLAGS) $(LIBS)
 else
-	$(CXX) -o gmic_gimp_gtk gmic_gimp_gtk.cpp gmic_gimp_gtk.o -Dgmic_gui `gimptool-2.0$(EXE) --cflags` $(subst -L/opt/local,-L/tmp/skl/Gimp.app/Contents/Resources,$(shell gimptool-2.0$(EXE) --libs) $(CFLAGS) $(LIBS))
+	$(CXX) -o gmic_gimp_gtk gmic_gimp_gtk.cpp gmic_gimp_gtk.o `gimptool-2.0$(EXE) --cflags` $(subst -L/opt/local,-L/tmp/skl/Gimp.app/Contents/Resources,$(shell gimptool-2.0$(EXE) --libs) $(CFLAGS) $(LIBS))
 endif
 else
-	$(CXX) -o gmic_gimp_gtk gmic_gimp_gtk.cpp gmic_gimp_gtk.o -Dgmic_gui `gimptool-2.0$(EXE) --cflags` `gimptool-2.0$(EXE) --libs` $(CFLAGS) $(LIBS)
+	$(CXX) -o gmic_gimp_gtk gmic_gimp_gtk.cpp gmic_gimp_gtk.o `gimptool-2.0$(EXE) --cflags` `gimptool-2.0$(EXE) --libs` $(CFLAGS) $(LIBS)
 endif
 	$(STRIP) gmic_gimp_gtk$(EXE)
 
 gmic_gimp_gtk.o: gmic.cpp gmic.h gmic_stdlib.h CImg.h
-	$(CXX) -o gmic_gimp_gtk.o -c gmic.cpp -Dgmic_gui $(CFLAGS)
+	$(CXX) -o gmic_gimp_gtk.o -c gmic.cpp $(CFLAGS)
 
 # Libgmic
 #--------
@@ -532,6 +531,22 @@ endif
 
 libcgmicstatic.o: gmic.cpp gmic.h gmic_stdlib.h CImg.h
 	$(CXX) -o libcgmicstatic.o -c gmic_libc.cpp $(PIC) $(CFLAGS)
+
+# All interfaces, sharing the same dynamic library
+#--------------------------------------------------
+allshared:
+	$(MAKE) "CFLAGS+=$(GMIC_CLI_CFLAGS) $(OPT_CFLAGS)" "LIBS+=$(GMIC_CLI_LIBS)" _allshared
+
+_allshared: CImg.h gmic_stdlib.h
+	$(CXX) -o gmic_allshared.o -c gmic.cpp $(PIC) $(CFLAGS)
+
+	ar rcs libgmic.a gmic_allshared.o
+	$(CXX) -shared -Wl,-soname,libgmic.so.1 -o libgmic.so gmic_allshared.o $(LIBS)
+	$(CXX) -o use_libgmic use_libgmic.cpp -L. -lgmic $(LIBS)
+	$(CXX) -o gmic gmic.cpp -Dgmic_main $(CFLAGS) -lgmic $(LIBS)
+	$(STRIP) gmic$(EXE)
+	$(CXX) -o gmic_gimp_gtk gmic_gimp_gtk.cpp `gimptool-2.0$(EXE) --cflags` `gimptool-2.0$(EXE) --libs` $(CFLAGS) -lgmic $(LIBS)
+	$(STRIP) gmic_gimp_gtk$(EXE)
 
 # G'MIC Online
 #-------------
@@ -681,9 +696,10 @@ stdlib:
 #  knowledge of the CeCILL license and that you accept its terms.\n\
 #\n\
 */\n" > gmic_stdlib.h
+	@echo "#ifndef gmic_gimp_gtk" >> gmic_stdlib.h
 	@\gmic gmic_stdlib.gmic raw:gmic_stdlib.gmic,char -compress_gmic_cli 1 -a y -serialize char,1,0 -o -.h,uchar | sed 's/unsigned char/const unsigned char/' | sed 's/unnamed/gmic_stdlib/' >> gmic_stdlib.h
 	@echo "\nconst unsigned long size_data_gmic_stdlib = (unsigned long)sizeof(data_gmic_stdlib);" >> gmic_stdlib.h
-	@echo "\n#ifdef gmic_gui" >> gmic_stdlib.h
+	@echo "\n#else" >> gmic_stdlib.h
 	@\gmic -v - ../html/img/gimp_logos.png -serialize uchar,1,0 -o -.h,uchar | sed 's/unsigned char/const unsigned char/' | sed 's/unnamed/gmic_logo/' >> gmic_stdlib.h
 	@\gmic -v - ../html/img/gimp_warning.png -serialize uchar,1,0 -o -.h,uchar | sed 's/unsigned char/const unsigned char/' | sed 's/unnamed/gmic_preview_warning/' >> gmic_stdlib.h
 	@echo "\nconst unsigned long size_data_gmic_logo = (unsigned long)sizeof(data_gmic_logo);" >> gmic_stdlib.h
