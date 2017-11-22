@@ -433,7 +433,7 @@ _lib: libgmic.o use_libgmic.cpp
 ifeq ($(OS),Darwin)
 	$(CXX) -shared -o libgmic.so libgmic.o $(LIBS)
 else
-	$(CXX) -shared -Wl,-soname,libgmic.so.1 -o libgmic.so libgmic.o $(LIBS)
+	$(CXX) -shared -Wl,-soname,libgmic.so.$(VERSION1) -o libgmic.so libgmic.o $(LIBS)
 	$(CXX) -o use_libgmic use_libgmic.cpp -L. -lgmic $(LIBS)
 endif
 
@@ -466,9 +466,9 @@ ifeq ($(OS),Darwin)
 	$(CXX) -shared -o libcgmic.so libcgmic.o libgmic.o $(LIBS)
 else
 ifeq ($(OS),Windows)
-	$(CXX) -shared -Wl,-soname,libcgmic.so.1 -o libcgmic$(SO) libcgmic.o libgmic.o -Wl,--output-def,libcgmic.def,--out-implib,libcgmic.a $(LIBS)
+	$(CXX) -shared -Wl,-soname,libcgmic.so.$(VERSION1) -o libcgmic$(SO) libcgmic.o libgmic.o -Wl,--output-def,libcgmic.def,--out-implib,libcgmic.a $(LIBS)
 else
-	$(CXX) -shared -Wl,-soname,libcgmic.so.1 -o libcgmic$(SO) libcgmic.o libgmic.o $(LIBS)
+	$(CXX) -shared -Wl,-soname,libcgmic.so.$(VERSION1) -o libcgmic$(SO) libcgmic.o libgmic.o $(LIBS)
 endif
 endif
 	$(CC) -std=c99 -o use_libcgmic use_libcgmic.c -L. -lcgmic
@@ -522,9 +522,9 @@ ifeq ($(OS),Darwin)
 	$(CXX) -shared -static -o libcgmicstatic.so libcgmicstatic.o libgmic.o $(PIC) $(CFLAGS) $(LIBS)
 else
 ifeq ($(OS),Windows)
-	$(CXX) -shared -static -Wl,-soname,libcgmicstatic.so.1 -o libcgmicstatic$(SO) libcgmicstatic.o libgmic.o $(PIC) -Wl,--output-def,libcgmicstatic.def,--out-implib,libcgmicstatic.a $(CFLAGS) $(LIBS)
+	$(CXX) -shared -static -Wl,-soname,libcgmicstatic.so.$(VERSION1) -o libcgmicstatic$(SO) libcgmicstatic.o libgmic.o $(PIC) -Wl,--output-def,libcgmicstatic.def,--out-implib,libcgmicstatic.a $(CFLAGS) $(LIBS)
 else
-	$(CXX) -shared -Wl,-soname,libcgmicstatic.so.1 -o libcgmicstatic$(SO) libcgmicstatic.o libgmic.o $(PIC) $(CFLAGS) $(LIBS)
+	$(CXX) -shared -Wl,-soname,libcgmicstatic.so.$(VERSION1) -o libcgmicstatic$(SO) libcgmicstatic.o libgmic.o $(PIC) $(CFLAGS) $(LIBS)
 endif
 endif
 	$(CC) -std=c99 -o use_libcgmic_static use_libcgmic.c -L. -lcgmicstatic
@@ -537,17 +537,19 @@ libcgmicstatic.o: gmic.cpp gmic.h gmic_stdlib.h CImg.h
 allshared:
 	$(MAKE) "CFLAGS+=$(GMIC_CLI_CFLAGS) $(OPT_CFLAGS)" "LIBS+=$(GMIC_CLI_LIBS)" _allshared
 
-_allshared: CImg.h gmic_stdlib.h gmic_allshared.o
-	ar rcs libgmic.a gmic_allshared.o
-	$(CXX) -shared -Wl,-soname,libgmic.so.1 -o libgmic.so gmic_allshared.o $(LIBS)
-	$(CXX) -o use_libgmic use_libgmic.cpp -L. -lgmic $(LIBS)
-	$(CXX) -o gmic gmic.cpp -Dgmic_main $(CFLAGS) -lgmic $(LIBS)
+_allshared: libgmic_shared.o
+	ar rcs libgmic_shared.a libgmic_shared.o
+	$(CXX) -shared -Wl,-soname,libgmic_shared.so.$(VERSION1) -o libgmic_shared.so libgmic_shared.o $(LIBS)
+	$(CXX) -o use_libgmic use_libgmic.cpp -L. -lgmic_shared $(LIBS)
+
+	$(CXX) -o gmic gmic.cpp -Dgmic_main $(CFLAGS) -lgmic_shared $(LIBS)
 	$(STRIP) gmic$(EXE)
-	$(CXX) -o gmic_gimp_gtk gmic_gimp_gtk.cpp `gimptool-2.0$(EXE) --cflags` `gimptool-2.0$(EXE) --libs` $(CFLAGS) -lgmic $(LIBS)
+
+	$(CXX) -o gmic_gimp_gtk gmic_gimp_gtk.cpp `gimptool-2.0$(EXE) --cflags` `gimptool-2.0$(EXE) --libs` $(CFLAGS) -lgmic_shared $(LIBS)
 	$(STRIP) gmic_gimp_gtk$(EXE)
 
-gmic_allshared.o:
-	$(CXX) -o gmic_allshared.o -c gmic.cpp $(PIC) $(CFLAGS)
+libgmic_shared.o: CImg.h gmic_stdlib.h
+	$(CXX) -o libgmic_shared.o -c gmic.cpp $(PIC) $(CFLAGS)
 
 # G'MIC Online
 #-------------
