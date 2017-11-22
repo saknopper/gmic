@@ -425,7 +425,7 @@ endif
 	$(MAKE) cli lib gimp_gtk gimp_qt krita_qt gmic_qt libc zart
 
 cli:
-	$(MAKE) "CFLAGS+=$(GMIC_CLI_CFLAGS) $(OPT_CFLAGS)" "LIBS+=$(GMIC_CLI_LIBS)" gmic
+	$(MAKE) "CFLAGS+=$(GMIC_CLI_CFLAGS) $(OPT_CFLAGS)" "LIBS+=$(GMIC_CLI_LIBS)" gmic_cli
 	$(STRIP) gmic$(EXE)
 
 cli_s:
@@ -435,7 +435,7 @@ ifeq ($(OS),Darwin)
 endif
 
 debug:
-	$(MAKE) "CFLAGS+=$(GMIC_CLI_CFLAGS) $(DEBUG_CFLAGS)" "LIBS+=$(GMIC_CLI_LIBS)" gmic
+	$(MAKE) "CFLAGS+=$(GMIC_CLI_CFLAGS) $(DEBUG_CFLAGS)" "LIBS+=$(GMIC_CLI_LIBS)" gmic_cli
 
 gimp : gimp_qt
 
@@ -449,7 +449,7 @@ gimp_gtk:
 	$(MAKE) "CFLAGS+=$(GMIC_GIMP_GTK_CFLAGS) $(OPT_CFLAGS)" "LIBS+=$(GMIC_GIMP_GTK_LIBS)" gmic_gimp_gtk
 
 gmicol:
-	$(MAKE) "CFLAGS+=$(GMICOL_CFLAGS) $(OPT_CFLAGS)" "LIBS+=$(GMICOL_LIBS)" gmic
+	$(MAKE) "CFLAGS+=$(GMICOL_CFLAGS) $(OPT_CFLAGS)" "LIBS+=$(GMICOL_LIBS)" gmic_cli
 	$(STRIP) gmic$(EXE)
 
 lib:
@@ -467,7 +467,7 @@ native:
 	$(STRIP) gmic$(EXE)
 
 static:
-	$(MAKE) "CFLAGS+=$(GMIC_STATIC_CLI_CFLAGS) $(OPT_CFLAGS)" "LIBS+=$(GMIC_STATIC_CLI_LIBS)" gmic
+	$(MAKE) "CFLAGS+=$(GMIC_STATIC_CLI_CFLAGS) $(OPT_CFLAGS)" "LIBS+=$(GMIC_STATIC_CLI_LIBS)" gmic_cli
 	$(STRIP) gmic$(EXE)
 
 zart: zart_files CImg.h gmic_stdlib.h
@@ -616,8 +616,9 @@ endif
 	$(STRIP) gmic_gimp_gtk$(EXE)
 
 # gmic
-gmic: gmic.cpp gmic.h gmic_stdlib.h CImg.h
-	$(CXX) -o gmic gmic.cpp -Dgmic_main $(CFLAGS) $(LIBS)
+gmic_cli: gmic.cpp gmic.h gmic_stdlib.h CImg.h
+	$(CXX) -o gmic_cli.o -c gmic.cpp $(CFLAGS)
+	$(CXX) -o gmic gmic.cpp gmic_cli.o -Dgmic_main $(CFLAGS) $(LIBS)
 
 # header files
 gmic_stdlib.h: gmic_stdlib.gmic

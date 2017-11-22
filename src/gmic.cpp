@@ -2020,13 +2020,20 @@ static const CImgList<T>& save_gmz(const char *filename, const CImgList<T>& imag
 #else // #ifdef cimg_plugin
 
 #include "gmic.h"
-#include "gmic_stdlib.h"
 using namespace cimg_library;
-#undef min
-#undef max
+
+#ifndef gmic_pixel_type
+#define gmic_pixel_type float
+#endif
+
+#ifndef gmic_main
+#include "gmic_stdlib.h"
 
 // Define convenience macros, variables and functions.
 //----------------------------------------------------
+
+#undef min
+#undef max
 
 // Define number of hash slots to store variables and commands.
 #ifndef gmic_varslots
@@ -2034,11 +2041,6 @@ using namespace cimg_library;
 #endif
 #ifndef gmic_comslots
 #define gmic_comslots 128
-#endif
-
-// Define default pixel type.
-#ifndef gmic_pixel_type
-#define gmic_pixel_type float
 #endif
 
 // Macro to force stringifying selection for error messages.
@@ -14454,6 +14456,40 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
   return *this;
 }
 
+// Explicitely instanciate constructors and destructor when building the library.
+#ifdef gmic_pixel_type
+template gmic::gmic(const char *const commands_line,
+                    gmic_list<gmic_pixel_type>& images, gmic_list<char>& images_names,
+                    const char *const custom_commands, const bool include_stdlib,
+                    float *const p_progress, bool *const p_is_abort);
+
+template gmic& gmic::run(const char *const commands_line,
+                         gmic_list<gmic_pixel_type> &images, gmic_list<char> &images_names,
+                         float *const p_progress, bool *const p_is_abort);
+
+template CImgList<gmic_pixel_type>::~CImgList();
+#endif
+
+#ifdef gmic_pixel_type2
+template gmic::gmic(const char *const commands_line,
+                    gmic_list<gmic_pixel_type2>& images, gmic_list<char>& images_names,
+                    const char *const custom_commands, const bool include_stdlib,
+                    float *const p_progress, bool *const p_is_abort);
+
+template gmic& gmic::run(const char *const commands_line,
+                         gmic_list<gmic_pixel_type2> &images, gmic_list<char> &images_names,
+                         float *const p_progress=0, bool *const p_is_abort=0);
+
+template CImgList<gmic_pixel_type2>::~CImgList();
+#endif
+
+template CImgList<char>::~CImgList();
+
+//----------------------
+// Start CLI interface.
+//----------------------
+#else // #ifndef gmic_main
+
 // Fallback function for segfault signals.
 #if cimg_OS==1
 void gmic_segfault_sigaction(int signal, siginfo_t *si, void *arg) {
@@ -14469,11 +14505,6 @@ void gmic_segfault_sigaction(int signal, siginfo_t *si, void *arg) {
   std::exit(EXIT_FAILURE);
 }
 #endif
-
-//----------------------
-// Start CLI interface.
-//----------------------
-#ifdef gmic_main
 
 #if cimg_OS==2
 int _CRT_glob = 0; // Disable globbing for msys.
@@ -14717,36 +14748,5 @@ int main(int argc, char **argv) {
   return 0;
 }
 
-#else
-
-// Explicitely instanciate constructors and destructor when building the library.
-#ifdef gmic_pixel_type
-template gmic::gmic(const char *const commands_line,
-                    gmic_list<gmic_pixel_type>& images, gmic_list<char>& images_names,
-                    const char *const custom_commands, const bool include_stdlib,
-                    float *const p_progress, bool *const p_is_abort);
-
-template gmic& gmic::run(const char *const commands_line,
-                         gmic_list<gmic_pixel_type> &images, gmic_list<char> &images_names,
-                         float *const p_progress, bool *const p_is_abort);
-
-template CImgList<gmic_pixel_type>::~CImgList();
-#endif
-
-#ifdef gmic_pixel_type2
-template gmic::gmic(const char *const commands_line,
-                    gmic_list<gmic_pixel_type2>& images, gmic_list<char>& images_names,
-                    const char *const custom_commands, const bool include_stdlib,
-                    float *const p_progress, bool *const p_is_abort);
-
-template gmic& gmic::run(const char *const commands_line,
-                         gmic_list<gmic_pixel_type2> &images, gmic_list<char> &images_names,
-                         float *const p_progress=0, bool *const p_is_abort=0);
-
-template CImgList<gmic_pixel_type2>::~CImgList();
-#endif
-
-template CImgList<char>::~CImgList();
-
-#endif // #ifdef gmic_main
+#endif // #ifndef gmic_main
 #endif // #ifdef cimg_plugin
