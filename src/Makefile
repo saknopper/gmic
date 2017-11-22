@@ -567,7 +567,7 @@ libcgmic_files:
 	@echo " done!"
 
 libcgmic.o: gmic.cpp gmic.h gmic_stdlib.h CImg.h
-	$(CXX) -o libcgmic.o -c gmic_libc.cpp -Dgmic_gui $(PIC) $(CFLAGS)
+	$(CXX) -o libcgmic.o -c gmic_libc.cpp $(PIC) $(CFLAGS)
 
 libcgmic: libcgmic_files libgmic.o libcgmic.o
 	ar rcs libcgmic.a libcgmic.o
@@ -584,7 +584,7 @@ endif
 
 # libcgmicstatic
 libcgmicstatic.o: gmic.cpp gmic.h gmic_stdlib.h CImg.h
-	$(CXX) -o libcgmicstatic.o -c gmic_libc.cpp -Dgmic_gui $(PIC) $(CFLAGS)
+	$(CXX) -o libcgmicstatic.o -c gmic_libc.cpp $(PIC) $(CFLAGS)
 
 libcgmicstatic: libcgmic_files libgmic.o libcgmicstatic.o
 	ar rcs libcgmicstatic.a libcgmicstatic.o
@@ -685,16 +685,14 @@ stdlib:
 #  knowledge of the CeCILL license and that you accept its terms.\n\
 #\n\
 */\n" > gmic_stdlib.h
-	@echo "#ifndef gmic_gui" >> gmic_stdlib.h
 	@\gmic gmic_stdlib.gmic raw:gmic_stdlib.gmic,char -compress_gmic_cli 1 -a y -serialize char,1,0 -o -.h,uchar | sed 's/unsigned char/const unsigned char/' | sed 's/unnamed/gmic_stdlib/' >> gmic_stdlib.h
-	@echo "#else" >> gmic_stdlib.h
-	@\gmic gmic_stdlib.gmic raw:gmic_stdlib.gmic,char -compress_gmic_gui 1 -a y -serialize char,1,0 -o -.h,uchar | sed 's/unsigned char/const unsigned char/' | sed 's/unnamed/gmic_stdlib/' >> gmic_stdlib.h
+	@echo "\nconst unsigned long size_data_gmic_stdlib = (unsigned long)sizeof(data_gmic_stdlib);" >> gmic_stdlib.h
+	@echo "\n#ifdef gmic_gui" >> gmic_stdlib.h
 	@\gmic -v - ../html/img/gimp_logos.png -serialize uchar,1,0 -o -.h,uchar | sed 's/unsigned char/const unsigned char/' | sed 's/unnamed/gmic_logo/' >> gmic_stdlib.h
 	@\gmic -v - ../html/img/gimp_warning.png -serialize uchar,1,0 -o -.h,uchar | sed 's/unsigned char/const unsigned char/' | sed 's/unnamed/gmic_preview_warning/' >> gmic_stdlib.h
-	@echo "const unsigned long size_data_gmic_logo = (unsigned long)sizeof(data_gmic_logo);" >> gmic_stdlib.h
+	@echo "\nconst unsigned long size_data_gmic_logo = (unsigned long)sizeof(data_gmic_logo);" >> gmic_stdlib.h
 	@echo "const unsigned long size_data_gmic_preview_warning = (unsigned long)sizeof(data_gmic_preview_warning);" >> gmic_stdlib.h
 	@echo "#endif" >> gmic_stdlib.h
-	@echo "const unsigned long size_data_gmic_stdlib = (unsigned long)sizeof(data_gmic_stdlib);" >> gmic_stdlib.h
 	@echo >>gmic_stdlib.h
 	@\gmic -v - -_update_server_upload gmic_stdlib.h
 
