@@ -74,7 +74,7 @@ endif
 ifneq ($(VERSION),$(CIMG_VERSION))
 define ERROR_MESSAGE
 Version numbers of files 'gmic.h' (v.$(VERSION)) and 'CImg.h' (v.$(CIMG_VERSION)) do not match.
-Try 'make clean' to ensure you get the latest version of CImg
+Try removing file 'CImg.h' and try again
 endef
 $(error	$(ERROR_MESSAGE))
 endif
