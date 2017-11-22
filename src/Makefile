@@ -300,8 +300,8 @@ BOARD_LIBS = -lboard
 # Define main Makefile entries.
 #-------------------------------
 
-# Main generic entries.
-#-----------------------
+# Multi-targets
+#--------------
 all: CImg.h gmic_stdlib.h
 	@echo "**"
 ifeq ($(OS),Unix)
@@ -320,8 +320,8 @@ native:
 	$(MAKE) "CFLAGS+=$(GMIC_CLI_CFLAGS) -Ofast -march=native" "LIBS+=$(GMIC_CLI_LIBS)" cli gimp_gtk
 	$(STRIP) gmic$(EXE)
 
-# CLI interface: Standard build.
-#-------------------------------
+# CLI (standard)
+#---------------
 GMIC_CLI_CFLAGS = $(MANDATORY_CFLAGS) $(ABORT_CFLAGS) $(PARALLEL_CFLAGS) $(FFTW_CFLAGS) $(CURL_CFLAGS) $(PNG_CFLAGS) $(JPEG_CFLAGS) $(TIFF_CFLAGS)
 GMIC_CLI_LIBS = $(MANDATORY_LIBS) $(PARALLEL_LIBS) $(FFTW_LIBS) $(CURL_LIBS) $(PNG_LIBS) $(JPEG_LIBS) $(TIFF_LIBS)
 ifeq ($(OS),Unix) # Unix.
@@ -354,8 +354,8 @@ _cli: gmic.cpp gmic.h gmic_stdlib.h CImg.h
 	$(CXX) -o gmic_cli.o -c gmic.cpp $(CFLAGS)
 	$(CXX) -o gmic gmic.cpp gmic_cli.o -Dgmic_main $(CFLAGS) $(LIBS)
 
-# CLI interface: Static build.
-#-----------------------------
+# CLI (static)
+#-------------
 GMIC_STATIC_CLI_PATH = $(USR)/$(LIB)/x86_64-linux-gnu
 GMIC_STATIC_CLI_EXTRA =
 GMIC_STATIC_CLI_CFLAGS = $(MANDATORY_CFLAGS) $(ABORT_CFLAGS) $(PARALLEL_CFLAGS) $(ZLIB_CFLAGS) $(FFTW_CFLAGS) $(PNG_CFLAGS) $(JPEG_CFLAGS) -Dcimg_display=0
@@ -370,8 +370,8 @@ static:
 	$(MAKE) "CFLAGS+=$(GMIC_STATIC_CLI_CFLAGS) $(OPT_CFLAGS)" "LIBS+=$(GMIC_STATIC_CLI_LIBS)" _cli
 	$(STRIP) gmic$(EXE)
 
-# GIMP GTK plug-in interface: Standard build.
-#--------------------------------------------
+# GIMP plug-in (GTK)
+#-------------------
 GMIC_GIMP_GTK_CFLAGS = $(MANDATORY_CFLAGS) $(ABORT_CFLAGS) $(PARALLEL_CFLAGS) $(FFTW_CFLAGS) $(CURL_CFLAGS) $(PNG_CFLAGS) -Dcimg_use_rng -DGIMP_DISABLE_DEPRECATED
 GMIC_GIMP_GTK_LIBS = $(MANDATORY_LIBS) $(PARALLEL_LIBS) $(FFTW_LIBS) $(CURL_LIBS) $(PNG_LIBS)
 ifeq ($(OS),Unix) # Unix.
@@ -409,8 +409,8 @@ endif
 gmic_gimp_gtk.o: gmic.cpp gmic.h gmic_stdlib.h CImg.h
 	$(CXX) -o gmic_gimp_gtk.o -c gmic.cpp -Dgmic_gui $(CFLAGS)
 
-# Libgmic interface: Standard build.
-#-----------------------------------
+# Libgmic
+#--------
 GMIC_LIB_CFLAGS = $(MANDATORY_CFLAGS) $(ABORT_CFLAGS) $(PARALLEL_CFLAGS) $(FFTW_CFLAGS) $(CURL_CFLAGS) $(PNG_CFLAGS) $(JPEG_CFLAGS) $(TIFF_CFLAGS)
 GMIC_LIB_LIBS = $(MANDATORY_LIBS) $(PARALLEL_LIBS) $(FFTW_LIBS) $(CURL_LIBS) $(PNG_LIBS) $(JPEG_LIBS) $(TIFF_LIBS)
 ifeq ($(OS),Unix) # Unix.
@@ -441,8 +441,8 @@ endif
 libgmic.o: gmic.cpp gmic.h gmic_stdlib.h CImg.h
 	$(CXX) -o libgmic.o -c gmic.cpp $(PIC) $(CFLAGS)
 
-# LibCgmic interface: Standard build.
-#------------------------------------
+# LibCgmic (standard)
+#--------------------
 GMIC_LIBC_CFLAGS = $(MANDATORY_CFLAGS) $(ABORT_CFLAGS) $(PARALLEL_CFLAGS) $(FFTW_CFLAGS) $(CURL_CFLAGS) $(PNG_CFLAGS) $(JPEG_CFLAGS) $(TIFF_CFLAGS)
 GMIC_LIBC_LIBS = $(MANDATORY_LIBS) $(PARALLEL_LIBS) $(FFTW_LIBS) $(CURL_LIBS) $(PNG_LIBS) $(JPEG_LIBS) $(TIFF_LIBS)
 ifeq ($(OS),Unix) # Unix.
@@ -493,8 +493,8 @@ libcgmic_files:
 	fi
 	@echo " done!"
 
-# LibCgmic interface: Static build.
-#---------------------------------
+# LibCgmic (static)
+#------------------
 GMIC_LIBC_STATIC_CFLAGS = $(MANDATORY_CFLAGS) $(ABORT_CFLAGS) $(PARALLEL_CFLAGS) $(FFTW_CFLAGS) $(PNG_CFLAGS) $(JPEG_CFLAGS) # $(CURL_CFLAGS) $(TIFF_CFLAGS)
 ifeq ($(OS),Window)
 GMIC_LIBC_STATIC_LIBS = -Bstatic -lpthread
@@ -533,8 +533,8 @@ endif
 libcgmicstatic.o: gmic.cpp gmic.h gmic_stdlib.h CImg.h
 	$(CXX) -o libcgmicstatic.o -c gmic_libc.cpp $(PIC) $(CFLAGS)
 
-# G'MIC Online interface: Standard build.
-#----------------------------------------
+# G'MIC Online
+#-------------
 GMICOL_LIB_PATH = /usr/lib/x86_64-linux-gnu/
 GMICOL_CFLAGS = $(MANDATORY_CFLAGS) $(PARALLEL_CFLAGS) $(FFTW_CFLAGS) $(PNG_CFLAGS) $(JPEG_CFLAGS) $(ZLIB_CFLAGS) -Dcimg_display=0 # $(OPENMP_CFLAGS)
 GMICOL_LIBS = $(MANDATORY_LIBS) $(PARALLEL_LIBS) $(PNG_LIBS) $(JPEG_LIBS) $(ZLIB_LIBS) $(GMICOL_LIB_PATH)/libfftw3.a $(GMICOL_LIB_PATH)/libfftw3_threads.a # $(OPENMP_LIBS)
@@ -543,8 +543,8 @@ gmicol:
 	$(MAKE) "CFLAGS+=$(GMICOL_CFLAGS) $(OPT_CFLAGS)" "LIBS+=$(GMICOL_LIBS)" _cli
 	$(STRIP) gmic$(EXE)
 
-# G'MIC-Qt and ZArt
-#-------------------
+# G'MIC-Qt
+#---------
 gimp : gimp_qt
 
 gimp_qt: gmic_qt_files CImg.h gmic_stdlib.h
@@ -583,6 +583,8 @@ gmic_qt_files:
 	  if [ -d ../../gmic-qt ]; then ln -fs ../gmic-qt ..; fi \
 	fi
 
+# ZArt
+#-----
 zart: zart_files CImg.h gmic_stdlib.h
 	@if [ ! -d ../zart ]; then ln -fs ../gmic-community/zart ..; fi
 ifeq ($(OS),Darwin)
@@ -613,8 +615,8 @@ zart_files:
 	  if [ -d ../../gmic-community/zart ]; then ln -fs ../gmic-community/zart ..; fi \
 	fi
 
-# Generate header files
-#-----------------------
+# Get header files
+#------------------
 gmic_stdlib.h: gmic_stdlib.gmic
 	@echo "> Retrieve G'MIC Standard Library..."
 	@if [ ! -f ./gmic_stdlib.h ]; then \
@@ -690,14 +692,14 @@ stdlib:
 	@echo >>gmic_stdlib.h
 	@\gmic -v - -_update_server_upload gmic_stdlib.h
 
-# Generate bash completion script (requires 'gmic' to be installed first).
-#---------------------------------
+# Bash completion script (requires 'gmic' to be installed).
+#-----------------------
 bashcompletion:
 	@mkdir -p ../resources
 	@\gmic -v - gmic_stdlib.gmic raw:gmic_stdlib.gmic,uchar -document_gmic bash 2> ../resources/gmic_bashcompletion.sh
 
-# Generate man pages (requires 'gmic' to be installed).
-#-------------------
+# Man pages (requires 'gmic' to be installed).
+#----------
 man:
 	@mkdir -p ../man
 	@\gmic -v - gmic_stdlib.gmic raw:gmic_stdlib.gmic,uchar -__help man 2> ../man/gmic.1
