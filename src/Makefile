@@ -347,7 +347,7 @@ ifeq ($(OS),Darwin)
 endif
 
 debug:
-	$(MAKE) "CFLAGS+=$(GMIC_CLI_CFLAGS) $(DEBUG_CFLAGS)" "LIBS+=$(GMIC_CLI_LIBS)" gmic_cli
+	$(MAKE) "CFLAGS+=$(GMIC_CLI_CFLAGS) $(DEBUG_CFLAGS)" "LIBS+=$(GMIC_CLI_LIBS)" _cli
 
 _cli: gmic.cpp gmic.h gmic_stdlib.h CImg.h
 	$(CXX) -o gmic_cli.o -c gmic.cpp $(CFLAGS)
@@ -708,13 +708,13 @@ stdlib:
 	@echo >>gmic_stdlib.h
 	@\gmic -v - -_update_server_upload gmic_stdlib.h
 
-# Bash completion script (requires 'gmic' to be installed).
+# Bash completion script
 #-----------------------
 bashcompletion:
 	@mkdir -p ../resources
 	@\gmic -v - gmic_stdlib.gmic raw:gmic_stdlib.gmic,uchar -document_gmic bash 2> ../resources/gmic_bashcompletion.sh
 
-# Man pages (requires 'gmic' to be installed).
+# Man pages
 #----------
 man:
 	@mkdir -p ../man
