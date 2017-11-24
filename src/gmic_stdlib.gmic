@@ -14465,7 +14465,7 @@ apply_timeout :
     __done$id=0 __is_timeout$id=0
     l
     parallel "$1 __done"$id"=1",\
-              "do if {$|>$2} __is_timeout"$id"=1 error \"\" fi wait 500 while {!$__done"$id"}"
+             "do if {$|>$2} __is_timeout"$id"=1 error \"\" fi wait 500 while {!$__done"$id"}"
     onfail
       v +
       if ${__is_timeout$id} v + error[0--5] "Command '$0': Time out ($2 seconds) for command '$1'."
