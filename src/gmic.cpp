@@ -3611,7 +3611,7 @@ void gmic::_gmic(const char *const commands_line,
   try {
     _run(items,images,images_names,p_progress,p_is_abort);
   } catch (gmic_exception&) {
-    print(images,0,"Abort G'MIC interpreter.\n");
+    print(images,0,"Abort G'MIC interpreter (caught exception).\n");
     throw;
   }
 }
@@ -14401,7 +14401,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
   } catch (CImgAbortException &) { // Special case of abort (abort from a CImg method).
     // Do the same as for a cancellation point.
     const bool is_very_verbose = verbosity>0 || is_debug;
-    if (is_very_verbose) print(images,0,"Abort G'MIC interpreter (abort signal).");
+    if (is_very_verbose) print(images,0,"Abort G'MIC interpreter (caught abort signal).");
     dowhiles.assign(nb_dowhiles = 0);
     fordones.assign(nb_fordones = 0);
     repeatdones.assign(nb_repeatdones = 0);
@@ -14420,9 +14420,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
       const char *cc = current_command;
       while (*cc=='-' || *cc=='+') ++cc;
       error(images,0,cc,"Command '%s': %s",current_command,error_message.data());
-    }
-    else
-      error(images,0,0,"%s",error_message.data());
+    } else error(images,0,0,"%s",error_message.data());
   }
 
   if (!is_endlocal) debug_line = initial_debug_line;
