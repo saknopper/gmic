@@ -162,14 +162,16 @@ namespace cimg_library {
 #define cimg_plugin "gmic.cpp"
 
 #ifdef cimg_use_abort
-inline bool *gmic_abort_ptr(bool *const p_is_abort);
-#define cimg_abort_init bool *const gmic_is_abort = ::gmic_abort_ptr(0)
-#define cimg_abort_test if (*gmic_is_abort) throw CImgAbortException()
-#endif // #ifdef cimg_use_abort
+static struct cimg_is_abort {
+  bool value, *ptr;
+  cimg_is_abort():value(false),ptr(&value) {}
+} _cimg_is_abort;
+#define cimg_abort_test() if (*_cimg_is_abort.ptr) throw CImgAbortException()
 
 inline double gmic_mp_ext(char *const str, void *const p_list);
 #define cimg_mp_ext_function(str) return ::gmic_mp_ext(str._data,&mp.listout)
 
+#endif // #ifdef cimg_use_abort
 #ifndef cimg_display
 #define cimg_display 0
 #endif // #ifndef cimg_display
@@ -185,7 +187,6 @@ inline double gmic_mp_ext(char *const str, void *const p_list);
 #elif cimg_OS==1
 #include <cerrno>
 #include <sys/resource.h>
-#include <sys/syscall.h>
 #include <signal.h>
 #endif // #if cimg_OS==2
 
@@ -220,12 +221,12 @@ struct gmic {
 
   // Run G'MIC pipeline on an already-constructed object.
   gmic& run(const char *const commands_line,
-            float *const p_progress=0);
+            float *const p_progress=0, bool *const p_is_abort=0);
 
   template<typename T>
   gmic& run(const char *const commands_line,
             gmic_list<T> &images, gmic_list<char> &images_names,
-            float *const p_progress=0);
+            float *const p_progress=0, bool *const p_is_abort=0);
 
   // These functions return (or init) G'MIC-specific paths.
   static const char* path_user(const char *const custom_path=0);
@@ -248,7 +249,6 @@ struct gmic {
   static unsigned int strescape(const char *const str, char *const res);
   static const gmic_image<char>& decompress_stdlib();
   static double mp_ext(char *const str, void *const p_list);
-  static bool *abort_ptr(bool *const p_is_abort);
 
   template<typename T>
   void _gmic(const char *const commands_line,
@@ -351,7 +351,7 @@ struct gmic {
   template<typename T>
   gmic& _run(const gmic_list<char>& commands_line,
              gmic_list<T> &images, gmic_list<char> &images_names,
-             float *const p_progress);
+             float *const p_progress, bool *const p_is_abort);
 
   template<typename T>
   gmic& _run(const gmic_list<char>& commands_line, unsigned int& position,
@@ -365,8 +365,6 @@ struct gmic {
   static const char *native_commands_names[];
   static gmic_image<int> native_commands_inds;
   static gmic_image<char> stdlib;
-  static gmic_list<void*> list_p_is_abort;
-  static bool _is_abort;
 
   gmic_list<char> *const commands, *const commands_names, *const commands_has_arguments,
     *const _variables, *const _variables_names, **const variables, **const variables_names,
@@ -381,7 +379,7 @@ struct gmic {
   unsigned int nb_dowhiles, nb_fordones, nb_repeatdones, nb_carriages, debug_filename, debug_line, cimg_exception_mode;
   int verbosity,render3d, renderd3d;
   bool is_released, is_debug, is_running, is_start, is_return, is_quit, is_double3d, is_debug_info, check_elif,
-    is_abort_thread;
+    _is_abort, *is_abort, is_abort_thread;
   const char *starting_commands_line;
 };
 
@@ -415,7 +413,6 @@ struct gmic_exception {
 };
 
 inline double gmic_mp_ext(char *const str, void *const p_list) { return gmic::mp_ext(str,p_list); }
-inline bool *gmic_abort_ptr(bool *const p_is_abort) { return gmic::abort_ptr(p_is_abort); }
 
 #endif // #ifndef gmic_version
 
