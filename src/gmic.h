@@ -222,12 +222,12 @@ struct gmic {
 
   // Run G'MIC pipeline on an already-constructed object.
   gmic& run(const char *const commands_line,
-            float *const p_progress=0, bool *const p_is_abort=0);
+            float *const p_progress=0);
 
   template<typename T>
   gmic& run(const char *const commands_line,
             gmic_list<T> &images, gmic_list<char> &images_names,
-            float *const p_progress=0, bool *const p_is_abort=0);
+            float *const p_progress=0);
 
   // These functions return (or init) G'MIC-specific paths.
   static const char* path_user(const char *const custom_path=0);
@@ -353,7 +353,7 @@ struct gmic {
   template<typename T>
   gmic& _run(const gmic_list<char>& commands_line,
              gmic_list<T> &images, gmic_list<char> &images_names,
-             float *const p_progress, bool *const p_is_abort);
+             float *const p_progress);
 
   template<typename T>
   gmic& _run(const gmic_list<char>& commands_line, unsigned int& position,
@@ -368,6 +368,7 @@ struct gmic {
   static gmic_image<int> native_commands_inds;
   static gmic_image<char> stdlib;
   static gmic_list<void*> list_p_is_abort;
+  static bool _is_abort;
 
   gmic_list<char> *const commands, *const commands_names, *const commands_has_arguments,
     *const _variables, *const _variables_names, **const variables, **const variables_names,
@@ -382,7 +383,7 @@ struct gmic {
   unsigned int nb_dowhiles, nb_fordones, nb_repeatdones, nb_carriages, debug_filename, debug_line, cimg_exception_mode;
   int verbosity,render3d, renderd3d;
   bool is_released, is_debug, is_running, is_start, is_return, is_quit, is_double3d, is_debug_info, check_elif,
-    _is_abort, *is_abort, is_abort_thread;
+    is_abort_thread;
   const char *starting_commands_line;
 };
 
