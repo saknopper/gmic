@@ -250,7 +250,7 @@ struct gmic {
   static unsigned int strescape(const char *const str, char *const res);
   static const gmic_image<char>& decompress_stdlib();
   static double mp_ext(char *const str, void *const p_list);
-  static bool *abort_ptr(bool *const ptr=0);
+  static bool *abort_ptr(bool *const p_is_abort=0);
 
   template<typename T>
   void _gmic(const char *const commands_line,
