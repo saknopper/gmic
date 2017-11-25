@@ -367,7 +367,7 @@ struct gmic {
   static const char *native_commands_names[];
   static gmic_image<int> native_commands_inds;
   static gmic_image<char> stdlib;
-  static gmic_list<void*> list_abort_ptr;
+  static gmic_list<void*> list_p_is_abort;
 
   gmic_list<char> *const commands, *const commands_names, *const commands_has_arguments,
     *const _variables, *const _variables_names, **const variables, **const variables_names,
