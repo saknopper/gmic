@@ -2261,6 +2261,29 @@ struct _gmic_parallel {
   _gmic_parallel() { variables_sizes.assign(gmic_varslots); }
 };
 
+CImgList<void*> gmic::list_abort_ptr = CImgList<void*>();
+bool *gmic::abort_ptr(bool *const ptr) {
+#if cimg_OS==1
+  const long tid = (long)syscall(SYS_gettid);
+#elif cimg_OS==2
+  const long tid = (long)GetCurrentThreadId();
+#else
+  const long tid = 0;
+#endif
+  bool *res = 0;
+  int ind = -1;
+  cimglist_for(list_abort_ptr,l)
+    if (list_abort_ptr(l,0)==(void*)tid) { ind = l; break; }
+  if (ptr) { // Set pointer
+    if (ind>=0) list_abort_ptr(ind,1) = (void*)ptr;
+    else CImg<void*>::vector((void*)tid,(void*)ptr).move_to(list_abort_ptr);
+    res = ptr;
+  } else { // Get pointer
+    res = ind>=0?(bool*)list_abort_ptr(ind,1):0;
+  }
+  return res;
+}
+
 template<typename T>
 #if cimg_OS!=2
 static void *gmic_parallel(void *arg)

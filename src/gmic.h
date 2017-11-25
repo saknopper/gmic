@@ -187,6 +187,7 @@ inline double gmic_mp_ext(char *const str, void *const p_list);
 #elif cimg_OS==1
 #include <cerrno>
 #include <sys/resource.h>
+#include <sys/syscall.h>
 #include <signal.h>
 #endif // #if cimg_OS==2
 
@@ -249,6 +250,7 @@ struct gmic {
   static unsigned int strescape(const char *const str, char *const res);
   static const gmic_image<char>& decompress_stdlib();
   static double mp_ext(char *const str, void *const p_list);
+  static bool *abort_ptr(bool *const ptr=0);
 
   template<typename T>
   void _gmic(const char *const commands_line,
@@ -365,6 +367,7 @@ struct gmic {
   static const char *native_commands_names[];
   static gmic_image<int> native_commands_inds;
   static gmic_image<char> stdlib;
+  static gmic_list<void*> list_abort_ptr;
 
   gmic_list<char> *const commands, *const commands_names, *const commands_has_arguments,
     *const _variables, *const _variables_names, **const variables, **const variables_names,
