@@ -167,11 +167,17 @@ static struct cimg_is_abort {
   cimg_is_abort():value(false),ptr(&value) {}
 } _cimg_is_abort;
 #define cimg_abort_test() if (*_cimg_is_abort.ptr) throw CImgAbortException()
+#endif // #ifdef cimg_use_abort
+
+// #ifdef cimg_use_abort
+// inline bool *gmic_abort_ptr(bool *const p_is_abort);
+// #define cimg_abort_init bool *const gmic_is_abort = ::gmic_abort_ptr(0)
+// #define cimg_abort_test if (*gmic_is_abort) throw CImgAbortException()
+// #endif // #ifdef cimg_use_abort
 
 inline double gmic_mp_ext(char *const str, void *const p_list);
 #define cimg_mp_ext_function(str) return ::gmic_mp_ext(str._data,&mp.listout)
 
-#endif // #ifdef cimg_use_abort
 #ifndef cimg_display
 #define cimg_display 0
 #endif // #ifndef cimg_display
@@ -187,6 +193,7 @@ inline double gmic_mp_ext(char *const str, void *const p_list);
 #elif cimg_OS==1
 #include <cerrno>
 #include <sys/resource.h>
+#include <sys/syscall.h>
 #include <signal.h>
 #endif // #if cimg_OS==2
 
@@ -249,6 +256,7 @@ struct gmic {
   static unsigned int strescape(const char *const str, char *const res);
   static const gmic_image<char>& decompress_stdlib();
   static double mp_ext(char *const str, void *const p_list);
+  static bool *abort_ptr(bool *const p_is_abort);
 
   template<typename T>
   void _gmic(const char *const commands_line,
@@ -365,6 +373,7 @@ struct gmic {
   static const char *native_commands_names[];
   static gmic_image<int> native_commands_inds;
   static gmic_image<char> stdlib;
+  static gmic_list<void*> list_p_is_abort;
 
   gmic_list<char> *const commands, *const commands_names, *const commands_has_arguments,
     *const _variables, *const _variables_names, **const variables, **const variables_names,
@@ -413,6 +422,7 @@ struct gmic_exception {
 };
 
 inline double gmic_mp_ext(char *const str, void *const p_list) { return gmic::mp_ext(str,p_list); }
+inline bool *gmic_abort_ptr(bool *const p_is_abort) { return gmic::abort_ptr(p_is_abort); }
 
 #endif // #ifndef gmic_version
 

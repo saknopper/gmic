@@ -2220,6 +2220,29 @@ double gmic::mp_ext(char *const str, void *const p_list) {
   return res;
 }
 
+// Manage correspondence between abort pointers and thread ids.
+CImgList<void*> gmic::list_p_is_abort = CImgList<void*>();
+bool *gmic::abort_ptr(bool *const p_is_abort) {
+#if cimg_OS==1
+  const long tid = (long)syscall(SYS_gettid);
+#elif cimg_OS==2
+  const long tid = (long)GetCurrentThreadId();
+#else
+  const long tid = 0;
+#endif
+  int ind = -1;
+  cimglist_for(list_p_is_abort,l)
+    if (list_p_is_abort(l,0)==(void*)tid) { ind = l; break; }
+  if (p_is_abort) { // Set pointer
+    if (ind>=0) list_p_is_abort(ind,1) = (void*)p_is_abort;
+    else CImg<void*>::vector((void*)tid,(void*)p_is_abort).move_to(list_p_is_abort);
+    return p_is_abort;
+  }
+  // Get pointer
+  static bool _is_abort;
+  return ind<0?&_is_abort:(bool*)list_p_is_abort(ind,1);
+}
+
 // Manage mutexes.
 struct _gmic_mutex {
 #if cimg_OS==2
@@ -4586,6 +4609,7 @@ gmic& gmic::_run(const gmic_list<char>& commands_line,
   if (p_progress) progress = p_progress; else { _progress = -1; progress = &_progress; }
   if (p_is_abort) is_abort = p_is_abort; else { _is_abort = false; is_abort = &_is_abort; }
   is_abort_thread = false;
+  abort_ptr(is_abort);
   *progress = -1;
   cimglist_for(commands_line,l) {
     const char *it = commands_line[l].data();
