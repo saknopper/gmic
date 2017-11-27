@@ -54,9 +54,6 @@
 #undef max
 
 // Define default pixel type.
-#ifndef gmic_pixel_type
-#define gmic_pixel_type float
-#endif
 #define __s_gmic_pixel_type(s) #s
 #define _s_gmic_pixel_type(s) __s_gmic_pixel_type(s)
 #define s_gmic_pixel_type _s_gmic_pixel_type(gmic_pixel_type)
