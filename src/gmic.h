@@ -166,7 +166,7 @@ static struct cimg_is_abort {
   bool value, *ptr;
   cimg_is_abort():value(false),ptr(&value) {}
 } _cimg_is_abort;
-#define cimg_abort_test() if (*_cimg_is_abort.ptr) throw CImgAbortException()
+#define cimg_abort_test if (*_cimg_is_abort.ptr) throw CImgAbortException()
 #endif // #ifdef cimg_use_abort
 
 // #ifdef cimg_use_abort
