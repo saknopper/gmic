@@ -2217,7 +2217,9 @@ double gmic::mp_ext(char *const str, void *const p_list) {
 // Manage correspondence between abort pointers and thread ids.
 CImgList<void*> gmic::list_p_is_abort = CImgList<void*>();
 bool *gmic::abort_ptr(bool *const p_is_abort) {
-#if cimg_OS==1
+#if defined(__MACOSX__) || defined(__APPLE__)
+  const long tid = (long)getpid();
+#elif cimg_OS==1
   const long tid = (long)syscall(SYS_gettid);
 #elif cimg_OS==2
   const long tid = (long)GetCurrentThreadId();
@@ -2548,7 +2550,9 @@ gmic::~gmic() {
 #endif
 
   cimg::mutex(21);
-#if cimg_OS==1
+#if defined(__MACOSX__) || defined(__APPLE__)
+  const long tid = (long)getpid();
+#elif cimg_OS==1
   const long tid = (long)syscall(SYS_gettid);
 #elif cimg_OS==2
   const long tid = (long)GetCurrentThreadId();
