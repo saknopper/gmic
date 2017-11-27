@@ -2294,6 +2294,7 @@ static DWORD WINAPI gmic_parallel(void *arg)
   _gmic_parallel<T> &st = *(_gmic_parallel<T>*)arg;
   try {
     unsigned int pos = 0;
+    st.gmic_instance.abort_ptr(st.gmic_instance.is_abort);
     st.gmic_instance.is_debug_info = false;
     st.gmic_instance._run(st.commands_line,pos,*st.images,*st.images_names,
                           *st.parent_images,*st.parent_images_names,
