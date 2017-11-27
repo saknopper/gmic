@@ -32292,8 +32292,8 @@ fx_rorschach :
 
 #@gui Satin : fx_satin, fx_satin(1)
 #@gui : Iterations = int(20,4,128)
-#@gui : Smoothness (%) = float(1.5,0,10)
-#@gui : Seed = int(256,0,65535)
+#@gui : Smoothness (%) = float(1,0,5)
+#@gui : Seed = int(0,0,65535)
 #@gui : sep = separator()
 #@gui : Dark color = color(0,0,0,255)
 #@gui : Light color = color(255,255,255,255)
@@ -32301,7 +32301,7 @@ fx_rorschach :
 #@gui : sep = separator()
 #@gui : Brightness (%) = float(0,-100,100)
 #@gui : Contrast (%) = float(0,-100,100)
-#@gui : Gamma (%) = float(-30,-100,100)
+#@gui : Gamma (%) = float(-50,-100,100)
 #@gui : Hue (%) = float(0,-100,100)
 #@gui : Saturation (%) = float(0,-100,100)
 #@gui : sep = separator(), note = note{"This filter has been inspired by <a href="https://fence-post.deviantart.com/art/Satin-Texture-in-GIMP-46937633">this tutorial</a> from DeviantArt user <i>fence-post</i>."}
