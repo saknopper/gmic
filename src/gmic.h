@@ -161,19 +161,19 @@ namespace cimg_library {
 #endif
 #define cimg_plugin "gmic.cpp"
 
-#ifdef cimg_use_abort
-static struct cimg_is_abort {
-  bool value, *ptr;
-  cimg_is_abort():value(false),ptr(&value) {}
-} _cimg_is_abort;
-#define cimg_abort_test if (*_cimg_is_abort.ptr) throw CImgAbortException()
-#endif // #ifdef cimg_use_abort
-
 // #ifdef cimg_use_abort
-// inline bool *gmic_abort_ptr(bool *const p_is_abort);
-// #define cimg_abort_init bool *const gmic_is_abort = ::gmic_abort_ptr(0)
-// #define cimg_abort_test if (*gmic_is_abort) throw CImgAbortException()
+// static struct cimg_is_abort {
+//   bool value, *ptr;
+//   cimg_is_abort():value(false),ptr(&value) {}
+// } _cimg_is_abort;
+// #define cimg_abort_test if (*_cimg_is_abort.ptr) throw CImgAbortException()
 // #endif // #ifdef cimg_use_abort
+
+#ifdef cimg_use_abort
+inline bool *gmic_abort_ptr(bool *const p_is_abort);
+#define cimg_abort_init bool *const gmic_is_abort = ::gmic_abort_ptr(0)
+#define cimg_abort_test if (*gmic_is_abort) throw CImgAbortException()
+#endif // #ifdef cimg_use_abort
 
 inline double gmic_mp_ext(char *const str, void *const p_list);
 #define cimg_mp_ext_function(str) return ::gmic_mp_ext(str._data,&mp.listout)

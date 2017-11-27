@@ -4727,10 +4727,6 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
     // Begin command line parsing.
     if (!commands_line && is_start) { print(images,0,"Start G'MIC interpreter."); is_start = false; }
     while (position<commands_line.size() && !is_quit && !is_return) {
-
-#ifdef cimg_use_abort
-      _cimg_is_abort.ptr = is_abort;
-#endif // #ifdef cimg_use_abort
       const bool is_first_item = !position;
 
       // Process debug info.
