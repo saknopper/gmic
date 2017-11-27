@@ -42,6 +42,7 @@
 
 // Include necessary header files.
 //--------------------------------
+#define gmic_gimp_gtk
 #include "gmic.h"
 #include "gmic_stdlib.h"
 #include <pthread.h>
