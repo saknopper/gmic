@@ -340,7 +340,8 @@ cli:
 
 cli_s:
 ifeq ($(OS),Darwin)
-	c++ -o gmic gmic.cpp -Dgmic_cli -Dgmic_build -Dcimg_use_zlib -I/opt/local/include  -Dgmic_prerelease=\"$(PRERELEASE_CFLAGS)\" -std=c++11 -stdlib=libc++ -Dcimg_use_abort -Dcimg_use_png -Dcimg_use_jpeg -Dcimg_use_tiff -I/opt/local/include  -Dcimg_use_curl -I/opt/local/include  -Dcimg_use_fftw3 -I/opt/local/include  -Dgmic_is_parallel -Dcimg_display=1 -I/opt/local/include -O2 -mmacosx-version-min=10.7 -L/tmp/skl/Gimp.app/Contents/Resources/lib -lpng -lz -ljpeg  -ltiff -lcurl -lfftw3  -lfftw3_threads -lpthread -lHalf -L/usr/X11R6/lib -lX11 -lpthread
+	c++ -o gmic_cli.o -c gmic.cpp -Dgmic_build -Dcimg_use_zlib -I/opt/local/include -Dgmic_prerelease=\"$(PRERELEASE_CFLAGS)\" -std=c++11 -stdlib=libc++ -Dcimg_use_abort -Dcimg_use_png -Dcimg_use_jpeg -Dcimg_use_tiff -I/opt/local/include  -Dcimg_use_curl -I/opt/local/include -Dcimg_use_fftw3 -I/opt/local/include -Dgmic_is_parallel -Dcimg_display=1 -I/opt/local/include -O2 -mmacosx-version-min=10.7
+	c++ -o gmic gmic_cli.cpp -Dgmic_build -Dcimg_use_zlib -I/opt/local/include  -Dgmic_prerelease=\"$(PRERELEASE_CFLAGS)\" -std=c++11 -stdlib=libc++ -Dcimg_use_abort -Dcimg_use_png -Dcimg_use_jpeg -Dcimg_use_tiff -I/opt/local/include  -Dcimg_use_curl -I/opt/local/include  -Dcimg_use_fftw3 -I/opt/local/include  -Dgmic_is_parallel -Dcimg_display=1 -I/opt/local/include -O2 -mmacosx-version-min=10.7 -L/tmp/skl/Gimp.app/Contents/Resources/lib -lpng -lz -ljpeg  -ltiff -lcurl -lfftw3  -lfftw3_threads -lpthread -lHalf -L/usr/X11R6/lib -lX11 -lpthread
 	$(STRIP) gmic$(EXE)
 endif
 
@@ -349,7 +350,7 @@ debug:
 
 _cli: check_versions gmic.cpp gmic.h gmic_stdlib.h CImg.h
 	$(CXX) -o gmic_cli.o -c gmic.cpp $(CFLAGS)
-	$(CXX) -o gmic gmic.cpp gmic_cli.o -Dgmic_cli $(CFLAGS) $(LIBS)
+	$(CXX) -o gmic gmic_cli.cpp gmic_cli.o $(CFLAGS) $(LIBS)
 
 # CLI (static)
 #-------------
@@ -540,7 +541,7 @@ _allshared: libgmic_shared.o
 	$(CXX) -shared -Wl,-soname,libgmic_shared.so.$(VERSION1) -o libgmic_shared.so libgmic_shared.o $(LIBS)
 	$(CXX) -o use_libgmic use_libgmic.cpp -L. -lgmic_shared $(LIBS)
 
-	$(CXX) -o gmic gmic.cpp -Dgmic_cli $(CFLAGS) -lgmic_shared $(LIBS)
+	$(CXX) -o gmic gmic_cli.cpp $(CFLAGS) -lgmic_shared $(LIBS)
 	$(STRIP) gmic$(EXE)
 
 	$(CXX) -o gmic_gimp_gtk gmic_gimp_gtk.cpp `gimptool-2.0$(EXE) --cflags` `gimptool-2.0$(EXE) --libs` $(CFLAGS) -lgmic_shared $(LIBS)
