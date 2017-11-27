@@ -32305,7 +32305,7 @@ fx_rorschach :
 #@gui : Hue (%) = float(0,-100,100)
 #@gui : Saturation (%) = float(0,-100,100)
 #@gui : sep = separator(), note = note{"This filter has been inspired by <a href="https://fence-post.deviantart.com/art/Satin-Texture-in-GIMP-46937633">this tutorial</a> from DeviantArt user <i>fence-post</i>."}
-#@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2014/27/11</i>.</small>")
+#@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2017/11/27</i>.</small>")
 fx_satin :
   ($4,$8^$5,$9^$6,$10^$7,$11) srgb2rgb. r. 256,1,1,4,3 rgb2srgb.
   repeat {$!-1} l[$>]
@@ -32327,6 +32327,7 @@ fx_satin :
     pass. 1 map.. . rm.
     sh. 0,2 adjust_colors. ${13-17} rm.
   endl done
+  rm.
 
 #@gui Seamless turbulence : fx_seamless_turbulence, fx_seamless_turbulence(0)
 #@gui : Amplitude = float(15,0,30)
