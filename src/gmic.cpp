@@ -2230,17 +2230,20 @@ bool *gmic::abort_ptr(bool *const p_is_abort) {
 #else
   const long tid = 0;
 #endif
+  cimg::mutex(21);
+  bool *res = p_is_abort;
   int ind = -1;
   cimglist_for(list_p_is_abort,l)
     if (list_p_is_abort(l,0)==(void*)tid) { ind = l; break; }
   if (p_is_abort) { // Set pointer
     if (ind>=0) list_p_is_abort(ind,1) = (void*)p_is_abort;
     else CImg<void*>::vector((void*)tid,(void*)p_is_abort).move_to(list_p_is_abort);
-    return p_is_abort;
+  } else { // Get pointer
+    static bool _is_abort;
+    res = ind<0?&_is_abort:(bool*)list_p_is_abort(ind,1);
   }
-  // Get pointer
-  static bool _is_abort;
-  return ind<0?&_is_abort:(bool*)list_p_is_abort(ind,1);
+  cimg::mutex(21,0);
+  return res;
 }
 
 // Manage mutexes.
@@ -2549,6 +2552,21 @@ gmic::~gmic() {
   CImgDisplay *const _display_windows = (CImgDisplay*)display_windows;
   delete[] _display_windows;
 #endif
+
+  cimg::mutex(21);
+#if cimg_OS==1
+  const long tid = (long)syscall(SYS_gettid);
+#elif cimg_OS==2
+  const long tid = (long)GetCurrentThreadId();
+#else
+  const long tid = 0;
+#endif
+  int ind = -1;
+  cimglist_for(list_p_is_abort,l)
+    if (list_p_is_abort(l,0)==(void*)tid) { ind = l; break; }
+  if (ind>=0) list_p_is_abort.remove(ind);
+  cimg::mutex(21,0);
+
   delete[] commands;
   delete[] commands_names;
   delete[] commands_has_arguments;
