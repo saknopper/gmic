@@ -338,13 +338,6 @@ cli:
 	$(MAKE) "CFLAGS+=$(GMIC_CLI_CFLAGS) $(OPT_CFLAGS)" "LIBS+=$(GMIC_CLI_LIBS)" _cli
 	$(STRIP) gmic$(EXE)
 
-cli_s:
-ifeq ($(OS),Darwin)
-	c++ -o gmic_cli.o -c gmic.cpp -Dgmic_build -Dcimg_use_zlib -I/opt/local/include -Dgmic_prerelease=\"$(PRERELEASE_CFLAGS)\" -std=c++11 -stdlib=libc++ -Dcimg_use_abort -Dcimg_use_png -Dcimg_use_jpeg -Dcimg_use_tiff -I/opt/local/include  -Dcimg_use_curl -I/opt/local/include -Dcimg_use_fftw3 -I/opt/local/include -Dgmic_is_parallel -Dcimg_display=1 -I/opt/local/include -O2 -mmacosx-version-min=10.7
-	c++ -o gmic gmic_cli.cpp -Dgmic_build -Dcimg_use_zlib -I/opt/local/include  -Dgmic_prerelease=\"$(PRERELEASE_CFLAGS)\" -std=c++11 -stdlib=libc++ -Dcimg_use_abort -Dcimg_use_png -Dcimg_use_jpeg -Dcimg_use_tiff -I/opt/local/include  -Dcimg_use_curl -I/opt/local/include  -Dcimg_use_fftw3 -I/opt/local/include  -Dgmic_is_parallel -Dcimg_display=1 -I/opt/local/include -O2 -mmacosx-version-min=10.7 -L/tmp/skl/Gimp.app/Contents/Resources/lib -lpng -lz -ljpeg  -ltiff -lcurl -lfftw3  -lfftw3_threads -lpthread -lHalf -L/usr/X11R6/lib -lX11 -lpthread
-	$(STRIP) gmic$(EXE)
-endif
-
 debug:
 	$(MAKE) "CFLAGS+=$(GMIC_CLI_CFLAGS) $(DEBUG_CFLAGS)" "LIBS+=$(GMIC_CLI_LIBS)" _cli
 
