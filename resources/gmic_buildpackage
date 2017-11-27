@@ -395,7 +395,7 @@ mkdir $DIR
 cp -Lrf COPYING README $DIR
 mkdir $DIR/src
 cd src
-cp -Lrf Makefile CImg.h gmic.cpp gmic.h gmic_stdlib.h gmic_stdlib.gmic gmic_gimp_gtk.cpp gmic_in_script.scm use_libgmic.cpp gmic_libc.cpp gmic_libc.h use_libcgmic.c $DIR/src
+cp -Lrf Makefile CImg.h gmic.cpp gmic.h gmic_stdlib.h gmic_stdlib.gmic gmic_cli.cpp gmic_gimp_gtk.cpp gmic_in_script.scm use_libgmic.cpp gmic_libc.cpp gmic_libc.h use_libcgmic.c $DIR/src
 touch $DIR/src/gmic_stdlib.h
 cd ..
 mkdir $DIR/man
