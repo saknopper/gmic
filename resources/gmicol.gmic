@@ -614,6 +614,7 @@ gmicol_light_leaks_preview :
 #@web clone("Random color ellipses")
 #@web clone("Resynthetize texture [FFT]")
 #@web clone("Resynthetize texture [patch-based]")
+#@web clone("Satin")
 #@web clone("Seamless turbulence")
 #@web clone("Shock waves")
 #@web clone("Sponge")

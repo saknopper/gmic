@@ -32290,6 +32290,47 @@ fx_rorschach :
     fi
   endl done
 
+#@gui Satin : fx_satin, fx_satin(1)
+#@gui : Iterations = int(15,4,128)
+#@gui : Smoothness (%) = float(0.25,0,10)
+#@gui : Wave amplitude = float(0,0,100)
+#@gui : Wave frequency = float(5,0,40)
+#@gui : sep = separator()
+#@gui : Seed = int(256,0,65535)
+#@gui : First color = color(255,255,255,255)
+#@gui : Second color = color(0,0,0,255)
+#@gui : Stretch contrast = bool(0)
+#@gui : sep = separator()
+#@gui : Brightness (%) = float(0,-100,100)
+#@gui : Contrast (%) = float(0,-100,100)
+#@gui : Gamma (%) = float(-30,-100,100)
+#@gui : Hue (%) = float(0,-100,100)
+#@gui : Saturation (%) = float(0,-100,100)
+#@gui : sep = separator(), note = note{"This filter has been inspired by <a href="https://fence-post.deviantart.com/art/Satin-Texture-in-GIMP-46937633">this tutorial</a> from DeviantArt user <i>fence-post</i>."}
+#@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2014/27/11</i>.</small>")
+fx_satin :
+  ($6,$10^$7,$11^$8,$12^$9,$13) srgb2rgb. r. 256,1,1,4,3 rgb2srgb.
+  repeat {$!-1} l[$>]
+    srand $5 channels 0 f 0
+    repeat $1
+      100%,100%,1,1,"init(
+           A = u([0,0],[w,h]-1);
+           B = u([0,0],[w,h]-1);
+           N = [0,-1,1,0]*(B - A);
+           D = A + N;
+           C = B + N;
+           abc = solve([A,1,B,1,C,1,D,1],[0,255,255,0]);
+         );
+         dot(abc,[x,y,1])"
+      c. 0,255 -- abs
+    done
+    b $2% n 0,255
+    if $3 +* {$4%} sin. *. $3 + n 0,255 fi
+    if $14 normalize_local , fi
+    pass. 1 map.. . rm.
+    sh. 0,2 adjust_colors. ${15-19} rm.
+  endl done
+
 #@gui Seamless turbulence : fx_seamless_turbulence, fx_seamless_turbulence(0)
 #@gui : Amplitude = float(15,0,30)
 #@gui : Smoothness = float(20,0,40)
