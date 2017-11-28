@@ -2218,9 +2218,9 @@ double gmic::mp_ext(char *const str, void *const p_list) {
 CImgList<void*> gmic::list_p_is_abort = CImgList<void*>();
 bool *gmic::abort_ptr(bool *const p_is_abort) {
 #if defined(__MACOSX__) || defined(__APPLE__)
-  void* tid = (void*)getpid();
+  void* tid = (void*)(cimg_ulong)getpid();
 #elif cimg_OS==1
-  void* tid = (void*)syscall(SYS_gettid);
+  void* tid = (void*)(cimg_ulong)syscall(SYS_gettid);
 #elif cimg_OS==2
   void* tid = (void*)(cimg_ulong)GetCurrentThreadId();
 #else
@@ -2551,9 +2551,9 @@ gmic::~gmic() {
 
   cimg::mutex(21);
 #if defined(__MACOSX__) || defined(__APPLE__)
-  void* tid = (void*)getpid();
+  void* tid = (void*)(cimg_ulong)getpid();
 #elif cimg_OS==1
-  void* tid = (void*)syscall(SYS_gettid);
+  void* tid = (void*)(cimg_ulong)syscall(SYS_gettid);
 #elif cimg_OS==2
   void* tid = (void*)(cimg_ulong)GetCurrentThreadId();
 #else
