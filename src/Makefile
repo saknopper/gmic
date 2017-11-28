@@ -124,7 +124,7 @@ PIC =
 endif
 
 ifneq (,$(wildcard ../../gmic/src))
-ZART_GMIC_PATH=../../gmic/src
+ZART_GMIC_PATH=../gmic/src
 else
 ZART_GMIC_PATH=../src
 endif
@@ -600,7 +600,6 @@ gmic_qt_files:
 # ZArt
 #-----
 zart: check_versions zart_files CImg.h gmic_stdlib.h
-	@if [ ! -d ../zart ]; then ln -fs ../gmic-community/zart ..; fi
 ifeq ($(OS),Darwin)
 	cd ../zart && $(QMAKE) CONFIG+=release GMIC_PATH=$(ZART_GMIC_PATH) zart.pro && $(MAKE) && $(STRIP) zart.app/Contents/MacOS/zart
 else
@@ -610,23 +609,23 @@ endif
 
 zart_files:
 	@if [ ! -d ../zart ]; then \
-	  if [ ! -d ../../gmic-community/zart ]; then \
+	  if [ ! -d ../../zart ]; then \
 	    echo "**"; \
-	    echo "** Warning: folder 'gmic-community/zart' was not found !"; \
+	    echo "** Warning: folder 'zart' was not found !"; \
 	    echo "** It is mandatory to compile 'zart'."; \
-            echo "** Trying to retrieve it, with: $$ cd ../../ && git clone https://github.com/dtschump/gmic-community.git"; \
+            echo "** Trying to retrieve it, with: $$ cd ../../ && git clone https://github.com/c-koi/zart.git"; \
 	    echo "**"; \
-	    if cd ../../ && git clone https://github.com/dtschump/gmic-community.git; then \
+	    if cd ../../ && git clone https://github.com/c-koi/zart.git; then \
 	      echo "**"; \
               echo "** Success !"; \
 	      echo "**"; \
 	    else \
               echo "**"; \
-              echo "** Fatal error: Failed to retrieve folder 'gmic-community/zart', compilation will probably ends shortly !"; \
+              echo "** Fatal error: Failed to retrieve folder 'zart', compilation will probably ends shortly !"; \
               echo "**"; \
 	    fi; \
 	  fi; \
-	  if [ -d ../../gmic-community/zart ]; then ln -fs ../gmic-community/zart ..; fi \
+	  if [ -d ../../zart ]; then ln -fs ../zart ..; fi \
 	fi
 
 # Get header files
@@ -797,7 +796,9 @@ distclean: clean
 
 clean:
 	rm -rf CImg.h gmic_stdlib.h gmic$(EXE) gmic_gimp_gtk$(EXE) use_libgmic$(EXE) use_libcgmic$(EXE) use_libcgmic_static$(EXE) gmic*.o libgmic* libcgmic* *~
+	@if [ -h ../zart ]; then cd ../zart && $(MAKE) clean; fi
 	@if [ -h ../zart ]; then rm -f ../zart; fi
+	@if [ -h ../gmic-qt ]; then cd ../gmic-qt && $(MAKE) clean; fi
 	@if [ -h ../gmic-qt ]; then rm -f ../gmic-qt; fi
 	@if [ -h gmic_libc.h ]; then rm -f gmic_libc.h; fi
 	@if [ -h gmic_libc.cpp ]; then rm -f gmic_libc.cpp; fi
