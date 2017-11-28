@@ -58,7 +58,7 @@ if [ "$OSTYPE" == "msys" ]; then
     cp -rf /e/work/src/gmic-qt $HOME
     cp -rf /e/work/src/gmic/src $HOME/gmic
     cp -rf /e/work/src/gmic-community/libcgmic/*gmic* $HOME/gmic/src
-    cp -rf /e/work/src/gmic-community/zart $HOME/gmic/
+    cp -rf /e/work/src/zart $HOME/gmic/
     cp -rf /e/work/src/gmic/resources/gmic_film_cluts.gmz $HOME/build${BITS}-gimp-gtk
     cp -rf /e/work/src/gmic/resources/gmic_film_cluts.gmz $HOME/build${BITS}-gimp-qt
 
@@ -308,7 +308,7 @@ cd gmic/src/
 cp -f gmic_stdlib.gmic ../html/
 cp -f gmic_stdlib.gmic ../html/gmic_stdlib.$SVERSION
 make stdlib CImg.h
-ln -fs ../gmic-community/zart ..
+ln -fs ../zart ..
 ln -fs ../gmic-qt ..
 ln -fs ../../gmic-community/libcgmic/gmic_libc.cpp .
 ln -fs ../../gmic-community/libcgmic/gmic_libc.h .
