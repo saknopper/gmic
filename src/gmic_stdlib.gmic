@@ -681,8 +681,8 @@ _help_usage :
 \n       "$c"++"$n", "$c"--"$n", "$c"+="$n", "$c"-="$n", "$c"*="$n", "$c"/="$n", "$c"%="$n", "$c"&="$n", "$c"|="$n", "$c"^="$n", "$c">>="$n", "$c"<<="$n" (in-place operators).
 \n
 \n    _ "${g}"Usual math functions:"$n" "${c}"abs(), acos(), arg(), argkth(), argmax(), argmin(), asin(), atan(),
-\n       atan2(), bool(), cbrt(), ceil(), cos(), cosh(), cut(), exp(), fact(), fibo(), floor(), gauss(), int(), isval(),
-\n       isnan(), isinf(), isint(), isbool(), isfile(), isdir(), isin(), kth(), log(), log2(), log10(),
+\n       atan2(), avg(), bool(), cbrt(), ceil(), cos(), cosh(), cut(), exp(), fact(), fibo(), floor(), gauss(), int(),
+\n       isval(), isnan(), isinf(), isint(), isbool(), isfile(), isdir(), isin(), kth(), log(), log2(), log10(),
 \n       max(), mean(), med(), min(), narg(), prod(), rol()"$n" (left bit rotation),
 \n       "${c}"ror()"$n" (right bit rotation)"${c}", round(), sign(), sin(), sinc(), sinh(), sqrt(), std(),
 \n       srand(_seed), sum(), tan(), tanh(), variance(), xor()"$n".
