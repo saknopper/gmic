@@ -7418,6 +7418,26 @@ transfer_colors : skip ${1=0}
 _transfer_colors :  # Check transfer_colors performance.
   repeat $! l[$>] rgb2ycbcr s c histogram 256,0,255 a c -dg 300,200 endl done
 
+#@cli transfer_hist : [ref_image],x0[%],y0[%],x1[%],y1[%]
+#@cli : Process selected images to linearly match cropped histogram of current image with the one from image [ref_image].
+#@cli : Default values: 'x0=0', 'y0=0', 'x1=100%', 'y1=100%'.
+#@cli : $ image.jpg sample lena +transfer_hist[0] [1]
+transfer_hist : skip "${2=0},${3=0},${4=100%},${5=100%}"
+  e[^-1] "Process image$? to match histogram of reference image $1, with crop coordinates ($2,$3)-($4,$5)."
+  v - pass$1 repeat {$!-1} l[$>,-1]
+    +z $2,$3,$4,$5
+    repeat {s}
+      sh[-2,-1] $>
+      avg1,std1={-2,[ia,sqrt(iv)]}
+      avg2,std2={-1,[ia,sqrt(iv)]}
+      a={$std2/$std1}
+      b={$avg2-$a*$avg1}
+      rm[-2,-1]
+      sh[0] $> *. $a +. $b rm.
+    done
+    rm[-2,-1]
+  endl done rm. v +
+
 #@cli transfer_rgb : [target],_gamma>=0,_regularization>=0,_luminosity_constraints>=0,_rgb_resolution>=0,_is_constraints={ 0 | 1 }
 #@cli : Transfer colors from selected source images to selected reference image (given as argument).
 #@cli : 'gamma' determines the importance of color occurences in the matching process (0=none to 1=huge).

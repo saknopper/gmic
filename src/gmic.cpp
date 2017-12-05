@@ -14198,6 +14198,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
           if (is_verbose) {
             unsigned int count_total = 0;
             for (unsigned int l = 0; l<gmic_comslots; ++l) count_total+=commands[l].size();
+            cimg::mutex(29);
             if (count_new && count_replaced)
               std::fprintf(cimg::output()," (%u new, %u replaced, total: %u).",
                            count_new,count_replaced,count_total);
