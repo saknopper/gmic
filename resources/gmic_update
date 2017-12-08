@@ -10,3 +10,5 @@ cd $HOME/work/src/gmic-community
 git pull
 cd $HOME/work/src/gmic-qt
 git pull
+cd $HOME/work/src/zart
+git pull

@@ -282,7 +282,7 @@ fi
 # Build package from main machine (ELARA).
 #-----------------------------------------
 cd ${HOME}/work/src
-rm -rf gmic-qt
+rm -rf gmic-qt zart
 git clone git@github.com:c-koi/gmic-qt.git
 RELEASE0=`grep "#define gmic_version" gmic/src/gmic.h | tail -c5`
 RELEASE1=`echo $RELEASE0 | head -c1`
@@ -307,7 +307,7 @@ echo " - Create 'gmic_stdlib.h' file"
 cd gmic/src/
 cp -f gmic_stdlib.gmic ../html/
 cp -f gmic_stdlib.gmic ../html/gmic_stdlib.$SVERSION
-make stdlib CImg.h
+make do_gmic_stdlib.h do_gmic_gimp_gtk.h CImg.h
 ln -fs ../zart ..
 ln -fs ../gmic-qt ..
 ln -fs ../../gmic-community/libcgmic/gmic_libc.cpp .
