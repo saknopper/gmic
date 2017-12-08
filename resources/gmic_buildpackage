@@ -80,7 +80,7 @@ if [ "$OSTYPE" == "msys" ]; then
         mv /tmp/Makefile Makefile
     else SUFFIX=_pre;
     fi
-    sed "s/rm -rf CImg.h gmic_stdlib.h /rm -rf /" Makefile > /tmp/Makefile
+    sed "s/rm -rf CImg.h gmic_stdlib.h gmic_gimp_gtk.h /rm -rf /" Makefile > /tmp/Makefile
     mv /tmp/Makefile Makefile
 
     cd $HOME
@@ -396,8 +396,9 @@ mkdir $DIR
 cp -Lrf COPYING README $DIR
 mkdir $DIR/src
 cd src
-cp -Lrf Makefile CImg.h gmic.cpp gmic.h gmic_stdlib.h gmic_stdlib.gmic gmic_cli.cpp gmic_gimp_gtk.cpp gmic_in_script.scm use_libgmic.cpp gmic_libc.cpp gmic_libc.h use_libcgmic.c $DIR/src
+cp -Lrf Makefile CImg.h gmic.cpp gmic.h gmic_stdlib.h gmic_gimp_gtk.h gmic_stdlib.gmic gmic_cli.cpp gmic_gimp_gtk.cpp gmic_in_script.scm use_libgmic.cpp gmic_libc.cpp gmic_libc.h use_libcgmic.c $DIR/src
 touch $DIR/src/gmic_stdlib.h
+touch $DIR/src/gmic_gimp_gtk.h
 cd ..
 mkdir $DIR/man
 cd man
@@ -438,7 +439,7 @@ if [ "$1" == "final" ]; then
     sed "s/PRERELEASE = /NO_PRERELEASE = /" Makefile > /tmp/Makefile
     mv /tmp/Makefile Makefile
 fi
-sed "s/rm -rf CImg.h gmic_stdlib.h /rm -rf /" Makefile > /tmp/Makefile
+sed "s/rm -rf CImg.h gmic_stdlib.h gmic_gimp_gtk.h /rm -rf /" Makefile > /tmp/Makefile
 mv /tmp/Makefile Makefile
 make clean
 rm -f gmic_buildpackage
