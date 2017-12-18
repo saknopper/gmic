@@ -8741,12 +8741,18 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
 
         // Set image name.
         if (!is_get && !std::strcmp("name",command)) {
-          gmic_substitute_args(false);
-          print(images,0,"Set name of image%s to '%s'.",
-                gmic_selection.data(),gmic_argument_text_printed());
-          CImg<char>::string(argument).move_to(name);
-          strreplace_fw(name);
-          cimg_forY(selection,l) images_names[selection[l]].assign(name);
+          if (selection.height()>1)
+            g_list_c = CImg<char>::string(argument).get_split(CImg<char>::vector(','),0,false);
+          else g_list_c.assign(CImg<char>::string(argument));
+          print(images,0,"Set name%s of image%s to '%s'.",
+                selection.height()>1?"s":"",gmic_selection.data(),gmic_argument_text_printed());
+          cimglist_for(g_list_c,l) {
+            if (g_list_c[l].back()) g_list_c[l].resize(1,g_list_c[l].height()+1,1,1,0);
+            strreplace_fw(g_list_c[l]);
+          }
+          cimg_forY(selection,l)
+            images_names[selection[l]].assign(g_list_c[l%g_list_c.width()]);
+          g_list_c.assign();
           ++position; continue;
         }
 
