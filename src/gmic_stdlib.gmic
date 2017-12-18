@@ -5120,8 +5120,10 @@ _update_tutorial_html :
 
 #@cli nm : eq. to 'name'. : (+)
 
-#@cli name : "name" : (+)
-#@cli : Set name of selected images.
+#@cli name : "name1","name2",... : (+)
+#@cli : Set names of selected images.
+#@cli : - If the selection contains a single image, then the command is considered to have a single argument (possibly containing comas).
+#@cli : - If the selection contains more than one image, each command argument defines a single image name.
 #@cli : (eq. to 'nm').
 #@cli : $ image.jpg name image blur[image] 2
 #@cli : $$
