@@ -5122,8 +5122,8 @@ _update_tutorial_html :
 
 #@cli name : "name1","name2",... : (+)
 #@cli : Set names of selected images.
-#@cli : - If the selection contains a single image, then the command is considered to have a single argument (possibly containing comas).
-#@cli : - If the selection contains more than one image, each command argument defines a single image name.
+#@cli : - If the selection contains a single image, then it is assumed the command has a single name argument (possibly containing multiple comas).
+#@cli : - If the selection contains more than one image, each command argument defines a single image name for each image of the selection.
 #@cli : (eq. to 'nm').
 #@cli : $ image.jpg name image blur[image] 2
 #@cli : $$
@@ -7386,7 +7386,7 @@ to_rgba :
 #@cli : Transfer colors of the specified reference image to selected images.
 #@cli : Default value: 'transfer_brightness=0'.
 #@cli : $ image.jpg +rand 0,255 +transfer_colors[0] [1],1
-transfer_colors : skip ${1=0}
+transfer_colors : skip ${2=0}
   e[^-1] "Transfer colors of image $1 to image$?."
   v - pass$1 0 mv. 0 to_rgb[0] to_colormode[^0] {max(3,${-max_s})} c 0,255   # Convert all images to RGB[A]
   repeat $! l[$>] split_opacity rgb2ycbcr[0] a c endl done                   # Perform RGB[A] to YCbCr[A] conversion.
@@ -10685,9 +10685,9 @@ histogram_nd : check $1>0 skip ${2=0%},${3=100%}
 
 #@cli histogram_cumul : _nb_levels>0,_is_normalized={ 0 | 1 },_val0[%],_val1[%]
 #@cli : Compute cumulative histogram of selected images.
-#@cli : Default values: 'nb_levels=256', 'is_normalized=0' and 'val0=val1=0'.
+#@cli : Default values: 'nb_levels=256', 'is_normalized=0', 'val0=0%' and 'val1=100%'.
 #@cli : $ image.jpg +histogram_cumul 256 histogram[0] 256 display_graph 400,300,3
-histogram_cumul : check ${1=256}>0 skip ${2=0} skip ${3=0},${4=0}
+histogram_cumul : check ${1=256}>0 skip ${2=0},${3=0%},${4=100%}
   arg 1+!$2,"normalized ",""
   e[^-1] "Compute "${}"cumulative histogram of image$?, using $1 levels."
   v - histogram $1,$3,$4 cumulate if $2 repeat $! /[$>] {$>,iM} done fi v +
