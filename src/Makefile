@@ -847,9 +847,9 @@ distclean: clean
 
 clean:
 	rm -rf CImg.h gmic_stdlib.h gmic_gimp_gtk.h gmic$(EXE) gmic_gimp_gtk$(EXE) use_libgmic$(EXE) use_libcgmic$(EXE) use_libcgmic_static$(EXE) gmic*.o libgmic* libcgmic* *~
-	@if [ -h ../zart ]; then cd ../zart && $(MAKE) clean; fi
+	@if [ -f ../zart/Makefile ]; then cd ../zart && $(MAKE) clean; fi
 	@if [ -h ../zart ]; then rm -f ../zart; fi
-	@if [ -h ../gmic-qt ]; then cd ../gmic-qt && $(MAKE) clean; fi
+	@if [ -f ../gmic-qt/Makefile ]; then cd ../gmic-qt && $(MAKE) clean; fi
 	@if [ -h ../gmic-qt ]; then rm -f ../gmic-qt; fi
 	@if [ -h gmic_libc.h ]; then rm -f gmic_libc.h; fi
 	@if [ -h gmic_libc.cpp ]; then rm -f gmic_libc.cpp; fi
