@@ -8748,7 +8748,8 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
           print(images,0,"Set name%s of image%s to '%s'.",
                 selection.height()>1?"s":"",gmic_selection.data(),gmic_argument_text_printed());
           cimglist_for(g_list_c,l) {
-            if (g_list_c[l].back()) g_list_c[l].resize(1,g_list_c[l].height()+1,1,1,0);
+            g_list_c[l].unroll('x');
+            if (g_list_c[l].back()) g_list_c[l].resize(g_list_c[l].width()+1,1,1,1,0);
             strreplace_fw(g_list_c[l]);
           }
           cimg_forY(selection,l)
