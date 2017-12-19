@@ -8271,8 +8271,8 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
               g_list_c.move_to(images_names,uind0);
             }
           }
-          if (exception._message) throw exception;
           g_list.assign(); g_list_c.assign();
+          if (exception._message) throw exception;
           continue;
         }
 
@@ -8743,8 +8743,8 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
         if (!is_get && !std::strcmp("name",command)) {
           gmic_substitute_args(true);
           if (selection.height()>1)
-            g_list_c = CImg<char>::string(argument).get_split(CImg<char>::vector(','),0,false);
-          else g_list_c.assign(CImg<char>::string(argument));
+            CImg<char>::string(argument).get_split(CImg<char>::vector(','),0,false).move_to(g_list_c);
+          else CImg<char>::string(argument).move_to(g_list_c);
           print(images,0,"Set name%s of image%s to '%s'.",
                 selection.height()>1?"s":"",gmic_selection.data(),gmic_argument_text_printed());
           cimglist_for(g_list_c,l) {
@@ -13400,8 +13400,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             debug_filename = previous_debug_filename;
             debug_line = previous_debug_line;
             is_return = false;
-            g_list.assign();
-            g_list_c.assign();
+            g_list.assign(); g_list_c.assign();
             if (has_arguments && !_is_noarg) ++position;
             if (exception._message) throw exception;
             continue;
