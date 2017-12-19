@@ -8741,6 +8741,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
 
         // Set image name.
         if (!is_get && !std::strcmp("name",command)) {
+          gmic_substitute_args(true);
           if (selection.height()>1)
             g_list_c = CImg<char>::string(argument).get_split(CImg<char>::vector(','),0,false);
           else g_list_c.assign(CImg<char>::string(argument));
