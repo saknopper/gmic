@@ -70,7 +70,6 @@ if [ "$OSTYPE" == "msys" ]; then
     RELEASE3=`echo $RELEASE0 | head -c3 | tail -c1`
     VERSION=$RELEASE1.$RELEASE2.$RELEASE3
     SVERSION=$RELEASE1$RELEASE2$RELEASE3
-    echo " - Release number : $VERSION$SUFFIX."
 
     if [ "$1" == "final" ]; then
         SUFFIX="";
@@ -80,6 +79,9 @@ if [ "$OSTYPE" == "msys" ]; then
         mv /tmp/Makefile Makefile
     else SUFFIX=_pre;
     fi
+
+    echo " - Release number : $VERSION$SUFFIX."
+
     sed "s/rm -rf CImg.h gmic_stdlib.h gmic_gimp_gtk.h /rm -rf /" Makefile > /tmp/Makefile
     mv /tmp/Makefile Makefile
 
