@@ -141,8 +141,8 @@ else
 STRIP = strip
 endif
 
-ifndef QMAKE_COM
-QMAKE_COM=qmake
+ifndef QMAKE
+QMAKE=qmake
 endif
 
 #--------------------------------------------------------
@@ -562,17 +562,17 @@ gmicol:
 gimp : gimp_qt
 
 gimp_qt: check_versions gmic_qt_files CImg.h gmic_stdlib.h
-	cd ../gmic-qt && $(QMAKE_COM) CONFIG+=release GMIC_PATH=$(QT_GMIC_PATH) PRERELEASE=$(PRERELEASE) HOST=gimp gmic_qt.pro && $(MAKE)
+	cd ../gmic-qt && $(QMAKE) CONFIG+=release GMIC_PATH=$(QT_GMIC_PATH) PRERELEASE=$(PRERELEASE) HOST=gimp gmic_qt.pro && $(MAKE)
 	@echo "Executable 'gmic_gimp_qt' has been successfully compiled in '../gmic-qt/'."
 
 krita : krita_qt
 
 krita_qt: check_versions gmic_qt_files CImg.h gmic_stdlib.h
-	cd ../gmic-qt && $(QMAKE_COM) CONFIG+=release GMIC_PATH=$(QT_GMIC_PATH) PRERELEASE=$(PRERELEASE) HOST=krita gmic_qt.pro && $(MAKE)
+	cd ../gmic-qt && $(QMAKE) CONFIG+=release GMIC_PATH=$(QT_GMIC_PATH) PRERELEASE=$(PRERELEASE) HOST=krita gmic_qt.pro && $(MAKE)
 	@echo "Executable 'gmic_krita_qt' has been successfully compiled in '../gmic-qt/'."
 
 gmic_qt: check_versions gmic_qt_files CImg.h gmic_stdlib.h
-	cd ../gmic-qt && $(QMAKE_COM) CONFIG+=release GMIC_PATH=$(QT_GMIC_PATH) PRERELEASE=$(PRERELEASE) HOST=none gmic_qt.pro && $(MAKE)
+	cd ../gmic-qt && $(QMAKE) CONFIG+=release GMIC_PATH=$(QT_GMIC_PATH) PRERELEASE=$(PRERELEASE) HOST=none gmic_qt.pro && $(MAKE)
 	@echo "Executable 'gmic_qt' has been successfully compiled in '../gmic-qt/'."
 
 gmic_qt_files:
@@ -601,9 +601,9 @@ gmic_qt_files:
 #-----
 zart: check_versions zart_files CImg.h gmic_stdlib.h
 ifeq ($(OS),Darwin)
-	cd ../zart && $(QMAKE_COM) CONFIG+=release GMIC_PATH=$(ZART_GMIC_PATH) zart.pro && $(MAKE) && $(STRIP) zart.app/Contents/MacOS/zart
+	cd ../zart && $(QMAKE) CONFIG+=release GMIC_PATH=$(ZART_GMIC_PATH) zart.pro && $(MAKE) && $(STRIP) zart.app/Contents/MacOS/zart
 else
-	cd ../zart && $(QMAKE_COM) CONFIG+=release GMIC_PATH=$(ZART_GMIC_PATH) zart.pro && $(MAKE) && $(STRIP) zart
+	cd ../zart && $(QMAKE) CONFIG+=release GMIC_PATH=$(ZART_GMIC_PATH) zart.pro && $(MAKE) && $(STRIP) zart
 endif
 	@echo "Executable 'zart' has been successfully compiled in '../zart/'."
 
