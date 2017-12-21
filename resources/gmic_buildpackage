@@ -255,6 +255,7 @@ if [ "$HOSTNAME" != "elara" ] ; then
     else
         sed "s/\$(MAKE) cli lib gimp_gtk gimp_qt krita_qt gmic_qt libc zart/\$(MAKE) cli lib gimp_gtk libc zart/g" Makefile > /tmp/Makefile && mv /tmp/Makefile Makefile
     fi
+    sed "s/\&\& \$(MAKE) clean//g" Makefile > /tmp/Makefile && mv /tmp/Makefile Makefile;  # Prevent 'qmake not found' bug when using dpkg-buildpackage, still don't know why.
 
     cd /tmp/$OUTDIR &&
         dpkg-buildpackage -d -j3 -rfakeroot;
