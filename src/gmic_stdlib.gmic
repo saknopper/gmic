@@ -29681,6 +29681,34 @@ fx_scanlines :
 fx_scanlines_preview :
   gui_split_preview "fx_scanlines $*",$-1
 
+#@gui Streak : fx_streak,fx_streak(1)
+#@gui : Mask color = color(255,0,0,255)
+#@gui : Step (%) = float(0,0,30)
+#@gui : Angle = float(0,0,360)
+#@gui : Propagation = choice(3,"Backward","Forward","Bidirectional [sharp]","Bidirectional [smooth]")
+#@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2017/12/22</i>.</small>")
+fx_streak :
+  repeat $! l[$>]
+    to_rgba
+    if {!$4} R,G,B,A=0 else R,G,B,A=${1-4} fi +select_color 0,$R,$G,$B,$A
+    if {$7==3} srgb2rgb.. fi
+    f.. "
+      const step = max(1,$5%*min(w,h));
+      const angle = $6*pi/180;
+      const dx = step*cos(angle);
+      const dy = step*sin(angle);
+      if (!i(#-1),I,
+        ixf = xf = x; iyf = yf = y; lf = 0; if ($7>=1, while (i(#-1,ixf=round(xf),iyf=round(yf)), ++lf; xf-=dx; yf-=dy)); # Forward
+        ixb = xb = x; iyb = yb = y; lb = 0; if ($7!=1, while (i(#-1,ixb=round(xb),iyb=round(yb)), ++lb; xb+=dx; yb+=dy)); # Backward
+        $7==0?I(ixb,iyb):
+        $7==1?I(ixf,iyf):
+        $7==2?(lf<lb?I(ixf,iyf):I(ixb,iyb)):
+        (lb*lb*I(ixf,iyf) + lf*lf*I(ixb,iyb))/(lb^2+lf^2);
+      )"
+    if {$7==3} rgb2srgb.. fi
+    rm.
+  endl done
+
 #@gui Visible watermark : fx_watermark_visible, fx_watermark_visible(0)
 #@gui : Text = text{"\\251 G'MIC"}
 #@gui : Opacity = float(0.4,0.1,0.9)
