@@ -491,6 +491,7 @@ gmicol_rotate :
 
 #@web clone("Random shade stripes")
 #@web clone("Scanlines")
+#@web clone("Streak")
 #@web clone("Visible watermark")
 #@web clone("Warp by intensity")
 
