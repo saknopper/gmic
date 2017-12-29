@@ -29191,7 +29191,7 @@ fx_blur_angular_preview :
 #@gui Blur [bloom] : fx_blur_bloom, fx_blur_bloom_preview(0)
 #@gui : Amplitude = float(1,0,10)
 #@gui : Ratio = float(2,0,5)
-#@gui : Iterations = int(5,0,10)
+#@gui : Iterations = int(5,0,100)
 #@gui : Operator = choice("Add","Max","Min")
 #@gui : Kernel = choice("Quasi-gaussian","Gaussian","Box","Triangle","Quadratic")
 #@gui : Normalize scales = bool(0)
