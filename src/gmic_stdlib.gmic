@@ -453,19 +453,19 @@ _help_usage :
 \n
 \n  - There are two different types of commands that can be run by the "${-GMIC}" interpreter:
 \n
-\n    . "${g}"Native commands"$n", are the hard-coded functionalities in the interpreter core. They are thus
+\n    . "${g}"Builtin commands"$n", are the hard-coded functionalities in the interpreter core. They are thus
 \n       compiled as binary code and run fast, most of the time. Omitting an argument when invoking a
-\n       native command is not permitted, except if all following arguments are also omitted.
+\n       builtin command is not permitted, except if all following arguments are also omitted.
 \n       For instance, invoking '"${c}"plasma 10,,5"$n"' is invalid but '"${c}"plasma 10"$n"' is correct.
-\n    . "${g}"Custom commands"$n", are defined as "${-GMIC}" pipelines of native or other custom commands.
-\n       They are interpreted by the "${-GMIC}" interpreter, and thus run a bit slower than native commands.
+\n    . "${g}"Custom commands"$n", are defined as "${-GMIC}" pipelines of builtin or other custom commands.
+\n       They are interpreted by the "${-GMIC}" interpreter, and thus run a bit slower than builtin commands.
 \n       Omitting arguments when invoking a custom command is permitted. For instance, expressions
 \n       '"${c}"flower ,,,100,,2"$n"' or '"${c}"flower ,"$n"' are correct.
 \n
 \n  - Most of the existing commands in "${-GMIC}" are actually defined as "${g}"custom commands"$n".
 \n
 \n  - A user can easily add its own custom commands to the "${-GMIC}" interpreter (see section
-\n     "${c}"'Adding custom commands"$n"' for more details). New native commands cannot be added
+\n     "${c}"'Adding custom commands"$n"' for more details). New builtin commands cannot be added
 \n     (unless you modify the "${-GMIC}" interpreter source code and recompile it)."
 
   _help_section "Input/output properties"
@@ -1073,7 +1073,7 @@ _help_usage :
 \n   command arguments are possible, they appear separated by '"$g"|"$n"'. An argument specified inside '"$g"[]"$n"'
 \n   or starting by '"${g}"_"$n"' is optional except when standing for an existing image "$c"[image]"$n", where '"${g}"image"$n"'
 \n   can be either an indice number or an image name. In this case, the '"$g"[]"$n"' characters are mandatory
-\n   when writing the item. A command marked with '"$g"(+)"$n"' is one of the "${g}"native"$n" commands. Note also that
+\n   when writing the item. A command marked with '"$g"(+)"$n"' is one of the "${g}"builtin"$n" commands. Note also that
 \n   all images that serve as illustrations in this reference documentation are normalized in "$g"[0,255]"$n"
 \n   before being displayed. You may need to do this explicitly (command '"${c}"normalize 0,255"$n"') if you
 \n   want to save and view images with the same aspect than those illustrated in the example codes."

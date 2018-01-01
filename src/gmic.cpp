@@ -2325,8 +2325,8 @@ static DWORD WINAPI gmic_parallel(void *arg)
   return 0;
 }
 
-// Array of G'MIC native commands (must be sorted in lexicographic order!).
-const char *gmic::native_commands_names[] = {
+// Array of G'MIC builtin commands (must be sorted in lexicographic order!).
+const char *gmic::builtin_commands_names[] = {
   "!=","%","&","*","*3d","+","+3d","-","-3d","/","/3d","<","<<","<=","=","==",">",">=",">>",
   "a","abs","acos","add","add3d","and","append","asin","atan","atan2","autocrop","axes",
   "b","bilateral","blur","boxfilter","break","bsl","bsr",
@@ -2361,7 +2361,7 @@ const char *gmic::native_commands_names[] = {
   "w","w0","w1","w2","w3","w4","w5","w6","w7","w8","w9","wait","warn","warp","watershed","while","window",
   "x","xor","y","z","^","|" };
 
-CImg<int> gmic::native_commands_inds = CImg<int>::empty();
+CImg<int> gmic::builtin_commands_inds = CImg<int>::empty();
 
 // Perform a dichotomic search in a lexicographic ordered 'CImgList<char>' or 'char**'.
 // Return false or true if search succeeded.
@@ -3575,12 +3575,12 @@ void gmic::_gmic(const char *const commands_line,
 
   // Initialize class variables and default G'MIC environment.
   cimg::mutex(22);
-  if (!native_commands_inds) {
-    native_commands_inds.assign(128,2,1,1,-1);
-    for (unsigned int i = 0; i<sizeof(native_commands_names)/sizeof(char*); ++i) {
-      const int c = *native_commands_names[i];
-      if (native_commands_inds[c]<0) native_commands_inds[c] = (int)i;
-      native_commands_inds(c,1) = (int)i;
+  if (!builtin_commands_inds) {
+    builtin_commands_inds.assign(128,2,1,1,-1);
+    for (unsigned int i = 0; i<sizeof(builtin_commands_names)/sizeof(char*); ++i) {
+      const int c = *builtin_commands_names[i];
+      if (builtin_commands_inds[c]<0) builtin_commands_inds[c] = (int)i;
+      builtin_commands_inds(c,1) = (int)i;
     }
   }
   cimg::mutex(22,0);
@@ -4820,11 +4820,11 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
           err = cimg_sscanf(item,"%255[a-zA-Z_0-9]%c%c",command,&sep0,&sep1);
           is_command = err==1 || (err==2 && sep0=='.') || (err==3 && (sep0=='[' || (sep0=='.' && sep1=='.')));
           is_command&=*item<'0' || *item>'9';
-          if (is_command) { // Look for a native command
+          if (is_command) { // Look for a builtin command
             const int
-              ind0 = native_commands_inds[*command],
-              ind1 = native_commands_inds(*command,1);
-            if (ind0>=0) is_command = search_sorted(command,native_commands_names + ind0,ind1 - ind0 + 1U,__ind);
+              ind0 = builtin_commands_inds[*command],
+              ind1 = builtin_commands_inds(*command,1);
+            if (ind0>=0) is_command = search_sorted(command,builtin_commands_names + ind0,ind1 - ind0 + 1U,__ind);
             if (!is_command) { // Look for a custom command
               hash_custom = hashcode(command,false);
               is_command = search_sorted(command,commands_names[hash_custom],
@@ -13005,7 +13005,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
 
         // Execute custom command.
         if (!is_input_command && is_command) {
-          if (hash_custom==~0U) { // A --native_command not supporting double hyphen (e.g. --v)
+          if (hash_custom==~0U) { // A --builtin_command not supporting double hyphen (e.g. --v)
             hash_custom = hashcode(command,false);
             is_command = search_sorted(command,commands_names[hash_custom],
                                        commands_names[hash_custom].size(),ind_custom);
@@ -14280,11 +14280,11 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                 char *const posb = std::strchr(name,'[');
                 if (posb) *posb = 0; // Discard selection from the command name
                 int dmin = 4;
-                // Look for a native command
-                for (unsigned int l = 0; l<sizeof(native_commands_names)/sizeof(char*); ++l) {
-                  const char *const c = native_commands_names[l];
+                // Look for a builtin command
+                for (unsigned int l = 0; l<sizeof(builtin_commands_names)/sizeof(char*); ++l) {
+                  const char *const c = builtin_commands_names[l];
                   const int d = levenshtein(c,name.data() + foff);
-                  if (d<dmin) { dmin = d; misspelled = native_commands_names[l]; }
+                  if (d<dmin) { dmin = d; misspelled = builtin_commands_names[l]; }
                 }
                 for (unsigned int i = 0; i<gmic_comslots; ++i) // Look for a custom command
                   cimglist_for(commands_names[i],l) {
