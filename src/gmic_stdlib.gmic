@@ -17771,21 +17771,33 @@ _xpinks :
 _xframe :
   line 0%,0%,100%,0% line 0%,100%,100%,100% line 0%,0%,0%,100% line 100%,0%,100%,100%
 
-#@cli output_pink3d : filename
-#@cli : Save selected images as P5-coded PPM files (PINK extension for 3d volumetric images).
-output_pink3d :
-  e[^-1] "Output image$? as file '$1' (in 3d pink extension of P5-coded PPM format)."
+#@cli output_pink3d : filename,_type
+#@cli : Save selected images as _type-coded (P5,P8,P9) PPM files (PINK extension for 3d volumetric images).
+output_pink3d : skip ${2=P5}
+  e[^-1] "Output image$? as file '$1' (in 3d pink extension of "$2"-coded PPM format)."
   v - if {$!==1} filename0="$1"
   else repeat $! filename$>=${filename\ "\"$1\"",$>} done
   fi
   repeat $! l[$>]
-    if {d==1} o. ppm:${filename$>}  # 2d image, save as regular PPM format.
-    else                             # 3d image, save as PINK PPM extension.
-      ({'P5\n{w}\ {h}\ {d}\n255\n'})
-      +channels.. 0 y. x a[-2,-1] x
-      o. raw:${filename$>},char
+    if {['"$2"']=='P5'}
+      if {d==1} o. ppm:${filename$>}  # 2d image, save as regular PPM format.
+      else                            # 3d image, save as PINK PPM extension.
+        ({'P5\n{w}\ {h}\ {d}\n255\n'})
+        +channels.. 0 y. x a[-2,-1] x
+        o. raw:${filename$>},uchar
+        rm.
+      fi
+    elif {['"$2"']=='P8'}
+      ({'P8\n{w}\ {h}\ {d}\n{iM}\n'})
+      +channels.. 0 cast. uint,uchar y[-2,-1] x a[-2,-1] x
+      o. raw:${filename$>},uchar
       rm.
-    fi
+    elif {['"$2"']=='P9'}
+      ({'P9\n{w}\ {h}\ {d}\n{ceil(iM)}\n'})
+      +channels.. 0 cast. float,uchar y[-2,-1] x a[-2,-1] x
+      o. raw:${filename$>},uchar
+      rm.
+    else error "Type "$2"not implemented!" fi
   endl done v +
 
 #@cli pink
