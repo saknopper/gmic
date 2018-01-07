@@ -18971,6 +18971,47 @@ toc :
   v - _ticpos={$_ticpos-1} u {_$|-${_tic$_ticpos}} v +
   e[^-1] "Elapsed time: "${}" s".
 
+#@cli uchar2str
+#@cli : Encode the latest of the selected image as a string.
+#@cli : The string can be decoded using command 'str2uchar'.
+#@cli : Input image must have values that are integers in [0,255].
+uchar2str :
+  v - {ceil(whds*4/3)}
+  eval "
+    encode(x) = (c = x; c<12?_'0'+c:c<38?_'A'+c-12:_'a'+c-38);
+    od = 0;
+    for (os = 0, os<whds#-2,
+      s1 = i[#-2,os++];
+      s2 = i[#-2,os++];
+      s3 = i[#-2,os++];
+      i[#-1,od++] = encode(s1>>2);
+      i[#-1,od++] = encode(((s1&3)<<4) | (s2>>4));
+      i[#-1,od++] = encode(((s2&15)<<2) | (s3>>6));
+      i[#-1,od++] = encode(s3&63);
+    );
+  "
+  u {-2,w}_{-2,h}_{-2,d}_{-2,s}_{t} rm. v +
+
+#@cli uchar2str : "string"
+#@cli : Decode given string as a newly inserted image at the end of the list.
+#@cli : The argument string should have been generated using command 'uchar2str'.
+str2uchar :
+  v - ({'"$1"'}) s -,{'_'} w,h,d,s={0,t},{1,t},{2,t},{3,t} k.
+  eval "
+    decode(x) = (c = x; c<_'A'?c-_'0':c<_'a'?c-_'A'+12:c-_'a'+38);
+    od = 0;
+    for (os = 0, os<whds,
+      s1 = decode(i[os++]);
+      s2 = decode(i[os++]);
+      s3 = decode(i[os++]);
+      s4 = decode(i[os++]);
+      i[od++] = (s1<<2) | (s2>>4);
+      i[od++] = ((s2&15)<<4) | (s3>>2);
+      i[od++] = ((s3&3)<<6) | s4;
+    );
+  "
+  r. $w,$h,$d,$s,-1 v +
+
 #-------------------------------------
 #
 #@cli :: Other interactive commands
