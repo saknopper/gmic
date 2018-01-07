@@ -18996,21 +18996,30 @@ uchar2str :
 #@cli : Decode given string as a newly inserted image at the end of the list.
 #@cli : The argument string should have been generated using command 'uchar2str'.
 str2uchar :
-  v - ({'"$1"'}) s -,{'_'} w,h,d,s={0,t},{1,t},{2,t},{3,t} k.
-  eval "
+  v - 0 eval "
+    s = ['$1'];
+    s1 = find(s,_'_',1,0) + 1;
+    s2 = find(s,_'_',1,s1) + 1;
+    s3 = find(s,_'_',1,s2) + 1;
+    s4 = find(s,_'_',1,s3) + 1;
+    W = stov(s,0);
+    H = stov(s,s1);
+    D = stov(s,s2);
+    S = stov(s,s3);
+    ext('r. ',vtos([W,H,D,S]),',-1');
     decode(x) = (c = x; c<_'A'?c-_'0':c<_'a'?c-_'A'+12:c-_'a'+38);
     od = 0;
-    for (os = 0, os<whds,
-      s1 = decode(i[os++]);
-      s2 = decode(i[os++]);
-      s3 = decode(i[os++]);
-      s4 = decode(i[os++]);
-      i[od++] = (s1<<2) | (s2>>4);
-      i[od++] = ((s2&15)<<4) | (s3>>2);
-      i[od++] = ((s3&3)<<6) | s4;
+    for (os = s4, os<size(s),
+      s1 = decode(s[os++]);
+      s2 = decode(s[os++]);
+      s3 = decode(s[os++]);
+      s4 = decode(s[os++]);
+      i[#-1,od++] = (s1<<2) | (s2>>4);
+      i[#-1,od++] = ((s2&15)<<4) | (s3>>2);
+      i[#-1,od++] = ((s3&3)<<6) | s4;
     );
   "
-  r. $w,$h,$d,$s,-1 v +
+  v +
 
 #-------------------------------------
 #
