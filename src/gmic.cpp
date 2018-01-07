@@ -13669,9 +13669,10 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
         // New IxJxKxL image specified as array.
         unsigned int cx = 0, cy = 0, cz = 0, cc = 0, maxcx = 0, maxcy = 0, maxcz = 0;
         const char *nargument = 0;
+        CImg<char> s_value(256);
+        char separator = 0;
         for (nargument = arg_input.data() + 1; *nargument; ) {
-          CImg<char> s_value(256); *s_value = 0;
-          char separator = 0;
+          *s_value = separator = 0;
           value = 0;
           if (cimg_sscanf(nargument,"%255[0-9.eEinfa+-]%c",s_value.data(),&separator)==2 &&
               cimg_sscanf(s_value,"%lf%c",&value,&end)==1) {
@@ -13689,12 +13690,12 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             nargument+=std::strlen(s_value) + 1;
           } else break;
         }
+
         if (*nargument) arg_error("input");
         CImg<T> img(maxcx + 1,maxcy + 1,maxcz + 1,cc + 1,(T)0);
         cx = cy = cz = cc = 0;
         for (nargument = arg_input.data() + 1; *nargument; ) {
-          CImg<char> s_value(256); *s_value = 0;
-          char separator = 0;
+          *s_value = separator = 0;
           value = 0;
           if (cimg_sscanf(nargument,"%255[0-9.eEinfa+-]%c",s_value.data(),&separator)==2 &&
               cimg_sscanf(s_value,"%lf%c",&value,&end)==1) {
