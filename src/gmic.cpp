@@ -4174,7 +4174,7 @@ CImg<char> gmic::substitute_item(const char *const source,
 #endif // #if cimg_display==0
         }
 
-        // Double-quoted string.
+        // Double-backquoted string.
         if (!is_substituted && inbraces.width()>=3 && *inbraces=='`' && inbraces[1]=='`') {
           strreplace_bw(inbraces.data() + 2);
           CImg<char>(inbraces.data() + 2,inbraces.width() - 3,1,1,1,true).
