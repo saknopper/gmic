@@ -13667,20 +13667,27 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
       } else if (*arg_input=='(' && arg_input[std::strlen(arg_input) - 1]==')') {
 
         // New IxJxKxL image specified as array.
-        unsigned int cx = 0, cy = 0, cz = 0, cc = 0, maxcx = 0, maxcy = 0, maxcz = 0;
+        CImg<bool> au(256,1,1,1,false);
+        au['0'] = au['1'] = au['2'] = au['3'] = au['4'] = au['5'] = au['6'] = au['7'] = au['8'] = au['9'] =
+          au['.'] = au['e'] = au['E'] = au['i'] = au['n'] = au['f'] = au['a'] = au['+'] = au['-'] = true;
+        unsigned int l, cx = 0, cy = 0, cz = 0, cc = 0, maxcx = 0, maxcy = 0, maxcz = 0;
         const char *nargument = 0;
         CImg<char> s_value(256);
         char separator = 0;
         CImg<T> img;
+
         for (nargument = arg_input.data() + 1; *nargument; ) {
           *s_value = separator = 0;
-          value = 0;
-          if (cimg_sscanf(nargument,"%255[0-9.eEinfa+-]%c",s_value.data(),&separator)==2 &&
+          char *pd = s_value;
+          // Do something faster than 'scanf("%255[0-9.eEinfa+-]")'.
+          for (l = 0; l<255 && au((unsigned int)*nargument); ++l) *(pd++) = *(nargument++);
+          if (l<255) *pd = 0; else arg_error("input");
+          if (*nargument) separator = *(nargument++);
+          if ((separator=='^' || separator=='/' || separator==';' || separator==',' || separator==')') &&
               cimg_sscanf(s_value,"%lf%c",&value,&end)==1) {
             if (cx>maxcx) maxcx = cx;
             if (cy>maxcy) maxcy = cy;
             if (cz>maxcz) maxcz = cz;
-
             if (cx>=img._width || cy>=img._height || cz>=img._depth || cc>=img._spectrum)
               img.resize(cx>=img._width?7*cx/4 + 1:std::max(1U,img._width),
                          cy>=img._height?4*cy/4 + 1:std::max(1U,img._height),
@@ -13695,10 +13702,8 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             case ')' : break;
             default : arg_error("input");
             }
-            nargument+=std::strlen(s_value) + 1;
-          } else break;
+          } else arg_error("input");
         }
-        if (*nargument) arg_error("input");
         img.resize(maxcx + 1,maxcy + 1,maxcz + 1,cc + 1,0);
         print(images,0,"Input image at position%s, with values %s",
               _gmic_selection.data(),
