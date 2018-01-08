@@ -13690,7 +13690,6 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             nargument+=std::strlen(s_value) + 1;
           } else break;
         }
-
         if (*nargument) arg_error("input");
         CImg<T> img(maxcx + 1,maxcy + 1,maxcz + 1,cc + 1,(T)0);
         cx = cy = cz = cc = 0;
