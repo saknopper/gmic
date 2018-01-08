@@ -3278,25 +3278,6 @@ roddy :
 #@cli : Default values: 'datatype=float', 'is_compressed=1' and 'store_names=1'.
 #@cli : $ image.jpg +serialize uchar +unserialize[-1]
 
-#@cli shape_heart : _size>=0
-#@cli : Input a 2d heart binary shape with specified size.
-#@cli : Default value: 'size=512'.
-#@cli : $ shape_heart ,
-shape_heart : check "${1=512}>=0"
-  e[^-1] "Input a $1x$1 heart binary shape."
-  v -
-  ir={round($1)}
-  if {!$ir} 0
-  else l[]
-      2048,1,1,1,'t=2*pi*x/w;16*sin(t)^3'
-      2048,1,1,1,'t=2*pi*x/w;13*cos(t)-5*cos(2*t)-2*cos(3*t)-cos(4*t)'
-      a c display_parametric $ir,$ir,1,0,0,0
-      flood 50%,50%,0,0,0,1,0 ==. 0
-    endl
-  fi
-  nm "[2d heart shape]"
-  v +
-
 #@cli shape_circle : _size>=0
 #@cli : Input a 2d circle binary shape with specified size.
 #@cli : Default value: 'size=512'.
@@ -3395,6 +3376,54 @@ shape_fern : check "${1=512}>=0 && ${2=50%}>=0 && isval(${3=30}) && ${4=0.3}>=0 
     pointcloud -$4 r $ir,$ir,1,1,0,0,0.5,0.5
   endl fi
   nm "[2d Barnsley fern]"
+  v +
+
+#@cli shape_gear : _size>=0,_nb_teeth>0,0<=_height_teeth<=100,0<=_offset_teeth<=100,0<=_inner_radius<=100
+#@cli : Input a 2d gear binary shape with specified size.
+#@cli : Default value: 'size=512', 'nb_teeth=12', 'height_teeth=20', 'offset_teeth=0' and 'inner_radius=40'.
+#@cli : $ shape_heart ,
+shape_gear : check "${1=512}>=0 && isint(${2=12}) && $2>0 && ${3=20}>=0 && $3<=100 && ${4=0}>=0 && $4<=100 && ${5=40}>=0 && $5<=100"
+  e[^-1] "Input a $1x$1 gear binary shape with $2 teeth, teeth height $3, teeth offset $4 and inner radius $5."
+  v -
+  ir={round($1)}
+  if {!$ir} 0
+  else l[]
+    $ir,$ir
+    polygon {"
+      const nb_teeth = $2;
+      const height_teeth = $3%;
+      const offset_teeth = 2*$4%;
+      pts = vector2048();
+      for (i = 0, i<size(pts),
+        a = i*2*pi/size(pts);
+        r =  1 - height_teeth + height_teeth*(int(a*nb_teeth/pi + 2*nb_teeth - offset_teeth)%2);
+        pts[i++] = round(w/2*(1 + r*cos(a)));
+        pts[i++] = round(h/2*(1 + r*sin(a)));
+      );
+      [size(pts)/2,pts];
+    "},1,1
+    if $5 circle. 50%,50%,{0.5*w*$5%},1,0 fi
+  endl fi
+  nm "[2d heart shape]"
+  v +
+
+#@cli shape_heart : _size>=0
+#@cli : Input a 2d heart binary shape with specified size.
+#@cli : Default value: 'size=512'.
+#@cli : $ shape_heart ,
+shape_heart : check "${1=512}>=0"
+  e[^-1] "Input a $1x$1 heart binary shape."
+  v -
+  ir={round($1)}
+  if {!$ir} 0
+  else l[]
+      2048,1,1,1,'t=2*pi*x/w;16*sin(t)^3'
+      2048,1,1,1,'t=2*pi*x/w;13*cos(t)-5*cos(2*t)-2*cos(3*t)-cos(4*t)'
+      a c display_parametric $ir,$ir,1,0,0,0
+      flood 50%,50%,0,0,0,1,0 ==. 0
+    endl
+  fi
+  nm "[2d heart shape]"
   v +
 
 #@cli shape_polygon : _size>=0,_nb_vertices>=3,_angle
@@ -33344,6 +33373,29 @@ fx_equation_plot :
     $4,1,1,$5,"X=$2+($3-$2)*x/($4-1);$1"
     -dg $w,$h,$6,$7,$2,$3
   endl done
+
+#@gui Gear : fx_gear, fx_gear_preview
+#@gui : Size (%) = float(75,0,100)
+#@gui : Number of teeth = int(12,1,96)
+#@gui : Elevation (%) = float(15,0,100)
+#@gui : Angle (%) = float(0,0,100)
+#@gui : Inner radius (%) = float(40,0,100)
+#@gui : Smoothness = float(0,0,10)
+#@gui : Color = color(255,0,0,255)
+#@gui : Antialiasing = bool(1)
+#@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2018/01/08</i>.</small>")
+fx_gear :
+  max_wh=${-max_wh}
+  w,h={S=($!>0?[$max_wh]:512)*$1%;[max(S[0],1),max(S[1],1)]}
+  shape_gear {($11?2:1)*min($w,$h)},${2-5}
+  if $11 r2dx. 50% fi
+  frame. {2.5*$6}%,{2.5*$6}%,0 b. $6% c. 0,1
+  100%,100%,1,3 fc. ${7-9} rv[-2,-1] *. $10 a[-2,-1] c
+  r. $max_wh,1,4,0,0,0.5,0.5
+  mv. 0
+
+fx_gear_preview :
+  fx_gear $* blend[^0] [0],alpha rm[0]
 
 #@gui Gradient [corners] : fx_corner_gradient, fx_corner_gradient
 #@gui : Color 1 (up/left corner) = color(255,255,255,128)
