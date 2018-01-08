@@ -655,6 +655,7 @@ gmicol_light_leaks_preview :
 #@web clone("Cupid")
 #@web clone("Equation plot [parametric]")
 #@web clone("Equation plot [y=f(x)]")
+#@web clone("Gear")
 #@web clone("Gradient [corners]")
 #@web clone("Gradient [custom shape]")
 #@web clone("Gradient [linear]")
