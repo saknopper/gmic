@@ -13671,6 +13671,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
         const char *nargument = 0;
         CImg<char> s_value(256);
         char separator = 0;
+        CImg<T> img;
         for (nargument = arg_input.data() + 1; *nargument; ) {
           *s_value = separator = 0;
           value = 0;
@@ -13679,6 +13680,13 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             if (cx>maxcx) maxcx = cx;
             if (cy>maxcy) maxcy = cy;
             if (cz>maxcz) maxcz = cz;
+
+            if (cx>=img._width || cy>=img._height || cz>=img._depth || cc>=img._spectrum)
+              img.resize(cx>=img._width?7*cx/4 + 1:std::max(1U,img._width),
+                         cy>=img._height?4*cy/4 + 1:std::max(1U,img._height),
+                         cz>=img._depth?7*cz/4 + 1:std::max(1U,img._depth),
+                         cc>=img._spectrum?7*cc/4 + 1:std::max(1U,img._spectrum),0);
+            img(cx,cy,cz,cc) = (T)value;
             switch (separator) {
             case '^' : cx = cy = cz = 0; ++cc; break;
             case '/' : cx = cy = 0; ++cz; break;
@@ -13691,23 +13699,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
           } else break;
         }
         if (*nargument) arg_error("input");
-        CImg<T> img(maxcx + 1,maxcy + 1,maxcz + 1,cc + 1,(T)0);
-        cx = cy = cz = cc = 0;
-        for (nargument = arg_input.data() + 1; *nargument; ) {
-          *s_value = separator = 0;
-          value = 0;
-          if (cimg_sscanf(nargument,"%255[0-9.eEinfa+-]%c",s_value.data(),&separator)==2 &&
-              cimg_sscanf(s_value,"%lf%c",&value,&end)==1) {
-            img(cx,cy,cz,cc) = (T)value;
-            switch (separator) {
-            case '^' : cx = cy = cz = 0; ++cc; break;
-            case '/' : cx = cy = 0; ++cz; break;
-            case ';' : cx = 0; ++cy; break;
-            default : ++cx;
-            }
-            nargument+=std::strlen(s_value) + (separator?1:0);
-          } else break;
-        }
+        img.resize(maxcx + 1,maxcy + 1,maxcz + 1,cc + 1,0);
         print(images,0,"Input image at position%s, with values %s",
               _gmic_selection.data(),
               gmic_argument_text_printed());
