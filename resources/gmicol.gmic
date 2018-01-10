@@ -504,6 +504,7 @@ gmicol_rotate :
 #@web clone("Local contrast enhancement")
 #@web clone("Local normalization")
 #@web clone("Local variance normalization")
+#@web clone("Magic details")
 #@web clone("Mighty details")
 #@web clone("Sharpen [deblur]")
 #@web clone("Sharpen [Gold-Meinel]")

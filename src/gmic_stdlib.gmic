@@ -29671,6 +29671,28 @@ fx_normalize_local :
 fx_normalize_local_preview :
   gui_split_preview "fx_normalize_local $*",$-1
 
+#@gui Magic details : fx_magic_details,fx_magic_details_preview(0)
+#@gui : Amplitude = float(6,0,30)
+#@gui : Spatial scale = float(3,0,10)
+#@gui : Value scale = float(15,0,20)
+#@gui : Edge preservation = float(0.5,0,1)
+#@gui : Smoothness = float(2,0,20)
+#@gui : sep = separator(), Channel(s) = choice(27,"All","RGBA [all]","RGB [all]","RGB [red]","RGB [green]","RGB [blue]","RGBA [alpha]","Linear RGB [all]","Linear RGB [red]","Linear RGB [green]","Linear RGB [blue]","YCbCr [luminance]","YCbCr [blue-red chrominances]","YCbCr [blue chrominance]","YCbCr [red chrominance]","YCbCr [green chrominance]","Lab [lightness]","Lab [ab-chrominances]","Lab [a-chrominance]","Lab [b-chrominance]","Lch [ch-chrominances]","Lch [c-chrominance]","Lch [h-chrominance]","HSV [hue]","HSV [saturation]","HSV [value]","HSI [intensity]","HSL [lightness]","CMYK [cyan]","CMYK [magenta]","CMYK [yellow]","CMYK [key]","YIQ [luma]","YIQ [chromas]")
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
+#@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2018/01/10</i>.</small>")
+fx_magic_details :
+  ac "_fx_magic_details ${1-5}",$6,1
+
+_fx_magic_details :
+  repeat $! l[$>]
+    +bilateral $2,$3
+    +gradient_norm.. +. 1 pow. -{0.1+$4} b. $5 n. 1,{1+$1}
+    -... .. *[-3,-1] + c 0,255
+  endl done
+
+fx_magic_details_preview :
+  gui_split_preview "fx_magic_details $*",$-1
+
 #@gui Mighty details : fx_mighty_details, fx_mighty_details_preview(0)
 #@gui : Amplitude = float(25,0,100)
 #@gui : Details amount = float(1,0,2)
@@ -29805,10 +29827,10 @@ fx_sharpen_texture_preview :
   gui_split_preview "fx_sharpen_texture $*",$-1
 
 #@gui Sharpen [unsharp mask] : fx_unsharp, fx_unsharp_preview(0)
-#@gui : Sharpening type = choice(0,"Gaussian","Bilateral")
+#@gui : Sharpening type = choice(1,"Gaussian","Bilateral")
 #@gui : Spatial radius = float(1.25,0,20)
-#@gui : Bilateral radius = float(30,0,60)
-#@gui : Amount = float(3,0,10)
+#@gui : Bilateral radius = float(10,0,60)
+#@gui : Amount = float(2,0,10)
 #@gui : Threshold = float(0,0,20)
 #@gui : Darkness level = float(1,0,4)
 #@gui : Lightness level = float(1,0,4)
