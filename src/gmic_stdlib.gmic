@@ -32387,7 +32387,7 @@ fx_inpaint_morpho :
   repeat $! l[$>]
     R=$1 G=$2 B=$3 A=$4
     if {!$A" && "(s==2" || "s==4)} split_opacity +!=. 0 *[0,-1] a c R=0 G=0 B=0 fi # Purely transparent color.
-    +select_color 0,$R,$G,$B,$A
+    +round select_color. 0,{round([$R,$G,$B,$A])}
     if $5 dilate. {1+2*$5} fi
     inpaint_morpho.. [1]
     rm.
@@ -32412,7 +32412,7 @@ fx_inpaint_patchmatch :
   repeat $! l[$>]
     R=$6 G=$7 B=$8 A=$9
     if {!$A" && "(s==2" || "s==4)} split_opacity +!=. 0 *[0,-1] a c R=0 G=0 B=0 fi # Purely transparent color.
-    +select_color 0,$R,$G,$B,$A
+    +round select_color. 0,{round([$R,$G,$B,$A])}
     if $10 dilate. {1+2*$10} fi
     if $11
       visu_size=${fitscreen[]" "{0,w},{0,h},1,25%,50%}
@@ -32441,7 +32441,9 @@ fx_inpaint_patchmatch_preview :
 #@gui : sep = separator(), note = note("<small>Authors: <i>David Tschumperl&#233;</i> and <i>Maxime Daisy</i>.      Latest update: <i>2015/25/11</i>.</small>")
 fx_inpaint_patch :
   repeat $! l[$>]
-    +select_color 0,${9-12}
+    R=$9 G=$10 B=$11 A=$12
+    if {!$A" && "(s==2" || "s==4)} split_opacity +!=. 0 *[0,-1] a c R=0 G=0 B=0 fi # Purely transparent color.
+    +round select_color. 0,{round([$R,$G,$B,$A])}
     if $13 dilate. {1+2*$13} fi
     inpaint.. [1],$1,{$1*$2},$3,1,{$4*$1},${5-8}
     rm.
