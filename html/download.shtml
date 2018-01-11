@@ -33,6 +33,26 @@
                       <li>Windows <i>32 bits</i>:
                         <a href="http://gmic.eu/files/prerelease_windows/gmic_gimp_qt_win32.exe">installer</a> or
                         <a href="http://gmic.eu/files/prerelease_windows/gmic_gimp_qt_win32.zip">.zip archive</a>
+                        <br/>
+                        <div class="popup" onclick="popupFunction()">
+                          <font color="red"><b>Important installation note for Windows users!</b></font>
+                          <span class="popuptext" id="myPopup">
+                            <p>
+                              The Windows version of the G'MIC plug-in for GIMP 2.8 comes with a bunch of
+                              <tt>.DLL</tt> files
+                              that may be <i>incompatible</i> with those provided with your installation of GIMP.
+                              To avoid possible <tt>DLL</tt> conflicts, our installer thus copies all his files
+                              into <b>a new subfolder</b>, located in your user's plug-in directory,
+                              You have then to explicitly add this subfolder as <b>a recognized plug-in folder</b>
+                              in the GIMP <i>preferences</i> to make sure GIMP can detect and run the plug-in.
+                            </p>
+                            <p>
+                              Please follow the steps described in this
+                              <a href="https://www.youtube.com/watch?v=4wXgfTIeOOs">tutorial video</a>
+                              if you're not sure about the way to do this properly.
+                            </p>
+                          </span>
+                        </div>
                       </li>
                       <li>Linux <i>64 bits</i>: <a href="http://gmic.eu/files/prerelease_linux/gmic_gimp_qt_linux64.zip">.zip archive</a></li>
                       <li>Linux <i>32 bits</i>: <a href="http://gmic.eu/files/prerelease_linux/gmic_gimp_qt_linux32.zip">.zip archive</a></li>
