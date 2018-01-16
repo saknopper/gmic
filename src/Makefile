@@ -108,9 +108,9 @@ OS = Windows
 endif
 
 ifeq ($(OS),Darwin)
-PLUGINDIR = $(HOME)/Library/Application\ Support/Gimp/plug-ins
 ifeq (,$(wildcard /opt/local))
 USR = /usr/local
+PLUGINDIR = $(HOME)/Library/Application\ Support/Gimp/plug-ins
 else
 USR = /opt/local
 endif
