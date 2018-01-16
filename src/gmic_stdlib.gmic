@@ -25548,7 +25548,7 @@ fx_linify :
 
 fx_linify_preview :
   if {!${"-gui_check_version 216"}} return fi
-  gui_split_preview "fx_linify ${1-6},0",$-1,{if(isval($GMIC_GUI_TIMEOUT),0$GMIC_GUI_TIMEOUT,16)}
+  gui_split_preview "fx_linify ${1-6},0",$-1,{if(isval($_preview_timeout),0$_preview_timeout,16)}
 
 #@gui Lylejk's painting : fx_lylejk_painting, fx_lylejk_painting_preview(0)
 #@gui : Iterations = int(10,1,20)
@@ -25936,7 +25936,7 @@ fx_sharp_abstract :
   ac "rolling_guidance ${1-3}",$4
 
 fx_sharp_abstract_preview :
-  gui_split_preview "fx_sharp_abstract $*",$-1,{if(isval($GMIC_GUI_TIMEOUT),0$GMIC_GUI_TIMEOUT,8)}
+  gui_split_preview "fx_sharp_abstract $*",$-1,{if(isval($_preview_timeout),0$_preview_timeout,8)}
 
 #@gui Smooth abstract : fx_smooth_abstract, fx_smooth_abstract_preview(0)
 #@gui : Smoothness (%) = float(75,0,100)
@@ -26820,7 +26820,7 @@ fx_pencil_portraitbw :
   endl a c endl done
 
 fx_pencil_portraitbw_preview :
-  gui_split_preview "fx_pencil_portraitbw $*",$-1,{if(isval($GMIC_GUI_TIMEOUT),0$GMIC_GUI_TIMEOUT,8)}
+  gui_split_preview "fx_pencil_portraitbw $*",$-1,{if(isval($_preview_timeout),0$_preview_timeout,8)}
 
 #@gui Sketch : fx_sketchbw, fx_sketchbw_preview(0)
 #@gui : Number of orientations = int(2,1,16)
@@ -32540,7 +32540,7 @@ fx_smooth_anisotropic :
   endl done c 0,255
 
 fx_smooth_anisotropic_preview :
-  gui_split_preview "fx_smooth_anisotropic $*",$-1,{if(isval($GMIC_GUI_TIMEOUT),0$GMIC_GUI_TIMEOUT,8)}
+  gui_split_preview "fx_smooth_anisotropic $*",$-1,{if(isval($_preview_timeout),0$_preview_timeout,8)}
 
 #@gui Smooth [antialias] : fx_smooth_antialias, fx_smooth_antialias_preview(0)
 #@gui : Amplitude = float(5,0,100)
@@ -32569,7 +32569,7 @@ fx_smooth_bilateral : skip ${5=0},${6=0}
   ac "repeat $3 bilateral $1,$2 done",$4
 
 fx_smooth_bilateral_preview :
-  gui_split_preview "fx_smooth_bilateral $*",$-1,{if(isval($GMIC_GUI_TIMEOUT),0$GMIC_GUI_TIMEOUT,8)}
+  gui_split_preview "fx_smooth_bilateral $*",$-1,{if(isval($_preview_timeout),0$_preview_timeout,8)}
 
 #@gui Smooth [guided] : fx_smooth_guided, fx_smooth_guided_preview(0)
 #@gui : Radius = int(5,1,100)
@@ -32582,7 +32582,7 @@ fx_smooth_guided : skip ${5=0},${6=0}
   ac "repeat $3 -guided $1,$2 done",$4
 
 fx_smooth_guided_preview :
-  gui_split_preview "fx_smooth_guided $*",$-1,{if(isval($GMIC_GUI_TIMEOUT),0$GMIC_GUI_TIMEOUT,8)}
+  gui_split_preview "fx_smooth_guided $*",$-1,{if(isval($_preview_timeout),0$_preview_timeout,8)}
 
 #@gui Smooth [diffusion] : fx_smooth_diffusion, fx_smooth_diffusion_preview(0)
 #@gui : Sharpness = float(0.7,0,2)
@@ -32599,7 +32599,7 @@ fx_smooth_diffusion :
   ac "gui_parallel_overlap \"smooth $6,$1,$2,$3,$4,$5,0 c 0,255\",$8,$9",$7
 
 fx_smooth_diffusion_preview :
-  gui_split_preview "fx_smooth_diffusion $*",$-1,{if(isval($GMIC_GUI_TIMEOUT),0$GMIC_GUI_TIMEOUT,8)}
+  gui_split_preview "fx_smooth_diffusion $*",$-1,{if(isval($_preview_timeout),0$_preview_timeout,8)}
 
 #@gui Smooth [mean-curvature] : fx_smooth_meancurvature, fx_smooth_meancurvature_preview(0)
 #@gui : Time step = float(30,5,50)
@@ -32613,7 +32613,7 @@ fx_smooth_meancurvature :
   ac "gui_parallel_overlap \"meancurvature_flow $2,$1,$3 c 0,255\",$5,$6",$4
 
 fx_smooth_meancurvature_preview :
-  gui_split_preview "fx_smooth_meancurvature $*",$-1,{if(isval($GMIC_GUI_TIMEOUT),0$GMIC_GUI_TIMEOUT,8)}
+  gui_split_preview "fx_smooth_meancurvature $*",$-1,{if(isval($_preview_timeout),0$_preview_timeout,8)}
 
 #@gui Smooth [median] : fx_smooth_median, fx_smooth_median_preview(0)
 #@gui : Radius = int(3,1,20)
@@ -32625,7 +32625,7 @@ fx_smooth_median :
   ac "median $1,$2",$3
 
 fx_smooth_median_preview :
-  gui_split_preview "fx_smooth_median $*",$-1,{if(isval($GMIC_GUI_TIMEOUT),0$GMIC_GUI_TIMEOUT,8)}
+  gui_split_preview "fx_smooth_median $*",$-1,{if(isval($_preview_timeout),0$_preview_timeout,8)}
 
 #@gui Smooth [nlmeans] : fx_smooth_nlmeans, fx_smooth_nlmeans_preview(0)
 #@gui : Patch size = float(4,0.5,10)
@@ -32651,7 +32651,7 @@ _fx_smooth_nlmeans4 : if {s>=3} channels 0,2 srgb2rgb rgb2lab channels 0 else no
 _fx_smooth_nlmeans5 :
 
 fx_smooth_nlmeans_preview:
-  gui_split_preview "fx_smooth_nlmeans $*",$-1,{if(isval($GMIC_GUI_TIMEOUT),0$GMIC_GUI_TIMEOUT,8)}
+  gui_split_preview "fx_smooth_nlmeans $*",$-1,{if(isval($_preview_timeout),0$_preview_timeout,8)}
 
 #@gui Smooth [patch-based] : fx_smooth_patch, fx_smooth_patch_preview(0)
 #@gui : Spatial variance = float(10,0.1,200)
@@ -32669,7 +32669,7 @@ fx_smooth_patch :
   ac "gui_parallel_overlap \"repeat $7 denoise $1,$2,$3,$4,$5,$6 done c 0,255\",$9,$10",$8
 
 fx_smooth_patch_preview :
-  gui_split_preview "fx_smooth_patch $*",$-1,{if(isval($GMIC_GUI_TIMEOUT),0$GMIC_GUI_TIMEOUT,8)}
+  gui_split_preview "fx_smooth_patch $*",$-1,{if(isval($_preview_timeout),0$_preview_timeout,8)}
 
 #@gui Smooth [patch-pca] : fx_smooth_patchpca, fx_smooth_patchpca_preview(0)
 #@gui : Strength = float(4,0,16)
@@ -32686,7 +32686,7 @@ fx_smooth_patchpca :
   ac "denoise_patchpca ${1-4} c 0,255",$5
 
 fx_smooth_patchpca_preview :
-  gui_split_preview "fx_smooth_patchpca $*",$-1,{if(isval($GMIC_GUI_TIMEOUT),0$GMIC_GUI_TIMEOUT,8)}
+  gui_split_preview "fx_smooth_patchpca $*",$-1,{if(isval($_preview_timeout),0$_preview_timeout,8)}
 
 #@gui Smooth [perona-malik] : fx_smooth_peronamalik, fx_smooth_peronamalik_preview(0)
 #@gui : K-factor = float(20,0,255)
@@ -32701,7 +32701,7 @@ fx_smooth_peronamalik :
   ac "gui_parallel_overlap \"peronamalik_flow $1,$3,$2,$4 c 0,255\",$6,$7",$5
 
 fx_smooth_peronamalik_preview :
-  gui_split_preview "fx_smooth_peronamalik $*",$-1,{if(isval($GMIC_GUI_TIMEOUT),0$GMIC_GUI_TIMEOUT,8)}
+  gui_split_preview "fx_smooth_peronamalik $*",$-1,{if(isval($_preview_timeout),0$_preview_timeout,8)}
 
 #@gui Smooth [selective gaussian] : fx_smooth_selective, fx_smooth_selective_preview(0)
 #@gui : Amplitude = float(5,0,20)
@@ -32716,7 +32716,7 @@ fx_smooth_selective :
   ac "gui_parallel_overlap \"repeat $4 blur_selective $1,$2,$3 done c 0,255\",$6,$7",$5
 
 fx_smooth_selective_preview :
-  gui_split_preview "fx_smooth_selective $*",$-1,{if(isval($GMIC_GUI_TIMEOUT),0$GMIC_GUI_TIMEOUT,8)}
+  gui_split_preview "fx_smooth_selective $*",$-1,{if(isval($_preview_timeout),0$_preview_timeout,8)}
 
 #@gui Smooth [skin] : fx_smooth_skin, fx_smooth_skin_preview(1)
 #@gui : note = note("<small><b>Step 1:</b> Skin detection</small>")
@@ -32821,7 +32821,7 @@ fx_smooth_tv :
   ac "gui_parallel_overlap \"tv_flow $2,$1,$3 c 0,255\",$5,$6",$4
 
 fx_smooth_tv_preview :
-  gui_split_preview "fx_smooth_tv $*",$-1,{if(isval($GMIC_GUI_TIMEOUT),0$GMIC_GUI_TIMEOUT,8)}
+  gui_split_preview "fx_smooth_tv $*",$-1,{if(isval($_preview_timeout),0$_preview_timeout,8)}
 
 #@gui Smooth [wavelets] : fx_smooth_haar, fx_smooth_haar_preview(0)
 #@gui : Threshold = float(1,0,10)
@@ -32836,7 +32836,7 @@ fx_smooth_haar :
   ac "gui_parallel_overlap \"denoise_haar $1,$3,$2 c 0,255\",$5,$6",$4
 
 fx_smooth_haar_preview :
-  gui_split_preview "fx_smooth_haar $*",$-1,{if(isval($GMIC_GUI_TIMEOUT),0$GMIC_GUI_TIMEOUT,8)}
+  gui_split_preview "fx_smooth_haar $*",$-1,{if(isval($_preview_timeout),0$_preview_timeout,8)}
 
 #@gui Upscale [diffusion] : fx_upscale_smart, fx_upscale_smart_preview(0)
 #@gui : Width = text("200%")
