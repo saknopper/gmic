@@ -362,6 +362,7 @@ gmicol_rotate :
 #@web _
 
 #@web clone("Detect skin")
+#@web clone("Equalize HSI-HSL-HSV")
 #@web clone("Equalize HSV")
 #@web clone("HSL adjustment")
 #@web clone("HSV select")
