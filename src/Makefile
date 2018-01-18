@@ -17,14 +17,22 @@
 #  Copyright   : David Tschumperle
 #                ( http://tschumperle.users.greyc.fr/ )
 #
-#  License     : CeCILL v2.0
-#                ( http://www.cecill.info/licences/Licence_CeCILL_V2-en.html )
+#  Licenses        : This file is 'dual-licensed', you have to choose one
+#      	              of the two licenses below to apply.
 #
-#  This software is governed by the CeCILL  license under French law and
-#  abiding by the rules of distribution of free software.  You can  use,
-#  modify and/ or redistribute the software under the terms of the CeCILL
-#  license as circulated by CEA, CNRS and INRIA at the following URL
-#  "http://www.cecill.info".
+#                    CeCILL-C
+#                    The CeCILL-C license is close to the GNU LGPL.
+#                    ( http://www.cecill.info/licences/Licence_CeCILL-C_V1-en.html )
+#
+#                or  CeCILL v2.0
+#                    The CeCILL license is compatible with the GNU GPL.
+#                    ( http://www.cecill.info/licences/Licence_CeCILL_V2-en.html )
+#
+#  This software is governed either by the CeCILL or the CeCILL-C license
+#  under French law and abiding by the rules of distribution of free software.
+#  You can  use, modify and or redistribute the software under the terms of
+#  the CeCILL or CeCILL-C licenses as circulated by CEA, CNRS and INRIA
+#  at the following URL: "http://www.cecill.info".
 #
 #  As a counterpart to the access to the source code and  rights to copy,
 #  modify and redistribute granted by the license, users are provided only
@@ -44,7 +52,7 @@
 #  same conditions as regards security.
 #
 #  The fact that you are presently reading this means that you have had
-#  knowledge of the CeCILL license and that you accept its terms.
+#  knowledge of the CeCILL and CeCILL-C licenses and that you accept its terms.
 #
 
 #---------------------------
@@ -678,12 +686,12 @@ do_gmic_stdlib.h:
 #  Copyright   : David Tschumperle\n\
 #                ( http://tschumperle.users.greyc.fr/ )\n\
 #\n\
-#  License     : CeCILL v2.0\n\
-#                ( http://www.cecill.info/licences/Licence_CeCILL_V2-en.html )\n\
+#  License     : CeCILL-C v1.0\n\
+#                ( http://www.cecill.info/licences/Licence_CeCILL-C_V1-en.html )\n\
 #\n\
-#  This software is governed by the CeCILL  license under French law and\n\
+#  This software is governed by the CeCILL-C license under French law and\n\
 #  abiding by the rules of distribution of free software.  You can  use,\n\
-#  modify and/ or redistribute the software under the terms of the CeCILL\n\
+#  modify and/ or redistribute the software under the terms of the CeCILL-C\n\
 #  license as circulated by CEA, CNRS and INRIA at the following URL\n\
 #  \"http://www.cecill.info\".\n\
 #\n\
@@ -705,7 +713,7 @@ do_gmic_stdlib.h:
 #  same conditions as regards security.\n\
 #\n\
 #  The fact that you are presently reading this means that you have had\n\
-#  knowledge of the CeCILL license and that you accept its terms.\n\
+#  knowledge of the CeCILL-C license and that you accept its terms.\n\
 #\n\
 */\n" > gmic_stdlib.h
 	@\gmic gmic_stdlib.gmic raw:gmic_stdlib.gmic,char compress_gmic 1 a y serialize char,1,0 o -.h,uchar | sed 's/unsigned char/const unsigned char/' | sed 's/unnamed/gmic_stdlib/' >> gmic_stdlib.h
@@ -730,7 +738,7 @@ do_gmic_gimp_gtk.h:
 #  License     : CeCILL v2.0\n\
 #                ( http://www.cecill.info/licences/Licence_CeCILL_V2-en.html )\n\
 #\n\
-#  This software is governed by the CeCILL  license under French law and\n\
+#  This software is governed by the CeCILL license under French law and\n\
 #  abiding by the rules of distribution of free software.  You can  use,\n\
 #  modify and/ or redistribute the software under the terms of the CeCILL\n\
 #  license as circulated by CEA, CNRS and INRIA at the following URL\n\

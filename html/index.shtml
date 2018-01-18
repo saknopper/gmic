@@ -34,7 +34,10 @@
 
           <td valign="top">
             <b><font color="#000066">G'MIC</font></b> is a full-featured open-source framework for <b><a href="https://en.wikipedia.org/wiki/Image_processing">image processing</a></b>,
-            distributed under the <b><a href="http://www.cecill.info/licences/Licence_CeCILL_V2.1-en.html">CeCILL</a></b> license (GPL-compatible).
+            distributed partly under the
+            <a href="http://www.cecill.info/licences/Licence_CeCILL-C_V1-en.html"><b>CeCILL-C</b></a> (LGPL-like)
+            and
+            <a href="http://www.cecill.info/licences/Licence_CeCILL_V2.1-en.html"><b>CeCILL</b></a> (GPL-compatible) licenses.
             It provides several different <b><a href="https://en.wikipedia.org/wiki/User_interface">user interfaces</a></b> to convert / manipulate / filter / visualize
             <b>generic image datasets</b>, ranging from 1d scalar signals to 3d+t sequences of multi-spectral volumetric images, thus including 2d color images.<br/><br/>
             These user interfaces are:<br/><br/>
@@ -167,8 +170,6 @@
       <br/><br/>
 
       <b><font color="#000066">G'MIC</font></b> has been designed with <b>portability</b> in mind and runs on different platforms (Windows, Unix, MacOSX).
-      It is distributed under the
-      <a href="http://www.cecill.info/licences/Licence_CeCILL_V2-en.html"><b>CeCILL</b></a> license (<b>GPL-compatible</b>).
       Since 2008, it is mainly developed in the
       <a href="https://www.greyc.fr/image">Image Team</a>
       of the

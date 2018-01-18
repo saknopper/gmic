@@ -5,8 +5,9 @@
 
 -----------------------
 
-**G'MIC** is a full-featured open-source framework for **[image processing](https://en.wikipedia.org/wiki/Image_processing)**, distributed under the
-**[CeCILL](http://www.cecill.info/licences/Licence_CeCILL_V2.1-en.html)** license (GPL compatible).
+**G'MIC** is a full-featured open-source framework for **[image processing](https://en.wikipedia.org/wiki/Image_processing)**, distributed partly under the
+**[CeCILL-C](http://www.cecill.info/licences/Licence_CeCILL-C_V1-en.html)** (LGPL-like) and
+**[CeCILL](http://www.cecill.info/licences/Licence_CeCILL_V2.1-en.html)** (GPL compatible) licenses.
 It provides several different **[user interfaces](https://en.wikipedia.org/wiki/User_interface)** to convert/manipulate/filter/visualize **generic image datasets**,
 ranging from _1d scalar signals_ to _3d+t sequences of multi-spectral volumetric images_, thus including _2d color images_.
 These user interfaces are:
