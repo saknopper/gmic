@@ -6961,7 +6961,7 @@ rgb2hsl :
     C = M - m;
     H = 60*(C==0?0:M==R?((G-B)/C)%6:M==G?(B-R)/C+2:(R-G)/C+4);
     L = 0.5*(m + M)/255;
-    S = L>=1?0:C/(1-abs(2*L-1))/255;
+    S = L>=1 || L<=0?0:C/(1-abs(2*L-1))/255;
     [ cut(H,0,360), cut(S,0,1), cut(L,0,1) ];
   "
   v +
@@ -27545,7 +27545,7 @@ fx_hsv_equalizer_preview :
 #@gui : Saturation offset = float(0,-1,1)
 #@gui : Value offset = float(0,-1,1)
 #@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
-#@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2018/01/18</i>.</small>")
+#@gui : sep = separator(), note = note("<small>Authors: <i>David Tschumperl&#233;</i> and <i>David Revoy</i>.      Latest update: <i>2018/01/18</i>.</small>")
 fx_equalize_hsv :
   cs=${"arg 1+$1,hsi,hsl,hsv"}
   repeat $! l[$>] split_opacity l[0]
@@ -27556,7 +27556,9 @@ fx_equalize_hsv :
     +[-2,-1] rm..
     +channels. 2 ${cs}2rgb..
     if $3 # Hue-saturation smoothness
-      mM={-2,[im,iM]} b.. $3 n.. $mM rgb2$cs.. j.. .,0,0,0,2 ${cs}2rgb..
+      mM={-2,[im,iM]}
+      srgb2rgb.. b.. $3 rgb2srgb.. n.. $mM
+      rgb2$cs.. j.. .,0,0,0,2 ${cs}2rgb..
     fi
     rm.
     blend alpha,{$2%}
