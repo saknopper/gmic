@@ -27577,9 +27577,9 @@ fx_equalize_hsv_preview :
        (H = x*360/(w-1); S = y/(h-1); V = y/(h-1));
      [H,S,V]"
     ${cs}2rgb.
-    r. $_preview_width,$_preview_height,1,3,0,0,0.5,0.5
   fi
   gui_split_preview "fx_equalize_hsv $*",$-1
+  r. $_preview_width,$_preview_height,1,3,0,0,0.5,0.5
 
 #@gui Mixer [CMYK] : fx_mix_cmyk, fx_mix_cmyk_preview(1)+
 #@gui : Cyan factor = float(1,0,4)
