@@ -27556,8 +27556,8 @@ fx_equalize_hsv :
     {"V = [${8-32:3}];
       const sV = size(V);
       for (k = 0, k<sV, ++k,
-        v0 = k*1/sV;
-        v1 = (k+1)*1/sV;
+        v0 = k/sV;
+        v1 = (k+1)/sV;
         V[k]*=(V[k]>0?(1 - v0):v1);
       ); V
     "}
