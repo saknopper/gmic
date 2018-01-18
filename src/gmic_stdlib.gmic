@@ -4239,6 +4239,7 @@ update_server :
     "replace_str google,Google "\
     "replace_str g\47mic,G\47MIC "\
     "replace_str haldCLUT,HaldCLUT "\
+    "replace_str hsi,HSI "\
     "replace_str hsl,HSL "\
     "replace_str hsv,HSV "\
     "replace_str html,HTML "\
@@ -27501,6 +27502,66 @@ fx_hsv_equalizer_preview :
     -|[-3--1] +. 0.33 /. 1.33	#1 and 0.25
     *[2,-1] a c hsv2rgb
   fi endl
+
+#@gui Equalize HSI-HSL-HSV : fx_equalize_hsv, fx_equalize_hsv_preview(0)
+#@gui : Colorspace = choice(1,"HSI","HSL","HSV")
+#@gui : Opacity (%) = float(100,0,100)
+#@gui : Smoothness = float(0,0,16)
+#@gui : sep = separator(), note = note("<small><b>Black:</b></small>")
+#@gui : Hue offset = float(0,-180,180)
+#@gui : Saturation offset = float(0,-1,1)
+#@gui : Value offset = float(0,-1,1)
+#@gui : sep = separator(), note = note("<small><b>Near black:</b></small>")
+#@gui : Hue offset = float(0,-180,180)
+#@gui : Saturation offset = float(0,-1,1)
+#@gui : Value offset = float(0,-1,1)
+#@gui : sep = separator(), note = note("<small><b>Dark grey:</b></small>")
+#@gui : Hue offset = float(0,-180,180)
+#@gui : Saturation offset = float(0,-1,1)
+#@gui : Value offset = float(0,-1,1)
+#@gui : sep = separator(), note = note("<small><b>Mi-dark grey:</b></small>")
+#@gui : Hue offset = float(0,-180,180)
+#@gui : Saturation offset = float(0,-1,1)
+#@gui : Value offset = float(0,-1,1)
+#@gui : sep = separator(), note = note("<small><b>Middle grey:</b></small>")
+#@gui : Hue offset = float(0,-180,180)
+#@gui : Saturation offset = float(0,-1,1)
+#@gui : Value offset = float(0,-1,1)
+#@gui : sep = separator(), note = note("<small><b>Mid-light grey:</b></small>")
+#@gui : Hue offset = float(0,-180,180)
+#@gui : Saturation offset = float(0,-1,1)
+#@gui : Value offset = float(0,-1,1)
+#@gui : sep = separator(), note = note("<small><b>Light grey:</b></small>")
+#@gui : Hue offset = float(0,-180,180)
+#@gui : Saturation offset = float(0,-1,1)
+#@gui : Value offset = float(0,-1,1)
+#@gui : sep = separator(), note = note("<small><b>Highlights:</b></small>")
+#@gui : Hue offset = float(0,-180,180)
+#@gui : Saturation offset = float(0,-1,1)
+#@gui : Value offset = float(0,-1,1)
+#@gui : sep = separator(), note = note("<small><b>White:</b></small>")
+#@gui : Hue offset = float(0,-180,180)
+#@gui : Saturation offset = float(0,-1,1)
+#@gui : Value offset = float(0,-1,1)
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
+#@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2018/01/18</i>.</small>")
+fx_equalize_hsv : skip $*
+  cs=${"arg 1+$1,hsi,hsl,hsv"}
+  repeat $! l[$>] split_opacity l[0]
+    to_rgb
+    9,1,1,3,${4-28:3},${5-29:3},${6-30:3} r. 256,1,1,3,1
+    +rgb2$cs.. +channels. 100% *. 256 round. map. ...
+    +[-2,-1] rm..
+    +channels. 2 ${cs}2rgb..
+    if $3
+      mM={-2,[im,iM]} b.. $3 n.. $mM rgb2$cs.. j.. .,0,0,0,2 ${cs}2rgb..
+    fi
+    rm.
+    blend alpha,{$2%}
+  endl a c endl done
+
+fx_equalize_hsv_preview :
+  gui_split_preview "fx_equalize_hsv $*",$-1
 
 #@gui Mixer [CMYK] : fx_mix_cmyk, fx_mix_cmyk_preview(1)+
 #@gui : Cyan factor = float(1,0,4)
