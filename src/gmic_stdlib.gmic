@@ -27506,8 +27506,10 @@ fx_hsv_equalizer_preview :
 #@gui Equalize HSI-HSL-HSV : fx_equalize_hsv, fx_equalize_hsv_preview
 #@gui : Colorspace = choice(1,"HSI","HSL","HSV")
 #@gui : Opacity (%) = float(100,0,100)
-#@gui : Hue-saturation smoothness = float(0,0,16)
+#@gui : Chroma smoothness = float(0,0,16)
 #@gui : Value smoothness = float(0,0,16)
+#@gui : sep = separator()
+#@gui : Preview mapping = choice("None","Grey","Color")
 #@gui : sep = separator(), note = note("<small><b>Black:</b></small>")
 #@gui : Hue offset = float(0,-180,180)
 #@gui : Saturation offset = float(0,-1,1)
@@ -27550,7 +27552,9 @@ fx_equalize_hsv :
   cs=${"arg 1+$1,hsi,hsl,hsv"}
   repeat $! l[$>] split_opacity l[0]
     to_rgb
-    9,1,1,3,${5-29:3},${6-30:3},${7-31:3} r. 256,1,1,3,1
+    9,1,1,3,${6-30:3},${7-31:3},${8-32:3}
+#    sh. 1,2 +sign. abs.. pow.. 1.5 *[-2,-1] rm. # nonlinear scale.
+    r. 256,1,1,3,1
     sh. 2 nM={[im,iM]} b. $4 nm. $nM rm. # Value smoothness
     +rgb2$cs.. +channels. 100% *. 256 round. map. ...
     +[-2,-1] rm..
@@ -27565,6 +27569,16 @@ fx_equalize_hsv :
   endl a c endl done
 
 fx_equalize_hsv_preview :
+  if $5
+    cs=${"arg 1+$1,hsi,hsl,hsv"}
+    rm {0.8*[$_preview_width,$_preview_height]},1,3,\
+    "$5==1?
+       (H = S = 0; V = y/(h-1)):
+       (H = x*360/(w-1); S = y/(h-1); V = y/(h-1));
+     [H,S,V]"
+    ${cs}2rgb.
+    r. $_preview_width,$_preview_height,1,3,0,0,0.5,0.5
+  fi
   gui_split_preview "fx_equalize_hsv $*",$-1
 
 #@gui Mixer [CMYK] : fx_mix_cmyk, fx_mix_cmyk_preview(1)+
