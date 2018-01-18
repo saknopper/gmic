@@ -5,9 +5,9 @@
 ;;   Description : Show how to call G'MIC commands from a GIMP script.
 ;;                 ( http://gmic.eu )
 ;;
-;;   Note : This script uses the GTK version of the plug-in, if you want to use
-;;          the Qt version instead, just replace the string 'gtk' by 'qt' when
-;;          it appears in the source.
+;;   Note        : This script uses the GTK version of the plug-in, if you want to use
+;;                 the Qt version instead, just replace the string 'gtk' by 'qt' when
+;;                 it appears in the source.
 ;;
 ;;   Copyright   : David Tschumperle
 ;;                 ( http://tschumperle.users.greyc.fr/ )

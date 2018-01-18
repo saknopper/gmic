@@ -9,16 +9,16 @@
 #  Copyright   : David Tschumperle
 #                ( http://tschumperle.users.greyc.fr/ )
 #
-#  Licenses        : This file is 'dual-licensed', you have to choose one
-#                    of the two licenses below to apply.
+#  Licenses    : This file is 'dual-licensed', you have to choose one
+#                of the two licenses below to apply.
 #
-#                    CeCILL-C
-#                    The CeCILL-C license is close to the GNU LGPL.
-#                    ( http://www.cecill.info/licences/Licence_CeCILL-C_V1-en.html )
+#                CeCILL-C
+#                The CeCILL-C license is close to the GNU LGPL.
+#                ( http://www.cecill.info/licences/Licence_CeCILL-C_V1-en.html )
 #
-#                or  CeCILL v2.0
-#                    The CeCILL license is compatible with the GNU GPL.
-#                    ( http://www.cecill.info/licences/Licence_CeCILL_V2-en.html )
+#            or  CeCILL v2.1
+#                The CeCILL license is compatible with the GNU GPL.
+#                ( http://www.cecill.info/licences/Licence_CeCILL_V2.1-en.html )
 #
 #  This software is governed either by the CeCILL or the CeCILL-C license
 #  under French law and abiding by the rules of distribution of free software.
@@ -1344,7 +1344,7 @@ _help_header_latex :
 \n
 \n\\Cc{G\47MIC} is an open framework: the default language can be extended with custom \\Cc{G\47MIC}-written commands, defining thus new available image filters or effects. By the way, \\Cc{G\47MIC} already contains a substantial set of pre-defined image processing algorithms and pipelines (more than 1000).\\\\
 \n
-\n\\Cc{G\47MIC} has been designed with portability in mind and runs on different platforms (Windows, Unix, MacOSX). It is distributed partly under the CeCILL-C (LGPL-like) and CeCILL (GPL-compatible) licenses. Since 2008, it is developed in the Image Team of the GREYC laboratory, in Caen/France, by permanent researchers working in the field of image processing on a daily basis.
+\n\\Cc{G\47MIC} has been designed with portability in mind and runs on different platforms (Windows, Unix, MacOSX). It is distributed partly under the CeCILL licenses (CeCILL-C and/or CeCILL). Since 2008, it is developed in the Image Team of the GREYC laboratory, in Caen/France, by permanent researchers working in the field of image processing on a daily basis.
 \n\\section*{Version}
 \n
 \n \\Ca{\\textbf{gmic:} GREYC\'s Magic for Image Computing.}\\\\
@@ -4486,8 +4486,8 @@ update_server :
             "#  Description : Update file for G\47MIC commands and filters (for version "${-strver}")."\n\
             "#                ( http://gmic.eu )"\n\
             "#"\n\
-            "#  License     : CeCILL-C v1.0"\n\
-            "#                ( http://www.cecill.info/licences/Licence_CeCILL-C_V1-en.html )"\n\
+            "#  License     : CeCILL v2.1 or CeCILL-C v1.0"\n\
+            "#                ( http://www.cecill.info/index.en.html )"\n\
             "#"\n\n'})
     ({'"\n\n# Local Variables:"\n\
        "# mode: sh"\n\

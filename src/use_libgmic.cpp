@@ -9,16 +9,16 @@
  #  Copyright   : David Tschumperle
  #                ( http://tschumperle.users.greyc.fr/ )
  #
- #  Licenses        : This file is 'dual-licensed', you have to choose one
- #                    of the two licenses below to apply.
+ #  Licenses    : This file is 'dual-licensed', you have to choose one
+ #                of the two licenses below to apply.
  #
- #                    CeCILL-C
- #                    The CeCILL-C license is close to the GNU LGPL.
- #                    ( http://www.cecill.info/licences/Licence_CeCILL-C_V1-en.html )
+ #                CeCILL-C
+ #                The CeCILL-C license is close to the GNU LGPL.
+ #                ( http://www.cecill.info/licences/Licence_CeCILL-C_V1-en.html )
  #
- #                or  CeCILL v2.0
- #                    The CeCILL license is compatible with the GNU GPL.
- #                    ( http://www.cecill.info/licences/Licence_CeCILL_V2-en.html )
+ #            or  CeCILL v2.1
+ #                The CeCILL license is compatible with the GNU GPL.
+ #                ( http://www.cecill.info/licences/Licence_CeCILL_V2.1-en.html )
  #
  #  This software is governed either by the CeCILL or the CeCILL-C license
  #  under French law and abiding by the rules of distribution of free software.

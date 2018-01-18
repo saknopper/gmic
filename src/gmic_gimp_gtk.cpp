@@ -9,8 +9,8 @@
  #  Copyright   : David Tschumperle
  #                ( http://tschumperle.users.greyc.fr/ )
  #
- #  License     : CeCILL v2.0
- #                ( http://www.cecill.info/licences/Licence_CeCILL_V2-en.html )
+ #  License     : CeCILL v2.1
+ #                ( http://www.cecill.info/licences/Licence_CeCILL_V2.1-en.html )
  #
  #  This software is governed by the CeCILL  license under French law and
  #  abiding by the rules of distribution of free software.  You can  use,
