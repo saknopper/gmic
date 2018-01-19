@@ -27509,7 +27509,7 @@ fx_hsv_equalizer_preview :
 #@gui : Hue curvness = float(0,0,16)
 #@gui : Saturation curvness = float(0,0,16)
 #@gui : Value curvness = float(0,0,16)
-#@gui : Smoothness = float(0,0,16)
+#@gui : Smoothness = float(0,0,32)
 #@gui : sep = separator()
 #@gui : Preview mapping = choice("None","Grey","Color")
 #@gui : sep = separator(), note = note("<small><b>Black:</b></small>")
