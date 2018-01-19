@@ -27506,10 +27506,10 @@ fx_hsv_equalizer_preview :
 #@gui Equalize HSI-HSL-HSV : fx_equalize_hsv, fx_equalize_hsv_preview
 #@gui : Colorspace = choice(1,"HSI","HSL","HSV")
 #@gui : Opacity (%) = float(100,0,100)
-#@gui : Hue smoothness = float(0,0,16)
-#@gui : Saturation smoothness = float(0,0,16)
-#@gui : Value smoothness = float(0,0,16)
-#@gui : Spatial chroma smoothness = float(0,0,16)
+#@gui : Hue curvness = float(0,0,16)
+#@gui : Saturation curvness = float(0,0,16)
+#@gui : Value curvness = float(0,0,16)
+#@gui : Smoothness = float(0,0,16)
 #@gui : sep = separator()
 #@gui : Preview mapping = choice("None","Grey","Color")
 #@gui : sep = separator(), note = note("<small><b>Black:</b></small>")
@@ -27571,10 +27571,11 @@ fx_equalize_hsv :
     +rgb2$cs.. +channels. 100% *. 256 round. map. ...
     +[-2,-1] rm..
     +channels. 2 ${cs}2rgb..
-    if $3 # Spatial chroma smoothness
+    if $6 # Spatial smoothness
       mM={-2,[im,iM]}
-      srgb2rgb.. b.. $6 rgb2srgb.. n.. $mM
-      rgb2$cs.. j.. .,0,0,0,2 ${cs}2rgb..
+      srgb2rgb.. n. 0,255
+      bilateral.. .,$6,{2+$6}
+      rgb2srgb..
     fi
     rm.
     blend alpha,{$2%}
