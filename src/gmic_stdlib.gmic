@@ -24336,8 +24336,8 @@ fx_gmicky_preview :
 #@gui : - <b>2016/03/25</b> : version <i>1.7.0</i>.\n
 #@gui : - <b>2017/05/29</b> : version <i>2.0.0</i>.\n
 #@gui : - <b>2017/10/09</b> : version <i>2.1.0</i>.\n
-#@gui : - <span foreground="purple"><b>2018/01/19</b> : version <i>2.1.9</i> (Current stable).</span>\n
-##@gui : - <b>2018/01/03</b> : version <i>2.2.0_pre</i> (Current development).\n
+#@gui : - <span foreground="purple"><b>2018/01/02</b> : version <i>2.1.8</i> (Current stable).</span>\n
+#@gui : - <b>2018/01/03</b> : version <i>2.1.9_pre</i> (Current development).\n
 #@gui : "}
 #@gui : sep = separator()
 #@gui : url = link{"View changelog to upcoming major version (2.2.0)","https://discuss.pixls.us/t/on-the-road-to-2-2-0"}
