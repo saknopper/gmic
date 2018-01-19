@@ -27506,8 +27506,8 @@ fx_hsv_equalizer_preview :
 #@gui Equalize HSI-HSL-HSV : fx_equalize_hsv, fx_equalize_hsv_preview(0)+
 #@gui : Colorspace = choice(1,"HSI","HSL","HSV")
 #@gui : Opacity (%) = float(100,0,100)
-#@gui : Value blending = float(0,0,16)
-#@gui : Color blending = float(0,0,32)
+#@gui : Value blending = float(0,0,64)
+#@gui : Color blending = float(0,0,64)
 #@gui : sep = separator()
 #@gui : Preview mapping = choice("None","Grey","Color")
 #@gui : sep = separator(), note = note("<small><b>Black:</b></small>")
