@@ -7497,7 +7497,7 @@ transfer_rgb : check "${2=0.3}>=0 && ${3=8}>=0 && ${4=0.15}>=0 && ${5=64}>=0 && 
     else
       l[source,res_noregul]
         rgb2ycbcr  # Perform regularization in YCbCr to avoid creation of false colors.
-        +-[1] [0] repeat $3 -guided. [0],5,5 done +. [0] c. 0,255
+        +-[1] [0] repeat $3 guided. [0],5,5 done +. [0] c. 0,255
         ycbcr2rgb
       endl
       nm. res
@@ -9692,7 +9692,7 @@ _inpaint_patchmatch :
 #@cli : Default values: 'nb_scales=75%', 'diffusion_type=1' and 'diffusion_iter=20'.
 #@cli : $ image.jpg 100%,100% ellipse[-1] 30%,30%,40,30,0,1,255 +inpaint_diffusion[0] [1]
 inpaint_diffusion : check ${is_image_arg\ $1}" && ${2=75%}>=0 && isint(${3=1}) && $3>=0 && $3<=3 && ${4=20}>=0"
-  v - s0="isotropic" s1="delaunay-guided" s2="edge-guided" s3="mask_guided"
+  v - s0="isotropic" s1="delaunay-guided" s2="edge-guided" s3="mask-guided"
   v + e[^-1] "Inpaint image$? by mask $1, using a multiscale diffusion algorithm with $2 scales and $4 iterations of "${s$3}" diffusion." v -
   repeat $! nm={n} pass$1 l[$>,-1]
     nb_scalesM={round(log2(max(w,h,d)))}
@@ -26428,7 +26428,7 @@ _fx_colorize_lineart_smartcoloring :
         eq[new_strokes] 0 label_fg[new_strokes] 0,0
         if $min_color_area +area_fg[new_strokes] 0,0 >. $min_color_area *[new_strokes,-1] fi
         watershed[new_strokes] [strokes],0 rm[strokes]
-        srgb2rgb. -guided. [new_strokes],{1+$9/5},0 rgb2srgb.
+        srgb2rgb. guided. [new_strokes],{1+$9/5},0 rgb2srgb.
       fi
       rm[new_strokes]
       nm. new_colors
@@ -26641,7 +26641,7 @@ fx_engrave :
         if $14 r {100*$f}%,{100*$f}%,1,100%,3 fi
         b {$f*$9} segment_watershed 5
         if $14 r $wh,1,100%,2 fi
-        repeat $10 -guided 10,{$10*80} done
+        repeat $10 guided 10,{$10*80} done
         rgb2hsv s c +... $11 +.. {$12%} +. $13% a c hsv2rgb
       endl a c endl
       nm[0] mode(darken),name($nm),pos($pos)
@@ -27272,7 +27272,7 @@ fx_customize_clut :
   if {!$3} map_clut[^-1] . # w/o spatial regularization
   else repeat {$!-1}       # w/ spatial regularization
     +luminance[$>] +map_clut[$>] .. -. [$>]
-    repeat $3 -guided. ..,2,50 done +[$>,-1] rm.
+    repeat $3 guided. ..,2,50 done +[$>,-1] rm.
   done fi
   adjust_colors ${4-8},0,255
   if $9 repeat $! l[$>] split_opacity n[0] 0,255 a c endl done fi
@@ -27509,7 +27509,7 @@ fx_hsv_equalizer_preview :
 #@gui : Hue curvness = float(0,0,16)
 #@gui : Saturation curvness = float(0,0,16)
 #@gui : Value curvness = float(0,0,16)
-#@gui : Smoothness = float(0,0,32)
+#@gui : Spatial regulatization = float(0,0,32)
 #@gui : sep = separator()
 #@gui : Preview mapping = choice("None","Grey","Color")
 #@gui : sep = separator(), note = note("<small><b>Black:</b></small>")
@@ -27572,6 +27572,7 @@ fx_equalize_hsv :
     +[-2,-1] rm.. +channels. 100% ${cs}2rgb..
     if $6 # Spatial smoothness
       mM={-2,[im,iM]} srgb2rgb.. *. 255 bilateral.. .,$6,{2+$6} rgb2srgb..
+#      *. 255 repeat $6 guided.. .,2,50 done
       rgb2$cs.. /. 255 j.. .,0,0,0,2 ${cs}2rgb..
     fi
     rm.
@@ -27785,7 +27786,7 @@ fx_mix_ycbcr_preview :
 fx_retinex :
   repeat $! l[$>]
     +retinex $2,${"arg 1+$3,hsi,hsv,lab,lrgb,rgb,ycbcr"},$4,$5,${7--1}
-    if $6 -guided. ..,$6,$6 fi
+    if $6 guided. ..,$6,$6 fi
     j[0] .,0,0,0,0,{$1%} rm.
     c 0,255
   endl done
@@ -27874,7 +27875,7 @@ fx_selective_desaturation :
     fi
     c[1] 0,1
     rgb2hsl[0] s[0] c
-    mM={[im,iM]} repeat $6 -guided. [2],1,0.1 done n. $mM # Regularization step.
+    mM={[im,iM]} repeat $6 guided. [2],1,0.1 done n. $mM # Regularization step.
     if {$7==0} *[1,-1]
     elif {$7==1} ($1^$2^$3) rgb2hsl. *[1] {i[1]} rm[-2,-1]
     else rv[1,-1] rm.
@@ -32677,7 +32678,7 @@ fx_smooth_bilateral_preview :
 #@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2014/29/10</i>.</small>")
 fx_smooth_guided : skip ${5=0},${6=0}
-  ac "repeat $3 -guided $1,$2 done",$4
+  ac "repeat $3 guided $1,$2 done",$4
 
 fx_smooth_guided_preview :
   gui_split_preview "fx_smooth_guided $*",$-1,{if(isval($_preview_timeout),0$_preview_timeout,8)}
