@@ -27506,10 +27506,8 @@ fx_hsv_equalizer_preview :
 #@gui Equalize HSI-HSL-HSV : fx_equalize_hsv, fx_equalize_hsv_preview(0)+
 #@gui : Colorspace = choice(1,"HSI","HSL","HSV")
 #@gui : Opacity (%) = float(100,0,100)
-#@gui : Hue curvness = float(0,0,16)
-#@gui : Saturation curvness = float(0,0,16)
-#@gui : Value curvness = float(0,0,16)
-#@gui : Spatial regulatization = float(0,0,32)
+#@gui : Value regularization = float(0,0,16)
+#@gui : Color regularization = float(0,0,32)
 #@gui : sep = separator()
 #@gui : Preview mapping = choice("None","Grey","Color")
 #@gui : sep = separator(), note = note("<small><b>Black:</b></small>")
@@ -27549,14 +27547,14 @@ fx_hsv_equalizer_preview :
 #@gui : Saturation offset = float(0,-1,1)
 #@gui : Value offset = float(0,-1,1)
 #@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
-#@gui : sep = separator(), note = note("<small>Authors: <i>David Tschumperl&#233;</i> and <i>David Revoy</i>.      Latest update: <i>2018/01/18</i>.</small>")
+#@gui : sep = separator(), note = note("<small>Authors: <i>David Tschumperl&#233;</i> and <i>David Revoy</i>.      Latest update: <i>2018/01/19</i>.</small>")
 fx_equalize_hsv :
   cs=${"arg 1+$1,hsi,hsl,hsv"}
   repeat $! l[$>] split_opacity l[0]
     to_rgb
     9,1,1,4,\
-    {"V = [${8-32:3}]*pi/180; [cos(V),sin(V)]"},${9-33:3},\
-    {"V = [${10-34:3}];
+    {"V = [${6-30:3}]*pi/180; [cos(V),sin(V)]"},${7-31:3},\
+    {"V = [${8-32:3}];
       const sV = size(V);
       for (k = 0, k<sV, ++k,
         v0 = k/sV;
@@ -27564,15 +27562,12 @@ fx_equalize_hsv :
         V[k]*=(V[k]>0?(1 - v0):v1);
       ); V"}
     r. 256,1,1,4,1
-    sh. 0,1 nM={[im,iM]} b. $3 nm. $nM rm. # Hue smoothness
-    sh. 2 nM={[im,iM]} b. $4 nm. $nM rm.   # Saturation smoothness
-    sh. 3 nM={[im,iM]} b. $5 nm. $nM rm.   # Value smoothness
+    sh. 3 nM={[im,iM]} b. $3 nm. $nM rm.   # Value smoothness
     f. "[ atan2(G,R)*180/pi,B,A,0 ]" channels. 0,2
     +rgb2$cs.. +channels. 100% *. 256 round. map. ...
     +[-2,-1] rm.. +channels. 100% ${cs}2rgb..
-    if $6 # Spatial smoothness
-      mM={-2,[im,iM]} srgb2rgb.. *. 255 bilateral.. .,$6,{2+$6} rgb2srgb..
-#      *. 255 repeat $6 guided.. .,2,50 done
+    if $4 # Spatial smoothness
+      mM={-2,[im,iM]} *. 255 bilateral.. .,$4,{2+$4}
       rgb2$cs.. /. 255 j.. .,0,0,0,2 ${cs}2rgb..
     fi
     rm.
@@ -27580,17 +27575,17 @@ fx_equalize_hsv :
   endl a c endl done
 
 fx_equalize_hsv_preview :
-  if $7
+  if $5
     cs=${"arg 1+$1,hsi,hsl,hsv"}
     rm {0.8*[$_preview_width,$_preview_height]},1,3,\
-    "$7==1?
+    "$5==1?
        (H = S = 0; V = y/(h-1)):
        (H = x*360/(w-1); S = y/(h-1); V = y/(h-1));
      [H,S,V]"
     ${cs}2rgb.
   fi
   gui_split_preview "fx_equalize_hsv $*",$-1
-  r. $_preview_width,$_preview_height,1,3,0,0,0.5,0.5
+  if $5 r. $_preview_width,$_preview_height,1,3,0,0,0.5,0.5 fi
 
 #@gui Mixer [CMYK] : fx_mix_cmyk, fx_mix_cmyk_preview(1)+
 #@gui : Cyan factor = float(1,0,4)
