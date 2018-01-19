@@ -27503,7 +27503,7 @@ fx_hsv_equalizer_preview :
     *[2,-1] a c hsv2rgb
   fi endl
 
-#@gui Equalize HSI-HSL-HSV : fx_equalize_hsv, fx_equalize_hsv_preview
+#@gui Equalize HSI-HSL-HSV : fx_equalize_hsv, fx_equalize_hsv_preview(0)+
 #@gui : Colorspace = choice(1,"HSI","HSL","HSV")
 #@gui : Opacity (%) = float(100,0,100)
 #@gui : Hue curvness = float(0,0,16)
@@ -27565,14 +27565,16 @@ fx_equalize_hsv :
       ); V"}
     r. 256,1,1,4,1
     sh. 0,1 nM={[im,iM]} b. $3 nm. $nM rm. # Hue smoothness
-    sh. 2 nM={[im,iM]} b. $4 nm. $nM rm. # Saturation smoothness
-    sh. 3 nM={[im,iM]} b. $5 nm. $nM rm. # Value smoothness
+    sh. 2 nM={[im,iM]} b. $4 nm. $nM rm.   # Saturation smoothness
+    sh. 3 nM={[im,iM]} b. $5 nm. $nM rm.   # Value smoothness
     f. "[ atan2(G,R)*180/pi,B,A,0 ]" channels. 0,2
     +rgb2$cs.. +channels. 100% *. 256 round. map. ...
-    +[-2,-1] rm.. ${cs}2rgb.
+    +[-2,-1] rm.. +channels. 100% ${cs}2rgb..
     if $6 # Spatial smoothness
-      mM={-2,[im,iM]} +norm.. srgb2rgb.. bilateral.. .,$6,{2+$6} rgb2srgb.. rm.
+      mM={-2,[im,iM]} srgb2rgb.. *. 255 bilateral.. .,$6,{2+$6} rgb2srgb..
+      rgb2$cs.. /. 255 j.. .,0,0,0,2 ${cs}2rgb..
     fi
+    rm.
     blend alpha,{$2%}
   endl a c endl done
 
