@@ -18973,7 +18973,7 @@ uchar2str :
   "
   u {-2,w}_{-2,h}_{-2,d}_{-2,s}_{t} rm. v +
 
-#@cli uchar2str : "string"
+#@cli str2uchar : "string"
 #@cli : Decode given string as a newly inserted image at the end of the list.
 #@cli : The argument string should have been generated using command 'uchar2str'.
 str2uchar :
@@ -24330,7 +24330,7 @@ fx_gmicky_preview :
 #@gui : - <b>2017/05/29</b> : version <i>2.0.0</i>.\n
 #@gui : - <b>2017/10/09</b> : version <i>2.1.0</i>.\n
 #@gui : - <span foreground="purple"><b>2018/01/19</b> : version <i>2.1.9</i> (Current stable).</span>\n
-##@gui : - <b>2018/01/03</b> : version <i>2.2.0_pre</i> (Current development).\n
+#@gui : - <b>2018/01/22</b> : version <i>2.2.0_pre</i> (Current development).\n
 #@gui : "}
 #@gui : sep = separator()
 #@gui : url = link{"View changelog to upcoming major version (2.2.0)","https://discuss.pixls.us/t/on-the-road-to-2-2-0"}
