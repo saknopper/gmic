@@ -18598,7 +18598,7 @@ math_lib :
     (arg(1 + int(_I[0]/60),[_c,_x,0],[_x,_c,0],[0,_c,_x],[0,_x,_c],[_x,0,_c],[_c,0,_x])+=_I[2] - _c)*=255;
   );
 
-  is_intriangle(P,A,B,C) = ( # Test is a point is inside a triangle
+  is_intriangle(P,A,B,C) = ( # Test if a point is inside a triangle
     _v0 = C - A;
     _v1 = B - A;
     _v2 = P - A;
@@ -18611,6 +18611,10 @@ math_lib :
     _u = (_dot11*_dot02 - _dot01*_dot12)*_invDenom;
     _v = (_dot00*_dot12 - _dot01*_dot02)*_invDenom;
     _u>=0 && _v>=0 && _u + _v<1);
+
+  is_inquadrilateral(P,A,B,C,D) = ( # Test if a point is inside a quadrilateral
+    is_intriangle(P,A,B,D) || is_intriangle(P,B,C,D);
+  );
 
   length_spline(P0,T0,P1,T1) = ( # Compute the length of a spline P0-P1 with tangents T0,T1
     _P0 = P0;
@@ -28487,6 +28491,19 @@ fx_conformal_maps :
 
 fx_conformal_maps_preview :
   fx_conformal_maps ${1-3},"$4",${5-11},0,0,0
+
+#@gui Crease : fx_crease,fx_crease(0)
+#@gui : Amplitude = float(30,0,300)
+#@gui : Frequency (%) = float(10,0,100)
+#@gui : Boundary = choice(3,"Transparent","Nearest","Periodic","Mirror")
+#@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2018/01/22</i>.</small>")
+fx_crease :
+  repeat $! l[$>]
+    if {!$3} to_a fi
+    2,2,1,2,{"const w1 = w#-1-1; const h1 = h#-1 - 1; [ 0,w1,0,w1,0,0,h1,h1 ];"}
+    r. {0,D=$2*[w,h]%;[max(D[0],1),max(D[1],1)]},1,2,3 noise. $1,1
+    r. ..,..,1,2,3 warp.. .,0,1,$3 rm.
+  endl done
 
 #@gui Distort lens : fx_distort_lens, fx_distort_lens_preview(1)
 #@gui : Amplitude = float(0.1,-1,1)

@@ -410,7 +410,8 @@ gmicol_rotate :
 #@web clone("Circle transform")
 #@web clone("Continuous droste")
 #@web clone("Conformal maps")
-#@gui clone("Distort lens")
+#@web clone("Crease")
+#@web clone("Distort lens")
 
 #@web Drop water : fx_drop_water_preview, fx_drop_water_preview(1)
 #@web : note = note("<small><b>Shape geometry:</b></small>")
