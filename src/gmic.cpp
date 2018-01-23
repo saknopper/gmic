@@ -2212,7 +2212,6 @@ double gmic::mp_ext(char *const str, void *const p_list) {
         gi._run(gi.commands_line_to_CImgList(gmic::strreplace_fw(str)),pos,images,images_names,
                 parent_images,parent_images_names,variables_sizes,0,0,command_selection);
       } catch (gmic_exception&) {
-        gi.callstack.remove();
         res = cimg::type<double>::nan();
       }
       gi.callstack.remove();
