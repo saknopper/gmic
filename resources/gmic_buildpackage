@@ -207,7 +207,7 @@ if [ "$OSTYPE" == "msys" ]; then
 #    fi
 
     echo " - All done!"
-    return;
+    exit 0;
 fi
 
 # Build package from a virtual Debian/Ubuntu machine.
@@ -279,7 +279,7 @@ if [ "$HOSTNAME" != "elara" ] ; then
     fi
 
     echo VIRTUALBOX_DONE
-    return;
+    exit 0;
 fi
 
 # Build package from main machine (ELARA).

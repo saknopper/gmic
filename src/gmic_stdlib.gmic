@@ -18479,6 +18479,81 @@ math_lib :
     nan;
   );
 
+  draw_quadrangle(ind,P0,P1,P2,P3,opacity,color) = ( # Draw quadrangle P0-P1-P2-P3 on image #ind
+    unref(_dq_color);
+    _opacity = opacity;
+    _dq_color = resize(color,s#ind);
+    _A = round(P0);
+    _B = round(P1);
+    _C = round(P2);
+    _D = round(P3);
+    _xmin = min(_A[0],_B[0],_C[0],_D[0]);
+    _xmax = max(_A[0],_B[0],_C[0],_D[0]);
+    _ymin = min(_A[1],_B[1],_C[1],_D[1]);
+    _ymax = max(_A[1],_B[1],_C[1],_D[1]);
+    _M0 = transp([_A,1,_B,1,_D,1],3);
+    _M1 = transp([_B,1,_C,1,_D,1],3);
+    for (_y = _ymin, _y<_ymax, ++_y,
+      for (_x = _xmin, _x<_xmax, ++_x,
+        _P = [ _x,_y,1 ];
+        _L0 = round(solve(_M0,_P),1e-5);
+        _L1 = round(solve(_M1,_P),1e-5);
+        if (min(_L0)>=0 || min(_L1)>=0, copy(i(#ind,_x,_y,0,0),_dq_color,size(_dq_color),whd#ind,1,_opacity));
+      );
+    );
+    nan;
+  );
+
+  draw_quadrangle(ind,P0,P1,P2,P3,opacity,color0,color1,color2,color3) = ( # Draw shaded quadrangle P0-P1-P2-P3 on image #ind
+    unref(_dq_color);
+    unref(_dq_color0);
+    unref(_dq_color1);
+    unref(_dq_color2);
+    unref(_dq_color3);
+    _opacity = opacity;
+    _dq_color0 = resize(color0,s#ind);
+    _dq_color1 = resize(color1,s#ind);
+    _dq_color2 = resize(color2,s#ind);
+    _dq_color3 = resize(color3,s#ind);
+    _dq_color4 = (_dq_color0 + _dq_color1 + _dq_color2 + _dq_color3)/4;
+    _A = round(P0);
+    _B = round(P1);
+    _C = round(P2);
+    _D = round(P3);
+    _G = round((_A + _B + _C + _D)/4);
+    _xmin = min(_A[0],_B[0],_C[0],_D[0]);
+    _xmax = max(_A[0],_B[0],_C[0],_D[0]);
+    _ymin = min(_A[1],_B[1],_C[1],_D[1]);
+    _ymax = max(_A[1],_B[1],_C[1],_D[1]);
+    _M0 = transp([_A,1,_B,1,_G,1],3);
+    _M1 = transp([_B,1,_C,1,_G,1],3);
+    _M2 = transp([_C,1,_D,1,_G,1],3);
+    _M3 = transp([_D,1,_A,1,_G,1],3);
+    for (_y = _ymin, _y<_ymax, ++_y,
+      for (_x = _xmin, _x<_xmax, ++_x,
+        _P = [ _x,_y,1 ];
+        _L0 = round(solve(_M0,_P),1e-5);
+        _L1 = round(solve(_M1,_P),1e-5);
+        _L2 = round(solve(_M2,_P),1e-5);
+        _L3 = round(solve(_M3,_P),1e-5);
+        min(_L0)>=0?(
+          _dq_color = _L0[0]*_dq_color0 + _L0[1]*_dq_color1 + _L0[2]*_dq_color4;
+          copy(i(#ind,_x,_y,0,0),_dq_color,size(_dq_color),whd#ind,1,_opacity);
+        ):min(_L1)>=0?(
+          _dq_color = _L1[0]*_dq_color1 + _L1[1]*_dq_color2 + _L1[2]*_dq_color4;
+          copy(i(#ind,_x,_y,0,0),_dq_color,size(_dq_color),whd#ind,1,_opacity);
+        ):min(_L2)>=0?(
+          _dq_color = _L2[0]*_dq_color2 + _L2[1]*_dq_color3 + _L2[2]*_dq_color4;
+          copy(i(#ind,_x,_y,0,0),_dq_color,size(_dq_color),whd#ind,1,_opacity);
+        ):min(_L3)>=0?(
+          _dq_color = _L3[0]*_dq_color3 + _L3[1]*_dq_color0 + _L3[2]*_dq_color4;
+          copy(i(#ind,_x,_y,0,0),_dq_color,size(_dq_color),whd#ind,1,_opacity);
+        );
+      );
+    );
+    nan;
+  );
+
   draw_rectangle(ind,P0,P1,opacity,color) = ( # Draw rectangle P0-P1 on image #ind
     unref(_dr_color);
     _P0 = round(P0);
@@ -18582,6 +18657,35 @@ math_lib :
           _x0 = round(max(0,_x0 - 0.25));
           _x1 = round(min(w#ind - 1,_x1 + 0.25));
           draw_scanline(#ind,_x0,_x1,_y,_opacity,_dt_color);
+        );
+      );
+    );
+    nan;
+  );
+
+  draw_triangle(ind,P0,P1,P2,opacity,color0,color1,color2) = ( # Draw a shaded triangle P0-P1-P2 on image #ind
+    unref(_dt_color);
+    unref(_dt_color0);
+    unref(_dt_color1);
+    unref(_dt_color2);
+    _opacity = opacity;
+    _dt_color0 = resize(color0,s#ind);
+    _dt_color1 = resize(color1,s#ind);
+    _dt_color2 = resize(color2,s#ind);
+    _A = round(P0);
+    _B = round(P1);
+    _C = round(P2);
+    _xmin = min(_A[0],_B[0],_C[0]);
+    _xmax = max(_A[0],_B[0],_C[0]);
+    _ymin = min(_A[1],_B[1],_C[1]);
+    _ymax = max(_A[1],_B[1],_C[1]);
+    _M = transp([_A,1,_B,1,_C,1],3);
+    for (_y = _ymin, _y<_ymax, ++_y,
+      for (_x = _xmin, _x<_xmax, ++_x,
+        _L = round(solve(_M,[_x,_y,1]),1e-5);
+        if (min(_L)>=0,
+          _dt_color = _L[0]*_dt_color0 + _L[1]*_dt_color1 + _L[2]*_dt_color2;
+          copy(i(#ind,_x,_y,0,0),_dt_color,size(_dt_color),whd#ind,1,_opacity);
         );
       );
     );
