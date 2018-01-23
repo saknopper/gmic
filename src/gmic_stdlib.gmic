@@ -23484,13 +23484,6 @@ gui_filter_sources : skip ${1=0},${2=1}
     if $local m $local gui_filter_sources $1,0 return fi
   fi
 
-  # Import faves from previous version 1.7.x.
-  if {isfile($_path_rc/gimp_faves)" && "!isfile($_path_rc/gui_faves)} l[]
-    i raw:$_path_rc/gimp_faves,uchar replace_str "gimp_","fx_"
-    o raw:$_path_rc/gui_faves,uchar
-    rm
-  onfail rm endl fi
-
   # Build list of filter sources.
   ({'{/$_path_user}'}) # Include local '.gmic' (or 'user.gmic') file.
   ({'http://gmic.eu/update$_version.gmic'},1) # Include stdlib update (last 1 -> Override default filters).
