@@ -29883,7 +29883,7 @@ fx_normalize_local_preview :
 #@gui : Amplitude = float(6,0,30)
 #@gui : Spatial scale = float(3,0,10)
 #@gui : Value scale = float(15,0,20)
-#@gui : Edges = float(0.5,-3,3)
+#@gui : Edges = float(-0.5,-3,3)
 #@gui : Smoothness = float(2,0,20)
 #@gui : sep = separator(), Channel(s) = choice(27,"All","RGBA [all]","RGB [all]","RGB [red]","RGB [green]","RGB [blue]","RGBA [alpha]","Linear RGB [all]","Linear RGB [red]","Linear RGB [green]","Linear RGB [blue]","YCbCr [luminance]","YCbCr [blue-red chrominances]","YCbCr [blue chrominance]","YCbCr [red chrominance]","YCbCr [green chrominance]","Lab [lightness]","Lab [ab-chrominances]","Lab [a-chrominance]","Lab [b-chrominance]","Lch [ch-chrominances]","Lch [c-chrominance]","Lch [h-chrominance]","HSV [hue]","HSV [saturation]","HSV [value]","HSI [intensity]","HSL [lightness]","CMYK [cyan]","CMYK [magenta]","CMYK [yellow]","CMYK [key]","YIQ [luma]","YIQ [chromas]")
 #@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
