@@ -24843,6 +24843,152 @@ _dice3 : _dice1 ellipse. 25%,75%,5.2%,5.2%,0,1,255 ellipse. 75%,25%,5.2%,5.2%,0,
 _dice4 : _dice3 _dice0
 _dice5 : _dice3 ellipse. 25%,50%,5.2%,5.2%,0,1,255 ellipse. 75%,50%,5.2%,5.2%,0,1,255
 
+#@gui Drawn montage : fx_drawn_montage, fx_drawn_montage_preview(1)
+#@gui : Layer = choice("1st","2nd","3rd","4th","5th","6th","7th","8th","9th","10th","11th","12th","13th","14th","15th","16th")
+#@gui : Associated color = color(0,0,0)
+#@gui : Zoom = float(-10,0,10)
+#@gui : X-centering (%) = float(50,0,100)
+#@gui : Y-centering (%) = float(50,0,100)
+#@gui : Angle = choice("0 deg.","90 deg.","180 deg.","270 deg.")
+#@gui : pargs = value(-1)
+#@gui : args0 = value(0:0:0:0:50:50:0)
+#@gui : args1 = value(0:0:0:0:50:50:0)
+#@gui : args2 = value(0:0:0:0:50:50:0)
+#@gui : args3 = value(0:0:0:0:50:50:0)
+#@gui : args4 = value(0:0:0:0:50:50:0)
+#@gui : args5 = value(0:0:0:0:50:50:0)
+#@gui : args6 = value(0:0:0:0:50:50:0)
+#@gui : args7 = value(0:0:0:0:50:50:0)
+#@gui : args8 = value(0:0:0:0:50:50:0)
+#@gui : args9 = value(0:0:0:0:50:50:0)
+#@gui : args10 = value(0:0:0:0:50:50:0)
+#@gui : args11 = value(0:0:0:0:50:50:0)
+#@gui : args12 = value(0:0:0:0:50:50:0)
+#@gui : args13 = value(0:0:0:0:50:50:0)
+#@gui : args14 = value(0:0:0:0:50:50:0)
+#@gui : args15 = value(0:0:0:0:50:50:0)
+#@gui : sep = separator(), note = note{"<small><b>Note:</b>
+#@gui : This filter requires a top layer containing the desired montage layout defined as free-form shapes of different colors. You can then assign each
+#@gui : layer to a layout color to create the montage.
+#@gui : </small>"}
+#@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2018/01/29</i>.</small>")
+_fx_drawn_montage :
+  nb_layers={min(16,$!-1)}
+
+  if {!$nb_layers}
+    error="A top layout layer is missing for this filter to make it work properly!"
+    if $-1 gui_warning_preview $error return
+    else error $error
+    fi
+  fi
+
+  # Manage parameter changes.
+  pargs,args0,args1,args2,args3,args4,args5,args6,args7,args8,args9,args10,args11,args12,args13,args14,args15=${9-25}
+  if {$1!=$pargs} # Get back saved parameters for selected layer
+    ({'${args$1}'}) replace. {':'},{','} arg_R,arg_G,arg_B,arg_zoom,arg_xcenter,arg_ycenter,arg_angle=${u\ {t}} rm.
+  else # Set new parameters for selected #L
+    arg_R,arg_G,arg_B,arg_zoom,arg_xcenter,arg_ycenter,arg_angle=${2-8}
+  fi
+  args$1=$arg_R:$arg_G:$arg_B:$arg_zoom:$arg_xcenter:$arg_ycenter:$arg_angle
+  status=\{$1\}\{$arg_R,$arg_G,$arg_B\}\{$arg_zoom\}\{$arg_xcenter\}\{$arg_ycenter\}\{$arg_angle\}\{$1\}\{$args0\}\{$args1\}\{$args2\}\{$args3\}\{$args4\}\{$args5\}\{$args6\}\{$args7\}\{$args8\}\{$args9\}\{$args10\}\{$args11\}\{$args12\}\{$args13\}\{$args14\}\{$args15\}
+
+  # Read parameters for all layers.
+  c= repeat $nb_layers ({'${args$>}'}) replace. {':'},{','} R$>,G$>,B$>,zoom$>,xcenter$>,ycenter$>,angle$>=${u\ {t}} cols=$cols$c${R$>},${G$>},${B$>} c=, rm. rotate[{1+$>}] {90*${angle$>}} done
+
+  # Get bounding boxes for each associated color in layout layer, as well as labeled layout layer.
+  to_rgb[0] to_rgba[^0] $nb_layers,1,1,4,[inf,inf,-inf,-inf] [0],[0]
+  f[0] "
+    init(colors = [ "$cols" ]);
+    for (l = 0, l<"$nb_layers", ++l,
+      I==colors[3*l,3]?(
+        if (x<i(#-2,l,0,0,0), i(#-2,l,0,0,0) = x);
+        if (y<i(#-2,l,0,0,1), i(#-2,l,0,0,1) = y);
+        if (x>i(#-2,l,0,0,2), i(#-2,l,0,0,2) = x);
+        if (y>i(#-2,l,0,0,3), i(#-2,l,0,0,3) = y);
+        i(#-1,x,y) = l + 1;
+      );
+    ); I"
+
+  thumbnail=0 boundaries=0
+  if $-1
+
+    # Render thumbnail of current layer, for preview.
+    l={1+$1}
+    if {$l<=$nb_layers}
+      if {$l,w>h} +r2dx[$l] {$_preview_width/6} else +r2dy[$l] {$_preview_height/6} fi
+      frame. 1,1,0,0,0,255 drgba. to. "#"$l,0,-2,13 to_rgba.
+      mv. -3
+      thumbnail=1
+    fi
+
+    # Render region boundaries of layout layer, for preview.
+    +f. "const boundaries = 1; V = crop(x-2,y-2,5,5); if (min(V)==max(V),0,i)"
+    (0,0,0,$cols) r. 3,{$nb_layers+1},1,1,-1 1,100%,1,1,y?255:0 a[-2,-1] x permute. yzcx map.. . rm.
+
+    repeat $nb_layers
+      xmin,ymin,xmax,ymax={-3,I[$>]}
+      if {!isinf($xmin)" && "!isinf($ymin)" && "!isinf($xmax)" && "!isinf($ymax)}
+        xc$>,yc$>={0,0.5*([$xmin,$ymin]+[$xmax,$ymax]-6)*100/[w,h]}
+      else xc$>,yc$>=-1024
+      fi
+    done
+
+    mv. -3
+    boundaries=1
+  fi
+
+  # Render montage.
+  if {iM>0}
+
+    # Resize layers to fit proposed layout.
+    repeat $nb_layers
+      l={$>+1} xmin,ymin,xmax,ymax={-2,I[$>]}
+      if {!isinf($xmin)" && "!isinf($ymin)" && "!isinf($xmax)" && "!isinf($ymax)}
+        dx={$xmax-$xmin+1}
+        dy={$ymax-$ymin+1}
+        nw,nh={$l,round(min(w/$dx,h/$dy)*[$dx,$dy]/(1+3*(${zoom$>}/10)^2))}
+        r[$l] $nw,$nh,1,100%,0,0,{(100-${xcenter$>})%},{(100-${ycenter$>})%}  # Centered crop
+        r[$l] $dx,$dy,1,100%,6                                                # Resize
+      else r[$l] 1,1 # Save a bit of memory!
+      fi
+    done
+
+    # Draw image pixels over layout layer.
+    to_rgba[0]
+    f[0] "
+      l = i#-1;
+      l1 = l - 1;
+      l<=0?I:(
+        xmin = i(#-2,l1,0,0,0);
+        ymin = i(#-2,l1,0,0,1);
+        rx = x - xmin;
+        ry = y - ymin;
+        crop(#l,rx,ry,0,0,1,1,1,4);
+      )"
+  fi
+  rm[-2,-1]
+
+  # Manage preview.
+  if $boundaries blend[0,-1] alpha fi # Add shape boundaries.
+  if $thumbnail # Add current layer thumbnail over preview
+    drgba[0] rr2d[0] $_preview_width,$_preview_height
+    j[0] .,3,3,0,0,0.75
+    rm.
+  fi
+  if $-1 repeat $nb_layers
+    to "#"{1+$>},${xc$>}%,${yc$>}%,13,1,0.75
+  done fi
+
+
+  k[0] c 0,255
+  u $status
+
+fx_drawn_montage :
+  _fx_drawn_montage $*,0
+
+fx_drawn_montage_preview :
+  _fx_drawn_montage $*,1
+
 #@gui Extract objects : fx_extract_objects, fx_extract_objects_preview(1)
 #@gui : X-background (%) = float(0,0,100)
 #@gui : Y-background (%) = float(0,0,100)
@@ -25590,38 +25736,6 @@ fx_highlight_bloom :
 
 fx_highlight_bloom_preview :
   gui_split_preview "fx_highlight_bloom $*",$-1
-
-#@gui Illustration look : fx_illustration_look,fx_illustration_look_preview(0)
-#@gui : Tone mapping (%) = float(100,0,100)
-#@gui : Desaturate (%) = float(0,0,100)
-#@gui : Vintage tone (%) = float(0,0,100)
-#@gui : Output as multiple layers = bool(0)
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
-#@gui : sep = separator(), note = note("<small>Authors: <i>S&#233;bastien Guyader</i> and <i>David Tschumperl&#233;</i>.      Latest update: <i>2017/05/01</i>.</small>")
-fx_illustration_look :
-  repeat $! l[$>] nm=${-gui_layer_name}
-    to_rgb nm. base_layer
-
-    # Create processed layers.
-    +fx_smooth_anisotropic[base_layer] 20,0.16,0.63,0.6,2.35,0.8,30,2,0,1,1,0,1,24 nm. blur_layer
-    +blend[base_layer,blur_layer] grainextract nm. detail_layer
-    if $2 rgb2hsv[blur_layer] sh[blur_layer] 1 -. {$2%} c. 0,1 rm. hsv2rgb[blur_layer] fi
-    if $3 +fx_mix_rgb[blur_layer] 1,10,0,1,0,0,0.7,-10,0,0,10,0 j[blur_layer] .,0,0,0,0,{$3%} rm. fi
-    if $1 +fx_map_tones_fast[blur_layer] 20,0.2,11,0 j[blur_layer] .,0,0,0,0,{$1%} rm. fi
-    simplelocalcontrast_p[blur_layer] 25,1,50,1,1,1,1,1,1,1,1,1
-    +fx_graphic_novelfxl[blur_layer] 1,2,6,5,20,0,1.02857,200,0,1,0.0761905,0.0857143,0,0,0,2,1,1,1,1.25714,0.371429,1.04762 nm. graphicnovel_layer
-
-    # Order and set layer properties.
-    mv[detail_layer] 0 nm[detail_layer] "name("$nm" [Detail]),mode(grainmerge),opacity(100)"
-    mv[graphicnovel_layer] 1 nm[graphicnovel_layer] "name("$nm" [Paint]),mode(normal),opacity(50)"
-    mv[blur_layer] 2 nm[blur_layer] "name("$nm" [Base]),mode(normal),opacity(100)"
-    rm[base_layer]
-
-    if {!$4} gui_merge_layers nm "name("$nm"),mode(normal),opacity(100)" fi
-  endl done
-
-fx_illustration_look_preview :
-  gui_split_preview "fx_illustration_look ${1-3},0",$-1
 
 #@gui Kuwahara : fx_kuwahara, fx_kuwahara_preview(0)
 #@gui : Iterations = int(2,1,20)
