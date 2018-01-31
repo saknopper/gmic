@@ -29981,11 +29981,14 @@ _fx_equalize_local_histograms :
     );
 
     bins = vector512(0);
-    V = crop(x - N,y - N,2*N+1,2*N+1);
-    for (k = 0, k<size(V), ++k, # Compute local weighted histogram
-      val = V[k];
-      diff = abs(val - i);
-      bins[val]+=weights[diff];
+
+    for (c = 0, c<s, ++c,
+      V = crop(x - N,y - N,0,c,2*N+1,2*N+1,1,1);
+      for (k = 0, k<size(V), ++k, # Compute local weighted histogram
+        val = V[k];
+        diff = abs(val - V[size(V)/2]);
+        bins[val]+=weights[diff];
+      );
     );
 
     sum = 0;
