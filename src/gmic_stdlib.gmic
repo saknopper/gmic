@@ -29950,6 +29950,64 @@ fx_equalize_details :
 fx_equalize_details_preview :
   gui_split_preview "fx_equalize_details $*",$-1
 
+#@gui Equalize local histograms : fx_equalize_local_histograms, fx_equalize_local_histograms_preview(0)
+#@gui : Strength (%) = float(75,0,100)
+#@gui : Mode = choice(2,"Raw","Hard","Soft")
+#@gui : Radius = int(4,1,16)
+#@gui : Sigma = float(100,0,256)
+#@gui : Regularization = float(8,0,32)
+#@gui : Reduce halos = bool(1)
+#@gui : sep = separator(), Channel(s) = choice(16,"All","RGBA [all]","RGB [all]","RGB [red]","RGB [green]","RGB [blue]","RGBA [alpha]","Linear RGB [all]","Linear RGB [red]","Linear RGB [green]","Linear RGB [blue]","YCbCr [luminance]","YCbCr [blue-red chrominances]","YCbCr [blue chrominance]","YCbCr [red chrominance]","YCbCr [green chrominance]","Lab [lightness]","Lab [ab-chrominances]","Lab [a-chrominance]","Lab [b-chrominance]","Lch [ch-chrominances]","Lch [c-chrominance]","Lch [h-chrominance]","HSV [hue]","HSV [saturation]","HSV [value]","HSI [intensity]","HSL [lightness]","CMYK [cyan]","CMYK [magenta]","CMYK [yellow]","CMYK [key]","YIQ [luma]","YIQ [chromas]")
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
+#@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2018/01/31</i>.</small>")
+fx_equalize_local_histograms :
+  b0="normal" b1="overlay" b2="softlight"
+  repeat $! l[$>]
+    +ac "_fx_equalize_local_histograms ${1-6}",$7,1
+    blend ${b$2},{$1%}
+  endl done
+
+_fx_equalize_local_histograms :
+  +n 0,511 round.
+  f. "
+    init(
+      const boundary = 1;
+      const N = $3;
+      const sigma = ($6?1:-1)*(0.1+$4);
+      weights = vector512();
+      for (k = 0, k<size(weights), ++k, # Pre-compute exponentials
+        weights[k] = sigma>=0?exp(-sqr(k/sigma)):1 - exp(-sqr(k/sigma))
+      );
+    );
+
+    bins = vector512(0);
+    V = crop(x - N,y - N,2*N+1,2*N+1);
+    for (k = 0, k<size(V), ++k, # Compute local weighted histogram
+      val = V[k];
+      diff = abs(val - i);
+      bins[val]+=weights[diff];
+    );
+
+    sum = 0;
+    for (k = 0, k<size(bins), ++k,
+      sum+=bins[k];
+      bins[k] = sum;
+    );
+    bins/=max(1e-5,sum);
+
+    P = I;
+    size(P)==1?(P = bins[P[0]]; 0):
+    size(P)==2?(P = [ bins[P[0]], bins[P[1]] ]; 0):
+    size(P)==3?(P = [ bins[P[0]], bins[P[1]], bins[P[2]] ]; 0):
+    size(P)==4?(P = [ bins[P[0]], bins[P[1]], bins[P[2]], bins[P[3]] ]; 0);
+    P"
+  n. 0,255
+  if $5 norm.. bilateral. ..,$5,{2+$5} fi
+  k.
+
+fx_equalize_local_histograms_preview :
+  gui_split_preview "fx_equalize_local_histograms $*",$-1
+
 #@gui Freaky details : fx_freaky_details, fx_freaky_details_preview(0)
 #@gui : Amplitude = int(2,1,5)
 #@gui : Scale = float(10,0,100)
