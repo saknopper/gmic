@@ -9101,6 +9101,8 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
           cimg::lowercase(uext);
 
           if (!cimg::strcasecmp(ext,"off")) {
+
+            // OFF file (geomview).
             *formula = 0;
             std::strncpy(formula,filename,_formula.width() - 1);
             formula[_formula.width() - 1] = 0;
@@ -9137,6 +9139,8 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
           } else if (!cimg::strcasecmp(ext,"cpp") || !cimg::strcasecmp(ext,"c") ||
                      !cimg::strcasecmp(ext,"hpp") || !cimg::strcasecmp(ext,"h") ||
                      !cimg::strcasecmp(ext,"pan")) {
+
+            // .cpp, .c, .hpp, .h or .pan file.
             const char *const
               stype = (cimg_sscanf(options,"%255[a-z64]%c",&(*argx=0),&(end=0))==1 ||
                        (cimg_sscanf(options,"%255[a-z64]%c",&(*argx=0),&end)==2 && end==','))?
@@ -9203,6 +9207,8 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                                                  "specified pixel type '%s'.",
                                                  _filename.data(),stype);
           } else if (!cimg::strcasecmp(ext,"tiff") || !cimg::strcasecmp(ext,"tif")) {
+
+            // TIFF file.
             const char *const
               stype = (cimg_sscanf(options,"%255[a-z64]%c",&(*argx=0),&(end=0))==1 ||
                        (cimg_sscanf(options,"%255[a-z64]%c",&(*argx=0),&end)==2 && end==','))?
@@ -9287,6 +9293,8 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                                                  _filename.data(),stype);
 
           } else if (!cimg::strcasecmp(ext,"gif")) {
+
+            // GIF file.
             float fps = 0, _nb_loops = 0;
             g_list.assign(selection.height());
             cimg_forY(selection,l) if (!gmic_check(images[selection(l)]))
@@ -9323,6 +9331,8 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
               g_list.save(filename); // Save distinct .gif files.
             }
           } else if (!cimg::strcasecmp(ext,"jpeg") || !cimg::strcasecmp(ext,"jpg")) {
+
+            // JPEG file.
             float quality = 100;
             if (cimg_sscanf(options,"%f%c",&quality,&end)!=1) quality = 100;
             if (quality<0) quality = 0; else if (quality>100) quality = 100;
@@ -9362,6 +9372,8 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
               }
             }
           } else if (!cimg::strcasecmp(ext,"mnc") && *options) {
+
+            // MNC file.
             g_list.assign(selection.height());
             cimg_forY(selection,l) if (!gmic_check(images[selection(l)]))
               CImg<unsigned int>::vector(selection(l)).move_to(empty_indices);
@@ -9397,6 +9409,8 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
               }
             }
           } else if (!cimg::strcasecmp(ext,"raw")) {
+
+            // RAW data file.
             const char *const stype = cimg_sscanf(options,"%255[a-z64]%c",argx,&end)==1?argx:
               cimg::type<T>::string();
             g_list.assign(selection.height());
@@ -9460,7 +9474,28 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                                                  "Command 'output': File '%s', invalid "
                                                  "specified pixel type '%s'.",
                                                  _filename.data(),stype);
+          } else if (!cimg::strcasecmp(ext,"yuv")) {
+
+            // YUV sequence.
+            if (cimg_sscanf(options,"%f",&opacity)!=1) opacity = 444;
+            else opacity = cimg::round(opacity);
+            const unsigned int ich = (unsigned int)opacity;
+            if (ich!=420 && ich!=422 && ich!=444)
+              error(images,0,0,
+                    "Command 'output': YUV file '%s', specified chroma subsampling '%g' is invalid.",
+                    _filename.data(),opacity);
+            g_list.assign(selection.height());
+            cimg_forY(selection,l)
+              g_list[l].assign(images[selection[l]],images[selection[l]]?true:false);
+            print(images,0,"Output image%s as YUV-%u:%u:%u file '%s'.",
+                  gmic_selection.data(),
+                  ich/100,(ich/10)%10,ich%10,
+                  _filename.data());
+            g_list.save_yuv(filename,ich,true);
+
           } else if (!cimg::strcasecmp(ext,"cimg") || !cimg::strcasecmp(ext,"cimgz")) {
+
+            // CImg[z] file.
             const char *const stype = cimg_sscanf(options,"%255[a-z64]%c",argx,&end)==1?argx:
               cimg::type<T>::string();
             g_list.assign(selection.height());
@@ -9495,6 +9530,8 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                                                  "specified pixel type '%s'.",
                                                  _filename.data(),stype);
           } else if (!cimg::strcasecmp(ext,"gmz") || !*ext) {
+
+            // GMZ file.
             const char *const stype = cimg_sscanf(options,"%255[a-z64]%c",argx,&end)==1?argx:
               cimg::type<T>::string();
             g_list.assign(selection.height());
@@ -9554,6 +9591,8 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                      !cimg::strcasecmp(ext,"wmv") ||
                      !cimg::strcasecmp(ext,"xvid") ||
                      !cimg::strcasecmp(ext,"mpeg")) {
+
+            // Generic video file.
             float fps = 0, keep_open = 0;
             name.assign(8); *name = 0; // codec
             cimg_sscanf(options,"%f,%7[a-zA-Z0-9],%f",&fps,name.data(),&keep_open);
@@ -13982,12 +14021,12 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
               _first_frame = (unsigned int)first_frame,
               _last_frame = last_frame>=0?(unsigned int)last_frame:~0U;
             if (_last_frame!=~0U)
-              print(images,0,"Input frames %u...%u with step %g of file '%s' at position%s",
+              print(images,0,"Input frames %u...%u:%g of file '%s' at position%s",
                     _first_frame,_last_frame,step,
                     _filename0,
                     _gmic_selection.data());
             else
-              print(images,0,"Input frames %u...(last) with step %g of file '%s' at position%s",
+              print(images,0,"Input frames %u...(last):%g of file '%s' at position%s",
                     _first_frame,step,
                     _filename0,
                     _gmic_selection.data());
@@ -14093,15 +14132,19 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             dx = cimg::round(dx);
             dy = cimg::round(dy);
             const unsigned int ich = (unsigned int)cimg::round(ch);
-            if (dx<=0 || dy<=0 || (ich!=420 && ich!=422 && ich!=444))
+            if (dx<=0 || dy<=0)
               error(images,0,0,
-                    "Command 'input': YUV file '%s', invalid specified dimensions %gx%g (chroma subsampling %u).",
-                    _filename0,dx,dy,ich);
+                    "Command 'input': YUV file '%s', specified dimensions (%g,%g) are invalid.",
+                    _filename0,dx,dy);
+            if (ich!=420 && ich!=422 && ich!=444)
+              error(images,0,0,
+                    "Command 'input': YUV file '%s', specified chroma subsampling %g is invalid.",
+                    _filename0,ich);
             first_frame = cimg::round(first_frame);
             if (err>4) { // Load multiple frames.
               last_frame = cimg::round(last_frame);
               step = cimg::round(step);
-              print(images,0,"Input frames %g...%g with step %g of YUV-%u:%u:%u file '%s' at position%s",
+              print(images,0,"Input frames %g...%g:%g of YUV-%u:%u:%u file '%s' at position%s",
                     first_frame,last_frame,step,
                     ich/100,(ich/10)%10,ich%10,
                     _filename0,
@@ -14149,7 +14192,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             if (err>1) { // Load multiple frames.
               last_frame = cimg::round(last_frame);
               step = cimg::round(step);
-              print(images,0,"Input frames %g...%g with step %g of TIFF file '%s' at position%s",
+              print(images,0,"Input frames %g...%g:%g of TIFF file '%s' at position%s",
                     first_frame,last_frame,step,
                     _filename0,
                     _gmic_selection.data());

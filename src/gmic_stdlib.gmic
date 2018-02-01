@@ -526,10 +526,12 @@ _help_usage :
 \n       type can also be specified with the output expression '"${c}"filename.raw[,datatype]"$n"'.
 \n       '"${g}"datatype"$n"' can be the same as for "$g".cimg[z]"$n" files.
 \n
-\n    . "$g".yuv files:"$n" Image dimensions must be specified, and only sub-frames of an image sequence may
-\n       be loaded, using the input expression
+\n    . "$g".yuv files:"$n" Image dimensions must be specified when loading, and only sub-frames of an image sequence
+\n       may be loaded, using the input expression
 \n       '"${c}"filename.yuv,width,height[,chroma_subsampling[,first_frame[,last_frame[,step]]]"$n"'.
 \n       '"${g}"chroma_subsampling"$n"' can be "$g"{ 420 | 422 | 444 }"$n".
+\n       When saving, chroma subsampling mode can be specified with output expression
+\n       '"${c}"filename.yuv[,chroma_subsampling]"$n"'.
 \n
 \n    . "$g".tiff files:"$n" Only sub-images of multi-pages tiff files can be loaded, using the input
 \n       expression '"${c}"filename.tif,_first_frame,_last_frame,_step"$n"'.
