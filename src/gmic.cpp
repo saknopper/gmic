@@ -14092,31 +14092,34 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                                  &dx,&dy,&ch,&first_frame,&last_frame,&step))>=1) {
             dx = cimg::round(dx);
             dy = cimg::round(dy);
-            ch = cimg::round(ch);
-            if (dx<=0 || dy<=0 || (ch!=420 && ch!=422 && ch!=444))
+            const unsigned int ich = (unsigned int)cimg::round(ch);
+            if (dx<=0 || dy<=0 || (ich!=420 && ich!=422 && ich!=444))
               error(images,0,0,
-                    "Command 'input': YUV file '%s', invalid specified dimensions %gx%g (chroma subsampling %g).",
-                    _filename0,dx,dy,ch);
+                    "Command 'input': YUV file '%s', invalid specified dimensions %gx%g (chroma subsampling %u).",
+                    _filename0,dx,dy,ich);
             first_frame = cimg::round(first_frame);
             if (err>4) { // Load multiple frames.
               last_frame = cimg::round(last_frame);
               step = cimg::round(step);
-              print(images,0,"Input frames %g...%g with step %g of YUV file '%s' at position%s",
+              print(images,0,"Input frames %g...%g with step %g of YUV-%u:%u:%u file '%s' at position%s",
                     first_frame,last_frame,step,
+                    ich/100,(ich/10)%10,ich%10,
                     _filename0,
                     _gmic_selection.data());
-              input_images.load_yuv(filename,(unsigned int)dx,(unsigned int)dy,(unsigned int)ch,
+              input_images.load_yuv(filename,(unsigned int)dx,(unsigned int)dy,ich,
                                     (unsigned int)first_frame,(unsigned int)last_frame,
                                     (unsigned int)step);
             } else if (err==4) { // Load a single frame.
-              print(images,0,"Input frames %g of YUV file '%s' at position%s",
+              print(images,0,"Input frames %g of YUV-%u:%u:%u file '%s' at position%s",
                     first_frame,
+                    ich/100,(ich/10)%10,ich%10,
                     _filename0,
                     _gmic_selection.data());
-              input_images.load_yuv(filename,(unsigned int)dx,(unsigned int)dy,(unsigned int)ch,
+              input_images.load_yuv(filename,(unsigned int)dx,(unsigned int)dy,ich,
                                     (unsigned int)first_frame,(unsigned int)first_frame);
             } else { // Load all frames.
-              print(images,0,"Input all frames of YUV file '%s' at position%s",
+              print(images,0,"Input all frames of YUV-%u:%u:%u file '%s' at position%s",
+                    ich/100,(ich/10)%10,ich%10,
                     _filename0,
                     _gmic_selection.data());
               input_images.load_yuv(filename,(unsigned int)dx,(unsigned int)dy,(unsigned int)ch);
