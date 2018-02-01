@@ -528,7 +528,8 @@ _help_usage :
 \n
 \n    . "$g".yuv files:"$n" Image dimensions must be specified, and only sub-frames of an image sequence may
 \n       be loaded, using the input expression
-\n       '"${c}"filename.yuv,width,height[,first_frame[,last_frame[,step]]]"$n"'.
+\n       '"${c}"filename.yuv,width,height[,chroma_subsampling[,first_frame[,last_frame[,step]]]"$n"'.
+\n       '"${g}"chroma_subsampling"$n"' can be "$g"{ 420 | 422 | 444 }"$n".
 \n
 \n    . "$g".tiff files:"$n" Only sub-images of multi-pages tiff files can be loaded, using the input
 \n       expression '"${c}"filename.tif,_first_frame,_last_frame,_step"$n"'.
@@ -24157,6 +24158,7 @@ _gui_download_all_data :
 #@gui : note = note{"\n<span foreground="purple" underline="single">Supporters:</span>"}
 #@gui : note = note{" <b>-</b> A big hug goes to these friends who supported the project:"}
 #@gui : note = note{"<i>
+#@gui : Pamela Young,
 #@gui : <a href="http://chrisbowness.com/">Chris Bowness</a>,
 #@gui : Peter Howarth,
 #@gui : Marlon Montalvo,
