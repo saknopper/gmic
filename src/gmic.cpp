@@ -14138,8 +14138,8 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                     _filename0,dx,dy);
             if (ich!=420 && ich!=422 && ich!=444)
               error(images,0,0,
-                    "Command 'input': YUV file '%s', specified chroma subsampling %g is invalid.",
-                    _filename0,ich);
+                    "Command 'input': YUV file '%s', specified chroma subsampling '%g' is invalid.",
+                    _filename0,ch);
             first_frame = cimg::round(first_frame);
             if (err>4) { // Load multiple frames.
               last_frame = cimg::round(last_frame);
