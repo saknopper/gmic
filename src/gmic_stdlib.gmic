@@ -24161,6 +24161,7 @@ _gui_download_all_data :
 #@gui : note = note{"\n<span foreground="purple" underline="single">Supporters:</span>"}
 #@gui : note = note{" <b>-</b> A big hug goes to these friends who supported the project:"}
 #@gui : note = note{"<i>
+#@gui : Adrian Bottomley,
 #@gui : Pamela Young,
 #@gui : <a href="http://chrisbowness.com/">Chris Bowness</a>,
 #@gui : Peter Howarth,
