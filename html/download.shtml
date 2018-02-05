@@ -147,38 +147,6 @@
                     <br/></td>
                 </tr>
 
-                <!-- G'MIC for Ubuntu 32 bits -->
-                <!-- <tr> -->
-                <!--   <td><img alt="" src="img/download_ubuntu32.png" border="0"></img></td><td>&nbsp;&nbsp;</td> -->
-                <!--   <td><font size="3"><b><font color="#000066">G'MIC</font></b> for Ubuntu <i>32 bits</i> - All interfaces</font><br/> -->
-                <!--     <ul> -->
-                <!--       <li>Ubuntu 14.04 <i>Trusty</i>: <a href="http://gmic.eu/files/linux/gmic_ubuntu_trusty_i386.deb">.deb package</a></li> -->
-                <!--     </ul> -->
-                <!--     <br/></td> -->
-                <!-- </tr> -->
-
-                <!-- G'MIC Static 64 bits -->
-                <!-- <tr> -->
-                <!--   <td><img alt="" src="img/download_linux64.png" border="0"></img></td><td>&nbsp;&nbsp;</td> -->
-                <!--   <td><font size="3"><b><font color="#000066">G'MIC</font></b> for Linux <i>64 bits</i> - Command-line interface</font><br/> -->
-                <!--     <ul> -->
-                <!--       <li>Static version: <a href="http://gmic.eu/files/linux/gmic_static_linux64.zip">.zip archive</a> -->
-                <!--         <i>(beware: without display capabilities!)</i></li> -->
-                <!--     </ul> -->
-                <!--     <br/></td> -->
-                <!-- </tr> -->
-
-                <!-- G'MIC Static 32 bits -->
-                <!-- <tr> -->
-                <!--   <td><img alt="" src="img/download_linux32.png" border="0"></img></td><td>&nbsp;&nbsp;</td> -->
-                <!--   <td><font size="3"><b><font color="#000066">G'MIC</font></b> for Linux <i>32 bits</i> - Command-line interface</font><br/> -->
-                <!--     <ul> -->
-                <!--       <li>Static version: <a href="http://gmic.eu/files/linux/gmic_static_linux32.zip">.zip archive</a> -->
-                <!--         <i>(beware: without display capabilities!)</i></li> -->
-                <!--     </ul> -->
-                <!--     <br/></td> -->
-                <!-- </tr> -->
-
                 <!-- G'MIC for MacOSX -->
                 <tr>
                   <td><img alt="" src="img/download_macosx.png" border="0"></img></td><td>&nbsp;&nbsp;</td>
@@ -195,8 +163,8 @@
                   <td><img alt="" src="img/download_source.png" border="0"></img></td><td>&nbsp;&nbsp;</td>
                   <td><font size="3"><b><font color="#000066">G'MIC</font></b> source code</font><br/>
                     <ul>
-                      <li>Latest development snapshot: <a href="http://gmic.eu/files/prerelease/gmic_source.tar.gz">.tar.gz archive</a></li>
                       <li>Latest stable: <a href="http://gmic.eu/files/source/gmic_source.tar.gz">tar.gz archive</a></li>
+                      <li>Current development snapshot: <a href="http://gmic.eu/files/prerelease/gmic_source.tar.gz">.tar.gz archive</a></li>
                       <li>G'MIC-core: <a href="https://github.com/dtschump/gmic">git repository</a></li>
                       <li>G'MIC-Qt: <a href="https://github.com/c-koi/gmic-qt">git repository</a></li>
                       <li>G'MIC-community: <a href="https://github.com/dtschump/gmic-community">git repository</a></li>
@@ -215,8 +183,8 @@
                 </tr>
 
                 <tr>
-                  <td><a href="http://gmic.eu/files/prerelease"><img alt="" src="img/download_prerelease.png" border="0"></img></a></td><td>&nbsp;&nbsp;</td>
-                  <td><a href="http://gmic.eu/files/prerelease"><font size="3">G'MIC pre-release for testing</font></a><br/>
+                  <td><a href="http://gmic.eu/files/prerelease/?F=0"><img alt="" src="img/download_prerelease.png" border="0"></img></a></td><td>&nbsp;&nbsp;</td>
+                  <td><a href="http://gmic.eu/files/prerelease/?F=0"><font size="3">G'MIC pre-release for testing</font></a><br/>
                     <b>source and Windows/Linux installers/binaries</b><br/><br/></td>
                 </tr>
 
