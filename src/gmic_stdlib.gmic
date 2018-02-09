@@ -27783,12 +27783,12 @@ fx_equalize_hsv :
         V[k]*=(V[k]>0?(1 - v0):v1);
       ); V"}
     r. 256,1,1,4,1
-    sh. 3 nM={[im,iM]} b. $3 nm. $nM rm.   # Value smoothness
+    sh. 3 b. $3 rm.   # Value smoothness
     f. "[ atan2(G,R)*180/pi,B,A,0 ]" channels. 0,2
     +rgb2$cs.. +channels. 100% *. 256 round. map. ...
     +[-2,-1] rm.. +channels. 100% ${cs}2rgb..
     if $4 # Spatial smoothness
-      mM={-2,[im,iM]} *. 255 bilateral.. .,$4,{2+$4}
+      *. 255 bilateral.. .,$4,{2+$4}
       rgb2$cs.. /. 255 j.. .,0,0,0,2 ${cs}2rgb..
     fi
     rm.
