@@ -3393,7 +3393,7 @@ shape_fern : check "${1=512}>=0 && ${2=50%}>=0 && isval(${3=30}) && ${4=0.3}>=0 
 #@cli shape_gear : _size>=0,_nb_teeth>0,0<=_height_teeth<=100,0<=_offset_teeth<=100,0<=_inner_radius<=100
 #@cli : Input a 2d gear binary shape with specified size.
 #@cli : Default value: 'size=512', 'nb_teeth=12', 'height_teeth=20', 'offset_teeth=0' and 'inner_radius=40'.
-#@cli : $ shape_heart ,
+#@cli : $ shape_gear ,
 shape_gear : check "${1=512}>=0 && isint(${2=12}) && $2>0 && ${3=20}>=0 && $3<=100 && ${4=0}>=0 && $4<=100 && ${5=40}>=0 && $5<=100"
   e[^-1] "Input a $1x$1 gear binary shape with $2 teeth, teeth height $3, teeth offset $4 and inner radius $5."
   v -
