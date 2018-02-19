@@ -23596,6 +23596,17 @@ gui_filter_sources : skip ${1=0},${2=1}
     if $local m $local gui_filter_sources $1,0 return fi
   fi
 
+  # Try to clean older update files to save disk space.
+  if {u>0.95} l[]
+    files=${"files "$_path_rc"/update*.gmic"}
+    repeat {narg($files)}
+      file=${arg\ 1+$>,$files}
+      ({'$file'}) z. {[w-8,w-6]} ver={t} rm.
+      if {isval($ver)" && "$ver<$_version} 0 o. raw:$file,uchar rm. fi
+    done
+  onfail
+  endl fi
+
   # Build list of filter sources.
   ({'{/$_path_user}'}) # Include local '.gmic' (or 'user.gmic') file.
   ({'http://gmic.eu/update$_version.gmic'},1) # Include stdlib update (last 1 -> Override default filters).
