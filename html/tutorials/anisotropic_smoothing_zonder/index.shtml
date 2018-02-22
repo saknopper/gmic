@@ -34,9 +34,9 @@ gmic clean_disc.png -noise 30 -n 0,255 -o disc.png</I></FONT><BR>
 <h3>1-Image structure analysis</h3>
 </B>To localize the structure of the image you intend to filter, G'MIC uses gradient calculations since high gradient means high color variations and thus the border of a certain structure.<BR>
 <BR>
-But, the presence of noise in an image produces rather high color variation between concecutive pixel where there is actually no structure border. To handle this issue, the image is blurred <I>before</I> the gradient calculations so that the noise is smeared over a small distance. The parameter that controls that blur is the paramater called <B>gradient smoothness</B>. It therefore sets the limit between what should be considered as noise or as structure.<BR>
+But, the presence of noise in an image produces rather high color variation between concecutive pixel where there is actually no structure border. To handle this issue, the image is blurred <I>before</I> the gradient calculations so that the noise is smeared over a small distance. The parameter that controls that blur is the parameter called <B>gradient smoothness</B>. It therefore sets the limit between what should be considered as noise or as structure.<BR>
 <BR>
-Once the gradient computations are done, it is obtained what is called a <I>structure tensor</I>, that defines to the filter where it should act most (far from the structure borders). In practice, this <I>structure tensor </I>undergoes a second blurring in order to reduce the abruptness of the structure definition, thus increasing the size of the zones where the filter should have a intermediate behavior. The parameter regulating this second blurring is called the <B>tensor smoothness</B>. It can (for instance) diminish artefacts that may appear close to structure borders.<BR>
+Once the gradient computations are done, it is obtained what is called a <I>structure tensor</I>, that defines to the filter where it should act most (far from the structure borders). In practice, this <I>structure tensor </I>undergoes a second blurring in order to reduce the abruptness of the structure definition, thus increasing the size of the zones where the filter should have a intermediate behavior. The parameter regulating this second blurring is called the <B>tensor smoothness</B>. It can (for instance) diminish artifacts that may appear close to structure borders.<BR>
 <BR>
 The pictures below show the structure tensors as analyzed by G'mic.<BR>
     <IMG src="images/raw_structure_tensor.png" style="WIDTH:100px; HEIGHT:100px"><IMG src="images/default_structure_tensor.png" style="WIDTH:100px; HEIGHT:100px"><IMG src="images/personalized_structure_tensor.png" style="WIDTH:100px; HEIGHT:100px"><BR>
@@ -58,10 +58,10 @@ Once the structure is detected, it is time to tell the filter how to behave with
 <BR>
 The parameter <B>sharpness</B> gives the threshold used to separate areas that deserves a strong or a weak smoothing. A too low value and the whole image becomes eligible for the maximum smoothing. At the opposite, a too high value means no smoothing at all.<BR>
 <BR>
-The parameter <B>anisotropy </B>gives the amount of anisotropy of the filter. Set as 0, your filter isn't anisotropic anymore, but if it is set too high, some serpentine artefact might appear on your image.<BR>
+The parameter <B>anisotropy </B>gives the amount of anisotropy of the filter. Set as 0, your filter isn't anisotropic anymore, but if it is set too high, some serpentine artifact might appear on your image.<BR>
 <BR>
   <IMG src="images/fixed_disc.png" style="WIDTH:100px; HEIGHT:100px"><IMG src="images/high_anisotropy_disc.png" style="WIDTH:100px; HEIGHT:100px"><BR>
-    The left image above comes from a smoothing using a reasonnable level of anisotropy (0.3), whereas the right one let appear some serpentine artefact because of too much anisotropy (1.0).<BR>
+    The left image above comes from a smoothing using a reasonable level of anisotropy (0.3), whereas the right one let appear some serpentine artifact because of too much anisotropy (1.0).<BR>
     <BR>
     <FONT size=1><I>Those two images can be made using the following command lines:<BR>
     </I><I>gradient_tensor=3;tensor_smoothness=1;sharpness=0.4;anisotropy=0.3;<BR>

@@ -81,7 +81,7 @@
 
 #@web Ascii art : fx_asciiart, fx_asciiart(0)
 #@web : Charset = choice(5,"Custom","Binary digits","Digits","Lowercase letters","Uppercase letters","Ascii","Card suits","Math symbols")
-#@web : Custom dictionnary = text{" .oO0"}
+#@web : Custom dictionary = text{" .oO0"}
 #@web : Analysis scale = int(16,8,103)
 #@web : Analysis smoothness = float(15,0,100)
 #@web : Synthesis scale = int(16,8,103)
@@ -473,7 +473,7 @@ gmicol_rotate :
 #@web clone("Chromatic aberrations")
 #@web clone("Dirty")
 #@web clone("Flip &amp; rotate blocs")
-#@web clone("JPEG artefacts")
+#@web clone("JPEG artifacts")
 #@web clone("Lomo")
 #@web clone("Noise [additive]")
 #@web clone("Noise [spread]")
