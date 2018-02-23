@@ -2858,7 +2858,7 @@ gmic& gmic::error(const char *const format, ...) {
     cimg::mutex(29,0);
   }
 
-  // Store detailled error message for interpreter.
+  // Store detailed error message for interpreter.
   CImg<char> full_message(512 + message.width());
   if (debug_filename<commands_files.size() && debug_line!=~0U)
     cimg_snprintf(full_message,full_message.width(),
@@ -3440,7 +3440,7 @@ gmic& gmic::error(const CImgList<T>& list, const CImg<unsigned int> *const calls
     cimg::mutex(29,0);
   }
 
-  // Store detailled error message for interpreter.
+  // Store detailed error message for interpreter.
   CImg<char> full_message(512 + message.width());
   if (debug_filename<commands_files.size() && debug_line!=~0U)
     cimg_snprintf(full_message,full_message.width(),
@@ -5053,7 +5053,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
         // Check if a new name has been requested for a command that does not allow that.
         if (new_name && !is_get && !is_input_command)
           error(images,0,0,
-                "Item '%s %s': Unknow name '%s'.",
+                "Item '%s %s': Unknown name '%s'.",
                 initial_item,initial_argument,new_name.data());
 
         // Dispatch to dedicated parsing code, regarding the first character of the command.
@@ -6548,7 +6548,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             sx = cimg::round(sx);
             sy = cimg::round(sy);
             sz = cimg::round(sz);
-            print(images,0,"Dilate image%s with %gx%gx%g kenrel and neumann boundary conditions.",
+            print(images,0,"Dilate image%s with %gx%gx%g kernel and neumann boundary conditions.",
                   gmic_selection.data(),
                   sx,sy,sz);
             cimg_forY(selection,l) gmic_apply(dilate((unsigned int)sx,(unsigned int)sy,(unsigned int)sz));
@@ -12249,7 +12249,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
               commands_names[i].assign();
               commands_has_arguments[i].assign();
             }
-            print(images,0,"Discard definitions of all custom commmands (%u command%s).",
+            print(images,0,"Discard definitions of all custom commands (%u command%s).",
                   nb_commands,nb_commands>1?"s":"");
             cimg::mutex(23,0);
           } else { // Discard one or several custom command.
@@ -14544,7 +14544,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
   return *this;
 }
 
-// Explicitely instanciate constructors and destructor when building the library.
+// Explicitly instantiate constructors and destructor when building the library.
 #ifdef gmic_pixel_type
 template gmic::gmic(const char *const commands_line,
                     gmic_list<gmic_pixel_type>& images, gmic_list<char>& images_names,

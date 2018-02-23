@@ -177,7 +177,7 @@
       Other interesting technical aspects of <b><font color="#000066">G'MIC</font></b> are:
       <ul>
         <li>It can process a wide variety of image types, including <b>multi-spectral</b>
-          (arbitray number of channels) and <b>3d volumetric</b> images, as well as <b>image sequences</b>, or <b>3d vector objects</b>.
+          (arbitrary number of channels) and <b>3d volumetric</b> images, as well as <b>image sequences</b>, or <b>3d vector objects</b>.
           Images with different <b>pixel types</b> are supported, allowing to process flawlessly images with 8bits
           or 16bits integers per channel, as well as float-valued datasets.<br/><br/></li>
         <li>It internally works with <b>lists of images</b>. Image manipulations and interactions can be done either grouped or

@@ -101,7 +101,7 @@ int main() {
     // (here, create a deformed average of the input images, and save it as a BMP file).
     gmic("add normalize 0,255 flower 8 sharpen 100 output foo1.bmp",images,images_names);
 
-  } catch (gmic_exception &e) { // Catch exception, if an error occured in the interpreter.
+  } catch (gmic_exception &e) { // Catch exception, if an error occurred in the interpreter.
     std::fprintf(stderr,"\n- Error encountered when calling G'MIC : '%s'\n",e.what());
     return 0;
   }
@@ -121,7 +121,7 @@ int main() {
     gmic_instance.run("+resize 50%,50% to_rgba[-1] rotate[-1] 30 drop_shadow[-1] 0,13 "
                       "blur_radial[0] 10% blend alpha output foo3.bmp",images,images_names);
 
-  } catch (gmic_exception &e) { // Catch exception, if an error occured in the interpreter.
+  } catch (gmic_exception &e) { // Catch exception, if an error occurred in the interpreter.
     std::fprintf(stderr,"\n- Error encountered when calling G'MIC : '%s'\n",e.what());
     return 0;
   }

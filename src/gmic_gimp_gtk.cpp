@@ -1747,7 +1747,7 @@ CImgList<char> update_filters(const bool try_net_update, const bool is_silent=fa
   return invalid_servers;
 }
 
-// 'Convert' a CImg<T> image to a RGB[A] CImg<unsigned char> image, withing the same buffer.
+// 'Convert' a CImg<T> image to a RGB[A] CImg<unsigned char> image, within the same buffer.
 //------------------------------------------------------------------------------------------
 template<typename T>
 void convert_image2uchar(CImg<T>& img) {
@@ -2077,7 +2077,7 @@ CImg<char> get_command_line(const bool is_preview) {
   return res;
 }
 
-// Set defaut zoom factor for preview of the current filter.
+// Set default zoom factor for preview of the current filter.
 //----------------------------------------------------------
 void set_preview_factor() {
   const unsigned int filter = get_current_filter();
@@ -3007,7 +3007,7 @@ void process_image(const char *const command_line, const bool is_apply) {
       gtk_dialog_run(GTK_DIALOG(message));
       gtk_widget_destroy(message);
     } else {
-      std::fprintf(cimg::output(),"\n[gmic_gimp]./error/ When running command '%s', this error occured:\n%s\n",
+      std::fprintf(cimg::output(),"\n[gmic_gimp]./error/ When running command '%s', this error occurred:\n%s\n",
                    _command_line.data(),spt.error_message.data());
       std::fflush(cimg::output());
     }

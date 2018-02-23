@@ -162,7 +162,7 @@ cli_start :
 
 #@cli debug : (+)
 #@cli : Activate debug mode.
-#@cli : When activated, the G'MIC interpreter becomes very verbose and outputs additionnal log
+#@cli : When activated, the G'MIC interpreter becomes very verbose and outputs additional log
 #@cli : messages about its internal state on the standard output (stdout).
 #@cli : This option is useful for developers or to report possible bugs of the interpreter.
 
@@ -520,7 +520,7 @@ _help_usage :
 \n      "$g"{ uchar | char | ushort | short | uint | int | uint64 | int64 | float | double }"$n".
 \n
 \n    . "$g".raw binary files:"$n" Image dimensions and input pixel type may be specified when loading "$g".raw"$n"
-\n       files with input expresssion
+\n       files with input expression
 \n       '"${c}"filename.raw[,datatype][,width][,height[,depth[,dim[,offset]]]]]"$n"'. If no dimensions are
 \n       specified, the resulting image is a one-column vector with maximum possible height. Pixel
 \n       type can also be specified with the output expression '"${c}"filename.raw[,datatype]"$n"'.
@@ -716,7 +716,7 @@ _help_usage :
 \n       . '"${c}"round(value,rounding_value,direction)"$n"' returns a rounded value. '"${g}"direction"$n"' can be
 \n          "${g}"{ -1=to-lowest | 0=to-nearest | 1=to-highest }"$n".
 \n
-\n    _ "${g}"Variable names"$n" below are pre-defined. They can be overrided.
+\n    _ "${g}"Variable names"$n" below are pre-defined. They can be overridden.
 \n
 \n       . '"${c}"l"$n"': length of the associated list of images.
 \n       . '"${c}"w"$n"': width of the associated image, if any ("${g}"0"$n" otherwise).
@@ -881,7 +881,7 @@ _help_usage :
 \n          from the cropped region of image "${g}"[ind]"$n" (or from default image selected if '"${c}"ind"$n"' is not
 \n          specified). Cropped region starts from point "${g}"(x,y,z,c)"$n" and has a size of
 \n          "${g}"dx x dy x dz x dc"$n". Arguments for coordinates and sizes can be omitted if they are not
-\n          ambiguous (e.g. '"${c}"crop(#ind,x,y,dx,dy)"$n"' is a valid invokation of this function).
+\n          ambiguous (e.g. '"${c}"crop(#ind,x,y,dx,dy)"$n"' is a valid invocation of this function).
 \n       . '"${c}"draw(_#ind,S,x,y,z,c,dx,_dy,_dz,_dc,_opacity,_M,_max_M)"$n"' draws a sprite "${g}"S"$n" in image "${g}"[ind]"$n"
 \n          (or in default image selected if '"${c}"ind"$n"' is not specified) at coordinates "${g}"(x,y,z,c)"$n".
 \n          The size of the sprite "${g}"dx x dy x dz x dc"$n" must be specified. You can also specify a
@@ -1050,7 +1050,7 @@ _help_usage :
 \n    . '"$c"$""#"$n"' is substituted by the maximum indice of known arguments (either specified by the user
 \n       or set to a default value in the custom command).
 \n    . '"$c"$[]"$n"' is substituted by the list of selected image indices that have been specified during the
-\n       command invokation.
+\n       command invocation.
 \n    . '"$c"$""?"$n"' is substituted by a printable version of '"$c"$""[]"$n"' to be used in command descriptions.
 \n    . '"$c"$i"$n"' and '"$c"${i}"$n"' are both substituted by the "${g}"i^th"$n" specified argument. Negative indices such as
 \n       '"$c"${-j}"$n"' are allowed and refer to the "${g}"j^th"$n" latest argument. '"$c"$""0"$n"' is substituted by the
@@ -1339,7 +1339,7 @@ _help_header_latex :
 \n\\item A command-line executable '\\texttt{gmic}', to use the \\Cc{G\47MIC} framework from a shell.
 \nIn this setting, \\Cc{G\47MIC} may be seen as a direct (and friendly) competitor of the ImageMagick or GraphicsMagick software suites.
 \n\\item A plug-in '\\texttt{gmic\\_gimp}', to bring \\Cc{G\47MIC} capabilities to the GIMP image retouching software.
-\n\\item A web-service '\\texttt{\\Cc{G\47MIC} Online}', to allow users applying image processing algorithms directly in a web brower.
+\n\\item A web-service '\\texttt{\\Cc{G\47MIC} Online}', to allow users applying image processing algorithms directly in a web browser.
 \n\\item A Qt-based interface '\\texttt{ZArt}', for real-time manipulation of webcam images.
 \n\\item A C++ library '\\texttt{libgmic}', to be linked with third-party applications.
 \n\\end{itemize}
@@ -3809,7 +3809,7 @@ Most of those <b>300+</b> presets have been designed by <a href=\"http://blog.pa
 analog films. They have a dedicated section in the open-source <b><font color=\"#000066\">G\47MIC</font></b> plug-in for GIMP and Krita, so you can apply all these easily in GIMP.</p>\n\n
 <p>Below, you can navigate through the different proposed color presets and see how they modify the colors of some sample images.\n
 You can also download each color preset separately as its corresponding <a href=\"http://www.quelsolaar.com/technology/clut.html\">HaldCLUT</a> file (in <b>.png</b> format), to use it in\n
-other softwares that support this feature.</p>\n\n
+other software that support this feature.</p>\n\n
 <p><b>Image credits:</b> Sample images below have been borrowed from <a href=\"https://www.flickr.com/photos/patdavid/\">Patrick David</a> and\n
 <a href=\"https://www.flickr.com/photos/davelau/\">Chi King</a>\47s Flickr accounts, distributed under\n
 <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-by-SA 2.0</a>.</p>\n\n
@@ -3867,7 +3867,7 @@ with or endorsed by the companies that own the trademarks.</i></font></p>\n\n
 <div><a href=\"original/"$basename".jpg\" class=\"highslide\" onclick=\"return hs.expand(this)\"><img alt=\"\" border=\"0\" src=\"original/thumb_"$basename".jpg\" /></a>\n
 <div class=\"highslide-caption\"><b>Reference Image</b></div></div>\n
 </td></tr>\n
-<tr><td align=\"center\"><b>Refence Image</b></td></tr>\n\n"
+<tr><td align=\"center\"><b>Reference Image</b></td></tr>\n\n"
       repeat {narg({/$presets})}
         preset=${arg\ {1+$>},$presets}
 
@@ -4083,7 +4083,7 @@ update_gallery_html :
   of <b><font color=\"#000066\">G\47MIC</font></b>, from a set of initial 2D color images (displayed on the first row).<br/>\n
   Click on an image to zoom-in. The corresponding <b><font color=\"#000066\">G\47MIC</font></b> command used to generate the image appears as a caption.\n
   This gallery is intended to show the flexibility and the genericity of the <b><font color=\"#000066\">G\47MIC</font></b> language.\n
-  Remember, you can easily define your own image filters and effects by writting\n
+  Remember, you can easily define your own image filters and effects by writing\n
   your custom <b><font color=\"#000066\">G\47MIC</font></b> <a href=\"http://gmic.eu/gmic_stdlib.gmic\">command file</a>,\n
   and eventually put them directly in <a href=\"http://www.gimp.org\">GIMP</a> afterwards.\n\n
   <ul>\n
@@ -4160,7 +4160,7 @@ __update_gallery_html :
 
 # Function that updates filters definitions on the G'MIC web server.
 # It sorts and merges filters from all available sources, and save
-# a single update file on the G'MIC server. It also print on the standart
+# a single update file on the G'MIC server. It also print on the standard
 # output (stdout), the list of available filters.
 update_server :
   v -
@@ -5051,7 +5051,7 @@ _update_tutorial_html :
 
 #@cli wait : delay : (no arg) : (+)
 #@cli : Wait for a given delay (in ms), optionally since the last call to 'wait'.
-#@cli : or wait for a user event occuring on the selected instant display windows.
+#@cli : or wait for a user event occurring on the selected instant display windows.
 #@cli : 'delay' can be { <0=delay+flush events | 0=event | >0=delay }.
 #@cli : Command selection (if any) stands for instant display window indices instead of image indices.
 #@cli : If no window indices are specified and if 'delay' is positive, the command results
@@ -7389,7 +7389,7 @@ _transfer_colors :  # Check transfer_colors performance.
 
 #@cli transfer_rgb : [target],_gamma>=0,_regularization>=0,_luminosity_constraints>=0,_rgb_resolution>=0,_is_constraints={ 0 | 1 }
 #@cli : Transfer colors from selected source images to selected reference image (given as argument).
-#@cli : 'gamma' determines the importance of color occurences in the matching process (0=none to 1=huge).
+#@cli : 'gamma' determines the importance of color occurrences in the matching process (0=none to 1=huge).
 #@cli : 'regularization' determines the number of guided filter iterations to remove quantization effects.
 #@cli : 'luminosity_constraints' tells if luminosity constraints must be applied on non-confident matched colors.
 #@cli : 'is_constraints' tells if additional hard color constraints must be set (opens an interactive window).
@@ -7495,7 +7495,7 @@ transfer_rgb : check "${2=0.3}>=0 && ${3=8}>=0 && ${4=0.15}>=0 && ${5=64}>=0 && 
     # Map CLUT to get result.
     +map_clut[source] [clut] nm. res_noregul
 
-    # Apply guided smoothing to remove quantization artefacts.
+    # Apply guided smoothing to remove quantization artifacts.
     if {!$3}
       nm[res_noregul] res
     else
@@ -8595,7 +8595,7 @@ split_tiles : skip ${2=$1},${3=0}
   v - repeat $! l[$<] s y,$2 s x,$1 if $3 r [0],[0],100%,100%,0 fi endl done v +
 
 #@cli undistort : -1<=_amplitude<=1,_aspect_ratio,_zoom,_center_x[%],_center_y[%],_boundary_conditions
-#@cli : Correct barrel/pincushion distortions occuring with wide-angle lens.
+#@cli : Correct barrel/pincushion distortions occurring with wide-angle lens.
 #@cli : References:
 #@cli : [1] Zhang Z. (1999). Flexible camera calibration by viewing a plane from unknown orientation.
 #@cli : [2] Andrew W. Fitzgibbon (2001). Simultaneous linear estimation of multiple view geometry and lens distortion.
@@ -9536,7 +9536,7 @@ inpaint_flow : check ${is_image_arg\ $1}" && ${2=10}>=0 && ${3=100}>=0 && ${4=5}
 #@cli : Default values: 'maximal_area=4', 'tolerance=0' and 'is_high_connectivity=0'.
 #@cli : $ image.jpg noise 5%,2 +inpaint_holes 8,40
 inpaint_holes : check "${1=4}>=0 && ${2=0}>=0" skip ${3=0}
-  e[^-1] "Inpaint holes wih area less than $1 pixels in image$?, with tolerance $2 and "${arg\ 1+!$3,high,low}" connectivity."
+  e[^-1] "Inpaint holes with area less than $1 pixels in image$?, with tolerance $2 and "${arg\ 1+!$3,high,low}" connectivity."
   v - repeat $! l[$>]
     100%,100%,100%
     area={if(${is_percent\ $1},$1*w*h*d,$1)}
@@ -9893,7 +9893,7 @@ nlmeans:
   fi v +
 
 #@cli nlmeans_core: _reference_image,_scaling_map,_patch_radius>0,_spatial_bandwidth>0
-#@cli : Apply non local means denoising using a image for weigth and a map for scaling
+#@cli : Apply non local means denoising using a image for weight and a map for scaling
 nlmeans_core : check ${is_image_arg\ $1}" && "${is_image_arg\ $2}" && $3>0 && $4>0"
   e[^-1] "Apply non-local means denoising using weight images $1, scaling map $2, patch size $3 and spatial bandwidth $4."
   v - pass$1 0 pass$2 0
@@ -11015,7 +11015,7 @@ ssd_patch : check ${is_image_arg\ $1} skip ${2=0},${3=0}
 
 #@cli thinning
 #@cli : Compute skeleton of binary shapes using morphological thinning
-#@cli : (This is a quite slow iterative proces)
+#@cli : (This is a quite slow iterative process)
 #@cli : $ image.jpg threshold 50% +thinning
 thinning :
   e[^-1] "Compute skeleton of binary image$?, using morphological thinning."
@@ -12639,7 +12639,7 @@ yinyang :
 #---------------------------------
 
 #@cli dijkstra : starting_node>=0,ending_node>=0 : (+)
-#@cli : Compute minimal distances and pathes from specified adjacency matrices by the Dijkstra algorithm.
+#@cli : Compute minimal distances and paths from specified adjacency matrices by the Dijkstra algorithm.
 
 #@cli eigen : (+)
 #@cli : Compute the eigenvalues and eigenvectors of selected symmetric matrices or matrix fields.
@@ -13055,7 +13055,7 @@ delaunay3d :
   v - repeat $! l[$>]
     channels 0 neq 0
 
-    # Label each point separatly
+    # Label each point separately
     whd={w},{h},{d} +r 1,{w*h*d},1,1,-1 cumulate. *. .. r. $whd,1,-1
 
     # Compute voronoi diagram of point cloud.
@@ -13325,7 +13325,7 @@ imageplane3d :
   nm $nm endl done v +
 
 #@cli imagepyramid3d
-#@cli : Generate 3d mapped pyramides from selected images.
+#@cli : Generate 3d mapped pyramids from selected images.
 #@cli : $ image.jpg imagepyramid3d
 imagepyramid3d :
   e[^-1] "Generate 3d mapped pyramids from image$?."
@@ -17349,7 +17349,7 @@ files2video : check "isint(${3=25}) && $3>0" skip "${2=output.avi}",${4=mp4v}
     v + e[] "\r - Image "{1+$>}/$nb_files" ["$_file"] -> [$2]                    " v -
     i $file o "$2",$3,$4,1
     rm
-  onfail v + e[] "\n - Error occured on input file '"$file"'.\n" v -
+  onfail v + e[] "\n - Error occurred on input file '"$file"'.\n" v -
   endl done
   o $"$2",0,0,0 v +
 
@@ -23700,7 +23700,7 @@ _gui_merge_layers :
   endl
   if {narg({'$res'})} u $res else u "${2--1}" fi
 
-# Generate a splitted preview, with arguments "command",_split_type,_timeout,_compute_entire_image
+# Generate a split preview, with arguments "command",_split_type,_timeout,_compute_entire_image
 # 'split_type' can be { 0=no split | 1=forw. horiz. | 2=forw. vert. | 3=back. horiz. | 4=back. vert. | 5=dupl. horiz. (left). | 6=dupl. vert. (top). | 7=dupl. horiz. (right) | 8=dupl. vert. (bottom) }
 # 'timeout' can be { 0=no timeout | >0=with specified timeout (in seconds) }.
 # 'compute_entire_image' can be { 0=no | 1=yes }.
@@ -24528,7 +24528,7 @@ survey :
   i raw:http://gmic.eu/gmic_survey.raw,uchar s -,10
   repeat {$!-1} l[{$<-1},$<] if {"ia==ia#-2 && im==im#-2 && iM==iM#-2"} rm. fi endl done # Remove duplicates
 
-  # Get sequence of anwsers for each question.
+  # Get sequence of answers for each question.
   m "__survey : _survey $""1"
   N=0 repeat $! l[$>]
     ({'${hex2str\ {t}}'})
@@ -24755,7 +24755,7 @@ fx_array_preview :
 
 #@gui Ascii art : fx_asciiart, fx_asciiart_preview(0)+
 #@gui : Charset = choice(5,"Custom","Binary digits","Digits","Lowercase letters","Uppercase letters","Ascii","Card suits","Math symbols")
-#@gui : Custom dictionnary = text{" .oO0"}
+#@gui : Custom dictionary = text{" .oO0"}
 #@gui : Analysis scale = int(16,8,103)
 #@gui : Analysis smoothness = float(15,0,100)
 #@gui : Synthesis scale = int(16,8,103)
@@ -26356,7 +26356,7 @@ fx_charcoal_preview :
 #@gui : note = note{"<small><b>Description:</b>\n
 #@gui : This filter allows to quickly colorize a B&amp;W image or lineart.
 #@gui : Click on the <i>Apply</i> or <i>OK</i> buttons below to open the G'MIC interactive window and start adding color control points.
-#@gui : When you're done, exit the interactive window: your colored result will be transfered back to the host software.\n\n
+#@gui : When you're done, exit the interactive window: your colored result will be transferred back to the host software.\n\n
 #@gui : If you are not satisfied with the result, <i>Undo it (CTRL+Z)</i>, and click on <i>Apply</i> once again to modify your control points defined previously.
 #@gui : To clear all control points, click on the <i>Reset</i> button below.
 #@gui : </small>"}
@@ -27360,7 +27360,7 @@ fx_mask_color :
 #@gui : note = note{"<small><b>Description:</b>\n
 #@gui : This filter allows to apply color curves on your images, in many different colorspaces.
 #@gui : Click on the <i>Apply</i> or <i>OK</i> buttons below to open the G'MIC interactive windows and start building your color curves.
-#@gui : When you're done, exit the main image window: your modified result will be transfered back to the host software.\n\n
+#@gui : When you're done, exit the main image window: your modified result will be transferred back to the host software.\n\n
 #@gui : Once you've set curves, you can save them by pressing the <b>Add to faves</b> button below the filter tree.
 #@gui : To clear control points for your curves, click on the <i>Reset</i> button at the bottom.
 #@gui : </small>"}
@@ -28162,7 +28162,7 @@ fx_transfer_rgb_preview :
   endl done fi
 
 #@gui Transfer colors [basic] : fx_transfer_colors, fx_transfer_colors
-#@gui : Transfer brighness = bool(0)
+#@gui : Transfer brightness = bool(0)
 #@gui : Revert layers = bool(0)
 #@gui : note = note{"<small><b>Note: </b>
 #@gui : The bottom layer contains the target colors.\n
@@ -28337,7 +28337,7 @@ fx_edge_offsets_preview :
 #@gui : note = note{"<small><b>Description:</b>\n
 #@gui : This filter allows to quickly extract foreground objects from background in opaque RGB images.
 #@gui : Click on the <i>Apply</i> or <i>OK</i> buttons below to open the interactive window and start adding foreground and background control points.
-#@gui : When you're done, exit the interactive window: your extracted foreground will be transfered back to the host software.\n\n
+#@gui : When you're done, exit the interactive window: your extracted foreground will be transferred back to the host software.\n\n
 #@gui : If you are not satisfied with the result, click on <i>Apply</i> once again to modify your control points defined previously.
 #@gui : To remove all control points, click on the <i>Reset</i> button below.
 #@gui : </small>"}
@@ -29606,7 +29606,7 @@ fx_flip_blocs_preview :
   gui_split_preview "fx_flip_blocs $*",$-1
 
 #@gui JPEG artefacts : fx_jpeg_artefacts, fx_jpeg_artefacts_preview(0)
-#@gui : note = note("<small>This filter simulates the JPEG compression artefacts, using DCT quantization on 8x8 blocs.</small>")
+#@gui : note = note("<small>This filter simulates the JPEG compression artifacts, using DCT quantization on 8x8 blocs.</small>")
 #@gui : Quality (%) = int(50,1,100)
 #@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2017/05/07</i>.</small>")
@@ -33038,7 +33038,7 @@ fx_smooth_median_preview :
 #@gui : sep = separator(), note = note("<small>Author: <i>J&#233;r&#244;me Boulanger</i>.      Latest update: <i>2015/01/07</i>.</small>")
 fx_smooth_nlmeans:
   repeat $! l[$>]
-    if {s==1} nlmeans $1,$2,$3,-_fx_smooth_nlmeans$4 # Handle separatly gray scale images.
+    if {s==1} nlmeans $1,$2,$3,-_fx_smooth_nlmeans$4 # Handle separately gray scale images.
     else ac "gui_parallel_overlap \"nlmeans $1,$2,$3,-_fx_smooth_nlmeans$4\",$6,$7",$5
     fi
   endl done
