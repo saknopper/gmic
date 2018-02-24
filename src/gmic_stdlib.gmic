@@ -5984,7 +5984,7 @@ negate : skip "${1=,}"
     v +
   fi
 
-#@cli noise : std_variation>=0[%],_noise_type : (+)
+#@cli noise : std_deviation>=0[%],_noise_type : (+)
 #@cli : Add random noise to selected images.
 #@cli : 'noise_type' can be { 0=gaussian | 1=uniform | 2=salt&pepper | 3=poisson | 4=rice }.
 #@cli : Default value: 'noise_type=0'.
@@ -8683,7 +8683,7 @@ bandpass : skip ${1=0},${2=20%}
     fft.. *... . *[-2,-1] ifft rm.
   endl done v +
 
-#@cli bilateral : [guide],std_variation_s[%]>=0,std_variation_r[%]>=0,_sampling_s>=0,_sampling_r>=0 : std_variation_s[%]>=0,std_variation_r[%]>=0,_sampling_s>=0,_sampling_r>=0 : (+)
+#@cli bilateral : [guide],std_deviation_s[%]>=0,std_deviation_r[%]>=0,_sampling_s>=0,_sampling_r>=0 : std_deviation_s[%]>=0,std_deviation_r[%]>=0,_sampling_s>=0,_sampling_r>=0 : (+)
 #@cli : Blur selected images by anisotropic (eventually joint/cross) bilateral filtering.
 #@cli : If a guide image is provided, it is used for drive the smoothing filter.
 #@cli : A guide image must be of the same xyz-size as the selected images.
@@ -8692,7 +8692,7 @@ bandpass : skip ${1=0},${2=20%}
 
 #@cli b : eq. to 'blur'. : (+)
 
-#@cli blur : std_variation>=0[%],_boundary_conditions,_kernel : axes,std_variation>=0[%],_boundary_conditions,_kernel : (+)
+#@cli blur : std_deviation>=0[%],_boundary_conditions,_kernel : axes,std_deviation>=0[%],_boundary_conditions,_kernel : (+)
 #@cli : Blur selected images by a quasi-gaussian or gaussian filter (recursive implementation).
 #@cli : (eq. to 'b').\n
 #@cli : 'boundary_conditions' can be { 0=dirichlet | 1=neumann } and 'kernel' can be { 0=quasi-gaussian (faster) | 1=gaussian }.
@@ -9020,9 +9020,9 @@ deinterlace : skip ${1=0}
     + / 2 c 0,255 r $wh
   endl done v +
 
-#@cli denoise : std_variation_s>=0,_std_variation_p>=0,_patch_size>0,_lookup_size>0,_smoothness,_fast_approx={ 0 | 1 } : (+)
+#@cli denoise : std_deviation_s>=0,_std_deviation_p>=0,_patch_size>0,_lookup_size>0,_smoothness,_fast_approx={ 0 | 1 } : (+)
 #@cli : Denoise selected images by non-local patch averaging.
-#@cli : Default values: 'std_variation_p=10', 'patch_size=5', 'lookup_size=6' and 'smoothness=1'.
+#@cli : Default values: 'std_deviation_p=10', 'patch_size=5', 'lookup_size=6' and 'smoothness=1'.
 #@cli : $ image.jpg +denoise 5,5,8
 
 #@cli denoise_haar : _threshold>=0,_nb_scales>=0,_cycle_spinning>0
@@ -9108,7 +9108,7 @@ denoise_patchpca : check "${1=1.8} && $1>=0 && isint(${2=7}) && $2>0 && isint(${
     max[weights] 0.01 /[aggreg,weights] k[aggreg] nm $nm
   endl done v +
 
-#@cli deriche : std_variation>=0[%],order={ 0 | 1 | 2 },axis={ x | y | z | c },_boundary_conditions : (+)
+#@cli deriche : std_deviation>=0[%],order={ 0 | 1 | 2 },axis={ x | y | z | c },_boundary_conditions : (+)
 #@cli : Apply Deriche recursive filter on selected images, along specified axis and with
 #@cli : specified standard deviation, order and boundary conditions.
 #@cli : 'boundary_conditions' can be { 0=dirichlet | 1=neumann }.
@@ -10091,11 +10091,11 @@ remove_pixels : check "$1>=0"
     fi
   endl done v +
 
-#@cli rolling_guidance : std_variation_s[%]>=0,std_variation_r[%]>=0,_precision>=0
+#@cli rolling_guidance : std_deviation_s[%]>=0,std_deviation_r[%]>=0,_precision>=0
 #@cli : Apply the rolling guidance filter on selected image.
 #@cli : Rolling guidance filter is a fast image abstraction filter, described in:
 #@cli : "Rolling Guidance Filter", Qi Zhang Xiaoyong, Shen Li, Xu Jiaya Jia, ECCV'2014.
-#@cli : Default values: 'std_variation_s=4', 'std_variation_r=10' and 'precision=0.5'.
+#@cli : Default values: 'std_deviation_s=4', 'std_deviation_r=10' and 'precision=0.5'.
 #@cli : $ image.jpg +rolling_guidance , +-
 rolling_guidance : check "${1=4}>=0 && ${2=10}>=0 && ${3=0.5}>=0"
   e[^-1] "Apply rolling guidance filter on image$?, with standard deviations ($1,$2) and precision $3."
@@ -10390,7 +10390,7 @@ unsharp_octave : check "${1=4}>0 && ${3=2}>=0" skip ${2=1},${4=0}
     rm[0] / $weight
   nm $nm endl done v +
 
-#@cli vanvliet : std_variation>=0[%],order={ 0 | 1 | 2 | 3 },axis={ x | y | z | c },_boundary_conditions : (+)
+#@cli vanvliet : std_deviation>=0[%],order={ 0 | 1 | 2 | 3 },axis={ x | y | z | c },_boundary_conditions : (+)
 #@cli : Apply Vanvliet recursive filter on selected images, along specified axis and with
 #@cli : specified standard deviation, order and boundary conditions.
 #@cli : 'boundary_conditions' can be { 0=dirichlet | 1=neumann }.
