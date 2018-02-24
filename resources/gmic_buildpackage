@@ -319,12 +319,12 @@ ln -fs ../../gmic-community/libcgmic/gmic_libc.h .
 ln -fs ../../gmic-community/libcgmic/use_libcgmic.c .
 
 if [ "$1" == "final" ]; then
-    git tag -d v.$SVERSION
-    git tag v.$SVERSION
+    git tag -d v.$VERSION
+    git tag v.$VERSION
     gmic_commit "Final release "${VERSION}
     git push --tags
     COMMIT=$(git -C $HOME/work/src/gmic-qt log -1 | head -1 | cut -d' ' -f 2)  # Get the SHA1 of the latest commit
-    wget -O /dev/null --timeout=10 "${GMIC_FOUREY_URL}?version=v.${SVERSION}&commit=${COMMIT}"
+    wget -O /dev/null --timeout=10 "${GMIC_FOUREY_URL}?version=v.${VERSION}&commit=${COMMIT}"
 else
     gmic_commit "Auto-commit for release "${VERSION}${SUFFIX}
 fi
