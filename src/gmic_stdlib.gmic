@@ -14305,6 +14305,47 @@ weird3d : skip ${1=32}
 #
 #-------------------------------
 
+#@cli apply_blocs : "command",_bloc_width[%]>0,_bloc_height[%]>0,_bloc_depth[%]>0,_overlap_width[%]>=0,_overlap_height[%]>=0,_overlap_depth[%]>=0,_boundary_conditions={ 0=dirichlet | 1=neumann | 2=periodic | 3=mirror }
+#@cli : Apply specified command on each bloc (neighborhood) of the selected images, eventually with overlapping blocs.
+#@cli : Default values: 'bloc_width=bloc_height=bloc_depth=100%','overlap_width=overlap_height=overlap_depth=0' and 'boundary_conditions=1'.
+#@cli : $ image.jpg +equalize[0] 256 +apply_blocs[0] "equalize 256",16,16,1,50%,50%
+apply_blocs : check "${2=100%}>0 && ${3=100%}>0 && ${4=100%}>0 && ${5=0}>=0 && ${6=0}>=0 && ${7=0}>=0 && isint(${8=1}) && $8>=0 && $8<=3"
+  e[^-1] "Apply command '$1' on $2x$3x$4 blocs of image$?, with overlaps ($5,$6,$7) and "${"arg 1+$4,dirichlet,neumann,periodic,mirror"}" boundary conditions."
+  v - repeat $! l[$>]
+    bw={max(1,round(${"is_percent $2"}?w*$2:$2))}
+    bh={max(1,round(${"is_percent $3"}?h*$3:$3))}
+    bd={max(1,round(${"is_percent $4"}?d*$4:$4))}
+    ow={round(${"is_percent $5"}?$bw*$5:$5)}
+    oh={round(${"is_percent $6"}?$bh*$6:$6)}
+    od={round(${"is_percent $7"}?$bd*$7:$7)}
+    sw={cut($bw-$ow,1,$bw)}
+    sh={cut($bh-$oh,1,$bh)}
+    sd={cut($bd-$od,1,$bd)}
+    100%,100%,100%,{s+1} # Reconstructed image + weights
+
+    if {$ow>0" || "$oh>0" || "$od>0} l[] # Generate gaussian weight in case of overlap
+      $bw,1,1 1,$bh,1 1,1,$bd
+      = 1,50%,50%,50% distance 1
+      /[0] {0.3*$bw} /[1] {0.3*$bh} /[2] {0.3*$bd}
+      sqr * -1 exp r $bw,$bh,$bd,1 *
+    endl else $bw,$bh,$bd,1,1
+    fi
+    z=0 do
+      y=0 do
+        x=0 do
+          +z[0] $x,$y,$z,{$x+$bw-1},{$y+$bh-1},{$z+$bd-1},$8
+          l. $1 k. endl
+          j[1] .,$x,$y,$z,0,-1,.. rm.
+          j[1] .,$x,$y,$z,{0,s},-1
+          x+=$sw
+        while {0,$x<w}
+        y+=$sh
+      while {0,$y<h}
+      z+=$sd
+    while {0,$z<d}
+    rm. s. c,-{0,s} /[-2,-1] k.
+  endl done v +
+
 #@cli ap : eq. to 'apply_parallel'.
 ap :
   v - _gmic_s="$?" v +
