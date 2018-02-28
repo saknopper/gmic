@@ -14312,6 +14312,7 @@ ab : check "${2=10%}>0 && ${3=10%}>0 && ${4=10%}>0 && ${5=0}>=0 && ${6=0}>=0 && 
 
 #@cli apply_blocs : "command",_bloc_width[%]>0,_bloc_height[%]>0,_bloc_depth[%]>0,_overlap_width[%]>=0,_overlap_height[%]>=0,_overlap_depth[%]>=0,_boundary_conditions={ 0=dirichlet | 1=neumann | 2=periodic | 3=mirror }
 #@cli : Apply specified command on each bloc (neighborhood) of the selected images, eventually with overlapping blocs.
+#@cli : (eq. to 'ab').
 #@cli : Default values: 'bloc_width=bloc_height=bloc_depth=10%','overlap_width=overlap_height=overlap_depth=0' and 'boundary_conditions=1'.
 #@cli : $ image.jpg +equalize[0] 256 +apply_blocs[0] "equalize 256",16,16,1,50%,50%
 apply_blocs : check "${2=10%}>0 && ${3=10%}>0 && ${4=10%}>0 && ${5=0}>=0 && ${6=0}>=0 && ${7=0}>=0 && isint(${8=1}) && $8>=0 && $8<=3"
