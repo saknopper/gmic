@@ -14347,12 +14347,14 @@ _apply_blocs : check "${2=10%}>0 && ${3=10%}>0 && ${4=10%}>0 && ${5=0}>=0 && ${6
           for (x = 0, x<w#0, x+="$sw",
             draw(crop(#0,x,y,z,w,h,d),0,0,0,0,w,h,d);
             ext('__ab.');
+            breakpoint();
             draw(#1,crop(#-1),x,y,z,0,w,h,d,s#0,-1,mask);
             draw(#1,mask,x,y,z,s#0,w,h,d,1,-1);
           )
         )
       )"
-    rm[-2,-1] s. c,-{0,s} /[-2,-1] k.
+    rm[-2,-1]
+    s. c,-{0,s} /[-2,-1] k.
     uncommand __ab
   endl done v +
 
@@ -30122,6 +30124,31 @@ fx_normalize_local :
 fx_normalize_local_preview :
   gui_split_preview "fx_normalize_local $*",$-1
 
+#@gui Local processing : fx_local_processing, fx_local_processing_preview(1)
+#@gui : Action = choice("Normalize","Equalize")
+#@gui : Strength (%) = float(75,0,100)
+#@gui : Neighborhood size (%) = float(10,1,100)
+#@gui : Overlap (%) = float(50,0,75)
+#@gui : Regularization (%) = float(30,0,100)
+#@gui : Process channels individually = bool(0)
+#@gui : sep = separator(), Channel(s) = choice(7,"All","RGBA [all]","RGB [all]","RGB [red]","RGB [green]","RGB [blue]","RGBA [alpha]","Linear RGB [all]","Linear RGB [red]","Linear RGB [green]","Linear RGB [blue]","YCbCr [luminance]","YCbCr [blue-red chrominances]","YCbCr [blue chrominance]","YCbCr [red chrominance]","YCbCr [green chrominance]","Lab [lightness]","Lab [ab-chrominances]","Lab [a-chrominance]","Lab [b-chrominance]","Lch [ch-chrominances]","Lch [c-chrominance]","Lch [h-chrominance]","HSV [hue]","HSV [saturation]","HSV [value]","HSI [intensity]","HSL [lightness]","CMYK [cyan]","CMYK [magenta]","CMYK [yellow]","CMYK [key]","YIQ [luma]","YIQ [chromas]")
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
+#@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2018/02/28</i>.</small>")
+fx_local_processing :
+  com0="n 0,255"
+  com1="equalize 256,0,255 n 0,255"
+  com=${com$1}
+  if $6 com="s c "$com" a c" fi
+  repeat $! l[$>]
+    size={round(max(8,max(w,h)*$3%))}
+    +ac "ab \""$com"\","$size","$size",1,$4%,$4%",$7
+    if $5 +norm[0] bilateral[1] .,{$5/20}%,{2+$5/4} rm. fi
+    blend alpha,{$2%}
+  endl done
+
+fx_local_processing_preview :
+  gui_split_preview "fx_local_processing $*",$-1,{if(isval($_preview_timeout),0$_preview_timeout,8)}
+
 #@gui Magic details : fx_magic_details,fx_magic_details_preview(0)
 #@gui : Amplitude = float(6,0,30)
 #@gui : Spatial scale = float(3,0,10)
@@ -32984,7 +33011,7 @@ fx_solidify_td_preview :
 #@gui : Iterations = int(1,1,10)
 #@gui : sep = separator(), Channel(s) = choice("All","RGBA [all]","RGB [all]","RGB [red]","RGB [green]","RGB [blue]","RGBA [alpha]","Linear RGB [all]","Linear RGB [red]","Linear RGB [green]","Linear RGB [blue]","YCbCr [luminance]","YCbCr [blue-red chrominances]","YCbCr [blue chrominance]","YCbCr [red chrominance]","YCbCr [green chrominance]","Lab [lightness]","Lab [ab-chrominances]","Lab [a-chrominance]","Lab [b-chrominance]","Lch [ch-chrominances]","Lch [c-chrominance]","Lch [h-chrominance]","HSV [hue]","HSV [saturation]","HSV [value]","HSI [intensity]","HSL [lightness]","CMYK [cyan]","CMYK [magenta]","CMYK [yellow]","CMYK [key]","YIQ [luma]","YIQ [chromas]")
 #@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
-#@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2013/27/08</i>.</small>")
+#@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2013/08/27</i>.</small>")
 fx_smooth_anisotropic :
   repeat $! l[$>]
     ac "repeat $11 smooth $1,$2,$3,$4,$5,$6,$7,$8,$9,$10 done",$12
