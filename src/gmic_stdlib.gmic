@@ -14331,7 +14331,6 @@ _apply_blocs : check "${2=10%}>0 && ${3=10%}>0 && ${4=10%}>0 && ${5=0}>=0 && ${6
     sh={cut($bh-$oh,1,$bh)}
     sd={cut($bd-$od,1,$bd)}
     100%,100%,100%,{s+1} # Reconstructed image + weights
-
     if {$ow>0" || "$oh>0" || "$od>0} l[] # Generate gaussian weight in case of overlap
       $bw,1,1 1,$bh,1 1,1,$bd
       = 1,50%,50%,50% distance 1
@@ -14339,20 +14338,22 @@ _apply_blocs : check "${2=10%}>0 && ${3=10%}>0 && ${4=10%}>0 && ${5=0}>=0 && ${6
       sqr * -1 exp r $bw,$bh,$bd,1 *
     endl else $bw,$bh,$bd,1,1
     fi
-    z=0 do
-      y=0 do
-        x=0 do
-          +z[0] $x,$y,$z,{$x+$bw-1},{$y+$bh-1},{$z+$bd-1},$8
-          l. $1 k. endl
-          j[1] .,$x,$y,$z,0,-1,.. rm.
-          j[1] .,$x,$y,$z,{0,s},-1
-          x+=$sw
-        while {0,$x<w}
-        y+=$sh
-      while {0,$y<h}
-      z+=$sd
-    while {0,$z<d}
-    rm. s. c,-{0,s} /[-2,-1] k.
+    $bw,$bh,$bd,[0]
+    m "__ab : $1 k."
+    eval "
+      mask = crop(#2);
+      for (z = 0, z<d#0, z+="$sd",
+        for (y = 0, y<h#0, y+="$sh",
+          for (x = 0, x<w#0, x+="$sw",
+            draw(crop(#0,x,y,z,w,h,d),0,0,0,0,w,h,d);
+            ext('__ab.');
+            draw(#1,crop(#-1),x,y,z,0,w,h,d,s#0,-1,mask);
+            draw(#1,mask,x,y,z,s#0,w,h,d,1,-1);
+          )
+        )
+      )"
+    rm[-2,-1] s. c,-{0,s} /[-2,-1] k.
+    uncommand __ab
   endl done v +
 
 #@cli ap : eq. to 'apply_parallel'.
