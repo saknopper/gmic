@@ -505,6 +505,7 @@ gmicol_rotate :
 #@web clone("Freaky details")
 #@web clone("Local contrast enhancement")
 #@web clone("Local normalization")
+#@web clone("Local processing")
 #@web clone("Local variance normalization")
 #@web clone("Magic details")
 #@web clone("Mighty details")
