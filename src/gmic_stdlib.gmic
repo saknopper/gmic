@@ -14340,7 +14340,7 @@ _apply_blocs :
     endl else $bw,$bh,$bd,1,1
     fi
     $bw,$bh,$bd,[0]
-    m "__ab : $1 k. r "$bw,$bh,$bd
+    m "__ab : $1 k. r "$bw,$bh,$bd,{0,s},0
     eval "
       mask = crop(#2);
       for (z = 0, z<d#0, z+="$sd",
