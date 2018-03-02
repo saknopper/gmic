@@ -1049,7 +1049,7 @@ _help_usage :
 \n       double-quoted.
 \n    . '"$c"$""#"$n"' is substituted by the maximum indice of known arguments (either specified by the user
 \n       or set to a default value in the custom command).
-\n    . '"$c"$[]"$n"' is substituted by the list of selected image indices that have been specified during the
+\n    . '"$c"$""[]"$n"' is substituted by the list of selected image indices that have been specified during the
 \n       command invocation.
 \n    . '"$c"$""?"$n"' is substituted by a printable version of '"$c"$""[]"$n"' to be used in command descriptions.
 \n    . '"$c"$i"$n"' and '"$c"${i}"$n"' are both substituted by the "${g}"i^th"$n" specified argument. Negative indices such as
