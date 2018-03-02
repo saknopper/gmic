@@ -14377,14 +14377,9 @@ _apply_parallel :
   v -
   if {$!" && "narg("$*")}
     m "_ap : repeat $! l[$>] $* if $! k[0] else 0 fi endl done"
-    command=
-    N={min($!,$_cpus)} S=0 sep=""
-    repeat $N
-      E={round(($>+1)*$!/$N)-1}
-      command=$command$sep-_ap[$S-$E]
-      S={$E+1} sep=,
-    done
-    parallel $command
+    N={min($!,$_cpus)}
+    commands= sep= repeat $N commands=$commands${sep}_ap[$>--1:$N] sep=, done
+    parallel $commands
     uncommand _ap
   fi
   v +
