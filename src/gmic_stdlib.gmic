@@ -4164,13 +4164,13 @@ update_deprecate : check "isint($1) && $1>0 && $1<999"
   e[^-1] "Deprecate filter update file for G'MIC version $1."
   v - l[]
   i cimgz:"http://gmic.eu/update$1.gmic",uchar
-  +l. s +,{'"UPDATE INFORMATION"'} is_deprecated={$!>1} rm endl
+  +l. s +,{'"UPDATE"" INFORMATION"'} is_deprecated={$!>1} rm endl
   if $is_deprecated
     v + e[0--4] "  > Version $1 was already deprecated !" v -
   else
     s +,{'"#@cli :: "'}
     i[1] ({'"\n\
-            \#@gui <span foreground=\"red\"><i>  >> UPDATE INFORMATION</i></span> : _none_, fx_logo_en\n\
+            \#@gui <span foreground=\"red\"><i>  >> UPDATE"" INFORMATION</i></span> : _none_, fx_logo_en\n\
             \#@gui : note = note{\"A <b>new major version</b> of the <i>G\47MIC</i> plug-in is available!\\n\n\
             \#@gui : You are strongly encouraged to upgrade to the latest version, by visiting our <i>Download page</i> :\\n\\n\"}\n\
             \#@gui : url = link{\"Download G\47MIC plug-in\",\"http://gmic.eu/download.shtml\"}\n\
