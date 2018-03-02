@@ -473,7 +473,7 @@ gmicol_rotate :
 #@web clone("Chromatic aberrations")
 #@web clone("Dirty")
 #@web clone("Flip &amp; rotate blocs")
-#@web clone("JPEG artifacts")
+#@web clone("JPEG artefacts")
 #@web clone("Lomo")
 #@web clone("Noise [additive]")
 #@web clone("Noise [spread]")
