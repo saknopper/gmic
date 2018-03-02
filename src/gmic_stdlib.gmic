@@ -4158,6 +4158,31 @@ _update_gallery_html :
 __update_gallery_html :
   ${1--1}
 
+# Function that inserts a new 'Update information' filter for a previous version number,
+# passed as an argument.
+update_deprecate : check "isint($1) && $1>0 && $1<999"
+  e[^-1] "Deprecate filter update file for G'MIC version $1."
+  v - l[]
+  i cimgz:"http://gmic.eu/update$1.gmic",uchar
+  +l. s +,{'"UPDATE INFORMATION"'} is_deprecated={$!>1} rm endl
+  if $is_deprecated
+    v + e[0--4] "  > Version $1 was already deprecated !" v -
+  else
+    s +,{'"#@cli :: "'}
+    i[1] ({'"\n\
+            \#@gui <span foreground=\"red\"><i>  >> UPDATE INFORMATION</i></span> : _none_, fx_logo_en\n\
+            \#@gui : note = note{\"A <b>new major version</b> of the <i>G\47MIC</i> plug-in is available!\\n\n\
+            \#@gui : You are strongly encouraged to upgrade to the latest version, by visiting our <i>Download page</i> :\\n\\n\"}\n\
+            \#@gui : url = link{\"Download G\47MIC plug-in\",\"http://gmic.eu/download.shtml\"}\n\
+            \#@gui : note = note{\"\\nNote that there will be no updated filters anymore for your current plug-in version.\\n\\n\n\
+            \#@gui : Best regards,\\n\\n <i>The G\47MIC team.</i>\"}\n"'})
+    y[1] a y
+    file=${_path_rc}update$1.gmic
+    o cimgz:$file,uchar
+    _update_server_upload $file
+  fi
+  rm endl v + e[^-1] "  > Done!"
+
 # Function that updates filters definitions on the G'MIC web server.
 # It sorts and merges filters from all available sources, and save
 # a single update file on the G'MIC server. It also print on the standard
@@ -23888,15 +23913,6 @@ gui_autocrop_layers :
     z $coords
     nm mode($mode),opacity($opacity),pos({arg(1,$coords)},{arg(2,$coords)}),name($nm)
   endl done
-
-# Do not forget to ucomment this entry for a deprecated version of the G'MIC plug-in!
-# #@gui <span foreground="red"><b>  UPDATE INFORMATION</b></span> : _none_, fx_logo_en
-# #@gui : note = note{"A <b>new version</b> of the G'MIC plug-in is available!
-# #@gui : You are strongly encouraged to upgrade to the latest version, by visiting our Download page :"}
-# #@gui : url = link{"Download G'MIC plug-in","http://gmic.eu/download.shtml"}
-# #@gui : note = note{"\nNote that there will be no updated filters anymore for your current plug-in version.
-# #@gui : Installing the G'MIC plug-in for GIMP is easy and fast, so there are no reasons not for doing it :).\n\n
-# #@gui : Best regards,\n\n <i>The G'MIC team.</i>"}
 
 
 #@gui _<i>About</i>
