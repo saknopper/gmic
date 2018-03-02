@@ -4170,7 +4170,7 @@ update_deprecate : check "isint($1) && $1>0 && $1<999"
   else
     s +,{'"#@cli :: "'}
     i[1] ({'"\n\
-            \#@gui <span foreground=\"red\"><i>  >> UPDATE"" INFORMATION</i></span> : _none_, fx_logo_en\n\
+            \#@gui !<font color=\"red\"><i>&gt;&gt; UPDATE"" INFORMATION</i></font> : _none_, fx_logo_en\n\
             \#@gui : note = note{\"A <b>new major version</b> of the <i>G\47MIC</i> plug-in is available!\\n\n\
             \#@gui : You are strongly encouraged to upgrade to the latest version, by visiting our <i>Download page</i> :\\n\\n\"}\n\
             \#@gui : url = link{\"Download G\47MIC plug-in\",\"http://gmic.eu/download.shtml\"}\n\
