@@ -37,7 +37,7 @@
             distributed under the
             <a href="http://www.cecill.info/index.en.html"><b>CeCILL</b></a> free software licenses (LGPL-like and/or GPL-compatible).
             It provides several different <b><a href="https://en.wikipedia.org/wiki/User_interface">user interfaces</a></b> to convert / manipulate / filter / visualize
-            <b>generic image datasets</b>, ranging from 1d scalar signals to 3d+t sequences of multi-spectral volumetric images, thus including 2d color images.<br/><br/>
+            <b>generic image datasets</b>, ranging from 1d scalar signals to 3d+t sequences of multi-spectral volumetric images, hence including 2d color images.<br/><br/>
             These user interfaces are:<br/><br/>
 
             <table cellpadding="10" cellspacing="0">
