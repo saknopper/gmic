@@ -24519,8 +24519,9 @@ fx_gmicky_preview :
 #@gui : - <b>2016/03/25</b> : version <i>1.7.0</i>.\n
 #@gui : - <b>2017/05/29</b> : version <i>2.0.0</i>.\n
 #@gui : - <b>2017/10/09</b> : version <i>2.1.0</i>.\n
-#@gui : - <span foreground="purple"><b>2018/02/15</b> : version <i>2.2.0</i> (Current stable).</span>\n
-#@gui : - <b>2018/03/01</b> : version <i>2.2.1_pre</i> (Current development).\n
+#@gui : - <b>2018/02/15</b> : version <i>2.2.0</i>.\n
+#@gui : - <span foreground="purple"><b>2018/03/12</b> : version <i>2.2.1</i> (Current stable).</span>\n
+##@gui : - <b>2018/03/01</b> : version <i>2.2.1_pre</i> (Current development).\n
 #@gui : "}
 #@gui : sep = separator()
 #@gui : url = link{"View changelog to upcoming major version (2.3.0)","https://discuss.pixls.us/t/on-the-road-to-2-3-0"}
