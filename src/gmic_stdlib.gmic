@@ -1731,12 +1731,13 @@ dh :
   v - _gmic_s="$?" v +
   _display_histogram $"*"
 
-#@cli display_histogram : _width>0,_height>0,_clusters>0,_min_value[%],_max_value[%],_show_axes={ 0 | 1 },_expression.
+#@cli display_histogram : _width>=0,_height>=0,_clusters>0,_min_value[%],_max_value[%],_show_axes={ 0 | 1 },_expression.
 #@cli : Render a channel-by-channel histogram.
 #@cli : If selected image has several slices, the rendering is performed for all input slices.
 #@cli : 'expression' is a mathematical expression used to transform the histogram data for visualization purpose.
 #@cli : (eq. to 'dh').
-#@cli : Default values: 'width=512', 'height=300', 'clusters=256', 'min_value=0%', 'max_value=100%', 'show_axes=1' and 'expression=i'.
+#@cli : if specified 'width' or 'height' is '0', then image size is set to half the screen size.
+#@cli : Default values: 'width=0', 'height=0', 'clusters=256', 'min_value=0%', 'max_value=100%', 'show_axes=1' and 'expression=i'.
 #@cli : $ image.jpg +display_histogram 512,300
 display_histogram :
   v - _gmic_s="$?" v +
