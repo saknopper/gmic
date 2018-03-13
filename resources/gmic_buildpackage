@@ -391,6 +391,8 @@ cd resources/snippet
 lftp ftp://$GMIC_LOGIN:$GMIC_PASSWD@ftp.gmic.eu -e "mirror -RL . /www/gmic/snippet/ ; quit"
 cd ../..
 
+exit;
+
 # Construct a clean version of the G'MIC folder.
 #------------------------------------------------
 echo " - Construct clean version of the G'MIC directory."
