@@ -72,6 +72,9 @@ WGET = wget --no-check-certificate --quiet -O
 PLUGINDIR = `gimptool-2.0 --gimpplugindir`/plug-ins
 VERSION = $(shell grep 'gmic_version\ ' gmic.h | tail -c4 | head -c3)
 VERSION1 = $(shell grep 'gmic_version\ ' gmic.h | tail -c4 | head -c1)
+VERSION2 = $(shell grep 'gmic_version\ ' gmic.h | tail -c3 | head -c1)
+VERSION3 = $(shell grep 'gmic_version\ ' gmic.h | tail -c2 | head -c1)
+SVERSION=$(VERSION1).$(VERSION2).$(VERSION3)
 
 # Check that versions of files 'CImg.h' and 'gmic.h' match.
 ifneq (,$(wildcard CImg.h))
@@ -134,13 +137,21 @@ endif
 ifneq (,$(wildcard ../../gmic/src))
 ZART_GMIC_PATH=../gmic/src
 else
+ifneq (,$(wildcard ../../gmic-$(SVERSION)/src))
+ZART_GMIC_PATH=../gmic-$(SVERSION)/src
+else
 ZART_GMIC_PATH=../src
+endif
 endif
 
 ifneq (,$(wildcard ../../gmic/src))
 QT_GMIC_PATH=../gmic/src
 else
+ifneq (,$(wildcard ../../gmic-$(SVERSION)/src))
+QT_GMIC_PATH=../gmic-$(SVERSION)/src
+else
 QT_GMIC_PATH=../src
+endif
 endif
 
 ifdef NOSTRIP
