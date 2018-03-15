@@ -81,9 +81,6 @@ option(ENABLE_TIFF "Add support for handling images in Tiff format" ON)
 option(ENABLE_ZLIB "Add support for data compression via Zlib" ON)
 option(ENABLE_DYNAMIC_LINKING "Dynamically link the binaries to the GMIC shared library" OFF)
 
-set(EXECUTABLE_OUTPUT_PATH "${CMAKE_SOURCE_DIR}/src/" CACHE FILEPATH "Output directory for building all executables." FORCE)
-set(LIBRARY_OUTPUT_PATH "${CMAKE_SOURCE_DIR}/src/" CACHE FILEPATH "Output directory for building all libraries." FORCE)
-
 # compile flags
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/modules)
 set(CMAKE_POSITION_INDEPENDENT_CODE True)
@@ -241,7 +238,7 @@ if(NOT EXISTS ${CMAKE_SOURCE_DIR}/src/gmic_stdlib.h)
   execute_process(COMMAND touch ${CMAKE_SOURCE_DIR}/src/gmic_stdlib.h)
 endif(NOT EXISTS ${CMAKE_SOURCE_DIR}/src/gmic_stdlib.h)
 
-add_custom_target(gmic_extra_headers DEPENDS ./src/CImg.h ./src/gmic_stdlib.h)
+add_custom_target(gmic_extra_headers DEPENDS src/CImg.h src/gmic_stdlib.h)
 
 
 if(NOT CMAKE_BUILD_TYPE)
@@ -255,8 +252,8 @@ SET(CMAKE_CXX_FLAGS_RELWITHDEBINFO " ${COMPILE_FLAGS}")
 
 
 # source files
-SET(CLI_Includes ./src/gmic.h) #${CMAKE_BINARY_DIR}/gmic_stdlib.h ${CMAKE_BINARY_DIR}/CImg.h)
-SET(CLI_Sources ./src/gmic.cpp)
+SET(CLI_Includes src/gmic.h) #${CMAKE_BINARY_DIR}/gmic_stdlib.h ${CMAKE_BINARY_DIR}/CImg.h)
+SET(CLI_Sources src/gmic.cpp)
 
 IF(MINGW)
   IF("${EXTRA_LIBRARIES}" STREQUAL "")
@@ -298,7 +295,7 @@ if(BUILD_LIB)
     ${ZLIB_LIBRARIES}
     ${FFTW3_LIBRARIES}
     ${EXTRA_LIBRARIES}
-    )
+  )
 
   INSTALL(TARGETS libgmic LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}")
   INSTALL(FILES src/gmic.h DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}")
@@ -321,7 +318,7 @@ if(BUILD_LIB_STATIC)
     ${ZLIB_LIBRARIES}
     ${FFTW3_LIBRARIES}
     ${EXTRA_LIBRARIES}
-    )
+  )
 
   INSTALL(TARGETS libgmicstatic ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}")
   INSTALL(FILES src/gmic.h DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}")
@@ -335,7 +332,7 @@ if(BUILD_CLI)
     add_dependencies(gmic libgmic)
     target_link_libraries(gmic
       "libgmic"
-      )
+    )
   else(ENABLE_DYNAMIC_LINKING)
     add_executable(gmic ${CLI_Includes} ${CLI_Sources} src/gmic_cli.cpp)
     add_dependencies(gmic gmic_extra_headers)
@@ -350,7 +347,7 @@ if(BUILD_CLI)
       ${ZLIB_LIBRARIES}
       ${FFTW3_LIBRARIES}
       ${EXTRA_LIBRARIES}
-      )
+    )
   endif(ENABLE_DYNAMIC_LINKING)
 
   set_target_properties(gmic PROPERTIES COMPILE_FLAGS "${CLI_COMPILE_FLAGS}")
@@ -369,8 +366,8 @@ if(BUILD_PLUGIN)
     execute_process(COMMAND touch ${CMAKE_SOURCE_DIR}/src/gmic_gimp_gtk.h)
   endif(NOT EXISTS ${CMAKE_SOURCE_DIR}/src/gmic_gimp_gtk.h)
 
-  add_executable(gmic_gimp_gtk ${CLI_Includes} ./src/gmic_gimp_gtk.cpp)
-  add_dependencies(gmic_gimp_gtk gmic_extra_headers ./src/gmic_gimp_gtk.h)
+  add_executable(gmic_gimp_gtk ${CLI_Includes} src/gmic_gimp_gtk.cpp)
+  add_dependencies(gmic_gimp_gtk gmic_extra_headers src/gmic_gimp_gtk.h)
   set_target_properties(gmic_gimp_gtk PROPERTIES COMPILE_FLAGS "${GIMP2_INCLUDE_DIRS} -Dgmic_gui")
 
   if(ENABLE_DYNAMIC_LINKING)
@@ -378,7 +375,7 @@ if(BUILD_PLUGIN)
     target_link_libraries(gmic_gimp_gtk
       ${GIMP2_LIBRARIES}
       "libgmic"
-      )
+    )
   else(ENABLE_DYNAMIC_LINKING)
     target_sources(gmic_gimp_gtk PUBLIC ${CLI_Sources})
     target_link_libraries(gmic_gimp_gtk
@@ -387,7 +384,7 @@ if(BUILD_PLUGIN)
       ${FFTW3_LIBRARIES}
       ${GIMP2_LIBRARIES}
       ${EXTRA_LIBRARIES}
-      )
+    )
   endif(ENABLE_DYNAMIC_LINKING)
 
   if(PLUGIN_INSTALL_PREFIX)
@@ -401,21 +398,23 @@ if(BUILD_PLUGIN)
 endif(BUILD_PLUGIN)
 
 if(BUILD_MAN)
-  file(MAKE_DIRECTORY ${CMAKE_SOURCE_DIR}/man)
+  file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/man)
   add_custom_command(
-    OUTPUT ${CMAKE_SOURCE_DIR}/man/gmic.1
+    OUTPUT ${CMAKE_BINARY_DIR}/man/gmic.1
     DEPENDS gmic
-    COMMAND LD_LIBRARY_PATH=${EXECUTABLE_OUTPUT_PATH} ${EXECUTABLE_OUTPUT_PATH}/gmic -v - ${CMAKE_SOURCE_DIR}/src/gmic_stdlib.gmic raw:${CMAKE_SOURCE_DIR}/src/gmic_stdlib.gmic,uchar -__help man 2> ${CMAKE_SOURCE_DIR}/man/gmic.1
+    COMMAND LD_LIBRARY_PATH=${CMAKE_BINARY_DIR} ${CMAKE_BINARY_DIR}/gmic -v - ${CMAKE_SOURCE_DIR}/src/gmic_stdlib.gmic raw:${CMAKE_SOURCE_DIR}/src/gmic_stdlib.gmic,uchar -__help man 2> ${CMAKE_BINARY_DIR}/man/gmic.1
   )
-  add_custom_target(man ALL DEPENDS ${CMAKE_SOURCE_DIR}/man/gmic.1)
-  INSTALL(FILES ${CMAKE_SOURCE_DIR}/man/gmic.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1/)
+  add_custom_target(man ALL DEPENDS ${CMAKE_BINARY_DIR}/man/gmic.1)
+  INSTALL(FILES ${CMAKE_BINARY_DIR}/man/gmic.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1/)
 endif(BUILD_MAN)
 
 if(BUILD_BASH_COMPLETION)
+  file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/resources)
   add_custom_command(
-    OUTPUT ${CMAKE_SOURCE_DIR}/resources/gmic_bashcompletion.sh
+    OUTPUT ${CMAKE_BINARY_DIR}/resources/gmic_bashcompletion.sh
     DEPENDS gmic
-    COMMAND LD_LIBRARY_PATH=${EXECUTABLE_OUTPUT_PATH} ${EXECUTABLE_OUTPUT_PATH}/gmic -v - ${CMAKE_SOURCE_DIR}/src/gmic_stdlib.gmic raw:${CMAKE_SOURCE_DIR}/src/gmic_stdlib.gmic,uchar -document_gmic bash 2> ${CMAKE_SOURCE_DIR}/resources/gmic_bashcompletion.sh
+    COMMAND LD_LIBRARY_PATH=${CMAKE_BINARY_DIR} ${CMAKE_BINARY_DIR}/gmic -v - ${CMAKE_SOURCE_DIR}/src/gmic_stdlib.gmic raw:${CMAKE_SOURCE_DIR}/src/gmic_stdlib.gmic,uchar -document_gmic bash 2> ${CMAKE_BINARY_DIR}/resources/gmic_bashcompletion.sh
   )
-  add_custom_target(bashcompletion ALL DEPENDS ${CMAKE_SOURCE_DIR}/resources/gmic_bashcompletion.sh)
+  add_custom_target(bashcompletion ALL DEPENDS ${CMAKE_BINARY_DIR}/resources/gmic_bashcompletion.sh)
 endif(BUILD_BASH_COMPLETION)
+
