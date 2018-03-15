@@ -60,7 +60,7 @@
 #---------------------------
 
 # Try to auto-detect target OS.
-OS := $(shell uname)
+OS = $(shell uname)
 USR = /usr
 LIB = lib
 BIN = bin
@@ -75,6 +75,7 @@ VERSION1 = $(shell grep 'gmic_version\ ' gmic.h | tail -c4 | head -c1)
 VERSION2 = $(shell grep 'gmic_version\ ' gmic.h | tail -c3 | head -c1)
 VERSION3 = $(shell grep 'gmic_version\ ' gmic.h | tail -c2 | head -c1)
 SVERSION=$(VERSION1).$(VERSION2).$(VERSION3)
+SRC_PATH=$(shell pwd)
 
 # Check that versions of files 'CImg.h' and 'gmic.h' match.
 ifneq (,$(wildcard CImg.h))
@@ -132,20 +133,6 @@ ifeq ($(OS),Windows)
 EXE = .exe
 SO = .dll
 PIC =
-endif
-
-ifeq ($(shell [ -d ../gmic-qt -a ! -h ../gmic-qt ] && echo 1),1)
-QT_GMIC_PATH=../src
-else
-ifneq (,$(wildcard ../../gmic/src))
-QT_GMIC_PATH=../gmic/src
-else
-ifneq (,$(wildcard ../../gmic-$(SVERSION)/src))
-QT_GMIC_PATH=../gmic-$(SVERSION)/src
-else
-QT_GMIC_PATH=../src
-endif
-endif
 endif
 
 ifdef NOSTRIP
@@ -314,10 +301,6 @@ BOARD_LIBS = -lboard
 #-------------------------------
 # Define main Makefile entries.
 #-------------------------------
-
-deb:
-	@echo $(DEB)
-	@echo $(QT_GMIC_PATH)
 
 # Multi-targets
 #--------------
@@ -579,17 +562,17 @@ gmicol:
 gimp : gimp_qt
 
 gimp_qt: check_versions gmic_qt_files CImg.h gmic_stdlib.h
-	cd ../gmic-qt && $(QMAKE) CONFIG+=release GMIC_PATH=$(QT_GMIC_PATH) PRERELEASE=$(PRERELEASE) HOST=gimp gmic_qt.pro && $(MAKE)
+	cd ../gmic-qt && $(QMAKE) CONFIG+=release GMIC_PATH=$(SRC_PATH) PRERELEASE=$(PRERELEASE) HOST=gimp gmic_qt.pro && $(MAKE)
 	@echo "Executable 'gmic_gimp_qt' has been successfully compiled in '../gmic-qt/'."
 
 krita : krita_qt
 
 krita_qt: check_versions gmic_qt_files CImg.h gmic_stdlib.h
-	cd ../gmic-qt && $(QMAKE) CONFIG+=release GMIC_PATH=$(QT_GMIC_PATH) PRERELEASE=$(PRERELEASE) HOST=krita gmic_qt.pro && $(MAKE)
+	cd ../gmic-qt && $(QMAKE) CONFIG+=release GMIC_PATH=$(SRC_PATH) PRERELEASE=$(PRERELEASE) HOST=krita gmic_qt.pro && $(MAKE)
 	@echo "Executable 'gmic_krita_qt' has been successfully compiled in '../gmic-qt/'."
 
 gmic_qt: check_versions gmic_qt_files CImg.h gmic_stdlib.h
-	cd ../gmic-qt && $(QMAKE) CONFIG+=release GMIC_PATH=$(QT_GMIC_PATH) PRERELEASE=$(PRERELEASE) HOST=none gmic_qt.pro && $(MAKE)
+	cd ../gmic-qt && $(QMAKE) CONFIG+=release GMIC_PATH=$(SRC_PATH) PRERELEASE=$(PRERELEASE) HOST=none gmic_qt.pro && $(MAKE)
 	@echo "Executable 'gmic_qt' has been successfully compiled in '../gmic-qt/'."
 
 gmic_qt_files:
@@ -618,9 +601,9 @@ gmic_qt_files:
 #-----
 zart: check_versions zart_files CImg.h gmic_stdlib.h
 ifeq ($(OS),Darwin)
-	cd ../zart && $(QMAKE) CONFIG+=release GMIC_PATH=$(QT_GMIC_PATH) zart.pro && $(MAKE) && $(STRIP) zart.app/Contents/MacOS/zart
+	cd ../zart && $(QMAKE) CONFIG+=release GMIC_PATH=$(SRC_PATH) zart.pro && $(MAKE) && $(STRIP) zart.app/Contents/MacOS/zart
 else
-	cd ../zart && $(QMAKE) CONFIG+=release GMIC_PATH=$(QT_GMIC_PATH) zart.pro && $(MAKE) && $(STRIP) zart
+	cd ../zart && $(QMAKE) CONFIG+=release GMIC_PATH=$(SRC_PATH) zart.pro && $(MAKE) && $(STRIP) zart
 endif
 	@echo "Executable 'zart' has been successfully compiled in '../zart/'."
 
