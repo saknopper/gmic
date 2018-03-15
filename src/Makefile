@@ -135,16 +135,6 @@ PIC =
 endif
 
 ifneq (,$(wildcard ../../gmic/src))
-ZART_GMIC_PATH=../gmic/src
-else
-ifneq (,$(wildcard ../../gmic-$(SVERSION)/src))
-ZART_GMIC_PATH=../gmic-$(SVERSION)/src
-else
-ZART_GMIC_PATH=../src
-endif
-endif
-
-ifneq (,$(wildcard ../../gmic/src))
 QT_GMIC_PATH=../gmic/src
 else
 ifneq (,$(wildcard ../../gmic-$(SVERSION)/src))
@@ -620,9 +610,9 @@ gmic_qt_files:
 #-----
 zart: check_versions zart_files CImg.h gmic_stdlib.h
 ifeq ($(OS),Darwin)
-	cd ../zart && $(QMAKE) CONFIG+=release GMIC_PATH=$(ZART_GMIC_PATH) zart.pro && $(MAKE) && $(STRIP) zart.app/Contents/MacOS/zart
+	cd ../zart && $(QMAKE) CONFIG+=release GMIC_PATH=$(QT_GMIC_PATH) zart.pro && $(MAKE) && $(STRIP) zart.app/Contents/MacOS/zart
 else
-	cd ../zart && $(QMAKE) CONFIG+=release GMIC_PATH=$(ZART_GMIC_PATH) zart.pro && $(MAKE) && $(STRIP) zart
+	cd ../zart && $(QMAKE) CONFIG+=release GMIC_PATH=$(QT_GMIC_PATH) zart.pro && $(MAKE) && $(STRIP) zart
 endif
 	@echo "Executable 'zart' has been successfully compiled in '../zart/'."
 
