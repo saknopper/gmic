@@ -81,6 +81,9 @@ option(ENABLE_TIFF "Add support for handling images in Tiff format" ON)
 option(ENABLE_ZLIB "Add support for data compression via Zlib" ON)
 option(ENABLE_DYNAMIC_LINKING "Dynamically link the binaries to the GMIC shared library" OFF)
 
+set(EXECUTABLE_OUTPUT_PATH "${CMAKE_SOURCE_DIR}/src/" CACHE FILEPATH "Output directory for building all executables." FORCE)
+set(LIBRARY_OUTPUT_PATH "${CMAKE_SOURCE_DIR}/src/" CACHE FILEPATH "Output directory for building all libraries." FORCE)
+
 # compile flags
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/modules)
 set(CMAKE_POSITION_INDEPENDENT_CODE True)
@@ -402,7 +405,7 @@ if(BUILD_MAN)
   add_custom_command(
     OUTPUT ${CMAKE_SOURCE_DIR}/man/gmic.1
     DEPENDS gmic
-    COMMAND LD_LIBRARY_PATH=. ${CMAKE_BINARY_DIR}/gmic -v - ${CMAKE_SOURCE_DIR}/src/gmic_stdlib.gmic raw:${CMAKE_SOURCE_DIR}/src/gmic_stdlib.gmic,uchar -__help man 2> ${CMAKE_SOURCE_DIR}/man/gmic.1
+    COMMAND LD_LIBRARY_PATH=${EXECUTABLE_OUTPUT_PATH} ${EXECUTABLE_OUTPUT_PATH}/gmic -v - ${CMAKE_SOURCE_DIR}/src/gmic_stdlib.gmic raw:${CMAKE_SOURCE_DIR}/src/gmic_stdlib.gmic,uchar -__help man 2> ${CMAKE_SOURCE_DIR}/man/gmic.1
   )
   add_custom_target(man ALL DEPENDS ${CMAKE_SOURCE_DIR}/man/gmic.1)
   INSTALL(FILES ${CMAKE_SOURCE_DIR}/man/gmic.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1/)
@@ -412,7 +415,7 @@ if(BUILD_BASH_COMPLETION)
   add_custom_command(
     OUTPUT ${CMAKE_SOURCE_DIR}/resources/gmic_bashcompletion.sh
     DEPENDS gmic
-    COMMAND LD_LIBRARY_PATH=. ${CMAKE_BINARY_DIR}/gmic -v - ${CMAKE_SOURCE_DIR}/src/gmic_stdlib.gmic raw:${CMAKE_SOURCE_DIR}/src/gmic_stdlib.gmic,uchar -document_gmic bash 2> ${CMAKE_SOURCE_DIR}/resources/gmic_bashcompletion.sh
+    COMMAND LD_LIBRARY_PATH=${EXECUTABLE_OUTPUT_PATH} ${EXECUTABLE_OUTPUT_PATH}/gmic -v - ${CMAKE_SOURCE_DIR}/src/gmic_stdlib.gmic raw:${CMAKE_SOURCE_DIR}/src/gmic_stdlib.gmic,uchar -document_gmic bash 2> ${CMAKE_SOURCE_DIR}/resources/gmic_bashcompletion.sh
   )
   add_custom_target(bashcompletion ALL DEPENDS ${CMAKE_SOURCE_DIR}/resources/gmic_bashcompletion.sh)
 endif(BUILD_BASH_COMPLETION)
