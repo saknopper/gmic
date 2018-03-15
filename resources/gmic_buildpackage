@@ -473,11 +473,11 @@ gzip deb_${TARFILE}
 cp -f deb_${TARFILE}.gz ${HOME}/work/src/
 
 rm -rf `basename $DIR`/debian
-rm -rf `basename $DIR`/zart
-rm -rf `basename $DIR`/gmic-qt
-rm -rf `basename $DIR`/src/gmic_libc.cpp
-rm -rf `basename $DIR`/src/gmic_libc.h
-rm -rf `basename $DIR`/src/use_libcgmic.c
+#rm -rf `basename $DIR`/zart
+#rm -rf `basename $DIR`/gmic-qt
+#rm -rf `basename $DIR`/src/gmic_libc.cpp
+#rm -rf `basename $DIR`/src/gmic_libc.h
+#rm -rf `basename $DIR`/src/use_libcgmic.c
 tar chvf ${TARFILE} `basename $DIR`
 gzip ${TARFILE}
 cp -f ${TARFILE}.gz ${HOME}/work/src/
