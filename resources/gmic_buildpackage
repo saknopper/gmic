@@ -458,8 +458,6 @@ rm -r `find . -name "\#*"`
 rm -r `find . -name "CVS"`
 rm -r `find . -name ".git"`
 cd zart
-#sed "s+GMIC_PATH = ../../gmic/src/+GMIC_PATH = ../src/+" zart.pro > /tmp/zart.pro
-#mv /tmp/zart.pro zart.pro
 qmake CONFIG+=release GMIC_PATH=../src zart.pro
 
 # Create .tar.gz source archives.

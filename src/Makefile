@@ -134,6 +134,9 @@ SO = .dll
 PIC =
 endif
 
+ifeq ($(shell [ -d ../gmic-qt -a ! -h ../gmic-qt ] && echo 1),1)
+QT_GMIC_PATH=../src
+else
 ifneq (,$(wildcard ../../gmic/src))
 QT_GMIC_PATH=../gmic/src
 else
@@ -141,6 +144,7 @@ ifneq (,$(wildcard ../../gmic-$(SVERSION)/src))
 QT_GMIC_PATH=../gmic-$(SVERSION)/src
 else
 QT_GMIC_PATH=../src
+endif
 endif
 endif
 
@@ -310,6 +314,10 @@ BOARD_LIBS = -lboard
 #-------------------------------
 # Define main Makefile entries.
 #-------------------------------
+
+deb:
+	@echo $(DEB)
+	@echo $(QT_GMIC_PATH)
 
 # Multi-targets
 #--------------
