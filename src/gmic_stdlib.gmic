@@ -2439,10 +2439,10 @@ _document_gmic_declaration_html :
     v +
     e[] ${-eoff}${-doff}"<p style=\"margin-left:20px\"><a id=\""{0,t}"\"><font color=\"#005090\">&nbsp;&nbsp;<b>"{0,t}$qualifier"</b>:</font></a>"
     if {$!>1}
-      e[] "<p style=\"margin-left:75px\"><tt><i><font color=\"#900090\">"
+      e[] "<p style=\"margin-left:100px\"><tt><i><font color=\"#900090\">"
       repeat {$!-1} l[{1+$>}]
         if {h>48} v - replace_str ",",", " v + fi
-        e[] {0,t}${s{$<==0}}
+        e[] "<span style=\"margin-left:-1.5em\">"{0,t}"</span>"${s{$<==0}}
       endl done
       e[] "</font></i></tt></p>"
     else e[] ""
