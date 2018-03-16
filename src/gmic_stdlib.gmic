@@ -2384,7 +2384,7 @@ _document_gmic_desc_on_html :
   if $_is_desc
     u "<br/>"
   else
-    u "<p style=\"margin-left:100px\"><tt>"
+    u "<p style=\"margin-left:50px\"><tt>"
     _is_desc=1
   fi
   v +
@@ -2403,7 +2403,7 @@ _document_gmic_ex_on_html :
   if $_is_ex
     u ""
   else
-    u "<br/><table style=\"margin-left:100px\" width=\"75%\" bgcolor=\"#FFFFFF\" bordercolor=\"black\" border=\"1\" cellpadding=\"4\" cellspacing=\"0\">"\
+    u "<br/><table style=\"margin-left:50px\" width=\"75%\" bgcolor=\"#FFFFFF\" bordercolor=\"black\" border=\"1\" cellpadding=\"4\" cellspacing=\"0\">"\
       "<tr><td colspan=\"2\" bgcolor=\"#000000\"><font color=\"white\"><b>Example of use:</b></font></td></tr>"
     _is_ex=1
   fi
@@ -2439,7 +2439,7 @@ _document_gmic_declaration_html :
     v +
     e[] ${-eoff}${-doff}"<p style=\"margin-left:20px\"><a id=\""{0,t}"\"><font color=\"#005090\">&nbsp;&nbsp;<b>"{0,t}$qualifier"</b>:</font></a>"
     if {$!>1}
-      e[] "<p style=\"margin-left:120px\"><tt><i><font color=\"#900090\">"
+      e[] "<p style=\"margin-left:75px\"><tt><i><font color=\"#900090\">"
       repeat {$!-1} l[{1+$>}]
         if {h>48} v - replace_str ",",", " v + fi
         e[] {0,t}${s{$<==0}}
@@ -2554,7 +2554,7 @@ _document_gmic_footer_html : skip $1
     e[] "</p>" v -
   fi
   v +
-  e[] ${-eoff}${-doff}"<p style=\"margin-left:100px\"><font color=\"blue\"><b>[ Total number of commands: "$_command" ]</b></font>"
+  e[] ${-eoff}${-doff}"<p style=\"margin-left:50px\"><font color=\"blue\"><b>[ Total number of commands: "$_command" ]</b></font>"
   v -
   uncommand don,doff,eon,eoff
 
