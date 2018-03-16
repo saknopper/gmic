@@ -91,15 +91,15 @@ set(CMAKE_POSITION_INDEPENDENT_CODE True)
 
 set(COMPILE_FLAGS "-Dgmic_build -Dcimg_use_vt100 -Dgmic_is_parallel -Dcimg_use_abort ")
 if(MINGW)
-  SET(COMPILE_FLAGS "${COMPILE_FLAGS} -std=gnu++11")
+  set(COMPILE_FLAGS "${COMPILE_FLAGS} -std=gnu++11")
 elseif(APPLE)
-   SET(COMPILE_FLAGS "${COMPILE_FLAGS} -mmacosx-version-min=10.8 -std=c++11 -stdlib=libc++ -Wno-error=c++11-narrowing -Wc++11-extensions  -fpermissive")
+   set(COMPILE_FLAGS "${COMPILE_FLAGS} -mmacosx-version-min=10.8 -std=c++11 -stdlib=libc++ -Wno-error=c++11-narrowing -Wc++11-extensions  -fpermissive")
 else()
-  SET(COMPILE_FLAGS "${COMPILE_FLAGS} -std=gnu++11 -Wno-error=narrowing -fno-ipa-sra -fpermissive")
+  set(COMPILE_FLAGS "${COMPILE_FLAGS} -std=gnu++11 -Wno-error=narrowing -fno-ipa-sra -fpermissive")
 endif()
 
 if(NOT "${PRERELEASE_TAG}" STREQUAL "")
-  SET(COMPILE_FLAGS "${COMPILE_FLAGS} -Dgmic_prerelease=\"${PRERELEASE_TAG}\"")
+  set(COMPILE_FLAGS "${COMPILE_FLAGS} -Dgmic_prerelease=\"${PRERELEASE_TAG}\"")
 endif()
 
 set(EXTRA_LIBRARIES)
@@ -116,7 +116,7 @@ endif()
 
 # Zlib support
 if(ENABLE_ZLIB)
-  find_package (ZLIB)
+  find_package(ZLIB)
 endif()
 if(ZLIB_FOUND)
   set(COMPILE_FLAGS "${COMPILE_FLAGS} -Dcimg_use_zlib ")
@@ -127,7 +127,7 @@ endif()
 
 #X11 support
 if(ENABLE_X)
-  find_package (X11)
+  find_package(X11)
 endif()
 if(X11_FOUND)
   set(COMPILE_FLAGS "${COMPILE_FLAGS} -Dcimg_display=1 -Dcimg_appname=\\\"gmic\\\" ")
@@ -183,7 +183,7 @@ endif()
 
 
 if(ENABLE_TIFF)
-  find_package (TIFF)
+  find_package(TIFF)
 endif()
 if(TIFF_FOUND)
   set(CLI_COMPILE_FLAGS "${CLI_COMPILE_FLAGS} -Dcimg_use_tiff ")
@@ -193,7 +193,7 @@ endif()
 
 
 if(ENABLE_PNG)
-  find_package (PNG)
+  find_package(PNG)
 endif()
 if(PNG_FOUND)
   set(CLI_COMPILE_FLAGS "${CLI_COMPILE_FLAGS} -Dcimg_use_png ")
@@ -203,7 +203,7 @@ endif()
 
 
 if(ENABLE_JPEG)
-  find_package (JPEG)
+  find_package(JPEG)
 endif()
 if(JPEG_FOUND)
   set(CLI_COMPILE_FLAGS "${CLI_COMPILE_FLAGS} -Dcimg_use_jpeg ")
