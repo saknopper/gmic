@@ -65,7 +65,7 @@ include(GNUInstallDirs)
 option(BUILD_LIB "Build the GMIC shared library" ON)
 option(BUILD_LIB_STATIC "Build the GMIC static library" ON)
 option(BUILD_CLI "Build the CLI interface" ON)
-option(BUILD_PLUGIN "Build the GIMP plug-in" ON)
+option(BUILD_PLUGIN "Build the GIMP plug-in" OFF)
 option(BUILD_MAN "Build the manpage" ON)
 option(BUILD_BASH_COMPLETION "Build Bash completion" ON)
 option(ENABLE_X "Add support for X11" ON)
@@ -81,202 +81,195 @@ option(ENABLE_TIFF "Add support for handling images in Tiff format" ON)
 option(ENABLE_ZLIB "Add support for data compression via Zlib" ON)
 option(ENABLE_DYNAMIC_LINKING "Dynamically link the binaries to the GMIC shared library" OFF)
 
-set(EXECUTABLE_OUTPUT_PATH "${CMAKE_SOURCE_DIR}/src/" CACHE FILEPATH "Output directory for building all executables." FORCE)
-set(LIBRARY_OUTPUT_PATH "${CMAKE_SOURCE_DIR}/src/" CACHE FILEPATH "Output directory for building all libraries." FORCE)
+if(NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE Release)
+endif()
 
 # compile flags
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/modules)
 set(CMAKE_POSITION_INDEPENDENT_CODE True)
 
 set(COMPILE_FLAGS "-Dgmic_build -Dcimg_use_vt100 -Dgmic_is_parallel -Dcimg_use_abort ")
-IF(MINGW)
-  SET(COMPILE_FLAGS "${COMPILE_FLAGS} -std=gnu++11")
-ELSEIF(APPLE)
-   SET(COMPILE_FLAGS "${COMPILE_FLAGS} -mmacosx-version-min=10.8 -std=c++11 -stdlib=libc++ -Wno-error=c++11-narrowing -Wc++11-extensions  -fpermissive")
-ELSE(MINGW)
-  SET(COMPILE_FLAGS "${COMPILE_FLAGS} -std=gnu++11 -Wno-error=narrowing -fno-ipa-sra -fpermissive")
-ENDIF(MINGW)
+if(MINGW)
+  set(COMPILE_FLAGS "${COMPILE_FLAGS} -std=gnu++11")
+elseif(APPLE)
+   set(COMPILE_FLAGS "${COMPILE_FLAGS} -mmacosx-version-min=10.8 -std=c++11 -stdlib=libc++ -Wno-error=c++11-narrowing -Wc++11-extensions  -fpermissive")
+else()
+  set(COMPILE_FLAGS "${COMPILE_FLAGS} -std=gnu++11 -Wno-error=narrowing -fno-ipa-sra -fpermissive")
+endif()
 
-IF(NOT "${PRERELEASE_TAG}" STREQUAL "")
-  SET(COMPILE_FLAGS "${COMPILE_FLAGS} -Dgmic_prerelease=\"${PRERELEASE_TAG}\"")
-ENDIF(NOT "${PRERELEASE_TAG}" STREQUAL "")
+if(NOT "${PRERELEASE_TAG}" STREQUAL "")
+  set(COMPILE_FLAGS "${COMPILE_FLAGS} -Dgmic_prerelease=\"${PRERELEASE_TAG}\"")
+endif()
 
 set(EXTRA_LIBRARIES)
 set(CLI_COMPILE_FLAGS)
-
 
 # OpenMP support
 if(ENABLE_OPENMP)
   if(NOT APPLE)
     set(COMPILE_FLAGS "${COMPILE_FLAGS} -fopenmp -Dcimg_use_openmp ")
     set(EXTRA_LIBRARIES "${EXTRA_LIBRARIES} -lgomp")
-  endif(NOT APPLE)
-endif(ENABLE_OPENMP)
+  endif()
+endif()
 
 
 # Zlib support
 if(ENABLE_ZLIB)
-  find_package (ZLIB)
-endif(ENABLE_ZLIB)
+  find_package(ZLIB)
+endif()
 if(ZLIB_FOUND)
   set(COMPILE_FLAGS "${COMPILE_FLAGS} -Dcimg_use_zlib ")
   include_directories(${ZLIB_INCLUDE_DIRS})
   link_directories(${ZLIB_LIBRARY_DIRS})
-endif(ZLIB_FOUND)
+endif()
 
 
 #X11 support
 if(ENABLE_X)
-  find_package (X11)
-endif(ENABLE_X)
+  find_package(X11)
+endif()
 if(X11_FOUND)
   set(COMPILE_FLAGS "${COMPILE_FLAGS} -Dcimg_display=1 -Dcimg_appname=\\\"gmic\\\" ")
   include_directories(${X11_INCLUDE_DIR})
   include_directories(${X11_INCLUDE_DIRS})
   link_directories(${X11_LIBRARY_DIR})
   link_directories(${X11_LIBRARY_DIRS})
-else(X11_FOUND)
+else()
   set(COMPILE_FLAGS "${COMPILE_FLAGS} -Dcimg_display=0 -Dcimg_appname=\\\"gmic\\\" ")
-endif(X11_FOUND)
+endif()
 message( "X11_INCLUDE_DIR: " ${X11_INCLUDE_DIR} )
 message( "X11_INCLUDE_DIRs: " ${X11_INCLUDE_DIRs} )
 message( "X11_LIBRARY_DIR: " ${X11_LIBRARY_DIR} )
 message( "X11_LIBRARY_DIRS: " ${X11_LIBRARY_DIRS} )
 if(X11_XShm_FOUND)
   set(COMPILE_FLAGS "${COMPILE_FLAGS} -Dcimg_use_xshm ")
-endif(X11_XShm_FOUND)
+endif()
 
 
 if(ENABLE_FFTW)
   pkg_check_modules(FFTW3 fftw3>=3.0)
-endif(ENABLE_FFTW)
+endif()
 if(FFTW3_FOUND)
   set(COMPILE_FLAGS "${COMPILE_FLAGS} -Dcimg_use_fftw3 ")
   include_directories(${FFTW3_INCLUDE_DIRS})
   link_directories(${FFTW3_LIBRARY_DIRS})
   if(APPLE)
     set(COMPILE_FLAGS "${COMPILE_FLAGS} -Dcimg_use_fftw3_singlethread")
-  else(APPLE)
+  else()
     set(EXTRA_LIBRARIES "${EXTRA_LIBRARIES} -lfftw3_threads")
-  endif(APPLE)
-endif(FFTW3_FOUND)
+  endif()
+endif()
 
 
 if(ENABLE_OPENCV)
   pkg_check_modules(OPENCV opencv)
-endif(ENABLE_OPENCV)
+endif()
 if(OPENCV_FOUND)
   set(CLI_COMPILE_FLAGS "${CLI_COMPILE_FLAGS} -Dcimg_use_opencv ")
   include_directories(${OPENCV_INCLUDE_DIRS})
   link_directories(${OPENCV_LIBRARY_DIRS})
-endif(OPENCV_FOUND)
+endif()
 
 
 if(ENABLE_GRAPHICSMAGICK)
   pkg_check_modules(GRAPHICSMAGICK GraphicsMagick++)
-endif(ENABLE_GRAPHICSMAGICK)
+endif()
 if(GRAPHICSMAGICK_FOUND)
   set(CLI_COMPILE_FLAGS "${CLI_COMPILE_FLAGS} -Dcimg_use_magick ")
   include_directories(${GRAPHICSMAGICK_INCLUDE_DIRS})
   link_directories(${GRAPHICSMAGICK_LIBRARY_DIRS})
-endif(GRAPHICSMAGICK_FOUND)
+endif()
 
 
 if(ENABLE_TIFF)
-  find_package (TIFF)
-endif(ENABLE_TIFF)
+  find_package(TIFF)
+endif()
 if(TIFF_FOUND)
   set(CLI_COMPILE_FLAGS "${CLI_COMPILE_FLAGS} -Dcimg_use_tiff ")
   include_directories(${TIFF_INCLUDE_DIRS})
   link_directories(${TIFF_LIBRARY_DIRS})
-endif(TIFF_FOUND)
+endif()
 
 
 if(ENABLE_PNG)
-  find_package (PNG)
-endif(ENABLE_PNG)
+  find_package(PNG)
+endif()
 if(PNG_FOUND)
   set(CLI_COMPILE_FLAGS "${CLI_COMPILE_FLAGS} -Dcimg_use_png ")
   include_directories(${PNG_INCLUDE_DIRS})
   link_directories(${PNG_LIBRARY_DIRS})
-endif(PNG_FOUND)
+endif()
 
 
 if(ENABLE_JPEG)
-  find_package (JPEG)
-endif(ENABLE_JPEG)
+  find_package(JPEG)
+endif()
 if(JPEG_FOUND)
   set(CLI_COMPILE_FLAGS "${CLI_COMPILE_FLAGS} -Dcimg_use_jpeg ")
   include_directories(${JPEG_INCLUDE_DIRS})
   link_directories(${JPEG_LIBRARY_DIRS})
-endif(JPEG_FOUND)
+endif()
 
 
 if(ENABLE_OPENEXR)
   pkg_check_modules(OPENEXR OpenEXR)
-endif(ENABLE_OPENEXR)
+endif()
 if(OPENEXR_FOUND)
   set(CLI_COMPILE_FLAGS "${CLI_COMPILE_FLAGS} -Dcimg_use_openexr ")
   include_directories(${OPENEXR_INCLUDE_DIRS})
   link_directories(${OPENEXR_LIBRARY_DIRS})
-endif(OPENEXR_FOUND)
+endif()
 
 
 if(ENABLE_DYNAMIC_LINKING)
   if(NOT BUILD_LIB)
     message(FATAL_ERROR "ENABLE_DYNAMIC_LINKING needs BUILD_LIB")
-  endif(NOT BUILD_LIB)
+  endif()
   set(CMAKE_SKIP_RPATH TRUE)
-endif(ENABLE_DYNAMIC_LINKING)
+endif()
 
 # CImg.h header
 if(NOT EXISTS ${CMAKE_SOURCE_DIR}/src/CImg.h)
   file(DOWNLOAD https://github.com/dtschump/CImg/raw/master/CImg.h ${CMAKE_SOURCE_DIR}/src/CImg.h)
   execute_process(COMMAND touch ${CMAKE_SOURCE_DIR}/src/CImg.h)
-endif(NOT EXISTS ${CMAKE_SOURCE_DIR}/src/CImg.h)
+endif()
 
 # gmic_stdlib.h header
 if(NOT EXISTS ${CMAKE_SOURCE_DIR}/src/gmic_stdlib.h)
   file(DOWNLOAD http://gmic.eu/gmic_stdlib.h ${CMAKE_SOURCE_DIR}/src/gmic_stdlib.h)
   execute_process(COMMAND touch ${CMAKE_SOURCE_DIR}/src/gmic_stdlib.h)
-endif(NOT EXISTS ${CMAKE_SOURCE_DIR}/src/gmic_stdlib.h)
+endif()
 
-add_custom_target(gmic_extra_headers DEPENDS ./src/CImg.h ./src/gmic_stdlib.h)
+add_custom_target(gmic_extra_headers DEPENDS src/CImg.h src/gmic_stdlib.h)
 
-
-if(NOT CMAKE_BUILD_TYPE)
-  set(CMAKE_BUILD_TYPE "Release" CACHE STRING
-    "Choose the type of build, options are: Debug Release RelWithDebInfo."
-    FORCE)
-endif(NOT CMAKE_BUILD_TYPE)
-SET(CMAKE_CXX_FLAGS_DEBUG " -ansi -pedantic -Dcimg_verbosity=3 ${COMPILE_FLAGS}")
-SET(CMAKE_CXX_FLAGS_RELEASE " ${COMPILE_FLAGS}")
-SET(CMAKE_CXX_FLAGS_RELWITHDEBINFO " ${COMPILE_FLAGS}")
-
+set(CMAKE_CXX_FLAGS_DEBUG " -O1 -g -ansi -Wall -Wextra -pedantic -Dcimg_verbosity=3 ${COMPILE_FLAGS}")
+set(CMAKE_CXX_FLAGS_RELEASE " -O3 ${COMPILE_FLAGS}")
+set(CMAKE_CXX_FLAGS_RELWITHDEBINFO " -O3 -g ${COMPILE_FLAGS}")
 
 # source files
-SET(CLI_Includes ./src/gmic.h) #${CMAKE_BINARY_DIR}/gmic_stdlib.h ${CMAKE_BINARY_DIR}/CImg.h)
-SET(CLI_Sources ./src/gmic.cpp)
+set(CLI_Includes src/gmic.h) #${CMAKE_BINARY_DIR}/gmic_stdlib.h ${CMAKE_BINARY_DIR}/CImg.h)
+set(CLI_Sources src/gmic.cpp)
 
-IF(MINGW)
-  IF("${EXTRA_LIBRARIES}" STREQUAL "")
-    SET(EXTRA_LIBRARIES "-Wl,--stack,16777216")
-  ELSE("${EXTRA_LIBRARIES}" STREQUAL "")
-    SET(EXTRA_LIBRARIES "-Wl,--stack,16777216 ${EXTRA_LIBRARIES}")
-  ENDIF("${EXTRA_LIBRARIES}" STREQUAL "")
-ELSEIF(APPLE)
-  IF("${EXTRA_LIBRARIES}" STREQUAL "")
-    SET(EXTRA_LIBRARIES "-lpthread")
-  ELSE("${EXTRA_LIBRARIES}" STREQUAL "")
-    SET(EXTRA_LIBRARIES "-lpthread ${EXTRA_LIBRARIES}")
-  ENDIF("${EXTRA_LIBRARIES}" STREQUAL "")
-ELSE(MINGW)
-  IF("${EXTRA_LIBRARIES}" STREQUAL "")
-    SET(EXTRA_LIBRARIES "-lpthread")
-  ELSE("${EXTRA_LIBRARIES}" STREQUAL "")
-    SET(EXTRA_LIBRARIES "-lpthread ${EXTRA_LIBRARIES}")
-  ENDIF("${EXTRA_LIBRARIES}" STREQUAL "")
-ENDIF(MINGW)
+if(MINGW)
+  if("${EXTRA_LIBRARIES}" STREQUAL "")
+    set(EXTRA_LIBRARIES "-Wl,--stack,16777216")
+  else()
+    set(EXTRA_LIBRARIES "-Wl,--stack,16777216 ${EXTRA_LIBRARIES}")
+  endif()
+elseif(APPLE)
+  if("${EXTRA_LIBRARIES}" STREQUAL "")
+    set(EXTRA_LIBRARIES "-lpthread")
+  else()
+    set(EXTRA_LIBRARIES "-lpthread ${EXTRA_LIBRARIES}")
+  endif()
+else()
+  if("${EXTRA_LIBRARIES}" STREQUAL "")
+    set(EXTRA_LIBRARIES "-lpthread")
+  else()
+    set(EXTRA_LIBRARIES "-lpthread ${EXTRA_LIBRARIES}")
+  endif()
+endif()
 
 
 if(BUILD_LIB)
@@ -284,9 +277,9 @@ if(BUILD_LIB)
   add_dependencies(libgmic gmic_extra_headers)
   set_target_properties(libgmic PROPERTIES COMPILE_FLAGS "${CLI_COMPILE_FLAGS} ")
   set_target_properties(libgmic PROPERTIES SOVERSION "1" OUTPUT_NAME "gmic")
-  IF(NOT APPLE)
+  if(NOT APPLE)
     set_target_properties(libgmic PROPERTIES LINK_FLAGS "-Wl,-soname,libgmic.so.1")
-  ENDIF(NOT APPLE)
+  endif()
   target_link_libraries(libgmic
     ${X11_LIBRARIES}
     ${TIFF_LIBRARIES}
@@ -298,11 +291,11 @@ if(BUILD_LIB)
     ${ZLIB_LIBRARIES}
     ${FFTW3_LIBRARIES}
     ${EXTRA_LIBRARIES}
-    )
+  )
 
-  INSTALL(TARGETS libgmic LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}")
-  INSTALL(FILES src/gmic.h DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}")
-endif(BUILD_LIB)
+  install(TARGETS libgmic LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}")
+  install(FILES src/gmic.h DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}")
+endif()
 
 
 if(BUILD_LIB_STATIC)
@@ -321,11 +314,11 @@ if(BUILD_LIB_STATIC)
     ${ZLIB_LIBRARIES}
     ${FFTW3_LIBRARIES}
     ${EXTRA_LIBRARIES}
-    )
+  )
 
-  INSTALL(TARGETS libgmicstatic ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}")
-  INSTALL(FILES src/gmic.h DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}")
-endif(BUILD_LIB_STATIC)
+  install(TARGETS libgmicstatic ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}")
+  install(FILES src/gmic.h DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}")
+endif()
 
 
 if(BUILD_CLI)
@@ -335,8 +328,8 @@ if(BUILD_CLI)
     add_dependencies(gmic libgmic)
     target_link_libraries(gmic
       "libgmic"
-      )
-  else(ENABLE_DYNAMIC_LINKING)
+    )
+  else()
     add_executable(gmic ${CLI_Includes} ${CLI_Sources} src/gmic_cli.cpp)
     add_dependencies(gmic gmic_extra_headers)
     target_link_libraries(gmic
@@ -350,12 +343,12 @@ if(BUILD_CLI)
       ${ZLIB_LIBRARIES}
       ${FFTW3_LIBRARIES}
       ${EXTRA_LIBRARIES}
-      )
-  endif(ENABLE_DYNAMIC_LINKING)
+    )
+  endif()
 
   set_target_properties(gmic PROPERTIES COMPILE_FLAGS "${CLI_COMPILE_FLAGS}")
-  INSTALL(TARGETS gmic RUNTIME DESTINATION bin)
-endif(BUILD_CLI)
+  install(TARGETS gmic RUNTIME DESTINATION bin)
+endif()
 
 
 # GIMP plug-in
@@ -367,10 +360,10 @@ if(BUILD_PLUGIN)
   if(NOT EXISTS ${CMAKE_SOURCE_DIR}/src/gmic_gimp_gtk.h)
     file(DOWNLOAD http://gmic.eu/gmic_gimp_gtk.h ${CMAKE_SOURCE_DIR}/src/gmic_gimp_gtk.h)
     execute_process(COMMAND touch ${CMAKE_SOURCE_DIR}/src/gmic_gimp_gtk.h)
-  endif(NOT EXISTS ${CMAKE_SOURCE_DIR}/src/gmic_gimp_gtk.h)
+  endif()
 
-  add_executable(gmic_gimp_gtk ${CLI_Includes} ./src/gmic_gimp_gtk.cpp)
-  add_dependencies(gmic_gimp_gtk gmic_extra_headers ./src/gmic_gimp_gtk.h)
+  add_executable(gmic_gimp_gtk ${CLI_Includes} src/gmic_gimp_gtk.cpp)
+  add_dependencies(gmic_gimp_gtk gmic_extra_headers src/gmic_gimp_gtk.h)
   set_target_properties(gmic_gimp_gtk PROPERTIES COMPILE_FLAGS "${GIMP2_INCLUDE_DIRS} -Dgmic_gui")
 
   if(ENABLE_DYNAMIC_LINKING)
@@ -378,8 +371,8 @@ if(BUILD_PLUGIN)
     target_link_libraries(gmic_gimp_gtk
       ${GIMP2_LIBRARIES}
       "libgmic"
-      )
-  else(ENABLE_DYNAMIC_LINKING)
+    )
+  else()
     target_sources(gmic_gimp_gtk PUBLIC ${CLI_Sources})
     target_link_libraries(gmic_gimp_gtk
       ${X11_LIBRARIES}
@@ -387,35 +380,36 @@ if(BUILD_PLUGIN)
       ${FFTW3_LIBRARIES}
       ${GIMP2_LIBRARIES}
       ${EXTRA_LIBRARIES}
-      )
-  endif(ENABLE_DYNAMIC_LINKING)
+    )
+  endif()
 
   if(PLUGIN_INSTALL_PREFIX)
-    INSTALL(TARGETS gmic_gimp_gtk RUNTIME DESTINATION ${PLUGIN_INSTALL_PREFIX})
-    INSTALL(FILES ${CMAKE_SOURCE_DIR}/resources/gmic_film_cluts.gmz DESTINATION ${PLUGIN_INSTALL_PREFIX})
-  else(PLUGIN_INSTALL_PREFIX)
-    INSTALL(TARGETS gmic_gimp_gtk RUNTIME DESTINATION ${GIMP2_PLUGIN_DIR}/plug-ins)
-    INSTALL(FILES ${CMAKE_SOURCE_DIR}/resources/gmic_film_cluts.gmz DESTINATION ${GIMP2_PLUGIN_DIR}/plug-ins)
-  endif(PLUGIN_INSTALL_PREFIX)
-
-endif(BUILD_PLUGIN)
+    install(TARGETS gmic_gimp_gtk RUNTIME DESTINATION ${PLUGIN_INSTALL_PREFIX})
+    install(FILES ${CMAKE_SOURCE_DIR}/resources/gmic_film_cluts.gmz DESTINATION ${PLUGIN_INSTALL_PREFIX})
+  else()
+    install(TARGETS gmic_gimp_gtk RUNTIME DESTINATION ${GIMP2_PLUGIN_DIR}/plug-ins)
+    install(FILES ${CMAKE_SOURCE_DIR}/resources/gmic_film_cluts.gmz DESTINATION ${GIMP2_PLUGIN_DIR}/plug-ins)
+  endif()
+endif()
 
 if(BUILD_MAN)
-  file(MAKE_DIRECTORY ${CMAKE_SOURCE_DIR}/man)
+  file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/man)
   add_custom_command(
-    OUTPUT ${CMAKE_SOURCE_DIR}/man/gmic.1
+    OUTPUT ${CMAKE_BINARY_DIR}/man/gmic.1
     DEPENDS gmic
-    COMMAND LD_LIBRARY_PATH=${EXECUTABLE_OUTPUT_PATH} ${EXECUTABLE_OUTPUT_PATH}/gmic -v - ${CMAKE_SOURCE_DIR}/src/gmic_stdlib.gmic raw:${CMAKE_SOURCE_DIR}/src/gmic_stdlib.gmic,uchar -__help man 2> ${CMAKE_SOURCE_DIR}/man/gmic.1
+    COMMAND LD_LIBRARY_PATH=${CMAKE_BINARY_DIR} ${CMAKE_BINARY_DIR}/gmic -v - ${CMAKE_SOURCE_DIR}/src/gmic_stdlib.gmic raw:${CMAKE_SOURCE_DIR}/src/gmic_stdlib.gmic,uchar -__help man 2> ${CMAKE_BINARY_DIR}/man/gmic.1
   )
-  add_custom_target(man ALL DEPENDS ${CMAKE_SOURCE_DIR}/man/gmic.1)
-  INSTALL(FILES ${CMAKE_SOURCE_DIR}/man/gmic.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1/)
-endif(BUILD_MAN)
+  add_custom_target(man ALL DEPENDS ${CMAKE_BINARY_DIR}/man/gmic.1)
+  install(FILES ${CMAKE_BINARY_DIR}/man/gmic.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1/)
+endif()
 
 if(BUILD_BASH_COMPLETION)
+  file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/resources)
   add_custom_command(
-    OUTPUT ${CMAKE_SOURCE_DIR}/resources/gmic_bashcompletion.sh
+    OUTPUT ${CMAKE_BINARY_DIR}/resources/gmic_bashcompletion.sh
     DEPENDS gmic
-    COMMAND LD_LIBRARY_PATH=${EXECUTABLE_OUTPUT_PATH} ${EXECUTABLE_OUTPUT_PATH}/gmic -v - ${CMAKE_SOURCE_DIR}/src/gmic_stdlib.gmic raw:${CMAKE_SOURCE_DIR}/src/gmic_stdlib.gmic,uchar -document_gmic bash 2> ${CMAKE_SOURCE_DIR}/resources/gmic_bashcompletion.sh
+    COMMAND LD_LIBRARY_PATH=${CMAKE_BINARY_DIR} ${CMAKE_BINARY_DIR}/gmic -v - ${CMAKE_SOURCE_DIR}/src/gmic_stdlib.gmic raw:${CMAKE_SOURCE_DIR}/src/gmic_stdlib.gmic,uchar -document_gmic bash 2> ${CMAKE_BINARY_DIR}/resources/gmic_bashcompletion.sh
   )
-  add_custom_target(bashcompletion ALL DEPENDS ${CMAKE_SOURCE_DIR}/resources/gmic_bashcompletion.sh)
-endif(BUILD_BASH_COMPLETION)
+  add_custom_target(bashcompletion ALL DEPENDS ${CMAKE_BINARY_DIR}/resources/gmic_bashcompletion.sh)
+endif()
+
