@@ -235,8 +235,8 @@ _help : skip ${1=""}
              rm ({'$_gmic_n${_gmic_b}"Tutorial:"$_gmic_n$_gmic_r" "$tuturl'}) y
              _is_tutorial=1
           else # Regular example.
-            if $_is_example i[0] ({'"\n                 "'})
-            else i[0] ({'"\n        "$_gmic_n${_gmic_b}"Example: "$_gmic_n'}) _nb_example=0
+            if $_is_example i[0] ({'"\n               "'})
+            else i[0] ({'"\n      "$_gmic_n${_gmic_b}"Example: "$_gmic_n'}) _nb_example=0
             fi
             _is_example=1 _nb_example+=1
             i[1] ({'$_gmic_n[#$_nb_example]"  "$_gmic_g'})
@@ -2192,7 +2192,7 @@ _document_gmic_declaration_ascii :
   fi
 
 _document_gmic_description_ascii :
-  s="        " bs0="\n" bs1="\\\\\n         "
+  s="      " bs0="\n" bs1="\\\\\n         "
   is_equivalent={same([{^}],"'(eq. to '",8)}
   is_default={same([{^}],"'Default value'",13)}
   y x if {!narg($_is_tutorial)} _document_gmic_split_ascii 96 fi
