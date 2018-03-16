@@ -81,6 +81,10 @@ option(ENABLE_TIFF "Add support for handling images in Tiff format" ON)
 option(ENABLE_ZLIB "Add support for data compression via Zlib" ON)
 option(ENABLE_DYNAMIC_LINKING "Dynamically link the binaries to the GMIC shared library" OFF)
 
+if(NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE Release)
+endif()
+
 # compile flags
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/modules)
 set(CMAKE_POSITION_INDEPENDENT_CODE True)
@@ -240,16 +244,9 @@ endif(NOT EXISTS ${CMAKE_SOURCE_DIR}/src/gmic_stdlib.h)
 
 add_custom_target(gmic_extra_headers DEPENDS src/CImg.h src/gmic_stdlib.h)
 
-
-if(NOT CMAKE_BUILD_TYPE)
-  set(CMAKE_BUILD_TYPE "Release" CACHE STRING
-    "Choose the type of build, options are: Debug Release RelWithDebInfo."
-    FORCE)
-endif(NOT CMAKE_BUILD_TYPE)
-SET(CMAKE_CXX_FLAGS_DEBUG " -ansi -pedantic -Dcimg_verbosity=3 ${COMPILE_FLAGS}")
-SET(CMAKE_CXX_FLAGS_RELEASE " ${COMPILE_FLAGS}")
-SET(CMAKE_CXX_FLAGS_RELWITHDEBINFO " ${COMPILE_FLAGS}")
-
+SET(CMAKE_CXX_FLAGS_DEBUG " -O1 -g -ansi -Wall -Wextra -pedantic -Dcimg_verbosity=3 ${COMPILE_FLAGS}")
+SET(CMAKE_CXX_FLAGS_RELEASE " -O3 ${COMPILE_FLAGS}")
+SET(CMAKE_CXX_FLAGS_RELWITHDEBINFO " -O3 -g ${COMPILE_FLAGS}")
 
 # source files
 SET(CLI_Includes src/gmic.h) #${CMAKE_BINARY_DIR}/gmic_stdlib.h ${CMAKE_BINARY_DIR}/CImg.h)
