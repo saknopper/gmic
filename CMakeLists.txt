@@ -4,8 +4,8 @@
 #
 #  Basic usage :
 #
-#                 . cmake .
-#                 . make
+#                 - cmake .
+#                 - make
 #
 #                ( http://gmic.eu )
 #
@@ -55,6 +55,16 @@
 
 cmake_minimum_required(VERSION 2.8.9)
 cmake_policy(SET CMP0046 OLD)
+
+if(CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
+  message("Build directory is equal to source directory. Binaries will be put in the src directory.")
+  message("")
+
+  set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/src/" CACHE FILEPATH "Output directory for all targets." FORCE)
+  set(GMIC_BINARIES_PATH ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+else()
+  set(GMIC_BINARIES_PATH ${CMAKE_BINARY_DIR})
+endif()
 
 project(gmic CXX C)
 
@@ -248,7 +258,7 @@ set(CMAKE_CXX_FLAGS_RELEASE " -O3 ${COMPILE_FLAGS}")
 set(CMAKE_CXX_FLAGS_RELWITHDEBINFO " -O3 -g ${COMPILE_FLAGS}")
 
 # source files
-set(CLI_Includes src/gmic.h) #${CMAKE_BINARY_DIR}/gmic_stdlib.h ${CMAKE_BINARY_DIR}/CImg.h)
+set(CLI_Includes src/gmic.h)
 set(CLI_Sources src/gmic.cpp)
 
 if(MINGW)
@@ -397,7 +407,7 @@ if(BUILD_MAN)
   add_custom_command(
     OUTPUT ${CMAKE_BINARY_DIR}/man/gmic.1
     DEPENDS gmic
-    COMMAND LD_LIBRARY_PATH=${CMAKE_BINARY_DIR} ${CMAKE_BINARY_DIR}/gmic -v - ${CMAKE_SOURCE_DIR}/src/gmic_stdlib.gmic raw:${CMAKE_SOURCE_DIR}/src/gmic_stdlib.gmic,uchar -__help man 2> ${CMAKE_BINARY_DIR}/man/gmic.1
+    COMMAND LD_LIBRARY_PATH=${GMIC_BINARIES_PATH} ${GMIC_BINARIES_PATH}/gmic -v - ${CMAKE_SOURCE_DIR}/src/gmic_stdlib.gmic raw:${CMAKE_SOURCE_DIR}/src/gmic_stdlib.gmic,uchar -__help man 2> ${CMAKE_BINARY_DIR}/man/gmic.1
   )
   add_custom_target(man ALL DEPENDS ${CMAKE_BINARY_DIR}/man/gmic.1)
   install(FILES ${CMAKE_BINARY_DIR}/man/gmic.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1/)
@@ -408,7 +418,7 @@ if(BUILD_BASH_COMPLETION)
   add_custom_command(
     OUTPUT ${CMAKE_BINARY_DIR}/resources/gmic_bashcompletion.sh
     DEPENDS gmic
-    COMMAND LD_LIBRARY_PATH=${CMAKE_BINARY_DIR} ${CMAKE_BINARY_DIR}/gmic -v - ${CMAKE_SOURCE_DIR}/src/gmic_stdlib.gmic raw:${CMAKE_SOURCE_DIR}/src/gmic_stdlib.gmic,uchar -document_gmic bash 2> ${CMAKE_BINARY_DIR}/resources/gmic_bashcompletion.sh
+    COMMAND LD_LIBRARY_PATH=${GMIC_BINARIES_PATH} ${GMIC_BINARIES_PATH}/gmic -v - ${CMAKE_SOURCE_DIR}/src/gmic_stdlib.gmic raw:${CMAKE_SOURCE_DIR}/src/gmic_stdlib.gmic,uchar -document_gmic bash 2> ${CMAKE_BINARY_DIR}/resources/gmic_bashcompletion.sh
   )
   add_custom_target(bashcompletion ALL DEPENDS ${CMAKE_BINARY_DIR}/resources/gmic_bashcompletion.sh)
 endif()
