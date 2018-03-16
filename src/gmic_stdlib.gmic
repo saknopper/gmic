@@ -2180,7 +2180,7 @@ _document_gmic_declaration_ascii :
   else                                     # Declaration of a regular command.
     v + e[] "\n    "$_gmic_m${_gmic_b}{0,t}${qualifier}":"$_gmic_n v - rm[0]
     if $!
-      s="                        "
+      s="        "
       y x
       repeat {$!-1} ({'" |"'}) a[$>,-1] x done  # Insert ' |'.
       repeat $! l[$>] _document_gmic_split_ascii 80
@@ -2785,7 +2785,7 @@ _document_gmic_declaration_man :
   else                                         # Declaration of a regular command.
     v + e[] "\n    "${_gmic_b}{0,t}${qualifier}":"$_gmic_n v - rm[0]
     if $!
-      s="                        "
+      s="        "
       y x
       repeat {$!-1} ({'" |"'}) a[$>,-1] x done  # Insert ' |'.
       repeat $! l[$>] _document_gmic_split_ascii 80
