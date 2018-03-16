@@ -2184,7 +2184,7 @@ _document_gmic_declaration_ascii :
       y x
       repeat {$!-1} ({'" |"'}) a[$>,-1] x done  # Insert ' |'.
       repeat $! l[$>] _document_gmic_split_ascii 80
-        repeat {$!-1} ({'\\\\\n$s" "'}) a[$>,-1] x done
+        repeat {$!-1} ({'" "\\\\\n$s" "'}) a[$>,-1] x done
         a x v + e[] $_gmic_c$s{0,t}$_gmic_n v -
       endl done
     fi
