@@ -14583,10 +14583,11 @@ eval :
 
 #@cli x : eq. to 'exec'. : (+)
 
-#@cli exec : command : (+)
+#@cli exec : _is_verbose={ 0 | 1 },"command" : (+)
 #@cli : Execute external command using a system call.
 #@cli : The status value is then set to the error code returned by the system call.
 #@cli : (eq. to 'x').
+#@cli : Default value: 'is_verbose=0'.
 
 #@cli for : condition : (+)
 #@cli : Start a 'for...done' block.
