@@ -6856,7 +6856,6 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
           gmic_substitute_args(false);
           name.assign(argument,(unsigned int)std::strlen(argument) + 1);
           const char *arg_exec_text = gmic_argument_text_printed();
-          unsigned int offset_argument_text = 0;
           char *arg_exec = name;
           cimg::strunescape(arg_exec);
           strreplace_fw(arg_exec);
@@ -6864,18 +6863,16 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
           is_verbose = false; // is_verbose
           if ((*arg_exec=='0' || *arg_exec=='1') && arg_exec[1]==',') {
             is_verbose = (*arg_exec=='1');
-            arg_exec+=2; arg_exec_text+=2; offset_argument_text = 2;
+            arg_exec+=2; arg_exec_text+=2;
           }
-
-          std::fprintf(stderr,"\nDEBUG : '%s' %d\n",arg_exec_text,offset_argument_text);
 
 #ifdef gmic_noexec
           print(images,0,"Execute external command '%s' %s (skipped, no exec allowed).",
-                arg_exec_text + offset_argument_text,
+                arg_exec_text,
                 is_verbose?"in verbose mode":"");
 #else // #ifdef gmic_noexec
           print(images,0,"Execute external command '%s' %s.\n",
-                arg_exec_text + offset_argument_text,
+                arg_exec_text,
                 is_verbose?"in verbose mode":"");
           cimg::mutex(31);
           const int errcode = cimg::system(arg_exec,0,is_verbose);
