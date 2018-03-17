@@ -14586,6 +14586,7 @@ eval :
 #@cli exec : _is_verbose={ 0 | 1 },"command" : (+)
 #@cli : Execute external command using a system call.
 #@cli : The status value is then set to the error code returned by the system call.
+#@cli : If 'is_verbose=1', the executed command is allowed to output on stdout/stderr.
 #@cli : (eq. to 'x').
 #@cli : Default value: 'is_verbose=0'.
 
