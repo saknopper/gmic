@@ -11099,6 +11099,75 @@ topographic_map : check "isint(${1=16}) && $1>0" skip ${2=2}
     +b $2 isophotes. $1 compose_channels. + ==. 0 blend shapeaverage0
   endl done v +
 
+#@cli tsp : _precision>=0
+#@cli : Try to solve the Travelling salesman problem, using a combination of greedy search and 2-opt algorithms.
+#@cli : Selected images must have dimensions Nx1x1xC to represent N cities with C-dimensional coordinates.
+#@cli : This command re-order the image data to create a shortest path between given coordinates.
+#@cli : Default values: 'precision=256'.
+#@cli : $ 256,1,1,2 rand 0,512 tsp , 512,512,1,3 repeat {0,w} circle[-1] {0,I[$>]},2,1,255,255,255 line[-1] {0,boundary=2;[I[$>],I[$>+1]]},1,255,128,0 done keep[-1]
+tsp : check "${1=256}>=0"
+  e[^-1] "Try to solve the Travelling salesman problem for pointcloud$?, with precision $1."
+  v - repeat $! l[$>]
+    if {h>1" || "d>1} error[0--4] "Selected image '"{n}"' has invalid dimensions ("{[w,h,d,s]}")." fi
+
+    # Find initial estimate, using greedy nearest neighbor algorithm.
+    eval "
+      is_used = vectorw(0);
+      next = vectorw(-1);
+      n_initial = n_current = round(u(0,w-1));
+      do (
+        is_used[n_current] = 1;
+        P_current = I[n_current];
+        n_next = -1; dmin = inf;
+        for (n = 0, n<w, ++n,
+          if (!is_used[n],
+            d = norm(I[n] - P_current);
+            if (d<dmin, dmin = d; n_next = n);
+          );
+        );
+        if (n_next<0, next[n_current] = n_initial; break());
+        next[n_current] = n_next;
+        n_current = n_next;
+        _(while), 1
+      );
+      resize(#-1,w,1,1,s+1,0);
+      copy(i(0,0,0,s),next,w)"
+    100%,1,1,{s-1},">init(ind = 0); val = I[#0,ind]; ind = val[s]; val" rm..
+
+    # Improving initial estimate iteratively by 2-opt algorithm.
+    eval "
+      is_improved = 1;
+      while (is_improved,
+        is_improved = 0;
+        nb_try = $1*w;
+        for (try = 0, try<nb_try, ++try,
+          r = round(max(8,0.5*w*(try/nb_try)^0.25));
+          i = round(u(0,w-1));
+          ni = (i+1)%w;
+          pi = (i-1)%w;
+          do (j = (i + round(u(-r,r)))%w; _(while), j==i || j==ni || j==pi);
+          nj = (j+1)%w;
+          P_i = I[i];
+          P_ni = I[ni];
+          P_j = I[j];
+          P_nj = I[nj];
+          dist_ini = norm(P_ni - P_i);
+          dist_jnj = norm(P_nj - P_j);
+          dist_ij = norm(P_j - P_i);
+          dist_ninj = norm(P_nj - P_ni);
+          if (dist_ij + dist_ninj<dist_ini + dist_jnj,
+            mi = (min(i,j) + 1)%w;
+            mj = max(i,j);
+            oi = min(mi,mj);
+            oj = max(mi,mj);
+            delta = oj - oi + 1;
+            for (c = 0, c<s, ++c, copy(i(oi,0,0,c),i(oj,0,0,c),delta,1,-1));  # Reverse path between nodes.
+            is_improved = 1;
+          );
+        );
+      )"
+  endl done v +
+
 #@cli variance_patch : _patch_size>=1
 #@cli : Compute variance of each images patch centered at (x,y), in selected images.
 #@cli : Default value: 'patch_size=16'
