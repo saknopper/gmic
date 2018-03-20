@@ -253,7 +253,7 @@ endif()
 
 add_custom_target(gmic_extra_headers DEPENDS src/CImg.h src/gmic_stdlib.h)
 
-set(CMAKE_CXX_FLAGS_DEBUG " -O1 -g -ansi -Wall -Wextra -pedantic -Dcimg_verbosity=3 ${COMPILE_FLAGS}")
+set(CMAKE_CXX_FLAGS_DEBUG " -Og -g -ansi -Wall -Wextra -pedantic -Dcimg_verbosity=3 ${COMPILE_FLAGS}")
 set(CMAKE_CXX_FLAGS_RELEASE " -Ofast ${COMPILE_FLAGS}")
 set(CMAKE_CXX_FLAGS_RELWITHDEBINFO " -Ofast -g ${COMPILE_FLAGS}")
 
