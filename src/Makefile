@@ -178,7 +178,8 @@ endif
 
 # Enable optimizations.
 ifeq ($(notdir $(CXX)),g++)
-OPT_CFLAGS = -O3 -mtune=generic
+#OPT_CFLAGS = -O3 -mtune=generic
+OPT_CFLAGS = -Ofast -fno-finite-math-only -mtune=generic
 else
 ifeq ($(notdir $(CXX)),icpc)
 OPT_CFLAGS = -fast
