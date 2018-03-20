@@ -149,12 +149,6 @@ namespace cimg_library {
 
 #else // #ifndef gmic_build
 
-#ifdef __GNUC__
-#if defined(__FAST_MATH__)
-#error Using the -ffast-math CFLAG is known to lead to important issues in libgmic. Please disable it to compile.
-#endif
-#endif
-
 // Define private functions, used to compile libgmic.
 //---------------------------------------------------
 
