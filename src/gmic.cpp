@@ -6860,7 +6860,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
           cimg::strunescape(arg_exec);
           strreplace_fw(arg_exec);
 
-          is_verbose = false; // is_verbose
+          is_verbose = true; // is_verbose
           if ((*arg_exec=='0' || *arg_exec=='1') && arg_exec[1]==',') {
             is_verbose = (*arg_exec=='1');
             arg_exec+=2; arg_exec_text+=2;
@@ -6871,9 +6871,9 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                 arg_exec_text,
                 is_verbose?"in verbose mode":"");
 #else // #ifdef gmic_noexec
-          print(images,0,"Execute external command '%s' %s.\n",
+          print(images,0,"Execute external command '%s' %s",
                 arg_exec_text,
-                is_verbose?"in verbose mode":"");
+                is_verbose?"in verbose mode.\n":".");
           cimg::mutex(31);
           const int errcode = cimg::system(arg_exec,0,is_verbose);
           cimg::mutex(31,0);

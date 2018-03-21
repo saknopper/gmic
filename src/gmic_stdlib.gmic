@@ -4599,7 +4599,7 @@ _update_server_upload : skip "${2=""}"
   l[] GMIC_LOGIN=${gmic_ftp\ 0} onfail GMIC_LOGIN="" endl
   l[] GMIC_PASSWD=${gmic_ftp\ 1} onfail GMIC_PASSWD="" endl
   if {narg($GMIC_LOGIN)}
-    -x "lftp ftp://"$GMIC_LOGIN":"$GMIC_PASSWD"@ftp.gmic.eu -e \"put -O /www/gmic/ \\\"$1\\\" -o \\\""$out"\\\"; quit\" >/dev/null"
+    x 0,"lftp ftp://"$GMIC_LOGIN":"$GMIC_PASSWD"@ftp.gmic.eu -e \"put -O /www/gmic/ \\\"$1\\\" -o \\\""$out"\\\"; quit\" >/dev/null"
   fi
 
 # Upload released binaries on the G'MIC web server.
@@ -14658,7 +14658,7 @@ eval :
 #@cli : The status value is then set to the error code returned by the system call.
 #@cli : If 'is_verbose=1', the executed command is allowed to output on stdout/stderr.
 #@cli : (eq. to 'x').
-#@cli : Default value: 'is_verbose=0'.
+#@cli : Default value: 'is_verbose=1'.
 
 #@cli for : condition : (+)
 #@cli : Start a 'for...done' block.
@@ -24737,7 +24737,7 @@ survey :
   l[] GMIC_LOGIN=${gmic_ftp\ 0} onfail GMIC_LOGIN="" endl
   l[] GMIC_PASSWD=${gmic_ftp\ 1} onfail GMIC_PASSWD="" endl
   if {narg($GMIC_LOGIN)}
-    x "lftp ftp://"$GMIC_LOGIN":"$GMIC_PASSWD"@ftp.gmic.eu -e \"put -O /www/gmic/ \\\""$out"\\\"; quit\" >/dev/null"
+    x 0,"lftp ftp://"$GMIC_LOGIN":"$GMIC_PASSWD"@ftp.gmic.eu -e \"put -O /www/gmic/ \\\""$out"\\\"; quit\" >/dev/null"
   fi
   endl v +
 
