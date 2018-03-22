@@ -19846,7 +19846,7 @@ _x_color_curves :
 
   while {{*}" && "!{*,ESC}" && "!{*,Q}" && "!{*,SPACE}" && "!{*,ENTER}}
   w 0
-  repeat 4 if {narg(${__C$>})} __xcc_C$>=${__C$>} __C$>=-1 fi done  # Transfer curves to output variable and request curve widgets to close;
+  repeat 5 if {narg(${__C$>})} __xcc_C$>=${__C$>} __C$>=-1 fi done  # Transfer curves to output variable and request curve widgets to close;
 
 # Define colorspace conversion functions.
 __x_color_curves :
