@@ -66,9 +66,13 @@ else()
   set(GMIC_BINARIES_PATH ${CMAKE_BINARY_DIR})
 endif()
 
+set(CMAKE_CXX_STANDARD 11)
+set(CXX_STANDARD_REQUIRED ON)
+
 project(gmic CXX C)
 
 find_package(PkgConfig)
+include(FeatureSummary)
 include(GNUInstallDirs)
 
 # options controlling the build process
@@ -78,6 +82,7 @@ option(BUILD_CLI "Build the CLI interface" ON)
 option(BUILD_PLUGIN "Build the GIMP plug-in" OFF)
 option(BUILD_MAN "Build the manpage" ON)
 option(BUILD_BASH_COMPLETION "Build Bash completion" ON)
+option(CUSTOM_CFLAGS "Override default compiler optimization flags" OFF)
 option(ENABLE_X "Add support for X11" ON)
 option(ENABLE_FFMPEG "Add support for FFMpeg" ON)
 option(ENABLE_FFTW "Add support for FFTW" ON)
@@ -100,12 +105,10 @@ set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/modules)
 set(CMAKE_POSITION_INDEPENDENT_CODE True)
 
 set(COMPILE_FLAGS "-Dgmic_build -Dcimg_use_vt100 -Dgmic_is_parallel -Dcimg_use_abort")
-if(MINGW)
-  set(COMPILE_FLAGS "${COMPILE_FLAGS} -std=gnu++11")
-elseif(APPLE)
-   set(COMPILE_FLAGS "${COMPILE_FLAGS} -mmacosx-version-min=10.8 -std=c++11 -stdlib=libc++ -Wno-error=c++11-narrowing -Wc++11-extensions -fpermissive")
+if(APPLE)
+   set(COMPILE_FLAGS "${COMPILE_FLAGS} -mmacosx-version-min=10.8 -stdlib=libc++ -Wno-error=c++11-narrowing -Wc++11-extensions -fpermissive")
 else()
-  set(COMPILE_FLAGS "${COMPILE_FLAGS} -std=gnu++11 -Wno-error=narrowing -fno-ipa-sra -fpermissive")
+  set(COMPILE_FLAGS "${COMPILE_FLAGS} -Wno-error=narrowing -fno-ipa-sra -fpermissive")
 endif()
 
 if(NOT "${PRERELEASE_TAG}" STREQUAL "")
@@ -123,7 +126,6 @@ if(ENABLE_OPENMP)
   endif()
 endif()
 
-
 # Zlib support
 if(ENABLE_ZLIB)
   find_package(ZLIB)
@@ -133,7 +135,6 @@ if(ZLIB_FOUND)
   include_directories(${ZLIB_INCLUDE_DIRS})
   link_directories(${ZLIB_LIBRARY_DIRS})
 endif()
-
 
 #X11 support
 if(ENABLE_X)
@@ -156,7 +157,6 @@ if(X11_XShm_FOUND)
   set(COMPILE_FLAGS "${COMPILE_FLAGS} -Dcimg_use_xshm")
 endif()
 
-
 if(ENABLE_FFTW)
   pkg_check_modules(FFTW3 fftw3>=3.0)
 endif()
@@ -171,7 +171,6 @@ if(FFTW3_FOUND)
   endif()
 endif()
 
-
 if(ENABLE_OPENCV)
   pkg_check_modules(OPENCV opencv)
 endif()
@@ -180,7 +179,6 @@ if(OPENCV_FOUND)
   include_directories(${OPENCV_INCLUDE_DIRS})
   link_directories(${OPENCV_LIBRARY_DIRS})
 endif()
-
 
 if(ENABLE_GRAPHICSMAGICK)
   pkg_check_modules(GRAPHICSMAGICK GraphicsMagick++)
@@ -191,7 +189,6 @@ if(GRAPHICSMAGICK_FOUND)
   link_directories(${GRAPHICSMAGICK_LIBRARY_DIRS})
 endif()
 
-
 if(ENABLE_TIFF)
   find_package(TIFF)
 endif()
@@ -200,7 +197,6 @@ if(TIFF_FOUND)
   include_directories(${TIFF_INCLUDE_DIRS})
   link_directories(${TIFF_LIBRARY_DIRS})
 endif()
-
 
 if(ENABLE_PNG)
   find_package(PNG)
@@ -211,7 +207,6 @@ if(PNG_FOUND)
   link_directories(${PNG_LIBRARY_DIRS})
 endif()
 
-
 if(ENABLE_JPEG)
   find_package(JPEG)
 endif()
@@ -220,7 +215,6 @@ if(JPEG_FOUND)
   include_directories(${JPEG_INCLUDE_DIRS})
   link_directories(${JPEG_LIBRARY_DIRS})
 endif()
-
 
 if(ENABLE_OPENEXR)
   pkg_check_modules(OPENEXR OpenEXR)
@@ -253,9 +247,15 @@ endif()
 
 add_custom_target(gmic_extra_headers DEPENDS src/CImg.h src/gmic_stdlib.h)
 
-set(CMAKE_CXX_FLAGS_DEBUG "-Og -g -ansi -Wall -Wextra -pedantic -Dcimg_verbosity=3 ${COMPILE_FLAGS}")
-set(CMAKE_CXX_FLAGS_RELEASE "-Ofast ${COMPILE_FLAGS}")
-set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-Ofast -g ${COMPILE_FLAGS}")
+set(CMAKE_CXX_FLAGS_DEBUG "-g -ansi -Wall -Wextra -pedantic -Dcimg_verbosity=3 ${COMPILE_FLAGS}")
+set(CMAKE_CXX_FLAGS_RELEASE "${COMPILE_FLAGS}")
+set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-g ${COMPILE_FLAGS}")
+
+if(NOT CUSTOM_CFLAGS)
+  set(CMAKE_CXX_FLAGS_DEBUG "-Og ${CMAKE_CXX_FLAGS_DEBUG}")
+  set(CMAKE_CXX_FLAGS_RELEASE "-Ofast ${CMAKE_CXX_FLAGS_RELEASE}")
+  set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-Ofast ${CMAKE_CXX_FLAGS_RELWITHDEBINFO}")
+endif()
 
 # source files
 set(CLI_Includes src/gmic.h)
@@ -422,3 +422,5 @@ if(BUILD_BASH_COMPLETION)
   )
   add_custom_target(bashcompletion ALL DEPENDS ${CMAKE_BINARY_DIR}/resources/gmic_bashcompletion.sh)
 endif()
+
+feature_summary(WHAT ALL)
