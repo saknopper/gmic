@@ -81,6 +81,7 @@ option(BUILD_CLI "Build the CLI interface" ON)
 option(BUILD_PLUGIN "Build the GIMP plug-in" OFF)
 option(BUILD_MAN "Build the manpage" ON)
 option(BUILD_BASH_COMPLETION "Build Bash completion" ON)
+option(CUSTOM_CFLAGS "Override default compiler optimization flags" OFF)
 option(ENABLE_X "Add support for X11" ON)
 option(ENABLE_FFMPEG "Add support for FFMpeg" ON)
 option(ENABLE_FFTW "Add support for FFTW" ON)
@@ -245,9 +246,15 @@ endif()
 
 add_custom_target(gmic_extra_headers DEPENDS src/CImg.h src/gmic_stdlib.h)
 
-set(CMAKE_CXX_FLAGS_DEBUG "-Og -g -ansi -Wall -Wextra -pedantic -Dcimg_verbosity=3 ${COMPILE_FLAGS}")
-set(CMAKE_CXX_FLAGS_RELEASE "-Ofast ${COMPILE_FLAGS}")
-set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-Ofast -g ${COMPILE_FLAGS}")
+set(CMAKE_CXX_FLAGS_DEBUG "-g -ansi -Wall -Wextra -pedantic -Dcimg_verbosity=3 ${COMPILE_FLAGS}")
+set(CMAKE_CXX_FLAGS_RELEASE "${COMPILE_FLAGS}")
+set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-g ${COMPILE_FLAGS}")
+
+if(NOT CUSTOM_CFLAGS)
+  set(CMAKE_CXX_FLAGS_DEBUG "-Og ${CMAKE_CXX_FLAGS_DEBUG}")
+  set(CMAKE_CXX_FLAGS_RELEASE "-Ofast ${CMAKE_CXX_FLAGS_RELEASE}")
+  set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-Ofast ${CMAKE_CXX_FLAGS_RELWITHDEBINFO}")
+endif()
 
 # source files
 set(CLI_Includes src/gmic.h)
