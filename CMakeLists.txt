@@ -72,6 +72,7 @@ set(CXX_STANDARD_REQUIRED ON)
 project(gmic CXX C)
 
 find_package(PkgConfig)
+include(FeatureSummary)
 include(GNUInstallDirs)
 
 # options controlling the build process
@@ -421,3 +422,5 @@ if(BUILD_BASH_COMPLETION)
   )
   add_custom_target(bashcompletion ALL DEPENDS ${CMAKE_BINARY_DIR}/resources/gmic_bashcompletion.sh)
 endif()
+
+feature_summary(WHAT ALL)
