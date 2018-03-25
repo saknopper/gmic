@@ -3961,7 +3961,7 @@ update_gallery_html :
   repeat $nb_commands
     command=${"arg "1+$>,$commands}
     v + e[] "  > Command '"$command"' ["{1+$>}/$nb_commands"]." v -
-    +l
+    +l # Parse command definition and examples
       s -,{'"#@cli "$command" :"'}
       if {$!<2} s -,{'"#@cli "$command"\n"'} fi
       if {$!<2} v + warn[] "    ** Command '"$command"' not found! **" v -
@@ -3982,31 +3982,60 @@ update_gallery_html :
           );
         ";
         rm[0]
-        repeat $!
+        repeat $! # For each example found
           example$nex={$>,t}
+
           v + e[] "    - "${example$nex} v -
           m "_run : "${example$nex}
           sample_name=${"arg 1+"{$nex%narg($pics)},$pics}
+          filename_original=gallery_full_${sample_name}_original_$nex.jpg
           filename_full=gallery_full_${sample_name}_${command}_$nex.jpg
           filename_thumb=gallery_thumb_${sample_name}_${command}_$nex.png
+
+          l[] # Create a HTML representation of the command
+            ({'${example$nex}'})
+            +replace_str. "image.jpg","<a href=\"http://gmic.eu/img/sample_"$sample_name".png\" target=\"_blank\">"$sample_name".png</a>"
+            y -.. . is_input={-2,im!=0||iM!=0}
+            replaced_example$nex={t} rm
+          endl
+
           if {!isfile($filename_thumb)} l[]
             sp $sample_name,450 o image.jpg rm
+
             _run _gallery
-            o $filename_full,85
+            width,height={[w,h]}
+            o $filename_full,75
 
             repeat 3 autocrop done
             frame 3%,3%,255
             rr2d 440,440,0,3 drop_shadow. 2,2,2 rr2d 300,300,0,3
-            o $filename_thumb
-          rm endl fi
+            o $filename_thumb rm
 
-          ({'${example$nex}'}) replace_str. "image.jpg","<a href=\"http://gmic.eu/img/sample_"$sample_name".png\" target=\"_blank\">"$sample_name".png</a>" example$nex={t} rm.
+            if $is_input
+              image.jpg
+              # - 255 rr2d $width,$height,2,5 + 255 c 0,255
+              _gallery o $filename_original,70 rm
+            fi
+          endl fi
+
+          l[] $filename_full width,height={[w,h]+64} rm endl
 
           if {!($nex%$nb_cols)} html=${html}"<tr>\n" fi
-          html=${html}\
-               "  <td><center><div><a href=\""$filename_full"\" class=\"highslide\" onclick=\"return hs.expand(this)\">"\
-               "<img alt=\""gallery_$command$nex"\" border=\"0\" src=\""$filename_thumb"\" /><br/><b>"$command"</b></a>"\
-               "<div class=\"highslide-caption\">Command line: <tt>$ gmic "${example$nex}"</tt></div></div></center></td>\n"
+
+          if $is_input
+            html=${html}\
+                "  <td><center><div><a href=\"#\" onclick=\"return hs.htmlExpand(this, { width: "$width", height: "$height" })\">\n"\
+                "  <img alt=\""gallery_$command$nex"\" border=\"0\" src=\""$filename_thumb"\" /><br/><b>"$command"</b></a>\n"\
+                "  <div class=\"highslide-maincontent\"><center>\n"\
+                "  <img alt=\""gallery_$command$nex"\" border=\"0\" src=\""$filename_full"\" onclick=\"hs.close()\" onmouseover=\"javascript:this.src='"$filename_full"';\" onmouseout=\"javascript:this.src='"$filename_original"';\" />\n"\
+                "</center></div>\n"\
+                "<div class=\"highslide-caption\">Command line: <tt>$ gmic "${replaced_example$nex}"</tt></div></div></center></td>\n"
+          else
+            html=${html}\
+                "  <td><center><div><a href=\""$filename_full"\" class=\"highslide\" onclick=\"return hs.expand(this)\">"\
+                "<img alt=\""gallery_$command$nex"\" border=\"0\" src=\""$filename_thumb"\" /><br/><b>"$command"</b></a>"\
+                "<div class=\"highslide-caption\">Command line: <tt>$ gmic "${replaced_example$nex}"</tt></div></div></center></td>\n"
+          fi
           nex+=1
           if {!($nex%$nb_cols)} html=${html}"</tr>\n" fi
         done
@@ -10986,7 +11015,7 @@ tones : check $1>0
 #@cli topographic_map : _nb_levels>0,_smoothness
 #@cli : Render selected images as topographic maps.
 #@cli : Default values: 'nb_levels=16' and 'smoothness=2'.
-#@cli : $ image.jpg +topographic_map 10
+#@cli : $ image.jpg topographic_map 10
 topographic_map : check "isint(${1=16}) && $1>0" skip ${2=2}
   e[^-1] "Render topographic maps from image$?, with $1 levels and smoothness $2."
   v - repeat $! l[$>]
