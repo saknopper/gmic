@@ -3913,258 +3913,152 @@ with or endorsed by the companies that own the trademarks.</i></font></p>\n\n
   -x "ln -fs "${category}_$basename0.shtml" index.shtml"
   v + e[] "\n > All done, for "$nb_presets" presets.\n"
 
+
 # Generate gallery page for G'MIC web.
 update_gallery_html :
-  e[^-1] "Generate gallery for the G'MIC web site."
+  e[^-1] "Generate gallery for G'MIC web site."
   v -
-  thumb_size=128
 
-  # Clean files from a possible previous gallery generation.
-  -x "rm -f gallery.shtml img/gallery_*.jpg"
+  # Prepare folder structure.
+  v + e[] "\n  > Prepare folder structure." v -
+  -x "ln -fs ../copyright.html ."
+  -x "ln -fs ../favicon.ico ."
+  -x "ln -fs ../favicon.png ."
+  -x "ln -fs ../footer.html ."
+  -x "ln -fs ../header.html ."
+  -x "ln -fs ../gmicmenu ."
+  -x "ln -fs ../jquery-1.11.0.min.js ."
+  -x "ln -fs ../style.css ."
+  -x "ln -fs ../images ."
+  -x "ln -fs ../highslide ."
 
-  # Define and load test images.
-  img/chloe.jpg
-  img/fawn.jpg
-  img/house.jpg
-  img/statue.jpg
-  img/beach.jpg
+  # Parse and generate HTML page
+  i raw:$_path_rc/update$_version.gmic,uchar
 
-  nb_imgs=$!
-  repeat $! +r2dy[$>] $thumb_size width$>={w} rm. done  # Get width of standard thumbnails.
+  commands=boxfitting,cartoon,cubism,draw_whirl,fire_edges,fractalize,halftone,hardsketchbw,linify,mosaic,old_photo,pencilbw,polaroid,polygonize,poster_hope,rodilius,stained_glass,stencil,deform,flower,map_sphere,spherize,twirl,warp_perspective,hsv2rgb,append_tiles,bilateral,deriche,normalize_local,sharpen,solidify,watershed,histogram,isophotes,segment_watershed,slic,thinning,topographic_map,tsp,chessboard,mandelbrot,maze_mask,plasma,sierpinski,truchet,turbulence,add3d,distribution3d,elevation3d,gmic3d,imageblocks3d,imagerubik3d,skeleton3d,spherical3d,tensors3d,text3d,torus3d,weird3d,array,array_fade,array_mirror,frame_blur,frame_cube,frame_painting,imagegrid,imagegrid_hexagonal,rotate_tiles
 
-  # Define commands used to generate the gallery.
-  _nb_coms=-1
+  pics=apples,bottles,butterfly,car,cat,cliff,david,dog,duck,eagle,elephant,earth,flower,fruits,greece,gummy,inside,landscape,leaf,leno,lion,mandrill,monalisa,monkey,parrots,pencils,rooster,rose,square,teddy,tiger,wall,waterfall,zelda
 
-  _update_gallery_html " "
-  _update_gallery_html " "
-  _update_gallery_html " "
-  _update_gallery_html " "
-  _update_gallery_html " "
+  nb_cols=3
+  nb_commands={narg($commands)}
 
-  _update_gallery_html "luminance"
-  _update_gallery_html "solarize"
-  _update_gallery_html "negate"
-  _update_gallery_html "select_color 100,0,0,0 normalize 0,255"
-  _update_gallery_html "array_fade 4,4"
+  html="<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"\n"\
+       "  \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n\n"\
+       "<!--#include file=\"header.html\" -->\n\n"\
+       "<div id=\"bloc_option\"><div id=\"top_vert\"><div id=\"text_top\">Image gallery</div></div>\n"\
+       "<div id=\"center\"><div id=\"text_centre_intro\">\n"\
+       "This gallery will give you a quick overview of what features are found in the <b><font color=\"#000066\">G\47MIC</font></b> image processing framework.<br/>\n"\
+       "All the images below have been processed by the CLI interface <tt><a href=\"documentation.shtml\">gmic</a></tt>\n"\
+       "  of <b><font color=\"#000066\">G\47MIC</font></b>, from a set of initial 2D color images.\n"\
+       "Click on an image to enlarge it and display the <b><font color=\"#000066\">G\47MIC</font></b> command used for the processing.<br/>\n"\
+       "Remember, you can easily define your own image filters and effects by writing\n"\
+       "custom <b><font color=\"#000066\">G\47MIC</font></b> <a href=\"http://gmic.eu/gmic_stdlib.gmic\">command files</a>,\n"\
+       "then eventually add them afterwards in the plug-in for <a href=\"http://www.gimp.org\">GIMP</a> or <a href=\"http://www.krita.org\">Krita</a>.</br>\n\n"\
+       "For more details, visit the <a href=\"reference.shtml\">G\47MIC reference page</a> to get the full documentation on how to use the software.\n"\
+       "<br/><br/>\n"\
+       "<table align=\"center\">\n"
+  nex=0
+  repeat $nb_commands
+    command=${"arg "1+$>,$commands}
+    v + e[] "  > Command '"$command"' ["{1+$>}/$nb_commands"]." v -
+    +l
+      s -,{'"#@cli "$command" :"'}
+      if {$!<2} s -,{'"#@cli "$command"\n"'} fi
+      if {$!<2} v + warn[] "    ** Command '"$command"' not found! **" v -
+      else
+        k.
+        eval "
+          str = crop(#-1);
+          ind = 0;
+          while ((ind = find(str,'\n#@cli ',1,ind))>=0,
+            ++ind;
+            str[ind+6]!=_':' ? break() :
+            str[ind+7]==_' ' && str[ind+8]==_'$' && str[ind+9]==_' '?(
+              beg = ind + 10;
+              end = find(str,_'\n',1,beg) - 1;
+              com = vector1024(0);
+              ext('+rows[0] ',beg,',',end);
+            );
+          );
+        ";
+        rm[0]
+        repeat $!
+          example$nex={$>,t}
+          v + e[] "    - "${example$nex} v -
+          m "_run : "${example$nex}
+          sample_name=${"arg 1+"{$nex%narg($pics)},$pics}
+          filename_full=gallery_full_$command_$nex.jpg
+          filename_thumb=gallery_thumb_$command_$nex.jpg
+          if {!isfile($filename_thumb)} l[]
+            sp $sample_name,450 o image.jpg rm
+            _run _gallery
+            o $filename_full,85
 
-  _update_gallery_html "+mirror[-1] x fade_x 40,60"
-  _update_gallery_html "shift_tiles 20,20"
-  _update_gallery_html "fisheye 40"
-  _update_gallery_html "fisheye 50"
-  _update_gallery_html "shade_stripes ,"
+            repeat 3 autocrop done
+            frame 3%,3%,255
+            rr2d 440,440,0,3 drop_shadow. 2,2,2 rr2d 300,300,0,3
+            i[0] 100%,100%,1,3,189 blend alpha round
+            o $filename_thumb,85
+          rm endl fi
 
-  _update_gallery_html "shade_stripes 40,1"
-  _update_gallery_html "tetris 10"
-  _update_gallery_html "blur 1 gradient_orientation 2 add normalize 0,255 smooth 60,0,1,1,3"
-  _update_gallery_html "flower 30,5"
-  _update_gallery_html "water 30,1.5"
+          ({'${example$nex}'}) replace_str. "image.jpg","<a href=\"http://gmic.eu/img/sample_"$sample_name".png\" target=\"_blank\">"$sample_name".png</a>" example$nex={t} rm.
 
-  _update_gallery_html "wave 4,0.4"
-  _update_gallery_html "wave 15,0.2"
-  _update_gallery_html "deform 10"
-  _update_gallery_html "light_patch 4,0.7,1.7"
-  _update_gallery_html "mosaic 50"
-
-  _update_gallery_html "sponge 13"
-  _update_gallery_html "hearts 15"
-  _update_gallery_html "color_ellipses 1400,10,0.07"
-  _update_gallery_html "whirls 3"
-  _update_gallery_html "edges 15 normalize 0,255"
-
-  _update_gallery_html "to_rgba fx_reflect 50,1,110,160,190,64,0,1.5,0,-3.30,7,1.5 display_rgba"
-  _update_gallery_html "transform_polar R-r"
-  _update_gallery_html "drawing 200"
-  _update_gallery_html "draw_whirl 100"
-  _update_gallery_html "texturize_paper"
-
-  _update_gallery_html "stencilbw 30"
-  _update_gallery_html "glow 4"
-  _update_gallery_html "ditheredbw"
-  _update_gallery_html "blur_angular 10"
-  _update_gallery_html "blur_radial 10"
-
-  _update_gallery_html "repeat 3 +deform[0] 10 done add normalize 0,255"
-  _update_gallery_html "flood 50%,50%,0,50,0,0.7,155,100,255"
-  _update_gallery_html "+mirror x +mirror y mul equalize 255 normalize 0,255"
-  _update_gallery_html "kaleidoscope 0.5,0.5,50,20"
-  _update_gallery_html "noise 40 cut 0,255 +meancurvature_flow[-1] 20 sharpen[-1] 100 append x"
-
-  _update_gallery_html "gradient_norm sqrt normalize 0,255"
-  _update_gallery_html "to_rgba rotate_tiles 15,5,5 display_rgba"
-  _update_gallery_html "taquin 5"
-  _update_gallery_html "img/chloe.jpg drop_shadow[-1] 3 rotate[-1] 55 blend alpha"
-  _update_gallery_html "[-1] deform 10 morph 4,0.05 append x"
-
-  _update_gallery_html "polaroid 20 drop_shadow 3,3 rotate 10,1 display_rgba"
-  _update_gallery_html "+plasma 10,10 normalize 0,255 and equalize 256"
-  _update_gallery_html "100%,100% mandelbrot[-1] -1.17229,-0.3038,-1.15209,-0.2836,1000 map[-1] 0 mul[-2] 1.5 add normalize 0,255"
-  _update_gallery_html "+edges 15 normalize 0,255 fade_y 30,70"
-  _update_gallery_html "split_tiles 5,5 blur 8 sharpen 1000 equalize 255 append_tiles 5,5"
-
-  _update_gallery_html "imagecube3d mul3d 256 r3d 1,1,0,60 512,512,1,3 plasma[-1] 10,10 normalize[-1] 0,128 mode3d 5 db3d 0 object3d[1] [0],50%,50% keep[1] normalize 0,255"
-  _update_gallery_html "warp_perspective 0.3,0.9,0.5"
-  _update_gallery_html "rodilius ,"
-  _update_gallery_html "blur 3 gradient2rgb 1"
-  _update_gallery_html "normalize_local 80,7"
-
-  _update_gallery_html "normalize_local 80,3"
-  _update_gallery_html "normalize_local 80,7"
-  _update_gallery_html "normalize_local 80,6,2"
-  _update_gallery_html "isophotes 4 dilate 3 i[0] (0;255^0;255^100;100) r[0] [1],[1],1,3,3 blend alpha"
-  _update_gallery_html "crop 30%,30%,70%,70% resize 200%,200%,1,100%,5 frame_fuzzy 30,30"
-
-  _update_gallery_html "cartoon ,"
-  _update_gallery_html "cartoon ,"
-  _update_gallery_html "cartoon ,"
-  _update_gallery_html "cartoon ,"
-  _update_gallery_html "cartoon ,"
-
-  _update_gallery_html "resize2dx 300 mode3d 2 elevation3d 0.3 f3d 200 snapshot3d 400,1.5"
-  _update_gallery_html "resize2dx 300 mode3d 2 elevation3d 0.3 f3d 200 snapshot3d 400,1.5"
-  _update_gallery_html "resize2dx 300 mode3d 2 elevation3d 0.3 f3d 200 snapshot3d 400,1.5"
-  _update_gallery_html "resize2dx 300 mode3d 2 elevation3d 0.3 f3d 200 snapshot3d 400,1.5"
-  _update_gallery_html "resize2dx 300 mode3d 2 elevation3d 0.3 f3d 200 snapshot3d 400,1.5"
-
-  _update_gallery_html "topographic_map 16,2"
-  _update_gallery_html "topographic_map 16,2"
-  _update_gallery_html "topographic_map 16,2"
-  _update_gallery_html "topographic_map 16,2"
-  _update_gallery_html "topographic_map 16,2"
-
-  _update_gallery_html "+blur 10 curvature[-1] norm[-1] add[-1] 0.01 div equalize 255 normalize 0,255"
-  _update_gallery_html "+blur 10 curvature[-1] norm[-1] add[-1] 0.01 div equalize 255 normalize 0,255"
-  _update_gallery_html "+blur 10 curvature[-1] norm[-1] add[-1] 0.01 div equalize 255 normalize 0,255"
-  _update_gallery_html "+blur 10 curvature[-1] norm[-1] add[-1] 0.01 div equalize 255 normalize 0,255"
-  _update_gallery_html "+blur 10 curvature[-1] norm[-1] add[-1] 0.01 div equalize 255 normalize 0,255"
-
-  _update_gallery_html "blur 1 pencilbw 0.3"
-  _update_gallery_html "blur 1 pencilbw 0.3"
-  _update_gallery_html "blur 1 pencilbw 0.3"
-  _update_gallery_html "blur 1 pencilbw 0.3"
-  _update_gallery_html "blur 1 pencilbw 0.3"
-
-  _update_gallery_html "old_photo drop_shadow 3,3 rotate -5,1 display_rgba"
-  _update_gallery_html "old_photo drop_shadow 3,3 rotate -10,1 display_rgba"
-  _update_gallery_html "old_photo drop_shadow 3,3 rotate -15,1 display_rgba"
-  _update_gallery_html "old_photo drop_shadow 3,3 rotate -20,1 display_rgba"
-  _update_gallery_html "old_photo drop_shadow 3,3 rotate -25,1 display_rgba"
-
-  _update_gallery_html "erode 10 +erode 3 - equalize 255 smooth 40,0,1,1,3 normalize 0,255 negate"
-  _update_gallery_html "erode 10 +erode 3 - equalize 255 smooth 60,0,1,1,3 normalize 0,255 negate"
-  _update_gallery_html "erode 10 +erode 3 - equalize 255 smooth 80,0,1,1,3 normalize 0,255 negate"
-  _update_gallery_html "erode 10 +erode 3 - equalize 255 smooth 100,0,1,1,3 normalize 0,255 negate"
-  _update_gallery_html "erode 10 +erode 3 - equalize 255 smooth 120,0,1,1,3 normalize 0,255 negate"
-
-  _update_gallery_html "light_relief ,"
-  _update_gallery_html "light_relief ,"
-  _update_gallery_html "light_relief ,"
-  _update_gallery_html "light_relief ,"
-  _update_gallery_html "light_relief ,"
-
-  _update_gallery_html "+warhol 2 fade_radial 50,70"
-  _update_gallery_html "+warhol 3 fade_radial 50,70"
-  _update_gallery_html "+warhol 4 fade_radial 50,70"
-  _update_gallery_html "+warhol 5 fade_radial 50,70"
-  _update_gallery_html "+warhol 6 fade_radial 50,70"
-
-  _update_gallery_html "+sketchbw , reverse blend overlay"
-  _update_gallery_html "+sketchbw , reverse blend overlay"
-  _update_gallery_html "+mirror x append x map_sphere ,"
-  _update_gallery_html "+mirror x append x map_sphere ,"
-  _update_gallery_html "fx_painting 2,1.5,2"
-
-  _update_gallery_html "focale3d 800 remove 512,512,1,3 chessboard 64,64,0,0,15,1,${-RGB},${-RGB} +imagecube3d mul3d[-1] 230 rotate3d[-1] 1,1,0.5,50 mode3d 3 object3d[-2] [-1],50%,50%,0 remove[-1] fx_painting 1,1.5,2 equalize[-1] 256"
-  _update_gallery_html "+histogram 256 display_graph[-1] {0,w},{0,h},3 to_rgba[-1] mul[-1] 0.5 blend alpha"
-  _update_gallery_html "100%,100%,1,1,'X=(x-w/2)/30;Y=(y-h/2)/30;5*cos(X*Y)*sqrt(X^2+Y^2)' elevation3d[0] [1] keep[0] rotate3d 1,1,0,60 snapshot3d 500,2"
-  _update_gallery_html "kuwahara 10 noise 30 smooth 100,0,1,3,3 sharpen 400 normalize 0,255 equalize 256"
-  _update_gallery_html "frame 4,4,0 array_mirror 1,3"
-
-  _nb_coms+=1
-
-  # Generate gallery HTML header.
-  string "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"\n\
-      \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n\
-<!--#include file=\"header.html\" -->\n
-<div id=\"bloc_option\"><div id=\"top_bleu\"><div id=\"text_top\">Image Gallery</div></div>\n
-<div id=\"center\"><div id=\"text_centre_intro\">\n
-  All the images below have been processed by the command line version <b><a href=\"documentation.shtml\">gmic</a></b>\n
-  of <b><font color=\"#000066\">G\47MIC</font></b>, from a set of initial 2D color images (displayed on the first row).<br/>\n
-  Click on an image to zoom-in. The corresponding <b><font color=\"#000066\">G\47MIC</font></b> command used to generate the image appears as a caption.\n
-  This gallery is intended to show the flexibility and the genericity of the <b><font color=\"#000066\">G\47MIC</font></b> language.\n
-  Remember, you can easily define your own image filters and effects by writing\n
-  your custom <b><font color=\"#000066\">G\47MIC</font></b> <a href=\"http://gmic.eu/gmic_stdlib.gmic\">command file</a>,\n
-  and eventually put them directly in <a href=\"http://www.gimp.org\">GIMP</a> afterwards.\n\n
-  <ul>\n
-  <li>See also the <a href=\"reference.shtml\">G\47MIC reference page</a> to have processing examples of almost all <b><font color=\"#000066\">G\47MIC</font></b> commands\n
-    (scroll down there to view example images).</li>\n
-  <li>See also the <a href=\"http://www.flickr.com/groups/gmic/pool/\">Flickr slideshow</a>, showing uses of the G\47MIC plug-in\n
-  by various artists.</li>\n
-  </ul>\n
-  <b>Copyrights : </b> All pictures have been shot by <a href=\"http://tschumperle.users.greyc.fr/\">David Tschumperl&eacute;</a>.<br/><br/>\n"
-
-  # Generate main gallery table.
-  string "<center><table cellpadding=\"1\" border=\"0\" cellspacing=\"2\">\n"
-  row=0
-  repeat $_nb_coms
-
-    ind={$>%$nb_imgs}
-    out_img=${"filename "img/gallery.jpg,$>}
-    out_thumb=${"filename "img/gallery_thumb.png,$>}
-
-    # Start new row.
-    if {!$ind} string "<tr>\n" fi
-
-    com=${_com$>}
-
-    v + e[] " - Image "{$>+1}/$_nb_coms" : $ "$com v -
-
-    displayed_com$ind=$com
-    if {!narg($com)} com="skip ," fi
-    +__update_gallery_html[$ind] $com
-
-    iind={$ind%5}
-
-    width={$iind,w} height={$iind,h}
-    o. $out_img,75
-    r2dy. $thumb_size if {w>${width$ind}} r. ${width$ind},100%,100%,100%,2 fi
-    l. frame 3%,3%,255 to_rgba drop_shadow 2,2,3 endl
-    o. $out_thumb rm.
-
-    string "
-<td width=\""${width$>}"\"><center><div>\
-<a href=\""$out_img"\" class=\"highslide\" onclick=\"return hs.expand(this)\">\
-<img alt=\"\" border=\"0\" src=\""$out_thumb"\"/></a>\
-<div class=\"highslide-caption\">gmic "{$ind,b}.{$ind,x}" "${displayed_com$ind}"</div>\
-</div></center></td>\n"
-
-    if {$ind==$nb_imgs-1" || "$>==$_nb_coms-1} # End row.
-      string "</tr>\n<tr bgcolor=\""$bgcolor"\">\n"
-      repeat {$ind+1}
-        string "<td width=\""${width$>}"\"><center><font size=\"1\">gmic "{$>,b}.{$>,x}" "${displayed_com$>}"</font></center></td>\n"
-      done
-      string "</tr>\n"
-      row+=1
-    fi
-
+          if {!($nex%$nb_cols)} html=${html}"<tr>\n" fi
+          html=${html}\
+               "  <td><center><div><a href=\""$filename_full"\" class=\"highslide\" onclick=\"return hs.expand(this)\">"\
+               "<img alt=\""gallery_$command$nex"\" border=\"0\" src=\""$filename_thumb"\" /><br/><b>"$command"</b></a>"\
+               "<div class=\"highslide-caption\">Command line used: <tt>$ gmic "${example$nex}"</tt></div></div></center></td>\n"
+          nex+=1
+          if {!($nex%$nb_cols)} html=${html}"</tr>\n" fi
+        done
+      fi
+      rm
+    endl
   done
-  string "</table></center>\n"
+  rm
+  if {$nex%$nb_cols} html=${html}"</tr>\n" fi
+  html=$html\
+       "</table>\n"\
+       "</div></div><div id=\"footer\"><img alt=\"\" src=\"images/footer.jpg\" /></div></div>\n\n"\
+       "<!--#include file=\"copyright.html\" -->\n"\
+       "<!--#include file=\"footer.html\" -->\n"
 
-  # Generate gallery footer.
-  string "
-</div></div><div id=\"footer\"><img alt=\"\" src=\"images/footer.jpg\" /></div></div>\n\
-<!--#include file=\"copyright.html\" -->\n\
-<!--#include file=\"footer.html\" -->\n"
+  ({'$html'}) o. raw:index.shtml,uchar rm
 
-  # Save html page and exit properly.
-  rm[0-{$nb_imgs-1}] a x
-  o gallery.raw,uchar -x "mv gallery.raw gallery.shtml" rm
-  v + e[^-1] "All done !"
+  # Transfer on G'MIC server
+  v + e[] "  > Transfer gallery on G'MIC server.\n" v -
+  x "lftp ftp://"$GMIC_LOGIN":"$GMIC_PASSWD"@ftp.gmic.eu -e \"mirror -RL . /www/gmic/gallery ; quit\""
+  v +
 
-_update_gallery_html :
-  _nb_coms+=1 _com$_nb_coms="$1"
+# Generate a single image from a list of images, for the gallery.
+_gallery :
+  repeat $! l[$>] W$>={w} H$>={h} D$>={d} S$>={s} IS_3D$>=${-_is_3d} endl done
+  repeat $! l[$>]
+    if ${IS_3D$>} r3d 1,1,0,-80 r3d 0,1,0,80 snapshot3d 400
+    else if {w>8192} z 0,8191 elif {h>8192} rows 0,8191 fi n 0,255
+    fi
+  endl done
 
-__update_gallery_html :
-  ${1--1}
+  +__gallery if {w>1024} r={round(1024*100/w,0.1)} r[^-1] $r%,$r%,1,100%,2 fi rm.
+
+  repeat $! l[$>]
+    if {s==1} r {w},{h},1,3 else r {w},{h},1,3,0 fi
+    if {w<=h&&h<256} r2dy 256,2 elif {h<=w&&w<256} r2dx 256,2 fi
+    if {w<=h&&h>512} r2dy 512,2 elif {h<=w&&w>512} r2dx 512,2 fi
+    if {h<48} r 100%,48 fi
+    if {w<48} r 48,100% fi
+    frame 1,1,0 frame 4,4,255
+  endl done
+  to_rgb
+  - 255 __gallery + 255
+  if {w<256} - 255 r 256,100%,1,100%,0,0,0.5,0.5 + 255 fi
+  if {h<256} - 255 r 100%,256,1,100%,0,0,0.5,0.5 + 255 fi
+
+__gallery :
+  if {$!==2}
+    if {w>h} a y else a x fi
+  else append_tiles 2
+  fi
 
 # Function that inserts a new 'Update information' filter for a previous version number,
 # passed as an argument.

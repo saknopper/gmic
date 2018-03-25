@@ -360,8 +360,11 @@ else
     gmic v - ../src/gmic_stdlib.gmic raw:../src/gmic_stdlib.gmic,uchar _prerelease=`date +%y%m%d` __help html >& reference.shtml;
 fi
 rm -f image.jpg
-gmic ../src/gmic_stdlib.gmic update_gallery_html
-cd ..
+
+rm -rf gallery
+cd gallery
+gmic ../../src/gmic_stdlib.gmic update_gallery_html
+cd ../..
 
 # Create .pdf handbook.
 #----------------------
