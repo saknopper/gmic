@@ -361,9 +361,8 @@ else
 fi
 rm -f image.jpg
 
-rm -rf gallery
-cd gallery
-gmic ../../src/gmic_stdlib.gmic update_gallery_html
+rm -rf gallery && mkdir gallery
+cd gallery && gmic ../../src/gmic_stdlib.gmic update_gallery_html
 cd ../..
 
 # Create .pdf handbook.
