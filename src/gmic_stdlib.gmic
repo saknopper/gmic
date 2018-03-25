@@ -3935,7 +3935,7 @@ update_gallery_html :
   # Parse and generate HTML page
   i raw:$_path_rc/update$_version.gmic,uchar
 
-  commands=boxfitting,cartoon,cubism,draw_whirl,fire_edges,fractalize,halftone,hardsketchbw,linify,mosaic,old_photo,pencilbw,polaroid,polygonize,poster_hope,rodilius,stained_glass,stencil,deform,flower,map_sphere,spherize,twirl,warp_perspective,hsv2rgb,append_tiles,bilateral,deriche,normalize_local,sharpen,solidify,watershed,histogram,isophotes,segment_watershed,slic,thinning,topographic_map,tsp,chessboard,mandelbrot,maze_mask,plasma,sierpinski,truchet,turbulence,add3d,distribution3d,elevation3d,gmic3d,imageblocks3d,imagerubik3d,skeleton3d,spherical3d,tensors3d,text3d,torus3d,weird3d,array,array_fade,array_mirror,frame_blur,frame_cube,frame_painting,imagegrid,imagegrid_hexagonal,rotate_tiles
+  commands=array,array_fade,array_mirror,frame_blur,frame_cube,frame_painting,imagegrid,rotate_tiles,boxfitting,cartoon,cubism,draw_whirl,fire_edges,fractalize,halftone,hardsketchbw,linify,mosaic,old_photo,pencilbw,polaroid,polygonize,poster_hope,rodilius,stained_glass,stencil,deform,flower,map_sphere,spherize,twirl,warp_perspective,hsv2rgb,append_tiles,bilateral,deriche,normalize_local,sharpen,solidify,watershed,histogram,isophotes,segment_watershed,slic,thinning,topographic_map,tsp,chessboard,mandelbrot,maze_mask,plasma,sierpinski,truchet,turbulence,add3d,distribution3d,elevation3d,gmic3d,imageblocks3d,imagerubik3d,skeleton3d,spherical3d,tensors3d,text3d,torus3d,weird3d
 
   pics=apples,bottles,butterfly,car,cat,cliff,david,dog,duck,eagle,elephant,earth,flower,fruits,greece,gummy,inside,landscape,leaf,leno,lion,mandrill,monalisa,monkey,parrots,pencils,rooster,rose,square,teddy,tiger,wall,waterfall,zelda
 
@@ -3987,8 +3987,8 @@ update_gallery_html :
           v + e[] "    - "${example$nex} v -
           m "_run : "${example$nex}
           sample_name=${"arg 1+"{$nex%narg($pics)},$pics}
-          filename_full=gallery_full_$command_$nex.jpg
-          filename_thumb=gallery_thumb_$command_$nex.jpg
+          filename_full=gallery_full_${command}_$nex.jpg
+          filename_thumb=gallery_thumb_${command}_$nex.png
           if {!isfile($filename_thumb)} l[]
             sp $sample_name,450 o image.jpg rm
             _run _gallery
@@ -3997,8 +3997,7 @@ update_gallery_html :
             repeat 3 autocrop done
             frame 3%,3%,255
             rr2d 440,440,0,3 drop_shadow. 2,2,2 rr2d 300,300,0,3
-            i[0] 100%,100%,1,3,189 blend alpha round
-            o $filename_thumb,85
+            o $filename_thumb
           rm endl fi
 
           ({'${example$nex}'}) replace_str. "image.jpg","<a href=\"http://gmic.eu/img/sample_"$sample_name".png\" target=\"_blank\">"$sample_name".png</a>" example$nex={t} rm.
@@ -4007,7 +4006,7 @@ update_gallery_html :
           html=${html}\
                "  <td><center><div><a href=\""$filename_full"\" class=\"highslide\" onclick=\"return hs.expand(this)\">"\
                "<img alt=\""gallery_$command$nex"\" border=\"0\" src=\""$filename_thumb"\" /><br/><b>"$command"</b></a>"\
-               "<div class=\"highslide-caption\">Command line used: <tt>$ gmic "${example$nex}"</tt></div></div></center></td>\n"
+               "<div class=\"highslide-caption\">Command line: <tt>$ gmic "${example$nex}"</tt></div></div></center></td>\n"
           nex+=1
           if {!($nex%$nb_cols)} html=${html}"</tr>\n" fi
         done
