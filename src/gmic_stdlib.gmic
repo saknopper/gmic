@@ -3920,7 +3920,7 @@ update_gallery_html :
   v -
 
   # Prepare folder structure.
-  v + e[] "\n  > Prepare folder structure." v -
+  v + e[] "  > Prepare folder structure." v -
   -x "ln -fs ../copyright.html ."
   -x "ln -fs ../favicon.ico ."
   -x "ln -fs ../favicon.png ."
@@ -4057,7 +4057,7 @@ update_gallery_html :
   # Transfer on G'MIC server
   v + e[] "  > Transfer gallery on G'MIC server.\n" v -
   x "lftp ftp://"$GMIC_LOGIN":"$GMIC_PASSWD"@ftp.gmic.eu -e \"mirror -RL . /www/gmic/gallery ; quit\""
-  v +
+  v + e[] "  > All done!.\n"
 
 # Generate a single image from a list of images, for the gallery.
 _gallery :
