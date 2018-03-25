@@ -3935,7 +3935,7 @@ update_gallery_html :
   # Parse and generate HTML page
   i raw:$HOME/work/src/gmic/src/gmic_stdlib.gmic,uchar
 
-  commands=array,array_fade,array_mirror,frame_blur,frame_cube,frame_painting,imagegrid,rotate_tiles,boxfitting,cartoon,cubism,draw_whirl,fire_edges,fractalize,halftone,hardsketchbw,linify,mosaic,old_photo,pencilbw,polaroid,polygonize,poster_hope,rodilius,stained_glass,stencil,deform,flower,map_sphere,spherize,twirl,warp_perspective,hsv2rgb,append_tiles,bilateral,deriche,normalize_local,sharpen,solidify,watershed,histogram,isophotes,segment_watershed,slic,thinning,topographic_map,tsp,chessboard,mandelbrot,maze_mask,plasma,sierpinski,truchet,turbulence,add3d,distribution3d,elevation3d,gmic3d,imageblocks3d,imagerubik3d,skeleton3d,spherical3d,tensors3d,text3d,torus3d,weird3d
+  commands=weave,array,array_fade,array_mirror,warhol,frame_blur,frame_cube,frame_painting,imagegrid,rotate_tiles,boxfitting,cartoon,cubism,draw_whirl,fire_edges,fractalize,halftone,hardsketchbw,linify,mosaic,old_photo,pencilbw,polaroid,polygonize,poster_hope,rodilius,stained_glass,stencil,deform,flower,map_sphere,spherize,twirl,warp_perspective,hsv2rgb,append_tiles,bilateral,deriche,normalize_local,sharpen,solidify,watershed,histogram,isophotes,segment_watershed,slic,thinning,topographic_map,tsp,chessboard,mandelbrot,maze_mask,plasma,sierpinski,truchet,turbulence,add3d,distribution3d,elevation3d,gmic3d,imageblocks3d,imagerubik3d,skeleton3d,spherical3d,tensors3d,text3d,torus3d,weird3d
 
   pics=apples,bottles,butterfly,car,cat,cliff,david,dog,duck,eagle,elephant,earth,flower,fruits,greece,gummy,inside,landscape,leaf,leno,lion,monalisa,parrots,pencils,rooster,rose,square,teddy,tiger,wall,waterfall,zelda
 
@@ -4013,7 +4013,6 @@ update_gallery_html :
 
             if $is_input
               image.jpg
-              # - 255 rr2d $width,$height,2,5 + 255 c 0,255
               _gallery o $filename_original,70 rm
             fi
           endl fi
@@ -16202,7 +16201,7 @@ tetris : skip ${1=10}
 #@cli warhol : _M>0,_N>0,_smoothness>=0,_color>=0
 #@cli : Create MxN Andy Warhol-like artwork from selected images.
 #@cli : Default values: 'M=3', 'N=M', 'smoothness=2' and 'color=20'.
-#@cli : $ image.jpg +warhol 5,3,3,40
+#@cli : $ image.jpg warhol 3,3,3,40
 warhol : skip ${1=3},${2=$1},${3=2},${4=20}
   e[^-1] "Create $1x$2 Andy Warhol-like artwork from image$?."
   v - r0={100/max($1,$2)}
@@ -16217,7 +16216,7 @@ warhol : skip ${1=3},${2=$1},${3=2},${4=20}
 #@cli : Apply weave effect to the selected images.
 #@cli : 'angle' can be { 0=0 deg. | 1=22.5 deg. | 2=45 deg. | 3=67.5 deg. }.
 #@cli : Default values: 'density=6', 'thickness=65', 'shadow=40', 'shading=0.5', 'fibers_amplitude=0', 'fibers_smoothness=0', 'angle=0' and 'curvature_x=curvature_y=0'
-#@cli : $ image.jpg +weave ,
+#@cli : $ image.jpg weave ,
 weave : check "${1=6}>=0 && ${2=65}>=0 && $2<=100 && ${3=40}>=0 && $3<=100 && ${4=0.5}>=0"
         check "${5=0}>=0 && ${6=0}>=0 && ${7=0}>=0 && $7<=3 && ${8=0}>=-1 && $8<=1 && ${9=0}>=-1 && $9<=1"
   e[^-1] "Apply weave effect to image$?, with $1 strips, thickness $2, shadow $3, shading $4, "\
