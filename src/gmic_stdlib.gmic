@@ -3913,7 +3913,6 @@ with or endorsed by the companies that own the trademarks.</i></font></p>\n\n
   x "ln -fs "${category}_$basename0.shtml" index.shtml"
   v + e[] "\n > All done, for "$nb_presets" presets.\n"
 
-
 # Generate gallery page for G'MIC web.
 update_gallery_html :
   e[^-1] "Generate gallery pages for G'MIC web site."
@@ -3935,14 +3934,13 @@ update_gallery_html :
   # Define categories and sample pictures.
   categories=arrays,artistic,colors,deformations,filtering,patterns,3drendering
   nb_categories={narg($categories)}
-  commands_artistic=boxfitting,cartoon,cubism,draw_whirl,fire_edges,fractalize,halftone,hardsketchbw,linify,mosaic,pencilbw,old_photo,polaroid,polygonize,poster_hope,rodilius,stained_glass,stencil
-  commands_deformations=deform,flower,map_sphere,spherize,twirl,warp_perspective
-  commands_filtering=smooth,bilateral,deriche,normalize_local,sharpen,solidify
-  commands_colors=hsv2rgb
-  commands_arrays=array,array_fade,array_mirror,frame_blur,frame_cube,frame_painting,img2ascii,imagegrid,rotate_tiles,tunnel
-  commands_patterns=tsp,chessboard,mandelbrot,maze_mask,plasma,sierpinski,truchet,turbulence,weave
+  commands_arrays=array,array_fade,array_mirror,frame_blur,frame_cube,frame_painting,img2ascii,imagegrid,rotate_tiles,vignette,tunnel,plugin_arrays
+  commands_artistic=boxfitting,cartoon,cubism,draw_whirl,fire_edges,fractalize,halftone,hardsketchbw,light_relief,linify,mosaic,pencilbw,old_photo,polaroid,polygonize,poster_hope,rodilius,stained_glass,stencil,plugin_artistic
+  commands_colors=sepia,solarize,hsv2rgb,plugin_colors
+  commands_deformations=deform,flower,map_sphere,seamcarve,spherize,twirl,warp_perspective,water,wave,plugin_deformations
+  commands_filtering=blur_angular,blur_linear,blur_radial,glow,smooth,bilateral,dog,deriche,distance,gradient_norm,normalize_local,sharpen,solidify,plugin_filtering
+  commands_patterns=tsp,chessboard,mandelbrot,maze_mask,plasma,shape_fern,shape_snowflake,sierpinski,syntexturize_patchmatch,truchet,turbulence,watermark_visible,weave,plugin_patterns
   commands_3drendering=add3d,distribution3d,elevation3d,gmic3d,imageblocks3d,imagerubik3d,skeleton3d,spherical3d,tensors3d,text3d,torus3d,weird3d
-  # commands=array,array_fade,array_mirror,warhol,frame_blur,frame_cube,frame_painting,imagegrid,rotate_tiles,boxfitting,cartoon,cubism,draw_whirl,fire_edges,fractalize,halftone,hardsketchbw,linify,mosaic,old_photo,pencilbw,polaroid,polygonize,poster_hope,rodilius,smooth,stained_glass,stencil,deform,flower,map_sphere,spherize,twirl,warp_perspective,hsv2rgb,append_tiles,bilateral,deriche,normalize_local,sharpen,solidify,watershed,histogram,isophotes,segment_watershed,slic,thinning,topographic_map,tsp,chessboard,mandelbrot,maze_mask,plasma,sierpinski,truchet,turbulence,add3d,distribution3d,elevation3d,gmic3d,imageblocks3d,imagerubik3d,skeleton3d,spherical3d,tensors3d,text3d,torus3d,weird3d
 
   pics=apples,bottles,butterfly,car,cat,cliff,david,dog,duck,eagle,elephant,earth,flower,fruits,greece,gummy,inside,landscape,leaf,leno,lion,mandrill,monalisa,parrots,pencils,rooster,rose,square,teddy,tiger,wall,waterfall,zelda
 
@@ -3956,8 +3954,7 @@ update_gallery_html :
 
     commands=${commands_$category}
     nb_commands={narg($commands)}
-    col=0
-    nex=0
+    col,nex=0
 
     repeat $nb_categories
       cat=${arg\ 1+$>,$categories}
@@ -3999,7 +3996,7 @@ update_gallery_html :
       v + e[] "    - Command '"$command"' ["{1+$>}/$nb_commands"]." v -
       +l # Parse command definition and examples
         s -,{'"#@cli "$command" :"'}
-        if {$!<2} s -,{'"#@cli "$command"\n"'} fi
+        if {$!<2} s -,{'"#@cli "$command"\n"'} i[1] ({'\n'}) a[-2,-1] y fi
         if {$!<2} v + warn[] "    ** Command '"$command"' not found! **" v -
         else
           k.
@@ -4018,7 +4015,9 @@ update_gallery_html :
             );
           ";
           rm[0]
-          repeat $! # For each example found
+
+          nb_examples=$!
+          repeat $nb_examples # For each example found
             example$nex={$>,t}
 
             v + e[] "      $ "${example$nex} v -
@@ -4026,7 +4025,7 @@ update_gallery_html :
             sample=${"arg 1+"{$nex%narg($pics)},$pics}
             filename_original=${category}_${sample}_original_$nex.jpg
             filename_full=${category}_${sample}_full_$nex.jpg
-            filename_thumb=${category}_${sample}_thumb_$nex.png
+            filename_thumb=${category}_${sample}_thumb_$nex.jpg
 
             l[] # Create a HTML representation of the command
               ({'${example$nex}'})
@@ -4045,7 +4044,8 @@ update_gallery_html :
               repeat 3 autocrop done
               frame 3%,3%,255
               rr2d 440,440,0,3 drop_shadow. 2,2,2 rr2d 300,300,0,3
-              o $filename_thumb rm
+              i[0] 100%,100%,1,3,245 blend alpha
+              o $filename_thumb,60 rm
 
               if $is_input
                 image.jpg _gallery
@@ -4059,11 +4059,12 @@ update_gallery_html :
             l[] $filename_full width,height={[w,h]+64} rm endl
 
             if {!($col%$nb_cols)} html=${html}"<tr>\n" fi
+            if {$nb_examples==1} counter= else counter=" <font size=\"-2\"><i>"[{$>+1}/$nb_examples]"</i></font>" fi
 
             if $is_input
               html=${html}\
                   "  <td><center><div><a href=\"#\" onclick=\"return hs.htmlExpand(this, { width: "$width", height: "$height" })\">\n"\
-                  "  <img alt=\""gallery_$command$nex"\" border=\"0\" src=\""$filename_thumb"\" /><br/><b>"$command"</b></a>\n"\
+                  "  <img alt=\""gallery_$command$nex"\" border=\"0\" src=\""$filename_thumb"\" /><br/><b>"$command$counter"</b></a>\n"\
                   "  <div class=\"highslide-maincontent\"><center>\n"\
                   "  <img alt=\""gallery_$command$nex"\" border=\"0\" src=\""$filename_full"\" onclick=\"hs.close()\" onmouseover=\"javascript:this.src='"$filename_full"';\" onmouseout=\"javascript:this.src='"$filename_original"';\" />\n"\
                   "</center></div>\n"\
@@ -4071,18 +4072,18 @@ update_gallery_html :
             else
               html=${html}\
                   "  <td><center><div><a href=\""$filename_full"\" class=\"highslide\" onclick=\"return hs.expand(this)\">"\
-                  "<img alt=\""gallery_$command$nex"\" border=\"0\" src=\""$filename_thumb"\" /><br/><b>"$command"</b></a>"\
+                  "<img alt=\""gallery_$command$nex"\" border=\"0\" src=\""$filename_thumb"\" /><br/><b>"$command$counter"</b></a>"\
                   "<div class=\"highslide-caption\">Command line: <tt>$ gmic "${replaced_example$nex}"</tt></div></div></center></td>\n"
             fi
             nex+=1
-            col+=1
-            if {!($col%$nb_cols)} html=${html}"</tr>\n" fi
+            col={($col+1)%$nb_cols}
+            if {!$col} html=${html}"</tr>\n" fi
           done
         fi
         rm
       endl
     done
-    if {$col%$nb_cols} html=${html}"</tr>\n" fi
+    if $col html=${html}"</tr>\n" fi
     html=$html\
          "</table><br/>\n"\
          "<font size=\"-1\"><table cellspacing=\"0\" cellpadding=\"10\" border=\"1\" align=\"center\"><tr>\n"\
@@ -4104,7 +4105,7 @@ update_gallery_html :
   # Transfer on G'MIC server
   v + e[] "\n  * Transfer gallery on G'MIC server.\n" v -
   x "ln -fs artistic.shtml index.shtml"
-  x "lftp ftp://"$GMIC_LOGIN":"$GMIC_PASSWD"@ftp.gmic.eu -e \"mirror -RL . /www/gmic/gallery2 ; quit\""
+  x "lftp ftp://"$GMIC_LOGIN":"$GMIC_PASSWD"@ftp.gmic.eu -e \"mirror -RL . /www/gmic/gallery ; quit\""
   v + e[] "  * All done!.\n"
 
 # Generate a single image from a list of images, for the gallery.
@@ -7190,7 +7191,7 @@ select_color : skip ${1=0}
 
 #@cli sepia
 #@cli : Apply sepia tones effect on selected images.
-#@cli : $ image.jpg +sepia
+#@cli : $ image.jpg sepia
 sepia :
   e[^-1] "Apply sepia tones effect on image$?."
   v - (0,44,115,143,196,244^0,20,84,119,184,235^0,5,44,73,144,200) r. 256,1,1,3,3
@@ -7199,7 +7200,7 @@ sepia :
 
 #@cli solarize
 #@cli : Solarize selected images.
-#@cli : $ image.jpg +solarize
+#@cli : $ image.jpg solarize
 solarize :
   e[^-1] "Solarize image$?."
   v - luminance n 0,128 map 1 v +
@@ -8438,7 +8439,7 @@ _scale_dcci2x_mask : skip ${1=1.15}
 #@cli seamcarve : _width[%]>=0,_height[%]>=0,_is_priority_channel={ 0 | 1 },_is_antialiasing={ 0 | 1 },_maximum_seams[%]>=0
 #@cli : Resize selected images with specified 2d geometry, using the seam-carving algorithm.
 #@cli : Default values: 'height=100%', 'is_priority_channel=0', 'is_antialiasing=1' and 'maximum_seams=25%'.
-#@cli : $ image.jpg +seamcarve 60%
+#@cli : $ image.jpg seamcarve 60%
 # The main code of this algorithm has been done by Andy (Garagecoder).
 seamcarve : check "${2=100%}>=0 && ${5=25%}>=0" skip ${3=0},${4=1}
   e[^-1] "Resize image$? to $1x$2 using seam-carving algorithm, "${arg\ 1+!$3,with,without}" priority channel, "${arg\ 1+!$4,with,without}" anti-aliasing and maximum seams $5."
@@ -8710,7 +8711,7 @@ bandpass : skip ${1=0},${2=20%}
 #@cli blur_angular : amplitude[%],_center_x[%],_center_y[%]
 #@cli : Apply angular blur on selected images.
 #@cli : Default values: 'center_x=center_y=50%'.
-#@cli : $ image.jpg +blur_angular 2%
+#@cli : $ image.jpg blur_angular 2%
 #@cli : $$
 blur_angular : skip ${2=50%},${3=50%}
   e[^-1] "Apply angular blur on image$?, with amplitude $1 and center point ($2,$3)."
@@ -8723,7 +8724,7 @@ blur_angular : skip ${2=50%},${3=50%}
 #@cli : Specifying one axis multiple times apply also the blur multiple times.
 #@cli : Reference: Masaki Kawase, "Practical Implementation of High Dynamic Range Rendering", GDC 2004.
 #@cli : Default values: 'amplitude=1', 'ratio=2', 'nb_iter=5', 'blend_operator=+', 'kernel=0','normalize_scales=0' and 'axes=(all)'
-#@cli : $ image.jpg +blur_bloom ,
+#@cli : $ image.jpg blur_bloom ,
 blur_bloom : check "${1=1}>=0 && ${2=2}>=0 && isint(${3=5}) && $3>=0 && isint(${5=0}) && $5>=0 && $5<=4 && isval(${6=0})" skip ${4=+},${7=}
   e[^-1] "Apply bloom effect on image$?, with amplitude $1, ratio $2, $3 iterations, blend operator '$4' and "${"arg 1+!$6,\"\",\"no \""}"scale normalization."
   v -
@@ -8746,7 +8747,7 @@ blur_bloom : check "${1=1}>=0 && ${2=2}>=0 && isint(${3=5}) && $3>=0 && isint(${
 #@cli blur_linear : amplitude1[%],_amplitude2[%],_angle,_boundary_conditions={ 0=dirichlet | 1=neumann }
 #@cli : Apply linear blur on selected images, with specified angle and amplitudes.
 #@cli : Default values: 'amplitude2=0', 'angle=0' and 'boundary_conditions=1'.
-#@cli : $ image.jpg +blur_linear 10,0,45
+#@cli : $ image.jpg blur_linear 10,0,45
 #@cli : $$
 blur_linear : skip ${2=0},${3=0},${4=1}
   e[^-1] "Apply linear blur on image$?, with angle $3 deg. and amplitudes ($1,$2)."
@@ -8764,7 +8765,7 @@ blur_linear : skip ${2=0},${3=0},${4=1}
 #@cli blur_radial : amplitude[%],_center_x[%],_center_y[%]
 #@cli : Apply radial blur on selected images.
 #@cli : Default values: 'center_x=center_y=50%'.
-#@cli : $ image.jpg +blur_radial 2%
+#@cli : $ image.jpg blur_radial 2%
 #@cli : $$
 blur_radial : skip ${2=50%},${3=50%}
   e[^-1] "Apply radial blur on image$?, with amplitude $1 and center point ($2,$3)."
@@ -9205,7 +9206,7 @@ divergence :
 #@cli dog : _sigma1>=0[%],_sigma2>=0[%]
 #@cli : Compute difference of gaussian on selected images.
 #@cli : Default values: 'sigma1=2%' and 'sigma2=3%'.
-#@cli : $ image.jpg +dog 2,3
+#@cli : $ image.jpg dog 2,3
 dog : check "${1=2%}>=0 && ${2=3%}>=0"
   e[^-1] "Compute difference of gaussian on image$?, with standard deviations $1 and $2."
   v - repeat $! l[$>]
@@ -9309,7 +9310,7 @@ erode_threshold : check "isint($1) && $1>=1 && isint(${2=$1}) && $2>=1 && isint(
 
 #@cli gradient_norm
 #@cli : Compute gradient norm of selected images.
-#@cli : $ image.jpg +gradient_norm equalize[-1]
+#@cli : $ image.jpg gradient_norm equalize[-1]
 #@cli : $$
 gradient_norm :
   e[^-1] "Compute gradient norm of image$?."
@@ -10266,7 +10267,7 @@ syntexturize : check "${1=100%}>0 && ${2=$1}>0"
 #@cli : Resynthetize 'width'x'height' versions of selected micro-textures using a patch-matching algorithm.
 #@cli : If 'nbscales==0', the number of scales used is estimated from the image size.
 #@cli : Default values: 'width=height=100%', 'nb_scales=0', 'patch_size=7', 'blending_size=5' and 'precision=1'.
-#@cli : $ image.jpg crop 2,282,50,328 +syntexturize_patchmatch 320,320
+#@cli : $ image.jpg crop 2,282,50,328 syntexturize_patchmatch 320,320
 syntexturize_patchmatch : check "${1=100%}>0 && ${2=$1}>0 && isint(${3=0}) && $3>=0 && isint(${4=7}) && $4>0 && ${5=5}>=0 && ${6=1}>=0"
   e[^-1] "Resynthetize $1x$2 version(s) of texture$? using a patch-matching algorithm with "${"v - if $3 u \"$3 \" else u auto- fi v +"}"scales, $4x$4 patches, blending size $5 and precision $6."
   v - repeat $! l[$>]
@@ -15722,7 +15723,7 @@ fractalize : check "${1=0.8}>=0 && $1<=1"
 #@cli glow : _amplitude>=0
 #@cli : Add soft glow on selected images.
 #@cli : Default value: 'amplitude=1%'.
-#@cli : $ image.jpg +glow ,
+#@cli : $ image.jpg glow ,
 glow : skip ${1=1%}
   e[^-1] "Add soft glow on image$?, with amplitude $1."
   v - repeat $! l[$>] split_opacity +b[0] $1 n. [0] blend_edges[0,-1] 1 a c endl done v +
@@ -15857,7 +15858,7 @@ lightrays : check "${1=50}>=0 && $1<=100 && ${4=1}>=0 && ${5=1}>=0" skip ${2=50%
 #@cli : Apply relief light to selected images.
 #@cli : Default values(s) : 'ambient_light=0.3', 'specular_lightness=0.5', 'specular_size=0.2', 'darkness=0', 'xl=0.2', 'yl=zl=0.5',
 #@cli : 'zscale=1', 'opacity=1' and 'opacity_is_heightmap=0'.
-#@cli : $ image.jpg +blur 2 light_relief[-1] 0.3,4,0.1,0
+#@cli : $ image.jpg blur 2 light_relief 0.3,4,0.1,0
 light_relief : skip ${1=0.3},${2=0.5},${3=0.2},${4=0},${5=0.2},${6=0.5},${7=0.5},${8=1},${9=1},${10=0}
   e[^-1] "Apply relief light to image$?."
   v - repeat $! l[$>]
@@ -16603,7 +16604,7 @@ warp_perspective : skip ${1=1.5},${2=0},${3=1},${4=50},${5=50},${6=2}
 #@cli water : _amplitude,_smoothness>=0,_angle
 #@cli : Apply water deformation on selected images.
 #@cli : Default values: 'amplitude=30', 'smoothness=1.5' and 'angle=45'.
-#@cli : $ image.jpg +water ,
+#@cli : $ image.jpg water ,
 water : check ${2=1.5}>=0 skip ${1=30},${3=1},${4=45}
   e[^-1] "Apply water deformation on image$?, with amplitude $1, smoothness $2 and angle $3."
   v - repeat $! l[$>]
@@ -16613,7 +16614,7 @@ water : check ${2=1.5}>=0 skip ${1=30},${3=1},${4=45}
 #@cli wave : _amplitude>=0,_frequency>=0,_center_x,_center_y
 #@cli : Apply wave deformation on selected images.
 #@cli : Default values: 'amplitude=4', 'frequency=0.4' and 'center_x=center_y=50'.
-#@cli : $ image.jpg +wave ,
+#@cli : $ image.jpg wave ,
 wave : skip ${1=4},${2=0.4},${3=50},${4=50}
   e[^-1] "Apply wave deformation on image$?, with amplitude $1, frequency $2 and center point at ($3%,$4%)."
   v - repeat $! l[$>]
@@ -16816,7 +16817,7 @@ texturize_paper :
 #@cli vignette : _strength>=0,0<=_radius_min<=100,0<=_radius_max<=100
 #@cli : Add vignette effect to selected images.
 #@cli : Default values: 'strength=100', 'radius_min=70' and 'radius_max=90'.
-#@cli : $ image.jpg +vignette ,
+#@cli : $ image.jpg vignette ,
 vignette : check "${1=100}>=0 && ${2=70}>=0 && $2<=100 && ${3=90}>=0 && $3<=100"
   e[^-1] "Add vignette effect to image$?, with strength $1 and size $2."
   v - repeat $! l[$>]
@@ -16828,7 +16829,7 @@ vignette : check "${1=100}>=0 && ${2=70}>=0 && $2<=100 && ${3=90}>=0 && $3<=100"
 #@cli watermark_visible : _text,0<_opacity<1,_size>0,_angle,_mode={ 0=remove | 1=add },_smoothness>=0
 #@cli : Add or remove a visible watermark on selected images (value range must be [0,255]).
 #@cli : Default values: 'text=(c) G'MIC', 'opacity=0.3', 'size=53', 'angle=25', 'mode=1' and 'smoothness=0'.
-#@cli : $ image.jpg +watermark_visible ,0.7
+#@cli : $ image.jpg watermark_visible ,0.7
 watermark_visible : skip "${1=\251\ G\47MIC}" check "${2=0.3}>0 && $2<1 && ${3=53}>0 && ${6=0.5}>=0" skip ${4=25},${5=1}
   e[^-1] ${arg\ 1+!$5,Add,Remove}" visible watermark '$1' on image$?, with opacity $2, size $3, angle $4 deg."
   v - repeat $! l[$>]
@@ -35447,6 +35448,67 @@ fx_solve_maze_preview :
   ellipse $1%,$2%,3,3,0,1,0x1,0
   ellipse $3%,$4%,3,3,0,1,${7-9}
   ellipse $3%,$4%,3,3,0,1,0x1,0
+
+# Add some examples for the 'gallery pages' on the G'MIC web site.
+# These examples used filters specifically defined in the G'MIC plug-in.
+
+#@cli plugin_arrays
+#@cli : This entry shows some examples of array filters available in the G'MIC plug-in.
+#@cli : $ image.jpg fx_frame_blur 30,30,0,5,0,0,128,128,128,0,5,255,255,255,2,2,1,0,0.5,0.5,0
+
+#@cli plugin_artistic
+#@cli : This entry shows some examples of artistic filters available in the G'MIC plug-in.
+#@cli : $ image.jpg fx_engrave_preview 0.5,50,0,8,40,0,0,0,10,1,0,0,0,1,0
+#@cli : $ image.jpg fx_engrave_preview 0.5,4,0,7.68,15.2,0,0,1,10,1,0,0,0,1,0
+#@cli : $ image.jpg fx_gcd_layeretch 11,4,12,0.12,100,8.5,5,0,0,3,1,1,0
+#@cli : $ image.jpg fx_bokeh_preview 3,8,0,30,8,4,0.3,0.2,210,210,80,160,0.7,30,20,20,1,2,170,130,20,110,0.15,0
+#@cli : $ image.jpg fx_pencil_portraitbw 30,120,1,0.5,144,79,21,0
+#@cli : $ image.jpg fx_gcd_etch_preview 125,153,171,185,0.1,50,80,50,10,15,12,20,0,1,0.3,1,0,0
+#@cli : $ image.jpg fx_8bits_preview 25,800,16,0
+
+#@cli plugin_colors
+#@cli : This entry shows some examples of color filters available in the G'MIC plug-in.
+#@cli : $ image.jpg fx_color_abstraction_preview 1,10,0.2,0
+#@cli : $ image.jpg fx_boost_chroma_preview 50,0,0
+#@cli : $ image.jpg fx_retrofade_preview 20,6,40,0
+#@cli : $ image.jpg fx_tk_vintage_preview 2,0.85,0.7,80,200,5,147,26,161,0.3,235,220,176,0.4,190,181,108,0.2,0,0,100,0,0.3,25,0,0
+
+#@cli plugin_deformations
+#@cli : This entry shows some examples of color filters available in the G'MIC plug-in.
+#@cli : $ image.jpg fx_conformal_maps_preview 8,1,0,"((1.1 + i*z/6)/(1.04 - i*z/6))^6.2",0,0,0,0,0,3,0,0,"1024","1024"
+#@cli : $ image.jpg souphead_droste10_preview 40,100,1,1,1,0,0,0,0,0,1,10,1,0,90,0,0,0,0,1,0,1,1,0,0,0,0,0,1,0,0
+#@cli : $ image.jpg fx_crease 30,10,3
+#@cli : $ image.jpg fx_distort_lens_preview 0.29,0,0.23,50,50,0,0
+#@cli : $ image.jpg fx_drop_water_preview 0,20,2,80,0,3,35,10,1,0.5,0.25,0.5,0.75,0.05,0.15,1
+#@cli : $ image.jpg fx_reflect 50,1,110,160,190,64,0,1.5,0,-3.3,7,1.5
+#@cli : $ image.jpg fx_square_circle_preview 0,1,0,0,0,0,0,0
+#@cli : $ image.jpg fx_textured_glass_preview 40,40,1,1,0,2,0,0
+
+#@cli plugin_filtering
+#@cli : This entry shows some examples of filters available in the G'MIC plug-in.
+#@cli : $ image.jpg fx_gcd_crt 1.8,1.8,0,0
+#@cli : $ image.jpg fx_dirty_preview 30,1,0,0,0
+#@cli : $ image.jpg fx_freaky_details_preview 2,10,1,11,0,32,0
+#@cli : $ image.jpg jeje_normalize_local_variance_preview 50,5,5,1,0,0
+#@cli : $ image.jpg fx_mighty_details_preview 25,1,25,1,11,0
+
+#@cli plugin_patterns
+#@cli : This entry shows some examples of pattern rendering filters available in the G'MIC plug-in.
+#@cli : $ image.jpg fx_rain_preview 65,10,50,0.1,1,1,0
+#@cli : $ 400,400,1,3 fx_camouflage 9,12,100,30,46,33,75,90,65,179,189,117,255,246,158
+#@cli : $ image.jpg jeje_clouds_preview 50,0.5
+#@cli : $ image.jpg fx_crystal_preview 50,0.2,20,0
+#@cli : $ 400,400,1,3 fx_crystal_background 10,25,0,100,1
+#@cli : $ image.jpg fx_marble 0.5,1,0,0,0.4,0.6,0.6,1.1,0,100
+#@cli : $ image.jpg fx_mineral_mosaic 1,2,1,100,0
+#@cli : $ image.jpg fx_shapes_preview 1,16,10,2,5,106.8,2,0,0,1,0
+#@cli : $ 400,400,1,3 fx_satin 20,1,0,0,0,0,255,255,255,255,255,0,0,0,-50,0,0
+#@cli : $ 400,400,1,3 fx_seamless_turbulence 15,20,0,1,3,1
+#@cli : $ image.jpg fx_shockwaves_preview 10,10,20,0,0
+#@cli : $ 400,400,1,3 fx_equation_parametric "sin(t)*(exp(cos(t))-2*cos(4*t)-sin(t/12)^5)","cos(t)*(exp(cos(t))-2*cos(4*t)-sin(t/12)^5)",0,100,4096,1,0,64,0,0,128,0,0,1,1,1
+#@cli : $ 400,400,1,3 KittyRings_preview 30,8,0,1,113,0,113,0,255,0
+#@cli : $ 400,400,1,3 fx_neon_lightning 50,50,0,50,50,100,50,0.7,3,130,80,50,0.25,0
+#@cli : $ image.jpg gcd_wiremap 100,100,0.5,0.5,0
 
 
 # Local Variables:
