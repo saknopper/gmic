@@ -3932,11 +3932,12 @@ update_gallery_html :
   x "ln -fs ../highslide ."
 
   # Define categories and sample pictures.
-  categories=arrays,artistic,colors,deformations,filtering,patterns,3drendering
+  categories=arrays,artistic,blackandwhite,colors,deformations,filtering,patterns,3drendering
   nb_categories={narg($categories)}
   commands_arrays=gallery_arrays,array,array_fade,array_mirror,frame_blur,frame_cube,frame_painting,img2ascii,imagegrid,rotate_tiles,vignette,tunnel
-  commands_artistic=gallery_artistic,boxfitting,cartoon,cubism,draw_whirl,fire_edges,fractalize,halftone,hardsketchbw,light_relief,linify,mosaic,pencilbw,old_photo,polaroid,polygonize,poster_hope,rodilius,stained_glass,stencil
-  commands_colors=gallery_colors,sepia,solarize,hsv2rgb,transfer_rgb
+  commands_artistic=gallery_artistic,boxfitting,cartoon,cubism,draw_whirl,fractalize,halftone,hardsketchbw,light_relief,linify,mosaic,polaroid,polygonize,poster_hope,rodilius,stained_glass,stencil
+  commands_blackandwhite=gallery_blackandwhite,pencilbw,old_photo,sepia
+  commands_colors=gallery_colors,solarize,hsv2rgb,transfer_rgb
   commands_deformations=gallery_deformations,deform,flower,map_sphere,seamcarve,spherize,twirl,warp_perspective,water,wave
   commands_filtering=gallery_filtering,blur_angular,blur_linear,blur_radial,glow,smooth,bilateral,dog,deriche,distance,gradient_norm,normalize_local,sharpen,solidify
   commands_patterns=gallery_patterns,tsp,chessboard,mandelbrot,maze_mask,plasma,shape_fern,shape_snowflake,sierpinski,syntexturize_patchmatch,truchet,turbulence,watermark_visible,weave
@@ -3985,6 +3986,7 @@ update_gallery_html :
     html_menu="<font size=\"-1\"><table cellspacing=\"0\" cellpadding=\"10\" border=\"1\" align=\"center\"><tr>\n"\
          $td_arrays"<a href=\"arrays.shtml#menu\">Arrays, tiles &amp; frames</a></td>"\
          $td_artistic"<a href=\"artistic.shtml#menu\">Artistic</a></td>"\
+         $td_blackandwhite"<a href=\"blackandwhite.shtml#menu\">Black &amp; white</a></td>"\
          $td_colors"<a href=\"colors.shtml#menu\">Colors</a></td>"\
          $td_deformations"<a href=\"deformations.shtml#menu\">Deformations</a></td>"\
          $td_filtering"<a href=\"filtering.shtml#menu\">Filtering</a></td>"\
@@ -4044,10 +4046,12 @@ update_gallery_html :
               ({'${example$nex}'})
               +replace_str. "image.jpg","<a href=\"http://gmic.eu/img/sample_"$sample".png\" target=\"_blank\">"$sample".png</a>"
               y -.. . is_input={-2,im!=0||iM!=0}
+              l. s +,{'" "'} repeat $! if {$<,crop(0,0,1,5)=='_fps='||crop(0,0,1,7)=='_label='} rm[$<] fi done a y endl # Discard '_fps=?' and '_label=?'
               replaced_example$nex={t} rm
             endl
 
             etime=
+            _label=
             if {!isfile($filename_thumb)} l[]
               sp $sample,600 o image.jpg rm
 
@@ -4081,10 +4085,13 @@ update_gallery_html :
 
             if {!narg($etime)} html_etime= else html_etime="<br/><font size=\"-2\"><i>(generated in "${etime}"s)</i></font>" fi
 
+            if {['$_label']==0} _label=$command$counter
+            else ({'$_label'}) replace_str. "~"," " _label={t} rm.
+            fi
             if $is_input
               html=${html}\
                   "  <td><center><div><a href=\"#\" onclick=\"return hs.htmlExpand(this, { width: "$width", height: "$height" })\">\n"\
-                  "  <img alt=\""gallery_$command$nex"\" border=\"0\" src=\""$filename_thumb"\" /><br/><b>"$command$counter"</b></a>\n"\
+                  "  <img alt=\""gallery_$command$nex"\" border=\"0\" src=\""$filename_thumb"\" /><br/><b>"$_label"</b></a>\n"\
                   "  <div class=\"highslide-maincontent\"><center>\n"\
                   "  <img alt=\""gallery_$command$nex"\" border=\"0\" src=\""$filename_full"\" onclick=\"hs.close()\" onmouseover=\"javascript:this.src='"$filename_full"';\" onmouseout=\"javascript:this.src='"$filename_original"';\" />\n"\
                   "</center></div>\n"\
@@ -4092,7 +4099,7 @@ update_gallery_html :
             else
               html=${html}\
                   "  <td><center><div><a href=\""$filename_full"\" class=\"highslide\" onclick=\"return hs.expand(this)\">"\
-                  "<img alt=\""gallery_$command$nex"\" border=\"0\" src=\""$filename_thumb"\" /><br/><b>"$command$counter"</b></a>"\
+                  "<img alt=\""gallery_$command$nex"\" border=\"0\" src=\""$filename_thumb"\" /><br/><b>"$_label"</b></a>"\
                   "<div class=\"highslide-caption\">Command: <tt>$ gmic "${replaced_example$nex}${html_etime}"</tt></div></div></center></td>\n"
             fi
             nex+=1
@@ -35473,67 +35480,85 @@ fx_solve_maze_preview :
 
 #@cli gallery_arrays
 #@cli : This entry defines some examples of array filters for the G'MIC gallery page.
-#@cli : $ image.jpg fx_frame_blur 30,30,0,5,0,0,128,128,128,0,5,255,255,255,2,2,1,0,0.5,0.5,0
+#@cli : $ image.jpg fx_frame_blur 30,30,0,5,0,0,128,128,128,0,5,255,255,255,2,2,1,0,0.5,0.5,0 _label="Frame~[blur]"
 
 #@cli gallery_artistic
 #@cli : This entry defines some examples of artistic filters for the G'MIC gallery page.
-#@cli : $ image.jpg fx_engrave_preview 0.5,50,0,8,40,0,0,0,10,1,0,0,0,1,0
-#@cli : $ image.jpg fx_engrave_preview 0.5,4,0,7.68,15.2,0,0,1,10,1,0,0,0,1,0
-#@cli : $ image.jpg fx_gcd_layeretch 11,4,12,0.12,100,8.5,5,0,0,3,1,1,0
-#@cli : $ image.jpg fx_bokeh_preview 3,8,0,30,8,4,0.3,0.2,210,210,80,160,0.7,30,20,20,1,2,170,130,20,110,0.15,0
-#@cli : $ image.jpg fx_pencil_portraitbw 30,120,1,0.5,144,79,21,0
-#@cli : $ image.jpg fx_gcd_etch_preview 125,153,171,185,0.1,50,80,50,10,15,12,20,0,1,0.3,1,0,0
-#@cli : $ image.jpg fx_8bits_preview 25,800,16,0
-#@cli : $ image.jpg fire_edges 0.7,0.25,0.5,25,20 _fps=6
+#@cli : $ image.jpg fx_engrave_preview 0.5,4,0,7.68,15.2,0,0,1,10,1,0,0,0,1,0 _label="Engrave"
+#@cli : $ image.jpg fx_bokeh_preview 3,8,0,30,8,4,0.3,0.2,210,210,80,160,0.7,30,20,20,1,2,170,130,20,110,0.15,0 _label="Bokeh"
+#@cli : $ image.jpg fx_8bits_preview 25,800,16,0 _label="Oldschool~8bits"
+#@cli : $ image.jpg fire_edges 0.7,0.25,0.5,25,20 _fps=6 _label="Edges~on~fire"
+#@cli : $ image.jpg fx_diffusiontensors_preview 10,5,3,1,0.15,1,0,3,0 _label="Diffusion~tensors"
+#@cli : $ image.jpg fx_dreamsmooth_preview 3,1,1,0.8,0,0.8,1,24,0 _label="Dream~smoothing"
+#@cli : $ image.jpg fx_feltpen_preview 300,50,1,0.1,20,5,0 _label="Felt~pen"
+#@cli : $ image.jpg gtutor_fpaint_preview 0.5,0.5,0,0,45,0.5,0.5,0.5,0 _label="Finger~paint"
+#@cli : $ image.jpg fx_graphic_novelfxl 0,2,6,5,20,0,0.62,14,0,1,0.5,0.78,1.92,0,0,0,1,1,1,0.5,0.8,1.28 _label="Novel~FX"
+#@cli : $ image.jpg fx_illustration_look_preview 100,0,0,0,0 _label="Illustration~look"
+#@cli : $ image.jpg fx_lylejk_painting_preview 10,2,4,10,0 _label="Lylejk~painting"
+#@cli : $ image.jpg fx_painting_preview 5,2.5,1.5,50,1,0 _label="Painting"
+#@cli : $ image.jpg fx_delaunay_preview 5,75,1,3,0,0,0,128,1,1,0 _label="Polygonize~[delaunay]"
+#@cli : $ image.jpg fx_posterize_preview 150,30,1,12,0,0,0,0 _label="Posterize"
+#@cli : $ image.jpg fx_quadtree_preview 2,963,1.3,0,3,0.7,0.33,0,0 _label="Quadtree~variations"
+#@cli : $ image.jpg fx_vector_painting_preview 9.37,0 _label="Vector~painting"
 
 #@cli gallery_colors
 #@cli : This entry defines some examples of color filters for the G'MIC gallery page.
-#@cli : $ image.jpg fx_color_abstraction_preview 1,10,0.2,0
-#@cli : $ image.jpg fx_boost_chroma_preview 50,0,0
-#@cli : $ image.jpg fx_retrofade_preview 20,6,40,0
-#@cli : $ image.jpg fx_tk_vintage_preview 2,0.85,0.7,80,200,5,147,26,161,0.3,235,220,176,0.4,190,181,108,0.2,0,0,100,0,0.3,25,0,0
+#@cli : $ image.jpg fx_color_abstraction_preview 1,10,0.2,0 _label="Color~abstraction"
+#@cli : $ image.jpg fx_boost_chroma_preview 90,0,0 _label="Boost~chromaticity"
+#@cli : $ image.jpg fx_retrofade_preview 20,6,40,0 _label="Retro~fade"
+#@cli : $ image.jpg fx_tk_vintage_preview 2,0.85,0.7,80,200,5,147,26,161,0.3,235,220,176,0.4,190,181,108,0.2,0,0,100,0,0.3,25,0,0 _label="Vintage~style"
 
 #@cli gallery_deformations
 #@cli : This entry defines some examples of deformation filters for the G'MIC gallery page.
-#@cli : $ image.jpg animate "flower","30,10,0,0","30,10,0,360",10 rm. _fps=6
-#@cli : $ image.jpg fx_conformal_maps_preview 8,1,0,"((1.1 + i*z/6)/(1.04 - i*z/6))^6.2",0,0,0,0,0,3,0,0,"1024","1024"
-#@cli : $ image.jpg souphead_droste10_preview 40,100,1,1,1,0,0,0,0,0,1,10,1,0,90,0,0,0,0,1,0,1,1,0,0,0,0,0,1,0,0
-#@cli : $ image.jpg fx_crease 30,10,3
-#@cli : $ image.jpg fx_distort_lens_preview 0.29,0,0.23,50,50,0,0
-#@cli : $ image.jpg fx_drop_water_preview 0,20,2,80,0,3,35,10,1,0.5,0.25,0.5,0.75,0.05,0.15,1
-#@cli : $ image.jpg fx_reflect 50,1,110,160,190,64,0,1.5,0,-3.3,7,1.5
-#@cli : $ image.jpg fx_square_circle_preview 0,1,0,0,0,0,0,0
-#@cli : $ image.jpg fx_textured_glass_preview 40,40,1,1,0,2,0,0
-#@cli : $ sample lena,leno,320 morph 40 _fps=5
+#@cli : $ image.jpg animate "flower","30,10,0,0","30,10,0,360",10 rm. _fps=6 _label="flower"
+#@cli : $ image.jpg fx_conformal_maps_preview 8,1,0,"((1.1 + i*z/6)/(1.04 - i*z/6))^6.2",0,0,0,0,0,3,0,0,"1024","1024" _label="Conformal~maps"
+#@cli : $ image.jpg souphead_droste10_preview 40,100,1,1,1,0,0,0,0,0,1,10,1,0,90,0,0,0,0,1,0,1,1,0,0,0,0,0,1,0,0 _label="Continuous~droste"
+#@cli : $ image.jpg fx_crease 30,10,3 _label="Crease"
+#@cli : $ image.jpg fx_distort_lens_preview 0.29,0,0.23,50,50,0,0 _label="Distort~lens"
+#@cli : $ image.jpg fx_drop_water_preview 0,20,2,80,0,3,35,10,1,0.5,0.25,0.5,0.75,0.05,0.15,1 _label="Drop~water"
+#@cli : $ image.jpg fx_reflect 50,1,110,160,190,64,0,1.5,0,-3.3,7,1.5 _label="Reflection"
+#@cli : $ image.jpg fx_square_circle_preview 0,1,0,0,0,0,0,0 _label="Square~to~circle"
+#@cli : $ image.jpg fx_textured_glass_preview 40,40,1,1,0,2,0,0 _label="Textured~glass"
+#@cli : $ sample lena,leno,320 morph 40 _fps=5 _label="morph"
 
 #@cli gallery_filtering
 #@cli : This entry defines some examples of filters for the G'MIC gallery page.
-#@cli : $ image.jpg fx_gcd_crt 1.8,1.8,0,0 equalize 256
-#@cli : $ image.jpg fx_dirty_preview 30,1,0,0,0
-#@cli : $ image.jpg fx_freaky_details_preview 2,10,1,11,0,32,0
-#@cli : $ image.jpg jeje_normalize_local_variance_preview 50,5,5,1,0,0
-#@cli : $ image.jpg fx_mighty_details_preview 25,1,25,1,11,0
+#@cli : $ image.jpg fx_gcd_crt 1.8,1.8,0,0 equalize 256 _label="CRT~sub-pixels"
+#@cli : $ image.jpg fx_dirty_preview 30,1,0,0,0 _label="Dirty"
+#@cli : $ image.jpg fx_freaky_details_preview 2,10,1,11,0,32,0 _label="Freaky~details"
+#@cli : $ image.jpg jeje_normalize_local_variance_preview 50,5,5,1,0,0 _label="Local~variance~normalization"
+#@cli : $ image.jpg fx_mighty_details_preview 25,1,25,1,11,0 _label="Mighty~details"
 
 #@cli gallery_patterns
 #@cli : This entry defines some examples of pattern filters for the G'MIC gallery page.
-#@cli : $ image.jpg fx_rain_preview 65,10,50,0.1,1,1,0
-#@cli : $ 400,400,1,3 fx_camouflage 9,12,100,30,46,33,75,90,65,179,189,117,255,246,158
-#@cli : $ image.jpg jeje_clouds_preview 50,0.5
-#@cli : $ image.jpg fx_crystal_preview 50,0.2,20,0
-#@cli : $ 400,400,1,3 fx_crystal_background 10,25,0,100,1
-#@cli : $ image.jpg fx_marble 0.5,1,0,0,0.4,0.6,0.6,1.1,0,100
-#@cli : $ image.jpg fx_mineral_mosaic 1,2,1,100,0
-#@cli : $ image.jpg fx_shapes_preview 1,16,10,2,5,106.8,2,0,0,1,0
-#@cli : $ 400,400,1,3 fx_satin 20,1,0,0,0,0,255,255,255,255,255,0,0,0,-50,0,0
-#@cli : $ 400,400,1,3 fx_seamless_turbulence 15,20,0,1,3,1
-#@cli : $ image.jpg fx_shockwaves_preview 10,10,20,0,0
-#@cli : $ 400,400,1,3 fx_equation_parametric "sin(t)*(exp(cos(t))-2*cos(4*t)-sin(t/12)^5)","cos(t)*(exp(cos(t))-2*cos(4*t)-sin(t/12)^5)",0,100,4096,1,0,64,0,0,128,0,0,1,1,1
-#@cli : $ 400,400,1,3 KittyRings_preview 30,8,0,1,113,0,113,0,255,0
-#@cli : $ 400,400,1,3 fx_neon_lightning 50,50,0,50,50,100,50,0.7,3,130,80,50,0.25,0
-#@cli : $ sample monkey,lion,monkey 100%,100% plasma. equalize. 256 transition[0,1,2] [3],10 rm. _fps=10
+#@cli : $ image.jpg fx_rain_preview 65,10,50,0.1,1,1,0 _label="Rain~&amp;~snow"
+#@cli : $ 400,400,1,3 fx_camouflage 9,12,100,30,46,33,75,90,65,179,189,117,255,246,158 _label="Camouflage"
+#@cli : $ image.jpg jeje_clouds_preview 50,0.5 _label="Clouds"
+#@cli : $ image.jpg fx_crystal_preview 50,0.2,20,0 _label="Crystal"
+#@cli : $ 400,400,1,3 fx_crystal_background 10,25,0,100,1 _label="Crystal~background"
+#@cli : $ image.jpg fx_marble 0.5,1,0,0,0.4,0.6,0.6,1.1,0,100 _label="Marble"
+#@cli : $ image.jpg fx_mineral_mosaic 1,2,1,100,0 _label="Mineral~mosaic"
+#@cli : $ image.jpg fx_shapes_preview 1,16,10,2,5,106.8,2,0,0,1,0 _label="Op~art"
+#@cli : $ 400,400,1,3 fx_satin 20,1,0,0,0,0,255,255,255,255,255,0,0,0,-50,0,0 _label="Satin"
+#@cli : $ 400,400,1,3 fx_seamless_turbulence 15,20,0,1,3,1 _label="Seamless~turbulence"
+#@cli : $ image.jpg fx_shockwaves_preview 10,10,20,0,0 _label="Shock~waves"
+#@cli : $ 400,400,1,3 fx_equation_parametric "sin(t)*(exp(cos(t))-2*cos(4*t)-sin(t/12)^5)","cos(t)*(exp(cos(t))-2*cos(4*t)-sin(t/12)^5)",0,100,4096,1,0,64,0,0,128,0,0,1,1,1 _label="Equation~plot~[parametric]"
+#@cli : $ 400,400,1,3 KittyRings_preview 30,8,0,1,113,0,113,0,255,0 _label="Kitaoka~spin~illusion"
+#@cli : $ 400,400,1,3 fx_neon_lightning 50,50,0,50,50,100,50,0.7,3,130,80,50,0.25,0 _label="Neon~lighting"
+#@cli : $ sample monkey,lion,monkey 100%,100% plasma. equalize. 256 transition[0,1,2] [3],10 rm. _fps=10 _label="transition"
+#@cli : $ image.jpg fx_shapeism 6,7,0.38,0,1,5,32,8,3,-3,5,0.5,1,0,0,0,255 _label="Shapeism"
 
 #@cli gallery_3drendering
-#@cli : $ sample leno,lion,leno resize 400,400 transition3d 20,5,5 rm. _fps=10
+#@cli : This entry defines some examples of 3d rendering filters for the G'MIC gallery page.
+#@cli : $ sample leno,lion,leno resize 400,400 transition3d 20,5,5 rm. _fps=10 _label="transition3d"
+
+#@cli gallery_blackandwhite
+#@cli : This entry defines some examples of black-and-white filters for the G'MIC gallery page.
+#@cli : $ image.jpg fx_freaky_bw_preview 90,20,0,0,0,0 _label="Freaky~B&amp;W"
+#@cli : $ image.jpg fx_engrave_preview 0.5,50,0,8,40,0,0,0,10,1,0,0,0,1,0 _label="Engrave"
+#@cli : $ image.jpg fx_gcd_layeretch 11,4,12,0.12,100,8.5,5,0,0,3,1,1,0 _label="Multi-layer~etch"
+#@cli : $ image.jpg fx_pencil_portraitbw 30,120,1,0.5,144,79,21,0 _label="Pencil~portrait"
+#@cli : $ image.jpg fx_gcd_etch_preview 125,153,171,185,0.1,50,80,50,10,15,12,20,0,1,0.3,1,0,0 _label="Threshold~etch"
 
 # Local Variables:
 # mode: sh
