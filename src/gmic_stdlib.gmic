@@ -3985,7 +3985,7 @@ update_gallery_html : check "isbool(${1=0})"
          "<a href=\"http://gmic.eu/reference.shtml\">technical reference</a> to get a full documentation on this software.\n"\
          "<br/><br/>\n<div id=\"menu\">\n"
 
-    html_menu="<font size=\"-1\"><table cellspacing=\"0\" cellpadding=\"10\" border=\"1\" align=\"center\"><tr>\n"\
+    html_menu="<font size=\"-1\"><table cellspacing=\"0\" cellpadding=\"8\" border=\"1\" align=\"center\"><tr>\n"\
          $td_arrays"<a href=\"arrays.shtml#menu\">Arrays, tiles &amp; frames</a></td>"\
          $td_artistic"<a href=\"artistic.shtml#menu\">Artistic</a></td>"\
          $td_blackandwhite"<a href=\"blackandwhite.shtml#menu\">Black &amp; white</a></td>"\
@@ -4046,10 +4046,15 @@ update_gallery_html : check "isbool(${1=0})"
             fi
 
             l[] # Create a HTML representation of the command
-              ({'${example$nex}'})
+              ({'${example$nex}'}) y
               +replace_str. "image.jpg","<a href=\"http://gmic.eu/img/sample_"$sample".png\" target=\"_blank\">"$sample".png</a>"
               y -.. . is_input={-2,im!=0||iM!=0}
-              l. s +,{'" "'} repeat $! if {$<,crop(0,0,1,5)=='_fps='||crop(0,0,1,7)=='_label='} rm[$<] fi done a y endl # Discard '_fps=?' and '_label=?'
+              l. s +,{'" "'} repeat $! if {$<,crop(0,0,1,5)=='_fps='||crop(0,0,1,7)=='_label='} # Discard '_fps=?' and '_label=?'
+                rm[$<]
+              fi done a y endl
+              l. s +,{'" "'} repeat $! if {$<,crop(0,0,1,7)=='http://'} l[$<] # Add hyperlink
+                i[0] ({'"<a href=\""{$<,t}"\" target=\"_blank\">"'}) ({'</a>'}) y a y
+              endl fi done a y endl
               replaced_example$nex={t} rm
             endl
 
@@ -35565,7 +35570,7 @@ fx_solve_maze_preview :
 #@cli : $ image.jpg fx_pencil_portraitbw 30,120,1,0.5,144,79,21,0 _label="Pencil~portrait"
 #@cli : $ image.jpg fx_gcd_etch_preview 125,153,171,185,0.1,50,80,50,10,15,12,20,0,1,0.3,1,0,0 _label="Threshold~etch"
 
-#@cli gallery_coding
+#@cli gallery_codingfun
 #@cli : This entry defines some examples of coding-fun filters for the G'MIC gallery page.
 #@cli : $ http://gmic.eu/snippet/lissajou.gmic go _fps=10 _label="Lissajou"
 
