@@ -3934,13 +3934,13 @@ update_gallery_html :
   # Define categories and sample pictures.
   categories=arrays,artistic,colors,deformations,filtering,patterns,3drendering
   nb_categories={narg($categories)}
-  commands_arrays=array,array_fade,array_mirror,frame_blur,frame_cube,frame_painting,img2ascii,imagegrid,rotate_tiles,vignette,tunnel,plugin_arrays
-  commands_artistic=boxfitting,cartoon,cubism,draw_whirl,fire_edges,fractalize,halftone,hardsketchbw,light_relief,linify,mosaic,pencilbw,old_photo,polaroid,polygonize,poster_hope,rodilius,stained_glass,stencil,plugin_artistic
-  commands_colors=sepia,solarize,hsv2rgb,plugin_colors
-  commands_deformations=deform,flower,map_sphere,seamcarve,spherize,twirl,warp_perspective,water,wave,plugin_deformations
-  commands_filtering=blur_angular,blur_linear,blur_radial,glow,smooth,bilateral,dog,deriche,distance,gradient_norm,normalize_local,sharpen,solidify,plugin_filtering
-  commands_patterns=tsp,chessboard,mandelbrot,maze_mask,plasma,shape_fern,shape_snowflake,sierpinski,syntexturize_patchmatch,truchet,turbulence,watermark_visible,weave,plugin_patterns
-  commands_3drendering=add3d,distribution3d,elevation3d,gmic3d,imageblocks3d,imagerubik3d,skeleton3d,spherical3d,tensors3d,text3d,torus3d,weird3d
+  commands_arrays=array,array_fade,array_mirror,frame_blur,frame_cube,frame_painting,img2ascii,imagegrid,rotate_tiles,vignette,tunnel,gallery_arrays
+  commands_artistic=boxfitting,cartoon,cubism,draw_whirl,fire_edges,fractalize,halftone,hardsketchbw,light_relief,linify,mosaic,pencilbw,old_photo,polaroid,polygonize,poster_hope,rodilius,stained_glass,stencil,gallery_artistic
+  commands_colors=sepia,solarize,hsv2rgb,gallery_colors
+  commands_deformations=deform,flower,map_sphere,seamcarve,spherize,twirl,warp_perspective,water,wave,gallery_deformations
+  commands_filtering=blur_angular,blur_linear,blur_radial,glow,smooth,bilateral,dog,deriche,distance,gradient_norm,normalize_local,sharpen,solidify,gallery_filtering
+  commands_patterns=tsp,chessboard,mandelbrot,maze_mask,plasma,shape_fern,shape_snowflake,sierpinski,syntexturize_patchmatch,truchet,turbulence,watermark_visible,weave,gallery_patterns
+  commands_3drendering=add3d,distribution3d,elevation3d,gmic3d,imageblocks3d,imagerubik3d,skeleton3d,spherical3d,tensors3d,text3d,torus3d,weird3d,gallery_3drendering
 
   pics=apples,bottles,butterfly,car,cat,cliff,david,dog,duck,eagle,elephant,earth,flower,fruits,greece,gummy,inside,landscape,leaf,leno,lion,mandrill,monalisa,parrots,pencils,rooster,rose,square,teddy,tiger,wall,waterfall,zelda
 
@@ -4028,9 +4028,17 @@ update_gallery_html :
             v + e[] "      $ "${example$nex} v -
             m "_run : "${example$nex}
             sample=${"arg 1+"{$nex%narg($pics)},$pics}
+
             filename_original=${category}_${sample}_original_$nex.jpg
-            filename_full=${category}_${sample}_full_$nex.jpg
-            filename_thumb=${category}_${sample}_thumb_$nex.jpg
+            if {"find(['"${example$nex}"'],' _fps=')>=0"}
+              filename_full=${category}_${sample}_full_$nex.gif
+              filename_thumb=${category}_${sample}_thumb_$nex.gif
+              _is_animated=1
+            else
+              filename_full=${category}_${sample}_full_$nex.jpg
+              filename_thumb=${category}_${sample}_thumb_$nex.jpg
+              _is_animated=0
+            fi
 
             l[] # Create a HTML representation of the command
               ({'${example$nex}'})
@@ -4047,18 +4055,20 @@ update_gallery_html :
               etime=$| _run etime={_round($|-$etime,0.01)}
               _gallery
               width,height={[w,h]}
-              o $filename_full,70
+              if $_is_animated o $filename_full,$_fps else o $filename_full,70 fi
 
               repeat 3 autocrop done
               frame 3%,3%,255
-              rr2d 440,440,0,3 drop_shadow. 2,2,2 rr2d 300,300,0,3
-              i[0] 100%,100%,1,3,245 blend alpha
-              o $filename_thumb,60 rm
+              rr2d 440,440,0,3 drop_shadow 2,2,2 rr2d 300,300,0,3
+              100%,100%,1,3,245 blend[^-1] .,alpha,1,1 rm.
+
+              if $_is_animated o $filename_thumb,$_fps else o $filename_thumb,60 fi
+              rm
 
               if $is_input
                 image.jpg _gallery
                 rr2d $width,$height,0,5 c 0,255
-                to "Reference",2%,2%,6%
+                to "Input",2%,2%,6%
                 - 255 r $width,$height,1,3,0,0,0.5,0.5 + 255
                 o $filename_original,60 rm
               fi
@@ -4078,12 +4088,12 @@ update_gallery_html :
                   "  <div class=\"highslide-maincontent\"><center>\n"\
                   "  <img alt=\""gallery_$command$nex"\" border=\"0\" src=\""$filename_full"\" onclick=\"hs.close()\" onmouseover=\"javascript:this.src='"$filename_full"';\" onmouseout=\"javascript:this.src='"$filename_original"';\" />\n"\
                   "</center></div>\n"\
-                  "<div class=\"highslide-caption\">Command line: <tt>$ gmic "${replaced_example$nex}${html_etime}"</tt></div></div></center></td>\n"
+                  "<div class=\"highslide-caption\">Command: <tt>$ gmic "${replaced_example$nex}${html_etime}"</tt></div></div></center></td>\n"
             else
               html=${html}\
                   "  <td><center><div><a href=\""$filename_full"\" class=\"highslide\" onclick=\"return hs.expand(this)\">"\
                   "<img alt=\""gallery_$command$nex"\" border=\"0\" src=\""$filename_thumb"\" /><br/><b>"$command$counter"</b></a>"\
-                  "<div class=\"highslide-caption\">Command line: <tt>$ gmic "${replaced_example$nex}${html_etime}"</tt></div></div></center></td>\n"
+                  "<div class=\"highslide-caption\">Command: <tt>$ gmic "${replaced_example$nex}${html_etime}"</tt></div></div></center></td>\n"
             fi
             nex+=1
             col={($col+1)%$nb_cols}
@@ -4117,8 +4127,11 @@ _gallery :
     else if {w>8192} z 0,8191 elif {h>8192} rows 0,8191 fi n 0,255
     fi
   endl done
-  +__gallery
-  if {w>1024} r={round(1024*100/w,0.1)} r[^-1] $r%,$r%,1,100%,2 fi rm.
+
+  if {!$_is_animated}
+    +__gallery
+    if {w>1024} r={round(1024*100/w,0.1)} r[^-1] $r%,$r%,1,100%,2 fi rm.
+  fi
 
   repeat $! l[$>]
     if {s==1} r {w},{h},1,3
@@ -4128,15 +4141,18 @@ _gallery :
     if {w<=h&&h>620} r2dy 620,2 elif {h<=w&&w>620} r2dx 620,2 fi
     if {h<48} r 100%,48 fi
     if {w<48} r 48,100% fi
+    if {$_is_animated" && "(w>480" || "h>480)} rr2d 480,480,0,2 fi
     frame 1,1,0 frame 4,4,255
   endl done
-  - 255 __gallery + 255
-  if {w<256} - 255 r 256,100%,1,100%,0,0,0.5,0.5 + 255 fi
-  if {h<256} - 255 r 100%,256,1,100%,0,0,0.5,0.5 + 255 fi
+
+  if {!$_is_animated}
+    - 255 __gallery + 255
+    if {w<256} - 255 r 256,100%,1,100%,0,0,0.5,0.5 + 255 fi
+    if {h<256} - 255 r 100%,256,1,100%,0,0,0.5,0.5 + 255 fi
+  fi
 
 __gallery :
-  if {$!==2}
-    if {w>h} a y else a x fi
+  if {$!==2} if {w>h} a y else a x fi
   else append_tiles 2
   fi
 
@@ -9311,7 +9327,7 @@ erode_threshold : check "isint($1) && $1>=1 && isint(${2=$1}) && $2>=1 && isint(
 
 #@cli gradient_norm
 #@cli : Compute gradient norm of selected images.
-#@cli : $ image.jpg gradient_norm equalize[-1]
+#@cli : $ image.jpg gradient_norm equalize
 #@cli : $$
 gradient_norm :
   e[^-1] "Compute gradient norm of image$?."
@@ -35451,12 +35467,12 @@ fx_solve_maze_preview :
 # Add some examples for the 'gallery pages' on the G'MIC web site.
 # These examples used filters specifically defined in the G'MIC plug-in.
 
-#@cli plugin_arrays
-#@cli : This entry shows some examples of array filters available in the G'MIC plug-in.
+#@cli gallery_arrays
+#@cli : This entry defines some examples of array filters for the G'MIC gallery page.
 #@cli : $ image.jpg fx_frame_blur 30,30,0,5,0,0,128,128,128,0,5,255,255,255,2,2,1,0,0.5,0.5,0
 
-#@cli plugin_artistic
-#@cli : This entry shows some examples of artistic filters available in the G'MIC plug-in.
+#@cli gallery_artistic
+#@cli : This entry defines some examples of artistic filters for the G'MIC gallery page.
 #@cli : $ image.jpg fx_engrave_preview 0.5,50,0,8,40,0,0,0,10,1,0,0,0,1,0
 #@cli : $ image.jpg fx_engrave_preview 0.5,4,0,7.68,15.2,0,0,1,10,1,0,0,0,1,0
 #@cli : $ image.jpg fx_gcd_layeretch 11,4,12,0.12,100,8.5,5,0,0,3,1,1,0
@@ -35465,15 +35481,16 @@ fx_solve_maze_preview :
 #@cli : $ image.jpg fx_gcd_etch_preview 125,153,171,185,0.1,50,80,50,10,15,12,20,0,1,0.3,1,0,0
 #@cli : $ image.jpg fx_8bits_preview 25,800,16,0
 
-#@cli plugin_colors
-#@cli : This entry shows some examples of color filters available in the G'MIC plug-in.
+#@cli gallery_colors
+#@cli : This entry defines some examples of color filters for the G'MIC gallery page.
 #@cli : $ image.jpg fx_color_abstraction_preview 1,10,0.2,0
 #@cli : $ image.jpg fx_boost_chroma_preview 50,0,0
 #@cli : $ image.jpg fx_retrofade_preview 20,6,40,0
 #@cli : $ image.jpg fx_tk_vintage_preview 2,0.85,0.7,80,200,5,147,26,161,0.3,235,220,176,0.4,190,181,108,0.2,0,0,100,0,0.3,25,0,0
 
-#@cli plugin_deformations
-#@cli : This entry shows some examples of color filters available in the G'MIC plug-in.
+#@cli gallery_deformations
+#@cli : This entry defines some examples of deformation filters for the G'MIC gallery page.
+#@cli : $ image.jpg animate "flower","30,10,0,0","30,10,0,360",10 rm. _fps=6
 #@cli : $ image.jpg fx_conformal_maps_preview 8,1,0,"((1.1 + i*z/6)/(1.04 - i*z/6))^6.2",0,0,0,0,0,3,0,0,"1024","1024"
 #@cli : $ image.jpg souphead_droste10_preview 40,100,1,1,1,0,0,0,0,0,1,10,1,0,90,0,0,0,0,1,0,1,1,0,0,0,0,0,1,0,0
 #@cli : $ image.jpg fx_crease 30,10,3
@@ -35482,17 +35499,18 @@ fx_solve_maze_preview :
 #@cli : $ image.jpg fx_reflect 50,1,110,160,190,64,0,1.5,0,-3.3,7,1.5
 #@cli : $ image.jpg fx_square_circle_preview 0,1,0,0,0,0,0,0
 #@cli : $ image.jpg fx_textured_glass_preview 40,40,1,1,0,2,0,0
+#@cli : $ sample lena,leno,320 morph 40 _fps=5
 
-#@cli plugin_filtering
-#@cli : This entry shows some examples of filters available in the G'MIC plug-in.
+#@cli gallery_filtering
+#@cli : This entry defines some examples of filters for the G'MIC gallery page.
 #@cli : $ image.jpg fx_gcd_crt 1.8,1.8,0,0
 #@cli : $ image.jpg fx_dirty_preview 30,1,0,0,0
 #@cli : $ image.jpg fx_freaky_details_preview 2,10,1,11,0,32,0
 #@cli : $ image.jpg jeje_normalize_local_variance_preview 50,5,5,1,0,0
 #@cli : $ image.jpg fx_mighty_details_preview 25,1,25,1,11,0
 
-#@cli plugin_patterns
-#@cli : This entry shows some examples of pattern rendering filters available in the G'MIC plug-in.
+#@cli gallery_patterns
+#@cli : This entry defines some examples of pattern filters for the G'MIC gallery page.
 #@cli : $ image.jpg fx_rain_preview 65,10,50,0.1,1,1,0
 #@cli : $ 400,400,1,3 fx_camouflage 9,12,100,30,46,33,75,90,65,179,189,117,255,246,158
 #@cli : $ image.jpg jeje_clouds_preview 50,0.5
@@ -35508,6 +35526,8 @@ fx_solve_maze_preview :
 #@cli : $ 400,400,1,3 KittyRings_preview 30,8,0,1,113,0,113,0,255,0
 #@cli : $ 400,400,1,3 fx_neon_lightning 50,50,0,50,50,100,50,0.7,3,130,80,50,0.25,0
 
+#@cli gallery_3drendering
+#@cli : $ sample leno,lion,leno resize 400,400 transition3d 20,5,5 rm. _fps=10
 
 # Local Variables:
 # mode: sh
