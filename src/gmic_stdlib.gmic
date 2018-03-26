@@ -4022,7 +4022,7 @@ update_gallery_html :
             example$nex={$>,t}
 
             v + e[] "      $ "${example$nex} v -
-            m "_run : "${example$nex}
+            m "_run : reset "${example$nex}
             sample=${"arg 1+"{$nex%narg($pics)},$pics}
             filename_original=${category}_${sample}_original_$nex.jpg
             filename_full=${category}_${sample}_full_$nex.jpg
