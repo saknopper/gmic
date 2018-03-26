@@ -1854,7 +1854,7 @@ _display_parallel :
   e[0--3] "Display image$? in parallel."
   print
   v -
-  if {$!<=1} -d v + return fi
+  if {$!<=1} d v + return fi
   $!,1,1,1,x ({'{^}'}) rm..
   l.
     s -,{','} y x
@@ -1882,7 +1882,7 @@ _display_parallel0 :
   e[0--3] "Display image$? in parallel, without value normalization."
   print
   v -
-  if {$!<=1} -d0 v + return fi
+  if {$!<=1} d0 v + return fi
   $!,1,1,1,x ({'{^}'}) rm..
   l.
     s -,{','} y x
@@ -3980,8 +3980,9 @@ update_gallery_html :
          "<a href=\"http://www.krita.org\">Krita</a>.</br>\n\n"\
          "For more details, visit the <a href=\"http://gmic.eu/tutorial\">tutorial pages</a> as well as the "\
          "<a href=\"http://gmic.eu/reference.shtml\">technical reference</a> to get a full documentation on this software.\n"\
-         "<br/><br/>\n"\
-         "<div id=\"menu\"><font size=\"-1\"><table cellspacing=\"0\" cellpadding=\"10\" border=\"1\" align=\"center\"><tr>\n"\
+         "<br/><br/>\n<div id=\"menu\">\n"
+
+    html_menu="<font size=\"-1\"><table cellspacing=\"0\" cellpadding=\"10\" border=\"1\" align=\"center\"><tr>\n"\
          $td_arrays"<a href=\"arrays.shtml#menu\">Arrays, tiles &amp; frames</a></td>"\
          $td_artistic"<a href=\"artistic.shtml#menu\">Artistic</a></td>"\
          $td_colors"<a href=\"colors.shtml#menu\">Colors</a></td>"\
@@ -3989,9 +3990,12 @@ update_gallery_html :
          $td_filtering"<a href=\"filtering.shtml#menu\">Filtering</a></td>"\
          $td_patterns"<a href=\"patterns.shtml#menu\">Patterns</a></td>"\
          $td_3drendering"<a href=\"3drendering.shtml#menu\">3D rendering</a></td>"\
-         "</tr></table></font></div>\n"\
-         "<br/>\n"\
+         "</tr></table></font>\n"
+
+    html=${html}${html_menu}\
+         "</div><br/>\n"\
          "<table align=\"center\">\n"
+
     repeat $nb_commands
       command=${"arg "1+$>,$commands}
       v + e[] "    - Command '"$command"' ["{1+$>}/$nb_commands"]." v -
@@ -4022,7 +4026,7 @@ update_gallery_html :
             example$nex={$>,t}
 
             v + e[] "      $ "${example$nex} v -
-            m "_run : reset "${example$nex}
+            m "_run : "${example$nex}
             sample=${"arg 1+"{$nex%narg($pics)},$pics}
             filename_original=${category}_${sample}_original_$nex.jpg
             filename_full=${category}_${sample}_full_$nex.jpg
@@ -4035,10 +4039,13 @@ update_gallery_html :
               replaced_example$nex={t} rm
             endl
 
+            etime=
             if {!isfile($filename_thumb)} l[]
               sp $sample,600 o image.jpg rm
 
-              _run _gallery
+              db3d m3d md3d f3d l3d sl3d ss3d 0.8
+              etime=$| _run etime={_round($|-$etime,0.01)}
+              _gallery
               width,height={[w,h]}
               o $filename_full,70
 
@@ -4062,6 +4069,8 @@ update_gallery_html :
             if {!($col%$nb_cols)} html=${html}"<tr>\n" fi
             if {$nb_examples==1} counter= else counter=" <font size=\"-2\"><i>"[{$>+1}/$nb_examples]"</i></font>" fi
 
+            if {!narg($etime)} html_etime= else html_etime="<br/><font size=\"-2\"><i>(generated in "${etime}"s)</i></font>" fi
+
             if $is_input
               html=${html}\
                   "  <td><center><div><a href=\"#\" onclick=\"return hs.htmlExpand(this, { width: "$width", height: "$height" })\">\n"\
@@ -4069,12 +4078,12 @@ update_gallery_html :
                   "  <div class=\"highslide-maincontent\"><center>\n"\
                   "  <img alt=\""gallery_$command$nex"\" border=\"0\" src=\""$filename_full"\" onclick=\"hs.close()\" onmouseover=\"javascript:this.src='"$filename_full"';\" onmouseout=\"javascript:this.src='"$filename_original"';\" />\n"\
                   "</center></div>\n"\
-                  "<div class=\"highslide-caption\">Command line: <tt>$ gmic "${replaced_example$nex}"</tt></div></div></center></td>\n"
+                  "<div class=\"highslide-caption\">Command line: <tt>$ gmic "${replaced_example$nex}${html_etime}"</tt></div></div></center></td>\n"
             else
               html=${html}\
                   "  <td><center><div><a href=\""$filename_full"\" class=\"highslide\" onclick=\"return hs.expand(this)\">"\
                   "<img alt=\""gallery_$command$nex"\" border=\"0\" src=\""$filename_thumb"\" /><br/><b>"$command$counter"</b></a>"\
-                  "<div class=\"highslide-caption\">Command line: <tt>$ gmic "${replaced_example$nex}"</tt></div></div></center></td>\n"
+                  "<div class=\"highslide-caption\">Command line: <tt>$ gmic "${replaced_example$nex}${html_etime}"</tt></div></div></center></td>\n"
             fi
             nex+=1
             col={($col+1)%$nb_cols}
@@ -4085,17 +4094,8 @@ update_gallery_html :
       endl
     done
     if $col html=${html}"</tr>\n" fi
-    html=$html\
-         "</table><br/>\n"\
-         "<font size=\"-1\"><table cellspacing=\"0\" cellpadding=\"10\" border=\"1\" align=\"center\"><tr>\n"\
-         $td_arrays"<a href=\"arrays.shtml#menu\">Arrays, tiles &amp; frames</a></td>"\
-         $td_artistic"<a href=\"artistic.shtml#menu\">Artistic</a></td>"\
-         $td_colors"<a href=\"colors.shtml#menu\">Colors</a></td>"\
-         $td_deformations"<a href=\"deformations.shtml#menu\">Deformations</a></td>"\
-         $td_filtering"<a href=\"filtering.shtml#menu\">Filtering</a></td>"\
-         $td_patterns"<a href=\"patterns.shtml#menu\">Patterns</a></td>"\
-         $td_3drendering"<a href=\"3drendering.shtm#menu\">3D rendering</a></td>"\
-         "</tr></table></font>\n"\
+    html=${html}"</table><br/>\n"\
+         ${html_menu}\
          "</div></div><div id=\"footer\"><img alt=\"\" src=\"images/footer.jpg\" /></div></div>\n\n"\
          "<!--#include file=\"copyright.html\" -->\n"\
          "<!--#include file=\"footer.html\" -->\n"
@@ -4106,7 +4106,7 @@ update_gallery_html :
   # Transfer on G'MIC server
   v + e[] "\n  * Transfer gallery on G'MIC server.\n" v -
   x "ln -fs artistic.shtml index.shtml"
-  x "lftp ftp://"$GMIC_LOGIN":"$GMIC_PASSWD"@ftp.gmic.eu -e \"mirror -RL . /www/gmic/gallery ; quit\""
+  x "lftp ftp://"$GMIC_LOGIN":"$GMIC_PASSWD"@ftp.gmic.eu -e \"mirror -eRL . /www/gmic/gallery ; quit\""
   v + e[] "  * All done!.\n"
 
 # Generate a single image from a list of images, for the gallery.
@@ -4117,18 +4117,19 @@ _gallery :
     else if {w>8192} z 0,8191 elif {h>8192} rows 0,8191 fi n 0,255
     fi
   endl done
-
-  +__gallery if {w>1024} r={round(1024*100/w,0.1)} r[^-1] $r%,$r%,1,100%,2 fi rm.
+  +__gallery
+  if {w>1024} r={round(1024*100/w,0.1)} r[^-1] $r%,$r%,1,100%,2 fi rm.
 
   repeat $! l[$>]
-    if {s==1} r {w},{h},1,3 else r {w},{h},1,3,0 fi
+    if {s==1} r {w},{h},1,3
+    elif {s==4} drgba
+    else r {w},{h},1,3,0 fi
     if {w<=h&&h<256} r2dy 256,2 elif {h<=w&&w<256} r2dx 256,2 fi
-    if {w<=h&&h>512} r2dy 512,2 elif {h<=w&&w>512} r2dx 512,2 fi
+    if {w<=h&&h>620} r2dy 620,2 elif {h<=w&&w>620} r2dx 620,2 fi
     if {h<48} r 100%,48 fi
     if {w<48} r 48,100% fi
     frame 1,1,0 frame 4,4,255
   endl done
-  to_rgb
   - 255 __gallery + 255
   if {w<256} - 255 r 256,100%,1,100%,0,0,0.5,0.5 + 255 fi
   if {h<256} - 255 r 100%,256,1,100%,0,0,0.5,0.5 + 255 fi
@@ -5954,9 +5955,8 @@ _inrange :
 #@cli : $ image.jpg uniform_distribution {2^6},3 mirror[-1] x +map_clut[0] [1]
 map_clut :
   e[^-1] "Map color LUT $1 on image$?."
-  v -
-  if {!$!} v + return fi
-  to_color
+  if {!$!} return fi
+  v - to_color
   if ${"is_image_arg $1"} pass$1 0 to_rgb. else clut "$1" fi
   l={round((w*h*d)^(1/3))}
   if {w*h*d!=$l^3} v + error "Command '$0': Specified CLUT $1 has invalid dimensions "({w},{h},{d},{s}). fi
@@ -8756,7 +8756,7 @@ blur_linear : skip ${2=0},${3=0},${4=1}
   std1={if(${is_percent\ $1},$1*max(w,h),$1)}
   std2={if(${is_percent\ $2},$2*max(w,h),$2)}
   stdM={round(1.25*max($std1,$std2))}
-  if {$stdM<=0} return fi
+  if {$stdM<=0} v + return fi
   repeat $! l[$>]
     expand_xy $stdM,{$4!=0}
     {2*$stdM},{2*$stdM} gaussian. $1,$2,$3 normalize_sum.
@@ -9144,8 +9144,8 @@ dilate_circ : check $1>=0 skip ${2=1},${3=0}
 #@cli : $ image.jpg +dilate_oct 7
 dilate_oct : check $1>=0 skip ${2=1},${3=0}
   e[^-1] "Apply octagonal dilation of image$? by size $1, boundary conditions $2 and is_normalized $3."
-  v -
   if {$1<2} return fi
+  v -
   if {$1&1} ss={$1} else ss={$1+1} fi
   i[0] (0,1,0;1,1,1;0,1,0) i[1] (1,1,1;1,1,1;1,1,1)
   repeat {$!-2}
@@ -9262,8 +9262,8 @@ erode_circ : check $1>=0 skip ${2=1},${3=0}
 #@cli : $ image.jpg +erode_oct 7
 erode_oct : check $1>=0 skip ${2=1},${3=0}
   e[^-1] "Apply octagonal erosion of image$? by size $1, boundary conditions $2 and is_normalized $3."
-  v -
   if {$1<2} return fi
+  v -
   if {$1&1} ss={$1} else ss={$1+1} fi
   i[0] (0,1,0;1,1,1;0,1,0) i[1] (1,1,1;1,1,1;1,1,1)
   repeat {$!-2}
@@ -10268,7 +10268,7 @@ syntexturize : check "${1=100%}>0 && ${2=$1}>0"
 #@cli : Resynthetize 'width'x'height' versions of selected micro-textures using a patch-matching algorithm.
 #@cli : If 'nbscales==0', the number of scales used is estimated from the image size.
 #@cli : Default values: 'width=height=100%', 'nb_scales=0', 'patch_size=7', 'blending_size=5' and 'precision=1'.
-#@cli : $ image.jpg syntexturize_patchmatch 320,320
+#@cli : $ image.jpg crop 25%,25%,75%,75% syntexturize_patchmatch 512,512
 syntexturize_patchmatch : check "${1=100%}>0 && ${2=$1}>0 && isint(${3=0}) && $3>=0 && isint(${4=7}) && $4>0 && ${5=5}>=0 && ${6=1}>=0"
   e[^-1] "Resynthetize $1x$2 version(s) of texture$? using a patch-matching algorithm with "${"v - if $3 u \"$3 \" else u auto- fi v +"}"scales, $4x$4 patches, blending size $5 and precision $6."
   v - repeat $! l[$>]
@@ -11202,7 +11202,7 @@ axes : check "isint(${5=14}) && $5>=0 && ${6=1}>=0" skip ${7=0},${8=0}
     v - pattern=$7 color=${8--1}
   else
     e[0--3] "Draw xy-axes on image$?, with x-range ($1,$2), y-range ($3,$4), font height $5, opacity $6 and color (${7--1})."
-     v - pattern=0xFFFFFFFF color=${7--1}
+    v - pattern=0xFFFFFFFF color=${7--1}
   fi
   if {!$5" || "!$6} v + return fi
   mx={min($1,$2)} Mx={max($1,$2)}
@@ -14878,8 +14878,8 @@ frame_painting :
   skip ${4=225},${5=200},${6=120},${13=123456789}
   e[^-1] "Add painting frame to image$?, with size $1, contrast $2, profile smoothness $3, color (${4-6}), vignette size $7, "\
           "vignette strength $8, defects contrast $9, defects density $10, defects size $11, defects smoothness $12 and serial number $13."
+  if {!$1} return fi
   v - repeat $! l[$>]
-    if {!$1} return fi
     $1,$1 s={max(w,h)} rm.                             # Determine size of the frame
     ({'${dec2bin\ $13}'}) -. {'0'} r. $s               # Generate frame profile from serial number
     transpose. b. $3 n. {1-$2},{1+$2}
@@ -15022,7 +15022,7 @@ _frame :
 #@cli : Render selected images as binary ascii art.
 #@cli : This command returns the corresponding the list of widths and heights (expressed as a number of characters) for each selected image.
 #@cli : Default values: 'charset=[ascii charset]', 'analysis_scale=16', 'analysis_smoothness=20%', 'synthesis_scale=16' and '_output_ascii_filename=[undefined]'.
-#@cli : $ image.jpg +img2ascii , resize[0] [1],[1],1,3 mul
+#@cli : $ image.jpg img2ascii ,
 img2ascii : skip "${1= !\042#$%&\047()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ\133\\\135^_\140abcdefghijklmnopqrstuvwxyz\173|\174~}","${5=}" check "${2=16}>0 && ${3=20%}>=0 && ${4=16}>0"
   e[^-1] "Render image$? as binary ascii art, with charset '$1', analysis scale $2, analysis smoothness $3, synthesis scale $4 and output ascii filename '$5'."
   v -
@@ -16033,7 +16033,7 @@ _pixelsort :
 #@cli polaroid : _size1>=0,_size2>=0
 #@cli : Create polaroid effect in selected images.
 #@cli : Default values: 'size1=10' and 'size2=20'.
-#@cli : $ image.jpg to_rgba polaroid 5,30 rotate 20 drop_shadow , display_rgba
+#@cli : $ image.jpg to_rgba polaroid 5,30 rotate 20 drop_shadow ,
 polaroid : check "${1=10}>=0 && ${2=20}>=0"
   e[^-1] "Create polaroid effect in image$?, with borders sizes $1 and $2."
   v - - 255 r {100+$1}%,{100+$1}%,1,100%,0,0,0.5,0.5 r 100%,{100+$2}%,1,100%,0,0,0 + 255 v +
@@ -16630,8 +16630,8 @@ wave : skip ${1=4},${2=0.4},${3=50},${4=50}
 #@cli : $ image.jpg +wind ,
 wind : check "isint(${1=20}) && $1>=0 && ${3=0.7}>=0 && $3<=1" skip "${2=0},${4=20}"
   e[^-1] "Apply wind effect on image$?, with amplitude $1, angle "{round($2/45)*45}" deg., attenuation $3 and threshold $4."
-  v -
   if {!$1} return fi
+  v -
   dxdy=${-_wind{round($2/45)%8}}
   fact={(1-$3)^(1/$1)}
   repeat $! l[$>]
@@ -17085,9 +17085,8 @@ _fade :
 #@cli : $ image.jpg testimage2d {w},{h} +mirror[0] y +blend_median
 blend_median :
   e[^-1] "Blend image$? using 'median' mode."
-  v -
-  if {$!<2} v + return fi
-  to_colormode 0 r ${-max_whd},100%,0,0,0.5,0.5,0.5
+  if {$!<2} return fi
+  v - to_colormode 0 r ${-max_whd},100%,0,0,0.5,0.5,0.5
   if {$!==2} + / 2
   else
     whds={w},{h},{d},{s} r 100%,100%,{d*s},1,-1 a c
@@ -17775,8 +17774,8 @@ transition : check ${is_image_arg\ $1}" && $2>=0 && ${3=0}>=0 && $3<=100" skip $
 #@cli : $ image.jpg +blur 5 transition3d 9 display_rgba
 transition3d : check "isint(${1=10}) && $1>=2 && isint(${2=3}) && $2>0 && isint(${3=$2}) && $3>0" skip ${4=1},${5=1},${6=0},${7=1}
   e[^-1] "Create 3d transition sequence between image$?, with $1 frames, $2x$3 tiles and rotation axis ($4,$5,$6).\n"
-  v -
   if {$!<2} return fi
+  v -
   slices 0 to_rgb r ${-max_whds},3
   off=0 repeat {$!-1} l[{$>+$off},{$>+$off+1}]
     v + e[] "\r > Generate transition from image "$>" to image "{$>+1}".    " v -
@@ -17950,7 +17949,7 @@ alert : skip "${1=[G"{`39`}"MIC Alert]},${2=This is an alert box.},${3=OK}"
         sh[$selected] 4,6
         j.. .,$x0,$y0 rm.
       fi
-      -w$disp. 100%,100%,0,"$1" rm. wait
+      w$disp. 100%,100%,0,"$1" rm. wait
 
       # Handle user interactions.
       xm={*$disp,x} ym={*$disp,y} bm={{*$disp,b}&1} val={i($xm,$ym,0,3)}
@@ -17966,7 +17965,7 @@ alert : skip "${1=[G"{`39`}"MIC Alert]},${2=This is an alert box.},${3=OK}"
     while {{*$disp}" && "!{*$disp,ESC}}
 
     # Return result (indice of clicked button or '-1').
-    -w$disp 0 rm u $clicked
+    w$disp 0 rm u $clicked
   endl
   v +
 
@@ -18298,8 +18297,9 @@ hex2img :
 #@cli hex2str : hexadecimal_string
 #@cli : Convert specified hexadecimal string into a string.
 hex2str : skip ${1=""}
-  if {!narg("$1")} u "" return fi
-  v - ({'$*'}) if {w<2} rm. v + u "" return fi
+  v -
+  if {!narg("$1")} u "" v + return fi
+  ({'$*'}) if {w<2} rm. u "" v + return fi
   f. 'v=i-if(i>=97,87,48);if(x%2,v,v*16)' r. 2,{int(w/2)},1,1,-1 cumulate. x z. 1,1
   u {t} rm. v +
 
@@ -19880,8 +19880,7 @@ __x_color_curves :
 #@cli : Default values: 'is_lineart=1', 'max_resolution=1024' and 'multichannels_output=0'.
 x_colorize : skip ${1=0},${3=0},${4=0},${5=0},${6=0} check "${2=1024}==0 || $2>=128"
   if {!{*,u}} error[0--3] "Command '$0': No display available." return fi
-  v - s0="image" s1="lineart" s2="multichannel" s3="merged" v +
-  v - use_vt100 g=$_gmic_g c=$_gmic_c n=$_gmic_n r=$_gmic_r v +
+  v - s0="image" s1="lineart" s2="multichannel" s3="merged" use_vt100 g=$_gmic_g c=$_gmic_c n=$_gmic_n r=$_gmic_r v +
   e[^-1] "Colorize selected B&W "${s{!$1}}"$? interactively, with maximum resolution $2 and "${s{2+!$3}}" output."
   e[] "\n
 --------------------------------------------------------------------------------------\n
@@ -20178,8 +20177,8 @@ _x_colorize :
   fi
   a c nm $name
 
-  __color=-1   # Force color selectors to close.
-  u $status   # Return control points.
+  __color=-1 # Force color selectors to close.
+  u $status  # Return control points.
   w 0
 
 # Compute potential function.
@@ -32850,7 +32849,6 @@ fx_stars :
 #@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2010/29/12</i>.</small>")
 fx_stencil :
-  v -
   if {$5==0} norm stencil $1,$2,$3
   elif {$5==1} stencil $1,$2,$3
   else repeat $!
@@ -35509,7 +35507,6 @@ fx_solve_maze_preview :
 #@cli : $ 400,400,1,3 fx_equation_parametric "sin(t)*(exp(cos(t))-2*cos(4*t)-sin(t/12)^5)","cos(t)*(exp(cos(t))-2*cos(4*t)-sin(t/12)^5)",0,100,4096,1,0,64,0,0,128,0,0,1,1,1
 #@cli : $ 400,400,1,3 KittyRings_preview 30,8,0,1,113,0,113,0,255,0
 #@cli : $ 400,400,1,3 fx_neon_lightning 50,50,0,50,50,100,50,0.7,3,130,80,50,0.25,0
-#@cli : $ image.jpg gcd_wiremap 100,100,0.5,0.5,0
 
 
 # Local Variables:
