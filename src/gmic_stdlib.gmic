@@ -3916,11 +3916,11 @@ with or endorsed by the companies that own the trademarks.</i></font></p>\n\n
 
 # Generate gallery page for G'MIC web.
 update_gallery_html :
-  e[^-1] "Generate gallery for G'MIC web site."
+  e[^-1] "Generate gallery pages for G'MIC web site."
   v -
 
   # Prepare folder structure.
-  v + e[] "  > Prepare folder structure." v -
+  v + e[] "  * Prepare folder structure." v -
   -x "ln -fs ../copyright.html ."
   -x "ln -fs ../favicon.ico ."
   -x "ln -fs ../favicon.png ."
@@ -3932,132 +3932,161 @@ update_gallery_html :
   -x "ln -fs ../images ."
   -x "ln -fs ../highslide ."
 
-  # Parse and generate HTML page
-  i raw:$HOME/work/src/gmic/src/gmic_stdlib.gmic,uchar
-
-  commands=array,array_fade,array_mirror,warhol,frame_blur,frame_cube,frame_painting,imagegrid,rotate_tiles,boxfitting,cartoon,cubism,draw_whirl,fire_edges,fractalize,halftone,hardsketchbw,linify,mosaic,old_photo,pencilbw,polaroid,polygonize,poster_hope,rodilius,smooth,stained_glass,stencil,deform,flower,map_sphere,spherize,twirl,warp_perspective,hsv2rgb,append_tiles,bilateral,deriche,normalize_local,sharpen,solidify,watershed,histogram,isophotes,segment_watershed,slic,thinning,topographic_map,tsp,chessboard,mandelbrot,maze_mask,plasma,sierpinski,truchet,turbulence,add3d,distribution3d,elevation3d,gmic3d,imageblocks3d,imagerubik3d,skeleton3d,spherical3d,tensors3d,text3d,torus3d,weird3d
+  # Define categories and sample pictures.
+  categories=artistic,deformations,filtering,colors,arrays,patterns,3drendering
+  nb_categories={narg($categories)}
+  commands_artistic=boxfitting,cartoon,cubism,draw_whirl,fire_edges,fractalize,halftone,hardsketchbw,linify,mosaic,pencilbw,old_photo,polaroid,polygonize,poster_hope,rodilius,stained_glass,stencil
+  commands_deformations=deform,flower,map_sphere,spherize,twirl,warp_perspective
+  commands_filtering=smooth,bilateral,deriche,normalize_local,sharpen,solidify
+  commands_colors=hsv2rgb
+  commands_arrays=array,array_fade,array_mirror,warhol,frame_blur,frame_cube,frame_painting,imagegrid,rotate_tiles
+  commands_patterns=tsp,chessboard,mandelbrot,maze_mask,plasma,sierpinski,truchet,turbulence
+  commands_3drendering=add3d,distribution3d,elevation3d,gmic3d,imageblocks3d,imagerubik3d,skeleton3d,spherical3d,tensors3d,text3d,torus3d,weird3d
+  # commands=array,array_fade,array_mirror,warhol,frame_blur,frame_cube,frame_painting,imagegrid,rotate_tiles,boxfitting,cartoon,cubism,draw_whirl,fire_edges,fractalize,halftone,hardsketchbw,linify,mosaic,old_photo,pencilbw,polaroid,polygonize,poster_hope,rodilius,smooth,stained_glass,stencil,deform,flower,map_sphere,spherize,twirl,warp_perspective,hsv2rgb,append_tiles,bilateral,deriche,normalize_local,sharpen,solidify,watershed,histogram,isophotes,segment_watershed,slic,thinning,topographic_map,tsp,chessboard,mandelbrot,maze_mask,plasma,sierpinski,truchet,turbulence,add3d,distribution3d,elevation3d,gmic3d,imageblocks3d,imagerubik3d,skeleton3d,spherical3d,tensors3d,text3d,torus3d,weird3d
 
   pics=apples,bottles,butterfly,car,cat,cliff,david,dog,duck,eagle,elephant,earth,flower,fruits,greece,gummy,inside,landscape,leaf,leno,lion,monalisa,parrots,pencils,rooster,rose,square,teddy,tiger,wall,waterfall,zelda
 
+  # Generate HTML pages.
+  i raw:$HOME/work/src/gmic/src/gmic_stdlib.gmic,uchar
   nb_cols=3
-  nb_commands={narg($commands)}
-
-  html="<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"\n"\
-       "  \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n\n"\
-       "<!--#include file=\"header.html\" -->\n\n"\
-       "<div id=\"bloc_option\"><div id=\"top_vert\"><div id=\"text_top\">Image gallery</div></div>\n"\
-       "<div id=\"center\"><div id=\"text_centre_intro\">\n"\
-       "This gallery will give you a quick overview of what features are found in the <b><font color=\"#000066\">G\47MIC</font></b> image processing framework.<br/>\n"\
-       "All the images below have been processed by the CLI interface <tt><a href=\"documentation.shtml\">gmic</a></tt>\n"\
-       "  of <b><font color=\"#000066\">G\47MIC</font></b>, from a set of initial 2D color images.\n"\
-       "Click on an image to enlarge it and display the <b><font color=\"#000066\">G\47MIC</font></b> command used for the processing.<br/>\n"\
-       "Remember, you can easily define your own image filters and effects by writing\n"\
-       "custom <b><font color=\"#000066\">G\47MIC</font></b> <a href=\"http://gmic.eu/gmic_stdlib.gmic\">command files</a>,\n"\
-       "then eventually add them afterwards in the plug-in for <a href=\"http://www.gimp.org\">GIMP</a> or <a href=\"http://www.krita.org\">Krita</a>.</br>\n\n"\
-       "For more details, visit the <a href=\"reference.shtml\">G\47MIC reference page</a> to get the full documentation on how to use the software.\n"\
-       "<br/><br/>\n"\
-       "<table align=\"center\">\n"
   nex=0
-  repeat $nb_commands
-    command=${"arg "1+$>,$commands}
-    v + e[] "  > Command '"$command"' ["{1+$>}/$nb_commands"]." v -
-    +l # Parse command definition and examples
-      s -,{'"#@cli "$command" :"'}
-      if {$!<2} s -,{'"#@cli "$command"\n"'} fi
-      if {$!<2} v + warn[] "    ** Command '"$command"' not found! **" v -
-      else
-        k.
-        eval "
-          str = crop(#-1);
-          ind = 0;
-          while ((ind = find(str,'\n#@cli ',1,ind))>=0,
-            ++ind;
-            str[ind+6]!=_':' ? break() :
-            str[ind+7]==_' ' && str[ind+8]==_'$' && str[ind+9]==_' '?(
-              beg = ind + 10;
-              end = find(str,_'\n',1,beg) - 1;
-              com = vector1024(0);
-              ext('+rows[0] ',beg,',',end);
+
+  repeat $nb_categories
+    category=${arg\ 1+$>,$categories}
+    v + e[] "\n  * Process category '"$category"'." v -
+
+    commands=${commands_$category}
+    nb_commands={narg($commands)}
+
+    html="<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"\n"\
+         "  \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n\n"\
+         "<!--#include file=\"header.html\" -->\n\n"\
+         "<div id=\"bloc_option\"><div id=\"top_vert\"><div id=\"text_top\">Image gallery</div></div>\n"\
+         "<div id=\"center\"><div id=\"text_centre_intro\">\n"\
+         "This gallery will give you a quick overview of what features are found in the "\
+         "<b><font color=\"#000066\">G\47MIC</font></b> image processing framework.<br/>\n"\
+         "All the images below have been processed by the CLI interface <tt><a href=\"documentation.shtml\">gmic</a></tt>\n"\
+         "  of <b><font color=\"#000066\">G\47MIC</font></b>, from a set of initial 2D color images.\n"\
+         "Click on an image to enlarge it and display the <b><font color=\"#000066\">G\47MIC</font></b> command used for the processing.<br/>\n"\
+         "Remember, you can easily define your own image filters and effects by writing\n"\
+         "custom <b><font color=\"#000066\">G\47MIC</font></b> <a href=\"http://gmic.eu/gmic_stdlib.gmic\">command files</a>,\n"\
+         "then eventually add them afterwards in the plug-in for <a href=\"http://www.gimp.org\">GIMP</a> or "\
+         "<a href=\"http://www.krita.org\">Krita</a>.</br>\n\n"\
+         "For more details, visit the <a href=\"reference.shtml\">G\47MIC reference page</a> to get the full documentation on how "\
+         "to use the software.\n"\
+         "<br/><br/>\n"\
+         "<table cellspacing=\"0\" cellpadding=\"10\" border=\"1\" align=\"center\"><tr>\n"\
+         "<td><a href=\"arrays.shtml\">Arrays, tiles &amp; frames</a></td>"\
+         "<td><a href=\"artistic.shtml\">Artistic</a></td>"\
+         "<td><a href=\"colors.shtml\">Colors</a></td>"\
+         "<td><a href=\"deformations.shtml\">Deformations</a></td>"\
+         "<td><a href=\"filtering.shtml\">Filtering</a></td>"\
+         "<td><a href=\"patterns.shtml\">Patterns</a></td>"\
+         "<td><a href=\"3drendering.shtml\">3D rendering</a></td>"\
+         "</tr></table>\n"\
+         "<br/>\n"\
+         "<table align=\"center\">\n"
+    repeat $nb_commands
+      command=${"arg "1+$>,$commands}
+      v + e[] "    - Command '"$command"' ["{1+$>}/$nb_commands"]." v -
+      +l # Parse command definition and examples
+        s -,{'"#@cli "$command" :"'}
+        if {$!<2} s -,{'"#@cli "$command"\n"'} fi
+        if {$!<2} v + warn[] "    ** Command '"$command"' not found! **" v -
+        else
+          k.
+          eval "
+            str = crop(#-1);
+            ind = 0;
+            while ((ind = find(str,'\n#@cli ',1,ind))>=0,
+              ++ind;
+              str[ind+6]!=_':' ? break() :
+              str[ind+7]==_' ' && str[ind+8]==_'$' && str[ind+9]==_' '?(
+                beg = ind + 10;
+                end = find(str,_'\n',1,beg) - 1;
+                com = vector1024(0);
+                ext('+rows[0] ',beg,',',end);
+              );
             );
-          );
-        ";
-        rm[0]
-        repeat $! # For each example found
-          example$nex={$>,t}
+          ";
+          rm[0]
+          repeat $! # For each example found
+            example$nex={$>,t}
 
-          v + e[] "    - "${example$nex} v -
-          m "_run : "${example$nex}
-          sample_name=${"arg 1+"{$nex%narg($pics)},$pics}
-          filename_original=gallery_full_${sample_name}_original_$nex.jpg
-          filename_full=gallery_full_${sample_name}_${command}_$nex.jpg
-          filename_thumb=gallery_thumb_${sample_name}_${command}_$nex.png
+            v + e[] "      $ "${example$nex} v -
+            m "_run : "${example$nex}
+            sample=${"arg 1+"{$nex%narg($pics)},$pics}
+            filename_original=${category}_${sample}_original_$nex.jpg
+            filename_full=${category}_${sample}_full_$nex.jpg
+            filename_thumb=${category}_${sample}_thumb_$nex.png
 
-          l[] # Create a HTML representation of the command
-            ({'${example$nex}'})
-            +replace_str. "image.jpg","<a href=\"http://gmic.eu/img/sample_"$sample_name".png\" target=\"_blank\">"$sample_name".png</a>"
-            y -.. . is_input={-2,im!=0||iM!=0}
-            replaced_example$nex={t} rm
-          endl
+            l[] # Create a HTML representation of the command
+              ({'${example$nex}'})
+              +replace_str. "image.jpg","<a href=\"http://gmic.eu/img/sample_"$sample".png\" target=\"_blank\">"$sample".png</a>"
+              y -.. . is_input={-2,im!=0||iM!=0}
+              replaced_example$nex={t} rm
+            endl
 
-          if {!isfile($filename_thumb)} l[]
-            sp $sample_name,450 o image.jpg rm
+            if {!isfile($filename_thumb)} l[]
+              sp $sample,450 o image.jpg rm
 
-            _run _gallery
-            width,height={[w,h]}
-            o $filename_full,70
+              _run _gallery
+              width,height={[w,h]}
+              o $filename_full,70
 
-            repeat 3 autocrop done
-            frame 3%,3%,255
-            rr2d 440,440,0,3 drop_shadow. 2,2,2 rr2d 300,300,0,3
-            o $filename_thumb rm
+              repeat 3 autocrop done
+              frame 3%,3%,255
+              rr2d 440,440,0,3 drop_shadow. 2,2,2 rr2d 300,300,0,3
+              o $filename_thumb rm
+
+              if $is_input
+                image.jpg _gallery
+                rr2d $width,$height,0,5 c 0,255
+                to "Reference",2%,2%,6%
+                - 255 r $width,$height,1,3,0,0,0.5,0.5 + 255
+                o $filename_original,60 rm
+              fi
+            endl fi
+
+            l[] $filename_full width,height={[w,h]+64} rm endl
+
+            if {!($nex%$nb_cols)} html=${html}"<tr>\n" fi
 
             if $is_input
-              image.jpg _gallery
-              rr2d $width,$height,0,5 c 0,255
-              - 255 r $width,$height,1,3,0,0,0.5,0.5 + 255
-              o $filename_original,60 rm
+              html=${html}\
+                  "  <td><center><div><a href=\"#\" onclick=\"return hs.htmlExpand(this, { width: "$width", height: "$height" })\">\n"\
+                  "  <img alt=\""gallery_$command$nex"\" border=\"0\" src=\""$filename_thumb"\" /><br/><b>"$command"</b></a>\n"\
+                  "  <div class=\"highslide-maincontent\"><center>\n"\
+                  "  <img alt=\""gallery_$command$nex"\" border=\"0\" src=\""$filename_full"\" onclick=\"hs.close()\" onmouseover=\"javascript:this.src='"$filename_full"';\" onmouseout=\"javascript:this.src='"$filename_original"';\" />\n"\
+                  "</center></div>\n"\
+                  "<div class=\"highslide-caption\">Command line: <tt>$ gmic "${replaced_example$nex}"</tt></div></div></center></td>\n"
+            else
+              html=${html}\
+                  "  <td><center><div><a href=\""$filename_full"\" class=\"highslide\" onclick=\"return hs.expand(this)\">"\
+                  "<img alt=\""gallery_$command$nex"\" border=\"0\" src=\""$filename_thumb"\" /><br/><b>"$command"</b></a>"\
+                  "<div class=\"highslide-caption\">Command line: <tt>$ gmic "${replaced_example$nex}"</tt></div></div></center></td>\n"
             fi
-          endl fi
-
-          l[] $filename_full width,height={[w,h]+64} rm endl
-
-          if {!($nex%$nb_cols)} html=${html}"<tr>\n" fi
-
-          if $is_input
-            html=${html}\
-                "  <td><center><div><a href=\"#\" onclick=\"return hs.htmlExpand(this, { width: "$width", height: "$height" })\">\n"\
-                "  <img alt=\""gallery_$command$nex"\" border=\"0\" src=\""$filename_thumb"\" /><br/><b>"$command"</b></a>\n"\
-                "  <div class=\"highslide-maincontent\"><center>\n"\
-                "  <img alt=\""gallery_$command$nex"\" border=\"0\" src=\""$filename_full"\" onclick=\"hs.close()\" onmouseover=\"javascript:this.src='"$filename_full"';\" onmouseout=\"javascript:this.src='"$filename_original"';\" />\n"\
-                "</center></div>\n"\
-                "<div class=\"highslide-caption\">Command line: <tt>$ gmic "${replaced_example$nex}"</tt></div></div></center></td>\n"
-          else
-            html=${html}\
-                "  <td><center><div><a href=\""$filename_full"\" class=\"highslide\" onclick=\"return hs.expand(this)\">"\
-                "<img alt=\""gallery_$command$nex"\" border=\"0\" src=\""$filename_thumb"\" /><br/><b>"$command"</b></a>"\
-                "<div class=\"highslide-caption\">Command line: <tt>$ gmic "${replaced_example$nex}"</tt></div></div></center></td>\n"
-          fi
-          nex+=1
-          if {!($nex%$nb_cols)} html=${html}"</tr>\n" fi
-        done
-      fi
-      rm
-    endl
+            nex+=1
+            if {!($nex%$nb_cols)} html=${html}"</tr>\n" fi
+          done
+        fi
+        rm
+      endl
+    done
+    if {$nex%$nb_cols} html=${html}"</tr>\n" fi
+    html=$html\
+         "</table>\n"\
+         "</div></div><div id=\"footer\"><img alt=\"\" src=\"images/footer.jpg\" /></div></div>\n\n"\
+         "<!--#include file=\"copyright.html\" -->\n"\
+         "<!--#include file=\"footer.html\" -->\n"
+    ({'$html'}) o. raw:$category.shtml,uchar rm.
   done
   rm
-  if {$nex%$nb_cols} html=${html}"</tr>\n" fi
-  html=$html\
-       "</table>\n"\
-       "</div></div><div id=\"footer\"><img alt=\"\" src=\"images/footer.jpg\" /></div></div>\n\n"\
-       "<!--#include file=\"copyright.html\" -->\n"\
-       "<!--#include file=\"footer.html\" -->\n"
-
-  ({'$html'}) o. raw:index.shtml,uchar rm
 
   # Transfer on G'MIC server
-  v + e[] "  > Transfer gallery on G'MIC server.\n" v -
-  x "lftp ftp://"$GMIC_LOGIN":"$GMIC_PASSWD"@ftp.gmic.eu -e \"mirror -RL . /www/gmic/gallery ; quit\""
-  v + e[] "  > All done!.\n"
+  v + e[] "\n  * Transfer gallery on G'MIC server.\n" v -
+#  x "lftp ftp://"$GMIC_LOGIN":"$GMIC_PASSWD"@ftp.gmic.eu -e \"mirror -RL . /www/gmic/gallery ; quit\""
+  v + e[] "  * All done!.\n"
 
 # Generate a single image from a list of images, for the gallery.
 _gallery :
