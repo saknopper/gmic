@@ -3968,27 +3968,28 @@ update_gallery_html :
          "<!--#include file=\"header.html\" -->\n\n"\
          "<div id=\"bloc_option\"><div id=\"top_vert\"><div id=\"text_top\">Image gallery</div></div>\n"\
          "<div id=\"center\"><div id=\"text_centre_intro\">\n"\
-         "This gallery gives a quick overview of what features can be found in the "\
-         "<b><font color=\"#000066\">G\47MIC</font></b> image processing framework.<br/>\n"\
+         "This gallery gives a quick overview of the kind of features and filters available in the "\
+         "<b><font color=\"#000066\">G\47MIC</font></b> open-source image processing framework.<br/>\n"\
          "All the images below have been processed by the CLI interface <tt><a href=\"documentation.shtml\">gmic</a></tt>\n"\
          "  of <b><font color=\"#000066\">G\47MIC</font></b>, from a set of initial 2D color images.\n"\
-         "Click on an image to enlarge it and display the <b><font color=\"#000066\">G\47MIC</font></b> command that has been used for the processing.<br/>\n"\
-         "Remember, you can easily define your own image filters and effects by writing\n"\
-         "custom <b><font color=\"#000066\">G\47MIC</font></b> <a href=\"http://gmic.eu/gmic_stdlib.gmic\">command files</a>,\n"\
-         "then add them afterwards in the plug-ins for <a href=\"http://www.gimp.org\">GIMP</a> or "\
+         "Click on an image to enlarge it and display the <b><font color=\"#000066\">G\47MIC</font></b> command-line "\
+         "used for the processing (<i>note: this may require additional character escaping depending on the kind of shell you use!</i>).<br/>\n"\
+         "Remember, <b><font color=\"#000066\">G\47MIC</font></b> lets you define your own image pipelines through\n"\
+         "custom <a href=\"http://gmic.eu/gmic_stdlib.gmic\">command files</a>.\n"\
+         "Your custom filters can be easily added afterwards in the plug-in for <a href=\"http://www.gimp.org\">GIMP</a> or "\
          "<a href=\"http://www.krita.org\">Krita</a>.</br>\n\n"\
-         "For more details, visit the <a href=\"reference.shtml\">G\47MIC reference page</a> to get the full documentation on "\
-         "the software.\n"\
+         "For more details, visit the <a href=\"http://gmic.eu/tutorial\">tutorial pages</a> as well as the "\
+         "<a href=\"http://gmic.eu/reference.shtml\">technical reference</a> to get a full documentation on this software.\n"\
          "<br/><br/>\n"\
-         "<font size=\"-1\"><table cellspacing=\"0\" cellpadding=\"10\" border=\"1\" align=\"center\"><tr>\n"\
-         $td_arrays"<a href=\"arrays.shtml\">Arrays, tiles &amp; frames</a></td>"\
-         $td_artistic"<a href=\"artistic.shtml\">Artistic</a></td>"\
-         $td_colors"<a href=\"colors.shtml\">Colors</a></td>"\
-         $td_deformations"<a href=\"deformations.shtml\">Deformations</a></td>"\
-         $td_filtering"<a href=\"filtering.shtml\">Filtering</a></td>"\
-         $td_patterns"<a href=\"patterns.shtml\">Patterns</a></td>"\
-         $td_3drendering"<a href=\"3drendering.shtml\">3D rendering</a></td>"\
-         "</tr></table></font>\n"\
+         "<div id=\"menu\"><font size=\"-1\"><table cellspacing=\"0\" cellpadding=\"10\" border=\"1\" align=\"center\"><tr>\n"\
+         $td_arrays"<a href=\"arrays.shtml#menu\">Arrays, tiles &amp; frames</a></td>"\
+         $td_artistic"<a href=\"artistic.shtml#menu\">Artistic</a></td>"\
+         $td_colors"<a href=\"colors.shtml#menu\">Colors</a></td>"\
+         $td_deformations"<a href=\"deformations.shtml#menu\">Deformations</a></td>"\
+         $td_filtering"<a href=\"filtering.shtml#menu\">Filtering</a></td>"\
+         $td_patterns"<a href=\"patterns.shtml#menu\">Patterns</a></td>"\
+         $td_3drendering"<a href=\"3drendering.shtml#menu\">3D rendering</a></td>"\
+         "</tr></table></font></div>\n"\
          "<br/>\n"\
          "<table align=\"center\">\n"
     repeat $nb_commands
@@ -4035,7 +4036,7 @@ update_gallery_html :
             endl
 
             if {!isfile($filename_thumb)} l[]
-              sp $sample,450 o image.jpg rm
+              sp $sample,600 o image.jpg rm
 
               _run _gallery
               width,height={[w,h]}
@@ -4087,13 +4088,13 @@ update_gallery_html :
     html=$html\
          "</table><br/>\n"\
          "<font size=\"-1\"><table cellspacing=\"0\" cellpadding=\"10\" border=\"1\" align=\"center\"><tr>\n"\
-         $td_arrays"<a href=\"arrays.shtml\">Arrays, tiles &amp; frames</a></td>"\
-         $td_artistic"<a href=\"artistic.shtml\">Artistic</a></td>"\
-         $td_colors"<a href=\"colors.shtml\">Colors</a></td>"\
-         $td_deformations"<a href=\"deformations.shtml\">Deformations</a></td>"\
-         $td_filtering"<a href=\"filtering.shtml\">Filtering</a></td>"\
-         $td_patterns"<a href=\"patterns.shtml\">Patterns</a></td>"\
-         $td_3drendering"<a href=\"3drendering.shtml\">3D rendering</a></td>"\
+         $td_arrays"<a href=\"arrays.shtml#menu\">Arrays, tiles &amp; frames</a></td>"\
+         $td_artistic"<a href=\"artistic.shtml#menu\">Artistic</a></td>"\
+         $td_colors"<a href=\"colors.shtml#menu\">Colors</a></td>"\
+         $td_deformations"<a href=\"deformations.shtml#menu\">Deformations</a></td>"\
+         $td_filtering"<a href=\"filtering.shtml#menu\">Filtering</a></td>"\
+         $td_patterns"<a href=\"patterns.shtml#menu\">Patterns</a></td>"\
+         $td_3drendering"<a href=\"3drendering.shtm#menul\">3D rendering</a></td>"\
          "</tr></table></font>\n"\
          "</div></div><div id=\"footer\"><img alt=\"\" src=\"images/footer.jpg\" /></div></div>\n\n"\
          "<!--#include file=\"copyright.html\" -->\n"\
@@ -8693,7 +8694,7 @@ bandpass : skip ${1=0},${2=20%}
 #@cli : If a guide image is provided, it is used for drive the smoothing filter.
 #@cli : A guide image must be of the same xyz-size as the selected images.
 #@cli : Set 'sampling' arguments to '0' for automatic adjustment.
-#@cli : $ image.jpg repeat 5 bilateral[-1] 10,10 done
+#@cli : $ image.jpg repeat 5 bilateral 10,10 done
 
 #@cli b : eq. to 'blur'. : (+)
 
