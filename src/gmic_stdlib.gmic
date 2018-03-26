@@ -3933,23 +3933,22 @@ update_gallery_html :
   x "ln -fs ../highslide ."
 
   # Define categories and sample pictures.
-  categories=artistic,deformations,filtering,colors,arrays,patterns,3drendering
+  categories=arrays,artistic,colors,deformations,filtering,patterns,3drendering
   nb_categories={narg($categories)}
   commands_artistic=boxfitting,cartoon,cubism,draw_whirl,fire_edges,fractalize,halftone,hardsketchbw,linify,mosaic,pencilbw,old_photo,polaroid,polygonize,poster_hope,rodilius,stained_glass,stencil
   commands_deformations=deform,flower,map_sphere,spherize,twirl,warp_perspective
   commands_filtering=smooth,bilateral,deriche,normalize_local,sharpen,solidify
   commands_colors=hsv2rgb
-  commands_arrays=array,array_fade,array_mirror,warhol,frame_blur,frame_cube,frame_painting,imagegrid,rotate_tiles
-  commands_patterns=tsp,chessboard,mandelbrot,maze_mask,plasma,sierpinski,truchet,turbulence
+  commands_arrays=array,array_fade,array_mirror,frame_blur,frame_cube,frame_painting,img2ascii,imagegrid,rotate_tiles,tunnel
+  commands_patterns=tsp,chessboard,mandelbrot,maze_mask,plasma,sierpinski,truchet,turbulence,weave
   commands_3drendering=add3d,distribution3d,elevation3d,gmic3d,imageblocks3d,imagerubik3d,skeleton3d,spherical3d,tensors3d,text3d,torus3d,weird3d
   # commands=array,array_fade,array_mirror,warhol,frame_blur,frame_cube,frame_painting,imagegrid,rotate_tiles,boxfitting,cartoon,cubism,draw_whirl,fire_edges,fractalize,halftone,hardsketchbw,linify,mosaic,old_photo,pencilbw,polaroid,polygonize,poster_hope,rodilius,smooth,stained_glass,stencil,deform,flower,map_sphere,spherize,twirl,warp_perspective,hsv2rgb,append_tiles,bilateral,deriche,normalize_local,sharpen,solidify,watershed,histogram,isophotes,segment_watershed,slic,thinning,topographic_map,tsp,chessboard,mandelbrot,maze_mask,plasma,sierpinski,truchet,turbulence,add3d,distribution3d,elevation3d,gmic3d,imageblocks3d,imagerubik3d,skeleton3d,spherical3d,tensors3d,text3d,torus3d,weird3d
 
-  pics=apples,bottles,butterfly,car,cat,cliff,david,dog,duck,eagle,elephant,earth,flower,fruits,greece,gummy,inside,landscape,leaf,leno,lion,monalisa,parrots,pencils,rooster,rose,square,teddy,tiger,wall,waterfall,zelda
+  pics=apples,bottles,butterfly,car,cat,cliff,david,dog,duck,eagle,elephant,earth,flower,fruits,greece,gummy,inside,landscape,leaf,leno,lion,mandrill,monalisa,parrots,pencils,rooster,rose,square,teddy,tiger,wall,waterfall,zelda
 
   # Generate HTML pages.
   i raw:$HOME/work/src/gmic/src/gmic_stdlib.gmic,uchar
   nb_cols=3
-  nex=0
 
   repeat $nb_categories
     category=${arg\ 1+$>,$categories}
@@ -3957,33 +3956,42 @@ update_gallery_html :
 
     commands=${commands_$category}
     nb_commands={narg($commands)}
+    col=0
+    nex=0
+
+    repeat $nb_categories
+      cat=${arg\ 1+$>,$categories}
+      if {;'$cat'=='$category'} td_$cat="<td bgcolor=\"#CCDDFF\">"
+      else td_$cat="<td>"
+      fi
+    done
 
     html="<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"\n"\
          "  \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n\n"\
          "<!--#include file=\"header.html\" -->\n\n"\
          "<div id=\"bloc_option\"><div id=\"top_vert\"><div id=\"text_top\">Image gallery</div></div>\n"\
          "<div id=\"center\"><div id=\"text_centre_intro\">\n"\
-         "This gallery will give you a quick overview of what features are found in the "\
+         "This gallery gives a quick overview of what features can be found in the "\
          "<b><font color=\"#000066\">G\47MIC</font></b> image processing framework.<br/>\n"\
          "All the images below have been processed by the CLI interface <tt><a href=\"documentation.shtml\">gmic</a></tt>\n"\
          "  of <b><font color=\"#000066\">G\47MIC</font></b>, from a set of initial 2D color images.\n"\
-         "Click on an image to enlarge it and display the <b><font color=\"#000066\">G\47MIC</font></b> command used for the processing.<br/>\n"\
+         "Click on an image to enlarge it and display the <b><font color=\"#000066\">G\47MIC</font></b> command that has been used for the processing.<br/>\n"\
          "Remember, you can easily define your own image filters and effects by writing\n"\
          "custom <b><font color=\"#000066\">G\47MIC</font></b> <a href=\"http://gmic.eu/gmic_stdlib.gmic\">command files</a>,\n"\
-         "then eventually add them afterwards in the plug-in for <a href=\"http://www.gimp.org\">GIMP</a> or "\
+         "then add them afterwards in the plug-ins for <a href=\"http://www.gimp.org\">GIMP</a> or "\
          "<a href=\"http://www.krita.org\">Krita</a>.</br>\n\n"\
-         "For more details, visit the <a href=\"reference.shtml\">G\47MIC reference page</a> to get the full documentation on how "\
-         "to use the software.\n"\
+         "For more details, visit the <a href=\"reference.shtml\">G\47MIC reference page</a> to get the full documentation on "\
+         "the software.\n"\
          "<br/><br/>\n"\
-         "<table cellspacing=\"0\" cellpadding=\"10\" border=\"1\" align=\"center\"><tr>\n"\
-         "<td><a href=\"arrays.shtml\">Arrays, tiles &amp; frames</a></td>"\
-         "<td><a href=\"artistic.shtml\">Artistic</a></td>"\
-         "<td><a href=\"colors.shtml\">Colors</a></td>"\
-         "<td><a href=\"deformations.shtml\">Deformations</a></td>"\
-         "<td><a href=\"filtering.shtml\">Filtering</a></td>"\
-         "<td><a href=\"patterns.shtml\">Patterns</a></td>"\
-         "<td><a href=\"3drendering.shtml\">3D rendering</a></td>"\
-         "</tr></table>\n"\
+         "<font size=\"-1\"><table cellspacing=\"0\" cellpadding=\"10\" border=\"1\" align=\"center\"><tr>\n"\
+         $td_arrays"<a href=\"arrays.shtml\">Arrays, tiles &amp; frames</a></td>"\
+         $td_artistic"<a href=\"artistic.shtml\">Artistic</a></td>"\
+         $td_colors"<a href=\"colors.shtml\">Colors</a></td>"\
+         $td_deformations"<a href=\"deformations.shtml\">Deformations</a></td>"\
+         $td_filtering"<a href=\"filtering.shtml\">Filtering</a></td>"\
+         $td_patterns"<a href=\"patterns.shtml\">Patterns</a></td>"\
+         $td_3drendering"<a href=\"3drendering.shtml\">3D rendering</a></td>"\
+         "</tr></table></font>\n"\
          "<br/>\n"\
          "<table align=\"center\">\n"
     repeat $nb_commands
@@ -4050,7 +4058,7 @@ update_gallery_html :
 
             l[] $filename_full width,height={[w,h]+64} rm endl
 
-            if {!($nex%$nb_cols)} html=${html}"<tr>\n" fi
+            if {!($col%$nb_cols)} html=${html}"<tr>\n" fi
 
             if $is_input
               html=${html}\
@@ -4067,15 +4075,25 @@ update_gallery_html :
                   "<div class=\"highslide-caption\">Command line: <tt>$ gmic "${replaced_example$nex}"</tt></div></div></center></td>\n"
             fi
             nex+=1
-            if {!($nex%$nb_cols)} html=${html}"</tr>\n" fi
+            col+=1
+            if {!($col%$nb_cols)} html=${html}"</tr>\n" fi
           done
         fi
         rm
       endl
     done
-    if {$nex%$nb_cols} html=${html}"</tr>\n" fi
+    if {$col%$nb_cols} html=${html}"</tr>\n" fi
     html=$html\
-         "</table>\n"\
+         "</table><br/>\n"\
+         "<font size=\"-1\"><table cellspacing=\"0\" cellpadding=\"10\" border=\"1\" align=\"center\"><tr>\n"\
+         $td_arrays"<a href=\"arrays.shtml\">Arrays, tiles &amp; frames</a></td>"\
+         $td_artistic"<a href=\"artistic.shtml\">Artistic</a></td>"\
+         $td_colors"<a href=\"colors.shtml\">Colors</a></td>"\
+         $td_deformations"<a href=\"deformations.shtml\">Deformations</a></td>"\
+         $td_filtering"<a href=\"filtering.shtml\">Filtering</a></td>"\
+         $td_patterns"<a href=\"patterns.shtml\">Patterns</a></td>"\
+         $td_3drendering"<a href=\"3drendering.shtml\">3D rendering</a></td>"\
+         "</tr></table></font>\n"\
          "</div></div><div id=\"footer\"><img alt=\"\" src=\"images/footer.jpg\" /></div></div>\n\n"\
          "<!--#include file=\"copyright.html\" -->\n"\
          "<!--#include file=\"footer.html\" -->\n"
@@ -8250,7 +8268,7 @@ rotate_tileable : check ${2=8}>=0
   s. x,2 +/[-2,-1] atan. *. {180/pi}   # Compute corresponding angles.
   ($angle) index. .. rm..
   p={-3,@{^}} q={-2,@{^}} rm[-3--1]       # Find nearest fraction p/q to atan(angle).
-  if {!$p||!$q} return fi
+  if {!$p||!$q} v + return fi
 
   repeat $! l[$>]
     # Compute width and height of tile.
@@ -15002,7 +15020,7 @@ _frame :
 #@cli : Render selected images as binary ascii art.
 #@cli : This command returns the corresponding the list of widths and heights (expressed as a number of characters) for each selected image.
 #@cli : Default values: 'charset=[ascii charset]', 'analysis_scale=16', 'analysis_smoothness=20%', 'synthesis_scale=16' and '_output_ascii_filename=[undefined]'.
-#@cli : $ image.jpg +img2ascii , resize[0] [1],[1],1,3 +mul
+#@cli : $ image.jpg +img2ascii , resize[0] [1],[1],1,3 mul
 img2ascii : skip "${1= !\042#$%&\047()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ\133\\\135^_\140abcdefghijklmnopqrstuvwxyz\173|\174~}","${5=}" check "${2=16}>0 && ${3=20%}>=0 && ${4=16}>0"
   e[^-1] "Render image$? as binary ascii art, with charset '$1', analysis scale $2, analysis smoothness $3, synthesis scale $4 and output ascii filename '$5'."
   v -
@@ -15370,7 +15388,7 @@ taquin : check "isint($1) && $1>0 & isint(${2=$1}) && $2>0" skip ${3=0},${4=50},
 #@cli tunnel : _level>=0,_factor>0,_centering_x,_centering_y,_opacity,_angle
 #@cli : Apply tunnel effect on selected images.
 #@cli : Default values: 'level=9', 'factor=80%', 'centering_x=centering_y=0.5', 'opacity=1' and 'angle=0'
-#@cli : $ image.jpg +tunnel 20
+#@cli : $ image.jpg tunnel 20
 tunnel : check "${1=9}>=0 && ${2=80%}>0" skip ${3=0.5},${4=0.5},${5=0.1},${6=0}
   e[^-1] "Apply tunnel effect on image$?, with depth $1, factor $2, centering ($3,$4), opacity $5 and angle $6."
   v - repeat $! l[$>]
@@ -16270,7 +16288,8 @@ weave : check "${1=6}>=0 && ${2=65}>=0 && $2<=100 && ${3=40}>=0 && $3<=100 && ${
     blend[-4,-3] alpha blend[-2,-1] alpha c[-2,-1] 0,255
 
     # Render full pattern and merge.
-    /[-2,-1] 255 . ... a[-4,-2] x a[-2,-1] x a[-2,-1] y rotate_tileable. {$7*22.5} r. ..,..,1,1,0,2 *[-2,-1]
+    /[-2,-1] 255 . ... a[-4,-2] x a[-2,-1] x a[-2,-1] y rotate_tileable. {$7*22.5}
+    r. ..,..,1,1,0,2 *[-2,-1]
   endl a c endl done v +
 
 #@cli whirls : _texture>=0,_smoothness>=0,_darkness>=0,_lightness>=0
