@@ -3715,24 +3715,24 @@ update_film_emulation_html :
 
   # Prepare folder structure.
   v + e[] "\n  * Prepare folder structure." v -
-  -x "ln -fs ../copyright.html ."
-  -x "ln -fs ../favicon.ico ."
-  -x "ln -fs ../favicon.png ."
-  -x "ln -fs ../footer.html ."
-  -x "ln -fs ../header.html ."
-  -x "ln -fs ../gmicmenu ."
-  -x "ln -fs ../jquery-1.11.0.min.js ."
-  -x "ln -fs ../style.css ."
-  -x "ln -fs ../images ."
-  -x "mkdir -p img"
-  -x "cd img && ln -fs ../../img/logo4.jpg ."
-  -x "cd img && ln -fs ../../img/logos.jpg ."
-  -x "cd img && ln -fs ../../img/rss.png ."
-  -x "ln -fs ../highslide ."
+  x "ln -fs ../copyright.html ."
+  x "ln -fs ../favicon.ico ."
+  x "ln -fs ../favicon.png ."
+  x "ln -fs ../footer.html ."
+  x "ln -fs ../header.html ."
+  x "ln -fs ../gmicmenu ."
+  x "ln -fs ../jquery-1.11.0.min.js ."
+  x "ln -fs ../style.css ."
+  x "ln -fs ../images ."
+  x "mkdir -p img"
+  x "cd img && ln -fs ../../img/logo4.jpg ."
+  x "cd img && ln -fs ../../img/logos.jpg ."
+  x "cd img && ln -fs ../../img/rss.png ."
+  x "ln -fs ../highslide ."
 
   # Generate thumbnails.
   v + e[] "\n  * Generate thumbnails from samples." v -
-  if original else -x "mkdir original" fi
+  if original else x "mkdir original" fi
   nb_samples=$!
   to_rgb repeat $nb_samples l[$<]
     nm[0] sample_{1+$<}
@@ -3752,8 +3752,8 @@ update_film_emulation_html :
     presets=${-_fx_emulate_film_$category}
 
     v + e[] "\n  * Category ""#"{1+$>}": "$category"\n" v -
-    if $category else -x "mkdir "$category fi
-    if $category/clut else -x "mkdir "$category/clut fi
+    if $category else x "mkdir "$category fi
+    if $category/clut else x "mkdir "$category/clut fi
 
     repeat {narg({/$presets})}
       preset=${arg\ {1+$>},$presets}
@@ -3771,7 +3771,7 @@ update_film_emulation_html :
       repeat $nb_samples l[{2*$>},{2*$>+1},-1]
         basename={0,b}
         if $category/$basename/$preset.jpg else
-          if $category/$basename else -x "mkdir \""$category/$basename"\"" fi
+          if $category/$basename else x "mkdir \""$category/$basename"\"" fi
           +map_clut[^-1] .
           to.. ${_title\ $preset},4,{-2,h-28},20,2 frame.. 1,1,0
           o.. $category/$basename/$preset.jpg,$jpeg_quality
@@ -3910,7 +3910,7 @@ with or endorsed by the companies that own the trademarks.</i></font></p>\n\n
   # All done, exiting.
   rm
   category=${arg\ 1,$categories}
-  -x "ln -fs "${category}_$basename0.shtml" index.shtml"
+  x "ln -fs "${category}_$basename0.shtml" index.shtml"
   v + e[] "\n > All done, for "$nb_presets" presets.\n"
 
 
@@ -3921,16 +3921,16 @@ update_gallery_html :
 
   # Prepare folder structure.
   v + e[] "  * Prepare folder structure." v -
-  -x "ln -fs ../copyright.html ."
-  -x "ln -fs ../favicon.ico ."
-  -x "ln -fs ../favicon.png ."
-  -x "ln -fs ../footer.html ."
-  -x "ln -fs ../header.html ."
-  -x "ln -fs ../gmicmenu ."
-  -x "ln -fs ../jquery-1.11.0.min.js ."
-  -x "ln -fs ../style.css ."
-  -x "ln -fs ../images ."
-  -x "ln -fs ../highslide ."
+  x "ln -fs ../copyright.html ."
+  x "ln -fs ../favicon.ico ."
+  x "ln -fs ../favicon.png ."
+  x "ln -fs ../footer.html ."
+  x "ln -fs ../header.html ."
+  x "ln -fs ../gmicmenu ."
+  x "ln -fs ../jquery-1.11.0.min.js ."
+  x "ln -fs ../style.css ."
+  x "ln -fs ../images ."
+  x "ln -fs ../highslide ."
 
   # Define categories and sample pictures.
   categories=artistic,deformations,filtering,colors,arrays,patterns,3drendering
@@ -4085,7 +4085,8 @@ update_gallery_html :
 
   # Transfer on G'MIC server
   v + e[] "\n  * Transfer gallery on G'MIC server.\n" v -
-#  x "lftp ftp://"$GMIC_LOGIN":"$GMIC_PASSWD"@ftp.gmic.eu -e \"mirror -RL . /www/gmic/gallery ; quit\""
+  x "ln -fs artistic.shtml index.shtml"
+  x "lftp ftp://"$GMIC_LOGIN":"$GMIC_PASSWD"@ftp.gmic.eu -e \"mirror -RL . /www/gmic/gallery2 ; quit\""
   v + e[] "  * All done!.\n"
 
 # Generate a single image from a list of images, for the gallery.
@@ -4258,7 +4259,7 @@ update_server :
   v + e[] "> Load and archive .gmic source files.\n" v -
   _nb_sources=0
   load_gmic ${HOME}/work/src/gmic/src/gmic_stdlib.gmic
-  -x "cd $HOME/work/src/gmic-community && git pull 2>&1 >/dev/null"
+  x "cd $HOME/work/src/gmic-community && git pull 2>&1 >/dev/null"
   load_gmic ${HOME}/work/src/gmic-community/include/andreas_pahlsson.gmic
   load_gmic ${HOME}/work/src/gmic-community/include/andy_kelday.gmic
   load_gmic ${HOME}/work/src/gmic-community/include/arto_huotari.gmic
@@ -4788,24 +4789,24 @@ update_tutorial_html :
 
   # Prepare folder structure.
   v + e[] "\n  * Prepare folder structure." v -
-  -x "ln -fs ../../gmic/html/tutorial.css ."
-  -x "ln -fs ../../gmic/html/copyright.html ."
-  -x "ln -fs ../../gmic/html/favicon.ico ."
-  -x "ln -fs ../../gmic/html/favicon.png ."
-  -x "ln -fs ../../gmic/html/footer.html ."
-  -x "ln -fs ../../gmic/html/header.html ."
-  -x "ln -fs ../../gmic/html/gmicmenu ."
-  -x "ln -fs ../../gmic/html/jquery-1.11.0.min.js ."
-  -x "ln -fs ../../gmic/html/style.css ."
-  -x "ln -fs ../../gmic/html/images ."
-  -x "mkdir -p img"
-  -x "cd img && ln -fs ../../../gmic/html/img/logo4.jpg ."
-  -x "cd img && ln -fs ../../../gmic/html/img/logos.jpg ."
-  -x "cd img && ln -fs ../../../gmic/html/img/rss.png ."
-  -x "cd img && ln -fs ../../../gmic/html/convert_raw_img/* ."
-  -x "ln -fs ../../gmic/html/convert_raw.html ../../gmic/html/convert_raw.shtml ."
-  -x "ln -fs ../../gmic/html/tutorial_toc.html ."
-  -x "ln -fs ../../gmic/html/highslide ."
+  x "ln -fs ../../gmic/html/tutorial.css ."
+  x "ln -fs ../../gmic/html/copyright.html ."
+  x "ln -fs ../../gmic/html/favicon.ico ."
+  x "ln -fs ../../gmic/html/favicon.png ."
+  x "ln -fs ../../gmic/html/footer.html ."
+  x "ln -fs ../../gmic/html/header.html ."
+  x "ln -fs ../../gmic/html/gmicmenu ."
+  x "ln -fs ../../gmic/html/jquery-1.11.0.min.js ."
+  x "ln -fs ../../gmic/html/style.css ."
+  x "ln -fs ../../gmic/html/images ."
+  x "mkdir -p img"
+  x "cd img && ln -fs ../../../gmic/html/img/logo4.jpg ."
+  x "cd img && ln -fs ../../../gmic/html/img/logos.jpg ."
+  x "cd img && ln -fs ../../../gmic/html/img/rss.png ."
+  x "cd img && ln -fs ../../../gmic/html/convert_raw_img/* ."
+  x "ln -fs ../../gmic/html/convert_raw.html ../../gmic/html/convert_raw.shtml ."
+  x "ln -fs ../../gmic/html/tutorial_toc.html ."
+  x "ln -fs ../../gmic/html/highslide ."
 
   # Create images for toc tree.
   11,11,1,3,255 frame 1,1,0 line 3,50%,{w-4},50%,1,0 +line 50%,3,50%,{h-4},1,0
@@ -4823,7 +4824,7 @@ update_tutorial_html :
   done
 
   # Clean temp files.
-  -x "rm -f __tmp.html"
+  x "rm -f __tmp.html"
   v + e[] "\n  * All done !.\n\n"
 
 # Add page to the list of pages to explore.
@@ -4860,7 +4861,7 @@ _update_tutorial_html :
 
   # Get web page.
   v + e[] "    > Retrieve page '"$url"'." v -
-  -x "wget -q "$url" -O __tmp.html"
+  x "wget -q "$url" -O __tmp.html"
   i raw:__tmp.html,char
 
   # Discard or replace undesired text.
@@ -4950,7 +4951,7 @@ _update_tutorial_html :
              split_opacity if {$!==1" || "ia>250} is_opaque=1 fi a c
              if {$is_opaque} to_rgb else to_rgba i[0] 100%,100%,1,3 fc[0] 245,245,245 blend alpha fi
              o $relink,60 rm
-             # -x "git add "$relink
+             # x "git add "$relink
              v + e[] "    > Image link '"$link"' converted and relinked to '"$relink"'." v -
              onfail relink=$link v + e[] "    > Failed to retrieve image link '"$link"'." v - rm
              endl
@@ -4983,7 +4984,7 @@ _update_tutorial_html :
           else to_rgba i[0] 100%,100%,1,3 fc[0] 245,245,245 blend alpha
           fi
           o $relink,60 rm
-          # -x "git add "$relink
+          # x "git add "$relink
           v + e[] "    > Image '"$link"' converted and relinked to '"$relink"'." v -
           onfail relink=$link v + e[] "      > Failed to retrieve image '"$link"'." v - rm
           endl
@@ -5005,7 +5006,7 @@ _update_tutorial_html :
 
   # Save .html page.
   o raw:$4,char
-  # -x "git add $4"
+  # x "git add $4"
   rm
 
   # Generate parent .shtml page.
@@ -5021,7 +5022,7 @@ _update_tutorial_html :
      "<!--#include file=\"copyright.html\" -->"\n\
      "<!--#include file=\"footer.html\" -->"\n'})
   o raw:$3,char
-  # -x "git add $3"
+  # x "git add $3"
   rm
   wait {5000+u(2000)}
   v +
@@ -18145,7 +18146,7 @@ fibonacci : check "$1>=0"
 #@cli : Rename or move a file from a location $1 to another location $2.
 file_mv :
   e[^-1] "Move file '$1' to location '$2'."
-  v - if ${-is_windows} -x "move "$1" "$2 else -x "mv "$1" "$2 fi v +
+  v - if ${-is_windows} x "move "$1" "$2 else x "mv "$1" "$2 fi v +
 
 #@cli file_rand
 #@cli : Return a random filename for storing temporary data.
@@ -18165,9 +18166,9 @@ file_rm :
     1 nm. "$1" dir={/{f}} base={/{b}} ext={/{x}} rm. com=""
     if {narg($dir)} com="cd \""$dir"\\\" && " fi
     if {narg($ext)} com=${com}"del \""$base.$ext"\"" else com=${com}"del \""$base"\"" fi
-    -x $com
+    x $com
   else
-    -x "rm -f \"$1\""
+    x "rm -f \"$1\""
   fi
   v +
 
