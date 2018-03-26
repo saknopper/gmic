@@ -3934,13 +3934,13 @@ update_gallery_html :
   # Define categories and sample pictures.
   categories=arrays,artistic,colors,deformations,filtering,patterns,3drendering
   nb_categories={narg($categories)}
-  commands_arrays=array,array_fade,array_mirror,frame_blur,frame_cube,frame_painting,img2ascii,imagegrid,rotate_tiles,vignette,tunnel,gallery_arrays
-  commands_artistic=boxfitting,cartoon,cubism,draw_whirl,fire_edges,fractalize,halftone,hardsketchbw,light_relief,linify,mosaic,pencilbw,old_photo,polaroid,polygonize,poster_hope,rodilius,stained_glass,stencil,gallery_artistic
-  commands_colors=sepia,solarize,hsv2rgb,gallery_colors
-  commands_deformations=deform,flower,map_sphere,seamcarve,spherize,twirl,warp_perspective,water,wave,gallery_deformations
-  commands_filtering=blur_angular,blur_linear,blur_radial,glow,smooth,bilateral,dog,deriche,distance,gradient_norm,normalize_local,sharpen,solidify,gallery_filtering
-  commands_patterns=tsp,chessboard,mandelbrot,maze_mask,plasma,shape_fern,shape_snowflake,sierpinski,syntexturize_patchmatch,truchet,turbulence,watermark_visible,weave,gallery_patterns
-  commands_3drendering=add3d,distribution3d,elevation3d,gmic3d,imageblocks3d,imagerubik3d,skeleton3d,spherical3d,tensors3d,text3d,torus3d,weird3d,gallery_3drendering
+  commands_arrays=gallery_arrays,array,array_fade,array_mirror,frame_blur,frame_cube,frame_painting,img2ascii,imagegrid,rotate_tiles,vignette,tunnel
+  commands_artistic=gallery_artistic,boxfitting,cartoon,cubism,draw_whirl,fire_edges,fractalize,halftone,hardsketchbw,light_relief,linify,mosaic,pencilbw,old_photo,polaroid,polygonize,poster_hope,rodilius,stained_glass,stencil
+  commands_colors=gallery_colors,sepia,solarize,hsv2rgb,transfer_rgb
+  commands_deformations=gallery_deformations,deform,flower,map_sphere,seamcarve,spherize,twirl,warp_perspective,water,wave
+  commands_filtering=gallery_filtering,blur_angular,blur_linear,blur_radial,glow,smooth,bilateral,dog,deriche,distance,gradient_norm,normalize_local,sharpen,solidify
+  commands_patterns=gallery_patterns,tsp,chessboard,mandelbrot,maze_mask,plasma,shape_fern,shape_snowflake,sierpinski,syntexturize_patchmatch,truchet,turbulence,watermark_visible,weave
+  commands_3drendering=gallery_3drendering,add3d,distribution3d,elevation3d,gmic3d,imageblocks3d,imagerubik3d,skeleton3d,spherical3d,tensors3d,text3d,torus3d,weird3d
 
   pics=apples,bottles,butterfly,car,cat,cliff,david,dog,duck,eagle,elephant,earth,flower,fruits,greece,gummy,inside,landscape,leaf,leno,lion,mandrill,monalisa,parrots,pencils,rooster,rose,square,teddy,tiger,wall,waterfall,zelda
 
@@ -3948,7 +3948,7 @@ update_gallery_html :
   i raw:$HOME/work/src/gmic/src/gmic_stdlib.gmic,uchar
   nb_cols=3
 
-  repeat $nb_categories
+  repeat $nb_categories,ncat
     category=${arg\ 1+$>,$categories}
     v + e[] "\n  * Process category '"$category"'." v -
 
@@ -3968,12 +3968,12 @@ update_gallery_html :
          "<!--#include file=\"header.html\" -->\n\n"\
          "<div id=\"bloc_option\"><div id=\"top_vert\"><div id=\"text_top\">Image gallery</div></div>\n"\
          "<div id=\"center\"><div id=\"text_centre_intro\">\n"\
-         "This gallery gives a quick overview of the kind of features and filters available in the "\
+         "This gallery gives a quick overview of the kind of features and generic filters available in the "\
          "<b><font color=\"#000066\">G\47MIC</font></b> open-source image processing framework.<br/>\n"\
          "All the images below have been processed by the CLI interface <tt><a href=\"documentation.shtml\">gmic</a></tt>\n"\
          "  of <b><font color=\"#000066\">G\47MIC</font></b>, from a set of initial 2D color images.\n"\
          "Click on an image to enlarge it and display the <b><font color=\"#000066\">G\47MIC</font></b> command-line "\
-         "used for the processing (<i>note: this may require additional character escaping depending on the kind of shell you use!</i>).<br/>\n"\
+         "used for the processing (<i>note: you may have to escape some characters, according to type of shell you use!</i>).<br/>\n"\
          "Remember, <b><font color=\"#000066\">G\47MIC</font></b> lets you define your own image pipelines through\n"\
          "custom <a href=\"http://gmic.eu/gmic_stdlib.gmic\">command files</a>.\n"\
          "Your custom filters can be easily added afterwards in the plug-in for <a href=\"http://www.gimp.org\">GIMP</a> or "\
@@ -4027,7 +4027,7 @@ update_gallery_html :
 
             v + e[] "      $ "${example$nex} v -
             m "_run : "${example$nex}
-            sample=${"arg 1+"{$nex%narg($pics)},$pics}
+            sample=${"arg 1+"{($nex+8*$ncat)%narg($pics)},$pics}
 
             filename_original=${category}_${sample}_original_$nex.jpg
             if {"find(['"${example$nex}"'],' _fps=')>=0"}
@@ -4057,7 +4057,7 @@ update_gallery_html :
               width,height={[w,h]}
               if $_is_animated o $filename_full,$_fps else o $filename_full,70 fi
 
-              repeat 3 autocrop done
+              crop 5,5,{w-6},{h-6} # Remove frame added by '_gallery'
               frame 3%,3%,255
               rr2d 440,440,0,3 drop_shadow 2,2,2 rr2d 300,300,0,3
               100%,100%,1,3,245 blend[^-1] .,alpha,1,1 rm.
@@ -4145,11 +4145,14 @@ _gallery :
     frame 1,1,0 frame 4,4,255
   endl done
 
-  if {!$_is_animated}
+  if {$_is_animated}
+    - 255 r ${-max_wh},1,3,0,0,0.5,0.5 + 255
+  else
     - 255 __gallery + 255
     if {w<256} - 255 r 256,100%,1,100%,0,0,0.5,0.5 + 255 fi
     if {h<256} - 255 r 100%,256,1,100%,0,0,0.5,0.5 + 255 fi
   fi
+
 
 __gallery :
   if {$!==2} if {w>h} a y else a x fi
@@ -7416,6 +7419,7 @@ _transfer_colors :  # Check transfer_colors performance.
 #@cli : 'luminosity_constraints' tells if luminosity constraints must be applied on non-confident matched colors.
 #@cli : 'is_constraints' tells if additional hard color constraints must be set (opens an interactive window).
 #@cli : Default values: 'gamma=0.3','regularization=8', 'luminosity_constraints=0.1', 'rgb_resolution=64' and 'is_constraints=0'.
+#@cli : $ sample pencils,wall +transfer_rgb[0] [1],0,0.01
 transfer_rgb : check "${2=0.3}>=0 && ${3=8}>=0 && ${4=0.15}>=0 && ${5=64}>=0 && isint(${6=0})"
   sigma=1.5
 
@@ -35480,6 +35484,7 @@ fx_solve_maze_preview :
 #@cli : $ image.jpg fx_pencil_portraitbw 30,120,1,0.5,144,79,21,0
 #@cli : $ image.jpg fx_gcd_etch_preview 125,153,171,185,0.1,50,80,50,10,15,12,20,0,1,0.3,1,0,0
 #@cli : $ image.jpg fx_8bits_preview 25,800,16,0
+#@cli : $ image.jpg fire_edges 0.7,0.25,0.5,25,20 _fps=6
 
 #@cli gallery_colors
 #@cli : This entry defines some examples of color filters for the G'MIC gallery page.
@@ -35503,7 +35508,7 @@ fx_solve_maze_preview :
 
 #@cli gallery_filtering
 #@cli : This entry defines some examples of filters for the G'MIC gallery page.
-#@cli : $ image.jpg fx_gcd_crt 1.8,1.8,0,0
+#@cli : $ image.jpg fx_gcd_crt 1.8,1.8,0,0 equalize 256
 #@cli : $ image.jpg fx_dirty_preview 30,1,0,0,0
 #@cli : $ image.jpg fx_freaky_details_preview 2,10,1,11,0,32,0
 #@cli : $ image.jpg jeje_normalize_local_variance_preview 50,5,5,1,0,0
@@ -35525,6 +35530,7 @@ fx_solve_maze_preview :
 #@cli : $ 400,400,1,3 fx_equation_parametric "sin(t)*(exp(cos(t))-2*cos(4*t)-sin(t/12)^5)","cos(t)*(exp(cos(t))-2*cos(4*t)-sin(t/12)^5)",0,100,4096,1,0,64,0,0,128,0,0,1,1,1
 #@cli : $ 400,400,1,3 KittyRings_preview 30,8,0,1,113,0,113,0,255,0
 #@cli : $ 400,400,1,3 fx_neon_lightning 50,50,0,50,50,100,50,0.7,3,130,80,50,0.25,0
+#@cli : $ sample monkey,lion,monkey 100%,100% plasma. equalize. 256 transition[0,1,2] [3],10 rm. _fps=10
 
 #@cli gallery_3drendering
 #@cli : $ sample leno,lion,leno resize 400,400 transition3d 20,5,5 rm. _fps=10
