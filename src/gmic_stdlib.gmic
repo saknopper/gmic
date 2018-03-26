@@ -35572,7 +35572,7 @@ fx_solve_maze_preview :
 
 #@cli gallery_codingfun
 #@cli : This entry defines some examples of coding-fun filters for the G'MIC gallery page.
-#@cli : $ http://gmic.eu/snippet/lissajou.gmic go _fps=10 _label="Lissajou"
+#@cli : $ http://gmic.eu/snippet/lissajous.gmic go _fps=10 _label="Lissajous"
 
 # Local Variables:
 # mode: sh
