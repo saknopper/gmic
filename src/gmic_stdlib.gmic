@@ -4053,6 +4053,10 @@ update_gallery_html : check "isbool(${1=0})"
                 rm[$<]
               fi done a y endl
               l. s +,{'" "'} repeat $! if {$<,crop(0,0,1,7)=='http://'} l[$<] # Add hyperlink
+                if {!$1" && "crop(0,0,1,23)=='http://gmic.eu/snippet/'} # Update code snippet from 'resources/snippet' on the server
+                  filename_snippet=../../resources/snippet/{`crop(0,23,1,h-23)`}
+                  x "lftp ftp://"$GMIC_LOGIN":"$GMIC_PASSWD"@ftp.gmic.eu -e \"put -O /www/gmic/snippet \\\""$filename_snippet"\\\"; quit\" >/dev/null"
+                fi
                 i[0] ({'"<a href=\""{$<,t}"\" target=\"_blank\">"'}) ({'</a>'}) y a y
               endl fi done a y endl
               replaced_example$nex={t} rm
