@@ -4123,9 +4123,9 @@ update_gallery_html : check "isbool(${1=0})"
 
             html_codesample=
             if $is_codesample
-               html_codesample="\n<div id=\"dialog"$nex"\" title=\""samples/$basename_codesample"\">\n<pre>\n"
+               html_codesample="\n<div id=\"dialog"$nex"\" title=\""samples/$basename_codesample"\">\n<font size=\"-1\"><pre>\n"
                i raw:$url_codesample,uchar html_codesample=${html_codesample}{t} rm.
-               html_codesample=${html_codesample}"\n</pre></div>\n"\
+               html_codesample=${html_codesample}"\n</pre></font></div>\n"\
                               "<br/><script>$( function() { $( \"#dialog"$nex"\" ).dialog({ autoOpen: false, width:600 }); } );</script>\n"\
                               "<a onclick=\"javascript:$( '#dialog"$nex"' ).dialog( 'open' );\" style=\"cursor: pointer;\"><i><font size=\"-1\">[ Source code ]</font></i></a>\n"
             fi
