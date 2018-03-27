@@ -4045,7 +4045,7 @@ update_gallery_html : check "isbool(${1=0})"
           repeat $nb_examples # For each example found
             example$nex={$>,t}
 
-            v + e[] $_gmic_g"      $ "${example$nex}$_gmic_n v -
+            v + e[] $_gmic_g"        $ "${example$nex}$_gmic_n v -
             sample=${"arg 1+"{($nex+8*$ncat)%narg($pics)},$pics}
             is_codesample=0
 
@@ -4063,7 +4063,8 @@ update_gallery_html : check "isbool(${1=0})"
                   filename_codesample="../../resources/samples"/$basename_codesample
                   url_codesample="http://gmic.eu/samples/"$basename_codesample
                   if $1 x "lftp ftp://"$GMIC_LOGIN":"$GMIC_PASSWD"@ftp.gmic.eu -e \"put -O /www/gmic/samples \\\""$filename_codesample"\\\"; quit\" >/dev/null" fi
-                  i[0] ({'"<a href=\"javascript:$( '\#dialog"$nex"' ).dialog( 'open' );\">"'}) ({'</a>'}) y a y
+                  i[0] ({'"<a onclick=\"javascript:$( '\#dialog"$nex"' ).dialog( 'open' );\" style=\"cursor: pointer;\">"'})
+#                  i[0] ({'"<a href=\"javascript:$( '\#dialog"$nex"' ).dialog( 'open' );\">"'}) ({'</a>'}) y a y
                 else i[0] ({'"<a href=\""{$<,t}"\" target=\"_blank\">"'}) ({'</a>'}) y a y
                 fi
               endl fi done a y endl
@@ -4126,7 +4127,8 @@ update_gallery_html : check "isbool(${1=0})"
                i raw:$url_codesample,uchar html_codesample=${html_codesample}{t} rm.
                html_codesample=${html_codesample}"\n</pre></div>\n"\
                               "<br/><script>$( function() { $( \"#dialog"$nex"\" ).dialog({ autoOpen: false, width:600 }); } );</script>\n"\
-                              "<a href=\"javascript:$( '#dialog"$nex"' ).dialog( 'open' );\"><i><font size=\"-1\">[ Source code ]</font></a>\n"
+                              "<a onclick=\"javascript:$( '#dialog"$nex"' ).dialog( 'open' );\" style=\"cursor: pointer;\"><i><font size=\"-1\">[ Source code ]</font></i></a>\n"
+#                              "<a href=\"javascript:$( '#dialog"$nex"' ).dialog( 'open' );\"><i><font size=\"-1\">[ Source code ]</font></a>\n"
             fi
 
             if {['$_label']==0} _label=$command$counter else ({'$_label'}) replace_str. "~"," " _label={t} rm. fi
