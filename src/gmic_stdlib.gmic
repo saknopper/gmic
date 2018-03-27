@@ -3994,10 +3994,10 @@ update_gallery_html : check "isbool(${1=0})"
          "<a href=\"http://gmic.eu/reference.shtml\">technical reference</a> to get a full documentation on this software.\n"\
          "<br/><br/>\n<div id=\"menu\">\n"
 
-    html_menu="<font size=\"-1\"><table cellspacing=\"0\" cellpadding=\"8\" border=\"1\" align=\"center\"><tr>\n"\
-         $td_arrays"<a href=\"arrays.shtml#menu\">Arrays, tiles &amp; frames</a></td>"\
+    html_menu="<font size=\"-1\"><table cellspacing=\"0\" cellpadding=\"4\" border=\"1\" align=\"center\"><tr>\n"\
+         $td_arrays"<a href=\"arrays.shtml#menu\">Arrays &amp; frames</a></td>"\
          $td_artistic"<a href=\"artistic.shtml#menu\">Artistic</a></td>"\
-         $td_blackandwhite"<a href=\"blackandwhite.shtml#menu\">Black &amp; white</a></td>"\
+         $td_blackandwhite"<a href=\"blackandwhite.shtml#menu\">B&amp;W</a></td>"\
          $td_colors"<a href=\"colors.shtml#menu\">Colors</a></td>"\
          $td_deformations"<a href=\"deformations.shtml#menu\">Deformations</a></td>"\
          $td_filtering"<a href=\"filtering.shtml#menu\">Filtering</a></td>"\
@@ -4084,8 +4084,8 @@ update_gallery_html : check "isbool(${1=0})"
               if $_is_animated o $filename_full,$_fps else o $filename_full,70 fi
 
               crop 5,5,{w-6},{h-6} # Remove frame added by '_gallery'
-              frame 3%,3%,255
-              rr2d 440,440,0,3 drop_shadow 2,2,2 rr2d 300,300,0,3
+              frame 3%,3%,255 rr2d 440,440,0,3 drop_shadow 2,2,2
+              if $_is_animated rr2d 230,230,0,3 else rr2d 300,300,0,3 fi
               100%,100%,1,3,245 blend[^-1] .,alpha,1,1 rm.
 
               if $_is_animated o $filename_thumb,$_fps else o $filename_thumb,60 fi
