@@ -3961,6 +3961,7 @@ update_gallery_html : check "isbool(${1=0})"
 
   repeat $nb_categories,ncat
     category=${arg\ 1+$>,$categories}
+    if {isfile($category.shtml)} continue fi
     v + e[] "\n  * Process category '"$category"'." v -
 
     commands=${commands_$category}
