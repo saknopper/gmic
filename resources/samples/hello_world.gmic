@@ -40,14 +40,14 @@
 #
 
 #-------------------------------------------------------
-# How to test this G'MIC code snippet?
+# How to test this G'MIC code sample?
 #
 # On a terminal, type :
 #
-# $ gmic http://gmic.eu/snippet/hello_world.gmic run
+# $ gmic http://gmic.eu/samples/hello_world.gmic go
 #
 #-------------------------------------------------------
-run :
+go :
   verbose -  # Make console output silent
   local[]    # Start a new empty environment
 
