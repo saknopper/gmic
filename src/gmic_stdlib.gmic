@@ -4018,7 +4018,7 @@ update_gallery_html : check "isbool(${1=0})"
 
     repeat $nb_commands
       command=${"arg "1+$>,$commands}
-      v + e[] $_gmic_m"    - Command '"$command"' ["{1+$>}/$nb_commands"]."$_gmic_n v -
+      v + e[] $_gmic_m"    - Command '"$_gmic_b$command$_gmic_n"' ["{1+$>}/$nb_commands"]."$_gmic_n v -
       +l # Parse command definition and examples
         s -,{'"#@cli "$command" :"'}
         if {$!<2} s -,{'"#@cli "$command"\n"'} i[1] ({'\n'}) a[-2,-1] y fi
