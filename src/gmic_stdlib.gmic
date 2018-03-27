@@ -3918,6 +3918,14 @@ with or endorsed by the companies that own the trademarks.</i></font></p>\n\n
 update_gallery_html : check "isbool(${1=0})"
   e[^-1] "Generate gallery pages for G'MIC web site."
   v -
+  if {narg(${"files *"})} # Check directory and clean in case of upload.
+    if {narg(${"files *_full_*.jpg"})" && "\
+        narg(${"files *_thumb_*.jpg"})" && "\
+        narg(${"files *_original_*.jpg"})}
+       if $1 x 0,"rm -f *" fi
+    else v + error[0--4] "Current folder should be empty!"
+    fi
+  fi
 
   # Prepare folder structure.
   v + e[] "  * Prepare folder structure." v -
