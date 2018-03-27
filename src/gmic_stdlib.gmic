@@ -3970,7 +3970,7 @@ update_gallery_html : check "isbool(${1=0})"
 
     repeat $nb_categories
       cat=${arg\ 1+$>,$categories}
-      if {;'$cat'=='$category'} td_$cat="<td bgcolor=\"#CCDDFF\">"
+      if {;'$cat'=='$category'} td_$cat="<td bgcolor=\"#DDDDDD\">"
       else td_$cat="<td>"
       fi
     done
@@ -4041,17 +4041,7 @@ update_gallery_html : check "isbool(${1=0})"
 
             v + e[] "      $ "${example$nex} v -
             sample=${"arg 1+"{($nex+8*$ncat)%narg($pics)},$pics}
-
-            filename_original=${category}_${sample}_original_$nex.jpg
-            if {"find(['"${example$nex}"'],' _fps=')>=0"}
-              filename_full=${category}_${sample}_full_$nex.gif
-              filename_thumb=${category}_${sample}_thumb_$nex.gif
-              _is_animated=1
-            else
-              filename_full=${category}_${sample}_full_$nex.jpg
-              filename_thumb=${category}_${sample}_thumb_$nex.jpg
-              _is_animated=0
-            fi
+            is_codesample=0
 
             l[] # Create a HTML representation of the command
               ({'${example$nex}'}) y
@@ -4061,21 +4051,37 @@ update_gallery_html : check "isbool(${1=0})"
                 rm[$<]
               fi done a y endl
               l. s +,{'" "'} repeat $! if {$<,crop(0,0,1,7)=='http://'} l[$<] # Add hyperlink
-                if {$1" && "crop(0,0,1,23)=='http://gmic.eu/samples/'} # Update code sample from 'resources/samples' on the server
-                  filename_codesample="../../resources/samples"/{`crop(0,23,1,h-23)`}
-                  x "lftp ftp://"$GMIC_LOGIN":"$GMIC_PASSWD"@ftp.gmic.eu -e \"put -O /www/gmic/samples \\\""$filename_codesample"\\\"; quit\" >/dev/null"
+                if {crop(0,0,1,23)=='http://gmic.eu/samples/'}
+                  is_codesample=1
+                  basename_codesample={`crop(0,23,1,h-23)`}
+                  filename_codesample="../../resources/samples"/$basename_codesample
+                  url_codesample="http://gmic.eu/samples/"$basename_codesample
+                  if $1 x "lftp ftp://"$GMIC_LOGIN":"$GMIC_PASSWD"@ftp.gmic.eu -e \"put -O /www/gmic/samples \\\""$filename_codesample"\\\"; quit\" >/dev/null" fi
+                  i[0] ({'"<br/><a href=\"javascript:window.open('"$url_codesample"','mypopuptitle','width=600,height=400')\">"'}) ({'</a>'}) y a y
+                else i[0] ({'"<a href=\""{$<,t}"\" target=\"_blank\">"'}) ({'</a>'}) y a y
                 fi
-                i[0] ({'"<a href=\""{$<,t}"\" target=\"_blank\">"'}) ({'</a>'}) y a y
               endl fi done a y endl
               replaced_example$nex={t} rm
             endl
             ({'${example$nex}'}) replace_str. "http://gmic.eu/samples/","../../resources/samples/" example$nex={t} rm.
             m "_run : "${example$nex}
 
+            if $is_input sample_=${sample}_ else sample_= fi
+            filename_original=${category}_${sample_}original_$nex.jpg
+            if {"find(['"${example$nex}"'],' _fps=')>=0"}
+              filename_full=${category}_${sample_}full_$nex.gif
+              filename_thumb=${category}_${sample_}thumb_$nex.gif
+              _is_animated=1
+            else
+              filename_full=${category}_${sample_}full_$nex.jpg
+              filename_thumb=${category}_${sample_}thumb_$nex.jpg
+              _is_animated=0
+            fi
+
             etime=
             _label=
             if {!isfile($filename_thumb)} l[]
-              sp $sample,600 o image.jpg rm
+              if $is_input sp $sample,600 o image.jpg rm fi
 
               db3d m3d md3d f3d l3d sl3d ss3d 0.8 srand 512
               etime=$| _run etime={_round($|-$etime,0.01)}
@@ -4105,24 +4111,25 @@ update_gallery_html : check "isbool(${1=0})"
             if {!($col%$nb_cols)} html=${html}"<tr>\n" fi
             if {$nb_examples==1} counter= else counter=" <font size=\"-2\"><i>"[{$>+1}/$nb_examples]"</i></font>" fi
 
-            if {!narg($etime)} html_etime= else html_etime="<br/><font size=\"-2\"><i>(generated in "${etime}"s)</i></font>" fi
+            html_etime=
+            if {narg($etime)} html_etime="<br/><font size=\"-2\"><i>(generated in "${etime}"s)</i></font>" fi
 
-            if {['$_label']==0} _label=$command$counter
-            else ({'$_label'}) replace_str. "~"," " _label={t} rm.
-            fi
+            html_codesample=
+            if $is_codesample html_codesample="<br/><font size=\"-1\"><i>[ <a href=\"javascript:window.open('"$url_codesample"','mypopuptitle','width=600,height=400')\">Source code</a> ]</i></font>" fi
+            if {['$_label']==0} _label=$command$counter else ({'$_label'}) replace_str. "~"," " _label={t} rm. fi
             if $is_input
               html=${html}\
                   "  <td><center><div><a href=\"#\" onclick=\"return hs.htmlExpand(this, { width: "$width", height: "$height" })\">\n"\
-                  "  <img alt=\""gallery_$command$nex"\" border=\"0\" src=\""$filename_thumb"\" /><br/><b>"$_label"</b></a>\n"\
+                  "  <img alt=\""gallery_$command$nex"\" border=\"0\" src=\""$filename_thumb"\" /><br/><b>"${_label}${html_codesample}"</b></a>\n"\
                   "  <div class=\"highslide-maincontent\"><center>\n"\
                   "  <img alt=\""gallery_$command$nex"\" border=\"0\" src=\""$filename_full"\" onclick=\"hs.close()\" onmouseover=\"javascript:this.src='"$filename_full"';\" onmouseout=\"javascript:this.src='"$filename_original"';\" />\n"\
                   "</center></div>\n"\
-                  "<div class=\"highslide-caption\">Command: <tt>$ gmic "${replaced_example$nex}${html_etime}"</tt></div></div></center></td>\n"
+                  "<div class=\"highslide-caption\">Command: <tt>$ gmic "${replaced_example$nex}"</tt>"${html_etime}"</div></div></center></td>\n"
             else
               html=${html}\
                   "  <td><center><div><a href=\""$filename_full"\" class=\"highslide\" onclick=\"return hs.expand(this)\">"\
-                  "<img alt=\""gallery_$command$nex"\" border=\"0\" src=\""$filename_thumb"\" /><br/><b>"$_label"</b></a>"\
-                  "<div class=\"highslide-caption\">Command: <tt>$ gmic "${replaced_example$nex}${html_etime}"</tt></div></div></center></td>\n"
+                  "<img alt=\""gallery_$command$nex"\" border=\"0\" src=\""$filename_thumb"\" /><br/><b>"${_label}${html_codesample}"</b></a>"\
+                  "<div class=\"highslide-caption\">Command: <tt>$ gmic "${replaced_example$nex}"</tt>"${html_etime}"</div></div></center></td>\n"
             fi
             nex+=1
             col={($col+1)%$nb_cols}
