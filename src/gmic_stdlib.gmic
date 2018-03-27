@@ -4075,7 +4075,7 @@ update_gallery_html : check "isbool(${1=0})"
             if {!isfile($filename_thumb)} l[]
               sp $sample,600 o image.jpg rm
 
-              db3d m3d md3d f3d l3d sl3d ss3d 0.8
+              db3d m3d md3d f3d l3d sl3d ss3d 0.8 srand 512
               etime=$| _run etime={_round($|-$etime,0.01)}
               _gallery
               width,height={[w,h]}
@@ -35585,6 +35585,7 @@ fx_solve_maze_preview :
 #@cli gallery_codingfun
 #@cli : This entry defines some examples of coding-fun filters for the G'MIC gallery page.
 #@cli : $ http://gmic.eu/snippet/lissajous.gmic go _fps=10 _label="Lissajous"
+#@cli : $ http://gmic.eu/snippet/torus3d.gmic go _fps=10 _label="3D torus"
 
 # Local Variables:
 # mode: sh
