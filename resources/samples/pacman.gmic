@@ -11,13 +11,13 @@ go :
 
   # Create image of pellets = [1].
   shape_circle 30
-  resize[-1] 250%,100%,1,1,0,0,0.5 W={w}
+  resize[-1] 300%,100%,1,1,0,0,0.5 W={w}
   resize[-1] [-2],100%,1,1,0,2
 
   # Create colormap = [2].
   (0,0,0;255,255,255;255,255,0) permute. yzcx
 
-  nbf=30
+  nbf=20
   repeat $nbf,f
     [0],[0] circle[-1] 30%,50%,15%,1,2
     y={h/2-2*h*($f<$nbf/2?$f:$nbf-$f)/$nbf}
