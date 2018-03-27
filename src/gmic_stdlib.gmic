@@ -3941,7 +3941,7 @@ update_gallery_html : check "isbool(${1=0})"
   x "ln -fs ../highslide ."
 
   # Define categories and sample pictures.
-  categories=arrays,artistic,blackandwhite,colors,deformations,filtering,patterns,3drendering,codingfun
+  categories=arrays,artistic,blackandwhite,colors,deformations,filtering,patterns,3drendering,codesamples
   nb_categories={narg($categories)}
   commands_arrays=gallery_arrays,array,array_fade,array_mirror,frame_blur,frame_cube,frame_painting,img2ascii,imagegrid,rotate_tiles,vignette,tunnel
   commands_artistic=gallery_artistic,boxfitting,cartoon,cubism,draw_whirl,fractalize,halftone,hardsketchbw,light_relief,linify,mosaic,polaroid,polygonize,poster_hope,rodilius,stained_glass,stencil
@@ -3951,7 +3951,7 @@ update_gallery_html : check "isbool(${1=0})"
   commands_filtering=gallery_filtering,blur_angular,blur_linear,blur_radial,glow,smooth,bilateral,dog,deriche,distance,gradient_norm,normalize_local,sharpen,solidify
   commands_patterns=gallery_patterns,tsp,chessboard,mandelbrot,maze_mask,plasma,shape_fern,shape_snowflake,sierpinski,syntexturize_patchmatch,truchet,turbulence,watermark_visible,weave
   commands_3drendering=gallery_3drendering,add3d,distribution3d,elevation3d,gmic3d,imageblocks3d,imagerubik3d,skeleton3d,spherical3d,tensors3d,text3d,torus3d,weird3d
-  commands_codingfun=gallery_codingfun
+  commands_codesamples=gallery_codesamples
 
   pics=apples,bottles,butterfly,car,cat,cliff,david,dog,duck,eagle,elephant,earth,flower,fruits,greece,gummy,inside,landscape,leaf,leno,lion,mandrill,monalisa,parrots,pencils,rooster,rose,square,teddy,tiger,wall,waterfall,zelda
 
@@ -4003,7 +4003,7 @@ update_gallery_html : check "isbool(${1=0})"
          $td_filtering"<a href=\"filtering.shtml#menu\">Filtering</a></td>"\
          $td_patterns"<a href=\"patterns.shtml#menu\">Patterns</a></td>"\
          $td_3drendering"<a href=\"3drendering.shtml#menu\">3D rendering</a></td>"\
-         $td_codingfun"<a href=\"codingfun.shtml#menu\">Coding fun!</a></td>"\
+         $td_codesamples"<a href=\"codesamples.shtml#menu\">Code samples</a></td>"\
          "</tr></table></font>\n"
 
     html=${html}${html_menu}\
@@ -4061,15 +4061,15 @@ update_gallery_html : check "isbool(${1=0})"
                 rm[$<]
               fi done a y endl
               l. s +,{'" "'} repeat $! if {$<,crop(0,0,1,7)=='http://'} l[$<] # Add hyperlink
-                if {$1" && "crop(0,0,1,23)=='http://gmic.eu/snippet/'} # Update code snippet from 'resources/snippet' on the server
-                  filename_snippet="../../resources/snippet"/{`crop(0,23,1,h-23)`}
-                  x "lftp ftp://"$GMIC_LOGIN":"$GMIC_PASSWD"@ftp.gmic.eu -e \"put -O /www/gmic/snippet \\\""$filename_snippet"\\\"; quit\" >/dev/null"
+                if {$1" && "crop(0,0,1,23)=='http://gmic.eu/samples/'} # Update code sample from 'resources/samples' on the server
+                  filename_codesample="../../resources/samples"/{`crop(0,23,1,h-23)`}
+                  x "lftp ftp://"$GMIC_LOGIN":"$GMIC_PASSWD"@ftp.gmic.eu -e \"put -O /www/gmic/samples \\\""$filename_codesample"\\\"; quit\" >/dev/null"
                 fi
                 i[0] ({'"<a href=\""{$<,t}"\" target=\"_blank\">"'}) ({'</a>'}) y a y
               endl fi done a y endl
               replaced_example$nex={t} rm
             endl
-            ({'${example$nex}'}) replace_str. "http://gmic.eu/snippet/","../../resources/snippet/" example$nex={t} rm.
+            ({'${example$nex}'}) replace_str. "http://gmic.eu/samples/","../../resources/samples/" example$nex={t} rm.
             m "_run : "${example$nex}
 
             etime=
@@ -35584,10 +35584,10 @@ fx_solve_maze_preview :
 #@cli : $ image.jpg fx_pencil_portraitbw 30,120,1,0.5,144,79,21,0 _label="Pencil~portrait"
 #@cli : $ image.jpg fx_gcd_etch_preview 125,153,171,185,0.1,50,80,50,10,15,12,20,0,1,0.3,1,0,0 _label="Threshold~etch"
 
-#@cli gallery_codingfun
+#@cli gallery_codesamples
 #@cli : This entry defines some examples of coding-fun filters for the G'MIC gallery page.
-#@cli : $ http://gmic.eu/snippet/lissajous.gmic go _fps=10 _label="Lissajous"
-#@cli : $ http://gmic.eu/snippet/torus3d.gmic go _fps=10 _label="3D~torus"
+#@cli : $ http://gmic.eu/samples/lissajous.gmic go _fps=10 _label="Lissajous"
+#@cli : $ http://gmic.eu/samples/torus3d.gmic go _fps=10 _label="3D~torus"
 
 # Local Variables:
 # mode: sh
