@@ -4064,9 +4064,9 @@ update_gallery_html : check "isbool(${1=0})"
                   url_codesample="http://gmic.eu/samples/"$basename_codesample
                   if $1 x "lftp ftp://"$GMIC_LOGIN":"$GMIC_PASSWD"@ftp.gmic.eu -e \"put -O /www/gmic/samples \\\""$filename_codesample"\\\"; quit\" >/dev/null" fi
                   i[0] ({'"<a onclick=\"javascript:$( '\#dialog"$nex"' ).dialog( 'open' );\" style=\"cursor: pointer;\">"'})
-                else i[0] ({'"<a href=\""{$<,t}"\" target=\"_blank\">"'}) ({'</a>'})
+                else i[0] ({'"<a href=\""{$<,t}"\" target=\"_blank\">"'})
                 fi
-                y a y
+                ({'</a>'}) y a y
               endl fi done a y endl
               replaced_example$nex={t} rm
             endl
