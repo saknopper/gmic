@@ -4064,9 +4064,9 @@ update_gallery_html : check "isbool(${1=0})"
                   url_codesample="http://gmic.eu/samples/"$basename_codesample
                   if $1 x "lftp ftp://"$GMIC_LOGIN":"$GMIC_PASSWD"@ftp.gmic.eu -e \"put -O /www/gmic/samples \\\""$filename_codesample"\\\"; quit\" >/dev/null" fi
                   i[0] ({'"<a onclick=\"javascript:$( '\#dialog"$nex"' ).dialog( 'open' );\" style=\"cursor: pointer;\">"'})
-#                  i[0] ({'"<a href=\"javascript:$( '\#dialog"$nex"' ).dialog( 'open' );\">"'}) ({'</a>'}) y a y
-                else i[0] ({'"<a href=\""{$<,t}"\" target=\"_blank\">"'}) ({'</a>'}) y a y
+                else i[0] ({'"<a href=\""{$<,t}"\" target=\"_blank\">"'}) ({'</a>'})
                 fi
+                y a y
               endl fi done a y endl
               replaced_example$nex={t} rm
             endl
@@ -4128,7 +4128,6 @@ update_gallery_html : check "isbool(${1=0})"
                html_codesample=${html_codesample}"\n</pre></div>\n"\
                               "<br/><script>$( function() { $( \"#dialog"$nex"\" ).dialog({ autoOpen: false, width:600 }); } );</script>\n"\
                               "<a onclick=\"javascript:$( '#dialog"$nex"' ).dialog( 'open' );\" style=\"cursor: pointer;\"><i><font size=\"-1\">[ Source code ]</font></i></a>\n"
-#                              "<a href=\"javascript:$( '#dialog"$nex"' ).dialog( 'open' );\"><i><font size=\"-1\">[ Source code ]</font></a>\n"
             fi
 
             if {['$_label']==0} _label=$command$counter else ({'$_label'}) replace_str. "~"," " _label={t} rm. fi
