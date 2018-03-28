@@ -35610,6 +35610,7 @@ fx_solve_maze_preview :
 #@cli : $ http://gmic.eu/samples/lissajous.gmic go _fps=10 _label="Lissajous"
 #@cli : $ http://gmic.eu/samples/torus3d.gmic go _fps=10 _label="3D~torus"
 #@cli : $ http://gmic.eu/samples/pacman.gmic go _fps=25 _label="Pacman"
+#@cli : $ http://gmic.eu/samples/scrolling.gmic go _fps=25 _label="Scrolling"
 
 # Local Variables:
 # mode: sh
