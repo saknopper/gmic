@@ -32,7 +32,7 @@ go :
   done
   remove[0-2]
 
-  # Quantize in 256 colors to avoid .gif flickering.
+  # Quantize all frames in 256 colors with the same colormap, to avoid .gif flickering.
   +colormap[50%] 256 index[^-1] .,0.75,1 rm.
 
 # End of file.
