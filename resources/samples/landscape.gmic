@@ -5,9 +5,9 @@ go :
   srand 512
 
   # Generate elevation map [0] and texture [1]
-  input 512,512 plasma[-1] 1,1,5 resize[-1] 100%,300%,1,1,0,2 blur[-1] 3 cut[-1] 30%,inf normalize[-1] 0,255
+  input 512,480 plasma[-1] 1,1,5 resize[-1] 100%,400%,1,1,0,2 blur[-1] 3 cut[-1] 40%,inf normalize[-1] 0,255
   input (0,102,51;149,175,124;102,42,0;255,255,255) permute[-1] yzcx srgb2rgb[-1] resize[-1] 256,1,1,3,3 rgb2srgb[-1]
-  point[-1] 0,0,0,1,64,100,200 +map[-2] [-1] rm[-2] normalize[0] 0,50
+  point[-1] 0,0,0,1,64,100,200 +map[-2] [-1] rm[-2] normalize[0] 0,40
   specl3d 0.3 specs3d 0.5
 
   # Generate background image [2].
@@ -16,20 +16,17 @@ go :
   # Generate frames
   nbf=60
   repeat $nbf,f
-    y={h#0/3*(1+$f/$nbf)}
+    y={h#0/4*(1+$f/$nbf)}
     ang={6*sin(2*pi*$f/$nbf)}
-    +rows[0,1] $y,{$y+h#0/4-1} w,h={[w,h]}
+    +rows[0,1] $y,{$y+h#0/3-1} w,h={[w,h]}
     rotate[-2,-1] $ang,1,0,50%,50%
 
-    +fill[-2] 'y/h' cut[-1] 30%,100% normalize[-1] 0,1
-    input 100%,100%,1,3,'[219,140,15]/2' image[-3] [-1],0,0,0,0,1,[-2] remove[-2,-1]
+    +fill[-2] 'y/h' cut[-1] 5%,50% normalize[-1] 0,1
+    input 100%,100%,1,3,'[219,140,15]/3' image[-3] [-1],0,0,0,0,1,[-2] remove[-2,-1]
 
     elevation3d[-1] [-2] remove[-2] reverse3d[-1]
-    -3d[-1] {$w/2},0,0 r3d[-1] 1,0,0,100 +3d[-1] 0,50,0 *3d[-1] {-2,4*w/$w}
-
-    +object3d[2] [-1],50%,50%,-300,1,5,0,1,200,0,-1000,-2200 remove[-2]
-
-    w.
+    -3d[-1] {$w/2},0,0 r3d[-1] 1,0,0,90 +3d[-1] 0,50,0 *3d[-1] {-2,4*w/$w}
+    +object3d[2] [-1],50%,35%,-250,1,5,0,1,300,0,-1000,-2200 remove[-2]
 
   done
   remove[0-2]
