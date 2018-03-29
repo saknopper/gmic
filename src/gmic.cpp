@@ -8953,6 +8953,11 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                            indices,argx,argy,&z,&opacity,&_render3d,&_is_double3d,&is_zbuffer,
                            &_focale3d,&_light3d_x,&_light3d_y,&_light3d_z,&end)==12 ||
                cimg_sscanf(argument,"[%255[a-zA-Z0-9_.%+-]],%255[0-9.eE%+-],%255[0-9.eE%+-],"
+                           "%f,%f,%u,%u,%u,%f,%f,%f,%f,%f%c",
+                           indices,argx,argy,&z,&opacity,&_render3d,&_is_double3d,&is_zbuffer,
+                           &_focale3d,&_light3d_x,&_light3d_y,&_light3d_z,
+                           &_specular_lightness3d,&end)==13 ||
+               cimg_sscanf(argument,"[%255[a-zA-Z0-9_.%+-]],%255[0-9.eE%+-],%255[0-9.eE%+-],"
                            "%f,%f,%u,%u,%u,%f,%f,%f,%f,%f,%f%c",
                            indices,argx,argy,&z,&opacity,&_render3d,&_is_double3d,&is_zbuffer,
                            &_focale3d,&_light3d_x,&_light3d_y,&_light3d_z,
