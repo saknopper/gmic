@@ -10197,10 +10197,9 @@ rolling_guidance : check "${1=4}>=0 && ${2=10}>=0 && ${3=0.5}>=0"
 #@cli : $ image.jpg sharpen 300
 #@cli : $ image.jpg blur 5 sharpen 300,1
 
-#@cli smooth : amplitude>=0,_sharpness>=0,_anisotropy,_alpha,_sigma,_dl>0,_da>0,_precision>0,interpolation,_fast_approx={ 0 | 1 } : nb_iterations>=0,_sharpness>=0,_anisotropy,_alpha,_sigma,_dt>0,0 : [tensor_field],_amplitude>=0,_dl>0,_da>0,_precision>0,_interpolation,_fast_approx={ 0 | 1 } : [tensor_field],_nb_iters>=0,_dt>0,0 : (+)
+#@cli smooth : amplitude[%]>=0,_sharpness>=0,0<=_anisotropy<=1,_alpha[%],_sigma[%],_dl>0,_da>0,_precision>0,interpolation,_fast_approx={ 0 | 1 } : nb_iterations>=0,_sharpness>=0,_anisotropy,_alpha,_sigma,_dt>0,0 : [tensor_field],_amplitude>=0,_dl>0,_da>0,_precision>0,_interpolation,_fast_approx={ 0 | 1 } : [tensor_field],_nb_iters>=0,_dt>0,0 : (+)
 #@cli : Smooth selected images anisotropically using diffusion PDE's, with specified field of
 #@cli : diffusion tensors.
-#@cli : 'anisotropy' must be in [0,1].
 #@cli : 'interpolation' can be { 0=nearest | 1=linear | 2=runge-kutta }.
 #@cli : Default values: 'sharpness=0.7', 'anisotropy=0.3', 'alpha=0.6', 'sigma=1.1', 'dl=0.8', 'da=30', 'precision=2', 'interpolation=0' and 'fast_approx=1'.
 #@cli : $ image.jpg repeat 3 smooth 40,0,1,1,2 done

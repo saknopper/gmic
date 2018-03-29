@@ -11438,105 +11438,107 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
         // Anisotropic PDE-based smoothing.
         if (!std::strcmp("smooth",command)) {
           gmic_substitute_args(true);
-          float amplitude = 0, sharpness = 0.7f, anisotropy = 0.3f, alpha = 0.6f,
-            sigma = 1.1f, dl =0.8f, da = 30.0f, gauss_prec = 2.0f;
+          float sharpness = 0.7f, anisotropy = 0.3f, dl =0.8f, da = 30.0f, gauss_prec = 2.0f;
           unsigned int is_fast_approximation = 1;
+          *argx = *argy = *argz = sep = sep0 = sep1 = 0;
           interpolation = 0;
-          sep = 0;
-          if ((cimg_sscanf(argument,"%f%c",
-                           &amplitude,&end)==1 ||
-               cimg_sscanf(argument,"%f,%f%c",
-                           &amplitude,&sharpness,&end)==2 ||
-               cimg_sscanf(argument,"%f,%f,%f%c",
-                           &amplitude,&sharpness,&anisotropy,&end)==3 ||
-               cimg_sscanf(argument,"%f,%f,%f,%f%c",
-                           &amplitude,&sharpness,&anisotropy,&alpha,&end)==4 ||
-               cimg_sscanf(argument,"%f,%f,%f,%f,%f%c",
-                           &amplitude,&sharpness,&anisotropy,&alpha,&sigma,&end)==5 ||
-               cimg_sscanf(argument,"%f,%f,%f,%f,%f,%f%c",
-                           &amplitude,&sharpness,&anisotropy,&alpha,&sigma,&dl,&end)==6 ||
-               cimg_sscanf(argument,"%f,%f,%f,%f,%f,%f,%f%c",
-                           &amplitude,&sharpness,&anisotropy,&alpha,&sigma,&dl,&da,&end)==7 ||
-               cimg_sscanf(argument,"%f,%f,%f,%f,%f,%f,%f,%f%c",
-                           &amplitude,&sharpness,&anisotropy,&alpha,&sigma,&dl,&da,&gauss_prec,
-                           &end)==8 ||
-               cimg_sscanf(argument,"%f,%f,%f,%f,%f,%f,%f,%f,%u%c",
-                           &amplitude,&sharpness,&anisotropy,&alpha,&sigma,&dl,&da,&gauss_prec,
-                           &interpolation,&end)==9 ||
-               cimg_sscanf(argument,"%f,%f,%f,%f,%f,%f,%f,%f,%u,%u%c",
-                           &amplitude,&sharpness,&anisotropy,&alpha,&sigma,&dl,&da,&gauss_prec,
-                           &interpolation,&is_fast_approximation,&end)==10) &&
-              amplitude>=0 && sharpness>=0 && anisotropy>=0 && anisotropy<=1 && dl>0 &&
+          value0 = 0.6; value1 = 1.1;
+          if ((cimg_sscanf(argument,"%255[0-9.eE%+-]%c",
+                           argz,&end)==1 ||
+               cimg_sscanf(argument,"%255[0-9.eE%+-],%f%c",
+                           argz,&sharpness,&end)==2 ||
+               cimg_sscanf(argument,"%255[0-9.eE%+-],%f,%f%c",
+                           argz,&sharpness,&anisotropy,&end)==3 ||
+               cimg_sscanf(argument,"%255[0-9.eE%+-],%f,%f,%255[0-9.eE%+-]%c",
+                           argz,&sharpness,&anisotropy,argx,&end)==4 ||
+               cimg_sscanf(argument,"%255[0-9.eE%+-],%f,%f,%255[0-9.eE%+-],%255[0-9.eE%+-]%c",
+                           argz,&sharpness,&anisotropy,argx,argy,&end)==5 ||
+               cimg_sscanf(argument,"%255[0-9.eE%+-],%f,%f,%255[0-9.eE%+-],%255[0-9.eE%+-],%f%c",
+                           argz,&sharpness,&anisotropy,argx,argy,&dl,&end)==6 ||
+               cimg_sscanf(argument,"%255[0-9.eE%+-],%f,%f,%255[0-9.eE%+-],%255[0-9.eE%+-],%f,%f%c",
+                           argz,&sharpness,&anisotropy,argx,argy,&dl,&da,&end)==7 ||
+               cimg_sscanf(argument,"%255[0-9.eE%+-],%f,%f,%255[0-9.eE%+-],%255[0-9.eE%+-],%f,%f,%f%c",
+                           argz,&sharpness,&anisotropy,argx,argy,&dl,&da,&gauss_prec,&end)==8 ||
+               cimg_sscanf(argument,"%255[0-9.eE%+-],%f,%f,%255[0-9.eE%+-],%255[0-9.eE%+-],%f,%f,%f,%u%c",
+                           argz,&sharpness,&anisotropy,argx,argy,&dl,&da,&gauss_prec,&interpolation,&end)==9 ||
+               cimg_sscanf(argument,"%255[0-9.eE%+-],%f,%f,%255[0-9.eE%+-],%255[0-9.eE%+-],%f,%f,%f,%u,%u,%c",
+                           argz,&sharpness,&anisotropy,argx,argy,&dl,&da,&gauss_prec,&interpolation,
+                           &is_fast_approximation,&end)==10) &&
+              (cimg_sscanf(argz,"%lf%c",&value,&end)==1 ||
+               (cimg_sscanf(argz,"%lf%c%c",&value,&sep,&end)==2 && sep=='%')) &&
+              (!*argx ||
+               cimg_sscanf(argx,"%lf%c",&value0,&end)==1 ||
+               (cimg_sscanf(argx,"%lf%c%c",&value0,&sep0,&end)==2 && sep0=='%')) &&
+              (!*argy ||
+               cimg_sscanf(argy,"%lf%c",&value1,&end)==1 ||
+               (cimg_sscanf(argy,"%lf%c%c",&value1,&sep1,&end)==2 && sep1=='%')) &&
+              value>=0 && value0>=0 && value1>=0 && sharpness>=0 && anisotropy>=0 && anisotropy<=1 && dl>0 &&
               da>=0 && gauss_prec>0 && interpolation<=2 && is_fast_approximation<=1) {
             if (da>0)
-              print(images,0,"Smooth image%s anisotropically, with amplitude %g, sharpness %g, "
-                    "anisotropy %g, alpha %g, sigma %g, dl %g, da %g, precision %g, "
+              print(images,0,"Smooth image%s anisotropically, with amplitude %g%s, sharpness %g, "
+                    "anisotropy %g, alpha %g%s, sigma %g%s, dl %g, da %g, precision %g, "
                     "%s interpolation and fast approximation %s.",
                     gmic_selection.data(),
-                    amplitude,
-                    sharpness,
-                    anisotropy,
-                    alpha,
-                    sigma,
-                    dl,
-                    da,
-                    gauss_prec,
+                    value,sep=='%'?"%":"",
+                    sharpness,anisotropy,value0,sep0=='%'?"%":"",value1,sep1=='%'?"%":"",dl,da,gauss_prec,
                     interpolation==0?"nearest-neighbor":interpolation==1?"linear":"runge-kutta",
                     is_fast_approximation?"enabled":"disabled");
-            else
+            else {
+              value = cimg::round(value);
               print(images,0,"Smooth image%s anisotropically, with %d iterations, sharpness %g, "
-                    "anisotropy %g, alpha %g, sigma %g and dt %g.",
+                    "anisotropy %g, alpha %g%s, sigma %g%s and dt %g.",
                     gmic_selection.data(),
-                    (int)amplitude,
-                    sharpness,
-                    anisotropy,
-                    alpha,
-                    sigma,
-                    dl);
-            cimg_forY(selection,l) gmic_apply(blur_anisotropic(amplitude,sharpness,anisotropy,alpha,sigma,dl,da,
-                                                               gauss_prec,interpolation,(bool)is_fast_approximation));
+                    (int)value,
+                    sharpness,anisotropy,value0,sep0=='%'?"%":"",value1,sep1=='%'?"%":"",dl);
+            }
+            if (sep=='%') value = -value;
+            if (sep0=='%') value0 = -value0;
+            if (sep1=='%') value1 = -value1;
+            cimg_forY(selection,l)
+              gmic_apply(blur_anisotropic((float)value,sharpness,anisotropy,(float)value0,(float)value1,dl,da,
+                                          gauss_prec,interpolation,(bool)is_fast_approximation));
           } else if (((cimg_sscanf(argument,"[%255[a-zA-Z0-9_.%+-]%c%c",
                                    indices,&sep,&end)==2 && sep==']') ||
-                      cimg_sscanf(argument,"[%255[a-zA-Z0-9_.%+-]],%f%c",
-                                  indices,&amplitude,&end)==2 ||
-                      cimg_sscanf(argument,"[%255[a-zA-Z0-9_.%+-]],%f,%f%c",
-                                  indices,&amplitude,&dl,&end)==3 ||
-                      cimg_sscanf(argument,"[%255[a-zA-Z0-9_.%+-]],%f,%f,%f%c",
-                                  indices,&amplitude,&dl,&da,&end)==4 ||
-                      cimg_sscanf(argument,"[%255[a-zA-Z0-9_.%+-]],%f,%f,%f,%f%c",
-                                  indices,&amplitude,&dl,&da,&gauss_prec,&end)==5 ||
-                      cimg_sscanf(argument,"[%255[a-zA-Z0-9_.%+-]],%f,%f,%f,%f,%u%c",
-                                  indices,&amplitude,&dl,&da,&gauss_prec,
-                                  &interpolation,&end)==6 ||
-                      cimg_sscanf(argument,"[%255[a-zA-Z0-9_.%+-]],%f,%f,%f,%f,%u,%u%c",
-                                  indices,&amplitude,&dl,&da,&gauss_prec,&interpolation,
+                      cimg_sscanf(argument,"[%255[a-zA-Z0-9_.%+-]],%255[0-9.eE%+-]%c",
+                                  indices,argx,&end)==2 ||
+                      cimg_sscanf(argument,"[%255[a-zA-Z0-9_.%+-]],%255[0-9.eE%+-],%f%c",
+                                  indices,argx,&dl,&end)==3 ||
+                      cimg_sscanf(argument,"[%255[a-zA-Z0-9_.%+-]],%255[0-9.eE%+-],%f,%f%c",
+                                  indices,argx,&dl,&da,&end)==4 ||
+                      cimg_sscanf(argument,"[%255[a-zA-Z0-9_.%+-]],%255[0-9.eE%+-],%f,%f,%f%c",
+                                  indices,argx,&dl,&da,&gauss_prec,&end)==5 ||
+                      cimg_sscanf(argument,"[%255[a-zA-Z0-9_.%+-]],%255[0-9.eE%+-],%f,%f,%f,%u%c",
+                                  indices,argx,&dl,&da,&gauss_prec,&interpolation,&end)==6 ||
+                      cimg_sscanf(argument,"[%255[a-zA-Z0-9_.%+-]],%255[0-9.eE%+-],%f,%f,%f,%u,%u%c",
+                                  indices,argx,&dl,&da,&gauss_prec,&interpolation,
                                   &is_fast_approximation,&end)==7) &&
                      (ind=selection2cimg(indices,images.size(),images_names,"smooth")).height()==1 &&
-                     amplitude>=0 && dl>0 && da>=0 && gauss_prec>0 && interpolation<=2 &&
+                     (!*argx ||
+                      cimg_sscanf(argx,"%lf%c",&value0,&end)==1 ||
+                      (cimg_sscanf(argx,"%lf%c%c",&value0,&sep0,&end)==2 && sep0=='%')) &&
+                     value0>=0 && dl>0 && da>=0 && gauss_prec>0 && interpolation<=2 &&
                      is_fast_approximation<=1) {
             const CImg<T> tensors = gmic_image_arg(*ind);
             if (da>0)
               print(images,0,
-                    "Smooth image%s anisotropically, with tensor field [%u], amplitude %g, "
+                    "Smooth image%s anisotropically, with tensor field [%u], amplitude %g%s, "
                     "dl %g, da %g, precision %g, %s interpolation and fast approximation %s.",
                     gmic_selection.data(),
                     *ind,
-                    amplitude,
-                    dl,
-                    da,
-                    gauss_prec,
-                    interpolation==0?"nearest-neighbor":interpolation==1?"linear":"runge-kutta",
+                    value0,sep0=='%'?"%":"",
+                    dl,da,gauss_prec,interpolation==0?"nearest-neighbor":interpolation==1?"linear":"runge-kutta",
                     is_fast_approximation?"enabled":"disabled");
-            else
+            else {
+              value0 = cimg::round(value0);
               print(images,0,
                     "Smooth image%s anisotropically, with tensor field [%u], %d iterations "
                     "and dt %g.",
                     gmic_selection.data(),
-                    *ind,
-                    (int)amplitude,
-                    dl);
-            cimg_forY(selection,l) gmic_apply(blur_anisotropic(tensors,amplitude,dl,da,gauss_prec,interpolation,
-                                                               is_fast_approximation));
+                    *ind,(int)value0,dl);
+            }
+            cimg_forY(selection,l)
+              gmic_apply(blur_anisotropic(tensors,(float)value0,dl,da,gauss_prec,interpolation,
+                                          is_fast_approximation));
           } else arg_error("smooth");
           is_released = false; ++position; continue;
         }
@@ -11836,9 +11838,8 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
         if (!std::strcmp("select",command)) {
           gmic_substitute_args(false);
           unsigned int feature_type = 0, is_deep_selection = 0;
-          *argx = *argy = *argz = 0;
+          *argx = *argy = *argz = sep = sep0 = sep1 = 0;
           value = value0 = value1 = 0;
-          sep = sep0 = sep1 = 0;
           exit_on_anykey = 0;
           if ((cimg_sscanf(argument,"%u%c",&feature_type,&end)==1 ||
                (cimg_sscanf(argument,"%u,%255[0-9.eE%+-]%c",
