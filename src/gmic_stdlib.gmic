@@ -3279,7 +3279,7 @@ roddy :
 #@cli : Take screenshot, optionally grabbed with specified coordinates, and insert it
 #@cli : at the end of the image list.
 
-#@cli select : feature_type,_X[%],_Y[%],_Z[%],_exit_on_anykey={ 0 | 1 },_is_deep_selection={ 0 | 1 } : (+)
+#@cli select : feature_type,_X[%]>=0,_Y[%]>=0,_Z[%]>=0,_exit_on_anykey={ 0 | 1 },_is_deep_selection={ 0 | 1 } : (+)
 #@cli : Interactively select a feature from selected images (use the instant display window [0] if opened).
 #@cli : 'feature_type' can be { 0=point | 1=segment | 2=rectangle | 3=ellipse }.
 #@cli : Arguments 'X','Y','Z' determine the initial selection view, for 3d volumetric images.

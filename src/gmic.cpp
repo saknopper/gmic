@@ -11861,7 +11861,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
               (!*argz ||
                cimg_sscanf(argz,"%lf%c",&value1,&end)==1 ||
                (cimg_sscanf(argz,"%lf%c%c",&value1,&sep1,&end)==2 && sep1=='%')) &&
-              feature_type<=3 && exit_on_anykey<=1 && is_deep_selection<=1) {
+              value>=0 && value0>=0 && value1>=0 && feature_type<=3 && exit_on_anykey<=1 && is_deep_selection<=1) {
             if (!*argx) { value = 50; sep = '%'; }
             if (!*argy) { value0 = 50; sep0 = '%'; }
             if (!*argz) { value1 = 50; sep1 = '%'; }
@@ -11891,9 +11891,12 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
               unsigned int XYZ[3];
               cimg_forY(selection,l) {
                 CImg<T> &img = images[selection[l]];
-                XYZ[0] = cimg::round(sep=='%'?(img.width() - 1)*value/100:value);
-                XYZ[1] = cimg::round(sep0=='%'?(img.height() - 1)*value0/100:value0);
-                XYZ[2] = cimg::round(sep1=='%'?(img.depth() - 1)*value1/100:value1);
+                XYZ[0] = (unsigned int)cimg::cut(cimg::round(sep=='%'?(img.width() - 1)*value/100:value),
+                                                 0.,img.width() - 1.);
+                XYZ[1] = (unsigned int)cimg::cut(cimg::round(sep0=='%'?(img.height() - 1)*value0/100:value0),
+                                                 0.,img.height() - 1.);
+                XYZ[2] = (unsigned int)cimg::cut(cimg::round(sep1=='%'?(img.depth() - 1)*value1/100:value1),
+                                                 0.,img.depth() - 1.);
                 if (_display_windows[0]) {
                   gmic_apply(select(_display_windows[0],feature_type,XYZ,
                                     (bool)exit_on_anykey,is_deep_selection));
