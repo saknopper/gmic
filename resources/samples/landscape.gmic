@@ -14,7 +14,7 @@ go :
   input 1,4,1,3,"y==0?[50,0,100]:y==1?[219,140,15]:y==2?[140,18,15]:[100,0,0]" resize[-1] 400,300,1,3,3
 
   # Generate frames
-  nbf=60
+  nbf=50
   repeat $nbf,f
     y={h#0/4*(1+$f/$nbf)}
     ang={6*sin(2*pi*$f/$nbf)}
