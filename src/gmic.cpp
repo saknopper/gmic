@@ -5696,8 +5696,8 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                       s[3],s[4],s[5]);
                 gmic_apply(crop(s[0],s[1],s[2],s[3],s[4],s[5]));
               }
-            }
 #endif // #if cimg_display!=0
+            }
           }
           is_released = false; continue;
         }
@@ -5825,8 +5825,8 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                 g_img(0,l) = (T)value0; g_img(1,l) = (T)value1;
               }
               g_img_uc.assign();
-            }
 #endif // #if cimg_display!=0
+            }
             g_img.value_string().move_to(status);
             g_img.assign();
           }
