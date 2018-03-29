@@ -11473,7 +11473,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                cimg_sscanf(argy,"%lf%c",&value1,&end)==1 ||
                (cimg_sscanf(argy,"%lf%c%c",&value1,&sep1,&end)==2 && sep1=='%')) &&
               value>=0 && value0>=0 && value1>=0 && sharpness>=0 && anisotropy>=0 && anisotropy<=1 && dl>0 &&
-              da>=0 && gauss_prec>0 && interpolation<=2 && is_fast_approximation<=1) {
+              (da>0 || (da==0 && sep!='%')) && gauss_prec>0 && interpolation<=2 && is_fast_approximation<=1) {
             if (da>0)
               print(images,0,"Smooth image%s anisotropically, with amplitude %g%s, sharpness %g, "
                     "anisotropy %g, alpha %g%s, sigma %g%s, dl %g, da %g, precision %g, "
@@ -11516,7 +11516,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                      (!*argx ||
                       cimg_sscanf(argx,"%lf%c",&value0,&end)==1 ||
                       (cimg_sscanf(argx,"%lf%c%c",&value0,&sep0,&end)==2 && sep0=='%')) &&
-                     value0>=0 && dl>0 && da>=0 && gauss_prec>0 && interpolation<=2 &&
+                     value0>=0 && dl>0 && (da>0 || (da==0 && sep0!='%')) && gauss_prec>0 && interpolation<=2 &&
                      is_fast_approximation<=1) {
             const CImg<T> tensors = gmic_image_arg(*ind);
             if (da>0)
