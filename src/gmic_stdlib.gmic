@@ -5852,7 +5852,7 @@ compress_rle : skip ${1=0} check "isint(${2=0}) && $2>=0"
 #@cli : Cut values of selected images in specified range.
 #@cli : (eq. to 'c').\n
 #@cli : (no arg) runs interactive mode (uses the instant display window [0] if opened).
-#@cli : In this case, the chosen cut values are returned in the status.
+#@cli : In interactive mode, the chosen cut values are returned in the status.
 #@cli : $ image.jpg +add 30% cut[-1] 0,255
 #@cli : $ image.jpg +cut 25%,75%
 
@@ -6268,7 +6268,7 @@ roundify : check $1>=0
 #@cli : Threshold values of selected images.
 #@cli : 'soft' can be { 0=hard-thresholding | 1=soft-thresholding }.
 #@cli : (no arg) runs interactive mode (uses the instant display window [0] if opened).
-#@cli : In this case, the chosen threshold value is returned in the status.
+#@cli : In interactive mode, the chosen threshold value is returned in the status.
 #@cli : Default value: 'is_soft=0'.
 #@cli : $ image.jpg +threshold[0] 50% +threshold[0] 50%,1
 #@cli : $$
@@ -7864,6 +7864,7 @@ autocrop_seq : skip ${1=auto}
 #@cli : (eq. to 'z').\n
 #@cli : 'boundary_conditions' can be { 0=dirichlet | 1=neumann | 2=periodic | 3=mirror }.
 #@cli : (no arg) runs interactive mode (uses the instant display window [0] if opened).
+#@cli : In interactive mode, the chosen crop coordinates are returned in the status.
 #@cli : Default value: 'boundary_conditions=0'.
 #@cli : $ image.jpg +crop -230,-230,280,280,1 crop[0] -230,-230,280,280,0
 #@cli : $ image.jpg crop 25%,25%,75%,75%
