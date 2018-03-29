@@ -5711,8 +5711,8 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
               CImgDisplay _disp, &disp = _display_windows[0]?_display_windows[0]:_disp;
               cimg_forY(selection,l) {
                 CImg<T>& img = gmic_check(images[selection[l]]);
-                if (disp) disp.resize(cimg_fitscreen(img.width(),img.height(),1),false);
-                else disp.assign(cimg_fitscreen(img.width(),img.height(),1),0,1);
+                if (disp) disp.resize(cimg_fitscreen(img.width(),img.height(),img.depth()),false);
+                else disp.assign(cimg_fitscreen(img.width(),img.height(),img.depth()),0,1);
                 disp.set_title("%s: crop",basename(images_names[selection[l]]));
                 const CImg<int> s = img.get_select(disp,2);
                 print(images,0,"Crop image [%d] with coordinates (%d,%d,%d) - (%d,%d,%d).",
