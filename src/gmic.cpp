@@ -2554,7 +2554,7 @@ gmic::~gmic() {
 #if cimg_display!=0
   CImgDisplay *const _display_windows = (CImgDisplay*)display_windows;
   delete[] _display_windows;
-#endif
+#endif // #if cimg_display!=0
 
   cimg::mutex(21);
 #if defined(__MACOSX__) || defined(__APPLE__)
@@ -3712,43 +3712,31 @@ template<typename T>
 gmic& gmic::display_images(const CImgList<T>& images, const CImgList<char>& images_names,
                            const CImg<unsigned int>& selection, unsigned int *const XYZ,
                            const bool exit_on_anykey) {
-#if cimg_display!=0
-  CImgDisplay *const _display_windows = (CImgDisplay*)display_windows;
-#endif
   if (!images || !images_names || !selection) { print(images,0,"Display image []."); return *this; }
   const bool is_verbose = verbosity>=0 || is_debug;
   CImg<char> gmic_selection;
   if (is_verbose) selection2string(selection,images_names,1,gmic_selection);
 
   // Check for available display.
-#if cimg_display==0
-  cimg::unused(exit_on_anykey);
-  print(images,0,"Display image%s",gmic_selection.data());
-  if (is_verbose) {
-    cimg::mutex(29);
-    if (XYZ) std::fprintf(cimg::output(),", from point (%u,%u,%u)",XYZ[0],XYZ[1],XYZ[2]);
-    std::fprintf(cimg::output()," (console output only, no display support).\n");
-    std::fflush(cimg::output());
-    cimg::mutex(29,0);
-    print_images(images,images_names,selection,false);
-  }
-#else // #if cimg_display==0
   bool is_available_display = false;
-  try {
-    is_available_display = (bool)CImgDisplay::screen_width();
-  } catch (CImgDisplayException&) {
+  try { is_available_display = (bool)CImgDisplay::screen_width(); } catch (CImgDisplayException&) { }
+  if (!is_available_display) {
+    cimg::unused(exit_on_anykey);
     print(images,0,"Display image%s",gmic_selection.data());
     if (is_verbose) {
       cimg::mutex(29);
       if (XYZ) std::fprintf(cimg::output(),", from point (%u,%u,%u)",XYZ[0],XYZ[1],XYZ[2]);
-      std::fprintf(cimg::output()," (console output only, no display available).\n");
+      std::fprintf(cimg::output()," (console output only, no display %s).\n",
+                   cimg_display?"available":"support");
       std::fflush(cimg::output());
       cimg::mutex(29,0);
       print_images(images,images_names,selection,false);
     }
+    return *this;
   }
-  if (!is_available_display) return *this;
 
+#if cimg_display!=0
+  CImgDisplay *const _display_windows = (CImgDisplay*)display_windows;
   CImgList<T> visu;
   CImgList<char> t_visu;
   CImg<bool> is_valid(1,selection.height(),1,1,true);
@@ -3812,7 +3800,7 @@ gmic& gmic::display_images(const CImgList<T>& images, const CImgList<char>& imag
 
     cimglist_for(visu,l) visu[l]._is_shared = is_shared(l);
   }
-#endif // #if cimg_display==0
+#endif // #if cimg_display!=0
   return *this;
 }
 
@@ -3825,28 +3813,24 @@ gmic& gmic::display_plots(const CImgList<T>& images, const CImgList<char>& image
                           const double xmin, const double xmax,
                           const double ymin, const double ymax,
                           const bool exit_on_anykey) {
-#if cimg_display!=0
-  CImgDisplay *const _display_windows = (CImgDisplay*)display_windows;
-#endif
   if (!images || !images_names || !selection) { print(images,0,"Plot image []."); return *this; }
   const bool is_verbose = verbosity>=0 || is_debug;
   CImg<char> gmic_selection;
   if (is_verbose) selection2string(selection,images_names,1,gmic_selection);
 
-#if cimg_display==0
-  print(images,0,"Plot image%s (console output only, no display support).\n",gmic_selection.data());
-  print_images(images,images_names,selection,false);
-  cimg::unused(plot_type,vertex_type,xmin,xmax,ymin,ymax,exit_on_anykey);
-#else // #if cimg_display==0
+  // Check for available display.
   bool is_available_display = false;
-  try {
-    is_available_display = (bool)CImgDisplay::screen_width();
-  } catch (CImgDisplayException&) {
-    print(images,0,"Plot image%s (console output only, no display available).",gmic_selection.data());
+  try { is_available_display = (bool)CImgDisplay::screen_width(); } catch (CImgDisplayException&) { }
+  if (!is_available_display) {
+    cimg::unused(plot_type,vertex_type,xmin,xmax,ymin,ymax,exit_on_anykey);
+    print(images,0,"Plot image%s (console output only, no display %s).\n",
+          gmic_selection.data(),cimg_display?"available":"support");
     print_images(images,images_names,selection,false);
+    return *this;
   }
-  if (!is_available_display) return *this;
 
+#if cimg_display!=0
+  CImgDisplay *const _display_windows = (CImgDisplay*)display_windows;
   CImgList<unsigned int> empty_indices;
   cimg_forY(selection,l) if (!gmic_check(images[selection(l)]))
     CImg<unsigned int>::vector(selection(l)).move_to(empty_indices);
@@ -3885,7 +3869,7 @@ gmic& gmic::display_plots(const CImgList<T>& images, const CImgList<char>& image
       if (is_verbose) nb_carriages = 0;
     }
   }
-#endif // #if cimg_display==0
+#endif // #if cimg_display!=0
   return *this;
 }
 
@@ -3896,35 +3880,31 @@ gmic& gmic::display_objects3d(const CImgList<T>& images, const CImgList<char>& i
                               const CImg<unsigned int>& selection,
                               const CImg<unsigned char>& background3d,
                               const bool exit_on_anykey) {
-#if cimg_display!=0
-  CImgDisplay *const _display_windows = (CImgDisplay*)display_windows;
-#endif
   if (!images || !images_names || !selection) {
     print(images,0,"Display 3d object [].");
     return *this;
   }
-
   const bool is_verbose = verbosity>=0 || is_debug;
   CImg<char> gmic_selection;
   if (is_verbose) selection2string(selection,images_names,1,gmic_selection);
-
   CImg<char> error_message(1024);
   cimg_forY(selection,l) if (!gmic_check(images[selection[l]]).is_CImg3d(true,error_message))
     error(images,0,0,
           "Command 'display3d': Invalid 3d object [%d] in selected image%s (%s).",
           selection[l],gmic_selection_err.data(),error_message.data());
-#if cimg_display==0
-  print(images,0,"Display 3d object%s (skipped, no display support).",gmic_selection.data());
-  cimg::unused(background3d,exit_on_anykey);
-#else // #if cimg_display==0
-  bool is_available_display = false;
-  try {
-    is_available_display = (bool)CImgDisplay::screen_width();
-  } catch (CImgDisplayException&) {
-    print(images,0,"Display 3d object%s (skipped, no display available).",gmic_selection.data());
-  }
-  if (!is_available_display) return *this;
 
+  // Check for available display.
+  bool is_available_display = false;
+  try { is_available_display = (bool)CImgDisplay::screen_width(); } catch (CImgDisplayException&) { }
+  if (!is_available_display) {
+    cimg::unused(background3d,exit_on_anykey);
+    print(images,0,"Display 3d object%s (skipped, no display %s).",
+          gmic_selection.data(),cimg_display?"available":"support");
+    return *this;
+  }
+
+#if cimg_display!=0
+  CImgDisplay *const _display_windows = (CImgDisplay*)display_windows;
   CImgDisplay _disp, &disp = _display_windows[0]?_display_windows[0]:_disp;
   cimg_forY(selection,l) {
     const unsigned int uind = selection[l];
@@ -3965,7 +3945,7 @@ gmic& gmic::display_objects3d(const CImgList<T>& images, const CImgList<char>& i
           pose3d[12],pose3d[13],pose3d[14],pose3d[15]);
     if (disp.is_closed()) break;
   }
-#endif // #if cimg_display==0
+#endif // #if cimg_display!=0
   return *this;
 }
 
@@ -3980,7 +3960,7 @@ CImg<char> gmic::substitute_item(const char *const source,
                                  const bool is_image_expr) {
 #if cimg_display!=0
   CImgDisplay *const _display_windows = (CImgDisplay*)display_windows;
-#endif
+#endif // #if cimg_display!=0
   if (!source) return CImg<char>();
   CImg<char> substituted_items(64), inbraces, substr(40), vs;
   char *ptr_sub = substituted_items.data();
@@ -4657,7 +4637,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
 
 #if cimg_display!=0
   CImgDisplay *const _display_windows = (CImgDisplay*)display_windows;
-#endif
+#endif // #if cimg_display!=0
   if (!commands_line || position>=commands_line._width) {
     if (is_debug) debug(images,"Return from empty function '%s/'.",
                         callstack.back().data());
@@ -5694,18 +5674,13 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             }
             ++position;
           } else {
-#if cimg_display==0
-            print(images,0,"Crop image%s in interactive mode (skipped, no display support).",
-                  gmic_selection.data());
-#else // #if cimg_display==0
             bool is_available_display = false;
-            try {
-              is_available_display = (bool)CImgDisplay::screen_width();
-            } catch (CImgDisplayException&) {
-              print(images,0,"Crop image%s in interactive mode (skipped, no display available).",
-                    gmic_selection.data());
-            }
-            if (is_available_display) {
+            try { is_available_display = (bool)CImgDisplay::screen_width(); } catch (CImgDisplayException&) { }
+            if (!is_available_display) {
+              print(images,0,"Crop image%s in interactive mode (skipped, no display %s).",
+                    gmic_selection.data(),cimg_display?"available":"support");
+            } else {
+#if cimg_display!=0
               print(images,0,"Crop image%s in interactive mode.",
                     gmic_selection.data());
               CImgDisplay _disp, &disp = _display_windows[0]?_display_windows[0]:_disp;
@@ -5722,7 +5697,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                 gmic_apply(crop(s[0],s[1],s[2],s[3],s[4],s[5]));
               }
             }
-#endif // #if cimg_display==0
+#endif // #if cimg_display!=0
           }
           is_released = false; continue;
         }
@@ -5774,19 +5749,14 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             cimg_forY(selection,l) gmic_apply(cut((T)value0,(T)value1));
             ++position;
           } else {
-            g_img.assign(2,selection.height()).fill((T)0);
-#if cimg_display==0
-            print(images,0,"Cut image%s in interactive mode (skipped, no display support).",
-                  gmic_selection.data());
-#else // #if cimg_display==0
             bool is_available_display = false;
-            try {
-              is_available_display = (bool)CImgDisplay::screen_width();
-            } catch (CImgDisplayException&) {
-              print(images,0,"Cut image%s in interactive mode (skipped, no display available).",
-                    gmic_selection.data());
-            }
-            if (is_available_display) {
+            try { is_available_display = (bool)CImgDisplay::screen_width(); } catch (CImgDisplayException&) { }
+            if (!is_available_display) {
+              print(images,0,"Cut image%s in interactive mode (skipped, no display %s).",
+                    gmic_selection.data(),cimg_display?"available":"support");
+            } else {
+              g_img.assign(2,selection.height()).fill((T)0);
+#if cimg_display!=0
               print(images,0,"Cut image%s in interactive mode.",
                     gmic_selection.data());
               CImgDisplay _disp, &disp = _display_windows[0]?_display_windows[0]:_disp;
@@ -5856,7 +5826,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
               }
               g_img_uc.assign();
             }
-#endif // #if cimg_display==0
+#endif // #if cimg_display!=0
             g_img.value_string().move_to(status);
             g_img.assign();
           }
@@ -6270,12 +6240,14 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             state = (*argument=='1'); ++position;
           } else state = true;
 
-#if cimg_display==0
-          print(images,0,"%s mouse cursor for display window%s (skipped, no display support).",
-                state?"Show":"Hide",
-                gmic_selection.data());
-#else // #if cimg_display==0
-          try {
+          bool is_available_display = false;
+          try { is_available_display = (bool)CImgDisplay::screen_width(); } catch (CImgDisplayException&) { }
+          if (!is_available_display) {
+            print(images,0,"%s mouse cursor for display window%s (skipped, no display %s).",
+                  state?"Show":"Hide",
+                  gmic_selection.data(),cimg_display?"available":"support");
+          } else {
+#if cimg_display!=0
             if (state) cimg_forY(selection,l) {
                 if (!_display_windows[l].is_closed()) _display_windows[selection[l]].show_mouse();
               }
@@ -6285,12 +6257,8 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             print(images,0,"%s mouse cursor for display window%s.",
                   state?"Show":"Hide",
                   gmic_selection.data());
-          } catch (CImgDisplayException&) {
-            print(images,0,"%s mouse cursor for display window%s (skipped, no display available).",
-                  state?"Show":"Hide",
-                  gmic_selection.data());
+#endif // #if cimg_display!=0
           }
-#endif // #if cimg_display==0
           continue;
         }
 
@@ -11867,22 +11835,16 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             if (!*argz) { value1 = 50; sep1 = '%'; }
 
             bool is_available_display = false;
-            try {
-#if cimg_display==0
-              throw CImgDisplayException();
-#else
-              is_available_display = (bool)CImgDisplay::screen_width();
-#endif
-            } catch (CImgDisplayException&) {
+            try { is_available_display = (bool)CImgDisplay::screen_width(); } catch (CImgDisplayException&) { }
+            if (!is_available_display) {
               print(images,0,
                     "Select %s in image%s in interactive mode, from point (%g%s,%g%s,%g%s) (skipped no display %s).",
                     feature_type==0?"point":feature_type==1?"segment":
                     feature_type==2?"rectangle":"ellipse",gmic_selection.data(),
                     value,sep=='%'?"%":"",value0,sep0=='%'?"%":"",value1,sep1=='%'?"%":"",
-                    cimg_display==0?"support":"available"
-                    );
-            }
-            if (is_available_display) {
+                    cimg_display==0?"support":"available");
+            } else {
+#if cimg_display!=0
               print(images,0,"Select %s in image%s in interactive mode, from point (%g%s,%g%s,%g%s).",
                     feature_type==0?"point":feature_type==1?"segment":
                     feature_type==2?"rectangle":"ellipse",gmic_selection.data(),
@@ -11907,6 +11869,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
               }
               if (is_get) images.back().value_string().move_to(status);
               else images[selection.back()].value_string().move_to(status);
+#endif // #if cimg_display!=0
             }
           } else arg_error("select");
           is_released = false; ++position; continue;
