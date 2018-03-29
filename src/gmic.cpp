@@ -11835,69 +11835,75 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
         // Select image feature.
         if (!std::strcmp("select",command)) {
           gmic_substitute_args(false);
-          unsigned int feature_type = 0, X = ~0U, Y = ~0U, Z = ~0U;
-          bool is_xyz = false;
+          unsigned int feature_type = 0, is_deep_selection = 0;
+          *argx = *argy = *argz = 0;
+          value = value0 = value1 = 0;
+          sep = sep0 = sep1 = 0;
           exit_on_anykey = 0;
           if ((cimg_sscanf(argument,"%u%c",&feature_type,&end)==1 ||
-               (is_xyz=(cimg_sscanf(argument,"%u,%u,%u,%u%c",&feature_type,&X,&Y,&Z,&end)==4)) ||
-               (is_xyz=(cimg_sscanf(argument,"%u,%u,%u,%u,%u%c",&feature_type,&X,&Y,&Z,&exit_on_anykey,&end)==5))) &&
-              feature_type<=3 && exit_on_anykey<=1) {
-#if cimg_display==0
-            print(images,0,"Select %s in image%s in interactive mode",
-                  feature_type==0?"point":feature_type==1?"segment":feature_type==2?"rectangle":
-                  "ellipse",gmic_selection.data());
-            if (is_verbose) {
-              cimg::mutex(29);
-              if (is_xyz) std::fprintf(cimg::output(),", from point (%u,%u,%u)",X,Y,Z);
-              std::fprintf(cimg::output()," (skipped, no display support).");
-              std::fflush(cimg::output());
-              cimg::mutex(29,0);
-            }
-            CImg<char>::string("-1").move_to(status);
-#else // #if cimg_display==0
+               (cimg_sscanf(argument,"%u,%255[0-9.eE%+-]%c",
+                            &feature_type,argx,&end)==2) ||
+               (cimg_sscanf(argument,"%u,%255[0-9.eE%+-],%255[0-9.eE%+-]%c",
+                            &feature_type,argx,argy,&end)==3) ||
+               (cimg_sscanf(argument,"%u,%255[0-9.eE%+-],%255[0-9.eE%+-],%255[0-9.eE%+-]%c",
+                            &feature_type,argx,argy,argz,&end)==4) ||
+               (cimg_sscanf(argument,"%u,%255[0-9.eE%+-],%255[0-9.eE%+-],%255[0-9.eE%+-],%u%c",
+                            &feature_type,argx,argy,argz,&exit_on_anykey,&end)==5) ||
+               (cimg_sscanf(argument,"%u,%255[0-9.eE%+-],%255[0-9.eE%+-],%255[0-9.eE%+-],%u,%u%c",
+                            &feature_type,argx,argy,argz,&exit_on_anykey,&is_deep_selection,&end)==6)) &&
+              (!*argx ||
+               cimg_sscanf(argx,"%lf%c",&value,&end)==1 ||
+               (cimg_sscanf(argx,"%lf%c%c",&value,&sep,&end)==2 && sep=='%')) &&
+              (!*argy ||
+               cimg_sscanf(argx,"%lf%c",&value0,&end)==1 ||
+               (cimg_sscanf(argx,"%lf%c%c",&value0,&sep0,&end)==2 && sep0=='%')) &&
+              (!*argz ||
+               cimg_sscanf(argz,"%lf%c",&value1,&end)==1 ||
+               (cimg_sscanf(argz,"%lf%c%c",&value1,&sep1,&end)==2 && sep1=='%')) &&
+              feature_type<=3 && exit_on_anykey<=1 && is_deep_selection<=1) {
+            if (!*argx) { value = 50; sep = '%'; }
+            if (!*argy) { value0 = 50; sep0 = '%'; }
+            if (!*argz) { value1 = 50; sep1 = '%'; }
+
             bool is_available_display = false;
             try {
+#if cimg_display==0
+              throw CImgDisplayException();
+#else
               is_available_display = (bool)CImgDisplay::screen_width();
+#endif
             } catch (CImgDisplayException&) {
               print(images,0,
-                    "Select %s in image%s in interactive mode",
+                    "Select %s in image%s in interactive mode, from point (%g%s,%g%s,%g%s) (skipped no display %s).",
                     feature_type==0?"point":feature_type==1?"segment":
-                    feature_type==2?"rectangle":"ellipse",gmic_selection.data());
-              if (is_verbose) {
-                cimg::mutex(29);
-                if (is_xyz) std::fprintf(cimg::output(),", from point (%u,%u,%u)",X,Y,Z);
-                std::fprintf(cimg::output()," (skipped, no display available).");
-                std::fflush(cimg::output());
-                cimg::mutex(29,0);
-              }
+                    feature_type==2?"rectangle":"ellipse",gmic_selection.data(),
+                    value,sep=='%'?"%":"",value0,sep0=='%'?"%":"",value1,sep1=='%'?"%":"",
+                    cimg_display==0?"support":"available"
+                    );
             }
             if (is_available_display) {
-              print(images,0,"Select %s in image%s in interactive mode",
+              print(images,0,"Select %s in image%s in interactive mode, from point (%g%s,%g%s,%g%s).",
                     feature_type==0?"point":feature_type==1?"segment":
-                    feature_type==2?"rectangle":"ellipse",gmic_selection.data());
-              if (is_verbose) {
-                cimg::mutex(29);
-                if (is_xyz) std::fprintf(cimg::output(),", from point (%u,%u,%u).",X,Y,Z);
-                else std::fprintf(cimg::output(),".");
-                std::fflush(cimg::output());
-                cimg::mutex(29,0);
-              }
+                    feature_type==2?"rectangle":"ellipse",gmic_selection.data(),
+                    value,sep=='%'?"%":"",value0,sep0=='%'?"%":"",value1,sep1=='%'?"%":"");
+
               unsigned int XYZ[3];
-              XYZ[0] = X; XYZ[1] = Y; XYZ[2] = Z;
-              if (_display_windows[0]) {
-                cimg_forY(selection,l)
-                  gmic_apply(select(_display_windows[0],feature_type,is_xyz?XYZ:0,
-                                    (bool)exit_on_anykey));
+              cimg_forY(selection,l) {
+                CImg<T> &img = images[selection[l]];
+                XYZ[0] = cimg::round(sep=='%'?(img.width() - 1)*value/100:value);
+                XYZ[1] = cimg::round(sep0=='%'?(img.height() - 1)*value0/100:value0);
+                XYZ[2] = cimg::round(sep1=='%'?(img.depth() - 1)*value1/100:value1);
+                if (_display_windows[0]) {
+                  gmic_apply(select(_display_windows[0],feature_type,XYZ,
+                                    (bool)exit_on_anykey,is_deep_selection));
+                } else {
+                  gmic_apply(select(images_names[selection[l]].data(),feature_type,XYZ,
+                                    (bool)exit_on_anykey,is_deep_selection));
+                }
               }
-              else {
-                cimg_forY(selection,l)
-                  gmic_apply(select(images_names[selection[l]].data(),feature_type,is_xyz?XYZ:0,
-                                    (bool)exit_on_anykey));
-              }
+              if (is_get) images.back().value_string().move_to(status);
+              else images[selection.back()].value_string().move_to(status);
             }
-            if (is_get) images.back().value_string().move_to(status);
-            else images[selection.back()].value_string().move_to(status);
-#endif // #if cimg_display==0
           } else arg_error("select");
           is_released = false; ++position; continue;
         }
