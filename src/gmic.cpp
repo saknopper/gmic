@@ -2520,13 +2520,13 @@ unsigned int gmic::strescape(const char *const str, char *const res) {
     commands_has_arguments(new CImgList<char>[gmic_comslots]), \
     _variables(new CImgList<char>[gmic_varslots]), _variables_names(new CImgList<char>[gmic_varslots]), \
     variables(new CImgList<char>*[gmic_varslots]), variables_names(new CImgList<char>*[gmic_varslots]), \
-    display_windows(new CImgDisplay[10]), is_running(false), is_display_available(false)
+    display_windows(new CImgDisplay[10]), is_running(false)
 #else
 #define gmic_new_attr commands(new CImgList<char>[gmic_comslots]), commands_names(new CImgList<char>[gmic_comslots]), \
     commands_has_arguments(new CImgList<char>[gmic_comslots]), \
     _variables(new CImgList<char>[gmic_varslots]), _variables_names(new CImgList<char>[gmic_varslots]), \
     variables(new CImgList<char>*[gmic_varslots]), variables_names(new CImgList<char>*[gmic_varslots]), \
-    display_windows(0), is_running(false), is_display_available(false)
+    display_windows(0), is_running(false)
 #endif // #if cimg_display!=0
 
 CImg<char> gmic::stdlib = CImg<char>::empty();
@@ -3579,6 +3579,7 @@ void gmic::_gmic(const char *const commands_line,
                  CImgList<T>& images, CImgList<char>& images_names,
                  const char *const custom_commands, const bool include_stdlib,
                  float *const p_progress, bool *const p_is_abort) {
+  static bool is_first = true;
 
   // Initialize class variables and default G'MIC environment.
   cimg::mutex(22);
@@ -3611,9 +3612,12 @@ void gmic::_gmic(const char *const commands_line,
   specular_shininess3d = 0.8f;
   starting_commands_line = commands_line;
   reference_time = (unsigned long)cimg::time();
+  if (is_first) {
 #if cimg_display!=0
-  try { is_display_available = (bool)CImgDisplay::screen_width(); } catch (CImgDisplayException&) { }
+    try { is_display_available = (bool)CImgDisplay::screen_width(); } catch (CImgDisplayException&) { }
 #endif
+    is_first = false;
+  }
   for (unsigned int l = 0; l<gmic_comslots; ++l) {
     commands_names[l].assign();
     commands[l].assign();
@@ -3665,6 +3669,7 @@ void gmic::_gmic(const char *const commands_line,
     throw;
   }
 }
+bool gmic::is_display_available = false;
 
 // Print info on selected images.
 //--------------------------------

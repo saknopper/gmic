@@ -380,6 +380,7 @@ struct gmic {
   static gmic_image<int> builtin_commands_inds;
   static gmic_image<char> stdlib;
   static gmic_list<void*> list_p_is_abort;
+  static bool is_display_available;
 
   gmic_list<char> *const commands, *const commands_names, *const commands_has_arguments,
     *const _variables, *const _variables_names, **const variables, **const variables_names,
@@ -394,7 +395,7 @@ struct gmic {
   unsigned int nb_dowhiles, nb_fordones, nb_repeatdones, nb_carriages, debug_filename, debug_line, cimg_exception_mode;
   int verbosity,render3d, renderd3d;
   bool is_released, is_debug, is_running, is_start, is_return, is_quit, is_double3d, is_debug_info, check_elif,
-    _is_abort, *is_abort, is_abort_thread, is_display_available;
+    _is_abort, *is_abort, is_abort_thread;
   const char *starting_commands_line;
 };
 
