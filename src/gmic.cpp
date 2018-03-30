@@ -2520,13 +2520,13 @@ unsigned int gmic::strescape(const char *const str, char *const res) {
     commands_has_arguments(new CImgList<char>[gmic_comslots]), \
     _variables(new CImgList<char>[gmic_varslots]), _variables_names(new CImgList<char>[gmic_varslots]), \
     variables(new CImgList<char>*[gmic_varslots]), variables_names(new CImgList<char>*[gmic_varslots]), \
-    display_windows(new CImgDisplay[10]), is_running(false)
+    display_windows(new CImgDisplay[10]), is_running(false), is_display_available(false)
 #else
 #define gmic_new_attr commands(new CImgList<char>[gmic_comslots]), commands_names(new CImgList<char>[gmic_comslots]), \
     commands_has_arguments(new CImgList<char>[gmic_comslots]), \
     _variables(new CImgList<char>[gmic_varslots]), _variables_names(new CImgList<char>[gmic_varslots]), \
     variables(new CImgList<char>*[gmic_varslots]), variables_names(new CImgList<char>*[gmic_varslots]), \
-    display_windows(0), is_running(false)
+    display_windows(0), is_running(false), is_display_available(false)
 #endif // #if cimg_display!=0
 
 CImg<char> gmic::stdlib = CImg<char>::empty();
@@ -3611,6 +3611,9 @@ void gmic::_gmic(const char *const commands_line,
   specular_shininess3d = 0.8f;
   starting_commands_line = commands_line;
   reference_time = (unsigned long)cimg::time();
+#if cimg_display!=0
+  try { is_display_available = (bool)CImgDisplay::screen_width(); } catch (CImgDisplayException&) { }
+#endif
   for (unsigned int l = 0; l<gmic_comslots; ++l) {
     commands_names[l].assign();
     commands[l].assign();
@@ -3718,9 +3721,7 @@ gmic& gmic::display_images(const CImgList<T>& images, const CImgList<char>& imag
   if (is_verbose) selection2string(selection,images_names,1,gmic_selection);
 
   // Check for available display.
-  bool is_available_display = false;
-  try { is_available_display = (bool)CImgDisplay::screen_width(); } catch (CImgDisplayException&) { }
-  if (!is_available_display) {
+  if (!is_display_available) {
     cimg::unused(exit_on_anykey);
     print(images,0,"Display image%s",gmic_selection.data());
     if (is_verbose) {
@@ -3819,9 +3820,7 @@ gmic& gmic::display_plots(const CImgList<T>& images, const CImgList<char>& image
   if (is_verbose) selection2string(selection,images_names,1,gmic_selection);
 
   // Check for available display.
-  bool is_available_display = false;
-  try { is_available_display = (bool)CImgDisplay::screen_width(); } catch (CImgDisplayException&) { }
-  if (!is_available_display) {
+  if (!is_display_available) {
     cimg::unused(plot_type,vertex_type,xmin,xmax,ymin,ymax,exit_on_anykey);
     print(images,0,"Plot image%s (console output only, no display %s).\n",
           gmic_selection.data(),cimg_display?"available":"support");
@@ -3894,9 +3893,7 @@ gmic& gmic::display_objects3d(const CImgList<T>& images, const CImgList<char>& i
           selection[l],gmic_selection_err.data(),error_message.data());
 
   // Check for available display.
-  bool is_available_display = false;
-  try { is_available_display = (bool)CImgDisplay::screen_width(); } catch (CImgDisplayException&) { }
-  if (!is_available_display) {
+  if (!is_display_available) {
     cimg::unused(background3d,exit_on_anykey);
     print(images,0,"Display 3d object%s (skipped, no display %s).",
           gmic_selection.data(),cimg_display?"available":"support");
@@ -4683,7 +4680,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
     interpolation = 0;
   char end, sep = 0, sep0 = 0, sep1 = 0, sepx = 0, sepy = 0, sepz = 0, sepc = 0, axis = 0;
   double vmin = 0, vmax = 0, value, value0, value1, nvalue, nvalue0, nvalue1;
-  bool is_endlocal = false, is_available_display = false;
+  bool is_endlocal = false;
   float opacity = 0;
   int err;
 
@@ -5674,9 +5671,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             }
             ++position;
           } else {
-            is_available_display = false;
-            try { is_available_display = (bool)CImgDisplay::screen_width(); } catch (CImgDisplayException&) { }
-            if (!is_available_display) {
+            if (!is_display_available) {
               print(images,0,"Crop image%s in interactive mode (skipped, no display %s).",
                     gmic_selection.data(),cimg_display?"available":"support");
             } else {
@@ -5753,9 +5748,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             cimg_forY(selection,l) gmic_apply(cut((T)value0,(T)value1));
             ++position;
           } else {
-            is_available_display = false;
-            try { is_available_display = (bool)CImgDisplay::screen_width(); } catch (CImgDisplayException&) { }
-            if (!is_available_display) {
+            if (!is_display_available) {
               print(images,0,"Cut image%s in interactive mode (skipped, no display %s).",
                     gmic_selection.data(),cimg_display?"available":"support");
             } else {
@@ -6244,9 +6237,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             state = (*argument=='1'); ++position;
           } else state = true;
 
-          is_available_display = false;
-          try { is_available_display = (bool)CImgDisplay::screen_width(); } catch (CImgDisplayException&) { }
-          if (!is_available_display) {
+          if (!is_display_available) {
             print(images,0,"%s mouse cursor for display window%s (skipped, no display %s).",
                   state?"Show":"Hide",
                   gmic_selection.data(),cimg_display?"available":"support");
@@ -10464,9 +10455,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             }
             ++position;
           } else {
-            is_available_display = false;
-            try { is_available_display = (bool)CImgDisplay::screen_width(); } catch (CImgDisplayException&) { }
-            if (!is_available_display) {
+            if (!is_display_available) {
               print(images,0,"Resize image%s in interactive mode (skipped, no display %s).",
                     gmic_selection.data(),cimg_display?"available":"support");
             } else {
@@ -11858,9 +11847,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             if (!*argy) { value0 = 50; sep0 = '%'; }
             if (!*argz) { value1 = 50; sep1 = '%'; }
 
-            is_available_display = false;
-            try { is_available_display = (bool)CImgDisplay::screen_width(); } catch (CImgDisplayException&) { }
-            if (!is_available_display) {
+            if (!is_display_available) {
               print(images,0,
                     "Select %s in image%s in interactive mode, from point (%g%s,%g%s,%g%s) (skipped no display %s).",
                     feature_type==0?"point":feature_type==1?"segment":
@@ -12017,9 +12004,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             }
             ++position;
           } else {
-            is_available_display = false;
-            try { is_available_display = (bool)CImgDisplay::screen_width(); } catch (CImgDisplayException&) { }
-            if (!is_available_display) {
+            if (!is_display_available) {
               print(images,0,
                     "Threshold image%s in interactive mode (skipped, no display %s).",
                     gmic_selection.data(),cimg_display?"available":"support");
@@ -12497,9 +12482,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
           strreplace_fw(title);
           cimg::strunescape(title);
 
-          is_available_display = false;
-          try { is_available_display = (bool)CImgDisplay::screen_width(); } catch (CImgDisplayException&) { }
-          if (!is_available_display) {
+          if (!is_display_available) {
             print(images,0,
                   "Display image%s in display window [%d] (skipped, no display %s).",
                   gmic_selection.data(),

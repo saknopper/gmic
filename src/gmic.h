@@ -394,7 +394,7 @@ struct gmic {
   unsigned int nb_dowhiles, nb_fordones, nb_repeatdones, nb_carriages, debug_filename, debug_line, cimg_exception_mode;
   int verbosity,render3d, renderd3d;
   bool is_released, is_debug, is_running, is_start, is_return, is_quit, is_double3d, is_debug_info, check_elif,
-    _is_abort, *is_abort, is_abort_thread;
+    _is_abort, *is_abort, is_abort_thread, is_display_available;
   const char *starting_commands_line;
 };
 
