@@ -196,8 +196,8 @@
                 </tr>
 
                 <tr>
-                  <td><a href="http://gmic.eu/files/prerelease/?F=0"><img alt="" src="img/download_prerelease.png" border="0"></img></a></td><td>&nbsp;&nbsp;</td>
-                  <td><a href="http://gmic.eu/files/prerelease/?F=0"><font size="3">G'MIC pre-release for testing</font></a><br/>
+                  <td><a href="http://gmic.eu/files/prerelease/"><img alt="" src="img/download_prerelease.png" border="0"></img></a></td><td>&nbsp;&nbsp;</td>
+                  <td><a href="http://gmic.eu/files/prerelease/"><font size="3">G'MIC pre-release for testing</font></a><br/>
                     <b>source and Windows/Linux installers/binaries</b><br/><br/></td>
                 </tr>
 
