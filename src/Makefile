@@ -183,7 +183,7 @@ else
 ifeq ($(notdir $(CXX)),icpc)
 OPT_CFLAGS = -fast
 else
-OPT_CFLAGS = -O3
+OPT_CFLAGS = -Ofast
 endif
 endif
 
