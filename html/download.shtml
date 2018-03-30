@@ -57,15 +57,28 @@
                       <li>Linux <i>64 bits</i>: <a href="http://gmic.eu/files/linux/gmic_gimp_qt_linux64.zip">.zip archive</a></li>
                       <li>Linux <i>32 bits</i>: <a href="http://gmic.eu/files/linux/gmic_gimp_qt_linux32.zip">.zip archive</a></li>
                       <li>Linux <i>32/64 bits</i>: <a href="http://gmic.eu/files/linux">Other .zip archives for specific distros</a></li>
-                      <li><i>GTK</i> version (<i>less features!</i>):
-                        Linux <i>64 bits</i>: <a href="http://gmic.eu/files/linux/gmic_gimp_gtk_linux64.zip">.zip archive</a>,
-                        Linux <i>32 bits</i>: <a href="http://gmic.eu/files/linux/gmic_gimp_gtk_linux32.zip">.zip archive</a>,
-                        Windows <i>64 bits</i>:
-                          <a href="http://gmic.eu/files/windows/gmic_gimp_gtk_win64.exe">installer</a> or
-                          <a href="http://gmic.eu/files/windows/gmic_gimp_gtk_win64.zip">.zip archive</a>,
-                        Windows <i>32 bits</i>:
-                          <a href="http://gmic.eu/files/windows/gmic_gimp_gtk_win32.exe">installer</a> or
-                          <a href="http://gmic.eu/files/windows/gmic_gimp_gtk_win32.zip">.zip archive</a>,
+                      <li><i>GTK</i> version (<i>deprecated, not recommended!</i>):
+                        <div class="popup" onclick="popupFunction2()">
+                          <b>View links</b>
+                          <span class="popuptext" id="myPopup2">
+                            <p>
+                              <b><i>GTK</i> version</b>:<br/>
+                                Please <font color="red">don't use this version <i>unless you have very good reasons to do so</i></font>.<br/>
+                                The code of the GTK plug-in is not maintained anymore, and has less features than the
+                                regular (Qt, maintained) version. <font color="red"><b>Use at your own risk!</b></font>
+                              <ul>
+                                <li>Linux <i>64 bits</i>: <a href="http://gmic.eu/files/linux/gmic_gimp_gtk_linux64.zip">.zip archive</a>.</li>
+                                <li>Linux <i>32 bits</i>: <a href="http://gmic.eu/files/linux/gmic_gimp_gtk_linux32.zip">.zip archive</a>.</li>
+                                <li>Windows <i>64 bits</i>:
+                                  <a href="http://gmic.eu/files/windows/gmic_gimp_gtk_win64.exe">installer</a> or
+                                  <a href="http://gmic.eu/files/windows/gmic_gimp_gtk_win64.zip">.zip archive</a>.</li>
+                                <li>Windows <i>32 bits</i>:
+                                  <a href="http://gmic.eu/files/windows/gmic_gimp_gtk_win32.exe">installer</a> or
+                                  <a href="http://gmic.eu/files/windows/gmic_gimp_gtk_win32.zip">.zip archive</a>.</li>
+                              </ul>
+                            </p>
+                          </span>
+                        </div>
                       </li>
                     </ul>
                     <br/></td>
