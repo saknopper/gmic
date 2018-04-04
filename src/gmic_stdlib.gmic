@@ -16120,7 +16120,7 @@ polaroid : check "${1=10}>=0 && ${2=20}>=0"
 #@cli polygonize : _warp_amplitude>=0,_smoothness[%]>=0,_min_area[%]>=0,_resolution_x[%]>0,_resolution_y[%]>0
 #@cli : Apply polygon effect on selected images.
 #@cli : Default values: 'warp_amplitude=300', 'smoothness=2%', 'min_area=0.1%', 'resolution_x=resolution_y=10%'.
-#@cli : $ image.jpg polygonize ,
+#@cli : $ image.jpg polygonize 300,1%,0.1%,3%,3%
 polygonize : check "${1=300}>=0 && ${2=2%}>=0 && ${3=0.1%}>=0 && ${4=10%}>0 && ${5=$4}>0"
   e[^-1] "Polygonize image$? with warp amplitude $1, smoothness $2, minimal area $3 and resolutions ($4,$5)."
   v -  repeat $! l[$>]
@@ -35549,8 +35549,8 @@ fx_solve_maze_preview :
 #@cli : $ image.jpg fx_lylejk_painting_preview 10,2,4,10,0 _label="Lylejk~painting"
 #@cli : $ image.jpg fx_painting_preview 5,2.5,1.5,50,1,0 _label="Painting"
 #@cli : $ image.jpg fx_delaunay_preview 5,75,1,3,0,0,0,128,1,1,0 _label="Polygonize~[delaunay]"
-#@cli : $ image.jpg fx_posterize_preview 150,30,1,12,0,0,0,0 _label="Posterize"
-#@cli : $ image.jpg fx_quadtree_preview 2,963,1.3,0,3,0.7,0.33,0,0 _label="Quadtree~variations"
+#@cli : $ image.jpg fx_posterize_preview 150,30,1,6,0,0,1,0 _label="Posterize"
+#@cli : $ image.jpg fx_quadtree_preview 2,1024,1.05,0,2.33,0.68,0.39,1,0 _label="Quadtree~variations"
 #@cli : $ image.jpg fx_vector_painting_preview 9.37,0 _label="Vector~painting"
 
 #@cli gallery_colors
@@ -35597,8 +35597,9 @@ fx_solve_maze_preview :
 #@cli : $ 400,400,1,3 fx_equation_parametric "sin(t)*(exp(cos(t))-2*cos(4*t)-sin(t/12)^5)","cos(t)*(exp(cos(t))-2*cos(4*t)-sin(t/12)^5)",0,100,4096,1,0,64,0,0,128,0,0,1,1,1 _label="Equation~plot~[parametric]"
 #@cli : $ 400,400,1,3 KittyRings_preview 30,8,0,1,113,0,113,0,255,0 _label="Kitaoka~spin~illusion"
 #@cli : $ 400,400,1,3 fx_neon_lightning 50,50,0,50,50,100,50,0.7,3,130,80,50,0.25,0 _label="Neon~lighting"
+#@cli : $ image.jpg fx_lava_preview 8,5,3,0,0 _label="Lava"
 #@cli : $ sample monkey,lion,monkey 100%,100% plasma. equalize. 256 transition[0,1,2] [3],10 rm. _fps=10 _label="transition"
-#@cli : $ image.jpg fx_shapeism 6,7,0.38,0,1,5,32,8,3,-3,5,0.5,1,0,0,0,255 _label="Shapeism"
+#@cli : $ image.jpg fx_shapeism 2,7,0.38,0,1,5,32,8,3,1,5,0.5,1,0,0,0,255 _label="Shapeism"
 
 #@cli gallery_3drendering
 #@cli : This entry defines some examples of 3d rendering filters for the G'MIC gallery page.
