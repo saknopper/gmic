@@ -12212,6 +12212,30 @@ grid : check "$1>=0 && $2>=0" skip ${3=0},${4=0},${5=1},${6=0},${7=$6}
 #@cli : Default values: 'opacity=1', 'pattern=(undefined)' and 'color1=0'.
 #@cli : $ image.jpg repeat 500 line 50%,50%,{u(w)},{u(h)},0.5,${-RGB} done line 0,0,100%,100%,1,0xCCCCCCCC,255 line 100%,0,0,100%,1,0xCCCCCCCC,255
 
+#@cli linethick : x0[%],y0[%],x1[%],y1[%],_thickness,_opacity,_color1
+#@cli : Draw specified colored thick line on selected images.
+#@cli : Default values: 'thickness=2', 'opacity=1' and 'color1=0'.
+linethick : check "${5=2}>=0 && isval(${6=1}) && isval(${7=0})"
+  e[^-1] "Draw thick line ($1,$2) - ($3,$4) on image$?, with thickness $5, opacity $6 and color (${7--1})."
+  v -
+  if {!$5} line ${1-4},${6--1}
+  else repeat $! l[$>]
+    x0={${"is_percent $1"}?(w-1)*$1:$1}
+    y0={${"is_percent $2"}?(h-1)*$2:$2}
+    x1={${"is_percent $3"}?(w-1)*$3:$3}
+    y1={${"is_percent $4"}?(h-1)*$4:$4}
+    coords={"
+      const th = "$5";
+      P0 = [ "$x0","$y0" ];
+      P1 = [ "$x1","$y1" ];
+      dP = P1 - P0;
+      n = [ -dP[1],dP[0] ]/max(1e-8,norm(dP))*th/2;
+      round([ P0 - n, P0 + n, P1 + n, P1 - n ]);
+    "}
+    polygon 4,$coords,${6--1}
+  endl done fi
+  v +
+
 #@cli mandelbrot : z0r,z0i,z1r,z1i,_iteration_max>=0,_is_julia={ 0 | 1 },_c0r,_c0i,_opacity : (+)
 #@cli : Draw mandelbrot/julia fractal on selected images.
 #@cli : Default values: 'iteration_max=100', 'is_julia=0', 'c0r=c0i=0' and 'opacity=1'.
