@@ -886,7 +886,7 @@ _help_usage :
 \n          (or in default image selected if '"${c}"ind"$n"' is not specified) at coordinates "${g}"(x,y,z,c)"$n".
 \n          The size of the sprite "${g}"dx x dy x dz x dc"$n" must be specified. You can also specify a
 \n          corresponding opacity mask "${g}"M"$n" if its size matches "${g}"S"$n".
-\n       . '"${c}"polygon(_#ind,nb_vertices,[_coords],_opacity,_color)"$n"' draws a filled polygon in image "${g}"[ind]"$n"
+\n       . '"${c}"polygon(_#ind,nb_vertices,coords,_opacity,_color)"$n"' draws a filled polygon in image "${g}"[ind]"$n"
 \n          (or in default image selected if '"${c}"ind"$n"' is not specified) at specified coordinates.
 \n          It draws a single line if '"${c}"nb_vertices"$n"' is set to 2.
 \n       . '"${c}"ellipse(_#ind,xc,yc,radius1,_radius2,_angle,_opacity,_color)"$n"' draws a filled ellipse in image "${g}"[ind]"$n"
