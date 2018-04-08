@@ -12552,7 +12552,7 @@ quiver : check ${"is_image_arg $1"}" && ${2=5%}>0 && ${3=1}>=0 && isbool(${4=1})
           X = round(x*w/w#0); Y = round(y*h/h#0);
           u = i(X,Y,0,0)*fact; v = i(X,Y,0,1)*fact;
           if ($4,
-            draw_arrow(#0,[x,y],[x + u,y + v],45,sampling/4,$5,[${6--1}]),
+            arrow(#0,[x,y],[x + u,y + v],45,sampling/4,$5,[${6--1}]),
             polygon(#0,2,[x - 0.5*u,y - 0.5*v],[x + 0.5*u,y + 0.5*v],$5,[${6--1}]);
           );
         );
@@ -12645,7 +12645,7 @@ spline : skip ${9=1},${10=0}
     y1={if(${"is_percent $6"},$6*(h-1),$6)}
     u1={if(${"is_percent $7"},$7*(w-1),$7)}
     v1={if(${"is_percent $8"},$8*(h-1),$8)}
-    eval ${-math_lib}"draw_spline(#0,["$x0","$y0"],["$u0","$v0"],["$x1","$y1"],["$u1","$v1"],$9,[${10--1}])"
+    eval ${-math_lib}"spline(#0,["$x0","$y0"],["$u0","$v0"],["$x1","$y1"],["$u1","$v1"],$9,[${10--1}])"
   endl done v +
 
 #@cli tetraedron_shade : x0,y0,z0,x1,y1,z1,x2,y2,z2,x3,y3,z3,R0,G0,B0,...,R1,G1,B1,...,R2,G2,B2,...,R3,G3,B3,...
@@ -18556,7 +18556,7 @@ math_lib :
     min(dist(A,C,D),dist(B,C,D),dist(C,A,B),dist(D,A,B));
   );
 
-  draw_arrow(ind,P0,P1,angle,length,opacity,color) = ( # Draw an arrow from P0 to P1 on image #ind
+  arrow(ind,P0,P1,angle,length,opacity,color) = ( # Draw an arrow from P0 to P1 on image #ind
     unref(_da_color);
     _opacity = opacity;
     _da_color = color;
@@ -18571,28 +18571,7 @@ math_lib :
    );
   );
 
-  draw_scanline(ind,x0,x1,y,opacity,color) = ( # Draw a single scanline (x0,y)->(x1,y) on image #ind
-    _x0 = max(0,x0);
-    ++(_dx = min(w#ind - 1,x1) - _x0);
-    s#ind==1?
-      copy(i(#ind,_x0,y,0,0),color[0],_dx,1,0,_opacity):
-    s#ind==2?
-      (copy(i(#ind,_x0,y,0,0),color[0],_dx,1,0,_opacity);
-       copy(i(#ind,_x0,y,0,1),color[1],_dx,1,0,_opacity)):
-    s#ind==3?
-      (copy(i(#ind,_x0,y,0,0),color[0],_dx,1,0,_opacity);
-       copy(i(#ind,_x0,y,0,1),color[1],_dx,1,0,_opacity);
-       copy(i(#ind,_x0,y,0,2),color[2],_dx,1,0,_opacity)):
-    s#ind==4?
-      (copy(i(#ind,_x0,y,0,0),color[0],_dx,1,0,_opacity);
-       copy(i(#ind,_x0,y,0,1),color[1],_dx,1,0,_opacity);
-       copy(i(#ind,_x0,y,0,2),color[2],_dx,1,0,_opacity);
-       copy(i(#ind,_x0,y,0,3),color[3],_dx,1,0,_opacity)):
-    # Generic cases.
-      for (_c = 0, _c<s#ind, ++_c, copy(i(#ind,_x0,y,0,c),color[c],_dx,1,0,_opacity));
-  );
-
-  draw_spline(ind,P0,T0,P1,T1,opacity,color) = ( # Draw spline P0-P1 with tangents T0,T1 on image #ind
+  spline(ind,P0,T0,P1,T1,opacity,color) = ( # Draw spline P0-P1 with tangents T0,T1 on image #ind
     unref(_ds_color);
     _P0 = P0;
     _P1 = P1;
