@@ -2076,7 +2076,7 @@ _display_tensors : check "${1=16}>0 && ${2=1.5}>=0 && isint(${3=2}) && $3>=0 && 
           C = [ hsv2rgb([ 2*ang,1-r2/r1,v ]), 255 ];
         );
       );
-      for (k = 1, k>=0, --k, draw_ellipse(#1,X,r1 + k*$4,r2 + k*$4,ang,1,arg(k + 1,C,Co)));
+      for (k = 1, k>=0, --k, ellipse(#1,X,r1 + k*$4,r2 + k*$4,ang,1,arg(k + 1,C,Co)));
       I"
     rm..
   endl done v +
@@ -4599,7 +4599,7 @@ update_server :
     replace_str "<i>David Tschumperl&#233;</i>","<i><a href=\""$url"\">David Tschumperl&#233;</a></i>"
     o cimgz:/tmp/update$_version.gmic,uchar
 
-    (217,218,219,220,221,222)
+    (222)
     repeat {w}
       v={i[$>]}
       _update_server_upload[] ${_path_rc}update$_version.gmic,plain_update$v.gmic
@@ -11940,7 +11940,8 @@ _close_binary :
       _I = I;
        P = int("$vfact"*(_I[0,2]+0.5));
        col = _I[2]>0?[128,255,0]:[255,64,0];
-       draw_circle(#"$visu",P,"$vfact"/2,0.5,col);
+       r = "$vfact"/2;
+       ellipse(#"$visu",P,r,r,0,0.5,col);
        I(#-1,P) = [ 255,255,255 ];
     I"
   fi
@@ -12010,7 +12011,7 @@ _close_binary :
       P1 = I[#"$keycoords",i1];
       (P0+=0.5)*=w#"$visu"/w#"$strokes";
       (P1+=0.5)*=w#"$visu"/w#"$strokes";
-      draw_line(#"$visu",P0,P1,0.5,[255,255,255]);
+      polygon(#"$visu",2,P0,P1,0.5,[255,255,255]);
       I"
   fi
 
@@ -12091,10 +12092,10 @@ _close_binary :
         (P0+=0.5)*=w#"$visu"/w#"$strokes";
         (P1+=0.5)*=w#"$visu"/w#"$strokes";
         col = I(#"$colormap",par);
-        draw_line(#"$visu",P0,P1,1,col);
-        draw_line(#"$visu",P0+[1,0],P1+[1,0],1,col);
-        draw_line(#"$visu",P0+[0,1],P1+[0,1],1,col);
-        draw_line(#"$visu",P0+[1,1],P1+[1,1],1,col);
+        polygon(#"$visu",2,P0,P1,1,col);
+        polygon(#"$visu",2,P0+[1,0],P1+[1,0],1,col);
+        polygon(#"$visu",2,P0+[0,1],P1+[0,1],1,col);
+        polygon(#"$visu",2,P0+[1,1],P1+[1,1],1,col);
       ); I"
     -d
   fi
@@ -12552,7 +12553,7 @@ quiver : check ${"is_image_arg $1"}" && ${2=5%}>0 && ${3=1}>=0 && isbool(${4=1})
           u = i(X,Y,0,0)*fact; v = i(X,Y,0,1)*fact;
           if ($4,
             draw_arrow(#0,[x,y],[x + u,y + v],45,sampling/4,$5,[${6--1}]),
-            draw_line(#0,[x - 0.5*u,y - 0.5*v],[x + 0.5*u,y + 0.5*v],$5,[${6--1}]);
+            polygon(#0,2,[x - 0.5*u,y - 0.5*v],[x + 0.5*u,y + 0.5*v],$5,[${6--1}]);
           );
         );
       );
@@ -18538,7 +18539,6 @@ is_windows :
 
 #@cli math_lib
 #@cli : Return string that defines a set of several useful macros for the embedded math evaluator.
-#@cli : $ image.jpg eval ${-math_lib}" for (i=0, i<1000, ++i, draw_line(#0,0.5*[w,h],u([w,h]),0.5,u([255,255,255])));"
 math_lib :
   v -
   u "
@@ -18567,274 +18567,8 @@ math_lib :
     if (length<0, _P0P1*=-length/100, _P0P1*=length/norm2(_P0P1));
     coords = [ _P0,_P1,_P1,_P1 - rot(angle)*_P0P1,_P1,_P1 - rot(-angle)*_P0P1 ];
     for (_k = 0, _k<3, ++_k,
-      draw_line(#ind,coords[4*_k,2],coords[4*_k+2,2],_opacity,_da_color);
+      polygon(#ind,2,coords[4*_k,2],coords[4*_k+2,2],_opacity,_da_color);
    );
-  );
-
-  draw_circle(ind,P0,radius,opacity,color) = ( # Draw a circle centered at P0 on image #ind
-    unref(_dc_color);
-    _P0 = round(P0);
-    _radius = round(radius);
-    _opacity = opacity;
-    _dc_color = resize(color,s#ind);
-    _ymin = _P0[1] - _radius;
-    _ymax = _P0[1] + _radius;
-    if (_P0[1]>=0 && _P0[1]<h#ind, draw_scanline(#ind,_P0[0] - _radius,_P0[0] + _radius,_P0[1],_opacity,_dc_color));
-    if (_radius>=0 && _ymax>=0 && _ymin<=w#ind - 1, # Circle is visible
-      for (_f = 1 - _radius; _ddFx = 0; _ddFy = -2*_radius; _x = 0; _y = _radius, _x<_y,
-        if (_f>=0,
-          _x1 = _P0[0] - _x;
-          _x2 = _P0[0] + _x;
-          _y1 = _P0[1] - _y;
-          _y2 = _P0[1] + _y;
-          if (_y1>=0 && _y1<h#ind, draw_scanline(#ind,_x1,_x2,_y1,_opacity,_dc_color));
-          if (_y2>=0 && _y2<h#ind, draw_scanline(#ind,_x1,_x2,_y2,_opacity,_dc_color));
-          _f+=(_ddFy+=2); --_y;
-        );
-        _no_diag = _y!=(_x++);
-        ++(_f+=(_ddFx+=2));
-        _x1 = _P0[0] - _y;
-        _x2 = _P0[0] + _y;
-        _y1 = _P0[1] - _x;
-        _y2 = _P0[1] + _x;
-        if (_no_diag,
-          if (_y1>=0 && _y1<h#ind, draw_scanline(#ind,_x1,_x2,_y1,_opacity,_dc_color));
-          if (_y2>=0 && _y2<h#ind, draw_scanline(#ind,_x1,_x2,_y2,_opacity,_dc_color));
-        );
-      );
-    );
-    nan;
-  );
-
-  draw_ellipse(ind,P0,r1,r2,angle,opacity,color) = ( # Draw an ellipse at P0 on image #ind
-    unref(_de_color);
-    _P0 = round(P0);
-    _r1 = abs(r1);
-    _r2 = abs(r2);
-    _angle = angle*pi/180;
-    _opacity = opacity;
-    _de_color = resize(color,s#ind);
-    _u = cos(_angle);
-    _v = sin(_angle);
-    _rmax = max(_r1,_r2);
-    _l1 = (_rmax/max(_r1,1e-6))^2;
-    _l2 = (_rmax/max(_r2,1e-6))^2;
-    _ta = _l1*_u^2 + _l2*_v^2;
-    _tb = _u*_v*(_l1 - _l2);
-    _tc = _l1*_v^2 + _l2*_u^2;
-    _yb = sqrt(_ta*_rmax^2/(_ta*_tc - _tb^2));
-    _ymin = round(_P0[1] - _yb - 1);
-    _ymax = round(_P0[1] + _yb + 1);
-    if (_ymax>=0 && _ymin<=h#ind - 1, # Ellipse is visible
-      _ymin = max(_ymin,0);
-      _ymax = min(_ymax,h#ind - 1);
-      for (_y = _ymin, _y<=_ymax, ++_y,
-        _Y = _y - _P0[1] + (_y<_P0[1]?0.5:-0.5);
-        _delta = _tb^2*_Y^2 - _ta*(_tc*_Y^2 - _rmax^2);
-        _sdelta = _delta>0?sqrt(_delta)/_ta:0;
-        _bY = _tb*_Y/_ta;
-        _xmin = int(_P0[0] - 0.5 - _bY - _sdelta);
-        _xmax = int(_P0[0] + 0.5 - _bY + _sdelta);
-        if (_xmax>=0 && _xmin<=w#ind - 1,
-          _xmin = max(_xmin,0);
-          _xmax = min(_xmax,w#ind - 1);
-          draw_scanline(#ind,_xmin,_xmax,_y,_opacity,_de_color);
-        );
-      );
-    );
-    nan;
-  );
-
-  draw_line(ind,P0,P1,opacity,color) = ( # Draw a line P0-P1 on image #ind
-    unref(_dl_color);
-    _P0 = round(P0);
-    (_P0P1 = round(P1))-=_P0;
-    _opacity = opacity;
-    _dl_color = resize(color,s#ind)*=abs(_opacity);
-    _omopacity = 1 - max(_opacity,0);
-    _tmax = max(abs(_P0P1));
-    __tmax = max(1,_tmax);
-    for (_tl = 0, _tl<=_tmax, ++_tl,
-      _P = round(_P0 + _tl*_P0P1/__tmax);
-      I(#ind,_P) = _dl_color + _omopacity*I(#ind,_P);
-    );
-    nan;
-  );
-
-  draw_polygon(ind,pts,opacity,color) = ( # Draw filled polygon on image #ind
-    unref(_dp_pts,_dp_color,_dp_N,_dp_Xcoords,_dp_Ycoords,_dp_Xs,_dp_Xsy);
-    _dp_pts = round(pts);
-    _opacity = opacity;
-    _dp_color = resize(color,s#ind);
-    const _dp_N = size(_dp_pts)/2;
-    _dp_Xcoords = resize(_dp_pts,_dp_N,1);
-    _dp_Ycoords = resize([_dp_pts[1,size(_dp_pts) - 1],0],_dp_N,1);
-    _xmin = min(_dp_Xcoords);
-    _xmax = max(_dp_Xcoords);
-    _ymin = min(_dp_Ycoords);
-    _ymax = max(_dp_Ycoords);
-    if (_xmax>=0 && _xmin<w#ind && _ymax>=0 && _ymin<h#ind, # Polygon is visible
-      _go_on = 1;
-      _ymin = max(_ymin,0);
-      _ymax = min(_ymax,h#ind - 1);
-      if (_ymin==_ymax,
-        _go_on = 0;
-        _xmin = max(_xmin,0);
-        _xmax = min(_xmax,w#ind - 1);
-        draw_scanline(#ind,_xmin,_xmax,_ymin,_opacity,_dp_color);
-      );
-      _none = _xmax + 1;
-      (_dp_Xs = resize(_dp_pts,_dp_N*h#ind,0)) = _none;
-      _n = 0;
-      _nn = 1;
-
-      whiledo (_go_on,
-       _an = (_nn + 1)%_dp_N;
-       _x0 = _dp_pts[2*_n];
-       _y0 = _dp_pts[2*_n + 1];
-       if (_dp_pts[2*_nn + 1]==_y0,
-         whiledo (_dp_pts[2*_an + 1]==_y0, _nn = _an; (_an+=1)%=_dp_N; );
-       );
-       _x1 = _dp_pts[2*_nn];
-       _y1 = _dp_pts[2*_nn + 1];
-       _tn = _an;
-       whiledo (_dp_pts[2*_tn + 1]==_y1, (_tn+=1)%=_dp_N);
-
-       if (_y0!=_y1,
-         _y2 = _dp_pts[2*_tn + 1];
-         _x01 = _x1 - _x0;
-         _y01 = _y1 - _y0;
-         _y12 = _y2 - _y1;
-         _dy = sign(_y01);
-         _tmax = max(1,abs(_y01));
-         _tend = _tmax - (_dy==sign(_y12));
-         for (_t = 0, _t<=_tend, ++_t,
-           if (_y0>=0 && _y0<h#ind, _dp_Xs[_n + _y0*_dp_N] = round(_x0 + _t*_x01/_tmax));
-           _y0+=_dy;
-         );
-       );
-        _go_on = _nn>_n;
-        _n = _nn;
-        _nn = _an;
-      );
-
-      for (_y0 = _ymin, _y0<=_ymax, ++_y0,
-        _dp_Xsy = sort(_dp_Xs[_y0*_dp_N,_dp_N]);
-        _px = w#ind;
-        for (_n = 0, _n<_dp_N,
-          dowhile (_x0 = _dp_Xsy[_n++], _n<_dp_N && _x0==_none);
-          if (_x0!=_none,
-            dowhile (_x1 = _dp_Xsy[_n++], _n<_dp_N && _x1==_none);
-            if (_x1!=_none && _x1>=0 && _x0<=w#ind - 1,
-              _x0 = max(_x0 + (_px==_x0),0);
-              _x1 = min(_x1,w#ind - 1);
-              draw_scanline(#ind,_x0,_x1,_y0,_opacity,_dp_color);
-              _px = _x1;
-            );
-          );
-        );
-      );
-    );
-    nan;
-  );
-
-  draw_quadrangle(ind,P0,P1,P2,P3,opacity,color) = ( # Draw quadrangle P0-P1-P2-P3 on image #ind
-    unref(_dq_color);
-    _opacity = opacity;
-    _dq_color = resize(color,s#ind);
-    _A = round(P0);
-    _B = round(P1);
-    _C = round(P2);
-    _D = round(P3);
-    _xmin = max(0,min(_A[0],_B[0],_C[0],_D[0]));
-    _xmax = min(w#ind-1,max(_A[0],_B[0],_C[0],_D[0]));
-    _ymin = max(0,min(_A[1],_B[1],_C[1],_D[1]));
-    _ymax = min(h#ind-1,max(_A[1],_B[1],_C[1],_D[1]));
-    _M0 = transp([_A,1,_B,1,_D,1],3);
-    _M1 = transp([_B,1,_C,1,_D,1],3);
-    for (_y = _ymin, _y<_ymax, ++_y,
-      for (_x = _xmin, _x<_xmax, ++_x,
-        _P = [ _x,_y,1 ];
-        _L0 = round(solve(_M0,_P),1e-5);
-        _L1 = round(solve(_M1,_P),1e-5);
-        if (min(_L0)>=0 || min(_L1)>=0, copy(i(#ind,_x,_y,0,0),_dq_color,size(_dq_color),whd#ind,1,_opacity));
-      );
-    );
-    nan;
-  );
-
-  draw_quadrangle(ind,P0,P1,P2,P3,opacity,color0,color1,color2,color3) = ( # Draw shaded quadrangle P0-P1-P2-P3 on image #ind
-    unref(_dq_color);
-    unref(_dq_color0);
-    unref(_dq_color1);
-    unref(_dq_color2);
-    unref(_dq_color3);
-    _opacity = opacity;
-    _dq_color0 = resize(color0,s#ind);
-    _dq_color1 = resize(color1,s#ind);
-    _dq_color2 = resize(color2,s#ind);
-    _dq_color3 = resize(color3,s#ind);
-    _dq_color4 = (_dq_color0 + _dq_color1 + _dq_color2 + _dq_color3)/4;
-    _A = round(P0);
-    _B = round(P1);
-    _C = round(P2);
-    _D = round(P3);
-    _G = round((_A + _B + _C + _D)/4);
-    _xmin = max(0,min(_A[0],_B[0],_C[0],_D[0]));
-    _xmax = min(w#ind-1,max(_A[0],_B[0],_C[0],_D[0]));
-    _ymin = max(0,min(_A[1],_B[1],_C[1],_D[1]));
-    _ymax = min(h#ind-1,max(_A[1],_B[1],_C[1],_D[1]));
-    _M0 = transp([_A,1,_B,1,_G,1],3);
-    _M1 = transp([_B,1,_C,1,_G,1],3);
-    _M2 = transp([_C,1,_D,1,_G,1],3);
-    _M3 = transp([_D,1,_A,1,_G,1],3);
-    for (_y = _ymin, _y<_ymax, ++_y,
-      for (_x = _xmin, _x<_xmax, ++_x,
-        _P = [ _x,_y,1 ];
-        _L0 = round(solve(_M0,_P),1e-5);
-        _L1 = round(solve(_M1,_P),1e-5);
-        _L2 = round(solve(_M2,_P),1e-5);
-        _L3 = round(solve(_M3,_P),1e-5);
-        min(_L0)>=0?(
-          _dq_color = _L0[0]*_dq_color0 + _L0[1]*_dq_color1 + _L0[2]*_dq_color4;
-          copy(i(#ind,_x,_y,0,0),_dq_color,size(_dq_color),whd#ind,1,_opacity);
-        ):min(_L1)>=0?(
-          _dq_color = _L1[0]*_dq_color1 + _L1[1]*_dq_color2 + _L1[2]*_dq_color4;
-          copy(i(#ind,_x,_y,0,0),_dq_color,size(_dq_color),whd#ind,1,_opacity);
-        ):min(_L2)>=0?(
-          _dq_color = _L2[0]*_dq_color2 + _L2[1]*_dq_color3 + _L2[2]*_dq_color4;
-          copy(i(#ind,_x,_y,0,0),_dq_color,size(_dq_color),whd#ind,1,_opacity);
-        ):min(_L3)>=0?(
-          _dq_color = _L3[0]*_dq_color3 + _L3[1]*_dq_color0 + _L3[2]*_dq_color4;
-          copy(i(#ind,_x,_y,0,0),_dq_color,size(_dq_color),whd#ind,1,_opacity);
-        );
-      );
-    );
-    nan;
-  );
-
-  draw_rectangle(ind,P0,P1,opacity,color) = ( # Draw rectangle P0-P1 on image #ind
-    unref(_dr_color);
-    _P0 = round(P0);
-    _P1 = round(P1);
-    _opacity = opacity;
-    _dr_color = resize(color,s#ind);
-    _Xcoords = [ _P0[0],_P1[0] ];
-    _Ycoords = [ _P0[1],_P1[1] ];
-    _xmin = min(_Xcoords);
-    _xmax = max(_Xcoords);
-    _ymin = min(_Ycoords);
-    _ymax = max(_Ycoords);
-    if (_xmax>=0 && _xmin<=w#ind - 1 && _ymax>=0 && _ymin<=h#ind - 1, # Rectangle is visible
-      _xmin = max(_xmin,0);
-      _xmax = min(_xmax,w#ind - 1);
-      _ymin = max(_ymin,0);
-      _ymax = min(_ymax,h#ind - 1);
-      for (_y = _ymin, _y<=_ymax, ++_y,
-        draw_scanline(#ind,_xmin,_xmax,_y,_opacity,_dr_color);
-      );
-    );
-    nan;
   );
 
   draw_scanline(ind,x0,x1,y,opacity,color) = ( # Draw a single scanline (x0,y)->(x1,y) on image #ind
@@ -26266,16 +26000,23 @@ fx_quadtree :
 
     if {$mode==0} # Squares
       f. ">"${-math_lib}"
+        rectangle(ind,P0,P1,opacity,color) = (
+          _P0 = P0;
+          _P2 = P1;
+          _P1 = [ _P2[0], _P0[1] ];
+          _P3 = [ _P0[0], _P2[1] ];
+          polygon(#ind,4,_P0,_P1,_P2,_P3,opacity,color);
+        );
         init( colo = [ 0,0,0,255 ] );
         P = I;
         Xpp = P[0,2];
         Xnn = P[2,2];
         col = [ P[6,3],255 ];
         if ("$outline"<=0,
-          draw_rectangle(#0,Xpp,Xnn,1,col);
+          rectangle(#0,Xpp,Xnn,1,col);
         _(else),
-          draw_rectangle(#0,Xpp,Xnn,1,colo);
-          draw_rectangle(#0,Xpp + "$outline",Xnn - "$outline",1,col);
+          rectangle(#0,Xpp,Xnn,1,colo);
+          rectangle(#0,Xpp + "$outline",Xnn - "$outline",1,col);
         );
         I"
 
@@ -26316,8 +26057,8 @@ fx_quadtree :
         anisotropy = (1 + eig[1])/(1 + eig[0]);
         r*=anisotropy^"$anisotropy";
         angle = atan2(eig[5],eig[4])*180/pi;
-        if ("$outline">0, draw_ellipse(#0,Xcc,R,r,angle,1,colo));
-        draw_ellipse(#0,Xcc,R - "$outline",r - "$outline",angle,1,col);
+        if ("$outline">0, ellipse(#0,Xcc,R,r,angle,1,colo));
+        ellipse(#0,Xcc,R - "$outline",r - "$outline",angle,1,col);
         I"
       if {!$outline} sh[0] 100% if {!im} solidify[0] 10% fi fi
     fi
@@ -26902,7 +26643,7 @@ _fx_colorize_lineart_smartcoloring :
       +negate[strokes] *. 255 to_rgb.
       +-[new_strokes] [strokes] dilate. 2
       100%,100%,1,3,[0,128,255] j... .,0,0,0,0,1,.. rm[-2,-1]
-      if {narg($keycoords)} f[keycoords] ${-math_lib}"draw_circle(#-1,(I)[0,2],3,1,[255,0,0]);I" rm[keycoords] fi
+      if {narg($keycoords)} f[keycoords] ${-math_lib}"ellipse(#-1,(I)[0,2],3,3,0,1,[255,0,0]);I" rm[keycoords] fi
       nm. geometry
     fi
 

@@ -41,12 +41,12 @@
 
 # The main run() function.
 #--------------------------
-run : skip ${1=0}
+go : skip ${1=0}
   v -
   _output_video=$1
   if $1
     v + e[] "\n  > Run 'BBQ Intro 2016' demo, by ARKHAM (video output mode)." v -
-    _run $1
+    _go $1
   else
     if ${-path_tmp}/bbq_intro2016.mp3 else l[]
       v + e[] "\n  > Retrieve music from the G'MIC server..." v -
@@ -57,10 +57,10 @@ run : skip ${1=0}
     endl fi
     v + e[] "\n  > Run 'BBQ Intro 2016' demo, by ARKHAM (live mode)." v -
     rm
-    parallel "x \"cvlc "${-path_tmp}"bbq_intro2016.mp3\"","_run $""1"
+    parallel "x \"cvlc "${-path_tmp}"bbq_intro2016.mp3\"","_go $""1"
   fi
 
-_run :
+_go :
   v -
   w 640,400,0,"BBQ Party 2016 - Intro (Arkham)"
   bbq_intro_notice
