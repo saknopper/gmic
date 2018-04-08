@@ -12017,7 +12017,7 @@ _close_binary :
 
   # Detect groups of hatches.
   [keylines],1,1,1,-1 a[keylines,-1] c
-  f[keylines] ">
+  f[keylines] ">"${-math_lib}"
     is_proj_in(X,A,B) = ( # Test if projected of point X on (AB) belongs to segment [A,B]
       pX = proj(X,A,B);
       dot(pX - A,pX - B)<=0;
@@ -18680,10 +18680,6 @@ math_lib :
   proj(X,A,B) = ( # Projection of point X onto line (A,B)
     _AB = B - A;
     P = A + dot(X - A,_AB)/max(1e-8,dot(_AB,_AB))*_AB;
-  );
-
-  rgb() = ( # Return a random RGB color
-    u([255,255,255]);
   );
 
   swap(x,y) = ( # Swap content of variables x and y
