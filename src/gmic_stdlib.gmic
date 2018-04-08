@@ -12541,7 +12541,7 @@ polka_dots : check $1>=0 skip ${2=20},${3=50},${4=50},${5=0},${6=10},${7=1},${8=
 quiver : check ${"is_image_arg $1"}" && ${2=5%}>0 && ${3=1}>=0 && isbool(${4=1})" skip "${5=1},${6=0}"
   e[^-1] "Draw 2d vector field $1 on image$?, with sampling $2, factor $3, arrows "${"arg 1+$4,disabled,enabled"}", opacity $5 and color (${6--1})."
   v - pass$1 repeat {$!-1} l[$>,-1]
-    eval "
+    eval ${-math_lib}"
       s_sampling = ['$2'];
       sampling = s_sampling[size(s_sampling) - 1 ]==_'%'?min(w#0,h#0)*$2:$2;
       vmax = max(abs(im),abs(iM));
