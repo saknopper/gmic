@@ -4240,7 +4240,7 @@ update_deprecate : check "isint($1) && $1>0 && $1<999"
             \#@gui : You are strongly encouraged to upgrade to the latest version, by visiting our <i>Download page</i> :\\n\\n\"}\n\
             \#@gui : url = link{\"Download G\47MIC plug-in\",\"http://gmic.eu/download.shtml\"}\n\
             \#@gui : note = note{\"\\nNote that there will be no updated filters anymore for your current plug-in version.\\n\\n\n\
-            \#@gui : Best regards,\\n\\n <i>The G\47MIC team.</i>\"}\n"'})
+            \#@gui : Best regards,\\n\\n <i>The G\47MIC team.</i>\"}\n\n"'})
     y[1] a y
     file=${_path_rc}update$1.gmic
     o cimgz:$file,uchar
