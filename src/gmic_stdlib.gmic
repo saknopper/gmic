@@ -4226,7 +4226,7 @@ __gallery :
 # Function that inserts a new 'Update information' filter for a previous version number,
 # passed as an argument.
 update_deprecate : check "isint($1) && $1>0 && $1<999"
-  e[^-1] "Deprecate filter update file for G'MIC version $1."
+  e[^-1] "Deprecate filter updates for G'MIC version $1."
   v - l[]
   file=${_path_rc}update$1.gmic
   i cimgz:"http://gmic.eu/update$1.gmic",uchar
