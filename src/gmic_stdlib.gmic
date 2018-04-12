@@ -4249,9 +4249,10 @@ update_deprecate : check "isint($1) && $1>0 && $1<999"
     i[1] ({'"\n\
             \#@gui !<b><i>&gt;&gt; UPDATE"" INFORMATION</i></b> : _none_, fx_logo_en\n\
             \#@gui : note = note{\"A <b>new version</b> of the <i>G\47MIC</i> plug-in is available!\\n\\n\n\
-            \#@gui : You are strongly encouraged to upgrade your plug-in version, by visiting our <i>Download page</i> :\\n\\n\"}\n\
-            \#@gui : url = link{\"Download G\47MIC\",\"http://gmic.eu/download.shtml\"}\n\
-            \#@gui : note = note{\"\\nNote that there will be no updated filters anymore for your current plug-in version.\\n\\n\n\
+            \#@gui : You are strongly encouraged to upgrade your version, by visiting our <i>Download page</i> :\\n\\n\"}\n\
+            \#@gui : url = link{\"Visit G\47MIC Download Page\",\"http://gmic.eu/download.shtml\"}\n\
+            \#@gui : note = note{\"\\nOf course, your plug-in will continue to work, but please note that we won\47t be able\n\
+            \#@gui : to provide filter updates anymore for your current plug-in version.\\n\\n\n\
             \#@gui : Best regards,\\n\\n <i>The G\47MIC team.</i>\"}\n\n"'})
     y[1] a y
     o cimgz:$file,uchar
