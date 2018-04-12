@@ -19226,7 +19226,7 @@ x_2048 :
   e[] "\n
 ------ "${g}"2048"$n" -----------------------------------------------\n
 ----\n
----- Join the numbers and get to the "${g}"2048"$n" title!\n
+---- Join the numbers and get to the "${g}"2048"$n" tile!\n
 ----\n
 ---- Use your "${c}"arrow keys"$n" to move the tiles. When two tiles\n
 ---- with the same number touch, they merge into one!\n
