@@ -35352,6 +35352,7 @@ fx_solve_maze_preview :
 #@cli : $ http://gmic.eu/samples/pacman.gmic go _fps=25 _label="Pacman"
 #@cli : $ http://gmic.eu/samples/scrolling.gmic go _fps=25 _label="Scrolling"
 #@cli : $ http://gmic.eu/samples/landscape.gmic go _fps=12 _label="Landscape"
+#@cli : $ http://gmic.eu/samples/mandelbrot.gmic go _fps=8 _label="Mandelbrot"
 
 # Local Variables:
 # mode: sh
