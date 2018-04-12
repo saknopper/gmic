@@ -4228,25 +4228,37 @@ __gallery :
 update_deprecate : check "isint($1) && $1>0 && $1<999"
   e[^-1] "Deprecate filter update file for G'MIC version $1."
   v - l[]
+  file=${_path_rc}update$1.gmic
   i cimgz:"http://gmic.eu/update$1.gmic",uchar
-  +l. s +,{'"UPDATE"" INFORMATION"'} is_deprecated={$!>1} rm endl
+  +l. s +,{'"UPDATE"" INFORMATION"'} is_deprecated={$!>1} rm endl # Check if deprecation has not been already done.
   if $is_deprecated
-    v + e[0--4] "  > Version $1 was already deprecated !" v -
+    v + e[0--4] "  > Version $1 already deprecated -> Removing deprecation." v -
+    off1={"data = crop(); find(data,'\n#@gui !<b><i>&gt;&gt; UPDATE"" INFORMATION</i></b>')"}
+    if {$off1>0}
+      +rows $off1,100% rows[0] 0,{$off1-1}
+      off2={"data = crop(); find(data,'\n\n')"}
+      if {$off2>0}
+        rows. {$off2+2},100% a y
+        o cimgz:$file,uchar
+        _update_server_upload $file
+        v + e[0--6] "  > Done! Version $1 is not deprecated anymore." v -
+      fi
+    fi
   else
     s +,{'"#@cli :: "'}
     i[1] ({'"\n\
             \#@gui !<b><i>&gt;&gt; UPDATE"" INFORMATION</i></b> : _none_, fx_logo_en\n\
-            \#@gui : note = note{\"A <b>new major version</b> of the <i>G\47MIC</i> plug-in is available!\\n\n\
-            \#@gui : You are strongly encouraged to upgrade to the latest version, by visiting our <i>Download page</i> :\\n\\n\"}\n\
-            \#@gui : url = link{\"Download G\47MIC plug-in\",\"http://gmic.eu/download.shtml\"}\n\
+            \#@gui : note = note{\"A <b>new version</b> of the <i>G\47MIC</i> plug-in is available!\\n\\n\n\
+            \#@gui : You are strongly encouraged to upgrade your plug-in version, by visiting our <i>Download page</i> :\\n\\n\"}\n\
+            \#@gui : url = link{\"Download G\47MIC\",\"http://gmic.eu/download.shtml\"}\n\
             \#@gui : note = note{\"\\nNote that there will be no updated filters anymore for your current plug-in version.\\n\\n\n\
             \#@gui : Best regards,\\n\\n <i>The G\47MIC team.</i>\"}\n\n"'})
     y[1] a y
-    file=${_path_rc}update$1.gmic
     o cimgz:$file,uchar
     _update_server_upload $file
+    v + e[0--4] "  > Done! Version $1 is now deprecated." v -
   fi
-  rm endl v + e[^-1] "  > Done!"
+  rm endl v +
 
 # Function that updates filters definitions on the G'MIC web server.
 # It sorts and merges filters from all available sources, and save
