@@ -267,9 +267,9 @@
       </pre>
       Then, get the <b><font color="#000066">G'MIC</font></b> source from the different repositories:
       <pre style="font-family:monospace;">
-        $ git clone <a href="https://github.com/dtschump/gmic">https://github.com/dtschump/gmic.git</a>
-        $ git clone <a href="https://github.com/c-koi/gmic-qt">https://github.com/c-koi/gmic-qt.git</a>
-        $ git clone <a href="https://github.com/c-koi/gmic-qt">https://github.com/c-koi/zart.git</a>
+        $ git clone --depth=1 <a href="https://github.com/dtschump/gmic">https://github.com/dtschump/gmic.git</a>
+        $ git clone --depth=1 <a href="https://github.com/c-koi/gmic-qt">https://github.com/c-koi/gmic-qt.git</a>
+        $ git clone --depth=1 <a href="https://github.com/c-koi/gmic-qt">https://github.com/c-koi/zart.git</a>
       </pre>
       You are now ready to compile all <b><font color="#000066">G'MIC</font></b> interfaces:
       <b><i>gmic</i></b> (command-line tool),
