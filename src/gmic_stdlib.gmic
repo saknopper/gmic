@@ -4124,7 +4124,7 @@ update_gallery_html : check "isbool(${1=0})"
               fi
             endl fi
 
-            l[] $filename_full width,height={[w,h]+64} rm endl
+            l[] $filename_full width,height={round([w,h]*(max(w,h)<300?1.75:1))} rm endl
 
             if {!($col%$nb_cols)} html=${html}"<tr>\n" fi
             if {$nb_examples==1} counter= else counter=" <font size=\"-2\"><i>"[{$>+1}/$nb_examples]"</i></font>" fi
@@ -4144,17 +4144,24 @@ update_gallery_html : check "isbool(${1=0})"
             if {['$_label']==0} _label=$command$counter else ({'$_label'}) replace_str. "~"," " _label={t} rm. fi
             if $is_input
               html=${html}\
-                  "  <td><center><div><a href=\"#\" onclick=\"return hs.htmlExpand(this, { width: "$width", height: "$height" })\">\n"\
+                  "  <td><center><div><a href=\"#\" onclick=\"return hs.htmlExpand(this, { width: "{$width+64}", height: "{$height+64}" })\">\n"\
                   "  <img alt=\""gallery_$command$nex"\" border=\"0\" src=\""$filename_thumb"\" "\
                   "onmouseover=\"javascript:this.src='"$filename_thumb_original"';\" onmouseout=\"javascript:this.src='"$filename_thumb"';\"/><br/><b>"${_label}${html_codesample}"</b></a>\n"\
                   "  <div class=\"highslide-maincontent\"><center>\n"\
-                  "  <img alt=\""gallery_$command$nex"\" border=\"0\" src=\""$filename_full"\" onclick=\"hs.close()\" onmouseover=\"javascript:this.src='"$filename_full"';\" onmouseout=\"javascript:this.src='"$filename_original"';\"/>\n"\
+                  "  <img alt=\""gallery_$command$nex"\" border=\"0\" width=\""$width"\" src=\""$filename_full"\" onclick=\"hs.close()\" onmouseover=\"javascript:this.src='"$filename_full"';\" onmouseout=\"javascript:this.src='"$filename_original"';\"/>\n"\
                   "</center></div>\n"\
                   "<div class=\"highslide-caption\">Command: <tt>$ gmic "${replaced_example$nex}"</tt>"${html_etime}"</div></div></center></td>\n"
             else
+              # html=${html}\
+              #     "  <td><center><div><a href=\""$filename_full"\" class=\"highslide\" onclick=\"return hs.expand(this, { width: "{$width+64}", height: "{$height+64}" })\">"\
+              #     "<img alt=\""gallery_$command$nex"\" border=\"0\" src=\""$filename_thumb"\" /><br/><b>"${_label}${html_codesample}"</b></a>"\
+              #     "<div class=\"highslide-caption\">Command: <tt>$ gmic "${replaced_example$nex}"</tt>"${html_etime}"</div></div></center></td>\n"
               html=${html}\
-                  "  <td><center><div><a href=\""$filename_full"\" class=\"highslide\" onclick=\"return hs.expand(this)\">"\
-                  "<img alt=\""gallery_$command$nex"\" border=\"0\" src=\""$filename_thumb"\" /><br/><b>"${_label}${html_codesample}"</b></a>"\
+                  "  <td><center><div><a href=\"#\" onclick=\"return hs.htmlExpand(this, { width: "{$width+64}", height: "{$height+64}" })\">\n"\
+                  "  <img alt=\""gallery_$command$nex"\" border=\"0\" src=\""$filename_thumb"\" /><br/><b>"${_label}${html_codesample}"</b></a>\n"\
+                  "  <div class=\"highslide-maincontent\"><center>\n"\
+                  "  <img alt=\""gallery_$command$nex"\" border=\"0\" width=\""$width"\" src=\""$filename_full"\" onclick=\"hs.close()\" />\n"\
+                  "</center></div>\n"\
                   "<div class=\"highslide-caption\">Command: <tt>$ gmic "${replaced_example$nex}"</tt>"${html_etime}"</div></div></center></td>\n"
             fi
             nex+=1
