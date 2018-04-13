@@ -3,7 +3,7 @@
 
 go :
 
-  # Create texture image (mandelbrot fractal)
+  # Create colormap.
   srand 0
   input 256,1,1,3,u(255)
   tsp. ,
