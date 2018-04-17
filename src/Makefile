@@ -392,7 +392,8 @@ gimp_gtk:
 _gimp_gtk: gmic_gimp_gtk.o gmic_gimp_gtk.cpp gmic_gimp_gtk.h
 ifeq ($(OS),Darwin)
 ifeq (,$(wildcard /tmp/skl))
-	$(CXX) -o gmic_gimp_gtk gmic_gimp_gtk.cpp gmic_gimp_gtk.o `gimptool-2.0$(EXE) --cflags` `gimptool-2.0$(EXE) --libs` $(CFLAGS) $(LIBS)
+#	$(CXX) -o gmic_gimp_gtk gmic_gimp_gtk.cpp gmic_gimp_gtk.o `gimptool-2.0$(EXE) --cflags` `gimptool-2.0$(EXE) --libs` $(CFLAGS) $(LIBS)
+	$(CXX) -o gmic_gimp_gtk gmic_gimp_gtk.cpp gmic_gimp_gtk.o $(subst -I/opt/local/include/fribidi, ,$(shell gimptool-2.0$(EXE) --cflags)) $(subst -lfribidi, ,$(subst -L/opt/local,-L/tmp/skl/Gimp.app/Contents/Resources,$(shell gimptool-2.0$(EXE) --libs))) $(CFLAGS) $(LIBS)
 else
 	$(CXX) -o gmic_gimp_gtk gmic_gimp_gtk.cpp gmic_gimp_gtk.o `gimptool-2.0$(EXE) --cflags` $(subst -L/opt/local,-L/tmp/skl/Gimp.app/Contents/Resources,$(shell gimptool-2.0$(EXE) --libs) $(CFLAGS) $(LIBS))
 endif
