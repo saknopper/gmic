@@ -14403,7 +14403,7 @@ tensors3d : check "${1=1}>=0 && isint(${2=2}) && $2>=0 && ${3=0.05}>=0"
 #@cli : Input 3d text pointcloud from the two specified strings.
 #@cli : Default values: 'text1="text1"', 'text2="text2"' and 'smoothness=1'.
 #@cli : $ text_pointcloud3d "G'MIC","Rocks!"
-text_pointcloud3d : skip ${1="text1"},${2="text2"},${3=1}
+text_pointcloud3d : skip "${1=text1}","${2=text2}",${3=1}
   e[^-1] "Input 3d pointcloud text object from strings '$1' and '$2', with smoothness $3."
   v -
   0 t. "$1",0,0,53,1,1
@@ -29642,7 +29642,10 @@ fx_lomo_preview :
 #@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2010/29/12</i>.</small>")
 fx_noise :
-  ac "noise $1,$2",$3,$4
+  ac "_fx_noise $1,$2",$3,$4
+
+_fx_noise :
+  repeat $! l[$>] split_opacity l[0] noise $1,$2 endl a c endl done
 
 fx_noise_preview :
   gui_split_preview "fx_noise $*",$-1
