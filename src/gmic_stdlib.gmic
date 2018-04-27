@@ -3951,7 +3951,7 @@ update_gallery_html : check "isbool(${1=0})"
   categories=arrays,artistic,blackandwhite,colors,deformations,filtering,patterns,3drendering,codesamples
   nb_categories={narg($categories)}
   commands_arrays=gallery_arrays,array,array_fade,array_mirror,frame_blur,frame_cube,frame_painting,img2ascii,imagegrid,rotate_tiles,vignette,tunnel
-  commands_artistic=gallery_artistic,boxfitting,cartoon,cubism,draw_whirl,fractalize,halftone,light_relief,hardsketchbw,linify,mosaic,polaroid,polygonize,poster_hope,rodilius,stained_glass,stencil
+  commands_artistic=gallery_artistic,boxfitting,cartoon,cubism,draw_whirl,fractalize,halftone,light_relief,sketchbw,linify,mosaic,polaroid,polygonize,poster_hope,rodilius,stained_glass,stencil
   commands_blackandwhite=gallery_blackandwhite,pencilbw,old_photo,sepia
   commands_colors=gallery_colors,solarize,hsv2rgb,transfer_rgb
   commands_deformations=gallery_deformations,deform,map_sphere,seamcarve,spherize,twirl,warp_perspective,water,wave
@@ -16284,7 +16284,7 @@ stars : check "${1=10%}>=0 && ${2=1}>=0 && ${3=32}>0 && ${4=5}>=1 && ${5=0.38}>=
 #@cli : Apply sketch effect to selected images.
 #@cli : Default values: 'nb_orients=2', 'start_angle=45', 'angle_range=180', 'length=30', 'threshold=1', 'opacity=0.03',
 #@cli : 'bgfactor=0', 'density=0.6', 'sharpness=0.1', 'anisotropy=0.6', 'smoothness=0.25', 'coherence=1', 'is_boost=0' and 'is_curved=1'.
-#@cli : $ image.jpg +sketchbw 1 +local reverse blur[-1] 3 blend[-2,-1] overlay endlocal
+#@cli : $ image.jpg +sketchbw 1 reverse blur[-1] 3 blend[-2,-1] overlay
 sketchbw :
   check "${1=2}>0 && ${3=180}>=0 && ${4=30}>=0 && ${5=1}>=0 && ${7=0}>=0 && ${8=0.6}>0 && ${9=0.1}>=0 && ${10=0.6}>=0 && ${11=0.25}>=0 && ${12=1}>=0"
   skip ${2=45},${6=0.03},${13=0},${14=1}
