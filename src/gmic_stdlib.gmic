@@ -694,7 +694,7 @@ _help_usage :
 \n    _ "${g}"Usual math functions:"$n" "${c}"abs(), acos(), arg(), argkth(), argmax(), argmin(), asin(), atan(),
 \n       atan2(), avg(), bool(), cbrt(), ceil(), cos(), cosh(), cut(), exp(), fact(), fibo(), floor(), gauss(), int(),
 \n       isval(), isnan(), isinf(), isint(), isbool(), isfile(), isdir(), isin(), kth(), log(), log2(), log10(),
-\n       max(), mean(), med(), min(), narg(), prod(), rol()"$n" (left bit rotation),
+\n       max(), med(), min(), narg(), prod(), rol()"$n" (left bit rotation),
 \n       "${c}"ror()"$n" (right bit rotation)"${c}", round(), sign(), sin(), sinc(), sinh(), sqrt(), std(),
 \n       srand(_seed), sum(), tan(), tanh(), variance(), xor()"$n".
 \n
@@ -711,7 +711,7 @@ _help_usage :
 \n          path to an existing file (resp. to a directory) or not.
 \n       . '"${c}"isin(v,a_1,...,a_n)"$n"' returns "${g}"0 (false)"$n" or "${g}"1 (true)"$n" whether the first value '"${g}"v"$n"' appears
 \n          in the set of other values 'a_i'.
-\n       . '"${c}"argmin()"$n"', '"${c}"argmax()"$n"', '"${c}"kth()"$n"', '"${c}"max()"$n"', '"${c}"mean()"$n"', '"${c}"med()"$n"', '"${c}"min()"$n"', '"${c}"std()"$n"', '"${c}"sum()"$n"'
+\n       . '"${c}"argmin()"$n"', '"${c}"argmax()"$n"', '"${c}"avg()"$n"', '"${c}"kth()"$n"', '"${c}"max()"$n"', '"${c}"med()"$n"', '"${c}"min()"$n"', '"${c}"std()"$n"', '"${c}"sum()"$n"'
 \n          and '"${c}"variance()"$n"' can be called with an arbitrary number of scalar/vector arguments.
 \n       . '"${c}"round(value,rounding_value,direction)"$n"' returns a rounded value. '"${g}"direction"$n"' can be
 \n          "${g}"{ -1=to-lowest | 0=to-nearest | 1=to-highest }"$n".
