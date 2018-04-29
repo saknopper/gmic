@@ -6283,7 +6283,7 @@ roundify : check $1>=0
   e[^-1] "Roundify image$?, with gamma $1."
   if {$1==1} return fi
   v - repeat $! l[$>]
-    +round 1 -.. . +*.. 2 abs. ^. $1 sign... *[-3,-1] *.. 0.5 -+
+    +round 1 -.. . +*.. 2 abs. ^. $1 sign... *[-3,-1] *.. 0.5 +
   endl done v +
 
 #@cli = : eq. to 'set'. : (+)
@@ -7177,7 +7177,7 @@ rgb2luv :
 rgb2int :
   e[^-1] "Convert color representation of image$? from RGB to INT24 scalars."
   v - to_rgb round repeat $! l[$>]
-    s c <<[0] 16 <<[1] 8 -+
+    s c <<[0] 16 <<[1] 8 +
   endl done v +
 
 #@cli rgb2srgb
@@ -8528,7 +8528,7 @@ scale_dcci2x_old : check "${1=1.15}>=0 && ${2=5}>=0" skip ${3=0}
     _scale_dcci2x_smooth[-5,-4] ...,..,$2 _scale_dcci2x_mask[-4--1] $1
 
     # resize and distribute pixels
-    r2dx 200%,4 shift[1] 1,1 shift[2] 0,1 shift[3] 1 -+
+    r2dx 200%,4 shift[1] 1,1 shift[2] 0,1 shift[3] 1 +
     if {!$3} r {w-1},{h-1},100%,100%,0 fi
   endl done v +
 
@@ -9303,8 +9303,8 @@ divergence :
   e[^-1] "Compute divergence of vector field$?."
   v - repeat $! l[$>]
     if {s==1} g x,0
-    elif {s==2} s c g.. x,0 g. y,0 -+
-    elif {s==3} s c g... x,0 g.. y,0 g. z,0 -+
+    elif {s==2} s c g.. x,0 g. y,0 +
+    elif {s==3} s c g... x,0 g.. y,0 g. z,0 +
     else v + error[] "Command '$0': Cannot compute divergence of image ["$>"] (has "{s}">3 channels)."
     fi
   endl done v +
@@ -9538,7 +9538,7 @@ _idct :
   s x,2 mirror. x
   r[0] 200%,100%,1,100%,4,0,0
   r[1] 200%,100%,1,100%,4,0,1
-  -+
+  +
   if $is_odd r {w-1},100%,100%,100%,0 fi
 
 #@cli iee
@@ -9906,7 +9906,7 @@ kuwahara : check $1>0
 laplacian :
   e[^-1] "Compute Laplacian of image $?."
   v - repeat $! l[$>]
-    hessian ${arg\ 1+(d==1),xxyyzz,xxyy} -+
+    hessian ${arg\ 1+(d==1),xxyyzz,xxyy} +
   endl done v +
 
 #@cli lic : _amplitude>0,_channels>0
@@ -9934,7 +9934,7 @@ map_tones : skip ${1=0.1},${2=0.8},${3=0.5},${4=30}
       g xy,1 a c +norm orientation..
       m={im} M={iM} b. $3 n. $m,$M
       *. 'alpha=$1*iM;(alpha/(1e-10+i))*(i/(1e-10+alpha))^$2'
-      * s c g.. x,-1 g. y,-1 -+
+      * s c g.. x,-1 g. y,-1 +
     endl done a c * 0.25 endl
 
    # Start Poisson-PDE iterations
@@ -9953,7 +9953,7 @@ map_tones_fast : check "${1=3%}>=0 && ${2=0.3}>=0"
     +*. 2 -. 1 abs. *. {$2*log(10)} exp.
     <=.. 0.5 r. ...
     +*... -1 +. 1 ^. .. *. -1 +. 1 *. ...
-    ^[-4,-2] ==.. 0 *[-3,-2] -+
+    ^[-4,-2] ==.. 0 *[-3,-2] +
   endl done n 0,255 v +
 
 #@cli meancurvature_flow : _nb_iter>=0,_dt,_keep_sequence={ 0 | 1 }
@@ -10051,7 +10051,7 @@ normalize_local :
     +-.. ... +. 0.01 -[-5] [-4] /[-5,-1]
     *[-3,-2] {$1+1} *. -$1 +... . +[-2,-1]
     if $5 max.. $6 min. $7 fi
-    -. .. *[-3,-1] -+
+    -. .. *[-3,-1] +
     if $5 c $6,$7 fi
   endl done v +
 
@@ -10154,7 +10154,7 @@ remove_hotpixels : check ${1=3}>0 skip ${2=10%}
   e[^-1] "Remove hot pixels in image$?, with mask size $1 and threshold $2."
   v - repeat $! l[$>]
     +median $1 +- abs. >=. $2
-    *.. . ==. 0 *[-3,-1] -+
+    *.. . ==. 0 *[-3,-1] +
   endl done v +
 
 #@cli remove_pixels : number_of_pixels[%]>=0
@@ -11120,7 +11120,7 @@ ssd_patch : check ${is_image_arg\ $1} skip ${2=0},${3=0}
         correlate[0] [1],$3 rm[1] # Sum I(x+p,y+q).J(p,q)
       fi
       *[0] -2 +[0,1] + $val
-    endl done -+
+    endl done +
   endl done v +
 
 #@cli thinning
@@ -16847,7 +16847,7 @@ noise_hurl : skip ${1=10}
   v - repeat $! l[$>]
     +f 0 noise. 10 n. {-2,[im,iM]} 100%,100%,1,1,-2
     noise. $1,2 >=. 0 r. ..
-    *.. . *. -1 +. 1 *[-3,-1] -+
+    *.. . *. -1 +. 1 *[-3,-1] +
   endl done v +
 
 #@cli pixelize : _scale_x>0,_scale_y>0,_scale_z>0
@@ -17291,7 +17291,7 @@ blend_seamless : check "${2=0}>=0 && ${3=100%}>=0" skip ${1=0}
       rm[-3--1]
 
       # Compute divergence (right-hand term of Poisson eq.)
-      g[0] x,-1 g[1] y,-1 -+
+      g[0] x,-1 g[1] y,-1 +
 
       # Inverse Laplacian.
       fft[0]
@@ -26638,7 +26638,7 @@ _fx_colorize_lineart_smartcoloring :
       channels. 0,2 srand 0
       f. "[i,u(1,max(3,$7))/255,u(min(252,$8),255)/255]"
       . sh. 0 rand. 0,360 rm.
-      hsi2rgb[-2,-1] *.. $6 *. {1-$6} -+[-2,-1] round.
+      hsi2rgb[-2,-1] *.. $6 *. {1-$6} +[-2,-1] round.
       point. $ind_bg,0,0,1,255 point. 0,0,0,1,255
 
       map[new_strokes] . rm.
@@ -28031,7 +28031,7 @@ fx_select_color :
     elif {$9==2} -[1] 255 *[1] -1 sh[0] 100% &. [1]   # Rejected colors.
     elif {$9==3} rm[0] - 255 * -1                      # Rejected mask.
     else # Replaced color.
-      /[1] 255 +*[0,1] +*[1] $11 +*[1] $12 +*[1] $13 *[1] $10 a[1,-3--1] c -[1,2] -+
+      /[1] 255 +*[0,1] +*[1] $11 +*[1] $12 +*[1] $13 *[1] $10 a[1,-3--1] c -[1,2] +
     fi
     k[0]
   endl done
@@ -30090,7 +30090,7 @@ _fx_mighty_details :
   +abs. sign.. M={iM} ^. {2-$2} *. {$M/iM} *[-2,-1]
   +diffusiontensors[0] 0,1,0.5,0.5
   repeat $4 smooth[1] [2],20 done
-  *[1] {-$1/5} -+
+  *[1] {-$1/5} +
 
 fx_mighty_details :
   ac "_fx_mighty_details ${1-4}",$5,1
@@ -33025,7 +33025,7 @@ fx_smooth_nlmeans:
   endl done
 
 _fx_smooth_nlmeans0 : s c abs max
-_fx_smooth_nlmeans1 : s c abs -+
+_fx_smooth_nlmeans1 : s c abs +
 _fx_smooth_nlmeans2 : norm
 _fx_smooth_nlmeans3 : if {s>=3} channels 0,2 luminance else norm fi
 _fx_smooth_nlmeans4 : if {s>=3} channels 0,2 srgb2rgb rgb2lab channels 0 else norm fi
