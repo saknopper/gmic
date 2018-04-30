@@ -37,7 +37,7 @@
                 <!-- G'MIC for GIMP -->
                 <tr>
                   <td><img alt="" src="img/download_gimp.png" border="0"></img></td><td>&nbsp;&nbsp;</td>
-                  <td><font size="3"><b><font color="#000066">G'MIC</font></b> plug-in for <a href="http://www.gimp.org">GIMP</a> (2.8+)</font><br/>
+                  <td><font size="3"><b><font color="#000066">G'MIC</font></b> plug-in for <a href="http://www.gimp.org">GIMP</a> (2.8)</font><br/>
                     <ul>
                       <li>Windows <i>64 bits</i>:
                         <a href="http://gmic.eu/files/windows/gmic_gimp_qt_win64.exe">installer</a> or
