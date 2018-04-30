@@ -14492,6 +14492,9 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
     for (char *str = std::strstr(error_message,"CImg<"); str; str = std::strstr(str,"CImg<")) {
       str[0] = 'g'; str[1] = 'm'; str[2] = 'i'; str[3] = 'c';
     }
+    for (char *str = std::strstr(error_message,"CImgList<"); str; str = std::strstr(str,"CImgList<")) {
+      str[0] = 'g'; str[1] = 'm'; str[2] = 'i'; str[3] = 'c';
+    }
     for (char *str = std::strstr(error_message,"cimg:"); str; str = std::strstr(str,"cimg:")) {
       str[0] = 'g'; str[1] = 'm'; str[2] = 'i'; str[3] = 'c';
     }
