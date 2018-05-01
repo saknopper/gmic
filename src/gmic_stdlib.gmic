@@ -696,7 +696,7 @@ _help_usage :
 \n       isval(), isnan(), isinf(), isint(), isbool(), isfile(), isdir(), isin(), kth(), log(), log2(), log10(),
 \n       max(), med(), min(), narg(), prod(), rol()"$n" (left bit rotation),
 \n       "${c}"ror()"$n" (right bit rotation)"${c}", round(), sign(), sin(), sinc(), sinh(), sqrt(), std(),
-\n       srand(_seed), sum(), tan(), tanh(), variance(), xor()"$n".
+\n       srand(_seed), sum(), tan(), tanh(), var(), xor()"$n".
 \n
 \n       . '"${c}"atan2(y,x)"$n"' is the version of '"${c}"atan()"$n"' with two arguments '"${g}"y"$n"' and '"${g}"x"$n"' (as in C/C++).
 \n       . '"${c}"permut(k,n,with_order)"$n"' computes the number of permutations of "${g}"k"$n" objects from a set of
@@ -712,7 +712,7 @@ _help_usage :
 \n       . '"${c}"isin(v,a_1,...,a_n)"$n"' returns "${g}"0 (false)"$n" or "${g}"1 (true)"$n" whether the first value '"${g}"v"$n"' appears
 \n          in the set of other values 'a_i'.
 \n       . '"${c}"argmin()"$n"', '"${c}"argmax()"$n"', '"${c}"avg()"$n"', '"${c}"kth()"$n"', '"${c}"max()"$n"', '"${c}"med()"$n"', '"${c}"min()"$n"', '"${c}"std()"$n"', '"${c}"sum()"$n"'
-\n          and '"${c}"variance()"$n"' can be called with an arbitrary number of scalar/vector arguments.
+\n          and '"${c}"var()"$n"' can be called with an arbitrary number of scalar/vector arguments.
 \n       . '"${c}"round(value,rounding_value,direction)"$n"' returns a rounded value. '"${g}"direction"$n"' can be
 \n          "${g}"{ -1=to-lowest | 0=to-nearest | 1=to-highest }"$n".
 \n
