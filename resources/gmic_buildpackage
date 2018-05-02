@@ -84,7 +84,7 @@ if [ "$OSTYPE" == "msys" ]; then
     else SUFFIX=_pre;
     fi
 
-    echo " - Release number : $VERSION$SUFFIX."
+    echo " - Release number : $VERSION$SUFFIX (GIMP $GIMPVER)."
 
     sed "s/rm -rf CImg.h gmic_stdlib.h gmic_gimp_gtk.h /rm -rf /" Makefile > /tmp/Makefile
     mv /tmp/Makefile Makefile
