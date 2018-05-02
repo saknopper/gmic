@@ -17,7 +17,7 @@
 AppName={#AppName}
 AppVersion=XXX
 AppPublisherURL=http://gmic.eu/
-DefaultDirName={%USERPROFILE|{userdesktop}\..}\.gimp-2.8\plug-ins\gmic_gimp_qt\
+DefaultDirName={userappdata}\GIMP\2.10\plug-ins\gmic_gimp_qt\
 DefaultGroupName={#AppName}
 UninstallDisplayIcon={app}\gmic_gimp_qt.exe
 LicenseFile={#file AddBackslash(SourcePath) + "CeCILL.rtf"}
@@ -32,45 +32,19 @@ OutputBaseFilename=gmic_gimp_qt_XXX_win64
 
 Source: build64-gimp-qt\gmic_film_cluts.gmz; DestDir: {app}
 Source: build64-gimp-qt\gmic_gimp_qt.exe; DestDir: {app}
-Source: build64-gimp-qt\libbz2-1.dll; DestDir: {app}
-Source: build64-gimp-qt\libcurl-4.dll; DestDir: {app}
-Source: build64-gimp-qt\LIBEAY32.dll; DestDir: {app}
 Source: build64-gimp-qt\libfftw3-3.dll; DestDir: {app}
-Source: build64-gimp-qt\libfreetype-6.dll; DestDir: {app}
-Source: build64-gimp-qt\libgcc_s_seh-1.dll; DestDir: {app}
-Source: build64-gimp-qt\libglib-2.0-0.dll; DestDir: {app}
-Source: build64-gimp-qt\libgmp-10.dll; DestDir: {app}
-Source: build64-gimp-qt\libgnutls-30.dll; DestDir: {app}
-Source: build64-gimp-qt\libgomp-1.dll; DestDir: {app}
-Source: build64-gimp-qt\libgraphite2.dll; DestDir: {app}
-Source: build64-gimp-qt\libharfbuzz-0.dll; DestDir: {app}
-Source: build64-gimp-qt\libhogweed-4.dll; DestDir: {app}
-Source: build64-gimp-qt\libiconv-2.dll; DestDir: {app}
-Source: build64-gimp-qt\libicudt57.dll; DestDir: {app}
-Source: build64-gimp-qt\libicuin57.dll; DestDir: {app}
-Source: build64-gimp-qt\libicuuc57.dll; DestDir: {app}
-Source: build64-gimp-qt\libintl-8.dll; DestDir: {app}
-Source: build64-gimp-qt\libnettle-6.dll; DestDir: {app}
-Source: build64-gimp-qt\libnghttp2-14.dll; DestDir: {app}
-Source: build64-gimp-qt\libp11-kit-0.dll; DestDir: {app}
-Source: build64-gimp-qt\libpcre-1.dll; DestDir: {app}
-Source: build64-gimp-qt\libpcre16-0.dll; DestDir: {app}
-Source: build64-gimp-qt\libpng16-16.dll; DestDir: {app}
-Source: build64-gimp-qt\librtmp-1.dll; DestDir: {app}
-Source: build64-gimp-qt\libssh2-1.dll; DestDir: {app}
-Source: build64-gimp-qt\libstdc++-6.dll; DestDir: {app}
-Source: build64-gimp-qt\libtasn1-6.dll; DestDir: {app}
-Source: build64-gimp-qt\libunistring-2.dll; DestDir: {app}
-Source: build64-gimp-qt\libwinpthread-1.dll; DestDir: {app}
+Source: build64-gimp-qt\libicudt61.dll; DestDir: {app}
+Source: build64-gimp-qt\libicuin61.dll; DestDir: {app}
+Source: build64-gimp-qt\libicuuc61.dll; DestDir: {app}
+Source: build64-gimp-qt\libpcre2-16-0.dll; DestDir: {app}
 Source: build64-gimp-qt\Qt5Core.dll; DestDir: {app}
 Source: build64-gimp-qt\Qt5Gui.dll; DestDir: {app}
 Source: build64-gimp-qt\Qt5Network.dll; DestDir: {app}
 Source: build64-gimp-qt\Qt5Widgets.dll; DestDir: {app}
-Source: build64-gimp-qt\SSLEAY32.dll; DestDir: {app}
-Source: build64-gimp-qt\zlib1.dll; DestDir: {app}
 Source: build64-gimp-qt\platforms\qdirect2d.dll; DestDir: {app}\platforms
 Source: build64-gimp-qt\platforms\qminimal.dll; DestDir: {app}\platforms
 Source: build64-gimp-qt\platforms\qoffscreen.dll; DestDir: {app}\platforms
+Source: build64-gimp-qt\platforms\qwebgl.dll; DestDir: {app}\platforms
 Source: build64-gimp-qt\platforms\qwindows.dll; DestDir: {app}\platforms
 
 ;[Icons]

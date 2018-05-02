@@ -70,6 +70,10 @@ if [ "$OSTYPE" == "msys" ]; then
     RELEASE3=`echo $RELEASE0 | head -c3 | tail -c1`
     VERSION=$RELEASE1.$RELEASE2.$RELEASE3
     SVERSION=$RELEASE1$RELEASE2$RELEASE3
+    IS_210=`uname -a | grep 2.10 | wc -l`
+    if [ $IS_210 ]; then GIMPVER=2.10;
+    else GIMPVER=2.8;
+    fi
 
     if [ "$1" == "final" ]; then
         SUFFIX="";
@@ -104,13 +108,13 @@ if [ "$OSTYPE" == "msys" ]; then
     OUTDIR_QT=gmic-qt-${VERSION}${SUFFIX}-win${BITS}
     OUTZIP_QT=gmic_qt_${VERSION}${SUFFIX}_win${BITS}.zip
 
-    OUTDIR_GIMP_GTK=gmic-gimp-gtk-${VERSION}${SUFFIX}-win${BITS}
-    OUTZIP_GIMP_GTK=gmic_gimp_gtk_${VERSION}${SUFFIX}_win${BITS}.zip
-    OUTINST_GIMP_GTK=gmic_gimp_gtk_${VERSION}${SUFFIX}_win${BITS}.exe
+    OUTDIR_GIMP_GTK=gmic-gimp${GIMPVER}-gtk-${VERSION}${SUFFIX}-win${BITS}
+    OUTZIP_GIMP_GTK=gmic_gimp${GIMPVER}_gtk_${VERSION}${SUFFIX}_win${BITS}.zip
+    OUTINST_GIMP_GTK=gmic_gimp${GIMPVER}_gtk_${VERSION}${SUFFIX}_win${BITS}.exe
 
-    OUTDIR_GIMP_QT=gmic-gimp-qt-${VERSION}${SUFFIX}-win${BITS}
-    OUTZIP_GIMP_QT=gmic_gimp_qt_${VERSION}${SUFFIX}_win${BITS}.zip
-    OUTINST_GIMP_QT=gmic_gimp_qt_${VERSION}${SUFFIX}_win${BITS}.exe
+    OUTDIR_GIMP_QT=gmic-gimp${GIMPVER}-qt-${VERSION}${SUFFIX}-win${BITS}
+    OUTZIP_GIMP_QT=gmic_gimp${GIMPVER}_qt_${VERSION}${SUFFIX}_win${BITS}.zip
+    OUTINST_GIMP_QT=gmic_gimp${GIMPVER}_qt_${VERSION}${SUFFIX}_win${BITS}.exe
 
     OUTDIR_KRITA_QT=gmic-krita-qt-${VERSION}${SUFFIX}-win${BITS}
     OUTZIP_KRITA_QT=gmic_krita_qt_${VERSION}${SUFFIX}_win${BITS}.zip
