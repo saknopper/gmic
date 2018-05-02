@@ -42,8 +42,8 @@
                       <li>for GIMP 2.10 :
                         <ul>
                           <li>Windows <i>64 bits</i>:
-                            <a href="http://gmic.eu/files/prerelease_windows/gmic_gimp_qt_win64.exe">installer</a> or
-                            <a href="http://gmic.eu/files/prerelease_windows/gmic_gimp_qt_win64.zip">.zip archive</a>
+                            <a href="http://gmic.eu/files/prerelease_windows/gmic_gimp2.10_qt_win64.exe">installer</a> or
+                            <a href="http://gmic.eu/files/prerelease_windows/gmic_gimp2.10_qt_win64.zip">.zip archive</a>
                           </li>
                         </ul>
                       </li><br/>
