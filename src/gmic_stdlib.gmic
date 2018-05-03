@@ -4727,14 +4727,22 @@ _update_server_binaries :
   file$N=gmic_cli_$1_win64.zip                     N+=1
   file$N=gmic_lib_$1_win32.zip                     N+=1
   file$N=gmic_lib_$1_win64.zip                     N+=1
-  file$N=gmic_gimp_gtk_$1_win32.zip                N+=1
-  file$N=gmic_gimp_gtk_$1_win64.zip                N+=1
-  file$N=gmic_gimp_gtk_$1_win32.exe                N+=1
-  file$N=gmic_gimp_gtk_$1_win64.exe                N+=1
-  file$N=gmic_gimp_qt_$1_win32.zip                 N+=1
-  file$N=gmic_gimp_qt_$1_win64.zip                 N+=1
-  file$N=gmic_gimp_qt_$1_win32.exe                 N+=1
-  file$N=gmic_gimp_qt_$1_win64.exe                 N+=1
+  file$N=gmic_gimp2.10_gtk_$1_win32.zip            N+=1
+  file$N=gmic_gimp2.10_gtk_$1_win64.zip            N+=1
+  file$N=gmic_gimp2.10_gtk_$1_win32.exe            N+=1
+  file$N=gmic_gimp2.10_gtk_$1_win64.exe            N+=1
+  file$N=gmic_gimp2.10_qt_$1_win32.zip             N+=1
+  file$N=gmic_gimp2.10_qt_$1_win64.zip             N+=1
+  file$N=gmic_gimp2.10_qt_$1_win32.exe             N+=1
+  file$N=gmic_gimp2.10_qt_$1_win64.exe             N+=1
+  file$N=gmic_gimp2.8_gtk_$1_win32.zip             N+=1
+  file$N=gmic_gimp2.8_gtk_$1_win64.zip             N+=1
+  file$N=gmic_gimp2.8_gtk_$1_win32.exe             N+=1
+  file$N=gmic_gimp2.8_gtk_$1_win64.exe             N+=1
+  file$N=gmic_gimp2.8_qt_$1_win32.zip              N+=1
+  file$N=gmic_gimp2.8_qt_$1_win64.zip              N+=1
+  file$N=gmic_gimp2.8_qt_$1_win32.exe              N+=1
+  file$N=gmic_gimp2.8_qt_$1_win64.exe              N+=1
   file$N=gmic_krita_qt_$1_win32.zip                N+=1
   file$N=gmic_krita_qt_$1_win64.zip                N+=1
 
