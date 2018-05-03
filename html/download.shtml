@@ -42,20 +42,20 @@
                       <li>for GIMP 2.10 :
                         <ul>
                           <li>Windows <i>64 bits</i>:
-                            <a href="http://gmic.eu/files/prerelease_windows/gmic_gimp2.10_qt_win64.exe">installer</a> or
-                            <a href="http://gmic.eu/files/prerelease_windows/gmic_gimp2.10_qt_win64.zip">.zip archive</a>
+                            <a href="http://gmic.eu/files/windows/gmic_gimp2.10_qt_win64.exe">installer</a> or
+                            <a href="http://gmic.eu/files/windows/gmic_gimp2.10_qt_win64.zip">.zip archive</a>
                           </li>
                         </ul>
                       </li><br/>
                       <li>for GIMP 2.8 :
                         <ul>
                           <li>Windows <i>64 bits</i>:
-                            <a href="http://gmic.eu/files/windows/gmic_gimp_qt_win64.exe">installer</a> or
-                            <a href="http://gmic.eu/files/windows/gmic_gimp_qt_win64.zip">.zip archive</a>
+                            <a href="http://gmic.eu/files/windows/gmic_gimp2.8_qt_win64.exe">installer</a> or
+                            <a href="http://gmic.eu/files/windows/gmic_gimp2.8_qt_win64.zip">.zip archive</a>
                           </li>
                           <li>Windows <i>32 bits</i>:
-                            <a href="http://gmic.eu/files/windows/gmic_gimp_qt_win32.exe">installer</a> or
-                            <a href="http://gmic.eu/files/windows/gmic_gimp_qt_win32.zip">.zip archive</a>
+                            <a href="http://gmic.eu/files/windows/gmic_gimp2.8_qt_win32.exe">installer</a> or
+                            <a href="http://gmic.eu/files/windows/gmic_gimp2.8_qt_win32.zip">.zip archive</a>
                             <br/>
                             <div class="popup" onclick="popupFunction()">
                               <font color="red"><b>Important installation note for Windows users!</b></font>
