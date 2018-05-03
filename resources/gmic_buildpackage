@@ -108,11 +108,13 @@ if [ "$OSTYPE" == "msys" ]; then
     OUTDIR_QT=gmic-qt-${VERSION}${SUFFIX}-win${BITS}
     OUTZIP_QT=gmic_qt_${VERSION}${SUFFIX}_win${BITS}.zip
 
-    OUTDIR_GIMP_GTK=gmic-gimp${GIMPVER}-gtk-${VERSION}${SUFFIX}-win${BITS}
+#    OUTDIR_GIMP_GTK=gmic-gimp${GIMPVER}-gtk-${VERSION}${SUFFIX}-win${BITS}
+    OUTDIR_GIMP_GTK=gmic_gimp_gtk
     OUTZIP_GIMP_GTK=gmic_gimp${GIMPVER}_gtk_${VERSION}${SUFFIX}_win${BITS}.zip
     OUTINST_GIMP_GTK=gmic_gimp${GIMPVER}_gtk_${VERSION}${SUFFIX}_win${BITS}.exe
 
-    OUTDIR_GIMP_QT=gmic-gimp${GIMPVER}-qt-${VERSION}${SUFFIX}-win${BITS}
+#    OUTDIR_GIMP_QT=gmic-gimp${GIMPVER}-qt-${VERSION}${SUFFIX}-win${BITS}
+    OUTDIR_GIMP_QT=gmic_gimp_qt
     OUTZIP_GIMP_QT=gmic_gimp${GIMPVER}_qt_${VERSION}${SUFFIX}_win${BITS}.zip
     OUTINST_GIMP_QT=gmic_gimp${GIMPVER}_qt_${VERSION}${SUFFIX}_win${BITS}.exe
 
