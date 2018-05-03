@@ -71,7 +71,7 @@ if [ "$OSTYPE" == "msys" ]; then
     VERSION=$RELEASE1.$RELEASE2.$RELEASE3
     SVERSION=$RELEASE1$RELEASE2$RELEASE3
     IS_210=`uname -a | grep 2.10 | wc -l`
-    if [ $IS_210 ]; then GIMPVER=2.10
+    if [ "$IS_210" == "1" ]; then GIMPVER=2.10
     else GIMPVER=2.8
     fi
 
