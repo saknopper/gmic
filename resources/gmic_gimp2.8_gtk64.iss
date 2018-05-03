@@ -1,6 +1,6 @@
 ;---------------------------------------------
 ;
-; File : gmic_gimp_gtk32.iss
+; File : gmic_gimp_gtk64.iss
 ;
 ; Description : Inno Setup Script to create
 ;               a Windows installer for
@@ -17,7 +17,7 @@
 AppName={#AppName}
 AppVersion=XXX
 AppPublisherURL=http://gmic.eu/
-DefaultDirName={userappdata}\GIMP\2.10\plug-ins\gmic_gimp_gtk\
+DefaultDirName={%USERPROFILE|{userdesktop}\..}\.gimp-2.8\plug-ins\gmic_gimp_gtk\
 DefaultGroupName={#AppName}
 UninstallDisplayIcon={app}\gmic_gimp_gtk.exe
 LicenseFile={#file AddBackslash(SourcePath) + "CeCILL.rtf"}
@@ -26,12 +26,34 @@ UninstallFilesDir={app}\uninst
 AppendDefaultDirName=false
 UsePreviousAppDir=true
 DirExistsWarning=no
-OutputBaseFilename=gmic_gimp_gtk_XXX_win32
+OutputBaseFilename=gmic_gimp_gtk_XXX_win64
 
 [Files]
-Source: build32-gimp-gtk\gmic_gimp_gtk.exe; DestDir: {app}
-Source: build32-gimp-gtk\gmic_film_cluts.gmz; DestDir: {app}
-Source: build32-gimp-gtk\libfftw3-3.dll; DestDir: {app}
+Source: build64-gimp-gtk\gmic_gimp_gtk.exe; DestDir: {app}
+Source: build64-gimp-gtk\gmic_film_cluts.gmz; DestDir: {app}
+Source: build64-gimp-gtk\libcurl-4.dll; DestDir: {app}
+Source: build64-gimp-gtk\libeay32.dll; DestDir: {app}
+Source: build64-gimp-gtk\libffi-6.dll; DestDir: {app}
+Source: build64-gimp-gtk\libfftw3-3.dll; DestDir: {app}
+Source: build64-gimp-gtk\libgcc_s_seh-1.dll; DestDir: {app}
+Source: build64-gimp-gtk\libgmp-10.dll; DestDir: {app}
+Source: build64-gimp-gtk\libgnutls-30.dll; DestDir: {app}
+Source: build64-gimp-gtk\libgomp-1.dll; DestDir: {app}
+Source: build64-gimp-gtk\libhogweed-4.dll; DestDir: {app}
+Source: build64-gimp-gtk\libiconv-2.dll; DestDir: {app}
+Source: build64-gimp-gtk\libidn-11.dll; DestDir: {app}
+Source: build64-gimp-gtk\libintl-8.dll; DestDir: {app}
+Source: build64-gimp-gtk\libnettle-6.dll; DestDir: {app}
+Source: build64-gimp-gtk\libnghttp2-14.dll; DestDir: {app}
+Source: build64-gimp-gtk\libp11-kit-0.dll; DestDir: {app}
+Source: build64-gimp-gtk\libpng16-16.dll; DestDir: {app}
+Source: build64-gimp-gtk\librtmp-1.dll; DestDir: {app}
+Source: build64-gimp-gtk\libssh2-1.dll; DestDir: {app}
+Source: build64-gimp-gtk\libstdc++-6.dll; DestDir: {app}
+Source: build64-gimp-gtk\libtasn1-6.dll; DestDir: {app}
+Source: build64-gimp-gtk\libwinpthread-1.dll; DestDir: {app}
+Source: build64-gimp-gtk\ssleay32.dll; DestDir: {app}
+Source: build64-gimp-gtk\zlib1.dll; DestDir: {app}
 
 ;[Icons]
 ;Name: {userstartmenu}\Gimp\Gmic_Gimp\Uninstall Gmic_Gimp; Filename: {uninstallexe}

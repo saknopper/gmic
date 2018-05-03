@@ -90,9 +90,9 @@ if [ "$OSTYPE" == "msys" ]; then
     mv /tmp/Makefile Makefile
 
     cd $HOME
-    sed s\/XXX\/${VERSION}${SUFFIX}\/g /e/work/src/gmic/resources/gmic_gimp_gtk${BITS}.iss > tmp.iss &&
+    sed s\/XXX\/${VERSION}${SUFFIX}\/g /e/work/src/gmic/resources/gmic_gimp${GIMPVER}_gtk${BITS}.iss > tmp.iss &&
         sed s\/YYY\/${RELEASE1}\/g tmp.iss > installer_gtk.iss
-    sed s\/XXX\/${VERSION}${SUFFIX}\/g /e/work/src/gmic/resources/gmic_gimp_qt${BITS}.iss > tmp.iss &&
+    sed s\/XXX\/${VERSION}${SUFFIX}\/g /e/work/src/gmic/resources/gmic_gimp${GIMPVER}_qt${BITS}.iss > tmp.iss &&
         sed s\/YYY\/${RELEASE1}\/g tmp.iss > installer_qt.iss
 
     # Define output files (archives/installers).
