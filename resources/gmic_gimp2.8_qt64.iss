@@ -26,7 +26,7 @@ UninstallFilesDir={app}\uninst
 AppendDefaultDirName=false
 UsePreviousAppDir=true
 DirExistsWarning=no
-OutputBaseFilename=gmic_gimp_qt_XXX_win64
+OutputBaseFilename=gmic_gimp2.8_qt_XXX_win64
 
 [Files]
 

@@ -26,7 +26,7 @@ UninstallFilesDir={app}\uninst
 AppendDefaultDirName=false
 UsePreviousAppDir=true
 DirExistsWarning=no
-OutputBaseFilename=gmic_gimp_gtk_XXX_win32
+OutputBaseFilename=gmic_gimp2.8_gtk_XXX_win32
 
 [Files]
 Source: build32-gimp-gtk\gmic_gimp_gtk.exe; DestDir: {app}
