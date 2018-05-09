@@ -29,9 +29,8 @@ DirExistsWarning=no
 OutputBaseFilename=gmic_gimp2.10_qt_XXX_win64
 
 [Files]
-
-Source: build64-gimp-qt\gmic_film_cluts.gmz; DestDir: {app}
 Source: build64-gimp-qt\gmic_gimp_qt.exe; DestDir: {app}
+Source: build64-gimp-qt\gmic_film_cluts.gmz; DestDir: {app}
 Source: build64-gimp-qt\libfftw3-3.dll; DestDir: {app}
 Source: build64-gimp-qt\libicudt61.dll; DestDir: {app}
 Source: build64-gimp-qt\libicuin61.dll; DestDir: {app}

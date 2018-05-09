@@ -16301,8 +16301,8 @@ sketchbw :
   m3d 0
   repeat $! l[$>]
     /. {max(iM,im)} s. c          # Normalize and split tensor coefficients.
-    100%,100%,1,1,255 nm. {-4,n}   # Create rendering B&W image.
-    {$8*w*h/($1*sqrt($4))}          # Create set of random coordinates.
+    100%,100%,1,1,255 nm. {-4,n}  # Create rendering B&W image.
+    {$8*w*h/($1*sqrt($4))}        # Create set of random coordinates.
     +rand. 0,{{-2,h}-1} rand.. 0,{{-3,w}-1} a[-2,-1] y mv. 0
     if {0,w>=$_cpus} s[0] x,$_cpus fi
     com=-skip repeat {$!-4} com=$com,"_sketchbw$14[] ${1--1},"$> done # String used to parallelize.
