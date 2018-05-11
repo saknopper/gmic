@@ -26946,7 +26946,7 @@ fx_freaky_bw_preview :
 #@gui : Opacity = float(0.1,0,1)
 #@gui : Edge = float(20,0,100)
 #@gui : Fast approximation = bool(0)
-#@gui : Color model = choice("Black on white","White on black","Black on transparent white","White on transparent black","Color on white")
+#@gui : Color model = choice(4,"Black on white","White on black","Black on transparent white","White on transparent black","Color on white")
 #@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2010/29/12</i>.</small>")
 fx_hardsketchbw :
@@ -26967,7 +26967,7 @@ fx_hardsketchbw_preview :
 #@gui : Radius = int(5,0,30)
 #@gui : Threshold = float(80,0,100)
 #@gui : Opacity = float(0.1,0,1)
-#@gui : Color model = choice("Black on white","White on black","Black on transparent white","White on transparent black","Color on white")
+#@gui : Color model = choice(4,"Black on white","White on black","Black on transparent white","White on transparent black","Color on white")
 #@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2011/18/05</i>.</small>")
 fx_houghsketchbw :
@@ -27035,7 +27035,7 @@ fx_pencilbw_preview :
 #@gui Pencil portrait : fx_pencil_portraitbw, fx_pencil_portraitbw_preview(0)
 #@gui : Stroke length = float(30,0,500)
 #@gui : Stroke angle = float(120,0,180)
-#@gui : Contour threshold = float(3,0,10)
+#@gui : Contour threshold = float(1,0,10)
 #@gui : Opacity = float(0.5,0,1)
 #@gui : Color = color(144,79,21)
 #@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
