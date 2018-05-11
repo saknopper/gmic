@@ -31953,8 +31953,8 @@ fx_light_patch :
 
 #@gui Light rays : fx_lightrays, fx_lightrays(1)
 #@gui : Density = float(80,0,100)
-#@gui : X-center (%) = float(50,0,100)
-#@gui : Y-center (%) = float(50,0,100)
+#@gui : X-center (%) = float(0,-200,300)
+#@gui : Y-center (%) = float(0,-200,300)
 #@gui : Length = float(1,0,1)
 #@gui : Attenuation = float(0.5,0,1)
 #@gui : Transparency = bool(0)
