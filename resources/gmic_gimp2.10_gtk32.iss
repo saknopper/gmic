@@ -32,6 +32,8 @@ OutputBaseFilename=gmic_gimp2.10_gtk_XXX_win32
 Source: build32-gimp-gtk\gmic_gimp_gtk.exe; DestDir: {app}
 Source: build32-gimp-gtk\gmic_film_cluts.gmz; DestDir: {app}
 Source: build32-gimp-gtk\libfftw3-3.dll; DestDir: {app}
+Source: build32-gimp-gtk\libgcc_s_dw2-1.dll; DestDir: {app}
+Source: build32-gimp-gtk\libstdc++-6.dll; DestDir: {app}
 
 ;[Icons]
 ;Name: {userstartmenu}\Gimp\Gmic_Gimp\Uninstall Gmic_Gimp; Filename: {uninstallexe}

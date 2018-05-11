@@ -31,9 +31,18 @@ OutputBaseFilename=gmic_gimp2.10_qt_XXX_win32
 [Files]
 Source: build32-gimp-qt\gmic_gimp_qt.exe; DestDir: {app}
 Source: build32-gimp-qt\gmic_film_cluts.gmz; DestDir: {app}
+Source: build32-gimp-qt\libfftw3-3.dll; DestDir: {app}\platforms
+Source: build32-gimp-qt\libgcc_s_dw2-1.dll; DestDir: {app}\platforms
+Source: build32-gimp-qt\libpcre2-16-0.dll; DestDir: {app}\platforms
+Source: build32-gimp-qt\libstdc++-6.dll; DestDir: {app}\platforms
+Source: build32-gimp-qt\qt5core.dll; DestDir: {app}\platforms
+Source: build32-gimp-qt\qt5gui.dll; DestDir: {app}\platforms
+Source: build32-gimp-qt\qt5network.dll; DestDir: {app}\platforms
+Source: build32-gimp-qt\qt5widgets.dll; DestDir: {app}\platforms
 Source: build32-gimp-qt\platforms\qdirect2d.dll; DestDir: {app}\platforms
 Source: build32-gimp-qt\platforms\qminimal.dll; DestDir: {app}\platforms
 Source: build32-gimp-qt\platforms\qoffscreen.dll; DestDir: {app}\platforms
+Source: build32-gimp-qt\platforms\qwebgl.dll; DestDir: {app}\platforms
 Source: build32-gimp-qt\platforms\qwindows.dll; DestDir: {app}\platforms
 
 ;[Icons]
