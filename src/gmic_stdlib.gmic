@@ -25703,6 +25703,49 @@ fx_feltpen_preview :
 #@gui : sep = separator(), url = link("Click here for a detailed description of this filter.","http://www.gimpchat.com/viewtopic.php?f=28&t=10036")
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2014/25/04</i>.</small>")
 
+#@gui Hard sketch : fx_hardsketchbw, fx_hardsketchbw_preview(0)
+#@gui : Amplitude = float(300,0,4000)
+#@gui : Density = float(50,0,100)
+#@gui : Smoothness = float(1,0,10)
+#@gui : Opacity = float(0.1,0,1)
+#@gui : Edge = float(20,0,100)
+#@gui : Fast approximation = bool(0)
+#@gui : Color model = choice(4,"Black on white","White on black","Black on transparent white","White on transparent black","Color on white")
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
+#@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2010/29/12</i>.</small>")
+fx_hardsketchbw :
+  b $3
+  if {$7==4} repeat $! l[$>] +hardsketchbw $1,$2,$4,$5,$6 blend hardlight endl done return fi
+  hardsketchbw $1,$2,$4,$5,$6
+  if {$7&1} negate fi
+  if {$7==2} r 100%,100%,1,4 repeat $! sh[$>] 3 *. -2 +. {2*255} c. 0,255 rm. done
+  elif {$7==3} r 100%,100%,1,4 repeat $! sh[$>] 3 *. 2 c. 0,255 rm. done
+  fi
+
+fx_hardsketchbw_preview :
+  gui_split_preview "fx_hardsketchbw $*",$-1
+
+#@gui Hough sketch : fx_houghsketchbw, fx_houghsketchbw_preview(0)
+#@gui : Smoothness = float(1.25,0,10)
+#@gui : Density = float(10,0,70)
+#@gui : Radius = int(5,0,30)
+#@gui : Threshold = float(80,0,100)
+#@gui : Opacity = float(0.1,0,1)
+#@gui : Color model = choice(4,"Black on white","White on black","Black on transparent white","White on transparent black","Color on white")
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
+#@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2011/18/05</i>.</small>")
+fx_houghsketchbw :
+  b $1 n 0,255
+  if {$6==4} repeat $! l[$>] +houghsketchbw ${2-5} blend hardlight endl done return fi
+  houghsketchbw ${2-5}
+  if {$6&1} negate fi
+  if {$6==2} r 100%,100%,1,4 repeat $! sh[$>] 3 *. -2 +. {2*255} c. 0,255 rm. done
+  elif {$6==3} r 100%,100%,1,4 repeat $! sh[$>] 3 *. 2 c. 0,255 rm. done
+  fi
+
+fx_houghsketchbw_preview :
+  gui_split_preview "fx_houghsketchbw $*",$-1
+
 #@gui Hope poster : fx_poster_hope, fx_poster_hope_preview(0)+
 #@gui : Gamma = float(0,-3,3)
 #@gui : Smoothness = float(3,0,20)
@@ -26172,6 +26215,35 @@ fx_sharp_abstract :
 
 fx_sharp_abstract_preview :
   gui_split_preview "fx_sharp_abstract $*",$-1,{if(isval($_preview_timeout),0$_preview_timeout,8)}
+
+#@gui Sketch : fx_sketchbw, fx_sketchbw_preview(0)
+#@gui : Number of orientations = int(2,1,16)
+#@gui : Starting angle = float(45,0,180)
+#@gui : Angle range = float(180,0,180)
+#@gui : Stroke length = float(30,0,1000)
+#@gui : Contour threshold = float(3,0,10)
+#@gui : Opacity = float(0.03,0,0.3)
+#@gui : Background intensity = float(0,0,2)
+#@gui : Density = float(0.6,0,5)
+#@gui : Sharpness = float(0.1,0,1)
+#@gui : Anisotropy = float(0.6,0,1)
+#@gui : Smoothness = float(0.25,0,10)
+#@gui : Coherence = float(1,0,10)
+#@gui : Boost stroke = bool(0)
+#@gui : Curved stroke = bool(1)
+#@gui : Color model = choice(4,"Black on white","White on black","Black on transparent white","White on transparent black","Color on white")
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
+#@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2018/05/11</i>.</small>")
+fx_sketchbw :
+  if {$15==4} repeat $! l[$>] +sketchbw ${1-14} blend hardlight endl done return fi
+  sketchbw ${1-14}
+  if {$15&1} negate fi
+  if {$15==2} r 100%,100%,1,4 repeat $! sh[$>] 3 *. -2 +. {2*255} c. 0,255 rm. done
+  elif {$15==3} r 100%,100%,1,4 repeat $! sh[$>] 3 *. 2 c. 0,255 rm. done
+  fi
+
+fx_sketchbw_preview :
+  gui_split_preview "fx_sketchbw $*",$-1
 
 #@gui Smooth abstract : fx_smooth_abstract, fx_smooth_abstract_preview(0)
 #@gui : Smoothness (%) = float(75,0,100)
@@ -26938,50 +27010,6 @@ fx_freaky_bw :
 fx_freaky_bw_preview :
   gui_split_preview "fx_freaky_bw $*",$-1
 
-
-#@gui Hard sketch : fx_hardsketchbw, fx_hardsketchbw_preview(0)
-#@gui : Amplitude = float(300,0,4000)
-#@gui : Density = float(50,0,100)
-#@gui : Smoothness = float(1,0,10)
-#@gui : Opacity = float(0.1,0,1)
-#@gui : Edge = float(20,0,100)
-#@gui : Fast approximation = bool(0)
-#@gui : Color model = choice(4,"Black on white","White on black","Black on transparent white","White on transparent black","Color on white")
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
-#@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2010/29/12</i>.</small>")
-fx_hardsketchbw :
-  b $3
-  if {$7==4} repeat $! l[$>] +hardsketchbw $1,$2,$4,$5,$6 blend hardlight endl done return fi
-  hardsketchbw $1,$2,$4,$5,$6
-  if {$7&1} negate fi
-  if {$7==2} r 100%,100%,1,4 repeat $! sh[$>] 3 *. -2 +. {2*255} c. 0,255 rm. done
-  elif {$7==3} r 100%,100%,1,4 repeat $! sh[$>] 3 *. 2 c. 0,255 rm. done
-  fi
-
-fx_hardsketchbw_preview :
-  gui_split_preview "fx_hardsketchbw $*",$-1
-
-#@gui Hough sketch : fx_houghsketchbw, fx_houghsketchbw_preview(0)
-#@gui : Smoothness = float(1.25,0,10)
-#@gui : Density = float(10,0,70)
-#@gui : Radius = int(5,0,30)
-#@gui : Threshold = float(80,0,100)
-#@gui : Opacity = float(0.1,0,1)
-#@gui : Color model = choice(4,"Black on white","White on black","Black on transparent white","White on transparent black","Color on white")
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
-#@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2011/18/05</i>.</small>")
-fx_houghsketchbw :
-  b $1 n 0,255
-  if {$6==4} repeat $! l[$>] +houghsketchbw ${2-5} blend hardlight endl done return fi
-  houghsketchbw ${2-5}
-  if {$6&1} negate fi
-  if {$6==2} r 100%,100%,1,4 repeat $! sh[$>] 3 *. -2 +. {2*255} c. 0,255 rm. done
-  elif {$6==3} r 100%,100%,1,4 repeat $! sh[$>] 3 *. 2 c. 0,255 rm. done
-  fi
-
-fx_houghsketchbw_preview :
-  gui_split_preview "fx_houghsketchbw $*",$-1
-
 #@gui Ink wash : fx_ink_wash, fx_ink_wash(0)
 #@gui : note = note("Ink wash controls")
 #@gui : Size = float(0.14,0,4)
@@ -27056,35 +27084,6 @@ fx_pencil_portraitbw :
 
 fx_pencil_portraitbw_preview :
   gui_split_preview "fx_pencil_portraitbw $*",$-1,{if(isval($_preview_timeout),0$_preview_timeout,8)}
-
-#@gui Sketch : fx_sketchbw, fx_sketchbw_preview(0)
-#@gui : Number of orientations = int(2,1,16)
-#@gui : Starting angle = float(45,0,180)
-#@gui : Angle range = float(180,0,180)
-#@gui : Stroke length = float(30,0,1000)
-#@gui : Contour threshold = float(3,0,10)
-#@gui : Opacity = float(0.03,0,0.3)
-#@gui : Background intensity = float(0,0,2)
-#@gui : Density = float(0.6,0,5)
-#@gui : Sharpness = float(0.1,0,1)
-#@gui : Anisotropy = float(0.6,0,1)
-#@gui : Smoothness = float(0.25,0,10)
-#@gui : Coherence = float(1,0,10)
-#@gui : Boost stroke = bool(0)
-#@gui : Curved stroke = bool(1)
-#@gui : Color model = choice(4,"Black on white","White on black","Black on transparent white","White on transparent black","Color on white")
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
-#@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2018/05/11</i>.</small>")
-fx_sketchbw :
-  if {$15==4} repeat $! l[$>] +sketchbw ${1-14} blend hardlight endl done return fi
-  sketchbw ${1-14}
-  if {$15&1} negate fi
-  if {$15==2} r 100%,100%,1,4 repeat $! sh[$>] 3 *. -2 +. {2*255} c. 0,255 rm. done
-  elif {$15==3} r 100%,100%,1,4 repeat $! sh[$>] 3 *. 2 c. 0,255 rm. done
-  fi
-
-fx_sketchbw_preview :
-  gui_split_preview "fx_sketchbw $*",$-1
 
 #@gui Stamp : fx_stamp, fx_stamp_preview(0)
 #@gui : Auto-threshold = bool(1)
