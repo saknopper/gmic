@@ -16302,6 +16302,7 @@ sketchbw :
   skip ${2=45},${6=0.03},${13=0},${14=0}
   e[^-1] "Apply B&W sketch effect on image$?."
   nb_angles,start_angle,angle_range,length,threshold,opacity,bgfactor,density,sharpness,anisotropy,smoothness,coherence,is_boost,is_curved=${1-14}
+  length={max($length,1)}
   v - repeat $! l[$>]
     {0,[w,h,1,1,0]}                                                       # [1] = canvas to draw onto
     +gradient_norm[0] sqrt.
