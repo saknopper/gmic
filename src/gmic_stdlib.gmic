@@ -15990,7 +15990,7 @@ houghsketchbw : check "${1=8}>=0 && ${2=5}>=0 && ${3=80}>=0 && $3<=100 && ${4=0.
 lightrays : check "${1=50}>=0 && $1<=100 && ${4=1}>=0 && ${5=1}>=0" skip ${2=50%},${3=50%}
   e[^-1] "Generate ray lights from image$?, with density $1, center point ($2,$3), ray length $4 and attenuation $5."
   v - repeat $! l[$>]
-    gradient_norm * -1 < $1% euclidean2polar $2,$3
+    gradient_norm >= $1% euclidean2polar $2,$3
     repeat {log2(w)} +shift. {2^$>} +[-2,-1] done
     function1d 0.5,0,1,{$4*w},1,{1+($4+1-$5)*w},0 r. {-2,w},1,1,1,0
     (1,{w}) r. {-2,w},1,1,1,3 /[-2,-1]
