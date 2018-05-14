@@ -4060,10 +4060,10 @@ update_gallery_html : check "isbool(${1=0})"
               l. s +,{'" "'} repeat $! if {$<,crop(0,0,1,5)=='_fps='||crop(0,0,1,7)=='_label='} # Discard '_fps=?' and '_label=?'
                 rm[$<]
               fi done a y endl
-              l. s +,{'" "'} repeat $! if {$<,crop(0,0,1,7)=='https://'} l[$<] # Add hyperlink
-                if {crop(0,0,1,23)=='https://gmic.eu/samples/'}
+              l. s +,{'" "'} repeat $! if {$<,crop(0,0,1,8)=='https://'} l[$<] # Add hyperlink
+                if {crop(0,0,1,24)=='https://gmic.eu/samples/'}
                   is_codesample=1
-                  basename_codesample={`crop(0,23,1,h-23)`}
+                  basename_codesample={`crop(0,24,1,h-24)`}
                   filename_codesample="../../resources/samples"/$basename_codesample
                   url_codesample="https://gmic.eu/samples/"$basename_codesample
                   if $1 x "lftp ftp://"$GMIC_LOGIN":"$GMIC_PASSWD"@ftp.gmic.eu -e \"put -O /www/gmic/samples \\\""$filename_codesample"\\\"; quit\" >/dev/null" fi
