@@ -4,7 +4,7 @@
 #                ( G'MIC command file )
 #
 #  Description : Define the commands and filters of the standard G'MIC library.
-#                ( http://gmic.eu )
+#                ( https://gmic.eu )
 #
 #  Copyright   : David Tschumperle
 #                ( http://tschumperle.users.greyc.fr/ )
@@ -229,8 +229,8 @@ _help : skip ${1=""}
           rows 1,100% autocrop {'" "'} # Discard '$' character.
           if {i==_'$'} # Tutorial page.
              v + e[] "" v -
-             if {h==1" && "i==_'$'} tuturl=http://gmic.eu/tutorial/_$command.shtml
-             else autocrop {'$'} autocrop {'" "'} tuturl=http://gmic.eu/tutorial/{0,t}.shtml
+             if {h==1" && "i==_'$'} tuturl=https://gmic.eu/tutorial/_$command.shtml
+             else autocrop {'$'} autocrop {'" "'} tuturl=https://gmic.eu/tutorial/{0,t}.shtml
              fi
              rm ({'$_gmic_n${_gmic_b}"Tutorial:"$_gmic_n$_gmic_r" "$tuturl'}) y
              _is_tutorial=1
@@ -275,7 +275,7 @@ _help_usage :
 \n
 \n    This reference documentation describes all the technical rules governing the "${-GMIC}" language.
 \n    As a starting point, you may want to visit our detailed tutorial pages, at:
-\n     "${r}"http://gmic.eu/tutorial/"$n
+\n     "${r}"https://gmic.eu/tutorial/"$n
 
   _help_section "Overall context"
 
@@ -1165,7 +1165,7 @@ __help_header_ascii :
   str="\n  "${_gmic_b}"gmic: GREYC\'s Magic for Image Computing."$_gmic_n"
 \n
 \n        "$_gmic_g${_gmic_b}"Version "${-strver}$strprerelease$_gmic_n", Copyright (c) 2008-2017, David Tschumperle.
-\n        "$_gmic_g"(http://gmic.eu)"$_gmic_n
+\n        "$_gmic_g"(https://gmic.eu)"$_gmic_n
   if {['$$_e']==0} m "_e : e[] \"$""*\"" fi
   v + _e[] $str v -
 
@@ -1185,7 +1185,7 @@ _help_paragraph_ascii :
 
 _help_footer_ascii :
   v +
-  e[] " "$_gmic_r$_gmic_b"** G\47MIC comes with ABSOLUTELY NO WARRANTY; for details visit: http://gmic.eu **"$_gmic_n
+  e[] " "$_gmic_r$_gmic_b"** G\47MIC comes with ABSOLUTELY NO WARRANTY; for details visit: https://gmic.eu **"$_gmic_n
   v -
 
 # Commands to output help in html format.
@@ -1257,7 +1257,7 @@ _help_header_html :
 \n<pre><font color=\"blue\"><b>gmic:</b> GREYC\'s Magic for Image Computing.</font>
 \n
 \n       Version <font color=\"brown\"><b>"${-strver}$strprerelease"</b></font>, Copyright (c) 2008-2017, David Tschumperl&eacute;
-\n       (<a href=\"http://gmic.eu\">http://gmic.eu</a>)
+\n       (<a href=\"https://gmic.eu\">https://gmic.eu</a>)
 \n</pre>
 "
 v -
@@ -1277,7 +1277,7 @@ _help_paragraph_html :
 _help_footer_html :
   v +
   e[] "
-\n<br/><b><font color=\"brown\">** G\47MIC comes with ABSOLUTELY NO WARRANTY; for details visit: <a href=\"http://gmic.eu\">http://gmic.eu **</a></font></b>
+\n<br/><b><font color=\"brown\">** G\47MIC comes with ABSOLUTELY NO WARRANTY; for details visit: <a href=\"https://gmic.eu\">https://gmic.eu **</a></font></b>
 \n</tt>
 \n</div>
 \n</div>
@@ -1332,7 +1332,7 @@ _help_header_latex :
 \n\\section*{License}
 \nThis document is distributed under the \\textbf{GNU Free Documentation License}, version 1.3.\\\\
 \nRead the full license terms at \\url{http://www.gnu.org/licenses/fdl-1.3.txt}.\\\\~\\\\
-\nAn online version of this documentation is available at:\\\\\\url{http://gmic.eu/reference.shtml}.
+\nAn online version of this documentation is available at:\\\\\\url{https://gmic.eu/reference.shtml}.
 \n\\section*{Motivations}
 \n\\Cc{G\47MIC} is a full-featured open-source framework for image processing, providing several different user interfaces to
 \nconvert/manipulate/filter/visualize generic image datasets, from 1d scalar signales to 3d+t sequences of multi-spectral volumetric images.
@@ -1359,7 +1359,7 @@ _help_header_latex :
 \n \\Ca{\\textbf{gmic:} GREYC\'s Magic for Image Computing.}\\\\
 \n
 \n        \\Cb{Version \\textbf{"$strver$strprerelease"}, Copyright (c) 2008-2017, David Tschumperl\\'e}\\\\
-\n        \\Cb{(\\url{http://gmic.eu})}
+\n        \\Cb{(\\url{https://gmic.eu})}
 \n\\chapter{Usage}
 "
   v -
@@ -1476,7 +1476,7 @@ clut : check "isval(${2=64}) && $2>0"
           elif {isfile(${-path_gimp}plug-ins/gmic_film_cluts.gmz)} i ${-path_gimp}plug-ins/gmic_film_cluts.gmz
           elif {isfile(${g_path_unix}gmic_film_cluts.gmz)} i ${g_path_unix}gmic_film_cluts.gmz
           fi
-        else l[] i http://gmic.eu/gmic_film_cluts.gmz o ${_path_rc}gmic_film_cluts.gmz,uchar endl
+        else l[] i https://gmic.eu/gmic_film_cluts.gmz o ${_path_rc}gmic_film_cluts.gmz,uchar endl
         fi
         repeat $! if {['{$>,n}']==['"$1"']} k[$>] break fi done
         if {$!==1} break fi # CLUT found!
@@ -2532,8 +2532,8 @@ _document_gmic_description_html :
 
 _document_gmic_example_html :
   if {i==_'$'} # Link to a tutorial page.
-    if {h==1" && "i==_'$'} tuturl=http://gmic.eu/tutorial/_$_command_name.shtml
-    else autocrop {'$'} autocrop {'" "'} tuturl=http://gmic.eu/tutorial/{0,t}.shtml
+    if {h==1" && "i==_'$'} tuturl=https://gmic.eu/tutorial/_$_command_name.shtml
+    else autocrop {'$'} autocrop {'" "'} tuturl=https://gmic.eu/tutorial/{0,t}.shtml
     fi
     v +
     e[] ${-eon}"<tr><td width=\"24\" align=\"center\"><a target=\"_blank\" href=\""$tuturl"\"><img alt=\"\" border=\"0\" src=\"img/moreinfos.png\" /></td>"\
@@ -2716,8 +2716,8 @@ _document_gmic_description_latex :
 
 _document_gmic_example_latex :
   if {i==_'$'} # Link to a tutorial page.
-    if {h==1" && "i==_'$'} tuturl=http://gmic.eu/tutorial/\\_$_command_name.shtml
-    else autocrop {'$'} autocrop {'" "'} tuturl=http://gmic.eu/tutorial/{0,t}.shtml
+    if {h==1" && "i==_'$'} tuturl=https://gmic.eu/tutorial/\\_$_command_name.shtml
+    else autocrop {'$'} autocrop {'" "'} tuturl=https://gmic.eu/tutorial/{0,t}.shtml
     fi
     l[] ({'$tuturl'}) replace_str "_","\\_"
     s x,-60 if {$!>1} i[1--2] ({'\\\\-'}) fi a x
@@ -2932,7 +2932,7 @@ gmicky_deevad :
   v -
   filename=${_path_rc}gmicky_large_deevad.cimgz
   if $filename $filename
-  else http://gmic.eu/img/gmicky_large_deevad.cimgz o. $filename +. 0
+  else https://gmic.eu/img/gmicky_large_deevad.cimgz o. $filename +. 0
   fi
   nm. [gmicky_deevad]
   v +
@@ -2945,7 +2945,7 @@ gmicky_mahvin :
   v -
   filename=${_path_rc}gmicky_large_mahvin.cimgz
   if $filename $filename
-  else http://gmic.eu/img/gmicky_large_mahvin.cimgz o. $filename +. 0
+  else https://gmic.eu/img/gmicky_large_mahvin.cimgz o. $filename +. 0
   fi
   nm. [gmicky_mahvin]
   v +
@@ -2958,7 +2958,7 @@ gmicky_wilber :
   v -
   filename=${_path_rc}gmicky_wilber_large.cimgz
   if $filename $filename
-  else http://gmic.eu/img/gmicky_wilber_large.cimgz o. $filename +. 0
+  else https://gmic.eu/img/gmicky_wilber_large.cimgz o. $filename +. 0
   fi
   nm. [gmicky_wilber] v +
 
@@ -3107,7 +3107,7 @@ output_cube :
    if {$N>1} fn=${"filename \"$1\",$>"} else fn="$1" fi
    o dlm:$fn rm i raw:$fn,uchar replace {','},32
    0 nm. $fn basename={b} rm.
-   header="\# Created by: G'MIC (http://gmic.eu)\n"\
+   header="\# Created by: G'MIC (https://gmic.eu)\n"\
           "TITLE \""$basename"\"\n\n"\
           "# LUT size\n"\
           "LUT_3D_SIZE "$l"\n\n"\
@@ -3276,7 +3276,7 @@ roddy :
   v -
   filename=${_path_rc}roddy_large.cimgz
   if $filename $filename
-  else http://gmic.eu/img/roddy_large.cimgz o. $filename +. 0
+  else https://gmic.eu/img/roddy_large.cimgz o. $filename +. 0
   fi
   nm. [roddy] v +
 
@@ -3575,7 +3575,7 @@ _sample :
 
     # Retrieve image data.
     filename=${_path_rc}sample_$name.png
-    url=http://gmic.eu/img/sample_$name.png
+    url=https://gmic.eu/img/sample_$name.png
     if $filename $filename
     else
       if ${is_rand{1+$>}} l[] $url o. $filename onfail testimage2d {m=max($W,$H);m>0?m:400} endl
@@ -3652,7 +3652,7 @@ _update :
   e[0--3] "Update commands from the latest definition file on the G\47MIC server."
   v -
   out=${_path_rc}update$_version.gmic
-  l[] cimgz:http://gmic.eu/update$_version.gmic
+  l[] cimgz:https://gmic.eu/update$_version.gmic
     if {h>7" && "same([{^}],'#@gmic',6)} o raw:$out,char fi
     rm
   onfail v + error[0--3] "Command 'update' : Unreachable update file."
@@ -3997,11 +3997,11 @@ update_gallery_html : check "isbool(${1=0})"
          "Click on an image to enlarge it and display the <b><font color=\"#000066\">G\47MIC</font></b> command-line "\
          "used for the processing (<i>note: to reproduce this, you may have to escape some characters, according to type of shell you use!</i>).<br/>\n"\
          "Remember, <b><font color=\"#000066\">G\47MIC</font></b> lets you define your own image pipelines through\n"\
-         "custom <a href=\"http://gmic.eu/gmic_stdlib.gmic\">command files</a>.\n"\
+         "custom <a href=\"https://gmic.eu/gmic_stdlib.gmic\">command files</a>.\n"\
          "Your custom filters can be easily added afterwards in the plug-in for <a href=\"http://www.gimp.org\">GIMP</a> or "\
          "<a href=\"http://www.krita.org\">Krita</a>.</br>\n\n"\
-         "For more details, visit the <a href=\"http://gmic.eu/tutorial\">tutorial pages</a> as well as the "\
-         "<a href=\"http://gmic.eu/reference.shtml\">technical reference</a> to get a full documentation on this software.\n"\
+         "For more details, visit the <a href=\"https://gmic.eu/tutorial\">tutorial pages</a> as well as the "\
+         "<a href=\"https://gmic.eu/reference.shtml\">technical reference</a> to get a full documentation on this software.\n"\
          "<br/><br/>\n<div id=\"menu\">\n"
 
     html_menu="<font size=\"-1\"><table cellspacing=\"0\" cellpadding=\"4\" border=\"1\" align=\"center\"><tr>\n"\
@@ -4055,17 +4055,17 @@ update_gallery_html : check "isbool(${1=0})"
 
             l[] # Create a HTML representation of the command
               ({'${example$nex}'}) y
-              +replace_str. "image.jpg","<a href=\"http://gmic.eu/img/sample_"$sample".png\" target=\"_blank\">"$sample".png</a>"
+              +replace_str. "image.jpg","<a href=\"https://gmic.eu/img/sample_"$sample".png\" target=\"_blank\">"$sample".png</a>"
               y -.. . is_input={-2,im!=0||iM!=0}
               l. s +,{'" "'} repeat $! if {$<,crop(0,0,1,5)=='_fps='||crop(0,0,1,7)=='_label='} # Discard '_fps=?' and '_label=?'
                 rm[$<]
               fi done a y endl
-              l. s +,{'" "'} repeat $! if {$<,crop(0,0,1,7)=='http://'} l[$<] # Add hyperlink
-                if {crop(0,0,1,23)=='http://gmic.eu/samples/'}
+              l. s +,{'" "'} repeat $! if {$<,crop(0,0,1,7)=='https://'} l[$<] # Add hyperlink
+                if {crop(0,0,1,23)=='https://gmic.eu/samples/'}
                   is_codesample=1
                   basename_codesample={`crop(0,23,1,h-23)`}
                   filename_codesample="../../resources/samples"/$basename_codesample
-                  url_codesample="http://gmic.eu/samples/"$basename_codesample
+                  url_codesample="https://gmic.eu/samples/"$basename_codesample
                   if $1 x "lftp ftp://"$GMIC_LOGIN":"$GMIC_PASSWD"@ftp.gmic.eu -e \"put -O /www/gmic/samples \\\""$filename_codesample"\\\"; quit\" >/dev/null" fi
                   i[0] ({'"<a onclick=\"javascript:$( '\#dialog"$nex"' ).dialog( 'open' );\" style=\"cursor: pointer;\">"'})
                 else i[0] ({'"<a href=\""{$<,t}"\" target=\"_blank\">"'})
@@ -4074,7 +4074,7 @@ update_gallery_html : check "isbool(${1=0})"
               endl fi done a y endl
               replaced_example$nex={t} rm
             endl
-            ({'${example$nex}'}) replace_str. "http://gmic.eu/samples/","../../resources/samples/" example$nex={t} rm.
+            ({'${example$nex}'}) replace_str. "https://gmic.eu/samples/","../../resources/samples/" example$nex={t} rm.
             m "_run : "${example$nex}
 
             if $is_input sample_=${sample}_ else sample_= fi
@@ -4236,7 +4236,7 @@ update_deprecate : check "isint($1) && $1>0 && $1<999"
   e[^-1] "Deprecate filter updates for G'MIC version $1."
   v - l[]
   file=${_path_rc}update$1.gmic
-  i cimgz:"http://gmic.eu/update$1.gmic",uchar
+  i cimgz:"https://gmic.eu/update$1.gmic",uchar
   +l. s +,{'"UPDATE"" INFORMATION"'} is_deprecated={$!>1} rm endl # Check if deprecation has not been already done.
   if $is_deprecated
     v + e[0--4] "  > Version $1 already deprecated -> Removing deprecation." v -
@@ -4257,7 +4257,7 @@ update_deprecate : check "isint($1) && $1>0 && $1<999"
             \#@gui !<b><i>&gt;&gt; UPDATE"" INFORMATION</i></b> : _none_, fx_logo_en\n\
             \#@gui : note = note{\"A <b>new version</b> of the <i>G\47MIC</i> plug-in is available!\\n\\n\n\
             \#@gui : You are strongly encouraged to upgrade your version, by visiting our <i>Download page</i> :\\n\\n\"}\n\
-            \#@gui : url = link{\"Visit G\47MIC Download Page\",\"http://gmic.eu/download.shtml\"}\n\
+            \#@gui : url = link{\"Visit G\47MIC Download Page\",\"https://gmic.eu/download.shtml\"}\n\
             \#@gui : note = note{\"\\nOf course, your plug-in will continue to work, but please note that we won\47t be able\n\
             \#@gui : to provide filter updates anymore for your current plug-in version.\\n\\n\n\
             \#@gui : Best regards,\\n\\n <i>The G\47MIC team.</i>\"}\n\n"'})
@@ -4325,7 +4325,7 @@ update_server :
     "    v + e[] $_gmic_g\"      [archived]\n\"$_gmic_n v - "\
     "  onfail v + e[] $_gmic_r\"      [could not be archived!]\n\"$_gmic_n v - endl "\
     "onfail l[] "\
-    "  source=http://gmic.eu/include/$filename "\
+    "  source=https://gmic.eu/include/$filename "\
     "  i raw:$source,char v + e[] $_gmic_c\"      [retrieved from archive '\"$source\"']\n\"$_gmic_n v - "\
     "  onfail v + e[] $_gmic_r\"      [error, not reachable!]\n\"$_gmic_n v -"\
     "  endl endl"
@@ -4599,7 +4599,7 @@ update_server :
             "#                ( G\47MIC command file )"\n\
             "#"\n\
             "#  Description : Update file for G\47MIC commands and filters (for version "${-strver}")."\n\
-            "#                ( http://gmic.eu )"\n\
+            "#                ( https://gmic.eu )"\n\
             "#"\n\
             "#  License     : CeCILL v2.1 or CeCILL-C v1.0"\n\
             "#                ( http://www.cecill.info/index.en.html )"\n\
@@ -4761,15 +4761,15 @@ _update_server_binaries :
         is_win=${strcontains[]" "$file,win}
         if $is_win folder="windows" else folder="linux" fi
 
-        v + e[] "- Upload file '"$file"' to 'http://gmic.eu/files/prerelease/"$file_short"'." v -
+        v + e[] "- Upload file '"$file"' to 'https://gmic.eu/files/prerelease/"$file_short"'." v -
         _update_server_upload $file,"files/prerelease/"$file_short
-        v + e[] "- Upload file '"$file"' to 'http://gmic.eu/files/prerelease_"$folder/$file_short"'." v -
+        v + e[] "- Upload file '"$file"' to 'https://gmic.eu/files/prerelease_"$folder/$file_short"'." v -
         _update_server_upload $file,"files/prerelease_"$folder/$file_short
 
         if {!$is_pre}
-          v + e[] "- Upload file '"$file"' to 'http://gmic.eu/files/"$folder/$file"'." v -
+          v + e[] "- Upload file '"$file"' to 'https://gmic.eu/files/"$folder/$file"'." v -
           _update_server_upload $file,"files/"$folder/$file
-          v + e[] "- Upload file '"$file"' to 'http://gmic.eu/files/"$folder/$file_short"'." v -
+          v + e[] "- Upload file '"$file"' to 'https://gmic.eu/files/"$folder/$file_short"'." v -
           _update_server_upload $file,"files/"$folder/$file_short
         fi
 
@@ -5066,7 +5066,7 @@ _update_tutorial_html :
         else # Else try to relink to reference page if link to a command.
           ({'$relink'}) if {i==_'_'}
             l. z 1,100% s -,{'.'} command=${basename\ {0,t}} k[0] endl
-            relink="http://gmic.eu/reference.shtml#"$command
+            relink="https://gmic.eu/reference.shtml#"$command
             v + e[] "    > Local link '"$link$anchor"' relinked to '"$relink"' "${_gmic_g}"(reference command)."${_gmic_n} v -
             rm[0] i[0] ({'$relink'}) y[0]
           else # If fail, link to original page with a hard link.
@@ -23588,7 +23588,7 @@ gui_filter_sources : skip ${1=0},${2=1}
 
   # Build list of filter sources.
   ({'{/$_path_user}'}) # Include local '.gmic' (or 'user.gmic') file.
-  ({'http://gmic.eu/update$_version.gmic'},1) # Include stdlib update (last 1 -> Override default filters).
+  ({'https://gmic.eu/update$_version.gmic'},1) # Include stdlib update (last 1 -> Override default filters).
   l[] _gui_filter_sources $1 onfail rm endl # Invoke custom command to include other filter sources.
   l[] i cimgz:${_path_rc}gui_filter_sources onfail endl # Include other user-defined filters sources.
 
@@ -23803,7 +23803,7 @@ gui_error_preview :
 gui_check_version :
   if {$_version<$1}
     gui_error_preview "This filter requires at least version *"${"strver $1"}"* of the G'MIC framework.\n\n"\
-                      "http://gmic.eu/download.shtml"
+                      "https://gmic.eu/download.shtml"
     u 0
   else u 1
   fi
@@ -23837,9 +23837,9 @@ gui_autocrop_layers :
 #@gui_en : note = note{"
 #@gui_en : This plug-in is based on our open-source libraries <b>G'MIC</b> and <b>CImg</b> (C++ Template Image Processing Library),
 #@gui_en : available at:"}
-#@gui_en : url = link("http://gmic.eu/")
+#@gui_en : url = link("https://gmic.eu/")
 #@gui_en : note = note{"and"}
-#@gui_en : url = link("http://cimg.eu/")
+#@gui_en : url = link("https://cimg.eu/")
 #@gui_en : note = note{"\n
 #@gui_en : If you appreciate <b>G'MIC</b>, you are welcome to send us a nice postcard from your place, at:\n\n
 #@gui_en : <small><tt>David Tschumperl&#233;,\n Laboratoire GREYC (CNRS UMR 6072), Equipe Image,\n
@@ -23902,7 +23902,7 @@ fx_logo : skip "${1=Universal plug-in\n    [ "${-strver}" ]}","${2=$1}"
   file=${_path_rc}gmicky_logo.png
   is_file=1
   if $file $file
-  else l[] i http://gmic.eu/img/gmicky_logo.png o $file onfail is_file=0 endl
+  else l[] i https://gmic.eu/img/gmicky_logo.png o $file onfail is_file=0 endl
   fi
   if $is_file
     if {!narg($_preview_width)} _preview_width=256 fi
@@ -23933,9 +23933,9 @@ fx_logo_en :
 #@gui_fr : note = note{"
 #@gui_fr : Ce greffon est bas&#233; sur nos biblioth&#232;ques libres <b>G'MIC</b> et <b>CImg</b> (C++ Template Image Processing Library),
 #@gui_fr : disponibles aux adresses :"}
-#@gui_fr : url = link("http://gmic.eu/")
+#@gui_fr : url = link("https://gmic.eu/")
 #@gui_fr : note = note{"et"}
-#@gui_fr : url = link("http://cimg.eu/")
+#@gui_fr : url = link("https://cimg.eu/")
 #@gui_fr : note = note{"\n
 #@gui_fr : Si vous appr&#233;ciez <b>G'MIC</b>, vous pouvez nous le faire savoir en nous envoyant une jolie carte
 #@gui_fr : postale de votre ville ou r&#233;gion, &#224; l'adresse :\n\n
@@ -23959,9 +23959,9 @@ fx_logo_fr :
 #@gui_ca : note = note{"
 #@gui_ca : Aquest connector est&#224; basat en les biblioteques de codi obert <b>G'MIC</b> i <b>CImg</b> (C++ Template Image Processing Library),
 #@gui_ca : disponibles a :"}
-#@gui_ca : url = link("http://gmic.eu/")
+#@gui_ca : url = link("https://gmic.eu/")
 #@gui_ca : note = note{"i"}
-#@gui_ca : url = link("http://cimg.eu/")
+#@gui_ca : url = link("https://cimg.eu/")
 #@gui_ca : note = note{"\n
 #@gui_ca : Si t'agrada el <b>G'MIC</b>, pots enviar-nos una postal del lloc on vius, a :\n\n
 #@gui_ca : <small><tt>David Tschumperl&#233;,\n Laboratoire GREYC (CNRS UMR 6072), Equipe Image,\n
@@ -23984,9 +23984,9 @@ fx_logo_ca :
 #@gui_ja : note = note{"
 #@gui_ja : This plug-in is based on our open-source libraries <b>G'MIC</b> and <b>CImg</b> (C++ Template Image Processing Library),
 #@gui_ja : available at:"}
-#@gui_ja : url = link("http://gmic.eu/")
+#@gui_ja : url = link("https://gmic.eu/")
 #@gui_ja : note = note{"and"}
-#@gui_ja : url = link("http://cimg.eu/")
+#@gui_ja : url = link("https://cimg.eu/")
 #@gui_ja : note = note{"\n
 #@gui_ja : If you appreciate <b>G'MIC</b>, you are welcome to send us a nice postcard from your place, at:\n\n
 #@gui_ja : <small><tt>David Tschumperl&#233;,\n Laboratoire GREYC (CNRS UMR 6072), Equipe Image,\n
@@ -24066,7 +24066,7 @@ fx_logo_ca :
 #@gui : sep = separator()
 #@gui : note = note{"<b><span color="red">Alternative (manual) method:</span></b>\nIf, for any reasons, your plug-in is unable to retrieve data from the Internet, you can download all
 #@gui : those data files manually (as a single .zip file) at this address :"}
-#@gui : url = link{"http://gmic.eu/gmic_all_data.zip"}
+#@gui : url = link{"https://gmic.eu/gmic_all_data.zip"}
 #@gui : note = note{"You must then decompress all files contained in this archive at the following location:\n
 #@gui : - for <b>Unix</b>-like systems : <span color="blue"><tt>$HOME/.config/gmic/</tt></span>\n
 #@gui : - for <b>Windows</b> systems : <span color="blue"><tt>%APPDATA/gmic/</tt></span>
@@ -24079,17 +24079,17 @@ gui_download_all_data :
 
   # Grain.
   _filenames_grain=${-_fx_emulate_grain}
-  _url_grain=http://gmic.eu/data_film_presets
+  _url_grain=https://gmic.eu/data_film_presets
   _prefix_grain=grain_
 
   # Light leaks.
   _filenames_lightleak=${-_fx_light_leaks}
-  _url_lightleak=http://gmic.eu/data_lightleaks
+  _url_lightleak=https://gmic.eu/data_lightleaks
   _prefix_lightleak=
 
   # Logos.
   _filenames_logo=gmicky_large_deevad,gmicky_small_deevad,gmicky_large_mahvin,gmicky_small_mahvin,gmicky_wilber_large,gmicky_wilber_small,roddy_large,roddy_small
-  _url_logo=http://gmic.eu/img
+  _url_logo=https://gmic.eu/img
   _prefix_logo=
 
   # Manage downloads.
@@ -24134,9 +24134,9 @@ _gui_download_all_data :
 #@gui : for inclusion into next releases of <b>G'MIC</b>.
 #@gui : "}
 #@gui : sep = separator()
-#@gui : url = link(0,"[1] G'MIC reference documentation","http://gmic.eu/reference.shtml")
-#@gui : url = link(0,"[2] G'MIC scripting tutorial","http://gmic.eu/tutorial/index.shtml")
-#@gui : url = link(0,"[3] G'MIC filter template","http://gmic.eu/template.gmic")
+#@gui : url = link(0,"[1] G'MIC reference documentation","https://gmic.eu/reference.shtml")
+#@gui : url = link(0,"[2] G'MIC scripting tutorial","https://gmic.eu/tutorial/index.shtml")
+#@gui : url = link(0,"[3] G'MIC filter template","https://gmic.eu/template.gmic")
 
 #@gui Friends hall of fame : _none_, fx_friends
 #@gui : note = note{"\n<span foreground="purple" underline="single">Supporters:</span>"}
@@ -24315,50 +24315,50 @@ _gui_download_all_data :
 #@gui :               You could be the <b>45rd</b> sender :)"}
 #@gui : note = note{" <b>-</b> A big hug goes to these postcard senders (recently received first) :"}
 #@gui : note = note{"<i>
-#@gui : <a href="http://cimg.eu/img/postcard70.jpg">Patrick Wanters</a> (USA),
-#@gui : <a href="http://cimg.eu/img/postcard69.jpg">Josep Febrer</a> (Pregonda/Menorca),
-#@gui : <a href="http://cimg.eu/img/postcard68.jpg">Richard Gledson</a> (Newcastle upon tyne/England),
-#@gui : <a href="http://cimg.eu/img/postcard67.jpg">James Jaworski</a> (Winnipeg/Canada),
-#@gui : <a href="http://cimg.eu/img/postcard66.jpg">Powlux</a> (France),
-#@gui : <a href="http://cimg.eu/img/postcard65.jpg">Volker Doebel</a> (Haldern/Germany),
-#@gui : <a href="http://cimg.eu/img/postcard64.jpg">Patrick Wauters</a> (Bilbao/Spain),
-#@gui : <a href="http://cimg.eu/img/postcard63.jpg">Sebastien Fourey</a> (Konstanz/Germany),
-#@gui : <a href="http://cimg.eu/img/postcard62.jpg">David Revoy</a> (Toulouse/France),
-#@gui : <a href="http://cimg.eu/img/postcard61.jpg">Giulio Canevari</a> (Pavia/Italy),
-#@gui : <a href="http://cimg.eu/img/postcard60.jpg">Bruno Steinbach</a> (Pondicherry/India),
-#@gui : <a href="http://cimg.eu/img/postcard59.jpg">Steve Gillow</a> (Fort Worth/Texas/USA),
-#@gui : <a href="http://cimg.eu/img/postcard58.jpg">Peter Neave</a> (Sydney/Australia),
-#@gui : <a href="http://cimg.eu/img/postcard57.jpg">Andrea [Photoflow]</a> (Italy),
-#@gui : <a href="http://cimg.eu/img/postcard56.jpg">Garry R. Osgood</a> (New York/USA),
-#@gui : <a href="http://cimg.eu/img/postcard55.jpg">Justin Pletzfeld</a> (Germany),
-#@gui : <a href="http://cimg.eu/img/postcard54.jpg">Werner Meier</a> (Germany),
-#@gui : <a href="http://cimg.eu/img/postcard53.jpg">Patrick Wauters</a> (Roma/Italy),
-#@gui : <a href="http://cimg.eu/img/postcard52.jpg">Marc Lis</a> (Belgium),
-#@gui : <a href="http://cimg.eu/img/postcard51.jpg">ZondeR</a> (France),
-#@gui : <a href="http://cimg.eu/img/postcard50.jpg">Bill C.</a> (USA),
-#@gui : <a href="http://cimg.eu/img/postcard49.jpg">Michael T.</a> (France),
-#@gui : <a href="http://cimg.eu/img/postcard48.jpg">Patrick Wauters</a> (Lisboa),
-#@gui : <a href="http://cimg.eu/img/postcard47.jpg">Akky [Gimpchat]</a> (Australia),
-#@gui : <a href="http://cimg.eu/img/postcard45.jpg">Michel Thomas</a> (Germany),
-#@gui : <a href="http://cimg.eu/img/postcard44.jpg">Pierre-Yves</a> (Ile de Batz/France),
-#@gui : <a href="http://cimg.eu/img/postcard43.jpg">Family Hamacher</a> (Trier/Germany),
-#@gui : <a href="http://cimg.eu/img/postcard41.jpg">Benoit Gauzere and Francois Lozes</a> (Hokusai/Japan),
-#@gui : <a href="http://cimg.eu/img/postcard40.jpg">Dr. Rainer Teubner</a> (Seligenstadt/Germany),
-#@gui : <a href="http://cimg.eu/img/postcard39.jpg">Mauro Mitrino</a> (Mantova/Italy),
-#@gui : <a href="http://cimg.eu/img/postcard37.jpg">Werner Meier</a> (Mettlach/Germany),
-#@gui : <a href="http://cimg.eu/img/postcard36.jpg">Arto Huotari</a> (Helsinki/Finland),
-#@gui : <a href="http://cimg.eu/img/postcard33.jpg">Benoit Gauzere</a> (California/USA),
-#@gui : <a href="http://cimg.eu/img/postcard30.jpg">Arkadi Gelfond</a> (Foster City - California/USA),
-#@gui : <a href="http://cimg.eu/img/postcard29.jpg">Corinne Masimann</a> (Neuchatel/Switzerland),
-#@gui : <a href="http://cimg.eu/img/postcard27.jpg">Mahvin</a> (Portland/USA),
-#@gui : <a href="http://cimg.eu/img/postcard26.jpg">Vincent Roullier</a> (Caen/France),
-#@gui : <a href="http://cimg.eu/img/postcard24.jpg">M????</a> (Munich/Germany),
-#@gui : <a href="http://cimg.eu/img/postcard23.jpg">F. Albior</a> (Jaca/Spain),
-#@gui : <a href="http://cimg.eu/img/postcard22.jpg">PhotoComIX</a> (Frascati/Italy),
-#@gui : <a href="http://cimg.eu/img/postcard21.jpg">Guy Poizat</a> (Cabestany/France),
-#@gui : <a href="http://cimg.eu/img/postcard20.jpg">Institut for Biomathematik und Biometrie</a> (Neuherberg/Germany),
-#@gui : <a href="http://cimg.eu/img/postcard15.jpg">Jean-Michel Webbe</a> (Guadeloupe/France),
-#@gui : <a href="http://cimg.eu/img/postcard14.jpg">Jaime</a> (Barcelona/Spain).
+#@gui : <a href="https://cimg.eu/img/postcard70.jpg">Patrick Wanters</a> (USA),
+#@gui : <a href="https://cimg.eu/img/postcard69.jpg">Josep Febrer</a> (Pregonda/Menorca),
+#@gui : <a href="https://cimg.eu/img/postcard68.jpg">Richard Gledson</a> (Newcastle upon tyne/England),
+#@gui : <a href="https://cimg.eu/img/postcard67.jpg">James Jaworski</a> (Winnipeg/Canada),
+#@gui : <a href="https://cimg.eu/img/postcard66.jpg">Powlux</a> (France),
+#@gui : <a href="https://cimg.eu/img/postcard65.jpg">Volker Doebel</a> (Haldern/Germany),
+#@gui : <a href="https://cimg.eu/img/postcard64.jpg">Patrick Wauters</a> (Bilbao/Spain),
+#@gui : <a href="https://cimg.eu/img/postcard63.jpg">Sebastien Fourey</a> (Konstanz/Germany),
+#@gui : <a href="https://cimg.eu/img/postcard62.jpg">David Revoy</a> (Toulouse/France),
+#@gui : <a href="https://cimg.eu/img/postcard61.jpg">Giulio Canevari</a> (Pavia/Italy),
+#@gui : <a href="https://cimg.eu/img/postcard60.jpg">Bruno Steinbach</a> (Pondicherry/India),
+#@gui : <a href="https://cimg.eu/img/postcard59.jpg">Steve Gillow</a> (Fort Worth/Texas/USA),
+#@gui : <a href="https://cimg.eu/img/postcard58.jpg">Peter Neave</a> (Sydney/Australia),
+#@gui : <a href="https://cimg.eu/img/postcard57.jpg">Andrea [Photoflow]</a> (Italy),
+#@gui : <a href="https://cimg.eu/img/postcard56.jpg">Garry R. Osgood</a> (New York/USA),
+#@gui : <a href="https://cimg.eu/img/postcard55.jpg">Justin Pletzfeld</a> (Germany),
+#@gui : <a href="https://cimg.eu/img/postcard54.jpg">Werner Meier</a> (Germany),
+#@gui : <a href="https://cimg.eu/img/postcard53.jpg">Patrick Wauters</a> (Roma/Italy),
+#@gui : <a href="https://cimg.eu/img/postcard52.jpg">Marc Lis</a> (Belgium),
+#@gui : <a href="https://cimg.eu/img/postcard51.jpg">ZondeR</a> (France),
+#@gui : <a href="https://cimg.eu/img/postcard50.jpg">Bill C.</a> (USA),
+#@gui : <a href="https://cimg.eu/img/postcard49.jpg">Michael T.</a> (France),
+#@gui : <a href="https://cimg.eu/img/postcard48.jpg">Patrick Wauters</a> (Lisboa),
+#@gui : <a href="https://cimg.eu/img/postcard47.jpg">Akky [Gimpchat]</a> (Australia),
+#@gui : <a href="https://cimg.eu/img/postcard45.jpg">Michel Thomas</a> (Germany),
+#@gui : <a href="https://cimg.eu/img/postcard44.jpg">Pierre-Yves</a> (Ile de Batz/France),
+#@gui : <a href="https://cimg.eu/img/postcard43.jpg">Family Hamacher</a> (Trier/Germany),
+#@gui : <a href="https://cimg.eu/img/postcard41.jpg">Benoit Gauzere and Francois Lozes</a> (Hokusai/Japan),
+#@gui : <a href="https://cimg.eu/img/postcard40.jpg">Dr. Rainer Teubner</a> (Seligenstadt/Germany),
+#@gui : <a href="https://cimg.eu/img/postcard39.jpg">Mauro Mitrino</a> (Mantova/Italy),
+#@gui : <a href="https://cimg.eu/img/postcard37.jpg">Werner Meier</a> (Mettlach/Germany),
+#@gui : <a href="https://cimg.eu/img/postcard36.jpg">Arto Huotari</a> (Helsinki/Finland),
+#@gui : <a href="https://cimg.eu/img/postcard33.jpg">Benoit Gauzere</a> (California/USA),
+#@gui : <a href="https://cimg.eu/img/postcard30.jpg">Arkadi Gelfond</a> (Foster City - California/USA),
+#@gui : <a href="https://cimg.eu/img/postcard29.jpg">Corinne Masimann</a> (Neuchatel/Switzerland),
+#@gui : <a href="https://cimg.eu/img/postcard27.jpg">Mahvin</a> (Portland/USA),
+#@gui : <a href="https://cimg.eu/img/postcard26.jpg">Vincent Roullier</a> (Caen/France),
+#@gui : <a href="https://cimg.eu/img/postcard24.jpg">M????</a> (Munich/Germany),
+#@gui : <a href="https://cimg.eu/img/postcard23.jpg">F. Albior</a> (Jaca/Spain),
+#@gui : <a href="https://cimg.eu/img/postcard22.jpg">PhotoComIX</a> (Frascati/Italy),
+#@gui : <a href="https://cimg.eu/img/postcard21.jpg">Guy Poizat</a> (Cabestany/France),
+#@gui : <a href="https://cimg.eu/img/postcard20.jpg">Institut for Biomathematik und Biometrie</a> (Neuherberg/Germany),
+#@gui : <a href="https://cimg.eu/img/postcard15.jpg">Jean-Michel Webbe</a> (Guadeloupe/France),
+#@gui : <a href="https://cimg.eu/img/postcard14.jpg">Jaime</a> (Barcelona/Spain).
 #@gui : </i>"}
 #@gui : sep = separator()
 #@gui : note = note{"\nMay the force be with you!"}
@@ -24402,16 +24402,16 @@ fx_gmicky_preview :
   w={w} h={h} rm
   if {$1==0}
     filename=${_path_rc}gmicky_small_deevad.cimgz
-    url=http://gmic.eu/img/gmicky_small_deevad.cimgz
+    url=https://gmic.eu/img/gmicky_small_deevad.cimgz
   elif {$1==1}
     filename=${_path_rc}gmicky_small_mahvin.cimgz
-    url=http://gmic.eu/img/gmicky_small_mahvin.cimgz
+    url=https://gmic.eu/img/gmicky_small_mahvin.cimgz
   elif {$1==2}
     filename=${_path_rc}gmicky_wilber_small.cimgz
-    url=http://gmic.eu/img/gmicky_wilber_small.cimgz
+    url=https://gmic.eu/img/gmicky_wilber_small.cimgz
   else
     filename=${_path_rc}roddy_small.cimgz
-    url=http://gmic.eu/img/roddy_small.cimgz
+    url=https://gmic.eu/img/roddy_small.cimgz
   fi
   if $filename $filename else $url o $filename fi
   r2dy $h
@@ -24472,7 +24472,7 @@ fx_gmicky_preview :
 #@gui : sep = separator(), note = note{"<small><b>Note:</b> You can now access the results of this survey, by clicking the <i>OK</i> button of the plug-in dialog.</small>"}
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2015/11/03</i>.</small>")
 gui_survey : skip $"*"
-  rm i http://gmic.eu/gmic_survey.png
+  rm i https://gmic.eu/gmic_survey.png
 
 gui_survey_preview :
   if $-1
@@ -24481,7 +24481,7 @@ gui_survey_preview :
     else
       str2hex $"*",$_version
       l
-        m "http://gmic.eu/gmic_survey.cgi?"${}
+        m "https://gmic.eu/gmic_survey.cgi?"${}
         gmic_survey_check
         1 o. raw:$lockname,char rm.
         gui_print_preview "Your answers have been sent.",20,"Thank you!",16
@@ -24497,7 +24497,7 @@ survey :
   v - l[]
 
   # Fetch survey data.
-  i raw:http://gmic.eu/gmic_survey.raw,uchar s -,10
+  i raw:https://gmic.eu/gmic_survey.raw,uchar s -,10
   repeat {$!-1} l[{$<-1},$<] if {"ia==ia#-2 && im==im#-2 && iM==iM#-2"} rm. fi endl done # Remove duplicates
 
   # Get sequence of answers for each question.
@@ -24553,7 +24553,7 @@ survey :
   i.. 100%,100%,1,3,255 blend[-2,-1] alpha
 
   # Add title.
-  i http://gmic.eu/img/logo4.jpg r2dy. 160 j.. .,60,8 rm.
+  i https://gmic.eu/img/logo4.jpg r2dy. 160 j.. .,60,8 rm.
   t. "Results of the survey",200,170,24,1,0
   t. "("$N" participants)",540,180,16,1,0,128,0
   r2dx 1280 round
@@ -24644,7 +24644,7 @@ _survey_choice :
 
 #@gui Privacy notice : _none_, _none_
 #@gui : note = note{"
-#@gui : This plugin may download up-to-date filter definitions from the <a href="http://gmic.eu">gmic.eu</a> server.\n\n
+#@gui : This plugin may download up-to-date filter definitions from the <a href="https://gmic.eu">gmic.eu</a> server.\n\n
 #@gui : It is the case when first launched after a fresh installation, and periodically
 #@gui : with a frequency which can be set in the settings dialog.
 #@gui : The user should be aware that the following information may be retrieved
@@ -30431,7 +30431,7 @@ _fx_emulate_grain_preview :
 __fx_emulate_grain :
   bm0=alpha bm1=grainmerge bm2=hardlight bm3=overlay bm4=softlight bm5=alpha
   if ${_path_rc}$1.cimgz i ${_path_rc}$1.cimgz
-  else i http://gmic.eu/data_film_presets/$1.cimgz o. ${_path_rc}$1.cimgz
+  else i https://gmic.eu/data_film_presets/$1.cimgz o. ${_path_rc}$1.cimgz
   fi
 
   repeat {$!-1} l[$>,-1] split_opacity[0]
@@ -30461,7 +30461,7 @@ __fx_emulate_grain :
 #@gui : Pseudo-gray dithering = int(0,0,5)
 #@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
 #@gui : sep = separator(), note = note("<small><b>Note:</b> The color LUTs used in this section have been designed by <b>Patrick David</b>. More info at:</small>")
-#@gui : url = link{"Film Emulation Presets in G'MIC","http://gmic.eu/film_emulation/index.shtml"}
+#@gui : url = link{"Film Emulation Presets in G'MIC","https://gmic.eu/film_emulation/index.shtml"}
 #@gui : sep = separator(), note = note("<small>Authors: <i>Patrick David</i> and <i>David Tschumperl&#233;</i>.      Latest update: <i>2016/02/08</i>.</small>")
 fx_emulate_film_bw :
   _fx_emulate_film $1,${arg\ {max(1,$1)},${-_$0}},${2--1}
@@ -30522,7 +30522,7 @@ fx_emulate_film_fujixtransii_preview :
 #@gui : Normalize colors = choice("None","Pre-process","Post-process","Both")
 #@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
 #@gui : sep = separator(), note = note("<small><b>Note:</b> The color LUTs used in this section have been designed by <b>Patrick David</b>. More info at:</small>")
-#@gui : url = link{"Film Emulation Presets in G'MIC","http://gmic.eu/film_emulation/index.shtml"}
+#@gui : url = link{"Film Emulation Presets in G'MIC","https://gmic.eu/film_emulation/index.shtml"}
 #@gui : sep = separator(), note = note("<small>Authors: <i>Patrick David</i> and <i>David Tschumperl&#233;</i>.      Latest update: <i>2016/02/08</i>.</small>")
 fx_emulate_film_instant_consumer :
   _fx_emulate_film $1,${arg\ {max(1,$1)},${-_$0}},${2--1}
@@ -30569,7 +30569,7 @@ fx_emulate_film_instant_consumer_preview :
 #@gui : Normalize colors = choice("None","Pre-process","Post-process","Both")
 #@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
 #@gui : sep = separator(), note = note("<small><b>Note:</b> The color LUTs used in this section have been designed by <b>Patrick David</b>. More info at:</small>")
-#@gui : url = link{"Film Emulation Presets in G'MIC","http://gmic.eu/film_emulation/index.shtml"}
+#@gui : url = link{"Film Emulation Presets in G'MIC","https://gmic.eu/film_emulation/index.shtml"}
 #@gui : sep = separator(), note = note("<small>Authors: <i>Patrick David</i> and <i>David Tschumperl&#233;</i>.      Latest update: <i>2016/02/08</i>.</small>")
 fx_emulate_film_instant_pro :
   _fx_emulate_film $1,${arg\ {max(1,$1)},${-_$0}},${2--1}
@@ -30605,7 +30605,7 @@ fx_emulate_film_instant_pro_preview :
 #@gui : Normalize colors = choice("None","Pre-process","Post-process","Both")
 #@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
 #@gui : sep = separator(), note = note("<small><b>Note:</b> The color LUTs used in this section have been designed by <b>Patrick David</b>. More info at:</small>")
-#@gui : url = link{"Film Emulation Presets in G'MIC","http://gmic.eu/film_emulation/index.shtml"}
+#@gui : url = link{"Film Emulation Presets in G'MIC","https://gmic.eu/film_emulation/index.shtml"}
 #@gui : sep = separator(), note = note("<small>Authors: <i>Patrick David</i> and <i>David Tschumperl&#233;</i>.      Latest update: <i>2016/02/08</i>.</small>")
 fx_emulate_film_negative_color :
   _fx_emulate_film $1,${arg\ {max(1,$1)},${-_$0}},${2--1}
@@ -30630,7 +30630,7 @@ fx_emulate_film_negative_color_preview :
 #@gui : Normalize colors = choice("None","Pre-process","Post-process","Both")
 #@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
 #@gui : sep = separator(), note = note("<small><b>Note:</b> The color LUTs used in this section have been designed by <b>Patrick David</b>. More info at:</small>")
-#@gui : url = link{"Film Emulation Presets in G'MIC","http://gmic.eu/film_emulation/index.shtml"}
+#@gui : url = link{"Film Emulation Presets in G'MIC","https://gmic.eu/film_emulation/index.shtml"}
 #@gui : sep = separator(), note = note("<small>Authors: <i>Patrick David</i> and <i>David Tschumperl&#233;</i>.      Latest update: <i>2016/02/08</i>.</small>")
 fx_emulate_film_negative_new :
   _fx_emulate_film $1,${arg\ {max(1,4*$1+$2-3)},${-_$0}},${3--1}
@@ -30663,7 +30663,7 @@ fx_emulate_film_negative_new_preview :
 #@gui : Normalize colors = choice("None","Pre-process","Post-process","Both")
 #@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
 #@gui : sep = separator(), note = note("<small><b>Note:</b> The color LUTs used in this section have been designed by <b>Patrick David</b>. More info at:</small>")
-#@gui : url = link{"Film Emulation Presets in G'MIC","http://gmic.eu/film_emulation/index.shtml"}
+#@gui : url = link{"Film Emulation Presets in G'MIC","https://gmic.eu/film_emulation/index.shtml"}
 #@gui : sep = separator(), note = note("<small>Authors: <i>Patrick David</i> and <i>David Tschumperl&#233;</i>.      Latest update: <i>2016/02/08</i>.</small>")
 fx_emulate_film_negative_old :
   _fx_emulate_film $1,${arg\ {max(1,4*$1+$2-3)},${-_$0}},${3--1}
@@ -30767,7 +30767,7 @@ fx_emulate_film_print_preview :
 #@gui : Normalize colors = choice("None","Pre-process","Post-process","Both")
 #@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
 #@gui : sep = separator(), note = note("<small><b>Note:</b> The color LUTs used in this section have been designed by <b>Patrick David</b>. More info at:</small>")
-#@gui : url = link{"Film Emulation Presets in G'MIC","http://gmic.eu/film_emulation/index.shtml"}
+#@gui : url = link{"Film Emulation Presets in G'MIC","https://gmic.eu/film_emulation/index.shtml"}
 #@gui : sep = separator(), note = note("<small>Authors: <i>Patrick David</i> and <i>David Tschumperl&#233;</i>.      Latest update: <i>2016/02/08</i>.</small>")
 fx_emulate_film_colorslide :
   _fx_emulate_film $1,${arg\ {max(1,$1)},${-_$0}},${2--1}
@@ -30796,7 +30796,7 @@ fx_emulate_film_colorslide_preview :
 #@gui : Normalize colors = choice("None","Pre-process","Post-process","Both")
 #@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
 #@gui : sep = separator(), note = note("<small>More info at:</small>")
-#@gui : url = link{"Film Emulation Presets in G'MIC","http://gmic.eu/film_emulation/index.shtml"}
+#@gui : url = link{"Film Emulation Presets in G'MIC","https://gmic.eu/film_emulation/index.shtml"}
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2016/02/08</i>.</small>")
 fx_emulate_film_userdefined : skip "${2=}"
   if {$1<2}
@@ -30836,7 +30836,7 @@ fx_emulate_film_userdefined_preview : skip "${2=}"
 #@gui : Normalize colors = choice("None","Pre-process","Post-process","Both")
 #@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
 #@gui : sep = separator(), note = note("<small>More info at:</small>")
-#@gui : url = link{"Film Emulation Presets in G'MIC","http://gmic.eu/film_emulation/index.shtml"}
+#@gui : url = link{"Film Emulation Presets in G'MIC","https://gmic.eu/film_emulation/index.shtml"}
 #@gui : sep = separator(), note = note("<small>Authors: <i>David Tschumperl&#233;</i> and <i>Patrick David</i>.      Latest update: <i>2016/02/08</i>.</small>")
 fx_emulate_film_various :
   _fx_emulate_film $1,${arg\ {max(1,$1)},${-_$0}},${2--1}
@@ -31916,7 +31916,7 @@ fx_lightglow_preview :
 fx_light_leaks :
   filename=lightleak_${"padint $1",6}.cimgz
   if ${_path_rc}$filename i ${_path_rc}$filename
-  else i http://gmic.eu/data_lightleaks/$filename o. ${_path_rc}$filename
+  else i https://gmic.eu/data_lightleaks/$filename o. ${_path_rc}$filename
   fi
   mode=${arg\ 1+$7,normal,lighten,screen,dodge,add,darken,multiply,burn,overlay,softlight,hardlight,difference,subtract,grainextract,grainmerge,divide,hue,saturation,value}
   mv. 0
@@ -34991,7 +34991,7 @@ fx_spatial_transition_preview :
 #@gui : This filter can execute any set of instructions understood by the <b>G'MIC</b> language interpreter.
 #@gui : Here, you can then test some commands before creating your own G'MIC custom commands and plug-in menu entries.\n\n
 #@gui : Please look at the documentation reference web page :</small>"}
-#@gui : url = link("http://gmic.eu/reference.shtml")
+#@gui : url = link("https://gmic.eu/reference.shtml")
 #@gui : note = note{"<small>
 #@gui : to learn more about available <b>G'MIC</b> commands.
 #@gui : </small>"}
@@ -35008,7 +35008,7 @@ fx_spatial_transition_preview :
 #@gui : This filter can execute any set of instructions understood by the <b>G'MIC</b> language interpreter.
 #@gui : Here, you can then test some commands before creating your own G'MIC custom commands and plug-in menu entries.\n\n
 #@gui : Please look at the documentation reference web page :</small>"}
-#@gui : url = link("http://gmic.eu/reference.shtml")
+#@gui : url = link("https://gmic.eu/reference.shtml")
 #@gui : note = note{"<small>
 #@gui : to learn more about available <b>G'MIC</b> commands.
 #@gui : </small>"}
@@ -35083,7 +35083,7 @@ fx_gmic_demos :
 fx_gmic_demos_preview :
   rm filename=${-path_tmp}gmic_demos.cimgz
   if $filename $filename
-  else l[] http://gmic.eu/img/gmic_demos.cimgz o $filename endl
+  else l[] https://gmic.eu/img/gmic_demos.cimgz o $filename endl
   fi
   k[$1,-1] rows. $1 map[0] [1] k[0]
 
@@ -35399,12 +35399,12 @@ fx_solve_maze_preview :
 
 #@cli gallery_codesamples
 #@cli : This entry defines some examples of coding-fun filters for the G'MIC gallery page.
-#@cli : $ http://gmic.eu/samples/lissajous.gmic go _fps=10 _label="Lissajous"
-#@cli : $ http://gmic.eu/samples/torus3d.gmic go _fps=10 _label="3D~torus"
-#@cli : $ http://gmic.eu/samples/pacman.gmic go _fps=25 _label="Pacman"
-#@cli : $ http://gmic.eu/samples/scrolling.gmic go _fps=25 _label="Scrolling"
-#@cli : $ http://gmic.eu/samples/landscape.gmic go _fps=12 _label="Landscape"
-#@cli : $ http://gmic.eu/samples/mandelbrot.gmic go _fps=8 _label="Mandelbrot"
+#@cli : $ https://gmic.eu/samples/lissajous.gmic go _fps=10 _label="Lissajous"
+#@cli : $ https://gmic.eu/samples/torus3d.gmic go _fps=10 _label="3D~torus"
+#@cli : $ https://gmic.eu/samples/pacman.gmic go _fps=25 _label="Pacman"
+#@cli : $ https://gmic.eu/samples/scrolling.gmic go _fps=25 _label="Scrolling"
+#@cli : $ https://gmic.eu/samples/landscape.gmic go _fps=12 _label="Landscape"
+#@cli : $ https://gmic.eu/samples/mandelbrot.gmic go _fps=8 _label="Mandelbrot"
 
 # Local Variables:
 # mode: sh

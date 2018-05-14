@@ -91,9 +91,9 @@
               </tr>
               <tr>
                 <td valign="top">
-                  <b>4</b> - A web service <a href="http://gmicol.greyc.fr"><b>G'MIC Online</b></a>, to allow users applying image processing algorithms
+                  <b>4</b> - A web service <a href="https://gmicol.greyc.fr"><b>G'MIC Online</b></a>, to allow users applying image processing algorithms
                   on their images, directly from a web browser.
-                  <p align="right"><i><font size="-1"><a href="http://gmicol.greyc.fr">[try it now...]</a></font></i></p>
+                  <p align="right"><i><font size="-1"><a href="https://gmicol.greyc.fr">[try it now...]</a></font></i></p>
                   <hr noshade="noshade" size="1" width="80%"/>
                 </td>
                 <td valign="top"><div><a href="img/gmic_gmicol.jpg" class="highslide" onclick="return hs.expand(this)"><img alt="" border="0" src="img/gmic_gmicol_thumb.jpg" /></a>
@@ -137,7 +137,7 @@
       It shows how it is able to process and visualize different types of 1d/2d/3d image datasets.
       <b><font color="#000066">G'MIC</font></b> is actually a handy toolbox for many image/signal processing applications.
       See also the <a href="gallery">Gallery section</a> for more detailed examples on its use.
-      You can also try the <a href="http://gmicol.greyc.fr">online version</a> of <b><font color="#000066">G'MIC</font></b>
+      You can also try the <a href="https://gmicol.greyc.fr">online version</a> of <b><font color="#000066">G'MIC</font></b>
       to try some of the filters it proposes.<br/><br/>
 
       <center>
@@ -183,7 +183,7 @@
       Since 2008, it is mainly developed in the
       <a href="https://www.greyc.fr/image">Image Team</a>
       of the
-      <a href="http://www.greyc.ensicaen.fr/">GREYC</a> laboratory, in Caen/France,
+      <a href="http://www.greyc.fr/">GREYC</a> laboratory, in Caen/France,
       by permanent researchers working in the field of image processing on a daily basis.<br/><br/>
 
       Other interesting technical aspects of <b><font color="#000066">G'MIC</font></b> are:
@@ -197,12 +197,12 @@
         <li>It provides light but efficient <b>visualization modules</b> dedicated to the exploration/viewing of
           2d/3d multi-spectral images, 3d vector objects (elevation map, isocurves, isosurfaces,...), or 1d graph plots.<br/><br/></li>
         <li>It is <b>highly extensible</b> through the possible inclusion of
-          <b><a href="http://gmic.eu/gmic_stdlib.gmic">custom command files</a></b>
+          <b><a href="https://gmic.eu/gmic_stdlib.gmic">custom command files</a></b>
           which add new commands that become understood by the language interpreter. Thus, users can design their own
           image processing library on top of <b><font color="#000066">G'MIC</font></b>.<br/><br/>
         </li>
         <li>It proposes commands to handle custom <b>interactive windows</b> where events can be managed  by the user.<br/><br/></li>
-        <li>It is based on the latest development version of the <a href="http://cimg.eu"><b>CImg Library</b></a>,
+        <li>It is based on the latest development version of the <a href="https://cimg.eu"><b>CImg Library</b></a>,
           a well established C++ template image processing toolkit, created and maintained by the same team of developers since 1999.</li>
       </ul>
     </div>
