@@ -42,20 +42,20 @@
                       <li>for <b>GIMP 2.10</b> :
                         <ul>
                           <li>Windows <i>64 bits</i>:
-                            <a href="https://gmic.eu/files/prerelease_windows/gmic_gimp2.10_qt_win64.exe">installer</a> or
-                            <a href="https://gmic.eu/files/prerelease_windows/gmic_gimp2.10_qt_win64.zip">.zip archive</a>
+                            <a href="https://gmic.eu/files/windows/gmic_gimp2.10_qt_win64.exe">installer</a> or
+                            <a href="https://gmic.eu/files/windows/gmic_gimp2.10_qt_win64.zip">.zip archive</a>
                           </li>
                         </ul>
                       </li><br/>
                       <li>for <b>GIMP 2.8</b> :
                         <ul>
                           <li>Windows <i>64 bits</i>:
-                            <a href="https://gmic.eu/files/prerelease_windows/gmic_gimp2.8_qt_win64.exe">installer</a> or
-                            <a href="https://gmic.eu/files/prerelease_windows/gmic_gimp2.8_qt_win64.zip">.zip archive</a>
+                            <a href="https://gmic.eu/files/windows/gmic_gimp2.8_qt_win64.exe">installer</a> or
+                            <a href="https://gmic.eu/files/windows/gmic_gimp2.8_qt_win64.zip">.zip archive</a>
                           </li>
                           <li>Windows <i>32 bits</i>:
-                            <a href="https://gmic.eu/files/prerelease_windows/gmic_gimp2.8_qt_win32.exe">installer</a> or
-                            <a href="https://gmic.eu/files/prerelease_windows/gmic_gimp2.8_qt_win32.zip">.zip archive</a>
+                            <a href="https://gmic.eu/files/windows/gmic_gimp2.8_qt_win32.exe">installer</a> or
+                            <a href="https://gmic.eu/files/windows/gmic_gimp2.8_qt_win32.zip">.zip archive</a>
                             <br/>
                             <div class="popup" onclick="popupFunction()">
                               <i><b>Important installation note for GIMP 2.8 on Windows!</b></i>
@@ -77,8 +77,8 @@
                               </span>
                             </div>
                           </li>
-                          <li>Linux <i>64 bits</i>: <a href="https://gmic.eu/files/prerelease_linux/gmic_gimp2.8_qt_linux64.zip">.zip archive</a></li>
-                          <li>Linux <i>32 bits</i>: <a href="https://gmic.eu/files/prerelease_linux/gmic_gimp2.8_qt_linux32.zip">.zip archive</a></li>
+                          <li>Linux <i>64 bits</i>: <a href="https://gmic.eu/files/linux/gmic_gimp2.8_qt_linux64.zip">.zip archive</a></li>
+                          <li>Linux <i>32 bits</i>: <a href="https://gmic.eu/files/linux/gmic_gimp2.8_qt_linux32.zip">.zip archive</a></li>
                           <li>Linux <i>32/64 bits</i>: <a href="https://gmic.eu/files/linux">Other .zip archives for specific distros</a></li>
                         </ul>
                       </li><br/>
@@ -93,21 +93,21 @@
                               regular (Qt, maintained) version. <font color="red"><b>Use at your own risk!</b></font>
                               <ul>
                                 <li>Linux <i>64 bits</i> (GIMP <b>2.8</b>):
-                                  <a href="https://gmic.eu/files/prerelease_linux/gmic_gimp2.8_gtk_linux64.zip">.zip archive</a>.</li>
+                                  <a href="https://gmic.eu/files/linux/gmic_gimp2.8_gtk_linux64.zip">.zip archive</a>.</li>
                                 <li>Linux <i>32 bits</i> (GIMP <b>2.8</b>):
-                                  <a href="https://gmic.eu/files/prerelease_linux/gmic_gimp2.8_gtk_linux32.zip">.zip archive</a>.</li>
+                                  <a href="https://gmic.eu/files/linux/gmic_gimp2.8_gtk_linux32.zip">.zip archive</a>.</li>
                                 <li>Windows <i>64 bits</i> (GIMP <b>2.10</b>):
-                                  <a href="https://gmic.eu/files/prerelease_windows/gmic_gimp2.10_gtk_win64.exe">installer</a> or
-                                  <a href="https://gmic.eu/files/prerelease_windows/gmic_gimp2.10_gtk_win64.zip">.zip archive</a>.</li>
+                                  <a href="https://gmic.eu/files/windows/gmic_gimp2.10_gtk_win64.exe">installer</a> or
+                                  <a href="https://gmic.eu/files/windows/gmic_gimp2.10_gtk_win64.zip">.zip archive</a>.</li>
                                 <li>Windows <i>32 bits</i> (GIMP <b>2.10</b>):
-                                  <a href="https://gmic.eu/files/prerelease_windows/gmic_gimp2.10_gtk_win32.exe">installer</a> or
-                                  <a href="https://gmic.eu/files/prerelease_windows/gmic_gimp2.10_gtk_win32.zip">.zip archive</a>.</li>
+                                  <a href="https://gmic.eu/files/windows/gmic_gimp2.10_gtk_win32.exe">installer</a> or
+                                  <a href="https://gmic.eu/files/windows/gmic_gimp2.10_gtk_win32.zip">.zip archive</a>.</li>
                                 <li>Windows <i>64 bits</i> (GIMP <b>2.8</b>):
-                                  <a href="https://gmic.eu/files/prerelease_windows/gmic_gimp2.8_gtk_win64.exe">installer</a> or
-                                  <a href="https://gmic.eu/files/prerelease_windows/gmic_gimp2.8_gtk_win64.zip">.zip archive</a>.</li>
+                                  <a href="https://gmic.eu/files/windows/gmic_gimp2.8_gtk_win64.exe">installer</a> or
+                                  <a href="https://gmic.eu/files/windows/gmic_gimp2.8_gtk_win64.zip">.zip archive</a>.</li>
                                 <li>Windows <i>32 bits</i> (GIMP <b>2.8</b>):
-                                  <a href="https://gmic.eu/files/prerelease_windows/gmic_gimp2.8_gtk_win32.exe">installer</a> or
-                                  <a href="https://gmic.eu/files/prerelease_windows/gmic_gimp2.8_gtk_win32.zip">.zip archive</a>.</li>
+                                  <a href="https://gmic.eu/files/windows/gmic_gimp2.8_gtk_win32.exe">installer</a> or
+                                  <a href="https://gmic.eu/files/windows/gmic_gimp2.8_gtk_win32.zip">.zip archive</a>.</li>
                               </ul>
                             </p>
                           </span>
@@ -122,8 +122,8 @@
                   <td><img alt="" src="img/download_krita.png" border="0"></img></td><td>&nbsp;&nbsp;</td>
                   <td><font size="3"><b><font color="#000066">G'MIC</font></b> plug-in for <a href="http://www.krita.org">Krita</a> (3.2+) </font><br/>
                     <ul>
-                      <li>Windows <i>64 bits</i>: <a href="https://gmic.eu/files/prerelease_windows/gmic_krita_qt_win64.zip">.zip archive</a></li>
-                      <li>Windows <i>32 bits</i>: <a href="https://gmic.eu/files/prerelease_windows/gmic_krita_qt_win32.zip">.zip archive</a></li>
+                      <li>Windows <i>64 bits</i>: <a href="https://gmic.eu/files/windows/gmic_krita_qt_win64.zip">.zip archive</a></li>
+                      <li>Windows <i>32 bits</i>: <a href="https://gmic.eu/files/windows/gmic_krita_qt_win32.zip">.zip archive</a></li>
                       <li>Linux <i>32/64 bits</i>: <a href="https://gmic.eu/files/linux">Other archives/packages for specific distros</a></li>
                     </ul>
                     <br/></td>
@@ -135,10 +135,10 @@
                   <td><img alt="" src="img/download_win64.png" border="0"></img></td><td>&nbsp;&nbsp;</td>
                   <td><font size="3"><b><font color="#000066">G'MIC</font></b> for Windows <i>64 bits</i> - Other interfaces</font><br/>
                     <ul>
-                      <li>Command-line interface (CLI): <a href="https://gmic.eu/files/prerelease_windows/gmic_cli_win64.zip">.zip archive</a></li>
-                      <!-- <li>Stand-alone <i>Qt</i> interface: <a href="https://gmic.eu/files/prerelease_windows/gmic_qt_win64.zip">.zip archive</a></li> -->
-                      <!-- <li>ZArt: <a href="https://gmic.eu/files/prerelease_windows/gmic_zart_win64.zip">.zip archive</a></li> -->
-                      <li>C/C++ library: <a href="https://gmic.eu/files/prerelease_windows/gmic_lib_win64.zip">.zip archive</a></li>
+                      <li>Command-line interface (CLI): <a href="https://gmic.eu/files/windows/gmic_cli_win64.zip">.zip archive</a></li>
+                      <!-- <li>Stand-alone <i>Qt</i> interface: <a href="https://gmic.eu/files/windows/gmic_qt_win64.zip">.zip archive</a></li> -->
+                      <!-- <li>ZArt: <a href="https://gmic.eu/files/windows/gmic_zart_win64.zip">.zip archive</a></li> -->
+                      <li>C/C++ library: <a href="https://gmic.eu/files/windows/gmic_lib_win64.zip">.zip archive</a></li>
                     </ul>
                     <br/></td>
                 </tr>
@@ -148,10 +148,10 @@
                   <td><img alt="" src="img/download_win32.png" border="0"></img></td><td>&nbsp;&nbsp;</td>
                   <td><font size="3"><b><font color="#000066">G'MIC</font></b> for Windows <i>32 bits</i> - Other interfaces</font><br/>
                     <ul>
-                      <li>Command-line interface (CLI): <a href="https://gmic.eu/files/prerelease_windows/gmic_cli_win32.zip">.zip archive</a></li>
-                      <!-- <li>Stand-alone <i>Qt</i> interface: <a href="https://gmic.eu/files/prerelease_windows/gmic_qt_win32.zip">.zip archive</a></li> -->
-                      <!-- <li>ZArt: <a href="https://gmic.eu/files/prerelease_windows/gmic_zart_win32.zip">.zip archive</a></li> -->
-                      <li>C/C++ library: <a href="https://gmic.eu/files/prerelease_windows/gmic_lib_win32.zip">.zip archive</a></li>
+                      <li>Command-line interface (CLI): <a href="https://gmic.eu/files/windows/gmic_cli_win32.zip">.zip archive</a></li>
+                      <!-- <li>Stand-alone <i>Qt</i> interface: <a href="https://gmic.eu/files/windows/gmic_qt_win32.zip">.zip archive</a></li> -->
+                      <!-- <li>ZArt: <a href="https://gmic.eu/files/windows/gmic_zart_win32.zip">.zip archive</a></li> -->
+                      <li>C/C++ library: <a href="https://gmic.eu/files/windows/gmic_lib_win32.zip">.zip archive</a></li>
                     </ul>
                     <br/></td>
                 </tr>
@@ -161,9 +161,9 @@
                   <td><img alt="" src="img/download_debian64.png" border="0"></img></td><td>&nbsp;&nbsp;</td>
                   <td><font size="3"><b><font color="#000066">G'MIC</font></b> for Debian <i>64 bits</i> - All interfaces</font><br/>
                     <ul>
-                      <li>Debian 9 <i>Stretch</i>: <a href="https://gmic.eu/files/prerelease_linux/gmic_debian_stretch_amd64.deb">.deb package</a></li>
-                      <li>Debian 8 <i>Jessie</i>: <a href="https://gmic.eu/files/prerelease_linux/gmic_debian_jessie_amd64.deb">.deb package</a></li>
-                      <li>Debian 7 <i>Wheezy</i>: <a href="https://gmic.eu/files/prerelease_linux/gmic_debian_wheezy_amd64.deb">.deb package</a></li>
+                      <li>Debian 9 <i>Stretch</i>: <a href="https://gmic.eu/files/linux/gmic_debian_stretch_amd64.deb">.deb package</a></li>
+                      <li>Debian 8 <i>Jessie</i>: <a href="https://gmic.eu/files/linux/gmic_debian_jessie_amd64.deb">.deb package</a></li>
+                      <li>Debian 7 <i>Wheezy</i>: <a href="https://gmic.eu/files/linux/gmic_debian_wheezy_amd64.deb">.deb package</a></li>
                     </ul>
                     <br/></td>
                 </tr>
@@ -173,9 +173,9 @@
                   <td><img alt="" src="img/download_debian32.png" border="0"></img></td><td>&nbsp;&nbsp;</td>
                   <td><font size="3"><b><font color="#000066">G'MIC</font></b> for Debian <i>32 bits</i> - All interfaces</font><br/>
                     <ul>
-                      <li>Debian 9 <i>Stretch</i>: <a href="https://gmic.eu/files/prerelease_linux/gmic_debian_stretch_i386.deb">.deb package</a></li>
-                      <li>Debian 8 <i>Jessie</i>: <a href="https://gmic.eu/files/prerelease_linux/gmic_debian_jessie_i386.deb">.deb package</a></li>
-                      <li>Debian 7 <i>Wheezy</i>: <a href="https://gmic.eu/files/prerelease_linux/gmic_debian_wheezy_i386.deb">.deb package</a></li>
+                      <li>Debian 9 <i>Stretch</i>: <a href="https://gmic.eu/files/linux/gmic_debian_stretch_i386.deb">.deb package</a></li>
+                      <li>Debian 8 <i>Jessie</i>: <a href="https://gmic.eu/files/linux/gmic_debian_jessie_i386.deb">.deb package</a></li>
+                      <li>Debian 7 <i>Wheezy</i>: <a href="https://gmic.eu/files/linux/gmic_debian_wheezy_i386.deb">.deb package</a></li>
                     </ul>
                     <br/></td>
                 </tr>
@@ -185,9 +185,9 @@
                   <td><img alt="" src="img/download_ubuntu64.png" border="0"></img></td><td>&nbsp;&nbsp;</td>
                   <td><font size="3"><b><font color="#000066">G'MIC</font></b> for Ubuntu <i>64 bits</i> - All interfaces</font><br/>
                     <ul>
-                      <li>Ubuntu 18.04 LTS <i>Bionic</i>: <a href="https://gmic.eu/files/prerelease_linux/gmic_ubuntu_bionic_amd64.deb">.deb package</a></li>
-                      <li>Ubuntu 17.10 <i>Artful</i>: <a href="https://gmic.eu/files/prerelease_linux/gmic_ubuntu_artful_amd64.deb">.deb package</a></li>
-                      <li>Ubuntu 16.04 LTS <i>Xenial</i>: <a href="https://gmic.eu/files/prerelease_linux/gmic_ubuntu_xenial_amd64.deb">.deb package</a></li>
+                      <li>Ubuntu 18.04 LTS <i>Bionic</i>: <a href="https://gmic.eu/files/linux/gmic_ubuntu_bionic_amd64.deb">.deb package</a></li>
+                      <li>Ubuntu 17.10 <i>Artful</i>: <a href="https://gmic.eu/files/linux/gmic_ubuntu_artful_amd64.deb">.deb package</a></li>
+                      <li>Ubuntu 16.04 LTS <i>Xenial</i>: <a href="https://gmic.eu/files/linux/gmic_ubuntu_xenial_amd64.deb">.deb package</a></li>
                     </ul>
                     <br/></td>
                 </tr>
