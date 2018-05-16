@@ -19119,68 +19119,69 @@ demo : check "isint(${1=2}) && $1>=0 && $1<=2"
 ----\n
 -------------------------------------"
   v - l[]
+  entries="2048 game","Blobs editor","Bouncing balls","Connect Four","Fire effect","Fireworks","Fish-eye effect",\
+          "Fourier filtering","Tower of Hanoi","Histogram demo","Hough transform","Jawbreaker","Virtual Landscape","The game of life",\
+          "Light effect","Mandelbrot explorer","3d metaballs","Minesweeper","Minimal path","Pacman","Paint",\
+          "Plasma effect","RGB quantization","3d reflection","3d rubber object","Shade bobs","Spline editor","3d starfield",\
+          "Tetris","Tic-tac-toe","Image waves","Fractal whirls","Color curves"
+  commands=x_2048,x_blobs,x_bouncing,x_connect4,x_fire,x_fireworks,x_fisheye,\
+           x_fourier,x_hanoi,x_histogram,x_hough,x_jawbreaker,x_landscape,x_life,\
+           x_light,x_mandelbrot,x_metaballs3d,x_minesweeper,x_minimal_path,x_pacman,x_paint,\
+           x_plasma,x_quantize_rgb,x_reflection3d,x_rubber3d,x_shadebobs,x_spline,x_starfield3d,\
+           x_tetris,x_tictactoe,x_waves,x_whirl,_demo_color_curves
+  nb_entries={narg($entries)}
   parallel_mode={1-if($1!=2,$1,$_cpus>=2)}
-  400,800,1,3 +plasma. 1,1,5 n. 0,230 water. 100
-  (0.1;0.03^0;0.1^0.2;0.1) r. ..,3 *[-2,-1]
-  (0;1) r. ..,..,1,1,3 pow. 1.5 n. 0.2,1.15 *[-2,-1] c. 0,255
+  strver=${-strver}
+  if {narg($_prerelease)} strver.=_pre#$_prerelease fi
 
-  100%,100%,1,3
-  0 t. "1- 2048 game\n"\
-       "2- Blobs editor\n"\
-       "3- Bouncing balls\n"\
-       "4- Connect four\n"\
-       "5- Fire effect\n"\
-       "6- Fireworks\n"\
-       "7- Fish-eye effect\n"\
-       "8- Fourier filtering\n"\
-       "9- Tower of Hanoi\n"\
-       "10- Histogram demo\n"\
-       "11- Hough transform\n"\
-       "12- Jawbreaker\n"\
-       "13- Virtual landscape\n"\
-       "14- The game of life\n"\
-       "15- Light effect\n"\
-       "16- Mandelbrot explorer\n"\
-       "17- 3d metaballs\n"\
-       "18- Minesweeper\n"\
-       "19- Minimal path\n"\
-       "20- Pacman\n"\
-       "21- Paint\n"\
-       "22- Plasma effect\n"\
-       "23- RGB quantization\n"\
-       "24- 3d reflection\n"\
-       "25- 3d rubber object\n"\
-       "26- Shade bobs\n"\
-       "27- Spline editor\n"\
-       "28- 3d starfield\n"\
-       "29- Tetris\n"\
-       "30- Tic-tac-toe\n"\
-       "31- Image waves\n"\
-       "32- Fractal whirls\n"\
-       "33- Color curves\n",0,0,22,1,255,255,255
-  commands=x_2048,x_blobs,x_bouncing,x_connect4,x_fire,x_fireworks,x_fisheye,x_fourier,x_hanoi,x_histogram,x_hough,\
-           x_jawbreaker,x_landscape,x_life,x_light,x_mandelbrot,x_metaballs3d,x_minesweeper,x_minimal_path,\
-           x_pacman,x_paint,x_plasma,x_quantize_rgb,x_reflection3d,x_rubber3d,x_shadebobs,\
-           x_spline,x_starfield3d,x_tetris,x_tictactoe,x_waves,x_whirl,_demo_color_curves
-  nb_demos={narg($commands)}
-  y0=59
-  j.. .,20,$y0,0,0 rm.
-  rectangle. 0,16,100%,52,1,120,120,32
+  # Generate menu graphics.
+  l[]
+    repeat $nb_entries
+      arg 1+$>,$entries entry=${}
+      0 t. $entry,0,0,21,1,1
+    done
+    r ${-max_wh},1,1,0,0,0.5,0.5
+    frame 4,4,0 a z
+    +n[0] 0,255
+    +shift[0] 1,3,0,0 max[0,-1]
+    frame[0] 1,1,1
+    frame[1] 1,1,128
+    r. [0],[0],[0],100%,0,0,0.5,0.5
+    +f[0] z+1
+    1,1,100%,3,u(128,255) r. 1,[0],[0],3 *. 'y/(h-1)' r. [0],[0],[0],3,3
+    frame 4,4,0
+    a c s z
+    append_tiles 3 s c
+    to_rgb[1] a[3-5] c
 
-  0 t. "G\'MIC demos",2,2,32,1,1,1,1
-  if $_prerelease 0 t. "Version:\n"$strver,40,1,18,1,1,1,1 rows. 2,100%
-  else 0 t. "Version: "$strver,40,1,18,1,1,1,1 rows. -2,100%
-  fi
-  a[-2,-1] x,0.5
+    0 t. "G\'MIC demos",2,2,32,1,1,1,1
+    if $_prerelease 0 t. "Version:\n"$strver,40,1,18,1,1,1,1 rows. 2,100%
+    else 0 t. "Version: "$strver,40,1,18,1,1,1,1 rows. -2,100%
+    fi
+    a[-2,-1] x,0.5
+    b. 0.5 n. 0,1
+    (32;255^255;255^0;0) r. ..,..,1,3,3 *[-2,-1] round. 1,-1 +!=. 0 channels. 1
 
-  b. 0.5 n. 0,1
-  (32;255^255;255^0;0) r. ..,..,1,3,3 *[-2,-1] round. 1,-1 +!=. 0 channels. 1
-  j... ..,20,18,0,0,1,. rm[-2,-1] +channels. 1 dilate. 5
-  (80;255;80^0;255;0^0;0;0) (10;255;10^0;100;0^0;0;0)
-  r[-2,-1] ...,22,1,3,3 polygon[-2,-1] 3,1,1,1,16,10,8,1,255,255,255 +mirror[-2,-1] x
-  max[-4,-2] max[-2,-1]
+    s=8
+    r[^-2,-1] 100%,{h+h#0+2*$s+6},1,100%,0,0,0,1
+    rectangle[0] 0,$s,100%,{$s+6+h-1},1,0.6
+    rectangle[1] 0,$s,100%,{$s+6+h-1},1,120,120,32
+    j[0] .,{(w#0-w)/2},{$s+3},0,0,-1
+    j[1] ..,{(w#0-w)/2},{$s+3},0,0,1,. rm[-2,-1]
+    c[0] 0,1
+    nm menu_opac,menu_fgcol,menu_ind,menu_bgcol
+  endl
 
-  # Pre-compute 3d objects.
+  # Generate 3d cursors.
+  l[]
+    sphere3d 7 o3d. 1 col3d. 255,230,0
+    torus3d 15,3 o3d. 0.5 col3d. 255,158,32
+    torus3d 25,3 o3d. 0.25 col3d. 200,64,16
+    c3d
+    nm cursor3d_1,cursor3d_2,cursor3d_3
+  endl
+
+  # Generate 3d background object.
   l[]
     n=16
     ball[] 64,200,100,64 n. 0,230 s. c,-3
@@ -19193,48 +19194,65 @@ demo : check "isint(${1=2}) && $1>=0 && $1<=2"
       3,{$P-$N},1,1,200 y a y
     endl
     l[5] # Opacities
-      n 0,0.25 i[0] (-128,{w},{h},1) 4,{$N-1},1,1,-128,0,0,0
+      n 0,0.5 i[0] (-128,{w},{h},1) 4,{$N-1},1,1,-128,0,0,0
       1,{$P-$N},1,1,0.25 y a y
     endl
     y a y
+    nm background3d
   endl
 
-  # Start main loop.
-  cfx={0} cfy={0} cfz={0} nfx={g} nfy={g} nfz={g} alpha=0 time0={$|-4} selected=-1 f3d 400
-  w[0] {f=h#0<0.5*{*,v}?1.5:1;[w#0,h#0]*=f},0,0,50%,50%,"[G'MIC - "$strver"]"
-  do
+  # Generate background.
+  {menu_fgcol,[w,h]},1,3 +plasma. 1,1,5 n. 0,230 water. 100
+  (0.1;0.03^0;0.1^0.2;0.1) r. ..,3 *[-2,-1]
+  (0;1) r. ..,..,1,1,3 pow. 1.5 n. 0.2,1.15 *[-2,-1] n. 0,128
+  nm. background
+  w. -1,-1,0,"[G'MIC - "$strver"]" cursor 0
 
-    # Set 3d coordinates for object.
+  # Enter event loop.
+  omb,ind_clicked,cfx,cfy,cfz,alpha=0
+  nfx,nfy,nfz={[g,g,g]} time0={$|-4}
+  do
+    mx,my,mb={menu_fgcol,x={*,x};y={*,y};[x<0?-1:x*(w-1)/({*,w}-1),y<0?-1:y*(h-1)/({*,h}-1),{*,b}]}
+    ind={menu_ind,i($mx,$my)}
+    if {$mb" && "!$ind_clicked} ind_clicked=$ind fi
+
+    # Render current view.
+    [background]
+
     3,$N,1,1,"const t = 0.8*"$|"; const a = "$alpha"; const oma = 1 - a;
               x==0?oma*cos("$cfx"*y + t) + a*cos("$nfx"*y + t):
               x==1?oma*sin("$cfy"*y + t) + a*sin("$nfy"*y + t):
                    oma*sin("$cfz"*y + t) + a*sin("$nfz"*y + t)"
     y.
-    j[6] .,0,8 rm.
-    +r3d[6] 1,2,3,{20*$|} *3d. {0,w/2-30},{0,h/2-30},300 +3d. 0,0,300
+    j[background3d] .,0,8 rm.
+    +r3d[background3d] 1,2,3,{20*$|} *3d. {menu_fgcol,[w,h]/2-30},300 +3d. 0,0,300
+    j3d.. .,50%,50%,0,1,1,0,0,200 rm.
+    if {$|-$time0>5} alpha+=0.02 fi
+    if {$alpha>1} alpha-=1 cfx,cfy,cfz=$nfx,$nfy,$nfz nfx,nfy,nfz={[g,g,g]} time0={$|-u*3} fi
 
-    # Render image.
-    *[0] 0.85 +[0] [1] j3d[0] .,50%,50%,0,1,1,0,0,200 rm.
-    j[0] [2],0,0,0,0,0.75,[3],255
+    if {$ind>0} +==[menu_ind] $ind j.. [menu_bgcol],0,0,0,0,{$mb" && "$ind_clicked==$ind?0.6:1},. rm. fi # Draw selection background
+    j. [menu_fgcol],0,0,0,0,1,[menu_opac]
 
-    # Manage mouse events.
-    y={{*,y}*{0,h}/{*,h}}
-    if {$y>=0} y={max(0,min({$nb_demos-1},int(($y-$y0)/22)))} j[0] [{if($selected>=0,5,4)}],0,{$y0+22*$y},0,0,0.2 fi # Menu location.
-
-    w[0] wait 20
-    if {{*,CTRLLEFT}&&{*,D}} w[0] 150%,150% elif {{*,CTRLLEFT}&&{*,C}} w[0] 100%,100% fi
-
-    if {({*,b}&1)&&$selected<0} selected=$y # Selection
-    elif {!{*,b}}
-      if {$selected>=0&&$y==$selected}
-      m "com : -v 0 "${arg\ {1+$y},$commands} parallel $parallel_mode,"l[] com v -1 rm endl" uncommand com
-      fi
-      selected=-1
+    if {$mx>0}
+      [cursor3d_1]
+      +r3d[cursor3d_2] 1,1,0.3,{100*$|} r3d. 0.2,0.7,1,{50*$|}
+      +r3d[cursor3d_3] 0.7,1,0,{-160*$|} r3d. 0.2,0.7,1,{-30*$|}
+      +3d[-3--1]
+      j3d.. .,$mx,$my,0,1,3,0,0 rm.
     fi
 
-    # Manage ball animation.
-    if {$|-$time0>5} alpha+=0.02 fi
-    if {$alpha>1} alpha-=1 cfx=$nfx cfy=$nfy cfz=$nfz nfx={g} nfy={g} nfz={g} time0={$|-u*3} fi
+    w. -1,-1,0
+    if {{*,CTRLLEFT}&&{*,D}} w. 150%,150% elif {{*,CTRLLEFT}&&{*,C}} w. 100%,100% fi
+    rm.
+
+    # Manage user selection.
+    if {!$mb" && "$omb" && "$ind_clicked" && "$ind_clicked==$ind}
+      m "com : -v 0 "${arg\ $ind,$commands} parallel $parallel_mode,"l[] com v -1 rm endl" uncommand com
+    elif {!$mb} ind_clicked=0
+    fi
+    omb=$mb
+
+    wait 20
   while {{*}" && "!{*,ESC}" && "!{*,Q}}
   rm w 0 endl -v 0 e[] ""
 
