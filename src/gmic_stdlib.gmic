@@ -374,7 +374,7 @@ _help_usage :
 \n       axis, taken from the last image '"${g}"[-1]"$n"''). Any specified dimension can be also written as
 \n       '"${c}"[image]"$n"', and is then set to the size (along the same axis) of the existing specified image
 \n       "${g}"[image]"$n". '"${g}"values"$n"' can be either a sequence of numbers separated by commas '"${g}","$n"', or a
-\n       mathematical expression, as e.g. in input item '"${c}"256,256,1,3,if(c==0,x,if(c==1,y,0))"$n"' which
+\n       mathematical expression, as e.g. in input item '"${c}"256,256,1,3,[x,y,128]"$n"' which
 \n       creates a 256x256 RGB color image with a spatial shading on the red and green channels.
 \n       (see section '"${c}"Mathematical expressions"$n"' to learn more about mathematical expressions).
 \n
@@ -386,7 +386,7 @@ _help_usage :
 \n    . '"${c}"0"$n"': Insert a new '"${g}"empty"$n"' image, containing no pixel data. Empty images are used only in rare
 \n       occasions.
 \n
-\n  - Input item '"${c}"name=value"$n"' declares a new local or global variable '"${g}"name"$n"', or assign a new value
+\n  - Input item '"${c}"name=value"$n"' declares a new variable '"${g}"name"$n"', or assign a new value
 \n     to an existing variable. Variable names must use the character set "${g}"[a-zA-Z0-9_]"$n" and cannot
 \n     start with a number.
 \n
@@ -437,7 +437,7 @@ _help_usage :
 \n    . '"${c}"command[0--1:2]"$n"': Apply command only on images of the list with even indices.
 \n    . '"${c}"command[0,2-4,50%--1]"$n"': Apply command on images "${g}"[0],[2],[3],[4]"$n" and on the second half of
 \n                                 the image list.
-\n    . '"${c}"command[^0,1]"$n"': Apply command on all images except the two first.
+\n    . '"${c}"command[^0,1]"$n"': Apply command on all images except the first two.
 \n    . '"${c}"command[name1,name2]"$n"': Apply command on named images '"${g}"name1"$n"' and '"${g}"name2"$n"'.
 \n
 \n  - Indices in selections are always sorted in increasing order, and duplicate indices are
@@ -453,7 +453,7 @@ _help_usage :
 \n  - "${-GMIC}" commands invoked without '"${c}"[selection]"$n"' are applied on all images of the list, i.e. the
 \n     default selection is '"${c}"[0--1]"$n"' (except for command '"${c}"input"$n"' whose default selection is '"${c}"[-1]"$n"').
 \n
-\n  - Prepending a single hyphen '"${g}"-"$n"' to a "${-GMIC}" command has no effect. This may be useful to recognize
+\n  - Prepending a single hyphen '"${g}"-"$n"' to a "${-GMIC}" command is allowed. This may be useful to recognize
 \n     command items more easily in a one-liner pipeline (typically invoked from a shell).
 \n
 \n  - A "${-GMIC}" command prepended with a plus sign '"${g}"+"$n"' or a double hyphen '"${g}"--"$n"' does not act 'in-place'
@@ -498,8 +498,8 @@ _help_usage :
 \n  - Be aware that usual file formats may be sometimes not adapted to store all the available image
 \n     data, since "${-GMIC}" uses float-valued image buffers. For instance, saving an image that was
 \n     initially loaded as a 16bits/channel image, as a "${c}".jpg"$n" file will result in a loss of
-\n     information. Use the "${-GMIC}"-specific file extensions "${c}".cimgz"$n" or "${c}".gmz"$n" to ensure that all data
-\n     precision are preserved when saving images.
+\n     information. Use the "${-GMIC}"-specific file extension "${c}".gmz"$n" to ensure that all data
+\n     precision is preserved when saving images.
 \n
 \n  - Sometimes, file options may/must be set for file formats:
 \n
@@ -587,7 +587,7 @@ _help_usage :
 \n       . '"${c}"$_prerelease"$n"': For pre-releases only, the date of the pre-release as '"${g}"yymmdd"$n"'.
 \n          For stable releases, this variable is not defined.
 \n       . '"${c}"$_version"$n"': A 3-digits number telling about the current version of the "${-GMIC}" interpreter
-\n          (currently '"$g$_version$n"').
+\n          (e.g. '"$g$_version$n"').
 \n       . '"${c}"$_vt100"$n"': Set to "${g}"1"$n" (default value) if colored text output is allowed on the console.
 \n       . '"${c}"$_path_rc"$n"': The path to the "${-GMIC}" folder used to store resources and configuration files
 \n         (its value is OS-dependent).
@@ -597,9 +597,9 @@ _help_usage :
 \n  - '"${c}"$$name"$n"' and '"${c}"$${name}"$n"' are both substituted by the G'MIC script code of the specified named
 \n     "${g}"custom command"$n", or by an empty string if no custom command with specified name exists.
 \n
-\n  - '"${c}"${\"-command line\"}"$n"' is substituted by the "${g}"status value"$n" set by the execution of the specified
-\n     command line (see command '"${c}"status"$n"' to learn more about status). Expression '"${c}"${}"$n"' thus stands
-\n     for the "${g}"current status value"$n".
+\n  - '"${c}"${\"-pipeline\"}"$n"' is substituted by the "${g}"status value"$n" after the execution of the specified
+\n     "${-GMIC}" pipeline (see command '"${c}"status"$n"'). Expression '"${c}"${}"$n"' thus stands for the
+\n     "${g}"current status value"$n".
 \n
 \n  - '"${c}"{``string}"$n"' (starting with two backquotes) is substituted by a "${g}"double-quoted version"$n" of the
 \n     specified string.
@@ -619,7 +619,7 @@ _help_usage :
 \n       . '"${c}"f"$n"': The image folder name.
 \n       . '"${c}"n"$n"': The image name or filename (if the image has been read from a file).
 \n       . '"${c}"t"$n"': The text string from the image values regarded as ascii codes.
-\n       . '"${c}"x"$n"': The image extension (i.e last characters after the last '.' in the image name).
+\n       . '"${c}"x"$n"': The image extension (i.e the characters after the last '.' in the image name).
 \n       . '"${c}"^"$n" : The sequence of all image values, separated by commas ','.
 \n       . '"${c}"@subset"$n"': The sequence of image values corresponding to the specified subset, and
 \n          separated by commas ','.
