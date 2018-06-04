@@ -1,0 +1,538 @@
+#!/bin/bash
+#
+#  File        : gmic_buildpackage
+#                ( Bash script )
+#
+#  Description : Build .tar.gz and .deb package files
+#                of G'MIC (GREYC's Magic for Image Computing).
+#
+#  Usage       : ./gmic_buildpackage [final]
+#
+#  Copyright   : David Tschumperle
+#                ( http://tschumperle.users.greyc.fr/ )
+#
+#  License     : CeCILL v2.0
+#                ( http://www.cecill.info/licences/Licence_CeCILL_V2-en.html )
+#
+#  This software is governed by the CeCILL  license under French law and
+#  abiding by the rules of distribution of free software.  You can  use,
+#  modify and/ or redistribute the software under the terms of the CeCILL
+#  license as circulated by CEA, CNRS and INRIA at the following URL
+#  "http://www.cecill.info".
+#
+#  As a counterpart to the access to the source code and  rights to copy,
+#  modify and redistribute granted by the license, users are provided only
+#  with a limited warranty  and the software's author,  the holder of the
+#  economic rights,  and the successive licensors  have only  limited
+#  liability.
+#
+#  In this respect, the user's attention is drawn to the risks associated
+#  with loading,  using,  modifying and/or developing or reproducing the
+#  software by the user in light of its specific status of free software,
+#  that may mean  that it is complicated to manipulate,  and  that  also
+#  therefore means  that it is reserved for developers  and  experienced
+#  professionals having in-depth computer knowledge. Users are therefore
+#  encouraged to load and test the software's suitability as regards their
+#  requirements in conditions enabling the security of their systems and/or
+#  data to be ensured and,  more generally, to use and operate it in the
+#  same conditions as regards security.
+#
+#  The fact that you are presently reading this means that you have had
+#  knowledge of the CeCILL license and that you accept its terms.
+#
+
+# Handle package building on Windows.
+#------------------------------------
+if [ "$OSTYPE" == "msys" ]; then
+
+    # Determine 32/64 bits architecture.
+    BITS=`g++ -v 2>&1 | grep Target | tail -c+9`
+    if [ "$BITS" == "x86_64-w64-mingw32" ]; then BITS=64; else BITS=32; fi
+    echo
+    echo " - Build G'MIC packages for Windows ($BITS bits)."
+    cd $HOME
+
+    # Clean old packages and input sources.
+    rm -rf gmic gmic-qt gmic_gimp_gtk gmic_gimp_qt gmic_*${VERSION}${SUFFIX}*_win${BITS}* gmic-*${VERSION}${SUFFIX}*-win${BITS}* *.iss
+    mkdir gmic
+    cp -rf /e/work/src/gmic-qt $HOME
+    cp -rf /e/work/src/gmic/src $HOME/gmic
+    cp -rf /e/work/src/gmic-community/libcgmic/*gmic* $HOME/gmic/src
+    cp -rf /e/work/src/zart $HOME/gmic/
+    cp -rf /e/work/src/gmic/resources/gmic_film_cluts.gmz $HOME/build${BITS}-gimp-gtk
+    cp -rf /e/work/src/gmic/resources/gmic_film_cluts.gmz $HOME/build${BITS}-gimp-qt
+
+    # Get version number.
+    cd $HOME/gmic/src
+    RELEASE0=`grep "#define gmic_version" gmic.h | tail -c5`
+    RELEASE1=`echo $RELEASE0 | head -c1`
+    RELEASE2=`echo $RELEASE0 | head -c2 | tail -c1`
+    RELEASE3=`echo $RELEASE0 | head -c3 | tail -c1`
+    VERSION=$RELEASE1.$RELEASE2.$RELEASE3
+    SVERSION=$RELEASE1$RELEASE2$RELEASE3
+    IS_210=`uname -a | grep 2.10 | wc -l`
+    if [ "$IS_210" == "1" ]; then GIMPVER=2.10
+    else GIMPVER=2.8
+    fi
+
+    if [ "$1" == "final" ]; then
+        SUFFIX="";
+        sed "s/PRERELEASE_CFLAGS = /NO_PRERELEASE_CFLAGS = /" Makefile > /tmp/Makefile
+        mv /tmp/Makefile Makefile
+        sed "s/PRERELEASE = /NO_PRERELEASE = /" Makefile > /tmp/Makefile
+        mv /tmp/Makefile Makefile
+    else SUFFIX=_pre;
+    fi
+
+    echo " - Release number : $VERSION$SUFFIX (GIMP $GIMPVER)."
+
+    sed "s/rm -rf CImg.h gmic_stdlib.h gmic_gimp_gtk.h /rm -rf /" Makefile > /tmp/Makefile
+    mv /tmp/Makefile Makefile
+
+    cd $HOME
+    sed s\/XXX\/${VERSION}${SUFFIX}\/g /e/work/src/gmic/resources/gmic_gimp${GIMPVER}_gtk${BITS}.iss > tmp.iss &&
+        sed s\/YYY\/${RELEASE1}\/g tmp.iss > installer_gtk.iss
+    sed s\/XXX\/${VERSION}${SUFFIX}\/g /e/work/src/gmic/resources/gmic_gimp${GIMPVER}_qt${BITS}.iss > tmp.iss &&
+        sed s\/YYY\/${RELEASE1}\/g tmp.iss > installer_qt.iss
+
+    # Define output files (archives/installers).
+    OUTDIR_CLI=gmic-cli-${VERSION}${SUFFIX}-win${BITS}
+    OUTZIP_CLI=gmic_cli_${VERSION}${SUFFIX}_win${BITS}.zip
+
+    OUTDIR_LIB=gmic-lib-${VERSION}${SUFFIX}-win${BITS}
+    OUTZIP_LIB=gmic_lib_${VERSION}${SUFFIX}_win${BITS}.zip
+
+    OUTDIR_ZART=gmic-zart-${VERSION}${SUFFIX}-win${BITS}
+    OUTZIP_ZART=gmic_zart_${VERSION}${SUFFIX}_win${BITS}.zip
+
+    OUTDIR_QT=gmic-qt-${VERSION}${SUFFIX}-win${BITS}
+    OUTZIP_QT=gmic_qt_${VERSION}${SUFFIX}_win${BITS}.zip
+
+#    OUTDIR_GIMP_GTK=gmic-gimp${GIMPVER}-gtk-${VERSION}${SUFFIX}-win${BITS}
+    OUTDIR_GIMP_GTK=gmic_gimp_gtk
+    OUTZIP_GIMP_GTK=gmic_gimp${GIMPVER}_gtk_${VERSION}${SUFFIX}_win${BITS}.zip
+    OUTINST_GIMP_GTK=gmic_gimp${GIMPVER}_gtk_${VERSION}${SUFFIX}_win${BITS}.exe
+
+#    OUTDIR_GIMP_QT=gmic-gimp${GIMPVER}-qt-${VERSION}${SUFFIX}-win${BITS}
+    OUTDIR_GIMP_QT=gmic_gimp_qt
+    OUTZIP_GIMP_QT=gmic_gimp${GIMPVER}_qt_${VERSION}${SUFFIX}_win${BITS}.zip
+    OUTINST_GIMP_QT=gmic_gimp${GIMPVER}_qt_${VERSION}${SUFFIX}_win${BITS}.exe
+
+    OUTDIR_KRITA_QT=gmic-krita-qt-${VERSION}${SUFFIX}-win${BITS}
+    OUTZIP_KRITA_QT=gmic_krita_qt_${VERSION}${SUFFIX}_win${BITS}.zip
+
+    # Compile sources.
+    cd $HOME/gmic/src && make clean && rm -f gmic gmic_gimp_gtk *.o
+    make OPT_CFLAGS="-Ofast -m${BITS} -mtune=generic" cli gimp_gtk libc libcstatic
+
+    cd $HOME/gmic/zart && rm -rf .obj && qmake GMIC_PATH=../src zart.pro && make clean
+    make release
+
+    cd $HOME/gmic-qt && rm -rf .obj
+    if [ "$1" == "final" ]; then
+        qmake PRERELEASE= HOST=none gmic_qt.pro && make clean && make release
+        qmake PRERELEASE= HOST=gimp gmic_qt.pro && make release
+        qmake PRERELEASE= HOST=krita gmic_qt.pro && make release
+    else
+        qmake PRERELEASE=`date +%y%m%d` HOST=none gmic_qt.pro && make clean && make release
+        qmake PRERELEASE=`date +%y%m%d` HOST=gimp gmic_qt.pro && make release
+        qmake PRERELEASE=`date +%y%m%d` HOST=krita gmic_qt.pro && make release
+    fi
+
+    # Copy binaries into their respective folders.
+    cd $HOME
+    cp -f gmic/src/gmic.exe build${BITS}-cli/
+    cp -f gmic/src/gmic.h gmic/src/gmic_libc.h gmic/src/use_lib* gmic/src/lib*.d* build${BITS}-lib/
+    cp -f gmic/src/gmic_gimp_gtk.exe build${BITS}-gimp-gtk/
+    cp -f gmic/zart/release/zart.exe build${BITS}-zart/
+    cp -f gmic-qt/release/gmic_qt.exe build${BITS}-qt/
+    cp -f gmic-qt/release/gmic_gimp_qt.exe build${BITS}-gimp-qt/
+    cp -f gmic-qt/release/gmic_krita_qt.exe build${BITS}-krita-qt/
+
+    # Construct G'MIC (CLI) archive.
+    cp -rf build${BITS}-cli ${OUTDIR_CLI} &&
+        cp -f /e/work/src/gmic/COPYING ${OUTDIR_CLI} &&
+        sed s\/_gmic_version\/${VERSION}${SUFFIX}\/ /e/work/src/gmic/README > ${OUTDIR_CLI}/README &&
+        zip -r -9 ${OUTZIP_CLI} ${OUTDIR_CLI} &&
+        cp -f ${OUTZIP_CLI} /e/work/src/
+
+    # Construct G'MIC (LIB) archive.
+    cp -rf build${BITS}-lib ${OUTDIR_LIB} &&
+        cp -f /e/work/src/gmic/COPYING ${OUTDIR_LIB} &&
+        sed s\/_gmic_version\/${VERSION}${SUFFIX}\/ /e/work/src/gmic/README > ${OUTDIR_LIB}/README &&
+        zip -r -9 ${OUTZIP_LIB} ${OUTDIR_LIB} &&
+        cp -f ${OUTZIP_LIB} /e/work/src/
+
+    # Construct G'MIC for GIMP (GTK) archive and installer.
+    cp -rf build${BITS}-gimp-gtk ${OUTDIR_GIMP_GTK} &&
+        cp -f /e/work/src/gmic/COPYING ${OUTDIR_GIMP_GTK} &&
+        sed s\/_gmic_version\/${VERSION}${SUFFIX}\/ /e/work/src/gmic/README > ${OUTDIR_GIMP_GTK}/README &&
+        zip -r -9 ${OUTZIP_GIMP_GTK} ${OUTDIR_GIMP_GTK} &&
+        cp -f ${OUTZIP_GIMP_GTK} /e/work/src/
+
+    /c/Program\ Files\ \(x86\)/Inno\ Setup\ 5/ISCC.exe installer_gtk.iss
+    touch ${OUTINST_GIMP_GTK} &&
+        sleep 3 &&
+        cp -f ${OUTINST_GIMP_GTK} /e/work/src/
+
+#    if [ "$BITS" == "64" ]
+
+       # # Construct ZART archive.
+       # cp -rf build${BITS}-zart ${OUTDIR_ZART} &&
+       #     cp -f /e/work/src/gmic/COPYING ${OUTDIR_ZART} &&
+       #     sed s\/_gmic_version\/${VERSION}${SUFFIX}\/ /e/work/src/gmic/README > ${OUTDIR_ZART}/README &&
+       #     zip -r -9 ${OUTZIP_ZART} ${OUTDIR_ZART} &&
+       #     cp -f ${OUTZIP_ZART} /e/work/src/
+
+       # # Construct G'MIC (Qt standalone) archive.
+       # cp -rf build${BITS}-qt ${OUTDIR_QT} &&
+       #     cp -f /e/work/src/gmic/COPYING ${OUTDIR_QT} &&
+       #     sed s\/_gmic_version\/${VERSION}${SUFFIX}\/ /e/work/src/gmic/README > ${OUTDIR_QT}/README &&
+       #     zip -r -9 ${OUTZIP_QT} ${OUTDIR_QT} &&
+       #     cp -f ${OUTZIP_QT} /e/work/src/
+
+       # Construct G'MIC for GIMP (Qt) archive and installer.
+       cp -rf build${BITS}-gimp-qt ${OUTDIR_GIMP_QT} &&
+           cp -f /e/work/src/gmic/COPYING ${OUTDIR_GIMP_QT} &&
+           sed s\/_gmic_version\/${VERSION}${SUFFIX}\/ /e/work/src/gmic/README > ${OUTDIR_GIMP_QT}/README &&
+           zip -r -9 ${OUTZIP_GIMP_QT} ${OUTDIR_GIMP_QT} &&
+           cp -f ${OUTZIP_GIMP_QT} /e/work/src/
+
+       /c/Program\ Files\ \(x86\)/Inno\ Setup\ 5/ISCC.exe installer_qt.iss
+       touch ${OUTINST_GIMP_QT} &&
+           sleep 3 &&
+           cp -f ${OUTINST_GIMP_QT} /e/work/src/
+
+       # Construct G'MIC for Krita (Qt) archive.
+       cp -rf build${BITS}-krita-qt ${OUTDIR_KRITA_QT} &&
+           cp -f /e/work/src/gmic/COPYING ${OUTDIR_KRITA_QT} &&
+           sed s\/_gmic_version\/${VERSION}${SUFFIX}\/ /e/work/src/gmic/README > ${OUTDIR_KRITA_QT}/README &&
+           zip -r -9 ${OUTZIP_KRITA_QT} ${OUTDIR_KRITA_QT} &&
+           cp -f ${OUTZIP_KRITA_QT} /e/work/src/
+
+#    fi
+
+    echo " - All done!"
+    exit 0;
+fi
+
+# Build package from a virtual Debian/Ubuntu machine.
+#-----------------------------------------------------
+HOSTNAME=`hostname`
+DIST=`lsb_release -d | tail -c+13 | xargs`
+BITS=`uname -m`
+
+IS_210=`grep \(10\) /usr/include/gimp-2.0/libgimpbase/gimpversion.h | wc -l`
+if [ "$IS_210" == "1" ]; then GIMPVER=2.10
+else GIMPVER=2.8
+fi
+
+if [ "$HOSTNAME" != "elara" ] ; then
+    SF_HOME=/media/sf_dtschump/
+    cd ${SF_HOME}/work/src
+    RELEASE0=`grep "#define gmic_version" gmic/src/gmic.h | tail -c5`
+    RELEASE1=`echo $RELEASE0 | head -c1`
+    RELEASE2=`echo $RELEASE0 | head -c2 | tail -c1`
+    RELEASE3=`echo $RELEASE0 | head -c3 | tail -c1`
+    VERSION=$RELEASE1.$RELEASE2.$RELEASE3
+    SVERSION=$RELEASE1$RELEASE2$RELEASE3
+
+    CODENAME=`lsb_release -i | xargs | tail -c+16 | xargs`_`lsb_release -c | xargs | tail -c+10 | xargs`
+    CODENAME="$(echo $CODENAME | tr '[A-Z]' '[a-z]')"
+    BITS=`uname -m`
+    if [ "$BITS" == "x86_64" ]; then BITS=64; ARCH=amd64; PARCH=x86_64; else BITS=32; ARCH=i386; PARCH=i386; fi
+    if [ "$1" == "final" ]; then SUFFIX=""; else SUFFIX=_pre; fi
+
+    TARFILE=gmic_${VERSION}${SUFFIX}.tar
+    OUTDIR=gmic-${VERSION}${SUFFIX}
+    OUTPAK=gmic_${VERSION}${SUFFIX}_${CODENAME}_${ARCH}.deb
+    OUTZIP_GIMP_GTK=gmic_gimp${GIMPVER}_gtk_${VERSION}${SUFFIX}_${CODENAME}_${ARCH}.zip
+    OUTZIP_GIMP_QT=gmic_gimp${GIMPVER}_qt_${VERSION}${SUFFIX}_${CODENAME}_${ARCH}.zip
+    OUTZIP_KRITA_QT=gmic_krita_qt_${VERSION}${SUFFIX}_${CODENAME}_${ARCH}.zip
+    GENERIC_OUTZIP_GIMP_GTK=gmic_gimp${GIMPVER}_gtk_${VERSION}${SUFFIX}_linux${BITS}.zip
+    GENERIC_OUTZIP_GIMP_QT=gmic_gimp${GIMPVER}_qt_${VERSION}${SUFFIX}_linux${BITS}.zip
+    GENERIC_OUTZIP_GIMP_GTK_SHORT=gmic_gimp${GIMPVER}_gtk_linux${BITS}.zip
+    GENERIC_OUTZIP_GIMP_QT_SHORT=gmic_gimp${GIMPVER}_qt_linux${BITS}.zip
+
+    while [ ! -f deb_${TARFILE}.gz ]; do sleep 10; done
+    sleep 10
+    cp deb_${TARFILE}.gz /tmp/ &&
+        cd /tmp/ &&
+        rm -rf $OUTDIR $OUTPAK $OUTZIP_GIMP_GTK $OUTZIP_GIMP_QT $OUTZIP_KRITA_QT $GENERIC_OUTZIP_GIMP_GTK $GENERIC_OUTZIP_GIMP_QT $GENERIC_OUTZIP_GIMP_GTK2 $GENERIC_OUTZIP_GIMP_QT2 &&
+        touch deb_${TARFILE}.gz &&
+        tar zxvf deb_${TARFILE}.gz &&
+        find gmic-${VERSION}${SUFFIX} -exec touch {} ;
+
+    cd $OUTDIR/src
+    if [ -f $HOME/is_qt5 ]; then
+        sed "s/\$(MAKE) cli lib gimp_gtk gmic_qt krita_qt gmic_qt libc zart/\$(MAKE) cli lib gimp_qt krita_qt gmic_qt libc zart/g" Makefile > /tmp/Makefile && mv /tmp/Makefile Makefile;
+    else
+        sed "s/\$(MAKE) cli lib gimp_gtk gimp_qt krita_qt gmic_qt libc zart/\$(MAKE) cli lib gimp_gtk libc zart/g" Makefile > /tmp/Makefile && mv /tmp/Makefile Makefile
+    fi
+    sed "s/\&\& \$(MAKE) clean//g" Makefile > /tmp/Makefile && mv /tmp/Makefile Makefile;  # Prevent 'qmake not found' bug when using dpkg-buildpackage, still don't know why.
+
+    cd /tmp/$OUTDIR &&
+        dpkg-buildpackage -d -j3 -rfakeroot;
+    mv ../gmic_${VERSION}_${ARCH}.deb ../$OUTPAK
+
+    zip -j -r -9 ../$OUTZIP_GIMP_GTK src/gmic_gimp_gtk README
+    cp -f ../$OUTPAK ../$OUTZIP_GIMP_GTK $SF_HOME/work/src/
+    if [ -f $HOME/is_qt5 ]; then
+        zip -j -r -9 ../$OUTZIP_GIMP_QT gmic-qt/gmic_gimp_qt README
+        zip -j -r -9 ../$OUTZIP_KRITA_QT gmic-qt/gmic_krita_qt README
+        cp -f ../$OUTZIP_GIMP_QT ../$OUTZIP_KRITA_QT $SF_HOME/work/src/
+    fi
+    if [ "$CODENAME" == "debian_wheezy" ]; then
+        cp -f ../$OUTZIP_GIMP_GTK $SF_HOME/work/src/$GENERIC_OUTZIP_GIMP_GTK
+        cp -f ../$OUTZIP_GIMP_GTK $SF_HOME/work/src/$GENERIC_OUTZIP_GIMP_GTK_SHORT
+    elif [ "$CODENAME" == "debian_jessie" ]; then
+        cp -f ../$OUTZIP_GIMP_QT $SF_HOME/work/src/$GENERIC_OUTZIP_GIMP_QT
+        cp -f ../$OUTZIP_GIMP_QT $SF_HOME/work/src/$GENERIC_OUTZIP_GIMP_QT_SHORT
+    fi
+
+    echo VIRTUALBOX_DONE
+    exit 0;
+fi
+
+# Build package from main machine (ELARA).
+#-----------------------------------------
+cd ${HOME}/work/src
+rm -rf gmic-qt zart
+git clone git@github.com:c-koi/gmic-qt.git
+git clone git@github.com:c-koi/zart.git
+RELEASE0=`grep "#define gmic_version" gmic/src/gmic.h | tail -c5`
+RELEASE1=`echo $RELEASE0 | head -c1`
+RELEASE2=`echo $RELEASE0 | head -c2 | tail -c1`
+RELEASE3=`echo $RELEASE0 | head -c3 | tail -c1`
+VERSION=$RELEASE1.$RELEASE2.$RELEASE3
+SVERSION=$RELEASE1$RELEASE2$RELEASE3
+CODENAME=`lsb_release -i | xargs | tail -c+16 | xargs`_`lsb_release -c | xargs | tail -c+10 | xargs`
+CODENAME="$(echo $CODENAME | tr '[A-Z]' '[a-z]')"
+BITS=`uname -m`
+if [ "$BITS" == "x86_64" ]; then BITS=64; ARCH=amd64; PARCH=x86_64; else BITS=32; ARCH=i386; PARCH=i386; fi
+if [ "$1" == "final" ]; then SUFFIX=""; else SUFFIX=_pre; fi
+DIR=/tmp/gmic-${VERSION}${SUFFIX}
+rm -f gmic_*${VERSION}${SUFFIX}* deb_gmic_*
+
+echo
+echo " - Release number : $VERSION$SUFFIX"
+
+# Create default command file.
+#-----------------------------
+echo " - Create 'gmic_stdlib.h' file"
+cd gmic/src/
+cp -f gmic_stdlib.gmic ../html/
+cp -f gmic_stdlib.gmic ../html/gmic_stdlib.$SVERSION
+make do_gmic_stdlib.h do_gmic_gimp_gtk.h CImg.h
+ln -fs ../zart ..
+ln -fs ../gmic-qt ..
+ln -fs ../../gmic-community/libcgmic/gmic_libc.cpp .
+ln -fs ../../gmic-community/libcgmic/gmic_libc.h .
+ln -fs ../../gmic-community/libcgmic/use_libcgmic.c .
+
+if [ "$1" == "final" ]; then
+    git tag -d v.$VERSION
+    git tag v.$VERSION
+    gmic_commit "Final release "${VERSION}
+    git push --tags
+    COMMIT=$(git -C $HOME/work/src/gmic-qt log -1 | head -1 | cut -d' ' -f 2)  # Get the SHA1 of the latest commit
+    wget -O /dev/null --timeout=10 "${GMIC_FOUREY_URL}?version=v.${VERSION}&commit=${COMMIT}"
+else
+    gmic_commit "Auto-commit for release "${VERSION}${SUFFIX}
+fi
+
+# Perform filters update on the G'MIC server.
+#---------------------------------------------
+echo " - Create list of filters."
+rm -f /tmp/gui_filters.txt
+gmic gmic_stdlib.gmic update_server > /tmp/gui_filters.txt
+size=`du -b /tmp/gui_filters.txt | head -c 1`
+if [ "$size" != "0" ]; then
+    cp -f /tmp/gui_filters.txt ../html/
+fi
+
+# Create man page and bash autocompletion script.
+#-------------------------------------------------
+echo " - Create man page and bash autocompletion script."
+make man
+make bashcompletion
+cd ..
+
+# Create HTML reference and gallery pages.
+#------------------------------------------
+echo " - Create HTML reference page."
+cd html
+rm -f img/gmic_stdlib*.jpg image.jpg gimp.shtml
+ln -s download.shtml gimp.shtml
+gmic sp tiger r2dy 480 o image.jpg
+gmic v - ../src/gmic_stdlib.gmic raw:../src/gmic_stdlib.gmic,uchar document_gmic images,img/
+if [ "$1" == "final" ]; then
+    gmic v - ../src/gmic_stdlib.gmic raw:../src/gmic_stdlib.gmic,uchar _prerelease= __help html >& reference.shtml;
+else
+    gmic v - ../src/gmic_stdlib.gmic raw:../src/gmic_stdlib.gmic,uchar _prerelease=`date +%y%m%d` __help html >& reference.shtml;
+fi
+rm -f image.jpg
+
+rm -rf gallery && mkdir gallery && cd gallery && gmic ../../src/gmic_stdlib.gmic update_gallery_html 1 && cd ..
+cd ..
+
+# Create .pdf handbook.
+#----------------------
+echo " - Create PDF reference handbook."
+cd html
+if [ "$1" == "final" ]; then
+    gmic v - ../src/gmic_stdlib.gmic raw:../src/gmic_stdlib.gmic,uchar _version=$SVERSION _prerelease= __help latex >& reference.tex;
+else
+    gmic v - ../src/gmic_stdlib.gmic raw:../src/gmic_stdlib.gmic,uchar _version=$SVERSION _prerelease=`date +%y%m%d` __help latex >& reference.tex;
+fi
+pdflatex reference.tex
+makeindex reference
+pdflatex reference.tex
+gs -dBATCH -dNOPAUSE -q -sDEVICE=pdfwrite -sOutputFile=gmic_reference.pdf reference.pdf
+rm -f reference.aux reference.idx reference.ind reference.out reference.ilg reference.log reference.pdf
+cd ..
+
+# Upload web page.
+#-----------------
+echo " - Upload G'MIC web page."
+cd html
+lftp ftp://$GMIC_LOGIN:$GMIC_PASSWD@ftp.gmic.eu -e "mirror -RL . /www/gmic/ ; quit"
+lftp ftp://$GMIC_LOGIN:$GMIC_PASSWD@ftp.gmic.eu -e "put -O \"/www/gmic/tutorial\" header.html; quit"
+rm -f gmic_stdlib.gmic gmic_stdlib.$SVERSION
+cd ..
+cd resources/samples
+lftp ftp://$GMIC_LOGIN:$GMIC_PASSWD@ftp.gmic.eu -e "mirror -RL . /www/gmic/samples/ ; quit"
+cd ../..
+
+# Construct a clean version of the G'MIC folder.
+#------------------------------------------------
+echo " - Construct clean version of the G'MIC directory."
+rm -rf $DIR
+mkdir $DIR
+cp -Lrf COPYING README CMakeLists.txt $DIR
+mkdir $DIR/src
+cd src
+cp -Lrf Makefile CImg.h gmic.cpp gmic.h gmic_stdlib.h gmic_gimp_gtk.h gmic_stdlib.gmic gmic_cli.cpp gmic_gimp_gtk.cpp gmic_in_script.scm use_libgmic.cpp gmic_libc.cpp gmic_libc.h use_libcgmic.c $DIR/src
+touch $DIR/src/gmic_stdlib.h
+touch $DIR/src/gmic_gimp_gtk.h
+cd ..
+mkdir $DIR/man
+cd man
+cp -Lrf gmic.1.gz $DIR/man
+cd ..
+mkdir $DIR/resources
+cd resources
+cp -Lrf gmic_bashcompletion.sh $DIR/resources
+cp -Lrf gmic_film_cluts.gmz $DIR/resources
+cp -Lrf debian $DIR
+cd ..
+cd zart
+qmake zart.pro
+make distclean
+mkdir $DIR/zart
+cp -Lrf images include src ui *.xml *.html README zart.pro zart.qrc $DIR/zart
+cd ..
+cd gmic-qt
+qmake gmic_qt.pro
+make distclean
+mkdir $DIR/gmic-qt
+cp -Lrf *.qrc translations icons images include resources src ui README.md gmic_qt.pro check_versions.sh pkg-config-check.sh pre_version.sh $DIR/gmic-qt
+cd ..
+
+cd $DIR
+sed s\/_gmic_version\/$VERSION$SUFFIX\/ README > /tmp/README
+mv /tmp/README README
+
+cd $DIR/debian
+sed s\/_gmic_version\/$VERSION\/ changelog > /tmp/changelog
+mv /tmp/changelog changelog
+
+cd $DIR/src
+if [ "$1" == "final" ]; then
+    sed "s/PRERELEASE_CFLAGS = /NO_PRERELEASE_CFLAGS = /" Makefile > /tmp/Makefile
+    mv /tmp/Makefile Makefile
+    sed "s/PRERELEASE = /NO_PRERELEASE = /" Makefile > /tmp/Makefile
+    mv /tmp/Makefile Makefile
+fi
+sed "s/rm -rf CImg.h gmic_stdlib.h gmic_gimp_gtk.h /rm -rf /" Makefile > /tmp/Makefile
+mv /tmp/Makefile Makefile
+make clean
+rm -f gmic_buildpackage
+for i in *.h *.cpp *.c *.gmic *.scm; do
+    sed -e 's/ *$//' $i >/tmp/gmic_buildpackage$$ && mv /tmp/gmic_buildpackage$$ $i
+done
+
+cd $DIR
+rm -rf debian/gmic
+rm -f `find . -name ".?*"`
+rm -f `find . -name "*~"`
+rm -r `find . -name "\#*"`
+rm -r `find . -name "CVS"`
+rm -r `find . -name ".git"`
+cd zart
+qmake CONFIG+=release GMIC_PATH=../src zart.pro
+
+# Create .tar.gz source archives.
+#--------------------------------
+echo " - Create .tar.gz source archives."
+cd $DIR/..
+TARFILE=gmic_${VERSION}${SUFFIX}.tar
+rm -f ${TARFILE} ${TARFILE}.gz deb_${TARFILE} deb_${TARFILE}.gz
+tar chvf deb_${TARFILE} `basename $DIR`
+gzip deb_${TARFILE}
+cp -f deb_${TARFILE}.gz ${HOME}/work/src/
+
+rm -rf `basename $DIR`/debian
+#rm -rf `basename $DIR`/zart
+#rm -rf `basename $DIR`/gmic-qt
+#rm -rf `basename $DIR`/src/gmic_libc.cpp
+#rm -rf `basename $DIR`/src/gmic_libc.h
+#rm -rf `basename $DIR`/src/use_libcgmic.c
+tar chvf ${TARFILE} `basename $DIR`
+gzip ${TARFILE}
+cp -f ${TARFILE}.gz ${HOME}/work/src/
+
+if [ "$1" == "final" ]; then
+    lftp ftp://$GMIC_LOGIN:$GMIC_PASSWD@ftp.gmic.eu -e "put -O /www/gmic/files/source/ ${HOME}/work/src/${TARFILE}.gz; quit";
+    lftp ftp://$GMIC_LOGIN:$GMIC_PASSWD@ftp.gmic.eu -e "put -O /www/gmic/files/source/ ${HOME}/work/src/${TARFILE}.gz -o gmic_source.tar.gz; quit";
+fi
+lftp ftp://$GMIC_LOGIN:$GMIC_PASSWD@ftp.gmic.eu -e "put -O /www/gmic/files/prerelease ${HOME}/work/src/${TARFILE}.gz -o gmic_source.tar.gz; quit"
+
+# Create debian packages for debian/ubuntu 64 bits.
+#--------------------------------------------------
+echo " - Create debian packages."
+
+cp ${HOME}/work/src/deb_${TARFILE}.gz /tmp/ &&
+    cd /tmp/ &&
+    OUTPAK=gmic_${VERSION}${SUFFIX}_${CODENAME}_${ARCH}.deb &&
+    OUTZIP_GIMP_GTK=gmic_gimp${GIMPVER}_gtk_${VERSION}${SUFFIX}_${CODENAME}_${ARCH}.zip &&
+    OUTZIP_GIMP_QT=gmic_gimp${GIMPVER}_qt_${VERSION}${SUFFIX}_${CODENAME}_${ARCH}.zip &&
+    OUTZIP_KRITA_QT=gmic_krita_qt_${VERSION}${SUFFIX}_${CODENAME}_${ARCH}.zip &&
+    OUTDIR=gmic-${VERSION}${SUFFIX} &&
+    rm -rf $OUTPAK $OUTZIP_GIMP_GTK $OUTZIP_GIMP_QT $OUTZIP_KRITA_QT &&
+    touch deb_${TARFILE}.gz &&
+    tar zxvf deb_${TARFILE}.gz &&
+    find gmic-${VERSION}${SUFFIX} -exec touch {} \; &&
+    cd $OUTDIR/src &&
+    sed "s/\$(MAKE) cli lib gimp_gtk gimp_qt krita_qt gmic_qt libc zart/\$(MAKE) cli lib gimp_qt krita_qt gmic_qt libc zart/g" Makefile > /tmp/Makefile &&
+    mv /tmp/Makefile Makefile && cd ../..
+cd $OUTDIR &&
+    dpkg-buildpackage -d -j3 -rfakeroot;
+mv ../gmic_${VERSION}_amd64.deb ../$OUTPAK &&
+    zip -j -r -9 ../$OUTZIP_GIMP_GTK src/gmic_gimp_gtk README &&
+    zip -j -r -9 ../$OUTZIP_GIMP_QT gmic-qt/gmic_gimp_qt README &&
+    zip -j -r -9 ../$OUTZIP_KRITA_QT gmic-qt/gmic_krita_qt README &&
+    cp -f ../$OUTPAK ../$OUTZIP_GIMP_GTK ../$OUTZIP_GIMP_QT ../$OUTZIP_KRITA_QT $HOME/work/src/
+
+echo ELARA_DONE
+
+# Wait for packages to be generated from Virtual machines, and copy them to G'MIC server.
+#----------------------------------------------------------------------------------------
+echo " - Waiting for all packages.".
+
+cd ${HOME}/work/src/
+gmic _update_server_binaries ${VERSION}${SUFFIX}
+
+#
+# End of file.
+#
