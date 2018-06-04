@@ -4749,11 +4749,11 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
       // Check consistency of the interpreter environment.
       if (images_names.size()!=images.size())
         error("G'MIC encountered a fatal error (images (%u) and images names (%u) have different size). "
-               "Please submit a bug report, at: https://github.com/dtschump/gmic-community/issues",
+               "Please submit a bug report, at: https://framagit.org/dtschump/gmic/issues",
               images_names.size(),images.size());
       if (!callstack)
         error("G'MIC encountered a fatal error (empty call stack). "
-              "Please submit a bug report, at: https://github.com/dtschump/gmic-community/issues");
+              "Please submit a bug report, at: https://framagit.org/dtschump/gmic/issues");
       if (callstack.size()>=64)
         error("Call stack overflow (infinite recursion?).");
 
