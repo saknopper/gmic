@@ -7905,7 +7905,7 @@ apply_scales : skip "${1=}" check "isint($2) && $2>0 && ${3=25%}>=0 && ${4=100%}
 #@cli : Autocrop and extract connected components in selected images, according to a mask given as the last channel of
 #@cli : each of the selected image (e.g. alpha-channel).
 #@cli : Default values: 'threshold=0%', 'min_area=0.1%', 'is_high_connectivity=0' and 'output_type=1'.
-#@cli : $ 256,256 noise 0.1,2 neq 0 dilate_circ 20 label_fg 0,1 normalize 0,255 +neq 0 *[-1] 255 append c +autocrop_components ,
+#@cli : $ 256,256 noise 0.1,2 eq 1 dilate_circ 20 label_fg 0,1 normalize 0,255 +neq 0 *[-1] 255 append c +autocrop_components ,
 autocrop_components : skip ${1=0%} check "${2=0.1%}>=0 && isbool(${3=0}) && isint(${4=1}) && $4>=0 && $4<=2"
   e[^-1] "Autocrop connected components from image$?, with threshold $1, minimal area $2, "${arg\ 1+$3,low,high}" connectivity "\
           "and output type set to '"${arg\ 1+$4,crop,segmentation,coordinates}"'.\n"
@@ -10469,7 +10469,7 @@ syntexturize_patchmatch : check "${1=100%}>0 && ${2=$1}>0 && isint(${3=0}) && $3
         # Initialization.
         {1+round(w*$width/{0,w},1,1)},{1+round(h*$height/{0,h},1,1)},1,1
 
-        noise. 0.2,2 neq. 0 +distance. 1 *. -1
+        noise. 0.2,2 ==. 1 +distance. 1 *. -1
         label_fg.. 0 watershed.. . rm.
 
         100%,100%,1,1,x +f. y a[-2,-1] c channels. 0,2
@@ -10590,7 +10590,7 @@ unsharp_octave : check "${1=4}>0 && ${3=2}>=0" skip ${2=1},${4=0}
 
 #@cli voronoi
 #@cli : Compute the discrete Voronoi diagram of non-zero pixels in selected images.
-#@cli : $ 400,400 noise 0.2,2 neq 0 +label_fg 0 voronoi[-1] +gradient[-1] xy,1 append[-2,-1] c norm[-1] ==[-1] 0 map[-2] 2 mul[-2,-1] normalize[-2] 0,255 dilate_circ[-2] 4 reverse max
+#@cli : $ 400,400 noise 0.2,2 eq 1 +label_fg 0 voronoi[-1] +gradient[-1] xy,1 append[-2,-1] c norm[-1] ==[-1] 0 map[-2] 2,2 mul[-2,-1] normalize[-2] 0,255 dilate_circ[-2] 4 reverse max
 voronoi :
   e[^-1] "Compute the discrete Voronoi diagram of non-zero pixels in image$?."
   v - repeat $! l[$>] s c repeat $! l[$>]
@@ -10626,7 +10626,7 @@ watermark_fourier : check ${2=33}>0
 #@cli watershed : [priority_image],_is_high_connectivity={ 0 | 1 } : (+)
 #@cli : Compute the watershed transform of selected images.
 #@cli : Default value: 'is_high_connectivity=1'.
-#@cli : $ 400,400 noise 0.2,2 neq 0 +distance 1 mul[-1] -1 label[-2] watershed[-2] [-1] mod[-2] 256 map[-2] 0 reverse
+#@cli : $ 400,400 noise 0.2,2 eq 1 +distance 1 mul[-1] -1 label[-2] watershed[-2] [-1] mod[-2] 256 map[-2] 0 reverse
 
 #---------------------------------
 #
@@ -10736,8 +10736,8 @@ barycenter :
 #@cli : Input images must be scalar.
 #@cli : Each pixel of the output image is a triplet (a,b,c) meaning the pixel belongs to
 #@cli : the Delaunay triangle 'ABC' where 'a','b','c' are the labels of the pixels 'A','B','C'.
-#@cli : $ 400,400 rand 32,255 100%,100% noise. 0.4,2 neq. 0 mul +delaunay
-#@cli : $ image.jpg b 1% 100%,100% noise. 0.8,2 neq. 0 mul +delaunay channels 0,2
+#@cli : $ 400,400 rand 32,255 100%,100% noise. 0.4,2 eq. 1 mul +delaunay
+#@cli : $ image.jpg b 1% 100%,100% noise. 0.8,2 eq. 1 mul +delaunay channels 0,2
 delaunay :
   e[^-1] "Generate discrete 2d Delaunay triangulation of non-zero pixels in image$?."
   v - repeat $! l[$>]
@@ -12588,7 +12588,7 @@ pack_sprites : check "isint(${1=5}) && $1>=0 && ${2=25}>=0 && $2<=100 && isint($
 
       # Generate random skeleton-oriented point cloud.
       +rectangle. 0,0,100%,100%,1,0xFFFFFFFF,0
-      if $is_first_time noise. 0.1,2 fi
+      if $is_first_time noise. 0.1,2 ==. 1 fi
       distance. 0 noise. 1,1
       max_patch. {$ind,round(1.5*max(w,h))}
       *. .. pointcloud3d.
@@ -13428,7 +13428,7 @@ cylinder3d : check ${3=24}>0 skip ${1=1},${2=1}
 #@cli : Generate 3d delaunay triangulations from selected images.
 #@cli : One assumes that the selected input images are binary images containing the set of points to mesh.
 #@cli : The output 3d object is a mesh composed of non-oriented triangles.
-#@cli : $ 500,500 noise 0.05,2 neq 0 * 255 +delaunay3d color3d[1] 255,128,0 dilate_circ[0] 5 to_rgb[0] +object3d[0] [1],0,0,0,1,1 max[-1] [0]
+#@cli : $ 500,500 noise 0.05,2 eq 1 * 255 +delaunay3d color3d[1] 255,128,0 dilate_circ[0] 5 to_rgb[0] +object3d[0] [1],0,0,0,1,1 max[-1] [0]
 delaunay3d :
   e[^-1] "Generate 3d delaunay triangulation from image$?."
   v - repeat $! l[$>]
@@ -15726,7 +15726,7 @@ boxfitting : check "isint(${1=3}) && $1>=1 && isint(${2=0}) && $2>=0 && ${3=0.1}
 
       # Add random non-intersecting squares with min size.
       if {$><1} # Takes random points for the first iteration.
-        100%,100% noise. {max(1e-3,$3)},2 neq. 0
+        100%,100% noise. {max(1e-3,$3)},2 ==. 1
       else # Then, try to take points near the median axis of the distance function otherwise.
         +distance. 1 +rand. 0,1 *[-2,-1] max_patch. {round($prec*$min_size)}
         prec={max(1,$prec*0.9)}
@@ -15900,7 +15900,7 @@ cubism : check "${1=50}>=0 && ${2=10}>=0 && $2<=50 && ${5=0}>=0" skip ${3=75},${
 draw_whirl : skip ${1=100}
   e[^-1] "Apply whirl drawing effect on image$? with amplitude $1."
   v - repeat $! l[$>]
-    100%,100% noise. 70,2 neq. 0 *. 255 r. .. &[-1,-2] smooth. $1,0,1,2,2
+    100%,100% noise. 70,2 ==. 1 *. 255 r. .. &[-1,-2] smooth. $1,0,1,2,2
     sqrt. n. 0,255 equalize.
   endl done v +
 
@@ -16072,7 +16072,7 @@ hardsketchbw : skip ${1=300},${2=50},${3=0.1},${4=20},${5=0}
 
       # Isolate starting points and tangents.
       w={w} h={h} g xy rv *.. -1 a c * $1
-      +norm >=. $4% 100%,100% noise. $2,2 neq. 0 *[-2,-1]
+      +norm >=. $4% 100%,100% noise. $2,2 ==. 1 *[-2,-1]
 
       # Retrieve points coordinates and corresponding tangents.
       pointcloud3d. s3d. rm[-6--5,-3--1] r. 3,{h/3},1,1,-1 s. x rm. a[-2,-1] c
@@ -16094,7 +16094,7 @@ hardsketchbw : skip ${1=300},${2=50},${3=0.1},${4=20},${5=0}
 hearts : skip ${1=10}
   e[^-1] "Apply heart filter on image$?, with density $1."
   v - repeat $! l[$>]
-    100%,100%,1 noise. $1,2 neq. 0 r. .. n. 0,1 *[-1,-2] _heart9x7
+    100%,100%,1 noise. $1,2 ==. 1 r. .. n. 0,1 *[-1,-2] _heart9x7
     dilate.. . rm.
   endl done v +
 
@@ -16544,7 +16544,7 @@ sketchbw :
 sponge : skip ${1=13}
   e[^-1] "Apply sponge filter on image$?, with brush size $1."
   v - repeat $! l[$>]
-    100%,100%,1,1 noise. 20,2 neq. 0 r. .. n. 0,1 *[-1,-2]
+    100%,100%,1,1 noise. 20,2 ==. 1 r. .. n. 0,1 *[-1,-2]
     _circle $1 dilate.. . rm.
   endl done v +
 
@@ -16632,7 +16632,7 @@ weave : check "${1=6}>=0 && ${2=65}>=0 && $2<=100 && ${3=40}>=0 && $3<=100 && ${
 whirls : skip ${1=3},${2=6},${3=0.5},${4=1.8}
   e[^-1] "Add random whirl texture to image$?, with texture $1, smoothness $2, darkness $3 and lightness $4."
   v - repeat $! l[$>]
-    100%,100% noise. 0.3,2 neq. 0 repeat $1 b. $2 gradient_norm. ^. 0.2 done
+    100%,100% noise. 0.3,2 ==. 1 repeat $1 b. $2 gradient_norm. ^. 0.2 done
     n. $3,$4 r. .. * c 0,255
   endl done v +
 
@@ -16797,7 +16797,7 @@ polar2euclidean : skip ${1=50%},${2=50%} check "${3=1}>0 && isint(${4=1}) && $4>
 raindrops : check "${2=0.1}>=0 && ${3=1}>=0 && isint(${4=0}) && $4>=0" skip ${1=80}
   e[^-1] "Apply raindrops deformation on image$?, with amplitude $1, density $2, wavelength $3 and $4 merging steps."
   v - repeat $! l[$>]
-    100%,100% noise. $2,2 neq. 0 distance. 1 f. 'cos(i)/(1+i/(1e-8+$3))'
+    100%,100% noise. $2,2 ==. 1 distance. 1 f. 'cos(i)/(1+i/(1e-8+$3))'
     if $4
       i.. (0,1,0;1,0,1;0,1,0) /.. 2 .
       repeat $4 +convolve. ...,1 -. ... rm... done rm[-3,-2]
@@ -17082,7 +17082,7 @@ scanlines : skip ${1=60},${2=2},${3=0},${4=0},${5=0}
 shade_stripes : skip ${1=5},${2=1},${3=0.8},${4=2}
   e[^-1] "Add "${arg\ 1+!$2,vertical,horizontal}" shaded stripes to image$?, with frequency $1, darkness $3 and lightness $4."
   v - n 0,255 repeat $! l[$>]
-    {max(1,w*($2!=0))},{max(1,h*($2==0))} noise. $1,2 neq. 0 distance. 1 r. .. n. $3,$4 * c 0,255
+    {max(1,w*($2!=0))},{max(1,h*($2==0))} noise. $1,2 ==. 1 distance. 1 r. .. n. $3,$4 * c 0,255
   endl done v +
 
 #@cli shadow_patch : _opacity>=0
@@ -17118,7 +17118,7 @@ spread : skip ${1=3},${2=$1},${3=0}
 stripes_y : skip ${1=10}
   e[^-1] "Add vertical stripes to image$?, with frequency $1."
   v - repeat $! l[$>]
-    100% noise. $1,2 neq. 0 *. 255 r. ..
+    100% noise. $1,2 ==. 1 *. 255 r. ..
     *. 0.15 + c 0,255
   endl done v +
 
@@ -17141,7 +17141,7 @@ texturize_canvas : check "${1=20}>=0 && ${2=3}>=0 && ${3=0.6}>=0 && ${4=80}"
 texturize_paper :
   e[^-1] "Add paper texture to image$?."
   v - repeat $! l[$>]
-    . 30%,30% noise. 1,2 neq. 0 r. ..,..,..,1,0 ifft.
+    . 30%,30% noise. 1,2 ==. 1 r. ..,..,..,1,0 ifft.
     rm. shift. {round(w/2)},{round(h/2)},{round(d/2)},0,2 sharpen. 1 n. 1,1.2 r. ..
     *[-2,-1] c. ..,.. rm..
   endl done v +
@@ -21706,7 +21706,7 @@ x_minesweeper : check "${1=20}>=8 && $1<=30 && ${2=$1}>=8 && $2<=30"
   v -
   # Generate random mine field and player board.
   # Labels : 0=mine, 1=empty, 2='1-near', 3='2-near', ..., 9='8-near', 10=still unknown.
-  $1,$2 noise. 30,2 neq. 0 nb_mines={is} (1,1,1;1,0,1;1,1,1) +convolve.. .,0 rm.. +. 1 ==.. 0 *[-2,-1] nm. field
+  $1,$2 noise. 30,2 ==. 1 nb_mines={is} (1,1,1;1,0,1;1,1,1) +convolve.. .,0 rm.. +. 1 ==.. 0 *[-2,-1] nm. field
   do x={round(u(w-1))} y={round(u(h-1))} while {i($x,$y)!=1} # Find a good starting point.
   +f[field] 11 =. 12,$x,$y nm. board
 
@@ -23218,7 +23218,7 @@ x_shadebobs :
       rx={u(-1,1)} ry={u(-1,1)} rz={u(-1,1)} rt={u(-1,1)} rcx={u(-0.6*0.6)} t=0
       N={20+round(u(80))} R={(2+round(u(40)))*min({*,w},{*,h})/300}
       if $obj3d rm[colormap,img,obj3d] fi
-      {4+round(u(12))},1,1,3 noise[0] 255,2 neq. 0 r[0] 256,1,1,3,3 *[0] 255 shift[0] 1 nm. colormap
+      {4+round(u(12))},1,1,3 noise[0] 255,2 ==. 1 r[0] 256,1,1,3,3 *[0] 255 shift[0] 1 nm. colormap
       (67.5;73.5;109.5;103.5;51.5;100.5;{2*$N};$N) 3,{2*$N},1,1,0
       1,$N,1,1,5 2,$N,1,1,'y+x*$N' a[-2--1] x z. 0,5
       4,$N,1,1,1 y[-3--1] a[-4--1] y nm. obj3d
@@ -23472,7 +23472,7 @@ x_tetris :
   i[board] $W,$H i[curr_board] [board]
   i[render] {$fact*$W},{$fact*$H},1,3 i[curr_render] [render] +channels. 0 nm. curr_render_mask
   +rows[render] 0,50% plasma. 1,2 noise. 20 blur_y. 40%,1 +mirror. y a[-2,-1] y r. [render]
-  n. 0,64 blur_x. 1 100%,100% noise. 0.5,2 neq. 0 b. 1 *. 300 +[-2,-1] c. 0,255 nm. background
+  n. 0,64 blur_x. 1 100%,100% noise. 0.5,2 ==. 1 b. 1 *. 300 +[-2,-1] c. 0,255 nm. background
 
   # Start game.
   time=$| score=0 fall_mode=0 gameover=0 n=-1 nn={round(u(0,$N-1))}
@@ -24066,7 +24066,7 @@ fx_logo_version2 : skip "${1=Universal plug-in}"
   6,1,1,3 rand. 150,255 point. 0 map.. . rm.
   expand_xy. 10,0 b. 2 r. 200%,200%,1,3,6 sqr. c. 0,60% n. 0,255
   warp_perspective. 0.5,0,1,50,50,0 shift. 0,-10
-  100%,100% noise. 0.8,2 neq. 0 *. 180 +blur_linear. 20,0,45,0 *. 20 max[-3--1]
+  100%,100% noise. 0.8,2 ==. 1 *. 180 +blur_linear. 20,0,45,0 *. 20 max[-3--1]
   sh. 2 (0;128) r. ..,3 +[-2,-1] min. 255 rm.
   0 t. "$1",0,0,13,1,1 +dilate. 3 *.. 255 r.. 100%,100%,1,3
   j... ..,{({-3,w}-w)/2},75%,0,0,1,. rm[-2,-1]
