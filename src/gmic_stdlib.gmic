@@ -26084,38 +26084,59 @@ fx_pen_drawing :
 fx_pen_drawing_preview :
   gui_split_preview "fx_pen_drawing $*",$-1
 
-#@gui Polygonize [delaunay] : fx_delaunay,fx_delaunay_preview(0)
-#@gui : Density = float(5,0,100)
-#@gui : Edges = float(75,0,100)
-#@gui : Smoothness = float(1,0,8)
-#@gui : Background = choice(3,"Black","White","Flat random colors","Flat image colors","Original image")
-#@gui : Outline color = color(0,0,0,128)
-#@gui : Border constraints = bool(1)
+#@gui Polygonize [delaunay] : fx_polygonize_delaunay, fx_polygonize_delaunay_preview(0)
+#@gui : Density (%) = float(40,0,100)
+#@gui : Edges = float(5,0,100)
+#@gui : Boundaries (%) = float(75,0,100)
+#@gui : Smoothness = float(0.5,0,8)
+#@gui : Filling = choice(3,"Black","White","Random","Average","Linear")
+#@gui : Outline (%) = float(50,0,100)
+#@gui : Outline color = color(0,0,0,255)
 #@gui : Anti-aliasing = bool(1)
 #@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
-#@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2015/19/01</i>.</small>")
-fx_delaunay :
-  repeat $! l[$>] split_opacity l[0] to_rgb
-    +b $3
-    gradient_norm. >=. {(100-$2)/5}
-    if $9 rectangle. 0,0,100%,100%,1,0xFFFFFFFF,1 fi
-    remove_pixels. {100-max(0.1,$1/4)}%
-    delaunay3d.
-    l. s3d rm[4] i[4] 1,100%,1,1,y r[4] 3,100% y a y endl  # Assign a different color to each triangle.
-    if $10 r[0] 200%,200% *3d[1] 2 fi
+#@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2018/06/05</i>.</small>")
+fx_polygonize_delaunay :
+  repeat $! l[$>] to_rgba
+    wh={[w,h]} if $11 r 150%,150%,1,100%,3 fi
 
-    if {$4==0} f[0] 0
-    elif {$4==1} f[0] 255
-    elif {$4==2} f[0] 0 l[1] s3d rand.. 0,255 a y endl j3d[0] [1],0,0,0,1,2,1,0,0
-    elif {$4==3} [0],[0],1,1,-1 j3d. ..,0,0,0,1,2,1,0,0 blend[0,-1] shapeaverage
+    # Compute Delaunay triangulation.
+    mM={[im,iM]} b $4 n $mM
+    +to_rgb. gradient_norm. ge. $2 f. "!x || !y || x==w-1 || y==h-1?(u^0.25<$3%):(u^0.25<$1%?i:0)" {is+1},1,1,2 f.. ">init(p = 0); i?(I[#-1,++p] = [x,y];p):0"
+    delaunay..
+
+    # Render filling.
+    if {$5==4} # Linear
+      +f[0] 0 f... "*i?(
+        p = I(#1); P0 = I[#2,p[0]]; P1 = I[#2,p[1]]; P2 = I[#2,p[2]];
+        W = solve([P0[0],P1[0],P2[0],P0[1],P1[1],P2[1],1,1,1],[x,y,1]);
+        I(#-1) = cut(W[0]*I(#0,P0) + W[1]*I(#0,P1) + W[2]*I(#0,P2),0,255);
+      );I"
+    elif {$5==3} # Average
+      +f[0] 0 f... "*i?(
+        p = I(#1); P0 = I[#2,p[0]]; P1 = I[#2,p[1]]; P2 = I[#2,p[2]];
+        I(#-1) = (I(#0,P0) + I(#0,P1) + I(#0,P2))/3;
+      );I"
+    elif {$5==2} # Random
+      +norm[1] label_fg. 0 {iM+1},1,1,3 rand. 0,255 to_rgba. point. 0 map.. . rm.
+    else # Black or white
+      +norm[1] neq. 0 *. 255 channels. -3,0
+      if $5 sh. 0,2 f. 255 rm. fi
     fi
-    col3d[1] $5,$6,$7 j3d[0] [1],0,0,0,{$8/255},1,1,0,0 rm[1]
+    rm[0,2]
 
-    if $10 r 50%,50%,1,100%,2 fi
-  endl a c endl done
+    # Render outlines.
+    if $6
+      norm[0] f[0] "i!=j(1) || i!=j(0,1)" thinning[0]
+      +fc. ${7-10} j.. .,0,0,0,0,{$6%},... rm.
+    fi
 
-fx_delaunay_preview :
-  gui_split_preview "fx_delaunay $*",$-1
+    k.
+    if $11 r $wh,1,100%,2 fi
+
+  endl done
+
+fx_polygonize_delaunay_preview :
+  gui_split_preview "fx_polygonize_delaunay $*",$-1
 
 #@gui Polygonize [energy] : fx_polygonize, fx_polygonize_preview(0)
 #@gui : Amplitude = int(300,0,2000)
