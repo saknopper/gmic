@@ -10743,7 +10743,7 @@ delaunay :
   v - repeat $! l[$>]
 
     # Retrieve point coordinates.
-    +z 0,0,0,0,100%,100%,0,0 neq. 0 {is+1},1,1,2 +f.. ">init(p = 0); i?(I[#-1,++p] = [x,y]; p):0"
+    +slices 0 norm. neq. 0 {is+1},1,1,2 +f.. ">init(p = 0); i?(I[#-1,++p] = [x,y]; p):0"
 
     # Compute voronoi diagram of point cloud.
     distance... 1 *... -1 watershed. ... rm...
