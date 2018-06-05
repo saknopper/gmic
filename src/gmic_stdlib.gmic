@@ -10731,6 +10731,44 @@ barycenter :
     fi
   nm "[barycenter of '"$nm"']" endl done v +
 
+#@cli delaunay
+#@cli : Generate discrete 2d Delaunay triangulation of non-zero pixels in selected images.
+#@cli : Input images must be scalar.
+#@cli : Each pixel of the output image is a triplet (a,b,c) meaning the pixel belongs to
+#@cli : the Delaunay triangle 'ABC' where 'a','b','c' are the labels of the pixels 'A','B','C'.
+#@cli : $ 400,400 rand 32,255 100%,100% noise. 0.4,2 mul +delaunay
+delaunay :
+  e[^-1] "Generate discrete 2d Delaunay triangulation of non-zero pixels in image$?."
+  v - repeat $! l[$>]
+
+    # Retrieve point coordinates.
+    +z 0,0,0,0,100%,100%,0,0 neq. 0 {is+1},1,1,2 +f.. ">init(p = 0); i?(I[#-1,++p] = [x,y]; p):0"
+
+    # Compute voronoi diagram of point cloud.
+    distance... 1 *... -1 watershed. ... rm...
+
+    # Detect delaunay triangles.
+    100%,100%,1,3
+    _delaunay 1,0,0,1 _delaunay -1,0,0,-1 _delaunay -1,0,0,1 _delaunay 0,-1,1,0 rm..
+
+    # Map initial labels.
+    f. "*P = I[#1,i]; i?i(#0,P[0],P[1],0,0):0"
+    k.
+  endl done v +
+
+_delaunay :
+  f.. "*
+     const boundary = 1;
+     p0 = i;
+     p1 = j($1,$2);
+     p2 = j($3,$4);
+     if (p0!=p1 && p0!=p2 && p1!=p2,
+       P0 = I[#-3,p0];
+       P1 = I[#-3,p1];
+       P2 = I[#-3,p2];
+       polygon(#-1,3,P0,P1,P2,1,[p0,p1,p2]);
+    ); i"
+
 #@cli detect_skin : 0<=tolerance<=1,_skin_x,_skin_y,_skin_radius>=0
 #@cli : Detect skin in selected color images and output an appartenance probability map.
 #@cli : Detection is performed using CbCr chromaticity data of skin pixels.
