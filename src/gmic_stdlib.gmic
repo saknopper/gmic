@@ -10737,6 +10737,7 @@ barycenter :
 #@cli : Each pixel of the output image is a triplet (a,b,c) meaning the pixel belongs to
 #@cli : the Delaunay triangle 'ABC' where 'a','b','c' are the labels of the pixels 'A','B','C'.
 #@cli : $ 400,400 rand 32,255 100%,100% noise. 0.4,2 mul +delaunay
+#@cli : $ image.jpg b 1% 100%,100% noise. 0.8,2 mul +delaunay channels 0,2
 delaunay :
   e[^-1] "Generate discrete 2d Delaunay triangulation of non-zero pixels in image$?."
   v - repeat $! l[$>]
@@ -10752,7 +10753,7 @@ delaunay :
     _delaunay 1,0,0,1 _delaunay -1,0,0,-1 _delaunay -1,0,0,1 _delaunay 0,-1,1,0 rm..
 
     # Map initial labels.
-    f. "*P = I[#1,i]; i?i(#0,P[0],P[1],0,0):0"
+    s. c +warp[0] [1],0,0 point. 0,0 map[-4--2] . rm. a[-3--1] c
     k.
   endl done v +
 
