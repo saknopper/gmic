@@ -32165,16 +32165,20 @@ fx_illuminate_shape2d :
 
   else # Output : illumination
     repeat {$!-$keep_input_bg} if $keep_input_bg sel=$>,-1 else sel=$> fi l[$sel]
-      if {!$keep_input_bg" && "$input_type>=2} _fx_illuminate_shape2d $*        # From bumpmap/normalmap w/o background
-      elif {$keep_input_bg" && "$input_type>=2} _fx_illuminate_shape2d[0] $*    # From bumpmap/normalmap w/ background
-      elif {!$keep_input_bg" && "$input_type<=1} +_fx_illuminate_shape2d $* rv  # From shape w/o background
-      else _fx_illuminate_shape2d[0] $*                                         # From shape w/ background
+      if {!$keep_input_bg" && "$input_type>=2} # From bumpmap/normalmap w/o background
+        _fx_illuminate_shape2d $*
+      elif {$keep_input_bg" && "$input_type>=2} # From bumpmap/normalmap w/ background
+        _fx_illuminate_shape2d[0] $*
+      elif {!$keep_input_bg" && "$input_type<=1} # From shape w/o background
+        +_fx_illuminate_shape2d $* rv
+      else # From shape w/ background
+        _fx_illuminate_shape2d[0] $*
       fi
       if {!$preview_shapes" || "0$_is_preview!=1}
         gui_set_layer_mode[0] $blending_mode
         gui_set_layer_opacity[0] $opacity
         if {$!>1" && "(0$_output_mode==0" || "0$_is_preview==1)}
-          if {!0$_is_preview} . fi
+          if {$keep_input_bg" && "!0$_is_preview} . fi
           gui_merge_layers[0,1]
         else k[0] fi
       fi
@@ -32351,15 +32355,17 @@ _fx_illuminate_shape2d : # Input selection must contains a single image. Output 
         light = [ "$lightx,$lighty,-1" ]*"$lightz"; # Light position
         camera = [ 0,0,-"$lightz" ];                # Camera position
       );
-      P = [ 2*x/(w - 1) - 1,2*y/(h - 1) - 1,0 ];
-      L = light - P;
-      L/=norm(L);
-      V = camera - P;
-      V/=norm(V);
-      N = -[ i0,i1,flatness ];
-      N/=norm(N);
-      R = 2*dot(N,L)*N - L;
-      res = ka + kd*dot(L,N) + ks*max(dot(R,V),0)^alpha;
+      res = i#0?(
+        P = [ 2*x/(w - 1) - 1,2*y/(h - 1) - 1,0 ];
+        L = light - P;
+        L/=norm(L);
+        V = camera - P;
+        V/=norm(V);
+        N = -[ i0,i1,flatness ];
+        N/=norm(N);
+        R = 2*dot(N,L)*N - L;
+        res = ka + kd*dot(L,N) + ks*max(dot(R,V),0)^alpha;
+      ):0;
       [ res,0 ]"
     channels. 0 *. 255 c. 0,255
     if {$light_smoothness" || "$linearity}
