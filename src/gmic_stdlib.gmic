@@ -2023,7 +2023,7 @@ drgba : skip "${1=none}"
   v - if {!${}} noarg fi v +
 
 #@cli display_rgba : _background_RGB_color
-#@cli : Render selected RGBA images over a checkerboard background.
+#@cli : Render selected RGBA images over a checkerboard or colored background.
 #@cli : (eq. to 'drgba').
 #@cli : Default values: 'background_RGB_color=undefined' (checkerboard).
 #@cli : $ image.jpg +norm threshold[-1] 40% blur[-1] 3 normalize[-1] 0,255 append c display_rgba
@@ -32171,7 +32171,10 @@ fx_illuminate_shape2d :
       if {!$preview_shapes" || "0$_is_preview!=1}
         gui_set_layer_mode[0] $blending_mode
         gui_set_layer_opacity[0] $opacity
-        if {$!>1" && "(0$_output_mode==0" || "0$_is_preview==1)} . gui_merge_layers[0,1] else k[0] fi
+        if {$!>1" && "(0$_output_mode==0" || "0$_is_preview==1)}
+          if {!0$_is_preview} . fi
+          gui_merge_layers[0,1]
+        else k[0] fi
       fi
     endl done
   fi
@@ -32220,13 +32223,15 @@ _fx_illuminate_shape2d : # Input selection must contains a single image. Output 
   preview_mode=$*
 
   # Generate 2d binary shape and corresponding bumpmap
-  nm={n} to_rgba
+  nm={n}
   if {$input_type==0} # Single opaque shape
+    to_rgba
     +channels. 100% >. 0 .
     select_color... 0,$gR,$gG,$gB,$gA
     mv... $! -[-2,-1]
 
   elif {$input_type==1} # Multiple colored shapes
+    to_rgba
     +channels. 100% >. 0 *[-2,-1]
     if {$min_shape_area>1} quantize_area. {$min_shape_area^2} fi
     s. c,-{s-1} >. 0 rv[-2,-1]
@@ -32234,16 +32239,20 @@ _fx_illuminate_shape2d : # Input selection must contains a single image. Output 
     label. 0,0 f. "j(1)!=i || j(0,1)!=i" thinning. ==. 0 *. ..
 
   elif {$input_type==2} # Bump map
+    to_a
     s c,-{s-1} >. 0 *.. . rv s. c S={$!-1} +[^0] /. $S
 
-  else # Normal map
+  elif {$input_type==3} # Normal map
     +channels 100% >. 0 *.. . rv
     f. "I==vector4(0)?[128,128,255,255]:I"
     channels. 0,2
+
+  else # Gradient map (hidden mode)
+    +channels 100% rv
   fi
 
   if {0$_is_preview" && "$preview_shapes}
-    if {$input_type>=2} k[0] else k. fi
+    if {$input_type==3} k[0] else k. fi
     +dilate. 3
     label_fg.. 0 srand 0 {-2,iM+1},1,1,3,'x==0?[0,0,0]:x==1?[255,255,255]:u([255,255,255])' map... . rm.
     *. 255 a c
@@ -32274,7 +32283,7 @@ _fx_illuminate_shape2d : # Input selection must contains a single image. Output 
 
   else # Output as illumination layer (phong model)
     if {$input_type<=2} g. xy a[-2,-1] c
-    else -. 128 /. 127 s. c,-2 /[-2,-1]
+    elif {$input_type==3} -. 128 /. 127 s. c,-2 /[-2,-1]
     fi
     f. "*
       init(
