@@ -32223,24 +32223,25 @@ fx_illuminate_shape2d_preview_interactive :
 
     w[] $wsiz,0,0,{rgb,[{*,u}-w,{*,v}-h]/2},"[G'MIC] Illuminate 2d shape"
     cursor 0
-    ox,oy,ob=inf
+    ox,oy,ob,olightz=inf
+    lightz=2
 
     do
-      x,y,b={rgb,[{*,x},{*,y}]*[w,h]/[{*,w},{*,h}]},{*,b}
+      x,y,b,mw={rgb,[{*,x},{*,y}]*[w,h]/[{*,w},{*,h}]},{*,b},{*,-o}
+      lightz={cut($lightz-sign($mw)*0.3,0.1,3)}
       if {$x<0} x,y={rgb,ang=2*$|;(1+[cos(ang),sin(ang)])*[w,h]/2} fi
-
       if {!$b}
-        lightx,lighty,lightz={rgb,3.5*(2*[$x/w,$y/h]-1)},2
-        if {[$ox,$oy,$ob]!=[$x,$y,$b]}
+        lightx,lighty={rgb,3.5*(2*[$x/w,$y/h]-1)}
+        if {[$ox,$oy,$ob,$olightz]!=[$x,$y,$b,$lightz]}
           +fx_illuminate_shape2d[normal,rgb] 4,0,${3-6},1,1,""$9,0,${11-15},""${16-25},$lightx,$lighty,$lightz,0,""0,0
           +j[background] .,0,0,0,0,1,[alpha],255 rm..
-          j. [light_rgb],{light_rgb,[$x,$y]-[w,h]/2},0,0,1,[light_alpha]
+          +r2dx[light_alpha,light_rgb] {light_rgb,8+$lightz*(w-8)} j... .,{[$x,$y]-[w,h]/2},0,0,1,.. rm[-2,-1]
           w.  rm. wait 20
         else wait
         fi
       else
         +j[background] [rgb],0,0,0,0,1,[alpha],255
-        j. [light_rgb],{light_rgb,[$x,$y]-[w,h]/2},0,0,0.5,[light_alpha]
+        +r2dx[light_alpha,light_rgb] {light_rgb,8+$lightz*(w-8)} j... .,{[$x,$y]-[w,h]/2},0,0,1,.. rm[-2,-1]
         w. rm. wait
       fi
       if {{*,CTRLLEFT}&&{*,-D}} w[] {1.5*[{*,w},{*,h}]}
