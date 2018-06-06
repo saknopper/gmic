@@ -32204,6 +32204,7 @@ fx_illuminate_shape2d_preview_interactive :
   repeat $! l[$>] +l
     +_fx_illuminate_shape2d $1,2,${3-6},0,1,""$9,0,${11-15},""${16-29},""0,0
     siz=${fitscreen\ {w},{h},1,256,640}
+    wsiz=${fitscreen\ $siz,1,30%,100%}
     r $siz,1,100%,3
     s. c,-3 neq. 0 l.. - 128 / 127 s c,-2 / endl a[-2,-1] c # Gradient map
     rv
@@ -32213,7 +32214,7 @@ fx_illuminate_shape2d_preview_interactive :
     100%,100%,1,3,[255,255,0]
     nm normal,rgb,alpha,background,light_alpha,light_rgb
 
-    w[] {rgb,[w,h]},0,0,{rgb,[{*,u}-w,{*,v}-h]/2},"[G'MIC] Illuminate 2d shape"
+    w[] $wsiz,0,0,{rgb,[{*,u}-w,{*,v}-h]/2},"[G'MIC] Illuminate 2d shape"
     cursor 0
     ox,oy,ob=inf
 
@@ -32235,7 +32236,10 @@ fx_illuminate_shape2d_preview_interactive :
         j. [light_rgb],{light_rgb,[$x,$y]-[w,h]/2},0,0,0.5,[light_alpha]
         w. rm. wait
       fi
-      if {{*,CTRLLEFT}&&{*,-D}} w[] {1.5*[{*,w},{*,h}]} elif {{*,CTRLLEFT}&&{*,-C}} w[] {0.75*[{*,w},{*,h}]} fi
+      if {{*,CTRLLEFT}&&{*,-D}} w[] {1.5*[{*,w},{*,h}]}
+      elif {{*,CTRLLEFT}&&{*,-C}} w[] {0.75*[{*,w},{*,h}]}
+      elif {{*,CTRLLEFT}&&{*,-R}} w[] $wsiz
+      fi
       ox,oy,ob=$x,$y,$b
 
     while {{*}" && "!{*,ESC}" && "!{*,Q}}
