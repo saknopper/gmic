@@ -32233,10 +32233,12 @@ _fx_illuminate_shape2d : # Input selection must contains a single image. Output 
   elif {$input_type==1} # Multiple colored shapes
     to_rgba
     +channels. 100% >. 0 *[-2,-1]
-    if {$min_shape_area>1} quantize_area. {$min_shape_area^2} fi
+    if {$min_shape_area>1} +quantize_area. {$min_shape_area^2} fi
     s. c,-{s-1} >. 0 rv[-2,-1]
     if {s>1} f. "init(A = resize([ 0,(s-1)/s ],s,3));I+A" norm. round. 0.01 fi
     label. 0,0 f. "j(1)!=i || j(0,1)!=i" thinning. ==. 0 *. ..
+    select_color... 0,$gR,$gG,$gB,$gA
+    mv... $! -[-2,-1]
 
   elif {$input_type==2} # Bump map
     to_a
