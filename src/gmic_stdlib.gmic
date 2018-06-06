@@ -32203,7 +32203,7 @@ fx_illuminate_shape2d_preview_interactive :
   _output_mode=0
   repeat $! l[$>] +l
     +_fx_illuminate_shape2d $1,2,${3-6},0,1,""$9,0,${11-15},""${16-29},""0,0
-    siz=${fitscreen\ {w},{h},1,128,640}
+    siz=${fitscreen\ {w},{h},1,256,640}
     r $siz,1,100%,3
     s. c,-3 neq. 0 l.. - 128 / 127 s c,-2 / endl a[-2,-1] c # Gradient map
     rv
@@ -32219,9 +32219,7 @@ fx_illuminate_shape2d_preview_interactive :
 
     do
       x,y,b={rgb,[{*,x},{*,y}]*[w,h]/[{*,w},{*,h}]},{*,b}
-      if {$x<0}
-        x,y={rgb,ang=2*$|;(1+[cos(ang),sin(ang)])*[w,h]/2}
-      fi
+      if {$x<0} x,y={rgb,ang=2*$|;(1+[cos(ang),sin(ang)])*[w,h]/2} fi
 
       if {!$b}
         lightx,lighty,lightz={rgb,3.5*(2*[$x/w,$y/h]-1)},2
@@ -32237,6 +32235,7 @@ fx_illuminate_shape2d_preview_interactive :
         j. [light_rgb],{light_rgb,[$x,$y]-[w,h]/2},0,0,0.5,[light_alpha]
         w. rm. wait
       fi
+      if {{*,CTRLLEFT}&&{*,-D}} w[] {1.5*[{*,w},{*,h}]} elif {{*,CTRLLEFT}&&{*,-C}} w[] {0.75*[{*,w},{*,h}]} fi
       ox,oy,ob=$x,$y,$b
 
     while {{*}" && "!{*,ESC}" && "!{*,Q}}
