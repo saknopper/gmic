@@ -32145,7 +32145,9 @@ fx_equalize_shadow_preview :
 #@gui : Light-Y = float(-2,-20,20)
 #@gui : Light-Z = float(2,0,20)
 #@gui : Normalize illumination = bool(0)
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
+#@gui : sep = separator()
+#@gui : Run interactive preview = button()
+#@gui : Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
 #@gui : sep = separator(), note = note{"<small><b>Note:</b> This filter automatically adds illumination to an opaque shape defined over a transparent background.</small>"}
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2018/05/18</i>.</small>")
 fx_illuminate_shape2d :
@@ -32182,8 +32184,12 @@ fx_illuminate_shape2d :
 fx_illuminate_shape2d_preview :
   _is_preview=1
   input_type,\
-  keep_input_bg=$1,$7
+  keep_input_bg,\
+  preview_interactive=$1,$7,$-2
   keep_input_bg&={$!>1}
+
+  if $preview_interactive fx_illuminate_shape2d_preview_interactive $* fi
+
   if $keep_input_bg
     repeat {$!-1} l[$>,-1]
       fx_illuminate_shape2d $* rv a z
@@ -32192,6 +32198,48 @@ fx_illuminate_shape2d_preview :
   else
     gui_split_preview "fx_illuminate_shape2d $*",$-1,0,1
   fi
+
+fx_illuminate_shape2d_preview_interactive :
+  _output_mode=0
+  repeat $! l[$>] +l
+    siz=${fitscreen\ {w},{h},1,128,640}
+    r $siz,1,100%,3
+    +_fx_illuminate_shape2d $1,2,${3-6},0,1,""$9,0,${11-15},""${16-29},""0,0
+    s. c,-3 neq. 0 l.. - 128 / 127 s c,-2 / endl a[-2,-1] c # Gradient map
+    rv
+    s. c,-3
+    (160,128;128,160) r. 16,16 r. ..,..,1,3,0,2
+    30,30,1,1 circle. 50%,50%,15%,1,1 b. 4 n. 0,1
+    100%,100%,1,3,[255,255,0]
+
+    nm normal,rgb,alpha,background,light_alpha,light_rgb
+
+    oxm,oym,obm=inf
+
+    w[] {rgb,[w,h]},0,0,{rgb,[{*,u}-w,{*,v}-h]/2},"[G'MIC] Illuminate 2d shape"
+    cursor[0] 0
+    do
+      xm,ym,bm={rgb,[{*,x},{*,y}]*[w,h]/[{*,w},{*,h}]},{*,b}
+
+      if {$xm>=0" && "!($bm&1)}
+        lightx,lighty,lightz={rgb,3.5*(2*[$xm/w,$ym/h]-1)},2
+
+        if {[$oxm,$oym,$obm]!=[$xm,$ym,$bm]}
+          +fx_illuminate_shape2d[normal,rgb] 4,0,${3-6},1,1,""$9,0,${11-15},""${16-25},$lightx,$lighty,$lightz,0,""0,0
+          +j[background] .,0,0,0,0,1,[alpha],255 rm..
+          j. [light_rgb],{light_rgb,[$xm,$ym]-[w,h]/2},0,0,1,[light_alpha]
+          w.  rm. wait 20
+        else wait
+        fi
+      else
+        +j[background] [rgb],0,0,0,0,1,[alpha],255
+        w. rm. wait
+      fi
+      oxm,oym,obm=$xm,$ym,$bm
+
+    while {{*}" && "!{*,ESC}" && "!{*,Q}}
+    w 0
+  rm endl endl done
 
 _fx_illuminate_shape2d : # Input selection must contains a single image. Output is a single image.
   input_type,\
@@ -32220,6 +32268,7 @@ _fx_illuminate_shape2d : # Input selection must contains a single image. Output 
   lighty,\
   lightz,\
   normalize_illumination,\
+  preview_interactive,\
   preview_mode=$*
 
   # Generate 2d binary shape and corresponding bumpmap
