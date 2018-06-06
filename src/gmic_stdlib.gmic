@@ -140,7 +140,7 @@ cli_noarg :
   v + e[] "\n[gmic] No commands, options or data provided (type "${c}"'gmic help'"$n" to get help)." v -
   if {{*,u}>0}
     v + e[] "[gmic] "${c}"Running in demo mode."$n v - parallel 0,"demo ," e[] ""
-     else
+  else
     v + e[] "\n" v -
   fi
   file_update=${_path_rc}update$_version.gmic
@@ -1139,7 +1139,7 @@ _help_examples :
 \n
 \n  - Generate a 3d ring of torii:
 \n     "${c}"gmic repeat 20 torus3d 15,2 color3d[-1] \"{u(60,255)},{u(60,255)},{u(60,255)}\" \\\
-\n      *3d[-1] 0.5,1 if \"{$>%2}\" rotate3d[-1] 0,1,0,90 endif add3d[-1] 70 add3d \\\
+\n      *3d[-1] 0.5,1 if \"{$>%2}\" rotate3d[-1] 0,1,0,90 fi add3d[-1] 70 add3d \\\
 \n      rotate3d 0,0,1,18 done moded3d 3 mode3d 5 double3d 0"$n"
 \n
 \n  - Create a vase from a 3d isosurface:
@@ -13068,7 +13068,7 @@ transpose :
 #@cli : (eq. to '+3d').
 #@cli : Default values: 'ty=tz=0'.
 #@cli : $ sphere3d 10 repeat 5 +add3d[-1] 10,{u(-10,10)},0 color3d[-1] ${-RGB} done add3d
-#@cli : $ repeat 20 torus3d 15,2 color3d[-1] ${-RGB} mul3d[-1] 0.5,1 if {$>%2} rotate3d[-1] 0,1,0,90 endif add3d[-1] 70 add3d rotate3d[-1] 0,0,1,18 done double3d 0
+#@cli : $ repeat 20 torus3d 15,2 color3d[-1] ${-RGB} mul3d[-1] 0.5,1 if {$>%2} rotate3d[-1] 0,1,0,90 fi add3d[-1] 70 add3d rotate3d[-1] 0,0,1,18 done double3d 0
 
 #@cli animate3d : _width>0,_height>0,_angle_dx,_angle_dy,_angle_dz,_zoom_factor>=0,_filename
 #@cli : Animate selected 3d objects in a window.
@@ -14884,11 +14884,11 @@ apply_timeout :
 
 #@cli continue : (+)
 #@cli : Go to end of current 'repeat...done', 'do...while' or 'local...endlocal' block.
-#@cli : $ image.jpg repeat 10 blur 1 if {1==1} continue endif deform 10 done
+#@cli : $ image.jpg repeat 10 blur 1 if {1==1} continue fi deform 10 done
 
 #@cli break : (+)
 #@cli : Break current 'repeat...done', 'do...while' or 'local...endlocal' block.
-#@cli : $ image.jpg repeat 10 blur 1 if {1==1} break endif deform 10 done
+#@cli : $ image.jpg repeat 10 blur 1 if {1==1} break fi deform 10 done
 
 #@cli do : (+)
 #@cli : Start a 'do...while' block.
@@ -14945,7 +14945,7 @@ eval :
 #@cli : Start a 'if...[elif]...[else]...fi' block and test if specified boolean is true,
 #@cli : or if specified filename exists.
 #@cli : 'boolean' can be a float number standing for { 0=false | other=true }.
-#@cli : $ image.jpg if {ia<64} add 50% elif {ia<128} add 25% elif {ia<192} sub 25% else sub 50% endif cut 0,255
+#@cli : $ image.jpg if {ia<64} add 50% elif {ia<128} add 25% elif {ia<192} sub 25% else sub 50% fi cut 0,255
 
 #@cli l : eq. to 'local'. : (+)
 
