@@ -32247,7 +32247,7 @@ _fx_illuminate_shape2d : # Input selection must contains a single image. Output 
     f. "I==vector4(0)?[128,128,255,255]:I"
     channels. 0,2
 
-  else # Gradient map (hidden mode)
+  else # Gradient map (hidden mode used by interactive preview)
     +channels 100% rv
   fi
 
