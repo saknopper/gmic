@@ -32283,7 +32283,7 @@ _fx_illuminate_shape2d : # Input selection must contains a single image. Output 
         const kd = "$diffuse"%;                     # Diffuse
         const ks = "$specular"%;                    # Specular
         const alpha = "$shininess";                 # Specularity
-        light = -[ "$lightx,$lighty,1" ]*"$lightz"; # Light position
+        light = [ "$lightx,$lighty,-1" ]*"$lightz"; # Light position
         camera = [ 0,0,-"$lightz" ];                # Camera position
       );
       P = [ 2*x/(w - 1) - 1,2*y/(h - 1) - 1,0 ];
@@ -32291,7 +32291,7 @@ _fx_illuminate_shape2d : # Input selection must contains a single image. Output 
       L/=norm(L);
       V = camera - P;
       V/=norm(V);
-      N = [ i0,i1,-flatness ];
+      N = -[ i0,i1,flatness ];
       N/=norm(N);
       R = 2*dot(N,L)*N - L;
       res = ka + kd*dot(L,N) + ks*max(dot(R,V),0)^alpha;
