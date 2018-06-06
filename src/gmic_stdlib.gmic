@@ -32146,7 +32146,7 @@ fx_equalize_shadow_preview :
 #@gui : Light-Z = float(2,0,20)
 #@gui : Normalize illumination = bool(0)
 #@gui : sep = separator()
-#@gui : Run interactive preview = button()
+#@gui : Open interactive preview = button()
 #@gui : Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
 #@gui : sep = separator(), note = note{"<small><b>Note:</b> This filter automatically adds illumination to an opaque shape defined over a transparent background.</small>"}
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2018/05/18</i>.</small>")
@@ -32202,9 +32202,9 @@ fx_illuminate_shape2d_preview :
 fx_illuminate_shape2d_preview_interactive :
   _output_mode=0
   repeat $! l[$>] +l
+    +_fx_illuminate_shape2d $1,2,${3-6},0,1,""$9,0,${11-15},""${16-29},""0,0
     siz=${fitscreen\ {w},{h},1,128,640}
     r $siz,1,100%,3
-    +_fx_illuminate_shape2d $1,2,${3-6},0,1,""$9,0,${11-15},""${16-29},""0,0
     s. c,-3 neq. 0 l.. - 128 / 127 s c,-2 / endl a[-2,-1] c # Gradient map
     rv
     s. c,-3
@@ -32215,26 +32215,29 @@ fx_illuminate_shape2d_preview_interactive :
 
     w[] {rgb,[w,h]},0,0,{rgb,[{*,u}-w,{*,v}-h]/2},"[G'MIC] Illuminate 2d shape"
     cursor 0
-    oxm,oym,obm=inf
+    ox,oy,ob=inf
 
     do
-      xm,ym,bm={rgb,[{*,x},{*,y}]*[w,h]/[{*,w},{*,h}]},{*,b}
+      x,y,b={rgb,[{*,x},{*,y}]*[w,h]/[{*,w},{*,h}]},{*,b}
+      if {$x<0}
+        x,y={rgb,ang=2*$|;(1+[cos(ang),sin(ang)])*[w,h]/2}
+      fi
 
-      if {$xm>=0" && "!($bm&1)}
-        lightx,lighty,lightz={rgb,3.5*(2*[$xm/w,$ym/h]-1)},2
-        if {[$oxm,$oym,$obm]!=[$xm,$ym,$bm]}
+      if {!$b}
+        lightx,lighty,lightz={rgb,3.5*(2*[$x/w,$y/h]-1)},2
+        if {[$ox,$oy,$ob]!=[$x,$y,$b]}
           +fx_illuminate_shape2d[normal,rgb] 4,0,${3-6},1,1,""$9,0,${11-15},""${16-25},$lightx,$lighty,$lightz,0,""0,0
           +j[background] .,0,0,0,0,1,[alpha],255 rm..
-          j. [light_rgb],{light_rgb,[$xm,$ym]-[w,h]/2},0,0,1,[light_alpha]
+          j. [light_rgb],{light_rgb,[$x,$y]-[w,h]/2},0,0,1,[light_alpha]
           w.  rm. wait 20
         else wait
         fi
       else
         +j[background] [rgb],0,0,0,0,1,[alpha],255
-        j. [light_rgb],{light_rgb,[$xm,$ym]-[w,h]/2},0,0,0.5,[light_alpha]
+        j. [light_rgb],{light_rgb,[$x,$y]-[w,h]/2},0,0,0.5,[light_alpha]
         w. rm. wait
       fi
-      oxm,oym,obm=$xm,$ym,$bm
+      ox,oy,ob=$x,$y,$b
 
     while {{*}" && "!{*,ESC}" && "!{*,Q}}
     w 0
