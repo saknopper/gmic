@@ -32351,13 +32351,14 @@ _fx_illuminate_shape2d : # Input selection must contains a single image. Output 
     fi
     f. "*
       init(
-        const flatness = "$flatness";               # Surface flatness
-        const ka = "$ambient"%;                     # Ambient
-        const kd = "$diffuse"%;                     # Diffuse
-        const ks = "$specular"%;                    # Specular
-        const alpha = "$shininess";                 # Specularity
-        light = [ "$lightx,$lighty,-1" ]*"$lightz"; # Light position
-        camera = [ 0,0,-"$lightz" ];                # Camera position
+        const flatness = "$flatness";                 # Surface flatness
+        const ka = "$ambient"%;                       # Ambient
+        const kd = "$diffuse"%;                       # Diffuse
+        const ks = "$specular"%;                      # Specular
+        const alpha = "$shininess";                   # Specularity
+        const m1 = max(1,"$lightz");
+        light = [ "m1*$lightx,m1*$lighty,-$lightz" ]; # Light position
+        camera = [ 0,0,-"$lightz" ];                  # Camera position
       );
       res = i#0?(
         P = [ 2*x/(w - 1) - 1,2*y/(h - 1) - 1,0 ];
