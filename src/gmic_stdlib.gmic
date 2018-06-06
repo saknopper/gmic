@@ -32211,19 +32211,17 @@ fx_illuminate_shape2d_preview_interactive :
     (160,128;128,160) r. 16,16 r. ..,..,1,3,0,2
     30,30,1,1 circle. 50%,50%,15%,1,1 b. 4 n. 0,1
     100%,100%,1,3,[255,255,0]
-
     nm normal,rgb,alpha,background,light_alpha,light_rgb
 
+    w[] {rgb,[w,h]},0,0,{rgb,[{*,u}-w,{*,v}-h]/2},"[G'MIC] Illuminate 2d shape"
+    cursor 0
     oxm,oym,obm=inf
 
-    w[] {rgb,[w,h]},0,0,{rgb,[{*,u}-w,{*,v}-h]/2},"[G'MIC] Illuminate 2d shape"
-    cursor[0] 0
     do
       xm,ym,bm={rgb,[{*,x},{*,y}]*[w,h]/[{*,w},{*,h}]},{*,b}
 
       if {$xm>=0" && "!($bm&1)}
         lightx,lighty,lightz={rgb,3.5*(2*[$xm/w,$ym/h]-1)},2
-
         if {[$oxm,$oym,$obm]!=[$xm,$ym,$bm]}
           +fx_illuminate_shape2d[normal,rgb] 4,0,${3-6},1,1,""$9,0,${11-15},""${16-25},$lightx,$lighty,$lightz,0,""0,0
           +j[background] .,0,0,0,0,1,[alpha],255 rm..
@@ -32233,6 +32231,7 @@ fx_illuminate_shape2d_preview_interactive :
         fi
       else
         +j[background] [rgb],0,0,0,0,1,[alpha],255
+        j. [light_rgb],{light_rgb,[$xm,$ym]-[w,h]/2},0,0,0.5,[light_alpha]
         w. rm. wait
       fi
       oxm,oym,obm=$xm,$ym,$bm
