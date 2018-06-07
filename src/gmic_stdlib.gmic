@@ -32118,7 +32118,7 @@ fx_equalize_shadow_preview :
 #@gui : Input type = choice{"Single opaque shapes over transp. bg","Multiple colored shapes over transp. bg","Bump map","Normal map"}
 #@gui : Output type = choice{"Illumination","Bump map","Normal map"}
 #@gui : Input guide color = color(255,0,0,255)
-#@gui : Keep base layer as input background = bool(0)
+#@gui : Keep base layer as input background = bool(1)
 #@gui : Keep transparency in output = bool(1)
 #@gui : sep = separator(), note = note("<small><b>Shape:</b></small>)
 #@gui : Minimal shape area = int(4,1,100)
@@ -32191,12 +32191,7 @@ fx_illuminate_shape2d_preview :
   keep_input_bg,\
   preview_interactive=$1,$7,$-2
   keep_input_bg&={$!>1}
-
-  if $preview_interactive
-    if $keep_input_bg sel=^-1 else sel=^ fi
-    fx_illuminate_shape2d_preview_interactive[$sel] $*
-  fi
-
+  if $preview_interactive fx_illuminate_shape2d_preview_interactive $* fi
   if $keep_input_bg
     repeat {$!-1} l[$>,-1]
       fx_illuminate_shape2d $* rv a z
@@ -32208,14 +32203,18 @@ fx_illuminate_shape2d_preview :
 
 fx_illuminate_shape2d_preview_interactive :
   _output_mode=0
-  repeat $! l[$>] +l
-    +_fx_illuminate_shape2d $1,2,${3-6},0,1,""$9,0,${11-15},""${16-29},""0,0
+  input_type,\
+  keep_input_bg=$1,$7
+  keep_input_bg&={$!>1}
+  repeat {$!-$keep_input_bg} if $keep_input_bg sel=$>,-1 else sel=$> fi +l[$sel]
+    +_fx_illuminate_shape2d[0] $1,2,${3-6},0,1,""$9,0,${11-15},""${16-29},""0,0
+    if {$!>2} rm[0] elif {$input_type>=2} sh[0] 0,2 f. 128 rm. fi
     siz=${fitscreen\ {w},{h},1,256,640}
     wsiz=${fitscreen\ $siz,1,30%,100%}
     r $siz,1,100%,3
+
     s. c,-3 neq. 0 l.. - 128 / 127 s c,-2 / endl a[-2,-1] c # Gradient map
-    rv
-    s. c,-3
+    rv s. c,-3
     (160,128;128,160) r. 16,16 r. ..,..,1,3,0,2
     30,30,1,1 circle. 50%,50%,15%,1,1 b. 4 n. 0,1
     100%,100%,1,3,[255,255,0]
@@ -32236,6 +32235,7 @@ fx_illuminate_shape2d_preview_interactive :
           +fx_illuminate_shape2d[normal,rgb] 4,0,${3-6},1,1,""$9,0,${11-15},""${16-25},$lightx,$lighty,$lightz,0,""0,0
           +j[background] .,0,0,0,0,1,[alpha],255 rm..
           +r2dx[light_alpha,light_rgb] {light_rgb,8+$lightz*(w-8)} j... .,{[$x,$y]-[w,h]/2},0,0,1,.. rm[-2,-1]
+          r. $wsiz,1,100% to. "Light: ("{_round($lightx,0.1)}","{_round($lighty,0.1)}","{_round($lightz,0.1)}")",2,2,20
           w.  rm. wait 20
         else wait
         fi
@@ -32252,7 +32252,7 @@ fx_illuminate_shape2d_preview_interactive :
 
     while {{*}" && "!{*,ESC}" && "!{*,Q}}
     w 0
-  rm endl endl done
+  rm endl done
 
 _fx_illuminate_shape2d : # Input selection must contains a single image. Output is a single image.
   input_type,\
