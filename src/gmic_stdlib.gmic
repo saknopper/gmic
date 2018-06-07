@@ -23957,9 +23957,9 @@ gui_print_preview : skip "${1=},${3=}" check "${2=32}>=0 && ${4=20}>=0"
   if $! k[0] fi
   drgba
   siz={narg($_preview_width)?[0$_preview_width,0$_preview_height]:[${fitscreen\ {[max(w,1),max(h,1)]},1,400}]}
-  sizw={arg(1,$siz)}
+  sizw={arg(1,$siz)-8}
   if $! rr2d $siz,2,3 drgba else $siz,1,3,128 fi
-  (1;1^1;0.5^0;0.5) (1.5,0,1.5;0,0,0;1.5,0,1.5) r[-2,-1] ...,3 * c 0,255
+  (1;0.5^1;0.5^0;1) (0.75,0,0.75;0,0,0;0.75,0,0.75) r[-2,-1] ...,3 * c 0,255
 
   # Render title.
   0 t. "$1",0,0,$2,1,255 i.. 100%,100%,1,3 fc.. 255,200,120 a[-2,-1] c r2dx. {min(w,arg(1,$sizw)-8)} r. 100%,140%,1,100%,0,0
@@ -23974,9 +23974,10 @@ gui_print_preview : skip "${1=},${3=}" check "${2=32}>=0 && ${4=20}>=0"
           c<c0/2?c0:c"}
       +z. {$x+1},100% z.. 0,$x
     done
+    a y,0
   endl
 
-  a[^0] y,0
+  a[^0] y,0.5
   r. [0],[0],1,100%,0,0,0.5,0.5
   blend alpha
 
