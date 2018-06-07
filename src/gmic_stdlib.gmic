@@ -23951,32 +23951,34 @@ gui_split_preview : skip ${3=0},${4=0}
 # $2 : header font size.
 # $3 : main message
 # $4 : main font size.
-# $5 : Split size for main message.
-gui_print_preview : skip "${1=},${3=}" check "${2=32}>=0 && ${4=20}>=0 && ${5=20}>=0"
+gui_print_preview : skip "${1=},${3=}" check "${2=32}>=0 && ${4=20}>=0"
+
+  # Resize image to output resolution.
+  if $! k[0] fi
+  drgba
   siz={narg($_preview_width)?[0$_preview_width,0$_preview_height]:[${fitscreen\ {[max(w,1),max(h,1)]},1,400}]}
-  if $! k[0] rr2d $siz,2,3 drgba else $siz,1,3,128 fi
+  sizw={arg(1,$siz)}
+  if $! rr2d $siz,2,3 drgba else $siz,1,3,128 fi
   (1;1^1;0.5^0;0.5) (1.5,0,1.5;0,0,0;1.5,0,1.5) r[-2,-1] ...,3 * c 0,255
 
-  l[] # Render title.
-    0 t. "$1",0,0,$2,1,255 r. 100%,140%,1,1,0
-    i[0] 100%,100%,1,3 fc[0] 255,200,128 a c
-  onfail rm
+  # Render title.
+  0 t. "$1",0,0,$2,1,255 i.. 100%,100%,1,3 fc.. 255,200,120 a[-2,-1] c r2dx. {min(w,arg(1,$sizw)-8)} r. 100%,140%,1,100%,0,0
+
+  # Render message.
+  l[]
+    0 t. "$3",0,0,$4,1,255 i.. 100%,100%,1,3,255 a c
+    for {w>$sizw}
+      x={"const c0 = "$sizw"-1;
+          for (c = c0, c>=0, --c, C1 = crop(#-1,c-2,0,0,3,5,h,1,1); max(C1)<=0?break());
+          c<c0/2?for (c = c0, c>=0, --c, C2 = crop(#-1,c,0,0,3,1,h,1,1); max(C2)<=0?break());
+          c<c0/2?c0:c"}
+      +z. {$x+1},100% z.. 0,$x
+    done
   endl
 
-  l[] # Render message.
-    ({'"$3"'}) +f. '>if(i>32||j(-1)<$5,j(-1)+1,0)' ==. 0 *. 256 max[-2,-1] s -,256
-    s y,-{round(1.3*$5)}
-    repeat $! l[$>] 0 t. {0,t},0,0,$4,1,255 rm[0] endl done
-    a y i[0] 100%,100%,1,3,255 a c
-  onfail rm
-  endl
-
-  a[^0] y,0.5
-  if {$!>1}
-    if {w>{0,w}} r2dx. {0,w-8} fi
-    if {h>{0,h}} r2dy. {0,h-8} fi
-    r[1] [0],[0],1,4,0,0,0.5,0.5 blend alpha
-  fi
+  a[^0] y,0
+  r. [0],[0],1,100%,0,0,0.5,0.5
+  blend alpha
 
 gui_no_preview : skip "$*"
   gui_print_preview "",0,"No preview\n  available",32
@@ -23985,10 +23987,10 @@ gui_timeout_preview :
   gui_print_preview "",0,"Preview timeout",32
 
 gui_warning_preview :
-  gui_print_preview "Preview warning:",32,"$*",22,30
+  gui_print_preview "Preview warning:",32,"$*",22
 
 gui_error_preview :
-  gui_print_preview "Preview error:",32,"$*",15,40
+  gui_print_preview "Preview error:",32,"$*",15
 
 gui_check_version :
   if {$_version<$1}
