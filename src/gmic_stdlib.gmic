@@ -32212,13 +32212,13 @@ fx_illuminate_shape2d_preview_interactive :
   keep_input_bg=$1,$7
   keep_input_bg&={$!>1}
   repeat {$!-$keep_input_bg} if $keep_input_bg sel=$>,-1 else sel=$> fi +l[$sel]
+    to_rgba
     +_fx_illuminate_shape2d[0] $1,2,${3-6},0,1,""$9,0,${11-15},""${16-29},""0,0
     if {$!>2} rm[0] elif {$input_type>=2} sh[0] 0,2 f. 128 rm. fi
     siz=${fitscreen\ {w},{h},1,256,640}
     wsiz0=${fitscreen\ $siz,1,30%,100%}
     wsiz=$wsiz0
     r $siz,1,100%,3
-
     s. c,-3 neq. 0 l.. - 128 / 127 s c,-2 / endl a[-2,-1] c # Gradient map
     rv s. c,-3
     (160,128;128,160) r. 16,16 r. ..,..,1,3,0,2
