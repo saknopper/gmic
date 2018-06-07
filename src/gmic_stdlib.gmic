@@ -32234,7 +32234,7 @@ fx_illuminate_shape2d_preview_interactive :
     do
       x,y,b,mw={rgb,[{*,x},{*,y}]*[w,h]/[{*,w},{*,h}]},{*,b},{*,-o}
       lightz={cut($lightz-0.3*sign($mw)+($y0>=0?3*($y-$y0)/h),0.1,4)}
-      if {$x<0} x,y={rgb,ang=2*$|;(1+[cos(ang),sin(ang)])*[w,h]/2} fi
+      if {$x<0} x,y={rgb,ang=$|;(1+[cos(1.4*ang),sin(0.85*ang)])*[w,h]/2} fi
       if {!$b" || "($b&1)}
         if {$b" && "!$clicked} x0,y0=$x,$y
         elif {!$b} x0,y0=-1
@@ -32367,11 +32367,12 @@ _fx_illuminate_shape2d : # Input selection must contains a single image. Output 
         const ks = "$specular"%;                      # Specular
         const alpha = "$shininess";                   # Specularity
         const m1 = max(1,"$lightz");
+        const mwh1 = max(w,h) - 1;
         light = [ "m1*$lightx,m1*$lighty,-$lightz" ]; # Light position
         camera = [ 0,0,-"$lightz" ];                  # Camera position
       );
       res = i#0?(
-        P = [ 2*x/(w - 1) - 1,2*y/(h - 1) - 1,0 ];
+        P = [ 2*x/mwh1 - 1,2*y/mwh1 - 1,0 ];
         L = light - P;
         L/=norm(L);
         V = camera - P;
