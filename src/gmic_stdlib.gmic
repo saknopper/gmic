@@ -32125,7 +32125,7 @@ fx_equalize_shadow_preview :
 #@gui : note = note{"<small>Parameter <i>Minimal shape area</i> is only active in <i>Multiple colored shapes</i> input mode.</small>"}
 #@gui : Preview detected shapes = bool(0)
 #@gui : Erosion/Dilation = float(0,-10,10)
-#@gui : Smoothness = float(1,0,5)
+#@gui : Smoothness = float(2,0,6)
 #@gui : Bump factor = float(1,-5,5)
 #@gui : Avg / max weight = float(1,0,1)
 #@gui : Resolution = choice{4,"Full (slower)","2048","1024","512","256","128","64 (faster)"}
