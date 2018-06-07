@@ -23954,7 +23954,7 @@ gui_split_preview : skip ${3=0},${4=0}
 # $5 : Split size for main message.
 gui_print_preview : skip "${1=},${3=}" check "${2=32}>=0 && ${4=20}>=0 && ${5=20}>=0"
   siz={narg($_preview_width)?[0$_preview_width,0$_preview_height]:[${fitscreen\ {[max(w,1),max(h,1)]},1,400}]}
-  if $! k[0] rr2d $siz,2 drgba else $siz,1,3,128 fi
+  if $! k[0] rr2d $siz,2,3 drgba else $siz,1,3,128 fi
   (1;1^1;0.5^0;0.5) (1.5,0,1.5;0,0,0;1.5,0,1.5) r[-2,-1] ...,3 * c 0,255
 
   l[] # Render title.
