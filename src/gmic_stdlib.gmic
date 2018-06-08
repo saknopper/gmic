@@ -32215,7 +32215,8 @@ fx_illuminate_shape2d_preview :
   if $preview_interactive fx_illuminate_shape2d_preview_interactive $* fi
   if $keep_input_bg
     repeat {$!-1} l[$>,-1]
-      fx_illuminate_shape2d $* rv a z
+      fx_illuminate_shape2d $*
+      rv to_colormode  0 a z
       gui_split_preview "slices 50%,100%",$-1,0,1
     endl done
   else
