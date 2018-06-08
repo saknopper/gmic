@@ -23964,7 +23964,10 @@ gui_print_preview : skip "${1=},${3=}" check "${2=32}>=0 && ${4=20}>=0"
   r[-2,-1] ...,3 * c 0,255
 
   # Render title.
-  0 t. "$1",0,0,$2,1,255 i.. 100%,100%,1,3 fc.. 255,200,120 a[-2,-1] c r2dx. {min(w,arg(1,$sizw)-8)} r. 100%,140%,1,100%,0,0
+  l[]
+    0 t. "$1",0,0,$2,1,255 i.. 100%,100%,1,3 fc.. 255,200,120 a[-2,-1] c r2dx. {min(w,arg(1,$sizw)-8)} r. 100%,140%,1,100%,0,0
+  onfail rm
+  endl
 
   # Render message.
   l[]
@@ -23997,7 +24000,7 @@ gui_print_preview : skip "${1=},${3=}" check "${2=32}>=0 && ${4=20}>=0"
   blend alpha
 
 gui_no_preview : skip "$*"
-  gui_print_preview "",0,"No preview\n  available",32
+  gui_print_preview "",0,"No preview available",32
 
 gui_timeout_preview :
   gui_print_preview "",0,"Preview timeout",32
