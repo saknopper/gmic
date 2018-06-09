@@ -4627,7 +4627,7 @@ update_server :
     replace_str "<i>David Tschumperl&#233;</i>","<i><a href=\""$url"\">David Tschumperl&#233;</a></i>"
     o cimgz:/tmp/update$_version.gmic,uchar
 
-    (222,223,224)
+    (230)
     repeat {w}
       v={i[$>]}
       _update_server_upload[] ${_path_rc}update$_version.gmic,plain_update$v.gmic
@@ -29125,8 +29125,7 @@ fx_euclidean2polar :
   if $5 polar2euclidean $1%,$2%,$3,$4 else euclidean2polar $1%,$2%,$3,$4 fi
 
 #@gui Fish-eye : fisheye, fisheye(1)
-#@gui : X-center = float(50,0,100)
-#@gui : Y-center = float(50,0,100)
+#@gui : Center = point(50,50,0,1,255)
 #@gui : Radius = float(70,0,100)
 #@gui : Amplitude = float(1,0,2)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2010/29/12</i>.</small>")
@@ -29185,8 +29184,7 @@ fx_symmetrizoscope :
 #@gui : X-angle = float(1.73,-4,4)
 #@gui : Y-angle = float(0,-4,4)
 #@gui : Zoom = float(1,0.1,4)
-#@gui : X-center = float(50,0,100)
-#@gui : Y-center = float(50,0,100)
+#@gui : Center = point(50,50,0,1,255)
 #@gui : X-offset = float(0,0,100)
 #@gui : Y-offset = float(0,0,100)
 #@gui : Boundary = choice(2,"Transparent","Nearest","Periodic","Mirror")
@@ -29534,8 +29532,7 @@ fx_twirl :
 #@gui Wave : wave, wave(1)
 #@gui : Amplitude = float(10,0,30)
 #@gui : Frequency = float(0.4,0,2)
-#@gui : X-center = float(50,0,100)
-#@gui : Y-center = float(50,0,100)
+#@gui : Center = point(50,50,0,1,255)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2010/29/12</i>.</small>")
 
 #@gui Wind : fx_wind, fx_wind_preview(0)
@@ -29558,8 +29555,7 @@ fx_wind_preview :
 
 #@gui Zoom : fx_zoom, fx_zoom(1)
 #@gui : Factor = float(2,0.01,10)
-#@gui : X-center = float(50,0,100)
-#@gui : Y-center = float(50,0,100)
+#@gui : Center = point(50,50,0,1,255)
 #@gui : Boundary = choice(0,"Transparent","Nearest","Periodic","Mirror")
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2010/29/12</i>.</small>")
 fx_zoom :
