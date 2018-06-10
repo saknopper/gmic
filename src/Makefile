@@ -7,7 +7,6 @@
 #                 . the G'MIC command line tool (type 'make cli').
 #                 . the G'MIC library, with the C++ API (type 'make lib').
 #                 . the G'MIC library, with the C API (type 'make libc' or 'make libcstatic').
-#                 . the G'MIC plug-in for GIMP, non-recommended GTK-based version (type 'make gimp_gtk').
 #                 . the G'MIC plug-in for GIMP, recommended Qt-based version (type 'make gimp').
 #                 . the G'MIC plug-in for Krita (type 'make krita').
 #                 . To compile all of them, just type 'make', or 'make all').
@@ -316,10 +315,10 @@ else
 endif
 endif
 	@echo "**"
-	$(MAKE) cli lib gimp_gtk gimp_qt krita_qt gmic_qt libc zart
+	$(MAKE) cli lib gimp krita gmic_qt libc zart
 
 native:
-	$(MAKE) "CFLAGS+=$(GMIC_CLI_CFLAGS) -Ofast -march=native" "LIBS+=$(GMIC_CLI_LIBS)" cli gimp_gtk
+	$(MAKE) "CFLAGS+=$(GMIC_CLI_CFLAGS) -Ofast -march=native" "LIBS+=$(GMIC_CLI_LIBS)" cli
 
 # CLI (standard)
 #---------------
@@ -364,45 +363,6 @@ GMIC_STATIC_CLI_LIBS = $(PARALLEL_LIBS) \
 static:
 	$(MAKE) "CFLAGS+=$(GMIC_STATIC_CLI_CFLAGS) $(OPT_CFLAGS)" "LIBS+=$(GMIC_STATIC_CLI_LIBS)" _cli
 	$(STRIP) gmic$(EXE)
-
-# GIMP plug-in (GTK)
-#-------------------
-GMIC_GIMP_GTK_CFLAGS = $(MANDATORY_CFLAGS) $(ABORT_CFLAGS) $(PARALLEL_CFLAGS) $(FFTW_CFLAGS) $(CURL_CFLAGS) $(PNG_CFLAGS) -Dcimg_use_rng -DGIMP_DISABLE_DEPRECATED
-GMIC_GIMP_GTK_LIBS = $(MANDATORY_LIBS) $(PARALLEL_LIBS) $(FFTW_LIBS) $(CURL_LIBS) $(PNG_LIBS)
-ifeq ($(OS),Unix) # Unix.
-GMIC_GIMP_GTK_CFLAGS += $(OPENMP_CFLAGS) $(X11_CFLAGS)
-GMIC_GIMP_GTK_LIBS += $(OPENMP_LIBS) $(X11_LIBS)
-else
-ifeq ($(OS),Darwin) # MaxOSX.
-GMIC_GIMP_GTK_CFLAGS += $(X11_CFLAGS)
-GMIC_GIMP_GTK_LIBS += $(X11_LIBS)
-else # Windows.
-GMIC_GIMP_GTK_CFLAGS += $(OPENMP_CFLAGS) $(GDI32_CFLAGS)
-GMIC_GIMP_GTK_LIBS += -mwindows $(OPENMP_LIBS) $(GDI32_LIBS) -lpthread -DPSAPI_VERSION=1 -lpsapi
-endif
-endif
-
-gimp_gtk:
-	@echo "**"
-	@echo "** Warning: The GTK-based interface of the G'MIC plug-in for GIMP is outdated, please consider compiling the Qt-based interface instead!"
-	@echo "** For this purpose, type: $$ make gimp"
-	@echo "**"
-	$(MAKE) "CFLAGS+=$(GMIC_GIMP_GTK_CFLAGS) $(OPT_CFLAGS)" "LIBS+=$(GMIC_GIMP_GTK_LIBS)" _gimp_gtk
-
-_gimp_gtk: gmic_gimp_gtk.o gmic_gimp_gtk.cpp gmic_gimp_gtk.h
-ifeq ($(OS),Darwin)
-ifeq (,$(wildcard /tmp/skl))
-	$(CXX) -o gmic_gimp_gtk gmic_gimp_gtk.cpp gmic_gimp_gtk.o `gimptool-2.0$(EXE) --cflags` `gimptool-2.0$(EXE) --libs` $(CFLAGS) $(LIBS)
-else
-	$(CXX) -o gmic_gimp_gtk gmic_gimp_gtk.cpp gmic_gimp_gtk.o $(subst -I/opt/local/include/fribidi, ,$(shell gimptool-2.0$(EXE) --cflags)) $(subst -lfribidi, ,$(subst -L/opt/local,-L/tmp/skl/Gimp.app/Contents/Resources,$(shell gimptool-2.0$(EXE) --libs))) $(CFLAGS) $(LIBS)
-endif
-else
-	$(CXX) -o gmic_gimp_gtk gmic_gimp_gtk.cpp gmic_gimp_gtk.o `gimptool-2.0$(EXE) --cflags` `gimptool-2.0$(EXE) --libs` $(CFLAGS) $(LIBS)
-endif
-	$(STRIP) gmic_gimp_gtk$(EXE)
-
-gmic_gimp_gtk.o: check_versions gmic.cpp gmic.h gmic_stdlib.h CImg.h
-	$(CXX) -o gmic_gimp_gtk.o -c gmic.cpp $(CFLAGS)
 
 # Libgmic
 #--------
@@ -541,9 +501,6 @@ _allshared: libgmic_shared.o
 	$(CXX) -o gmic gmic_cli.cpp $(CFLAGS) -lgmic_shared $(LIBS)
 	$(STRIP) gmic$(EXE)
 
-	$(CXX) -o gmic_gimp_gtk gmic_gimp_gtk.cpp `gimptool-2.0$(EXE) --cflags` `gimptool-2.0$(EXE) --libs` $(CFLAGS) -lgmic_shared $(LIBS)
-	$(STRIP) gmic_gimp_gtk$(EXE)
-
 libgmic_shared.o: check_versions CImg.h gmic_stdlib.h
 	$(CXX) -o libgmic_shared.o -c gmic.cpp $(PIC) $(CFLAGS)
 
@@ -559,15 +516,11 @@ gmicol:
 
 # G'MIC-Qt
 #---------
-gimp : gimp_qt
-
-gimp_qt: check_versions gmic_qt_files CImg.h gmic_stdlib.h
+gimp: check_versions gmic_qt_files CImg.h gmic_stdlib.h
 	cd ../gmic-qt && $(QMAKE) CONFIG+=release GMIC_PATH=$(SRC_PATH) PRERELEASE=$(PRERELEASE) HOST=gimp gmic_qt.pro && $(MAKE)
 	@echo "Executable 'gmic_gimp_qt' has been successfully compiled in '../gmic-qt/'."
 
-krita : krita_qt
-
-krita_qt: check_versions gmic_qt_files CImg.h gmic_stdlib.h
+krita: check_versions gmic_qt_files CImg.h gmic_stdlib.h
 	cd ../gmic-qt && $(QMAKE) CONFIG+=release GMIC_PATH=$(SRC_PATH) PRERELEASE=$(PRERELEASE) HOST=krita gmic_qt.pro && $(MAKE)
 	@echo "Executable 'gmic_krita_qt' has been successfully compiled in '../gmic-qt/'."
 
@@ -635,14 +588,6 @@ gmic_stdlib.h: gmic_stdlib.gmic
 	@if [ ! -f ./gmic_stdlib.h ]; then \
 	  $(WGET) gmic_stdlib.h http://gmic.eu/gmic_stdlib.h; \
 	  touch gmic_stdlib.h; \
-	fi
-	@echo " done!"
-
-gmic_gimp_gtk.h:
-	@echo "> Retrieve G'MIC icons for GTK-based GIMP plugin..."
-	@if [ ! -f ./gmic_gimp_gtk.h ]; then \
-	  $(WGET) gmic_gimp_gtk.h http://gmic.eu/gmic_gimp_gtk.h; \
-	  touch gmic_gimp_gtk.h; \
 	fi
 	@echo " done!"
 
@@ -720,57 +665,6 @@ do_gmic_stdlib.h:
 	@echo "\nconst unsigned long size_data_gmic_stdlib = (unsigned long)sizeof(data_gmic_stdlib);" >> gmic_stdlib.h
 	@\gmic v - _update_server_upload gmic_stdlib.h
 
-do_gmic_gimp_gtk.h:
-	@echo "/*\n\
-#\n\
-#  File        : gmic_gimp_gtk.h\n\
-#                ( C++ header file )\n\
-#\n\
-#  Description : Raw data arrays storing icons for the G'MIC GTK-based plugin for GIMP\n\
-#                into a compressed form.\n\
-#                This file has been automatically generated by the Makefile entry\n\
-#                'do_gmic_gimp_gtk.h:', from the images 'gimp_logos.png' and 'gimp_warning.png'.\n\
-#                ( http://gmic.eu )\n\
-#\n\
-#  Copyright   : David Tschumperle\n\
-#                ( http://tschumperle.users.greyc.fr/ )\n\
-#\n\
-#  License     : CeCILL v2.1\n\
-#                ( http://www.cecill.info/licences/Licence_CeCILL_V2.1-en.html )\n\
-#\n\
-#  This software is governed by the CeCILL license under French law and\n\
-#  abiding by the rules of distribution of free software.  You can  use,\n\
-#  modify and/ or redistribute the software under the terms of the CeCILL\n\
-#  license as circulated by CEA, CNRS and INRIA at the following URL\n\
-#  \"http://www.cecill.info\".\n\
-#\n\
-#  As a counterpart to the access to the source code and  rights to copy,\n\
-#  modify and redistribute granted by the license, users are provided only\n\
-#  with a limited warranty  and the software's author,  the holder of the\n\
-#  economic rights,  and the successive licensors  have only  limited\n\
-#  liability.\n\
-#\n\
-#  In this respect, the user's attention is drawn to the risks associated\n\
-#  with loading,  using,  modifying and/or developing or reproducing the\n\
-#  software by the user in light of its specific status of free software,\n\
-#  that may mean  that it is complicated to manipulate,  and  that  also\n\
-#  therefore means  that it is reserved for developers  and  experienced\n\
-#  professionals having in-depth computer knowledge. Users are therefore\n\
-#  encouraged to load and test the software's suitability as regards their\n\
-#  requirements in conditions enabling the security of their systems and/or\n\
-#  data to be ensured and,  more generally, to use and operate it in the\n\
-#  same conditions as regards security.\n\
-#\n\
-#  The fact that you are presently reading this means that you have had\n\
-#  knowledge of the CeCILL license and that you accept its terms.\n\
-#\n\
-*/\n" > gmic_gimp_gtk.h
-	@\gmic v - ../html/img/gimp_logos.png serialize uchar,1,0 o -.h,uchar | sed 's/unsigned char/const unsigned char/' | sed 's/unnamed/gmic_logo/' >> gmic_gimp_gtk.h
-	@echo "\nconst unsigned long size_data_gmic_logo = (unsigned long)sizeof(data_gmic_logo);" >> gmic_gimp_gtk.h
-	@\gmic v - ../html/img/gimp_warning.png serialize uchar,1,0 o -.h,uchar | sed 's/unsigned char/const unsigned char/' | sed 's/unnamed/gmic_preview_warning/' >> gmic_gimp_gtk.h
-	@echo "const unsigned long size_data_gmic_preview_warning = (unsigned long)sizeof(data_gmic_preview_warning);" >> gmic_gimp_gtk.h
-	@\gmic v - _update_server_upload gmic_gimp_gtk.h
-
 # Bash completion script
 #-----------------------
 bashcompletion:
@@ -795,7 +689,6 @@ install:
 	cp -f gmic $(DESTDIR)$(USR)/$(BIN)/
 	mkdir -p $(DESTDIR)$(USR)/$(INCLUDE)/
 	cp -f gmic.h $(DESTDIR)$(USR)/$(INCLUDE)/
-	@if [ -f gmic_gimp_gtk$(EXE) ];	then cp -f gmic_gimp_gtk$(EXE) $(DESTDIR)$(PLUGINDIR)/; fi
 	@if [ -f gmic_libc.h ]; then cp -f gmic_libc.h $(DESTDIR)$(USR)/$(INCLUDE)/; fi
 	@if [ -f ../zart/zart ]; then cp -f ../zart/zart $(DESTDIR)$(USR)/$(BIN)/; fi
 	@if [ -f ../gmic-qt/gmic_qt ]; then cp -f ../gmic-qt/gmic_qt $(DESTDIR)$(USR)/$(BIN)/; fi
@@ -834,7 +727,6 @@ endif
         fi
 
 uninstall:
-	rm -f $(DESTDIR)$(PLUGINDIR)/gmic_gimp_gtk
 	rm -f $(DESTDIR)$(PLUGINDIR)/gmic_gimp_qt
 	rm -f $(DESTDIR)$(PLUGINDIR)/gmic_krita_qt
 	rm -f $(DESTDIR)$(USR)/$(BIN)/gmic
@@ -854,7 +746,7 @@ uninstall:
 distclean: clean
 
 clean:
-	rm -rf CImg.h gmic_stdlib.h gmic_gimp_gtk.h gmic$(EXE) gmic_gimp_gtk$(EXE) use_libgmic$(EXE) use_libcgmic$(EXE) use_libcgmic_static$(EXE) gmic*.o libgmic* libcgmic* *~
+	rm -rf CImg.h gmic_stdlib.h gmic$(EXE) use_libgmic$(EXE) use_libcgmic$(EXE) use_libcgmic_static$(EXE) gmic*.o libgmic* libcgmic* *~
 	@if [ -f ../zart/Makefile ]; then cd ../zart && $(MAKE) clean; fi
 	@if [ -h ../zart ]; then rm -f ../zart; fi
 	@if [ -f ../gmic-qt/Makefile ]; then cd ../gmic-qt && $(MAKE) clean; fi

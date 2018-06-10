@@ -360,48 +360,6 @@ if(BUILD_CLI)
   install(TARGETS gmic RUNTIME DESTINATION bin)
 endif()
 
-
-# GIMP plug-in
-if(BUILD_PLUGIN)
-  execute_process(COMMAND gimptool-2.0 --gimpplugindir OUTPUT_VARIABLE GIMP2_PLUGIN_DIR OUTPUT_STRIP_TRAILING_WHITESPACE)
-  execute_process(COMMAND gimptool-2.0 --libs OUTPUT_VARIABLE GIMP2_LIBRARIES OUTPUT_STRIP_TRAILING_WHITESPACE)
-  execute_process(COMMAND gimptool-2.0 --cflags OUTPUT_VARIABLE GIMP2_INCLUDE_DIRS OUTPUT_STRIP_TRAILING_WHITESPACE)
-
-  if(NOT EXISTS ${CMAKE_SOURCE_DIR}/src/gmic_gimp_gtk.h)
-    file(DOWNLOAD http://gmic.eu/gmic_gimp_gtk.h ${CMAKE_SOURCE_DIR}/src/gmic_gimp_gtk.h)
-    execute_process(COMMAND touch ${CMAKE_SOURCE_DIR}/src/gmic_gimp_gtk.h)
-  endif()
-
-  add_executable(gmic_gimp_gtk ${CLI_Includes} src/gmic_gimp_gtk.cpp)
-  add_dependencies(gmic_gimp_gtk gmic_extra_headers src/gmic_gimp_gtk.h)
-  set_target_properties(gmic_gimp_gtk PROPERTIES COMPILE_FLAGS "${GIMP2_INCLUDE_DIRS} -Dgmic_gui")
-
-  if(ENABLE_DYNAMIC_LINKING)
-    add_dependencies(gmic_gimp_gtk libgmic)
-    target_link_libraries(gmic_gimp_gtk
-      ${GIMP2_LIBRARIES}
-      "libgmic"
-    )
-  else()
-    target_sources(gmic_gimp_gtk PUBLIC ${CLI_Sources})
-    target_link_libraries(gmic_gimp_gtk
-      ${X11_LIBRARIES}
-      ${ZLIB_LIBRARIES}
-      ${FFTW3_LIBRARIES}
-      ${GIMP2_LIBRARIES}
-      ${EXTRA_LIBRARIES}
-    )
-  endif()
-
-  if(PLUGIN_INSTALL_PREFIX)
-    install(TARGETS gmic_gimp_gtk RUNTIME DESTINATION ${PLUGIN_INSTALL_PREFIX})
-    install(FILES ${CMAKE_SOURCE_DIR}/resources/gmic_film_cluts.gmz DESTINATION ${PLUGIN_INSTALL_PREFIX})
-  else()
-    install(TARGETS gmic_gimp_gtk RUNTIME DESTINATION ${GIMP2_PLUGIN_DIR}/plug-ins)
-    install(FILES ${CMAKE_SOURCE_DIR}/resources/gmic_film_cluts.gmz DESTINATION ${GIMP2_PLUGIN_DIR}/plug-ins)
-  endif()
-endif()
-
 if(BUILD_MAN)
   file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/man)
   add_custom_command(
