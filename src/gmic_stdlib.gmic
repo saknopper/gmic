@@ -29475,7 +29475,7 @@ fx_symmetrize_preview :
   theta={$3*pi/180} u={cos($theta)} v={sin($theta)}
   repeat $! l[$>]
     x0,y0,x1,y1={V=[${3,4}]-[${1,2}];([${1,2},${1,2}]+100*[V,-V])*([w,h,w,h]-1)%}
-    line $x0,$y0,$x1,$y1,1,0x0F0F0F0F,0
+    line $x0,$y0,$x1,$y1,1,0x0F0F0F0F,0,0,0,255
     line $x0,$y0,$x1,$y1,1,0xF0F0F0F0,255
   endl done
 
