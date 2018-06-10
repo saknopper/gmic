@@ -29459,29 +29459,24 @@ fx_square_circle_preview :
   gui_split_preview "fx_square_circle $*",$-1,0,1
 
 #@gui Symmetrize : fx_symmetrize, fx_symmetrize_preview(1)
-#@gui : X-center = float(50,0,100)
-#@gui : Y-center = float(50,0,100)
-#@gui : Angle = float(90,0,360)
+#@gui : Point 1 = point(50,25,0,1,0,255,0)
+#@gui : Point 2 = point(50,75,0,1,255,255,0)
 #@gui : Boundary = choice(0,"Transparent","Nearest","Periodic","Mirror")
 #@gui : Type = choice("Symmetry","Antisymmetry")
 #@gui : Swap sides = bool(0)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2013/07/01</i>.</small>")
 fx_symmetrize :
-  if {!$4} to_a fi
-  symmetrize $1%,$2%,$3,$4,$5,$6
+  if {!$5} to_a fi
+  angle={atan2($4-$2,$3-$1)*180/pi}
+  symmetrize $1%,$2%,$angle,$5,$6,$7
 
 fx_symmetrize_preview :
   fx_symmetrize $*
   theta={$3*pi/180} u={cos($theta)} v={sin($theta)}
   repeat $! l[$>]
-    x0={w*$1%}
-    y0={h*$2%}
-    x1={$x0-max(w,h)*$u} y1={$y0-max(w,h)*$v}
-    x2={$x0+max(w,h)*$u} y2={$y0+max(w,h)*$v}
-    line $x1,$y1,$x2,$y2,1,0x0F0F0F0F,0
-    line $x1,$y1,$x2,$y2,1,0xF0F0F0F0,255
-    circle $x0,$y0,3,1,0,255,0,255
-    circle $x0,$y0,3,1,0xFFFFFFFF,0,0,0,255
+    x0,y0,x1,y1={V=[${3,4}]-[${1,2}];([${1,2},${1,2}]+100*[V,-V])*([w,h,w,h]-1)%}
+    line $x0,$y0,$x1,$y1,1,0x0F0F0F0F,0
+    line $x0,$y0,$x1,$y1,1,0xF0F0F0F0,255
   endl done
 
 #@gui Textured glass : fx_textured_glass, fx_textured_glass_preview(0)
