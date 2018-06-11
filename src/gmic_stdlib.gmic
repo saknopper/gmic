@@ -35742,10 +35742,8 @@ fx_image_sample_preview :
   fx_image_sample $1,{$w>$h?$w:0},{$h>$w?$h:0}
 
 #@gui Solve maze : fx_solve_maze, fx_solve_maze_preview(1)
-#@gui : Starting X-coord = float(5,0,100)
-#@gui : Starting Y-coord = float(5,0,100)
-#@gui : Ending X-coord = float(95,0,100)
-#@gui : Endind Y-coord = float(95,0,100)
+#@gui : Starting point (%) = point(5,5)
+#@gui : Ending point (%) = point(95,95)
 #@gui : Smoothness = float(0.1,0,1)
 #@gui : Thickness = int(3,1,10)
 #@gui : Color = color(255,0,0)
