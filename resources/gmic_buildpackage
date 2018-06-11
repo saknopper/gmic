@@ -60,6 +60,7 @@ if [ "$OSTYPE" == "msys" ]; then
     cp -rf /e/work/src/gmic-community/libcgmic/*gmic* $HOME/gmic/src
     cp -rf /e/work/src/zart $HOME/gmic/
     cp -rf /e/work/src/gmic/resources/gmic_film_cluts.gmz $HOME/build${BITS}-gimp-qt
+    rm -rf $HOME/build${BITS}-gimp-qt/update*.gmic
 
     # Get version number.
     cd $HOME/gmic/src
@@ -85,12 +86,14 @@ if [ "$OSTYPE" == "msys" ]; then
 
     echo " - Release number : $VERSION$SUFFIX (GIMP $GIMPVER)."
 
+    cp -f /e/.config/gmic/update$SVERSION.gmic $HOME/build${BITS}-gimp-qt/
+
     sed "s/rm -rf CImg.h gmic_stdlib.h /rm -rf /" Makefile > /tmp/Makefile
     mv /tmp/Makefile Makefile
 
     cd $HOME
     sed s\/XXX\/${VERSION}${SUFFIX}\/g /e/work/src/gmic/resources/gmic_gimp${GIMPVER}_qt${BITS}.iss > tmp.iss &&
-        sed s\/YYY\/${RELEASE1}\/g tmp.iss > installer_qt.iss
+        sed s\/xxx\/${SVERSION}\/g tmp.iss > installer_qt.iss
 
     # Define output files (archives/installers).
     OUTDIR_CLI=gmic-cli-${VERSION}${SUFFIX}-win${BITS}

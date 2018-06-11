@@ -44,6 +44,7 @@ Source: build32-gimp-qt\platforms\qminimal.dll; DestDir: {app}\platforms
 Source: build32-gimp-qt\platforms\qoffscreen.dll; DestDir: {app}\platforms
 Source: build32-gimp-qt\platforms\qwebgl.dll; DestDir: {app}\platforms
 Source: build32-gimp-qt\platforms\qwindows.dll; DestDir: {app}\platforms
+Source: build32-gimp-qt\updatexxx.gmic; DestDir: {userappdata}\gmic
 
 ;[Icons]
 ;Name: {userstartmenu}\Gimp\Gmic_Gimp\Uninstall Gmic_Gimp; Filename: {uninstallexe}
