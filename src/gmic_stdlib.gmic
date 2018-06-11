@@ -29528,8 +29528,7 @@ fx_zoom :
 
 #@gui Blur [angular] : fx_blur_angular, fx_blur_angular_preview(1)
 #@gui : Amplitude = float(2,0,10)
-#@gui : X-center (%) = float(50,0,100)
-#@gui : Y-center (%) = float(50,0,100)
+#@gui : Center (%) = point(50,50,0,1)
 #@gui : Sharpness = float(0,0,500)
 #@gui : Preview guides = bool(1)
 #@gui : sep = separator(), Channel(s) = choice(7,"All","RGBA [all]","RGB [all]","RGB [red]","RGB [green]","RGB [blue]","RGBA [alpha]","Linear RGB [all]","Linear RGB [red]","Linear RGB [green]","Linear RGB [blue]","YCbCr [luminance]","YCbCr [blue-red chrominances]","YCbCr [blue chrominance]","YCbCr [red chrominance]","YCbCr [green chrominance]","Lab [lightness]","Lab [ab-chrominances]","Lab [a-chrominance]","Lab [b-chrominance]","Lch [ch-chrominances]","Lch [c-chrominance]","Lch [h-chrominance]","HSV [hue]","HSV [saturation]","HSV [value]","HSI [intensity]","HSL [lightness]","CMYK [cyan]","CMYK [magenta]","CMYK [yellow]","CMYK [key]","YIQ [luma]","YIQ [chromas]")
@@ -29543,7 +29542,6 @@ fx_blur_angular_preview :
   if $5
     line 0,$3%,100%,$3%,0.5,0xF0F0F0F0,255 line 0,$3%,100%,$3%,0.5,0x0F0F0F0F,0
     line $2%,0,$2%,100%,0.5,0xF0F0F0F0,255 line $2%,0,$2%,100%,0.5,0x0F0F0F0F,0
-    circle $2%,$3%,5,0.7,0 circle $2%,$3%,3,0.7,0,255,0
   fi
 
 #@gui Blur [bloom] : fx_blur_bloom, fx_blur_bloom_preview(0)
@@ -29700,8 +29698,7 @@ fx_blur_linear_preview :
 
 #@gui Blur [radial] : fx_blur_radial, fx_blur_radial_preview(1)
 #@gui : Amplitude = float(3,0,20)
-#@gui : X-center (%) = float(50,0,100)
-#@gui : Y-center (%) = float(50,0,100)
+#@gui : Center (%) = point(50,50,0,1)
 #@gui : Sharpness = float(0,0,500)
 #@gui : Preview guides = bool(1)
 #@gui : sep = separator(), Channel(s) = choice(7,"All","RGBA [all]","RGB [all]","RGB [red]","RGB [green]","RGB [blue]","RGBA [alpha]","Linear RGB [all]","Linear RGB [red]","Linear RGB [green]","Linear RGB [blue]","YCbCr [luminance]","YCbCr [blue-red chrominances]","YCbCr [blue chrominance]","YCbCr [red chrominance]","YCbCr [green chrominance]","Lab [lightness]","Lab [ab-chrominances]","Lab [a-chrominance]","Lab [b-chrominance]","Lch [ch-chrominances]","Lch [c-chrominance]","Lch [h-chrominance]","HSV [hue]","HSV [saturation]","HSV [value]","HSI [intensity]","HSL [lightness]","CMYK [cyan]","CMYK [magenta]","CMYK [yellow]","CMYK [key]","YIQ [luma]","YIQ [chromas]")
@@ -29715,7 +29712,6 @@ fx_blur_radial_preview :
   if $5
     line 0,$3%,100%,$3%,0.5,0xF0F0F0F0,255 line 0,$3%,100%,$3%,0.5,0x0F0F0F0F,0
     line $2%,0,$2%,100%,0.5,0xF0F0F0F0,255 line $2%,0,$2%,100%,0.5,0x0F0F0F0F,0
-    circle $2%,$3%,5,0.7,0 circle $2%,$3%,3,0.7,0,255,0
   fi
 
 #@gui Chromatic aberrations : fx_chromatic_aberrations, fx_chromatic_aberrations_preview(0)
@@ -31484,13 +31480,12 @@ fx_polaroid :
 #@gui Tunnel : fx_tunnel, fx_tunnel(1)
 #@gui : Depth = int(4,1,100)
 #@gui : Factor = float(80,1,99)
-#@gui : X-center = float(0.5,0,1)
-#@gui : Y-center = float(0.5,0,1)
+#@gui : Center (%) = point(50,50)
 #@gui : Opacity = float(0.2,0,1)
 #@gui : Angle = float(0,-90,90)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2012/22/11</i>.</small>")
 fx_tunnel :
-  tunnel $1,$2%,${3-6}
+  tunnel $1,$2%,{[${3,4}]%},${5-6}
 
 #@gui Vignette : fx_vignette, fx_vignette
 #@gui : Strength = float(70,0,255)
@@ -32443,8 +32438,7 @@ fx_light_patch :
 
 #@gui Light rays : fx_lightrays, fx_lightrays(1)
 #@gui : Density = float(80,0,100)
-#@gui : X-center (%) = float(0,-200,300)
-#@gui : Y-center (%) = float(0,-200,300)
+#@gui : Center (%) = point(50,50,0,1)
 #@gui : Length = float(1,0,1)
 #@gui : Attenuation = float(0.5,0,1)
 #@gui : Transparency = bool(0)
@@ -33871,8 +33865,7 @@ fx_render3d : skip ${14=1}
 #@gui : Angle = float(30,0,360)
 #@gui : Tilt = float(60,0,90)
 #@gui : FOV = float(45,1,90)
-#@gui : X-centering = float(50,0,100)
-#@gui : Y-centering = float(50,0,100)
+#@gui : Centering (%) = point(50,50)
 #@gui : sep = separator()
 #@gui : X-light = float(0,-100,100)
 #@gui : Y-light = float(-50,-100,100)
