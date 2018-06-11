@@ -4081,7 +4081,7 @@ update_gallery_html : check "isbool(${1=0})"
               replaced_example$nex={t} rm
             endl
             ({'${example$nex}'}) replace_str. "https://gmic.eu/samples/","../../resources/samples/" example$nex={t} rm.
-            m "_run : "${example$nex}
+            m "_run : _preview_width,_preview_height=450,300 "${example$nex}
 
             if $is_input sample_=${sample}_ else sample_= fi
             filename_original=${category}_${sample_}original_$nex.jpg
@@ -28841,11 +28841,10 @@ fx_custom_deformation :
   mv. 0 done
 
 #@gui Circle transform : fx_circle_transform, fx_circle_transform_preview(1)
-#@gui : X-center (%) = float(50,0,100)
-#@gui : Y-center (%) = float(50,0,100)
+#@gui : Center = point(50,50,0,1)
+#@gui : Radius = point(75,50,0,1)
 #@gui : X-scale = float(-2,-16,16)
 #@gui : Y-scale = float(-2,-16,16)
-#@gui : Radius = float(0.2,0,1)
 #@gui : Symmetry = choice("None","Inside","Outside")
 #@gui : Interpolation = choice(1,"Nearest neighbor","Linear")
 #@gui : Boundary = choice(3,"Transparent","Nearest","Periodic","Mirror")
@@ -28853,26 +28852,32 @@ fx_custom_deformation :
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2013/08/01</i>.</small>")
 fx_circle_transform :
   repeat $! l[$>] to_rgba
-    r={$5*sqrt(w^2+h^2)}
-    if {$6==0} cond="i(X,Y,z,c,$7,$8)"
-    elif {$6==1} cond="if(N<"$r",i(X,Y,z,c,$7,$8),i)"
-    else cond="if(N>"$r",i(X,Y,z,c,$7,$8),i)"
+    r={dx=($3-$1)*(w-1)%;dy=($4-$2)*(h-1)%;norm(dx,dy)}
+    if {$7==0} cond="i(X,Y,z,c,$8,$9)"
+    elif {$7==1} cond="if(N<"$r",i(X,Y,z,c,$8,$9),i)"
+    else cond="if(N>"$r",i(X,Y,z,c,$8,$9),i)"
     fi
-    f 'U=x-w*$1%;V=y-h*$2%;N=sqrt(U*U+V*V);Nr=N-$r;X=x+$3*Nr*U/N;Y=y+$4*Nr*V/N;$cond'
+    f "U = x - w*$1%;
+       V = y - h*$2%;
+       N = sqrt(U*U + V*V);
+       Nr = N - "$r";
+       X = x + $5*Nr*U/N;
+       Y = y + $6*Nr*V/N;
+       "$cond
   endl done
 
 fx_circle_transform_preview :
   fx_circle_transform $*
-  repeat $! l[$>]
-    x0={$1%*w}
-    y0={$2%*h}
-    r={$5*sqrt(w^2+h^2)}
-    if $9
+  if $10
+    rr2d $_preview_width,$_preview_height,0,1
+    repeat $! l[$>]
+      x0,y0={[$1,$2]*([w,h]-1)%}
+      r={dx=($3-$1)*(w-1)%;dy=($4-$2)*(h-1)%;norm(dx,dy)}
       circle $x0,$y0,{$r-1},1,0xFFFFFFFF,0,0,0,255
       circle $x0,$y0,{$r+1},1,0xFFFFFFFF,0,0,0,255
       circle $x0,$y0,$r,1,0xFFFFFFFF,0,255,0,255
-    fi
-  endl done
+    endl done
+  fi
 
 #@gui Conformal maps : fx_conformal_maps, fx_conformal_maps_preview(1)
 #@gui : Mapping = choice{8,"Custom formula","z","(z-1)/(z+1)","cos(z)","sin(z)","tan(z)","exp(z)","log(z)","Dipole: 1/(4*z^2-1)","Star: -5*(z^3/3-z/4)/2"}
@@ -29443,7 +29448,7 @@ fx_square_circle_preview :
 #@gui : Boundary = choice(0,"Transparent","Nearest","Periodic","Mirror")
 #@gui : Type = choice("Symmetry","Antisymmetry")
 #@gui : Swap sides = bool(0)
-#@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2013/07/01</i>.</small>")
+#@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2018/06/11</i>.</small>")
 fx_symmetrize :
   if {!$6} to_a fi
   angle={isnan($3)?$5:atan2($4-$2,$3-$1)*180/pi}
@@ -29451,8 +29456,8 @@ fx_symmetrize :
 
 fx_symmetrize_preview :
   fx_symmetrize $*
-  angle={isnan($3)?$5:atan2($4-$2,$3-$1)*180/pi}
-  u,v={[cos($angle*pi/180),sin($angle*pi/180)]}
+  rr2d $_preview_width,$_preview_height,0,1
+  u,v={angle=isnan($3)?$5*pi/180:atan2($4-$2,$3-$1);[cos(angle),sin(angle)]}
   repeat $! l[$>]
     x0,y0,x1,y1={V=[$u,$v];([${1,2},${1,2}]+10000*[V,-V])*([w,h,w,h]-1)%}
     line $x0,$y0,$x1,$y1,1,0x0F0F0F0F,0,0,0,255
