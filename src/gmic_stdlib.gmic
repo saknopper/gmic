@@ -29355,25 +29355,21 @@ fx_map_sphere_preview :
 #@gui : Radius (%) = float(50,0,300)
 #@gui : Strength = float(1,-10,10)
 #@gui : Smoothness (%) = float(0,0,4)
-#@gui : X-center (%) = float(50,0,100)
-#@gui : Y-center (%) = float(50,0,100)
-#@gui : Select center (interactive) = button()
+#@gui : Center (%) = point(50,50,0,1)
 #@gui : Ratio = float(0,-2,2)
 #@gui : Angle = float(0,-90,90)
 #@gui : Interpolation = choice(2,"Nearest neighbor","Linear","Cubic")
 #@gui : Preview grid = bool(0)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2017/10/03</i>.</small>")
 fx_spherize :
-  ratio={10^$7}
-  spherize $1%,$2,$3%,$4%,$5%,$ratio,$8,$9
+  ratio={10^$6}
+  spherize $1%,$2,$3%,$4%,$5%,$ratio,$7,$8
   cut 0,255
 
 fx_spherize_preview :
   cx,cy=${4,5}
-  if $6 wh=${fitscreen\ {0,[w,h]}} w $wh,0,"[G'MIC] Select center" +select 0 cx,cy={[I[0],I[1]]/[w#0,h#0]*100} rm. fi
-  if $10 grid 5%,5%,50%,50%,0.6,255 fi
+  if $9 grid 5%,5%,50%,50%,0.6,255 fi
   fx_spherize ${1-3},$cx,$cy,${6--1}
-  u "{$1}{$2}{$3}{"$cx"}{"$cy"}{0}{$7}{$8}{$9}{$10}"
 
 #@gui Square to circle : fx_square_circle, fx_square_circle_preview
 #@gui : Mode = choice(0,"Square to circle","Circle to square")
@@ -29480,8 +29476,7 @@ fx_textured_glass_preview :
 
 #@gui Twirl : fx_twirl, fx_twirl(1)
 #@gui : Amplitude = float(1,-5,5)
-#@gui : X-center (%) = float(50,0,100)
-#@gui : Y-center (%) = float(50,0,100)
+#@gui : Center (%) = point(50,50,0,1)
 #@gui : Boundary = choice(3,"Transparent","Nearest","Periodic","Mirror")
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2010/29/12</i>.</small>")
 fx_twirl :
