@@ -29437,22 +29437,24 @@ fx_square_circle_preview :
   gui_split_preview "fx_square_circle $*",$-1,0,1
 
 #@gui Symmetrize : fx_symmetrize, fx_symmetrize_preview(1)
-#@gui : Point 1 = point(50,25,0,1,0,255,0)
-#@gui : Point 2 = point(50,75,0,1,255,255,0)
+#@gui : Point 1 = point(50,50,0,1,0,255,0)
+#@gui : Point 2 = point(nan,nan,1,1,255,255,0)
+#@gui : Angle = float(0,-180,180)
 #@gui : Boundary = choice(0,"Transparent","Nearest","Periodic","Mirror")
 #@gui : Type = choice("Symmetry","Antisymmetry")
 #@gui : Swap sides = bool(0)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2013/07/01</i>.</small>")
 fx_symmetrize :
-  if {!$5} to_a fi
-  angle={atan2($4-$2,$3-$1)*180/pi}
-  symmetrize $1%,$2%,$angle,$5,$6,$7
+  if {!$6} to_a fi
+  angle={isnan($3)?$5:atan2($4-$2,$3-$1)*180/pi}
+  symmetrize $1%,$2%,$angle,${6-8}
 
 fx_symmetrize_preview :
   fx_symmetrize $*
-  theta={$3*pi/180} u={cos($theta)} v={sin($theta)}
+  angle={isnan($3)?$5:atan2($4-$2,$3-$1)*180/pi}
+  u,v={[cos($angle*pi/180),sin($angle*pi/180)]}
   repeat $! l[$>]
-    x0,y0,x1,y1={V=[${3,4}]-[${1,2}];([${1,2},${1,2}]+100*[V,-V])*([w,h,w,h]-1)%}
+    x0,y0,x1,y1={V=[$u,$v];([${1,2},${1,2}]+100*[V,-V])*([w,h,w,h]-1)%}
     line $x0,$y0,$x1,$y1,1,0x0F0F0F0F,0,0,0,255
     line $x0,$y0,$x1,$y1,1,0xF0F0F0F0,255
   endl done
