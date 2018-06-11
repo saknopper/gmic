@@ -28841,7 +28841,7 @@ fx_custom_deformation :
   mv. 0 done
 
 #@gui Circle transform : fx_circle_transform, fx_circle_transform_preview(1)
-#@gui : Center = point(50,50,0,1)
+#@gui : Center (%) = point(50,50,0,1)
 #@gui : Radius = point(75,50,0,1)
 #@gui : X-scale = float(-2,-16,16)
 #@gui : Y-scale = float(-2,-16,16)
@@ -28968,8 +28968,7 @@ fx_crease :
 #@gui : Amplitude = float(0.1,-1,1)
 #@gui : Aspect ratio = float(0,-2,2)
 #@gui : Zoom = float(0,-4,4)
-#@gui : X-center (%) = float(50,0,100)
-#@gui : Y-center (%) = float(50,0,100)
+#@gui : Center (%) = point(50,50,0,1)
 #@gui : Boundary = choice(0,"Transparent","Nearest","Periodic","Mirror")
 #@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2017/18/02</i>.</small>")
@@ -29097,8 +29096,7 @@ fx_equirectangular2nadirzenith :
   if $1 -nadirzenith2equirectangular else equirectangular2nadirzenith fi
 
 #@gui Euclidean - polar : fx_euclidean2polar, fx_euclidean2polar(1)
-#@gui : X-center (%) = float(50,0,100)
-#@gui : Y-center (%) = float(50,0,100)
+#@gui : Center (%) = point(50,50,0,1)
 #@gui : Stretch factor = float(1,0.1,10)
 #@gui : Boundary = choice(1,"Transparent","Nearest","Periodic","Mirror")
 #@gui : Inverse transform = bool(0)
@@ -29108,7 +29106,7 @@ fx_euclidean2polar :
   if $5 polar2euclidean $1%,$2%,$3,$4 else euclidean2polar $1%,$2%,$3,$4 fi
 
 #@gui Fish-eye : fisheye, fisheye(1)
-#@gui : Center = point(50,50,0,1,255)
+#@gui : Center (%) = point(50,50,0,1,255)
 #@gui : Radius = float(70,0,100)
 #@gui : Amplitude = float(1,0,2)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2010/29/12</i>.</small>")
@@ -29118,8 +29116,7 @@ fx_euclidean2polar :
 #@gui : Petals = int(6,2,20)
 #@gui : Offset = float(0,0,100)
 #@gui : Angle = float(0,0,360)
-#@gui : X-center (%) = float(50,0,100)
-#@gui : Y-center (%) = float(50,0,100)
+#@gui : Center (%) = point(50,50,0,1)
 #@gui : Boundary = choice(3,"Transparent","Nearest","Periodic","Mirror")
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2010/29/12</i>.</small>")
 fx_flower :
@@ -29127,8 +29124,7 @@ fx_flower :
   flower $1,$2,$3%,$4,$5%,$6%,$7
 
 #@gui Kaleidoscope [blended] : fx_rotoidoscope, fx_rotoidoscope(1)
-#@gui : X-center (%) = float(50,0,100)
-#@gui : Y-center (%) = float(50,0,100)
+#@gui : Center (%) = point(50,50)
 #@gui : Angular tiles = int(10,1,72)
 #@gui : Smoothness = float(0.5,0,5)
 #@gui : Boundary = choice(3,"Transparent","Nearest","Periodic","Mirror")
@@ -29138,8 +29134,7 @@ fx_rotoidoscope :
   rotoidoscope $1%,$2%,$3,$4%,$5
 
 #@gui Kaleidoscope [polar] : fx_kaleidoscope, fx_kaleidoscope(1)
-#@gui : X-center (%) = float(50,0,100)
-#@gui : Y-center (%) = float(50,0,100)
+#@gui : Center (%) = point(50,50)
 #@gui : X-offset (%) = float(0,0,100)
 #@gui : Y-offset (%) = float(0,0,100)
 #@gui : Radius cut = float(100,0,100)
@@ -29167,7 +29162,7 @@ fx_symmetrizoscope :
 #@gui : X-angle = float(1.73,-4,4)
 #@gui : Y-angle = float(0,-4,4)
 #@gui : Zoom = float(1,0.1,4)
-#@gui : Center = point(50,50,0,1,255)
+#@gui : Center (%) = point(50,50,0,1,255)
 #@gui : X-offset = float(0,0,100)
 #@gui : Y-offset = float(0,0,100)
 #@gui : Boundary = choice(2,"Transparent","Nearest","Periodic","Mirror")
@@ -29178,8 +29173,7 @@ fx_warp_perspective :
 
 #@gui Polar transform : fx_transform_polar, fx_transform_polar(1)
 #@gui : Preset = choice("Custom transform","Inverse radius","Swap radius/angle")
-#@gui : X-center (%) = float(50,0,100)
-#@gui : Y-center (%) = float(50,0,100)
+#@gui : Center (%) = point(50,50,0,1)
 #@gui : Radius = text{"r + R/10*cos(a*5)"}
 #@gui : Angle = text{"a"}
 #@gui : Boundary = choice(3,"Transparent","Nearest","Periodic","Mirror")
@@ -29195,22 +29189,13 @@ fx_transform_polar :
   fi
 
 #@gui Quadrangle : fx_quadrangle, fx_quadrangle_preview(1)
-#@gui : note = note("<span color="red">Top-left vertex:</span>")
-#@gui : X0 (%) = float(5,-100,200)
-#@gui : Y0 (%) = float(5,-100,200)
-#@gui : note = note("<span color="green">Top-right vertex:</span>")
-#@gui : X1 (%) = float(95,-100,200)
-#@gui : Y1 (%) = float(25,-100,200)
-#@gui : note = note("<span color="blue">Bottom-right vertex:</span>")
-#@gui : X2 (%) = float(60,-100,200)
-#@gui : Y2 (%) = float(95,-100,200)
-#@gui : note = note("<span color="yellow">Bottom-left vertex:</span>")
-#@gui : X3 (%) = float(40,-100,200)
-#@gui : Y3 (%) = float(95,-100,200)
-#@gui : sep = separator()
+#@gui : Top-left vertex (%) = point(5,5,0,1,255,0,0)
+#@gui : Top-right vertex (%) = point(95,25,0,1,0,255,0)
+#@gui : Bottom-right vertex (%) = point(60,95,0,1,64,128,255)
+#@gui : Bottom-left vertex (%) = point(40,95,0,1,255,255,0)
 #@gui : Interpolation = choice(1,"Nearest neighbor","Linear")
 #@gui : Boundary = choice(3,"Transparent","Nearest","Periodic","Mirror")
-#@gui : Preview type = choice(2,"Quadrangle","Result","Both")
+#@gui : Preview type = choice(1,"Quadrangle","Result","Both")
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2017/10/11</i>.</small>")
 fx_quadrangle :
   at_quadrangle $1%,$2%,$3%,$4%,$5%,$6%,$7%,$8%,${9-10}
@@ -29219,13 +29204,13 @@ fx_quadrangle_preview :
   repeat $! l[$>]
     if {!$10} to_a fi
     if $11 +fx_quadrangle $* rr2d. {0,[w,h]},2,3 fi
-    if {$11!=1}
-      polygon[0] 4,$1%,$2%,$3%,$4%,$5%,$6%,$7%,$8%,0.5,255
+    polygon[{$11==1?1:0}] 4,$1%,$2%,$3%,$4%,$5%,$6%,$7%,$8%,0.25,255
+    if {$11>=2}
       circle[0] $1%,$2%,4,1,0 circle[0] $1%,$2%,3,1,255,0,0
       circle[0] $3%,$4%,4,1,0 circle[0] $3%,$4%,3,1,0,255,0
       circle[0] $5%,$6%,4,1,0 circle[0] $5%,$6%,3,1,64,128,255
       circle[0] $7%,$8%,4,1,0 circle[0] $7%,$8%,3,1,255,255,0
-    else
+    elif {$11>0}
       rm[0]
     fi
     if {$!==2}
@@ -29512,7 +29497,7 @@ fx_twirl :
 #@gui Wave : wave, wave(1)
 #@gui : Amplitude = float(10,0,30)
 #@gui : Frequency = float(0.4,0,2)
-#@gui : Center = point(50,50,0,1,255)
+#@gui : Center (%) = point(50,50,0,1,255)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2010/29/12</i>.</small>")
 
 #@gui Wind : fx_wind, fx_wind_preview(0)
@@ -29535,7 +29520,7 @@ fx_wind_preview :
 
 #@gui Zoom : fx_zoom, fx_zoom(1)
 #@gui : Factor = float(2,0.01,10)
-#@gui : Center = point(50,50,0,1,255)
+#@gui : Center (%) = point(50,50,0,1,255)
 #@gui : Boundary = choice(0,"Transparent","Nearest","Periodic","Mirror")
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2010/29/12</i>.</small>")
 fx_zoom :
@@ -29600,7 +29585,7 @@ fx_blur_bloom_preview :
 #@gui : Invert blur = bool(0)
 #@gui : sep = separator()
 #@gui : note = note("<small><b>Gaussian depth-of-field:</b></small>")
-#@gui : Center = point(50,50,0,0,255)
+#@gui : Center (%) = point(50,50,0,0,255)
 #@gui : First radius = float(30,0,200)
 #@gui : Second radius = float(30,0,200)
 #@gui : Angle = float(0,0,180)
@@ -34567,7 +34552,7 @@ fx_linear_gradient : skip ${13=0}
 #@gui : Swap colors = bool(0)
 #@gui : Fade start = float(0,0,100)
 #@gui : Fade end = float(100,0,100)
-#@gui : Center = point(50,50,0,1,255)
+#@gui : Center (%) = point(50,50,0,1,255)
 #@gui : sep = separator(), Colorspace = choice(0,"sRGB","Linear RGB","Lab")
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2015/29/06</i>.</small>")
 fx_radial_gradient : skip ${14=0}
