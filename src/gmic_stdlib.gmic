@@ -29195,7 +29195,7 @@ fx_transform_polar :
 #@gui : Bottom-left vertex (%) = point(40,95,0,1,255,255,0)
 #@gui : Interpolation = choice(1,"Nearest neighbor","Linear")
 #@gui : Boundary = choice(3,"Transparent","Nearest","Periodic","Mirror")
-#@gui : Preview type = choice(1,"Quadrangle","Result","Both")
+#@gui : Preview type = choice(1,"Input","Output","Both")
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2017/10/11</i>.</small>")
 fx_quadrangle :
   at_quadrangle $1%,$2%,$3%,$4%,$5%,$6%,$7%,$8%,${9-10}
