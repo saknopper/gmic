@@ -5335,7 +5335,7 @@ sort_str :
 #@cli acos : (+)
 #@cli : Compute the pointwise arc-cosine of selected images.
 #@cli : $ image.jpg +normalize -1,1 acos[-1]
-#@cli : $ 300,1,1,1,'x/w+0.1*u' +acos display_graph 400,300
+#@cli : $ 300,1,1,1,'cut(x/w+0.1*u,0,1)' +acos display_graph 400,300
 #@cli : $$ trigometric-and-inverse-trigometric-commands
 
 #@cli + : eq. to 'add'. : (+)
@@ -5380,7 +5380,7 @@ argmin :
 #@cli asin : (+)
 #@cli : Compute the pointwise arc-sine of selected images.
 #@cli : $ image.jpg +normalize -1,1 asin[-1]
-#@cli : $ 300,1,1,1,'x/w+0.1*u' +asin display_graph 400,300
+#@cli : $ 300,1,1,1,'cut(x/w+0.1*u,0,1)' +asin display_graph 400,300
 #@cli : $$ trigometric-and-inverse-trigometric-commands
 
 #@cli atan : (+)
