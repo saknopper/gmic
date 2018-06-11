@@ -87,37 +87,37 @@
                           <li>Linux <i>32/64 bits</i>: <a href="https://gmic.eu/files/linux">Other .zip archives for specific distros</a></li>
                         </ul>
                       </li><br/>
-                      <li><i>GTK</i> versions (<i>deprecated, not recommended!</i>):
-                        <div class="popup" onclick="popupFunction2()">
-                          <b>View links</b>
-                          <span class="popuptext" id="myPopup2">
-                            <p>
-                              <b><i>GTK</i> versions</b>:<br/>
-                              Please <font color="red">don't use these binaries <i>unless you have very good reasons to do so</i></font>.<br/>
-                              The code of the GTK plug-in is not maintained anymore, and has less features than the
-                              regular (Qt, maintained) version. <font color="red"><b>Use at your own risk!</b></font>
-                              <ul>
-                                <li>Linux <i>64 bits</i> (GIMP <b>2.8</b>):
-                                  <a href="https://gmic.eu/files/linux/gmic_gimp2.8_gtk_linux64.zip">.zip archive</a>.</li>
-                                <li>Linux <i>32 bits</i> (GIMP <b>2.8</b>):
-                                  <a href="https://gmic.eu/files/linux/gmic_gimp2.8_gtk_linux32.zip">.zip archive</a>.</li>
-                                <li>Windows <i>64 bits</i> (GIMP <b>2.10</b>):
-                                  <a href="https://gmic.eu/files/windows/gmic_gimp2.10_gtk_win64.exe">installer</a> or
-                                  <a href="https://gmic.eu/files/windows/gmic_gimp2.10_gtk_win64.zip">.zip archive</a>.</li>
-                                <li>Windows <i>32 bits</i> (GIMP <b>2.10</b>):
-                                  <a href="https://gmic.eu/files/windows/gmic_gimp2.10_gtk_win32.exe">installer</a> or
-                                  <a href="https://gmic.eu/files/windows/gmic_gimp2.10_gtk_win32.zip">.zip archive</a>.</li>
-                                <li>Windows <i>64 bits</i> (GIMP <b>2.8</b>):
-                                  <a href="https://gmic.eu/files/windows/gmic_gimp2.8_gtk_win64.exe">installer</a> or
-                                  <a href="https://gmic.eu/files/windows/gmic_gimp2.8_gtk_win64.zip">.zip archive</a>.</li>
-                                <li>Windows <i>32 bits</i> (GIMP <b>2.8</b>):
-                                  <a href="https://gmic.eu/files/windows/gmic_gimp2.8_gtk_win32.exe">installer</a> or
-                                  <a href="https://gmic.eu/files/windows/gmic_gimp2.8_gtk_win32.zip">.zip archive</a>.</li>
-                              </ul>
-                            </p>
-                          </span>
-                        </div>
-                      </li>
+                      <!-- <li><i>GTK</i> versions (<i>deprecated, not recommended!</i>): -->
+                      <!--   <div class="popup" onclick="popupFunction2()"> -->
+                      <!--     <b>View links</b> -->
+                      <!--     <span class="popuptext" id="myPopup2"> -->
+                      <!--       <p> -->
+                      <!--         <b><i>GTK</i> versions</b>:<br/> -->
+                      <!--         Please <font color="red">don't use these binaries <i>unless you have very good reasons to do so</i></font>.<br/> -->
+                      <!--         The code of the GTK plug-in is not maintained anymore, and has less features than the -->
+                      <!--         regular (Qt, maintained) version. <font color="red"><b>Use at your own risk!</b></font> -->
+                      <!--         <ul> -->
+                      <!--           <li>Linux <i>64 bits</i> (GIMP <b>2.8</b>): -->
+                      <!--             <a href="https://gmic.eu/files/linux/gmic_gimp2.8_gtk_linux64.zip">.zip archive</a>.</li> -->
+                      <!--           <li>Linux <i>32 bits</i> (GIMP <b>2.8</b>): -->
+                      <!--             <a href="https://gmic.eu/files/linux/gmic_gimp2.8_gtk_linux32.zip">.zip archive</a>.</li> -->
+                      <!--           <li>Windows <i>64 bits</i> (GIMP <b>2.10</b>): -->
+                      <!--             <a href="https://gmic.eu/files/windows/gmic_gimp2.10_gtk_win64.exe">installer</a> or -->
+                      <!--             <a href="https://gmic.eu/files/windows/gmic_gimp2.10_gtk_win64.zip">.zip archive</a>.</li> -->
+                      <!--           <li>Windows <i>32 bits</i> (GIMP <b>2.10</b>): -->
+                      <!--             <a href="https://gmic.eu/files/windows/gmic_gimp2.10_gtk_win32.exe">installer</a> or -->
+                      <!--             <a href="https://gmic.eu/files/windows/gmic_gimp2.10_gtk_win32.zip">.zip archive</a>.</li> -->
+                      <!--           <li>Windows <i>64 bits</i> (GIMP <b>2.8</b>): -->
+                      <!--             <a href="https://gmic.eu/files/windows/gmic_gimp2.8_gtk_win64.exe">installer</a> or -->
+                      <!--             <a href="https://gmic.eu/files/windows/gmic_gimp2.8_gtk_win64.zip">.zip archive</a>.</li> -->
+                      <!--           <li>Windows <i>32 bits</i> (GIMP <b>2.8</b>): -->
+                      <!--             <a href="https://gmic.eu/files/windows/gmic_gimp2.8_gtk_win32.exe">installer</a> or -->
+                      <!--             <a href="https://gmic.eu/files/windows/gmic_gimp2.8_gtk_win32.zip">.zip archive</a>.</li> -->
+                      <!--         </ul> -->
+                      <!--       </p> -->
+                      <!--     </span> -->
+                      <!--   </div> -->
+                      <!-- </li> -->
                     </ul>
                     <br/></td>
                 </tr>
@@ -297,7 +297,7 @@
       </pre>
       You are now ready to compile all <b><font color="#000066">G'MIC</font></b> interfaces:
       <b><i>gmic</i></b> (command-line tool),
-      <b><i>gmic_gimp_qt</i></b> and <b><i>gmic_gimp_gtk</i></b> (plug-ins for <a href="http://www.gimp.org">GIMP</a>),
+      <b><i>gmic_gimp_qt</i></b> (plug-in for <a href="http://www.gimp.org">GIMP</a>),
       <b><i>gmic_krita_qt</i></b> (plug-in for <a href="http://www.krita.org">Krita</a>),
       <b><i>ZArt</i></b> and
       <b><i>libgmic</i></b> (<b><font color="#000066">G'MIC</font></b> C++ library). Just pick your choice:
@@ -306,7 +306,6 @@
         $ make cli         # Compile command-line interface
         $ make gimp        # Compile plug-in for GIMP
         $ make krita       # Compile plug-in for Krita
-        $ make gimp_gtk    # Compile obsolete plug-in for GIMP (GTK-based)
         $ make lib         # Compile G'MIC library files
         $ make zart        # Compile ZArt
         $ make all         # Compile all of the G'MIC interfaces
