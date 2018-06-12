@@ -60,7 +60,7 @@ if [ "$OSTYPE" == "msys" ]; then
     cp -rf /e/work/src/gmic-community/libcgmic/*gmic* $HOME/gmic/src
     cp -rf /e/work/src/zart $HOME/gmic/
     cp -rf /e/work/src/gmic/resources/gmic_film_cluts.gmz $HOME/build${BITS}-gimp-qt
-    rm -rf $HOME/build${BITS}-gimp-qt/update*.gmic
+    rm -rf $HOME/build${BITS}-gimp-qt/update*.gmicz
 
     # Get version number.
     cd $HOME/gmic/src
@@ -85,8 +85,6 @@ if [ "$OSTYPE" == "msys" ]; then
     fi
 
     echo " - Release number : $VERSION$SUFFIX (GIMP $GIMPVER)."
-
-    cp -f /e/.config/gmic/update$SVERSION.gmic $HOME/build${BITS}-gimp-qt/
 
     sed "s/rm -rf CImg.h gmic_stdlib.h /rm -rf /" Makefile > /tmp/Makefile
     mv /tmp/Makefile Makefile
@@ -180,6 +178,7 @@ if [ "$OSTYPE" == "msys" ]; then
            zip -r -9 ${OUTZIP_GIMP_QT} ${OUTDIR_GIMP_QT} &&
            cp -f ${OUTZIP_GIMP_QT} /e/work/src/
 
+       cp -f /e/.config/gmic/update$SVERSION.gmicz $HOME/build${BITS}-gimp-qt/update$SVERSION.gmic
        /c/Program\ Files\ \(x86\)/Inno\ Setup\ 5/ISCC.exe installer_qt.iss
        touch ${OUTINST_GIMP_QT} &&
            sleep 3 &&
@@ -324,6 +323,9 @@ size=`du -b /tmp/gui_filters.txt | head -c 1`
 if [ "$size" != "0" ]; then
     cp -f /tmp/gui_filters.txt ../html/
 fi
+update_filename=$HOME/.config/gmic/update${SVERSION}.gmic
+update_filenamez=$HOME/.config/gmic/update${SVERSION}.gmicz
+gmic raw:$update_filename,uchar o cimgz:$update_filenamez,uchar
 
 # Create man page and bash autocompletion script.
 #-------------------------------------------------
