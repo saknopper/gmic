@@ -60,7 +60,7 @@ if [ "$OSTYPE" == "msys" ]; then
     cp -rf /e/work/src/gmic-community/libcgmic/*gmic* $HOME/gmic/src
     cp -rf /e/work/src/zart $HOME/gmic/
     cp -rf /e/work/src/gmic/resources/gmic_film_cluts.gmz $HOME/build${BITS}-gimp-qt
-    rm -rf $HOME/build${BITS}-gimp-qt/update*.gmicz
+    rm -rf $HOME/build${BITS}-gimp-qt/update*.gmic
 
     # Get version number.
     cd $HOME/gmic/src
