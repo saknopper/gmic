@@ -30,7 +30,6 @@ OutputBaseFilename=gmic_gimp2.8_qt_XXX_win32
 
 [Files]
 Source: build32-gimp-qt\gmic_gimp_qt.exe; DestDir: {app}
-Source: build32-gimp-qt\gmic_film_cluts.gmz; DestDir: {app}
 Source: build32-gimp-qt\libbz2-1.dll; DestDir: {app}
 Source: build32-gimp-qt\libfftw3-3.dll; DestDir: {app}
 Source: build32-gimp-qt\libfreetype-6.dll; DestDir: {app}
@@ -59,6 +58,7 @@ Source: build32-gimp-qt\platforms\qminimal.dll; DestDir: {app}\platforms
 Source: build32-gimp-qt\platforms\qoffscreen.dll; DestDir: {app}\platforms
 Source: build32-gimp-qt\platforms\qwindows.dll; DestDir: {app}\platforms
 Source: build32-gimp-qt\updatexxx.gmic; DestDir: {userappdata}\gmic
+Source: build32-gimp-qt\gmic_film_cluts.gmz; DestDir: {userappdata}\gmic
 
 ;[Icons]
 ;Name: {userstartmenu}\Gimp\Gmic_Gimp\Uninstall Gmic_Gimp; Filename: {uninstallexe}

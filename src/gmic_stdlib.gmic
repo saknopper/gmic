@@ -29489,7 +29489,7 @@ fx_twirl :
 #@gui Wave : wave, wave(1)
 #@gui : Amplitude = float(10,0,30)
 #@gui : Frequency = float(0.4,0,2)
-#@gui : Center (%) = point(50,50,0,1,255)
+#@gui : Center (%) = point(50,50,0,1)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2010/29/12</i>.</small>")
 
 #@gui Wind : fx_wind, fx_wind_preview(0)
