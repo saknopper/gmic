@@ -95,20 +95,20 @@
 #
 #           'typedef' can be :
 #
-#      _ 'bool(default_value={ 0 | 1 | false | true })'                  : Add a boolean parameter (0 or 1) (as a checkbutton).
-#      _ 'button(_alignment)'                                            : Add a boolean parameter (0 or 1) (as a button).
-#      _ 'choice(_default_indice,Choice0,..,ChoiceN)'                    : Add a integer parameter (as a combobox).
-#      _ 'color(R,_G,_B,_A)'                                             : Add R,G,B[,A] parameters (as a colorchooser).
-#      _ 'point(_X,_Y,_hideable={ 0 | 1 },_burst={ 0 | 1 },_R,_G,_B,_A)' : Add X,Y parameters (as a moveable point over the preview).
-#      _ 'value(value)'                                                  : Add a pre-defined value parameter (not displayed).
-#      _ 'file[_in,_out](_default_filename)'                             : Add a filename parameter (as a filechooser).
-#      _ 'float(default_value,min_value,max_value)'                      : Add a float-valued parameter (as a float slider).
-#      _ 'folder(_default_foldername)'                                   : Add a foldername parameter (as a folderchooser).
-#      _ 'int(default_value,min_value,max_value)'                        : Add a integer parameter (as an integer slider).
-#      _ 'link(_alignment,_label,URL)'                                   : Display a URL (do not add a parameter).
-#      _ 'note(_label)'                                                  : Display a label (do not add a parameter).
-#      _ 'text(_is_multiline={ 0 | 1 },_default text)'                   : Add a single or multi-line text parameter (as a text entry).
-#      _ 'separator()'                                                   : Display an horizontal separator (do not add a parameter).
+#      _ 'bool(default_value={ 0 | 1 | false | true })'                          : Add a boolean parameter (0 or 1) (as a checkbutton).
+#      _ 'button(_alignment)'                                                    : Add a boolean parameter (0 or 1) (as a button).
+#      _ 'choice(_default_indice,Choice0,..,ChoiceN)'                            : Add a integer parameter (as a combobox).
+#      _ 'color(R,_G,_B,_A)'                                                     : Add R,G,B[,A] parameters (as a colorchooser).
+#      _ 'point(_X,_Y,_hideable={ 0 | 1 },_burst={ 0 | 1 },_R,_G,_B,_A,_radius)' : Add X,Y parameters (as a moveable point over the preview).
+#      _ 'value(value)'                                                          : Add a pre-defined value parameter (not displayed).
+#      _ 'file[_in,_out](_default_filename)'                                     : Add a filename parameter (as a filechooser).
+#      _ 'float(default_value,min_value,max_value)'                              : Add a float-valued parameter (as a float slider).
+#      _ 'folder(_default_foldername)'                                           : Add a foldername parameter (as a folderchooser).
+#      _ 'int(default_value,min_value,max_value)'                                : Add a integer parameter (as an integer slider).
+#      _ 'link(_alignment,_label,URL)'                                           : Display a URL (do not add a parameter).
+#      _ 'note(_label)'                                                          : Display a label (do not add a parameter).
+#      _ 'text(_is_multiline={ 0 | 1 },_default text)'                           : Add a single or multi-line text parameter (as a text entry).
+#      _ 'separator()'                                                           : Display an horizontal separator (do not add a parameter).
 #
 #   Type separators '()' can be replaced by '[]' or '{}' if necessary (for instance if parentheses are required in
 #   an argument of the typedef, e.g in a text). You can also replace 'typedef' by '_typedef' to tell the plug-in not
@@ -29352,7 +29352,7 @@ fx_map_sphere_preview :
 #@gui : Radius (%) = float(50,0,300)
 #@gui : Strength = float(1,-10,10)
 #@gui : Smoothness (%) = float(0,0,4)
-#@gui : Center (%) = point(50,50,0,1)
+#@gui : Center (%) = point(50,50,0,1,255,255,255,170,10)
 #@gui : Ratio = float(0,-2,2)
 #@gui : Angle = float(0,-90,90)
 #@gui : Interpolation = choice(2,"Nearest neighbor","Linear","Cubic")
@@ -29489,7 +29489,7 @@ fx_twirl :
 #@gui Wave : wave, wave(1)
 #@gui : Amplitude = float(10,0,30)
 #@gui : Frequency = float(0.4,0,2)
-#@gui : Center (%) = point(50,50,0,1)
+#@gui : Center (%) = point(50,50,0,1,255,255,255,170,10)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2010/29/12</i>.</small>")
 
 #@gui Wind : fx_wind, fx_wind_preview(0)
