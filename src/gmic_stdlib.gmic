@@ -14136,19 +14136,19 @@ _primitives3d : check "isint($1) && $1>=0 && $1<=2"
       copy_material(nb) = (
         R = i[#4,pc++]; G = i[#4,pc++]; B = i[#4,pc++];
         R!=-128?( # RGB color
-          for (k = 0, k<nb, ++k, i[#-2,qc++] = R; i[#-2,qc++] = G; i[#-2,qc++] = B);
+          unref(data); data = [ R,G,B ];
+          for (k = 0, k<nb, ++k, copy(i[#-2,qc],data,3); qc+=3);
         ):(
           W = G; H = B; S = i[#4,pc++]; WHS = W*H*S;
           WHS?( # Non-shared texture
             qc+WHS+4>=h(#-2)?resize(#-2,1,int(WHS+1.5*qc+4*nb),1,1,0,0);
             copy(i[#-2,qc],i[#4,pc-4],WHS+4);
             pc+=WHS; qc+=WHS+4;
-            nb>1?for (k = 1, k<nb, ++k, i[#-2,qc++] = -128; i[#-2,qc++] = nq; i[#-2,qc++] = 0; i[#-2,qc++] = 0);
+            unref(data); data = [-128,nq,0,0];
+            for (k = 1, k<nb, ++k, copy(i[#-2,qc],data,4); qc+=4);
           ):( # Shared texture
-            copy(i[#-2,qc],i[#4,pc-4],4);
-            i[#-2,qc+1] = pref[W];
-            qc+=4;
-            nb>1?for (k = 1, k<nb, ++k, i[#-2,qc++] = -128; i[#-2,qc++] = pref[W]; i[#-2,qc++] = 0; i[#-2,qc++] = 0);
+            unref(data); data = [-128,pref[W],0,0];
+            for (k = 0, k<nb, ++k, copy(i[#-2,qc],data,4); qc+=4);
           );
         );
 
@@ -14161,27 +14161,28 @@ _primitives3d : check "isint($1) && $1>=0 && $1<=2"
             qo+WHS+4>=h(#-1)?resize(#-1,1,int(WHS+1.5*qo+4*nb),1,1,0,0);
             copy(i[#-1,qo],i[#5,po-4],WHS+4);
             po+=WHS; qo+=WHS+4;
-            nb>1?for (k = 1, k<nb, ++k, i[#-1,qo++] = -128; i[#-1,qo++] = nq; i[#-1,qo++] = 0; i[#-1,qo++] = 0);
+            unref(data); data = [-128,nq,0,0];
+            for (k = 1, k<nb, ++k, copy(i[#-1,qo],data,4); qo+=4);
           ):( # Shared texture
-            copy(i[#-1,qo],i[#5,po-4],4);
-            i[#-1,qo+1] = pref[W];
-            qo+=4;
-            nb>1?for (k = 1, k<nb, ++k, i[#-1,qo++] = -128; i[#-1,qo++] = pref[W]; i[#-1,qo++] = 0; i[#-1,qo++] = 0);
+            unref(data); data = [ -128,pref[W],0,0 ];
+            for (k = 0, k<nb, ++k, copy(i[#-1,qo],data,4); qo+=4);
           );
         );
       );
 
       # Add a new colored point primitive.
       add_point(ind,R,G,B,A) = (
-        i[#-3,qp++] = 1; i[#-3,qp++] = ind;
-        i[#-2,qc++] = R; i[#-2,qc++] = G; i[#-2,qc++] = B; i[#-1,qo++] = A;
+        copy(i[#-3,qp],[1,ind],2); qp+=2;
+        copy(i[#-2,qc],[R,G,B],3); qc+=3;
+        i[#-1,qo++] = A;
         ++nq
       );
 
       # Add a new colored segment primitive.
       add_segment(ind0,ind1,R,G,B,A) = (
-        i[#-3,qp++] = 2; i[#-3,qp++] = ind0; i[#-3,qp++] = ind1;
-        i[#-2,qc++] = R; i[#-2,qc++] = G; i[#-2,qc++] = B; i[#-1,qo++] = A;
+        copy(i[#-3,qp],[2,ind0,ind1],3); qp+=3;
+        copy(i[#-2,qc],[R,G,B],3); qc+=3;
+        i[#-1,qo++] = A;
         ++nq
       );
 
@@ -14199,11 +14200,13 @@ _primitives3d : check "isint($1) && $1>=0 && $1<=2"
           v0 = i[#3,pp++];
           get_RGBA(0,0,1);
           add_point(v0,R,G,B,A);
+
         ):N==2?( # Colored segment
           v0 = i[#3,pp++]; v1 = i[#3,pp++];
           get_RGBA(0,0,1);
           mode==0?(
-            add_point(v0,R,G,B,A); add_point(v1,R,G,B,A);
+            add_point(v0,R,G,B,A);
+            add_point(v1,R,G,B,A);
           ):(
             add_segment(v0,v1,R,G,B,A);
           );
@@ -14212,9 +14215,13 @@ _primitives3d : check "isint($1) && $1>=0 && $1<=2"
           v0 = i[#3,pp++]; v1 = i[#3,pp++]; v2 = i[#3,pp++];
           get_RGBA(0,0,1);
           mode==0?(
-            add_point(v0,R,G,B,A); add_point(v1,R,G,B,A); add_point(v2,R,G,B,A);
+            add_point(v0,R,G,B,A);
+            add_point(v1,R,G,B,A);
+            add_point(v2,R,G,B,A);
           ):mode==1?(
-            add_segment(v0,v1,R,G,B,A); add_segment(v1,v2,R,G,B,A); add_segment(v2,v0,R,G,B,A);
+            add_segment(v0,v1,R,G,B,A);
+            add_segment(v1,v2,R,G,B,A);
+            add_segment(v2,v0,R,G,B,A);
           ):(
             copy(i[#-3,qp],i[#3,pp-4],4); qp+=4;
             copy(i[#-2,qc],i[#4,pc-3],3); qc+=3;
@@ -14226,9 +14233,15 @@ _primitives3d : check "isint($1) && $1>=0 && $1<=2"
           v0 = i[#3,pp++]; v1 = i[#3,pp++]; v2 = i[#3,pp++]; v3 = i[#3,pp++];
           get_RGBA(0,0,1);
           mode==0?(
-            add_point(v0,R,G,B,A); add_point(v1,R,G,B,A); add_point(v2,R,G,B,A); add_point(v3,R,G,B,A);
+            add_point(v0,R,G,B,A);
+            add_point(v1,R,G,B,A);
+            add_point(v2,R,G,B,A);
+            add_point(v3,R,G,B,A);
           ):mode==1?(
-            add_segment(v0,v1,R,G,B,A); add_segment(v1,v2,R,G,B,A); add_segment(v2,v3,R,G,B,A); add_segment(v3,v0,R,G,B,A);
+            add_segment(v0,v1,R,G,B,A);
+            add_segment(v1,v2,R,G,B,A);
+            add_segment(v2,v3,R,G,B,A);
+            add_segment(v3,v0,R,G,B,A);
           ):(
             copy(i[#-3,qp],i[#3,pp-5],5); qp+=5;
             copy(i[#-2,qc],i[#4,pc-3],3); qc+=3;
@@ -14242,9 +14255,7 @@ _primitives3d : check "isint($1) && $1>=0 && $1<=2"
           mode==0?(
             x0 = i[#2,3*v0]; y0 = i[#2,3*v0+1]; z0 = i[#2,3*v0+2];
             x1 = i[#2,3*v1]; y1 = i[#2,3*v1+1]; z1 = i[#2,3*v1+2];
-            i[#2,3*v0] = (x0 + x1)/2;
-            i[#2,3*v0+1] = (y0 + y1)/2;
-            i[#2,3*v0+2] = (z0 + z1)/2;
+            copy(i[#2,3*v0],([ x0,y0,z0 ] + [ x1,y1,z1 ])/2,3);
             add_point(v0,R,G,B,A);
           ):(
             copy(i[#-3,qp],i[#3,pp-6],6); qp+=6;
@@ -14277,18 +14288,19 @@ _primitives3d : check "isint($1) && $1>=0 && $1<=2"
             get_RGBA(tx1,ty1,0); add_point(v1,R,G,B,A);
             get_RGBA(tx2,ty2,1); add_point(v2,R,G,B,A);
           ):mode==1?(
-            i[#-3,qp++] = 6; i[#-3,qp++] = v0; i[#-3,qp++] = v1; i[#-3,qp++] = tx0; i[#-3,qp++] = ty0; i[#-3,qp++] = tx1; i[#-3,qp++] = ty1;
-            i[#-3,qp++] = 6; i[#-3,qp++] = v1; i[#-3,qp++] = v2; i[#-3,qp++] = tx1; i[#-3,qp++] = ty1; i[#-3,qp++] = tx2; i[#-3,qp++] = ty2;
-            i[#-3,qp++] = 6; i[#-3,qp++] = v2; i[#-3,qp++] = v0; i[#-3,qp++] = tx2; i[#-3,qp++] = ty2; i[#-3,qp++] = tx0; i[#-3,qp++] = ty0;
+            copy(i[#-3,qp],[ 6,v0,v1,tx0,ty0,tx1,ty1,
+                             6,v1,v2,tx1,ty1,tx2,ty2,
+                             6,v2,v0,tx2,ty2,tx0,ty0 ],21); qp+=21;
             copy_material(3);
             nq+=3;
           ):(
             get_RGBA(tx0,ty0,0); R0 = R; G0 = G; B0 = B; A0 = A;
             get_RGBA(tx1,ty1,0); R0+=R; G0+=G; B0+=B; A0+=A;
             get_RGBA(tx2,ty2,2); (R0+=R)/=3; (G0+=G)/=3; (B0+=B)/=3; (A0+=A)/=3;
-            i[#-3,qp++] = 3; i[#-3,qp++] = v0; i[#-3,qp++] = v1; i[#-3,qp++] = v2;
-            i[#-2,qc++] = R; i[#-2,qc++] = G; i[#-2,qc++] = B; i[#-1,qo++] = A;
-            ++nq
+            copy(i[#-3,qp],[ 3,v0,v1,v2 ],4); qp+=4;
+            copy(i[#-2,qc],[ R,G,B ],3); qc+=3;
+            i[#-1,qo++] = A;
+            ++nq;
           );
 
         ):N==12?( # Textured quadrangle
@@ -14300,10 +14312,10 @@ _primitives3d : check "isint($1) && $1>=0 && $1<=2"
             get_RGBA(tx2,ty2,0); add_point(v2,R,G,B,A);
             get_RGBA(tx3,ty3,1); add_point(v3,R,G,B,A);
           ):mode==1?(
-            i[#-3,qp++] = 6; i[#-3,qp++] = v0; i[#-3,qp++] = v1; i[#-3,qp++] = tx0; i[#-3,qp++] = ty0; i[#-3,qp++] = tx1; i[#-3,qp++] = ty1;
-            i[#-3,qp++] = 6; i[#-3,qp++] = v1; i[#-3,qp++] = v2; i[#-3,qp++] = tx1; i[#-3,qp++] = ty1; i[#-3,qp++] = tx2; i[#-3,qp++] = ty2;
-            i[#-3,qp++] = 6; i[#-3,qp++] = v2; i[#-3,qp++] = v3; i[#-3,qp++] = tx2; i[#-3,qp++] = ty2; i[#-3,qp++] = tx3; i[#-3,qp++] = ty3;
-            i[#-3,qp++] = 6; i[#-3,qp++] = v3; i[#-3,qp++] = v0; i[#-3,qp++] = tx3; i[#-3,qp++] = ty3; i[#-3,qp++] = tx0; i[#-3,qp++] = ty0;
+            copy(i[#-3,qp],[ 6,v0,v1,tx0,ty0,tx1,ty1,
+                             6,v1,v2,tx1,ty1,tx2,ty2,
+                             6,v2,v3,tx2,ty2,tx3,ty3,
+                             6,v3,v0,tx3,ty3,tx0,ty0 ],28); qp+=28;
             copy_material(4);
             nq+=4;
           ):(
@@ -14311,9 +14323,10 @@ _primitives3d : check "isint($1) && $1>=0 && $1<=2"
             get_RGBA(tx1,ty1,0); R0+=R; G0+=G; B0+=B; A0+=A;
             get_RGBA(tx2,ty2,0); R0+=R; G0+=G; B0+=B; A0+=A;
             get_RGBA(tx3,ty3,2); (R0+=R)/=4; (G0+=G)/=4; (B0+=B)/=4; (A0+=A)/=4;
-            i[#-3,qp++] = 4; i[#-3,qp++] = v0; i[#-3,qp++] = v1; i[#-3,qp++] = v2; i[#-3,qp++] = v3;
-            i[#-2,qc++] = R; i[#-2,qc++] = G; i[#-2,qc++] = B; i[#-1,qo++] = A;
-            ++nq
+            copy(i[#-3,qp],[ 4,v0,v1,v2,v3 ],5); qp+=5;
+            copy(i[#-2,qc],[ R,G,B ],3); qc+=3;
+            i[#-1,qo++] = A;
+            ++nq;
           );
         );
       );
@@ -14321,8 +14334,7 @@ _primitives3d : check "isint($1) && $1>=0 && $1<=2"
       resize(#-2,1,qc,1,1,0,0);
       resize(#-1,1,qo,1,1,0,0);
       i[#1,1] = nq"
-    rm[3-5]
-    a y
+    rm[3-5] a y
   endl done v +
 
 #@cli projections3d : _x[%],_y[%],_z[%],_is_bounding_box={ 0 | 1 }
