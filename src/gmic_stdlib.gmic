@@ -14069,12 +14069,273 @@ pose3d :
   fi endl done v +
 
 #@cli p3d : eq. to 'primitives3d'. : (+)
+p3d : check "isint($1) && $1>=0 && $1<=2"
+  _primitives3d $*
 
-#@cli primitives3d : mode : (+)
+#@cli primitives3d : mode
 #@cli : Convert primitives of selected 3d objects.
 #@cli : (eq. to 'p3d').\n
-#@cli : 'mode' can be { 0=points | 1=segments | 2=non-textured }.
+#@cli : 'mode' can be { 0=points | 1=outlines | 2=non-textured }.
 #@cli : $ sphere3d 30 primitives3d 1 torus3d 50,10 color3d[-1] ${-RGB} add3d
+primitives3d : check "isint($1) && $1>=0 && $1<=2"
+  _$0 $*
+
+_primitives3d : check "isint($1) && $1>=0 && $1<=2"
+  e[0--3] "Convert primitives of 3d object$? to "${"arg 1+$1,points,outlines,non-textured"}"."
+  v - repeat $! l[$>]
+    s3d 1,64 .x2
+    eval "
+      const mode = $1;
+
+      # Read a RGBA color from the current primitive material.
+      get_RGBA(tx,ty,goto_next) = (
+        R = i[#4,pc];
+        R!=-128?( # RGB color
+          G = i[#4,pc+1];
+          B = i[#4,pc+2];
+          goto_next?(pc+=3);
+        ):( # Texture
+          W = i[#4,pc+1]; H = i[#4,pc+2]; S = i[#4,pc+3]; WH = W*H;
+          WH?( # Non-shared texture
+            off = pc + ty*W + tx + 4;
+            goto_next?(pc+=WH*S + 4);
+          ):( # Shared texture
+            off = pcol[W];
+            i[#4,off]==-128?(
+              ++off;
+              W = i[#4,off++]; H = i[#4,off++]; S = i[#4,off++]; WH = W*H;
+              off += ty*W + tx;
+            ):(WH=1);
+            goto_next?(pc+=4);
+          );
+          R = i[#4,off];
+          G = i[#4,off + WH];
+          B = i[#4,off + 2*WH];
+        );
+
+        A = i[#5,po];
+        A==-128?( # Texture
+          W = i[#5,po+1]; H = i[#5,po+2]; S = i[#5,po+3]; WH = W*H;
+          WH?( # Non-shared texture
+            off = po + ty*W + tx + 4;
+            goto_next?(po+=WH*S + 4);
+          ):( # Shared texture
+            off = popa[W];
+            i[#5,off]==-128?(
+              ++off;
+              W = i[#5,off++]; H = i[#5,off++]; S = i[#5,off++]; WH = W*H;
+              off += ty*W + tx;
+            );
+            goto_next?(po+=4);
+          );
+          A = i[#5,off];
+        );
+      );
+
+      # Copy material of current primitives 'nb' times.
+      copy_material(nb) = (
+        R = i[#4,pc++]; G = i[#4,pc++]; B = i[#4,pc++];
+        R!=-128?( # RGB color
+          unref(data); data = [ R,G,B ];
+          for (k = 0, k<nb, ++k, copy(i[#-2,qc],data,3); qc+=3);
+        ):(
+          W = G; H = B; S = i[#4,pc++]; WHS = W*H*S;
+          WHS?( # Non-shared texture
+            qc+WHS+4>=h(#-2)?resize(#-2,1,int(WHS+1.5*qc+4*nb),1,1,0,0);
+            copy(i[#-2,qc],i[#4,pc-4],WHS+4);
+            pc+=WHS; qc+=WHS+4;
+            unref(data); data = [-128,nq,0,0];
+            for (k = 1, k<nb, ++k, copy(i[#-2,qc],data,4); qc+=4);
+          ):( # Shared texture
+            unref(data); data = [-128,pref[W],0,0];
+            for (k = 0, k<nb, ++k, copy(i[#-2,qc],data,4); qc+=4);
+          );
+        );
+
+        A = i[#5,po++];
+        A!=-128?( # Opacity value
+          for (k = 0, k<nb, ++k, i[#-1,qo++] = A);
+        ):( # Texture
+          W = i[#5,po++]; H = i[#5,po++]; S = i[#5,po++]; WHS = W*H*S;
+          WHS?( # Non-shared texture
+            qo+WHS+4>=h(#-1)?resize(#-1,1,int(WHS+1.5*qo+4*nb),1,1,0,0);
+            copy(i[#-1,qo],i[#5,po-4],WHS+4);
+            po+=WHS; qo+=WHS+4;
+            unref(data); data = [-128,nq,0,0];
+            for (k = 1, k<nb, ++k, copy(i[#-1,qo],data,4); qo+=4);
+          ):( # Shared texture
+            unref(data); data = [ -128,pref[W],0,0 ];
+            for (k = 0, k<nb, ++k, copy(i[#-1,qo],data,4); qo+=4);
+          );
+        );
+      );
+
+      # Add a new colored point primitive.
+      add_point(ind,R,G,B,A) = (
+        copy(i[#-3,qp],[1,ind],2); qp+=2;
+        copy(i[#-2,qc],[R,G,B],3); qc+=3;
+        i[#-1,qo++] = A;
+        ++nq
+      );
+
+      # Add a new colored segment primitive.
+      add_segment(ind0,ind1,R,G,B,A) = (
+        copy(i[#-3,qp],[2,ind0,ind1],3); qp+=3;
+        copy(i[#-2,qc],[R,G,B],3); qc+=3;
+        i[#-1,qo++] = A;
+        ++nq
+      );
+
+      pcol = popa = pref = vector"{i[#1,1]}"();
+      for (pp = pc = po = qp = qc = qo = np = nq = 0, pp<h#3, ++np,
+        qp>=(h(#-3)-28)?resize(#-3,1,int(28+1.5*qp),1,1,0,0);
+        qc>=(h(#-2)-16)?resize(#-2,1,int(16+1.5*qc),1,1,0,0);
+        qo>=(h(#-1)-4)?resize(#-1,1,int(4+1.5*qo),1,1,0,0);
+        N = i[#3,pp++];
+        pcol[np] = pc;
+        popa[np] = po;
+        pref[np] = nq;
+
+        N==1?( # Colored point
+          v0 = i[#3,pp++];
+          get_RGBA(0,0,1);
+          add_point(v0,R,G,B,A);
+
+        ):N==2?( # Colored segment
+          v0 = i[#3,pp++]; v1 = i[#3,pp++];
+          get_RGBA(0,0,1);
+          mode==0?(
+            add_point(v0,R,G,B,A);
+            add_point(v1,R,G,B,A);
+          ):(
+            add_segment(v0,v1,R,G,B,A);
+          );
+
+        ):N==3?( # Colored triangle
+          v0 = i[#3,pp++]; v1 = i[#3,pp++]; v2 = i[#3,pp++];
+          get_RGBA(0,0,1);
+          mode==0?(
+            add_point(v0,R,G,B,A);
+            add_point(v1,R,G,B,A);
+            add_point(v2,R,G,B,A);
+          ):mode==1?(
+            add_segment(v0,v1,R,G,B,A);
+            add_segment(v1,v2,R,G,B,A);
+            add_segment(v2,v0,R,G,B,A);
+          ):(
+            copy(i[#-3,qp],i[#3,pp-4],4); qp+=4;
+            copy(i[#-2,qc],i[#4,pc-3],3); qc+=3;
+            i[#-1,qo++] = A;
+            ++nq;
+          );
+
+        ):N==4?( # Colored quadrangle
+          v0 = i[#3,pp++]; v1 = i[#3,pp++]; v2 = i[#3,pp++]; v3 = i[#3,pp++];
+          get_RGBA(0,0,1);
+          mode==0?(
+            add_point(v0,R,G,B,A);
+            add_point(v1,R,G,B,A);
+            add_point(v2,R,G,B,A);
+            add_point(v3,R,G,B,A);
+          ):mode==1?(
+            add_segment(v0,v1,R,G,B,A);
+            add_segment(v1,v2,R,G,B,A);
+            add_segment(v2,v3,R,G,B,A);
+            add_segment(v3,v0,R,G,B,A);
+          ):(
+            copy(i[#-3,qp],i[#3,pp-5],5); qp+=5;
+            copy(i[#-2,qc],i[#4,pc-3],3); qc+=3;
+            i[#-1,qo++] = A;
+            ++nq;
+          );
+
+        ):N==5?( # Colored sphere
+          v0 = i[#3,pp++]; v1 = i[#3,pp++]; i[#3,pp++] = (mode==1); v2 = i[#3,pp++]; v3 = i[#3,pp++];
+          get_RGBA(0,0,1);
+          mode==0?(
+            x0 = i[#2,3*v0]; y0 = i[#2,3*v0+1]; z0 = i[#2,3*v0+2];
+            x1 = i[#2,3*v1]; y1 = i[#2,3*v1+1]; z1 = i[#2,3*v1+2];
+            copy(i[#2,3*v0],([ x0,y0,z0 ] + [ x1,y1,z1 ])/2,3);
+            add_point(v0,R,G,B,A);
+          ):(
+            copy(i[#-3,qp],i[#3,pp-6],6); qp+=6;
+            copy(i[#-2,qc],i[#4,pc-3],3); qc+=3;
+            i[#-1,qo++] = A;
+            ++nq;
+          );
+
+        ):N==6?( # Textured segment
+          v0 = i[#3,pp++]; v1 = i[#3,pp++];
+          tx0 = i[#3,pp++]; ty0 = i[#3,pp++]; tx1 = i[#3,pp++]; ty1 = i[#3,pp++];
+          mode==0?(
+            get_RGBA(tx0,ty0,0); add_point(v0,R,G,B,A);
+            get_RGBA(tx1,ty1,1); add_point(v1,R,G,B,A);
+          ):mode==1?(
+            copy(i[#-3,qp],i[#3,pp-7],7); qp+=7;
+            copy_material(1);
+            ++nq;
+          ):(
+            get_RGBA(tx0,ty0,0); R0 = R; G0 = G; B0 = B; A0 = A;
+            get_RGBA(tx1,ty1,1); (R0+=R)/=2; (G0+=G)/=2; (B0+=B)/=2; (A0+=A)/=2;
+            add_segment(v0,v1,R0,G0,B0,A0);
+          );
+
+        ):N==9?( # Textured triangle
+          v0 = i[#3,pp++]; v1 = i[#3,pp++]; v2 = i[#3,pp++];
+          tx0 = i[#3,pp++]; ty0 = i[#3,pp++]; tx1 = i[#3,pp++]; ty1 = i[#3,pp++]; tx2 = i[#3,pp++]; ty2 = i[#3,pp++];
+          mode==0?(
+            get_RGBA(tx0,ty0,0); add_point(v0,R,G,B,A);
+            get_RGBA(tx1,ty1,0); add_point(v1,R,G,B,A);
+            get_RGBA(tx2,ty2,1); add_point(v2,R,G,B,A);
+          ):mode==1?(
+            copy(i[#-3,qp],[ 6,v0,v1,tx0,ty0,tx1,ty1,
+                             6,v1,v2,tx1,ty1,tx2,ty2,
+                             6,v2,v0,tx2,ty2,tx0,ty0 ],21); qp+=21;
+            copy_material(3);
+            nq+=3;
+          ):(
+            get_RGBA(tx0,ty0,0); R0 = R; G0 = G; B0 = B; A0 = A;
+            get_RGBA(tx1,ty1,0); R0+=R; G0+=G; B0+=B; A0+=A;
+            get_RGBA(tx2,ty2,2); (R0+=R)/=3; (G0+=G)/=3; (B0+=B)/=3; (A0+=A)/=3;
+            copy(i[#-3,qp],[ 3,v0,v1,v2 ],4); qp+=4;
+            copy(i[#-2,qc],[ R,G,B ],3); qc+=3;
+            i[#-1,qo++] = A;
+            ++nq;
+          );
+
+        ):N==12?( # Textured quadrangle
+          v0 = i[#3,pp++]; v1 = i[#3,pp++]; v2 = i[#3,pp++]; v3 = i[#3,pp++];
+          tx0 = i[#3,pp++]; ty0 = i[#3,pp++]; tx1 = i[#3,pp++]; ty1 = i[#3,pp++]; tx2 = i[#3,pp++]; ty2 = i[#3,pp++]; tx3 = i[#3,pp++]; ty3 = i[#3,pp++];
+          mode==0?(
+            get_RGBA(tx0,ty0,0); add_point(v0,R,G,B,A);
+            get_RGBA(tx1,ty1,0); add_point(v1,R,G,B,A);
+            get_RGBA(tx2,ty2,0); add_point(v2,R,G,B,A);
+            get_RGBA(tx3,ty3,1); add_point(v3,R,G,B,A);
+          ):mode==1?(
+            copy(i[#-3,qp],[ 6,v0,v1,tx0,ty0,tx1,ty1,
+                             6,v1,v2,tx1,ty1,tx2,ty2,
+                             6,v2,v3,tx2,ty2,tx3,ty3,
+                             6,v3,v0,tx3,ty3,tx0,ty0 ],28); qp+=28;
+            copy_material(4);
+            nq+=4;
+          ):(
+            get_RGBA(tx0,ty0,0); R0 = R; G0 = G; B0 = B; A0 = A;
+            get_RGBA(tx1,ty1,0); R0+=R; G0+=G; B0+=B; A0+=A;
+            get_RGBA(tx2,ty2,0); R0+=R; G0+=G; B0+=B; A0+=A;
+            get_RGBA(tx3,ty3,2); (R0+=R)/=4; (G0+=G)/=4; (B0+=B)/=4; (A0+=A)/=4;
+            copy(i[#-3,qp],[ 4,v0,v1,v2,v3 ],5); qp+=5;
+            copy(i[#-2,qc],[ R,G,B ],3); qc+=3;
+            i[#-1,qo++] = A;
+            ++nq;
+          );
+        );
+      );
+      resize(#-3,1,qp,1,1,0,0);
+      resize(#-2,1,qc,1,1,0,0);
+      resize(#-1,1,qo,1,1,0,0);
+      i[#1,1] = nq"
+    rm[3-5] a y
+  endl done v +
 
 #@cli projections3d : _x[%],_y[%],_z[%],_is_bounding_box={ 0 | 1 }
 #@cli : Generate 3d xy,xz,yz projection planes from specified volumetric images.
@@ -35795,7 +36056,7 @@ fx_solve_maze_preview :
 #@cli : $ image.jpg fx_illustration_look_preview 100,0,0,0,0 _label="Illustration~look"
 #@cli : $ image.jpg fx_lylejk_painting_preview 10,2,4,10,0 _label="Lylejk~painting"
 #@cli : $ image.jpg fx_painting_preview 5,2.5,1.5,50,1,0 _label="Painting"
-#@cli : $ image.jpg fx_delaunay_preview 5,75,1,3,0,0,0,128,1,1,0 _label="Polygonize~[delaunay]"
+##@cli : $ image.jpg fx_delaunay_preview 5,75,1,3,0,0,0,128,1,1,0 _label="Polygonize~[delaunay]"
 #@cli : $ image.jpg fx_posterize_preview 150,30,1,6,0,0,1,0 _label="Posterize"
 #@cli : $ image.jpg fx_quadtree_preview 2,1024,1.05,0,2.33,0.68,0.39,1,0 _label="Quadtree~variations"
 #@cli : $ image.jpg fx_vector_painting_preview 9.37,0 _label="Vector~painting"
