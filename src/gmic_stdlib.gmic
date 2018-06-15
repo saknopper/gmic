@@ -14855,7 +14855,7 @@ text3d : skip ${2=53},${3=10},${4=1.5}
 #@cli t3d : eq. to 'texturize3d'.
 t3d : check ${"is_image_arg $1"}" && (!narg(${2=}) || "${"is_image_arg $2"}")"
   e[^-1] "Texturize 3d object$? with texture $1"${"v - if {narg($2)} u \" and texture coordinates $2\" else u \"\" fi v +"}"."
-  v - pass$1 0 slices. 0 to_rgb.
+  v - pass$1 0 slices. 0 if {s==1} to_rgb. else channels. 0,2 fi
   if {narg($2)} pass$2 else 0 fi
   _texturize3d
   v +
@@ -14868,7 +14868,7 @@ t3d : check ${"is_image_arg $1"}" && (!narg(${2=}) || "${"is_image_arg $2"}")"
 #@cli : $ image.jpg torus3d 100,30 texturize3d[-1] [-2] keep[-1]
 texturize3d : check ${"is_image_arg $1"}" && (!narg(${2=}) || "${"is_image_arg $2"}")"
   e[^-1] "Texturize 3d object$? with texture $1"${"v - if {narg($2)} u \" and texture coordinates $2\" else u \"\" fi v +"}"."
-  v - pass$1 0 slices. 0 to_rgb.
+  v - pass$1 0 slices. 0 if {s==1} to_rgb. else channels. 0,2 fi
   if {narg($2)} pass$2 else 0 fi
   _$0
   v +
