@@ -14145,7 +14145,7 @@ _primitives3d : check "isint($1) && $1>=0 && $1<=2"
         ):(
           W = G; H = B; S = i[#4,pc++]; WHS = W*H*S;
           WHS?( # Non-shared texture
-            qc + WHS + 4*nb>=h(#-2)?resize(#-2,1,int(WHS + 1.5*qc + 4*nb),1,1,0,0);
+            qc + WHS + 4*nb>=h(#-2)?resize(#-2,1,int(1.5*qc + WHS + 4*nb),1,1,0,0);
             copy(i[#-2,qc],i[#4,pc-4],WHS+4);
             pc+=WHS; qc+=WHS+4;
             unref(data); data = [-128,nq,0,0];
@@ -14162,7 +14162,7 @@ _primitives3d : check "isint($1) && $1>=0 && $1<=2"
         ):( # Texture
           W = i[#5,po++]; H = i[#5,po++]; S = i[#5,po++]; WHS = W*H*S;
           WHS?( # Non-shared texture
-            qo + WHS + 4*nb>=h(#-1)?resize(#-1,1,int(WHS + 1.5*qo + 4*nb),1,1,0,0);
+            qo + WHS + 4*nb>=h(#-1)?resize(#-1,1,int(1.5*qo + WHS + 4*nb),1,1,0,0);
             copy(i[#-1,qo],i[#5,po-4],WHS+4);
             po+=WHS; qo+=WHS+4;
             unref(data); data = [-128,nq,0,0];
@@ -14192,9 +14192,9 @@ _primitives3d : check "isint($1) && $1>=0 && $1<=2"
 
       pcol = popa = pref = vector"{i[#1,1]}"();
       for (pp = pc = po = qp = qc = qo = np = nq = 0, pp<h#3, ++np,
-        qp + 28>=h(#-3)?resize(#-3,1,int(28 + 1.5*qp),1,1,0,0);
-        qc + 16>=h(#-2)?resize(#-2,1,int(16 + 1.5*qc),1,1,0,0);
-        qo + 4>=h(#-1)?resize(#-1,1,int(4 + 1.5*qo),1,1,0,0);
+        qp + 28>=h(#-3)?resize(#-3,1,int(1.5*qp + 28),1,1,0,0);
+        qc + 16>=h(#-2)?resize(#-2,1,int(1.5*qc + 16),1,1,0,0);
+        qo + 4>=h(#-1)?resize(#-1,1,int(1.5*qo + 4),1,1,0,0);
         N = i[#3,pp++];
         pcol[np] = pc;
         popa[np] = po;
