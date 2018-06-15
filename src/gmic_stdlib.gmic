@@ -14080,7 +14080,7 @@ p3d : check "isint($1) && $1>=0 && $1<=2"
 primitives3d : check "isint($1) && $1>=0 && $1<=2"
   _$0 $*
 
-_primitives3d : check "isint($1) && $1>=0 && $1<=2"
+_primitives3d :
   e[0--3] "Convert primitives of 3d object$? to "${"arg 1+$1,points,outlines,non-textured"}"."
   v - repeat $! l[$>]
     s3d 1,64 .x2
@@ -14852,14 +14852,106 @@ text3d : skip ${2=53},${3=10},${4=1.5}
   v - 0 t. "$1",0,0,$2,1,1 autocrop. 0 r. 100%,100%,$3 expand_xyz. 10,0
   b. $4 isosurface3d. 40% rv3d. nm. "[3d text '$1']" v +
 
-#@cli t3d : eq. to 'texturize3d'. : (+)
+#@cli t3d : eq. to 'texturize3d'.
+t3d : check ${"is_image_arg $1"}" && (!narg(${2=}) || "${"is_image_arg $2"}")"
+  e[^-1] "Texturize 3d object$? with texture $1"${"v - if {narg($2)} u \" and texture coordinates $2\" else u \"\" fi v +"}"."
+  v - pass$1 0 slices. 0 to_rgb.
+  if {narg($2)} pass$2 else 0 fi
+  _texturize3d
+  v +
 
-#@cli texturize3d : [ind_texture],_[ind_coords] : (+)
+#@cli texturize3d : [ind_texture],_[ind_coords]
 #@cli : Texturize selected 3d objects with specified texture and coordinates.
 #@cli : (eq. to 't3d').\n
 #@cli : When '[ind_coords]' is omitted, default XY texture projection is performed.
 #@cli : Default value: 'ind_coords=(undefined)'.
 #@cli : $ image.jpg torus3d 100,30 texturize3d[-1] [-2] keep[-1]
+texturize3d : check ${"is_image_arg $1"}" && (!narg(${2=}) || "${"is_image_arg $2"}")"
+  e[^-1] "Texturize 3d object$? with texture $1"${"v - if {narg($2)} u \" and texture coordinates $2\" else u \"\" fi v +"}"."
+  v - pass$1 0 slices. 0 to_rgb.
+  if {narg($2)} pass$2 else 0 fi
+  _$0
+  v +
+
+_texturize3d :
+  repeat {$!-2} l[$>,-2,-1]
+    s3d[0]
+
+    # Retrieve texture coordinates for each vertex.
+    if {!w}
+      +r[2] 3,{2,round(h/3)},1,1,-1 s. x,3 rm.
+      n.. 0,{6,w-1} n. 0,{6,h-1} a[-2,-1] x
+      mv. -2
+    fi
+
+    # Texturize 3d object
+    np={1,i[1]} 1,{2*$np} 1,{3*$np} 1,$np,1,1,1
+    eval "
+      add_material() = (
+        ind_tex>=0?( # Shared texture
+          copy(i[#-2,qc],[ -128,ind_tex,0,0 ],4); qc+=4
+        ):( # Non-shared texture
+          qc + whds#6 + 4>=h(#-2)?resize(#-2,1,int(1.5*qc + whds#6 + 4),1,1,0,0);
+          copy(i[#-2,qc],[ -128,w#6,h#6,s#6 ],4); qc+=4;
+          copy(i[#-2,qc],i(#6),whds#6); qc+=whds#6;
+          ind_tex = np;
+        );
+      );
+
+      ind_tex = -1;
+      for (pp = pc = qp = qc = np = 0, pp<h#3, ++np,
+        qp + 13>=h(#-3)?resize(#-3,1,int(1.5*qp + 13),1,1,0,0);
+        qc + 3>=h(#-2)?resize(#-2,1,int(1.5*qc + 3),1,1,0,0);
+        N = i[#3,pp++];
+
+        N==1?( # Colored point
+          v0 = i[#3,pp++]; tx0 = i(#7,0,v0); ty0 = i(#7,1,v0);
+          R = i(#6,tx0,ty0,0,0); G = i(#6,tx0,ty0,0,1); B = i(#6,tx0,ty0,0,2);
+          copy(i[#-3,qp],[ 1,v0 ],2); qp+=2;
+          copy(i[#-2,qc],[ R,G,B ],3); qc+=3;
+
+        ):(N==2 || N==6)?( # Colored segment
+          v0 = i[#3,pp++]; tx0 = i(#7,0,v0); ty0 = i(#7,1,v0);
+          v1 = i[#3,pp++]; tx1 = i(#7,0,v1); ty1 = i(#7,1,v1);
+          N==6?(pp+=4);
+          copy(i[#-3,qp],[ 6,v0,v1,tx0,ty0,tx1,ty1 ],7); qp+=7;
+          add_material();
+
+        ):(N==3 || N==9)?( # Colored triangle
+          v0 = i[#3,pp++]; tx0 = i(#7,0,v0); ty0 = i(#7,1,v0);
+          v1 = i[#3,pp++]; tx1 = i(#7,0,v1); ty1 = i(#7,1,v1);
+          v2 = i[#3,pp++]; tx2 = i(#7,0,v2); ty2 = i(#7,1,v2);
+          N==9?(pp+=6);
+          copy(i[#-3,qp],[ 9,v0,v1,v2,tx0,ty0,tx1,ty1,tx2,ty2 ],10); qp+=10;
+          add_material();
+
+        ):(N==4 || N==12)?( # Colored quadrangle
+          v0 = i[#3,pp++]; tx0 = i(#7,0,v0); ty0 = i(#7,1,v0);
+          v1 = i[#3,pp++]; tx1 = i(#7,0,v1); ty1 = i(#7,1,v1);
+          v2 = i[#3,pp++]; tx2 = i(#7,0,v2); ty2 = i(#7,1,v2);
+          v3 = i[#3,pp++]; tx3 = i(#7,0,v3); ty3 = i(#7,1,v3);
+          N==12?(pp+=8);
+          copy(i[#-3,qp],[ 12,v0,v1,v2,v3,tx0,ty0,tx1,ty1,tx2,ty2,tx3,ty3 ],13); qp+=13;
+          add_material();
+
+        ):N==5?( # Colored sphere
+          v0 = i[#3,pp++]; tx0 = i(#7,0,v0); ty0 = i(#7,1,v0);
+          v1 = i[#3,pp++]; tx1 = i(#7,0,v1); ty1 = i(#7,1,v1);
+          v2 = i[#3,pp++]; pp+=2;
+          (tx0+=tx1)/=2; (ty0+=ty1)/=2;
+          R = i(#6,tx0,ty0,0,0); G = i(#6,tx0,ty0,0,1); B = i(#6,tx0,ty0,0,2);
+          copy(i[#-3,qp],[ 5,v0,v1,v2,0,0 ],6); qp+=6;
+          copy(i[#-2,qc],[ R,G,B ],3); qc+=3;
+
+        );
+      );
+      resize(#-3,1,qp,1,1,0,0);
+      resize(#-2,1,qc,1,1,0,0)"
+
+    rm[3-5] mv[-3--1] 3
+    if {!w} rm.. fi
+    a[0-5] y
+  endl done rm[-2,-1]
 
 #@cli torus3d : _radius1,_radius2,_nb_subdivisions1>2,_nb_subdivisions2>2
 #@cli : Input 3d torus at (0,0,0), with specified geometry.

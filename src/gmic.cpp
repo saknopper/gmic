@@ -1782,21 +1782,6 @@ CImgList<T> get_split_CImg3d() const {
   return res;
 }
 
-CImg<T>& texturize_CImg3d(const CImg<T>& texture, const CImg<T>& coords) {
-  return get_texturize_CImg3d(texture,coords).move_to(*this);
-}
-
-CImg<T> get_texturize_CImg3d(const CImg<T>& texture, const CImg<T>& coords) const {
-  CImgList<uintT> primitives;
-  CImgList<T> colors;
-  CImgList<floatT> opacities;
-  const CImg<floatT> points = get_CImg3dtoobject3d(primitives,colors,opacities,false);
-  if (coords)
-    points.texturize_object3d(primitives,colors,texture,coords.get_resize(2,coords.size()/2,1,1,-1).transpose());
-  else points.texturize_object3d(primitives,colors,texture,coords);
-  return points.get_object3dtoCImg3d(primitives,colors,opacities,false);
-}
-
 static const CImgList<T>& save_gmz(const char *filename, const CImgList<T>& images, const CImgList<charT>& names) {
   CImgList<T> gmz(images.size() + 1);
   cimglist_for(images,l) gmz[l].assign(images[l],true);
@@ -2145,7 +2130,7 @@ const char *gmic::builtin_commands_names[] = {
   "s","s3d","screen","select","serialize","set","sh","shared","sharpen","shift","sign","sin","sinc","sinh","skip",
     "sl3d","slices","smooth","solve","sort","specl3d","specs3d","sphere3d","split","split3d","sqr","sqrt","srand",
     "ss3d","status","streamline3d","structuretensors","sub","sub3d","svd",
-  "t","t3d","tan","tanh","text","texturize3d","threshold","trisolve",
+  "t","tan","tanh","text","threshold","trisolve",
   "u","uncommand","unroll","unserialize",
   "v","vanvliet","verbose",
   "w","w0","w1","w2","w3","w4","w5","w6","w7","w8","w9","wait","warn","warp","watershed","while","window",
@@ -4795,7 +4780,6 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
           case 'r' : std::strcpy(command,"rotate3d"); break;
           case 's' : std::strcpy(command,"split3d"); break;
           case '-' : std::strcpy(command,"sub3d"); break;
-          case 't' : std::strcpy(command,"texturize3d"); break;
           } else if (!command4 && command2=='3' && command3=='d') {
           // Four-chars shortcuts (ending with '3d').
           if (command0=='d' && command1=='b') {
@@ -11902,44 +11886,6 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             }
           } else arg_error("text");
           g_img.assign();
-          is_released = false; ++position; continue;
-        }
-
-        // Texturize 3d object.
-        if (!std::strcmp("texturize3d",command)) {
-          gmic_substitute_args(true);
-          CImg<unsigned int> ind_texture, ind_coords;
-          sep = *argx = *argy = 0;
-          if (((cimg_sscanf(argument,"[%255[a-zA-Z0-9_.%+-]%c%c",
-                            argx,&sep,&end)==2 && sep==']') ||
-               (cimg_sscanf(argument,"[%255[a-zA-Z0-9_.%+-]],[%255[a-zA-Z0-9_.%+-]%c%c",
-                            argx,argy,&sep,&end)==3 && sep==']')) &&
-              (ind_texture=selection2cimg(argx,images.size(),images_names,"texturize3d")).height()==1 &&
-              (!*argy || (ind_coords=selection2cimg(argy,images.size(),images_names,"texturize3d")).height()==1)) {
-            if (ind_coords)
-              print(images,0,
-                    "Texturize 3d object%s with texture [%u] and texture coordinates [%u].",
-                    gmic_selection.data(),*ind_texture,*ind_coords);
-            else
-              print(images,0,"Texturize 3d object%s with texture [%u].",
-                    gmic_selection.data(),*ind_texture);
-            const CImg<T>
-              texture = gmic_image_arg(*ind_texture),
-              coords = ind_coords?gmic_image_arg(*ind_coords):CImg<T>();
-            cimg_forY(selection,l) {
-              const unsigned int uind = selection[l];
-              CImg<T>& img = images[uind];
-              try { gmic_apply(texturize_CImg3d(texture,coords)); }
-              catch (CImgException&) {
-                if (!img.is_CImg3d(true,&(*message=0)))
-                  error(images,0,0,
-                        "Command 'texturize3d': Invalid 3d object [%d], "
-                        "in selected image%s (%s).",
-                        uind,gmic_selection_err.data(),message.data());
-                else throw;
-              }
-            }
-          } else arg_error("texturize3d");
           is_released = false; ++position; continue;
         }
 
