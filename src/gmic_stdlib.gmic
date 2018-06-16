@@ -5989,30 +5989,6 @@ eigen2tensor :
 #@cli : $ 400,400,1,3 fill "X=x-w/2; Y=y-h/2; R=sqrt(X^2+Y^2); a=atan2(Y,X); if(R<=180,255*abs(cos(c+200*(x/w-0.5)*(y/h-0.5))),850*(a%(0.1*(c+1))))"
 #@cli : $$
 
-#@cli float2int8
-#@cli : Convert selected float-valued images to 8bits integer representations.
-float2int8 :
-  e[^-1] "Convert float-valued image$? to 8bits integer representations."
-  v - repeat $! l[$>]
-    s c repeat $! l[$>]
-      m={im} M={iM} quantize 16777216,0,1
-      +>> 8 &. 255 +&.. 255 >>... 16
-      ({'$m,$M'}) a y
-    endl done a c
-  endl done v +
-
-#@cli int82float
-#@cli : Convert selected 8bits integer representations to float-valued images.
-int82float :
-  e[^-1] "Convert 8bits integer representation$? to float-valued image$?."
-  v - repeat $! l[$>]
-    s c repeat $! l[$>]
-      sh. {h-1},{h-1},0,0 m={t} rm.
-      rows 0,{h-2} s y,3 *... 65536 *.. 256 -|
-      skip ${n\ $m}
-    endl done a c
-  endl done v +
-
 #@cli index : { [palette] | predefined_palette },0<=_dithering<=1,_map_palette={ 0 | 1 } : (+)
 #@cli : Index selected vector-valued images by specified vector-valued palette.
 #@cli : 'predefined_palette' can be { 0=default | 1=HSV | 2=lines | 3=hot | 4=cool | 5=jet | 6=flag | 7=cube }.
@@ -10806,22 +10782,6 @@ detect_skin : check "${1=0.5}>=0 && $1<=1" skip ${2=-1},${3=-1},${4=-1}
 #@cli : $ image.jpg threshold 20% distance 0 pow 0.3
 #@cli : $ 400,400 set 1,50%,50% +distance[0] 1,2 +distance[0] 1,1 distance[0] 1,0 mod 32 threshold 16 append c
 #@cli : $$
-
-#@cli float2fft8
-#@cli : Convert selected float-valued images to 8bits fourier representations.
-float2fft8 :
-  e[^-1] "Convert float-valued image$? to 8bits fourier representations."
-  v - repeat $! l[$>]
-    fftpolar +.. 1 log.. float2int8[-2,-1] a y
-  endl done v +
-
-#@cli fft82float
-#@cli : Convert selected 8bits fourier representations to float-valued images.
-fft82float :
-  e[^-1] "Convert float-valued image$? to 8bits fourier representations."
-  v - repeat $! l[$>]
-    s y,2 int82float exp.. -.. 1 ifftpolar
-  endl done v +
 
 #@cli fftpolar
 #@cli : Compute fourier transform of selected images, as centered magnitude/phase images.
@@ -31884,11 +31844,9 @@ fx_display_fft :
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2014/11/08</i>.</small>")
 fx_fourier : skip ${2=0}
   if $2 remove_opacity fi
-  if $1 repeat $! l
-      fft82float c 0,255
-      onfail error "Image ["$>"] does not seem to be a FFT transform."
-    endl done
-  else float2fft8 fi
+  if $1 repeat $! l[$>] s. y,-{int(h-1)/2} mM=${u\ {t}} rm. n.. {([$mM])[0,2]} n. {([$mM])[2,2]} exp.. -.. 1 ifftpolar[-2,-1] endl done c 0,255 # iFFT
+  else repeat $! l[$>] fftpolar +.. 1 log.. mM={[im#0,iM#0,im#1,iM#1]} n[-2,-1] 0,255 ({'$mM'},0) a[-3--1] y endl done # FFT
+  fi
 
 fx_fourier_preview :
   if $2 remove_opacity fi
