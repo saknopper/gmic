@@ -31865,6 +31865,7 @@ fx_fourier : skip ${2=0}
       else ({'$m0,$M0'},0) a[-3,-1] y ({'$m1,$M1'},0) a[-2,-1] y
       fi
     endl done
+    u "{1}{$2}{$3}"
   fi
 
 fx_fourier_preview :
