@@ -31839,21 +31839,31 @@ fx_display_fft :
 
 #@gui Fourier transform : fx_fourier, fx_fourier_preview(1)
 #@gui : Transform = choice(0,"Direct","Inverse")
-#@gui : Output type = choice{1,"One layer (horizontal)","One layer (vertical)"}
+#@gui : Magnitude/Phase = choice{1,"One layer (horizontal)","One layer (vertical)","Two layers"}
 #@gui : Discard transparency = bool(1)
 #@gui : url = link("Click here for a video tutorial","http://www.youtube.com/watch?v=3137dDa6P4s")
-#@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2014/11/08</i>.</small>")
+#@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2018/06/16</i>.</small>")
 fx_fourier : skip ${2=0}
   if $3 remove_opacity fi
   if $1 # iFFT
-    repeat $! l[$>]
-      if $2 s. y,-{int(h-1)/2} else s. x,-{int(w-1)/2} fi
-      mM=${u\ {t}} rm. n.. {([$mM])[0,2]} n. {([$mM])[2,2]} exp.. -.. 1 ifftpolar[-2,-1]
+    repeat {$2<2?$!:int($!/2)} if {$2<2} sel=$< else sel={[0,1]+2*$<} fi l[$sel]
+      if {$!==1}
+        if $2 s y,-{(h-1)/2} else s x,-{(w-1)/2} fi
+        m0,M0,m1,M1=${u\ {t}} rm.
+      else
+        s y,-{h-1} m0,M0=${u\ {1,t}} m1,M1=${u\ {3,t}} rm[1,3]
+      fi
+      n.. $m0,$M0 n. $m1,$M1 exp.. -.. 1 ifftpolar[-2,-1]
+    onfail
+      error "Input images do not seem to be data from direct FFT transforms with the same magnitude/phase mode."
     endl done c 0,255
   else # FFT
-    repeat $! l[$>]
-      fftpolar +.. 1 log.. mM={[im#0,iM#0,im#1,iM#1]} n[-2,-1] 0,255 ({'$mM'},0)
-      if $2 a[-3--1] y else y. a[-3--1] x fi
+    repeat $! l[$<]
+      fftpolar +.. 1 log.. m0,M0,m1,M1={[im#0,iM#0,im#1,iM#1]} n[-2,-1] 0,255
+      if {$2==0} ({'$m0,$M0,$m1,$M1'},0) y. a[-3--1] x
+      elif {$2==1} ({'$m0,$M0,$m1,$M1'},0) a[-3--1] y
+      else ({'$m0,$M0'},0) a[-3,-1] y ({'$m1,$M1'},0) a[-2,-1] y
+      fi
     endl done
   fi
 
