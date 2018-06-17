@@ -31840,6 +31840,7 @@ fx_display_fft :
 #@gui Fourier transform : fx_fourier, fx_fourier_preview(1)
 #@gui : Magnitude/Phase = choice{1,"One layer (horizontal)","One layer (vertical)","Two layers"}
 #@gui : Discard transparency = bool(1)
+#@gui : sep = separator(), note = note{"<small><b>Note:</b> Apply this filter once to get the direct FFT, and once again (CTRL+F) to get the reverse transform.</small>"}
 #@gui : url = link("Click here for a video tutorial","http://www.youtube.com/watch?v=3137dDa6P4s")
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2018/06/16</i>.</small>")
 fx_fourier : skip ${2=0}
