@@ -252,6 +252,7 @@ if [ "$HOSTNAME" != "elara" ] ; then
     cd /tmp/$OUTDIR &&
         dpkg-buildpackage -d -j3 -rfakeroot;
     mv ../gmic_${VERSION}_${ARCH}.deb ../$OUTPAK
+    cp -f ../$OUTPAK $SF_HOME/work/src/
 
     if [ -f $HOME/is_qt5 ]; then
         zip -j -r -9 ../$OUTZIP_GIMP_QT gmic-qt/gmic_gimp_qt README
