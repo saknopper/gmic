@@ -19641,13 +19641,7 @@ demo : check "isint(${1=2}) && $1>=0 && $1<=2"
   endl
 
   # Generate 3d cursors.
-  l[]
-    sphere3d 7 o3d. 1 col3d. 255,230,0
-    torus3d 15,3 o3d. 0.5 col3d. 255,158,32
-    torus3d 25,3 o3d. 0.25 col3d. 200,64,16
-    c3d
-    nm cursor3d_1,cursor3d_2,cursor3d_3
-  endl
+  arrow3d 20,20,0,0,0,0,20%,40%,40% col3d. 255,128,0 nm. cursor3d
 
   # Generate 3d background object.
   l[]
@@ -19702,11 +19696,8 @@ demo : check "isint(${1=2}) && $1>=0 && $1<=2"
     j. [menu_fgcol],0,0,0,0,1,[menu_opac]
 
     if {$mx>0}
-      [cursor3d_1]
-      +r3d[cursor3d_2] 1,1,0.3,{100*$|} r3d. 0.2,0.7,1,{50*$|}
-      +r3d[cursor3d_3] 0.7,1,0,{-160*$|} r3d. 0.2,0.7,1,{-30*$|}
-      +3d[-3--1]
-      j3d.. .,$mx,$my,0,1,3,0,0 rm.
+      +r3d[cursor3d] 1,1.3,0.6,{50*cos($|)}
+      j3d.. .,$mx,$my,0,1,4,0,0,800,{-2,[w,h]/2},-1000 rm.
     fi
 
     w. -1,-1,0
