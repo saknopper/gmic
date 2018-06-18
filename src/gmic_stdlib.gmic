@@ -25519,7 +25519,7 @@ fx_drawn_montage_preview :
   _fx_drawn_montage $*,1
 
 #@gui Extract objects : fx_extract_objects, fx_extract_objects_preview(1)
-#@gui : Background point (%) = point(0,0,0,1)
+#@gui : Background point (%) = point(0,0)
 #@gui : sep = separator()
 #@gui : Color tolerance = int(20,0,256)
 #@gui : Opacity threshold (%) = int(50,0,100)
@@ -29422,7 +29422,7 @@ fx_euclidean2polar :
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2010/29/12</i>.</small>")
 
 #@gui Flower : fx_flower, fx_flower_preview(1)
-#@gui : Center (%) = point(50,50,0,1)
+#@gui : Center (%) = point(50,50)
 #@gui : Amplitude / Angle = point(75,50,0,1)
 #@gui : Petals = int(6,2,20)
 #@gui : Offset (%) = float(0,0,100)
