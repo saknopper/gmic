@@ -18454,9 +18454,9 @@ transition3d : check "isint(${1=10}) && $1>=2 && isint(${2=3}) && $2>0 && isint(
       +3d[-$N--1] c3d.
 
       if $7 # Antialiased rendering.
-        i... {2*{-2,w}},{2*{-2,h}},1,3,-1
+        i... {-2,2*[w,h]},1,3,-1
         *3d. 2 j3d... .,50%,50%,0,1,2,0,0 rm.
-        to_rgba.. replace_color.. 0,0,-1,-1,-1,255,0,0,0,0
+        +select_color.. 0,-1,-1,-1 +dilate... 3 j[-4] .,0,0,0,0,1,.. rm. ==. 0 *. 255 a[-3,-1]
         r.. .,.,1,100%,2
       else # Standard rendering.
         i... {-2,w},{-2,h},1,3,-1 j3d... .,50%,50%,0,1,2,0,0 rm.
