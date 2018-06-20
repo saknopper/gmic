@@ -29429,7 +29429,7 @@ fx_euclidean2polar :
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2010/29/12</i>.</small>")
 
 #@gui Flower : fx_flower, fx_flower_preview(1)
-#@gui : Center (%) = point(50,50)
+#@gui : Center (%) = point(50,50,0,1)
 #@gui : Amplitude / Angle = point(75,50,0,1)
 #@gui : Petals = int(6,2,20)
 #@gui : Offset (%) = float(0,0,100)
@@ -29677,7 +29677,7 @@ fx_map_sphere_preview :
 #@gui : Radius (%) = float(50,0,300)
 #@gui : Strength = float(1,-10,10)
 #@gui : Smoothness (%) = float(0,0,4)
-#@gui : Center (%) = point(50,50,0,0,255,255,255,170,10)
+#@gui : Center (%) = point(50,50,0,1,255,255,255,170,10)
 #@gui : Ratio = float(0,-2,2)
 #@gui : Angle = float(0,-90,90)
 #@gui : Interpolation = choice(2,"Nearest neighbor","Linear","Cubic")
@@ -29814,7 +29814,7 @@ fx_twirl :
 #@gui Wave : wave, wave(1)
 #@gui : Amplitude = float(10,0,30)
 #@gui : Frequency = float(0.4,0,2)
-#@gui : Center (%) = point(50,50,0,0,255,255,255,170,10)
+#@gui : Center (%) = point(50,50,0,1,255,255,255,170,10)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2010/29/12</i>.</small>")
 
 #@gui Wind : fx_wind, fx_wind_preview(0)
