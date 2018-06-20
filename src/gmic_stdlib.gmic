@@ -31883,7 +31883,7 @@ fx_fourier : skip ${2=0}
       fi
       l[$i,{$i+1}] n[0] $m0,$M0 n[1] $m1,$M1 exp[0] -[0] 1 ifftpolar c 0,255 endl
     fi
-    i+={$1<2?1:2}
+    i+={$1<2" || "$is_ifft>2?1:2}
   done
 
 fx_fourier_preview :
