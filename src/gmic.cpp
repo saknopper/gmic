@@ -2504,6 +2504,7 @@ CImgList<char> gmic::commands_line_to_CImgList(const char *const commands_line) 
   CImg<char> item((unsigned int)std::strlen(ptrs0) + 1);
   CImgList<char> items;
   char *ptrd = item.data(), c = 0;
+
   for (const char *ptrs = ptrs0; *ptrs; ++ptrs) {
     c = *ptrs;
     if (c=='\\') { // If escaped character.
@@ -2519,7 +2520,7 @@ CImgList<char> gmic::commands_line_to_CImgList(const char *const commands_line) 
       *(ptrd++) = c;
     } else if (is_dquoted) { // If non-escaped character inside string.
       if (c=='\"') is_dquoted = false;
-      else if (c==1) while (c && c!=' ') c = *(++ptrs); // Discard debug info inside string.
+      else if (c==1) { while (c && c!=' ') c = *(++ptrs); if (!c) --ptrs; } // Discard debug info inside string.
       else *(ptrd++) = (c=='$' && ptrs[1]!='?')?gmic_dollar:c=='{'?gmic_lbrace:c=='}'?gmic_rbrace:
              c==','?gmic_comma:c;
     } else { // Non-escaped character outside string.
