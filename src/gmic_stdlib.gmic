@@ -24176,7 +24176,7 @@ _gui_merge_layers :
   if {narg({'$res'})} u $res else u "${2--1}" fi
 
 # Generate a split preview, with arguments "command",_split_type,_timeout,_compute_entire_image
-# 'split_type' can be { 0=no split | 1=forw. horiz. | 2=forw. vert. | 3=back. horiz. | 4=back. vert. | 5=dupl. horiz. (left). | 6=dupl. vert. (top). | 7=dupl. horiz. (right) | 8=dupl. vert. (bottom) }
+# 'split_type' can be { 0=no split | 1=forw. horiz. | 2=forw. vert. | 3=back. horiz. | 4=back. vert. | 5=dupl. horiz. (left). | 6=dupl. vert. (top). | 7=dupl. vert. (bottom) | 8=dupl. horiz. (right) |  }
 # 'timeout' can be { 0=no timeout | >0=with specified timeout (in seconds) }.
 # 'compute_entire_image' can be { 0=no | 1=yes }.
 _before :
@@ -24251,6 +24251,52 @@ gui_split_preview : skip ${3=0},${4=0}
     rm[-4--1]
   endl done
   uncommand gsp uncommand _gsp
+
+# gui_split_preview2 : "command",_split_type,_split_posx,_split_posy,_timeout,_compute_entire_image
+# 'split_type' can be { 0=no split | 1=forw. horiz. | 2=forw. vert. | 3=back. horiz. | 4=back. vert. | 5=dupl. horiz. (left). | 6=dupl. vert. (top). | 7=dupl. vert. (bottom) | 8=dupl. horiz. (right) |  }
+# 'timeout' can be { 0=no timeout | >0=with specified timeout (in seconds) }.
+# 'compute_entire_image' can be { 0=no | 1=yes }.
+gui_split_preview2 : check "isint(${2=0}) && $2>=0 && $2<=8 && ${5=0}>=0" skip "${3=50},${4=50}"
+  m "_split_preview : $1 k[0]"
+  posx,posy={cut([$3,$4],0,100)}
+  repeat $! l[$>]
+    if {$2==0} _split_preview
+    else
+      is_timeout=0
+      +l apply_timeout _split_preview,$5 onfail gui_timeout_preview is_timeout=1 endl
+      if $is_timeout k.
+      else
+        drgba rr2d $_preview_width,$_preview_height,0,2
+        r {[max(w#0,w#1),max(h#0,h#1)]},1,100%,0,0,0.5,0.5
+        if {$2==1" || "$2==3} # Forward/backward horizontal
+          1,[0],1,1,'y/(h-1)>=$posy%?($2==1):($2==3)' r. [0],[0],1,1 j[0] [1],0,0,0,0,1,.
+        elif {$2==2" || "$2==4} # Forward/backward vertical
+          [0],1,1,1,'x/(w-1)>=$posx%?($2==2):($2==4)' r. [0],[0],1,1 j[0] [1],0,0,0,0,1,.
+        elif {$2==5} # Duplicate top
+          p={round($posy*(h-1)/100)} j[0] [1],0,$p
+        elif {$2==6} # Duplicate left
+          p={round($posx*(w-1)/100)} j[0] [1],$p
+        elif {$2==7} # Duplicate bottom
+          p={round($posy*(h-1)/100)} j[0] [1],0,{$p-h}
+        elif {$2==8} # Duplicate right
+          p={round($posx*(w-1)/100)} j[0] [1],{$p-w}
+        fi
+        k[0]
+
+        posx,posy={[$posx,$posy]*([w,h]-1)%}
+        if {$2%2}
+          line 0,$posy,100%,$posy,0.75,0xF0F0F0F0,255 line 0,$posy,100%,$posy,0.75,0x0F0F0F0F,0
+          coords={p=[$posx,$posy];[p+[-10,-1],p+[10,-1],p+[0,-11]]} polygon 3,$coords,0.7,255 polygon 3,$coords,0.7,0xFFFFFFFF,0
+          coords={p=[$posx,$posy];[p+[-10,1],p+[10,1],p+[0,11]]} polygon 3,$coords,0.7,255 polygon 3,$coords,0.7,0xFFFFFFFF,0
+        else
+          line $posx,0,$posx,100%,0.75,0xF0F0F0F0,255 line $posx,0,$posx,100%,0.75,0x0F0F0F0F,0
+          coords={p=[$posx,$posy];[p+[-1,-10],p+[-1,10],p+[-11,0]]} polygon 3,$coords,0.7,255 polygon 3,$coords,0.7,0xFFFFFFFF,0
+          coords={p=[$posx,$posy];[p+[1,-10],p+[1,10],p+[11,0]]} polygon 3,$coords,0.7,255 polygon 3,$coords,0.7,0xFFFFFFFF,0
+        fi
+      fi
+    fi
+  endl done
+  uncommand _split_preview
 
 # Command to display text on a the G'MIC plug-in preview.
 # $1 : header message
@@ -25338,13 +25384,13 @@ fx_asciiart_preview :
 #@gui : Opacity = float(0.5,0,1)
 #@gui : First color = color(0,0,0,255)
 #@gui : Second color = color(255,255,255,255)
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2010/29/12</i>.</small>")
 fx_chessboard :
   to_rgba chessboard ${1-14}
 
 fx_chessboard_preview :
-  gui_split_preview "fx_chessboard $*",$-1
+  gui_split_preview2 "fx_chessboard $*",${-3--1}
 
 #@gui Dices : fx_dices, fx_dices(0)
 #@gui : Resolution = float(2,1,10)
@@ -25621,7 +25667,7 @@ fx_imagegrid_triangular :
 #@gui : sep = separator(),
 #@gui : Preview original = bool(0)
 #@gui : Tiled preview = choice(3,"None","2x1","1x2","2x2","3x3","4x4")
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10)
 #@gui : sep = separator(), note = note{"<small><b>Note:</b> This filter helps in converting your input pattern as a <b>seamless</b> (a.k.a periodic) texture.</small>"}
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2015/24/02</i>.</small>")
 fx_make_seamless :
@@ -25632,7 +25678,7 @@ fx_make_seamless :
 
 fx_make_seamless_preview :
   u={arg($3,2,1,2,3,4)} v={arg($3,1,2,2,3,4)}
-  gui_split_preview "if {!$2} fx_make_seamless $* fi if $3 array "$u","$v" fi",$-1
+  gui_split_preview2 "if {!$2} fx_make_seamless $* fi if $3 array "$u","$v" fi",${-3--1}
 
 #@gui Make seamless [patch-based] : fx_frame_seamless, fx_frame_seamless_preview(0)
 #@gui : Frame size = int(32,0,256)
@@ -25643,7 +25689,7 @@ fx_make_seamless_preview :
 #@gui : sep = separator(),
 #@gui : Preview original = bool(0)
 #@gui : Tiled preview = choice(3,"None","2x1","1x2","2x2","3x3","4x4")
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10)
 #@gui : sep = separator(), note = note{"<small><b>Note:</b> This filter helps in converting your input pattern as a <b>seamless</b> (a.k.a periodic) texture.</small>"}
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2015/15/12</i>.</small>")
 fx_frame_seamless :
@@ -25654,7 +25700,7 @@ fx_frame_seamless :
 
 fx_frame_seamless_preview :
   u={arg($7,2,1,2,3,4)} v={arg($7,1,2,2,3,4)}
-  gui_split_preview "if {!$6} fx_frame_seamless $* fi if $7 array "$u","$v" fi",$-1
+  gui_split_preview2 "if {!$6} fx_frame_seamless $* fi if $7 array "$u","$v" fi",${-3--1}
 
 #@gui Ministeck : fx_ministeck, fx_ministeck_preview(1)
 #@gui : Number of colors = int(8,2,24)
@@ -25956,7 +26002,7 @@ fx_isolate_tiles :
 #@gui : Smoothness = float(2,0,8)
 #@gui : Color = color(170,130,20,110)
 #@gui : Color dispersion = float(0.15,0,1)
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2015/02/07</i>.</small>")
 fx_bokeh :
   _shape=$2
@@ -25985,7 +26031,7 @@ _fx_bokeh7 : shape_star $1,5        # Star.
 _fx_bokeh8 : shape_circle $1        # Circle.
 
 fx_bokeh_preview :
-  gui_split_preview "_output_mode=0 fx_bokeh $*",$-1,0,1
+  gui_split_preview2 "_output_mode=0 fx_bokeh $*",${-3--1}
 
 # [internal] Draw one step of bokeh with specified geometry on last image.
 # $1=density, $2=size(in %), $3=outline(in %), $4=shade (in [0,1]), $5=smoothness (in %),
@@ -26082,10 +26128,10 @@ fx_brushify_preview :
 #@gui : Edge thickness = float(0.25,0,1)
 #@gui : Color strength = float(1.5,0,3)
 #@gui : Color quantization = int(8,2,256)
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2010/29/12</i>.</small>")
 fx_cartoon_preview :
-  gui_split_preview "cartoon $*",$-1
+  gui_split_preview2 "cartoon $*",${-3--1}
 
 #@gui Circle abstraction : fx_circle_abstraction, fx_circle_abstraction_preview(1)
 #@gui : Number of colors = int(8,2,16)
@@ -26095,7 +26141,7 @@ fx_cartoon_preview :
 #@gui : Filled circles = bool(1)
 #@gui : Fill transparent holes = bool(1)
 #@gui : Normalize colors = bool(1)
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2014/16/06</i>.</small>")
 fx_circle_abstraction :
   repeat $! l[$>]
@@ -26128,7 +26174,7 @@ fx_circle_abstraction :
   endl done
 
 fx_circle_abstraction_preview :
-  gui_split_preview "fx_circle_abstraction $*",$-1
+  gui_split_preview2 "fx_circle_abstraction $*",${-3--1}
 
 #@gui Cubism : fx_cubism, fx_cubism_preview(1)
 #@gui : Iterations = int(2,0,10)
@@ -26137,13 +26183,13 @@ fx_circle_abstraction_preview :
 #@gui : Angle = float(90,0,360)
 #@gui : Opacity = float(0.7,0.01,1)
 #@gui : Smoothness = float(0,0,5)
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2013/05/06</i>.</small>")
 fx_cubism :
   repeat $1 cubism ${2--1} done
 
 fx_cubism_preview :
-  gui_split_preview "fx_cubism $*",$-1
+  gui_split_preview2 "fx_cubism $*",${-3--1}
 
 #@gui Cutout : fx_cutout, fx_cutout_preview(1)
 #@gui : Number of levels = int(4,2,32)
