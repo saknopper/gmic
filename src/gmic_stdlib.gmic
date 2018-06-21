@@ -24906,8 +24906,8 @@ fx_friends :
   rand.. 0,255 sh.. 1,2 /. 2 rm.
   blur_radial.. 20 sharpen.. 50
   r. ..,..,1,4,0,0,0.5,0.5 blend alpha
-  113,67,1,1,0 t. "Greetings to\n  all G\47MIC\n  friends!",2,-2,23,1,1
-  +dilate. 3 *.. 255 to_rgb.. j... ..,{({-3,w}-{-2,w})/2},{({-3,h}-{-2,h})/2.2},0,0,1,.
+  143,80,1,1,0 t. "Greetings to\n  all G\47MIC\n  friends!",2,-2,27,1,1
+  +dilate. 3 *.. 255 to_rgb.. j... ..,{[w#-3-w#-2,h#-3-h#-2]/2},0,0,1,.
   rm[-2,-1]
 
 _heart80x73 :
