@@ -24192,21 +24192,21 @@ gui_split_preview : skip ${3=0},${4=0}
     m "gsp : w={w} h={h} s={s} $1 if {!$!} $w,$h,1,4 drgba to_colormode $s fi k[0] if {s>4} channels 0,3 fi"
   fi
   repeat $! l[$>]
-    if {$2==0} gsp. mv. 0 continue fi  # No split.
-    if {!($2%2)} # Vertical split.
+    if {$2==0} gsp. mv. 0 continue fi  # No split
+    if {!($2%2)} # Vertical split
       if $4 r. 200%,100%,100%,100%,0,2 fi
       s. x,2
-      if {$2==2} # Forward vertical.
+      if {$2==2} # Forward vertical
         gsp. to_colormode[-2,-1] 0
         _gsp _before _after
-      elif {$2==4} # Backward vertical.
+      elif {$2==4} # Backward vertical
         gsp.. to_colormode[-2,-1] 0
         _gsp _after _before
-      elif {$2==6} # Duplicate left.
+      elif {$2==6} # Duplicate left
         if {!$4} rm. . fi
         gsp. to_colormode[-2,-1] 0
         _gsp _before _after
-      else # Duplicate right.
+      else # Duplicate right
         if {!$4} rm.. . fi
         gsp.. to_colormode[-2,-1] 0
         _gsp _after _before
@@ -24219,20 +24219,20 @@ gui_split_preview : skip ${3=0},${4=0}
         fi
       fi
       line... 0,0,0,{-3,h},1,0,0,0,255 a[-4,-3] x
-    else # Horizontal split.
+    else # Horizontal split
       if $4 r. 100%,200%,100%,100%,0,2 fi
       s. y,2
-      if {$2==1} # Forward horizontal.
+      if {$2==1} # Forward horizontal
         gsp. to_colormode[-2,-1] {max({-2,s},s)}
         _gsp _before _after
-      elif {$2==3} # Backward horizontal.
+      elif {$2==3} # Backward horizontal
         gsp.. to_colormode[-2,-1] {max({-2,s},s)}
         _gsp _after _before
-      elif {$2==5} # Duplicate top.
+      elif {$2==5} # Duplicate top
         if {!$4} rm. . fi
         gsp. to_colormode[-2,-1] 0
         _gsp _before _after
-      else # Duplicate bottom.
+      else # Duplicate bottom
         if {!$4} rm.. . fi
         gsp.. to_colormode[-2,-1] 0
         _gsp _after _before
