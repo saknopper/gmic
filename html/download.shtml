@@ -49,7 +49,7 @@
                             <a href="https://gmic.eu/files/windows/gmic_gimp2.10_qt_win32.exe">installer</a> or
                             <a href="https://gmic.eu/files/windows/gmic_gimp2.10_qt_win32.zip">.zip archive</a>
                           </li>
-                          <li>Linux <i>64 bits</i> (tested with <i>Debian Sid</i>): <a href="https://gmic.eu/files/prerelease_linux/gmic_gimp2.10_qt_2.2.4_pre_debian_sid_amd64.zip">.zip archive</a></li>
+                          <li>Linux <i>64 bits</i> (tested with <i>Debian Sid</i>): <a href="https://gmic.eu/files/linux/gmic_gimp2.10_qt_2.3.0_debian_sid_amd64.zip">.zip archive</a></li>
                         </ul>
                       </li><br/>
                       <li>for <b>GIMP 2.8</b> :
@@ -86,7 +86,7 @@
                           <li>Linux <i>32 bits</i>: <a href="https://gmic.eu/files/linux/gmic_gimp2.8_qt_linux32.zip">.zip archive</a></li>
                           <li>Linux <i>32/64 bits</i>: <a href="https://gmic.eu/files/linux">Other .zip archives for specific distros</a></li>
                         </ul>
-                      </li><br/>
+                      </li>
                       <!-- <li><i>GTK</i> versions (<i>deprecated, not recommended!</i>): -->
                       <!--   <div class="popup" onclick="popupFunction2()"> -->
                       <!--     <b>View links</b> -->
@@ -119,7 +119,7 @@
                       <!--   </div> -->
                       <!-- </li> -->
                     </ul>
-                    <br/></td>
+                  </td>
                 </tr>
 
                 <!-- G'MIC for Krita -->
