@@ -24180,9 +24180,9 @@ _gui_merge_layers :
 # 'timeout' can be { 0=no timeout | >0=with specified timeout (in seconds) }.
 # 'compute_entire_image' can be { 0=no | 1=yes }.
 _before :
-  0 t. "Before",1,-1,13,1,1 r. {w+4},{h+4},1,1,0,0,0.5,0.5
+  0 t. "Before",1,-1,20,1,1 r. {w+4},{h+4},1,1,0,0,0.5,0.5
 _after :
-  0 t. "After",1,-1,13,1,1 r. {w+4},{h+4},1,1,0,0,0.5,0.5
+  0 t. "After",1,-1,20,1,1 r. {w+4},{h+4},1,1,0,0,0.5,0.5
 
 gui_split_preview : skip ${3=0},${4=0}
   m "_gsp : repeat $! l[$>] m={max(w,h,256)} if {$m==256} rr2d $m,$m,0,1 fi endl done"
