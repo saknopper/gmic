@@ -24268,22 +24268,23 @@ gui_split_preview2 : check "isint(${2=0}) && $2>=0 && $2<=8 && ${5=0}>=0" skip "
       else
         drgba rr2d $_preview_width,$_preview_height,0,2
         r {[max(w#0,w#1),max(h#0,h#1)]},1,100%,0,0,0.5,0.5
+        posx,posy={round([$posx,$posy]*([w,h]-1)%)}
+
         if {$2==1" || "$2==3} # Forward/backward horizontal
-          1,[0],1,1,'y/(h-1)>=$posy%?($2==1):($2==3)' r. [0],[0],1,1 j[0] [1],0,0,0,0,1,.
+          1,[0],1,1,'y>=$posy?($2==1):($2==3)' r. [0],[0],1,1 j[0] [1],0,0,0,0,1,.
         elif {$2==2" || "$2==4} # Forward/backward vertical
-          [0],1,1,1,'x/(w-1)>=$posx%?($2==2):($2==4)' r. [0],[0],1,1 j[0] [1],0,0,0,0,1,.
+          [0],1,1,1,'x>=$posx?($2==2):($2==4)' r. [0],[0],1,1 j[0] [1],0,0,0,0,1,.
         elif {$2==5} # Duplicate top
-          p={round($posy*(h-1)/100)} j[0] [1],0,$p
+          j[0] [1],0,$posy
         elif {$2==6} # Duplicate left
-          p={round($posx*(w-1)/100)} j[0] [1],$p
+          j[0] [1],$posx
         elif {$2==7} # Duplicate bottom
-          p={round($posy*(h-1)/100)} j[0] [1],0,{$p-h}
+          j[0] [1],0,{$posy-h}
         elif {$2==8} # Duplicate right
-          p={round($posx*(w-1)/100)} j[0] [1],{$p-w}
+          j[0] [1],{$posx-w}
         fi
         k[0]
 
-        posx,posy={[$posx,$posy]*([w,h]-1)%}
         if {$2%2}
           line 0,$posy,100%,$posy,0.75,0xF0F0F0F0,255 line 0,$posy,100%,$posy,0.75,0x0F0F0F0F,0
           coords={p=[$posx,$posy];[p+[-10,-1],p+[10,-1],p+[0,-11]]} polygon 3,$coords,0.7,255 polygon 3,$coords,0.7,0xFFFFFFFF,0
@@ -26196,7 +26197,7 @@ fx_cubism_preview :
 #@gui : Edge simplicity = float(0.5,0,3)
 #@gui : Edge fidelity = int(4,0,10)
 #@gui : Normalize = bool(1)
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10)
 #@gui : sep = separator(), note = note("<small>Authors: <i>David Tschumperl&#233;</i> and <i>Garagecoder</i>.      Latest update: <i>2014/03/06</i>.</small>")
 fx_cutout :
   repeat $! l[$>] split_opacity l[0]
@@ -26208,7 +26209,7 @@ fx_cutout :
   endl a c endl done
 
 fx_cutout_preview :
-  gui_split_preview "fx_cutout $*",$-1
+  gui_split_preview2 "fx_cutout $*",${-3--1}
 
 #@gui Diffusion tensors : fx_diffusiontensors, fx_diffusiontensors_preview(0)
 #@gui : Resolution (%) = float(10,0,20)
