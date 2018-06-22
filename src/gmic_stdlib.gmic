@@ -29282,20 +29282,16 @@ fx_crease :
     r. ..,..,1,2,3 warp.. .,0,1,$3 rm.
   endl done
 
-#@gui Distort lens : fx_distort_lens, fx_distort_lens_preview(1)
+#@gui Distort lens : fx_distort_lens, fx_distort_lens(1)
 #@gui : Amplitude = float(0.1,-1,1)
 #@gui : Aspect ratio = float(0,-2,2)
 #@gui : Zoom = float(0,-4,4)
 #@gui : Center (%) = point(50,50,0,1)
 #@gui : Boundary = choice(0,"Transparent","Nearest","Periodic","Mirror")
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right","Duplicate horizontal","Duplicate vertical","Checkered","Checkered inverse")
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2017/18/02</i>.</small>")
 fx_distort_lens :
   if {!$6} to_a fi
   undistort ${1-3},$4%,$5%,$6
-
-fx_distort_lens_preview :
-  gui_split_preview "fx_distort_lens $*",$-1
 
 #@gui Drop water : fx_drop_water, fx_drop_water_preview(1)
 #@gui : note = note("<small><b>Shape geometry:</b></small>")
@@ -29703,12 +29699,11 @@ fx_spherize_preview :
 #@gui : Y-factor (%) = float(0,-100,100)
 #@gui : X-offset (%) = float(0,-300,300)
 #@gui : Y-offset (%) = float(0,-300,300)
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right","Duplicate horizontal","Duplicate vertical","Checkered","Checkered inverse")
 #@gui : sep = separator(), note = note("<small>This filter implements the mapping functions described in this page, by <i>C. Fong</i>:</small>")
 #@gui : url = link("http://squircular.blogspot.com/2015/09/mapping-circle-to-square.html")
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2017/10/30</i>.</small>")
 fx_square_circle :
-  mode,interp,boundary,factx,facty,offx,offy,pmode=$*
+  mode,interp,boundary,factx,facty,offx,offy=$*
   if {!$boundary} to_a fi
   base="const interpolation = "$interp";
         const boundary = "$boundary";
@@ -29742,9 +29737,6 @@ fx_square_circle :
        I(U,V)"
   fi
 
-fx_square_circle_preview :
-  gui_split_preview "fx_square_circle $*",$-1
-
 #@gui Symmetrize : fx_symmetrize, fx_symmetrize_preview(1)
 #@gui : Point 1 = point(50,50,0,1,0,255,0,170,10)
 #@gui : Point 2 = point(50,75,-1,1,255,255,0,170,10)
@@ -29776,7 +29768,7 @@ fx_symmetrize_preview :
 #@gui : Edge attenuation = float(0,0,1)
 #@gui : Edge influence = float(2,0,10)
 #@gui : Noise scale = int(0,0,16)
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right","Duplicate horizontal","Duplicate vertical","Checkered","Checkered inverse")
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right","Duplicate horizontal","Duplicate vertical","Checkered","Checkered inverse"), Preview split = point(50,50,0,0,200,200,200,0,10,0)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2013/21/11</i>.</small>")
 fx_textured_glass :
   repeat $! l[$>]
@@ -29795,7 +29787,7 @@ fx_textured_glass :
   endl done
 
 fx_textured_glass_preview :
-  gui_split_preview "fx_textured_glass $*",$-1
+  gui_split_preview "fx_textured_glass $*",${-3--1}
 
 #@gui Twirl : fx_twirl, fx_twirl(1)
 #@gui : Amplitude = float(1,-5,5)
@@ -29826,7 +29818,7 @@ fx_twirl :
 #@gui : Mode = choice(1,"Darker","Brighter")
 #@gui : sep = separator(), Channel(s) = choice("All","RGBA [all]","RGB [all]","RGB [red]","RGB [green]","RGB [blue]","RGBA [alpha]","Linear RGB [all]","Linear RGB [red]","Linear RGB [green]","Linear RGB [blue]","YCbCr [luminance]","YCbCr [blue-red chrominances]","YCbCr [blue chrominance]","YCbCr [red chrominance]","YCbCr [green chrominance]","Lab [lightness]","Lab [ab-chrominances]","Lab [a-chrominance]","Lab [b-chrominance]","Lch [ch-chrominances]","Lch [c-chrominance]","Lch [h-chrominance]","HSV [hue]","HSV [saturation]","HSV [value]","HSI [intensity]","HSL [lightness]","CMYK [cyan]","CMYK [magenta]","CMYK [yellow]","CMYK [key]","YIQ [luma]","YIQ [chromas]")
 #@gui : Value action = choice("None","Cut","Normalize")
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right","Duplicate horizontal","Duplicate vertical","Checkered","Checkered inverse")
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right","Duplicate horizontal","Duplicate vertical","Checkered","Checkered inverse"), Preview split = point(50,50,0,0,200,200,200,0,10,0)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2011/13/07</i>.</small>")
 fx_wind :
   if {!$5} negate fi
@@ -29834,7 +29826,7 @@ fx_wind :
   if {!$5} negate fi
 
 fx_wind_preview :
-  gui_split_preview "fx_wind $*",$-1
+  gui_split_preview "fx_wind $*",${-3--1}
 
 #@gui Zoom : fx_zoom, fx_zoom(1)
 #@gui : Factor = float(2,0.01,10)
@@ -29878,7 +29870,7 @@ fx_blur_angular_preview :
 #@gui : Angle = float(0,-180,180)
 #@gui : note = note("Parameter <i>Angle</i> is only active when <i>Anisotropy</i>&gt;0")
 #@gui : sep = separator(), Channel(s) = choice(7,"All","RGBA [all]","RGB [all]","RGB [red]","RGB [green]","RGB [blue]","RGBA [alpha]","Linear RGB [all]","Linear RGB [red]","Linear RGB [green]","Linear RGB [blue]","YCbCr [luminance]","YCbCr [blue-red chrominances]","YCbCr [blue chrominance]","YCbCr [red chrominance]","YCbCr [green chrominance]","Lab [lightness]","Lab [ab-chrominances]","Lab [a-chrominance]","Lab [b-chrominance]","Lch [ch-chrominances]","Lch [c-chrominance]","Lch [h-chrominance]","HSV [hue]","HSV [saturation]","HSV [value]","HSI [intensity]","HSL [lightness]","CMYK [cyan]","CMYK [magenta]","CMYK [yellow]","CMYK [key]","YIQ [luma]","YIQ [chromas]")
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right","Duplicate horizontal","Duplicate vertical","Checkered","Checkered inverse")
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right","Duplicate horizontal","Duplicate vertical","Checkered","Checkered inverse"), Preview split = point(50,50,0,0,200,200,200,0,10,0)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2015/03/02</i>.</small>")
 fx_blur_bloom :
   op=${"arg 1+$4,+,max,min"}
@@ -29892,7 +29884,7 @@ fx_blur_bloom :
   fi
 
 fx_blur_bloom_preview :
-  gui_split_preview "fx_blur_bloom $*",$-1
+  gui_split_preview "fx_blur_bloom $*",${-3--1}
 
 #@gui Blur [depth-of-field] : fx_blur_dof, fx_blur_dof_preview(1)
 #@gui : Blur amplitude = float(3,0,20)
@@ -29978,7 +29970,7 @@ __fx_dof_blur :
 #@gui : Boundary = choice(1,"Black","Nearest")
 #@gui : sep = separator(), Channel(s) = choice("All","RGBA [all]","RGB [all]","RGB [red]","RGB [green]","RGB [blue]","RGBA [alpha]","Linear RGB [all]","Linear RGB [red]","Linear RGB [green]","Linear RGB [blue]","YCbCr [luminance]","YCbCr [blue-red chrominances]","YCbCr [blue chrominance]","YCbCr [red chrominance]","YCbCr [green chrominance]","Lab [lightness]","Lab [ab-chrominances]","Lab [a-chrominance]","Lab [b-chrominance]","Lch [ch-chrominances]","Lch [c-chrominance]","Lch [h-chrominance]","HSV [hue]","HSV [saturation]","HSV [value]","HSI [intensity]","HSL [lightness]","CMYK [cyan]","CMYK [magenta]","CMYK [yellow]","CMYK [key]","YIQ [luma]","YIQ [chromas]")
 #@gui : Value action = choice("None","Cut","Normalize")
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right","Duplicate horizontal","Duplicate vertical","Checkered","Checkered inverse")
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right","Duplicate horizontal","Duplicate vertical","Checkered","Checkered inverse"), Preview split = point(50,50,0,0,200,200,200,0,10,0)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2010/29/12</i>.</small>")
 _fx_gaussian_blur :
   b $1,$4
@@ -29989,19 +29981,19 @@ fx_gaussian_blur :
   ac "_fx_gaussian_blur $1,$2,$3,$4",$5,$6
 
 fx_gaussian_blur_preview :
-  gui_split_preview "fx_gaussian_blur $*",$-1
+  gui_split_preview "fx_gaussian_blur $*",${-3--1}
 
 #@gui Blur [glow] : fx_glow, fx_glow_preview(0)
 #@gui : Amplitude = float(6,0,20)
 #@gui : sep = separator(), Channel(s) = choice(7,"All","RGBA [all]","RGB [all]","RGB [red]","RGB [green]","RGB [blue]","RGBA [alpha]","Linear RGB [all]","Linear RGB [red]","Linear RGB [green]","Linear RGB [blue]","YCbCr [luminance]","YCbCr [blue-red chrominances]","YCbCr [blue chrominance]","YCbCr [red chrominance]","YCbCr [green chrominance]","Lab [lightness]","Lab [ab-chrominances]","Lab [a-chrominance]","Lab [b-chrominance]","Lch [ch-chrominances]","Lch [c-chrominance]","Lch [h-chrominance]","HSV [hue]","HSV [saturation]","HSV [value]","HSI [intensity]","HSL [lightness]","CMYK [cyan]","CMYK [magenta]","CMYK [yellow]","CMYK [key]","YIQ [luma]","YIQ [chromas]")
 #@gui : Value action = choice("None","Cut","Normalize")
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right","Duplicate horizontal","Duplicate vertical","Checkered","Checkered inverse")
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right","Duplicate horizontal","Duplicate vertical","Checkered","Checkered inverse"), Preview split = point(50,50,0,0,200,200,200,0,10,0)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2010/29/12</i>.</small>")
 fx_glow :
   ac "glow $1",$2,$3
 
 fx_glow_preview :
-  gui_split_preview "fx_glow $*",$-1
+  gui_split_preview "fx_glow $*",${-3--1}
 
 #@gui Blur [linear] : fx_blur_linear, fx_blur_linear_preview(1)
 #@gui : Tangent radius = float(10,0,100)
@@ -30011,13 +30003,13 @@ fx_glow_preview :
 #@gui : Boundary = choice(1,"Black","Nearest")
 #@gui : sep = separator(), Channel(s) = choice(7,"All","RGBA [all]","RGB [all]","RGB [red]","RGB [green]","RGB [blue]","RGBA [alpha]","Linear RGB [all]","Linear RGB [red]","Linear RGB [green]","Linear RGB [blue]","YCbCr [luminance]","YCbCr [blue-red chrominances]","YCbCr [blue chrominance]","YCbCr [red chrominance]","YCbCr [green chrominance]","Lab [lightness]","Lab [ab-chrominances]","Lab [a-chrominance]","Lab [b-chrominance]","Lch [ch-chrominances]","Lch [c-chrominance]","Lch [h-chrominance]","HSV [hue]","HSV [saturation]","HSV [value]","HSI [intensity]","HSL [lightness]","CMYK [cyan]","CMYK [magenta]","CMYK [yellow]","CMYK [key]","YIQ [luma]","YIQ [chromas]")
 #@gui : Value action = choice("None","Cut","Normalize")
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right","Duplicate horizontal","Duplicate vertical","Checkered","Checkered inverse")
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right","Duplicate horizontal","Duplicate vertical","Checkered","Checkered inverse"), Preview split = point(50,50,0,0,200,200,200,0,10,0)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2010/29/12</i>.</small>")
 fx_blur_linear :
   ac "blur_linear $1,{$2*$1/100},$3,$5 sharpen $4",$6,$7
 
 fx_blur_linear_preview :
-  gui_split_preview "fx_blur_linear $*",$-1
+  gui_split_preview "fx_blur_linear $*",${-3--1}
 
 #@gui Blur [radial] : fx_blur_radial, fx_blur_radial_preview(1)
 #@gui : Amplitude = float(3,0,20)
@@ -30045,7 +30037,7 @@ fx_blur_radial_preview :
 #@gui : Secondary color = color(0,255,0)
 #@gui : X-shift (px) = float(0,-16,16)
 #@gui : Y-shift (px) = float(0,-16,16)
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right","Duplicate horizontal","Duplicate vertical","Checkered","Checkered inverse")
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right","Duplicate horizontal","Duplicate vertical","Checkered","Checkered inverse"), Preview split = point(50,50,0,0,200,200,200,0,10,0)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2015/05/07</i>.</small>")
 fx_chromatic_aberrations :
 
@@ -30070,20 +30062,20 @@ fx_chromatic_aberrations :
   c 0,255
 
 fx_chromatic_aberrations_preview :
-  gui_split_preview "fx_chromatic_aberrations $*",$-1
+  gui_split_preview "fx_chromatic_aberrations $*",${-3--1}
 
 #@gui Dirty : fx_dirty, fx_dirty_preview(0)
 #@gui : Amplitude = float(30,0,100)
 #@gui : Monochrome = bool(1)
 #@gui : sep = separator(), Channel(s) = choice("All","RGBA [all]","RGB [all]","RGB [red]","RGB [green]","RGB [blue]","RGBA [alpha]","Linear RGB [all]","Linear RGB [red]","Linear RGB [green]","Linear RGB [blue]","YCbCr [luminance]","YCbCr [blue-red chrominances]","YCbCr [blue chrominance]","YCbCr [red chrominance]","YCbCr [green chrominance]","Lab [lightness]","Lab [ab-chrominances]","Lab [a-chrominance]","Lab [b-chrominance]","Lch [ch-chrominances]","Lch [c-chrominance]","Lch [h-chrominance]","HSV [hue]","HSV [saturation]","HSV [value]","HSI [intensity]","HSL [lightness]","CMYK [cyan]","CMYK [magenta]","CMYK [yellow]","CMYK [key]","YIQ [luma]","YIQ [chromas]")
 #@gui : Value action = choice("None","Cut","Normalize")
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right","Duplicate horizontal","Duplicate vertical","Checkered","Checkered inverse")
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right","Duplicate horizontal","Duplicate vertical","Checkered","Checkered inverse"), Preview split = point(50,50,0,0,200,200,200,0,10,0)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2014/24/11</i>.</small>")
 fx_dirty :
   ac "_fx_dirty ${1-2}",$3,$4
 
 fx_dirty_preview :
-  gui_split_preview "fx_dirty ${1--2}",$-1
+  gui_split_preview "fx_dirty ${1--2}",${-3--1}
 
 _fx_dirty :
   repeat $! l[$>]
@@ -30098,7 +30090,7 @@ _fx_dirty :
 #@gui : Flip = choice(3,"None","X-axis","Y-axis","XY-axes")
 #@gui : Rotate = choice(1,"-90 deg.","0 deg.","90 deg.")
 #@gui : sep = separator(), Channel(s) = choice("All","RGBA [all]","RGB [all]","RGB [red]","RGB [green]","RGB [blue]","RGBA [alpha]","Linear RGB [all]","Linear RGB [red]","Linear RGB [green]","Linear RGB [blue]","YCbCr [luminance]","YCbCr [blue-red chrominances]","YCbCr [blue chrominance]","YCbCr [red chrominance]","YCbCr [green chrominance]","Lab [lightness]","Lab [ab-chrominances]","Lab [a-chrominance]","Lab [b-chrominance]","Lch [ch-chrominances]","Lch [c-chrominance]","Lch [h-chrominance]","HSV [hue]","HSV [saturation]","HSV [value]","HSI [intensity]","HSL [lightness]","CMYK [cyan]","CMYK [magenta]","CMYK [yellow]","CMYK [key]","YIQ [luma]","YIQ [chromas]")
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right","Duplicate horizontal","Duplicate vertical","Checkered","Checkered inverse")
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right","Duplicate horizontal","Duplicate vertical","Checkered","Checkered inverse"), Preview split = point(50,50,0,0,200,200,200,0,10,0)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2016/01/09</i>.</small>")
 fx_flip_blocs :
   repeat $! l[$>]
@@ -30118,12 +30110,12 @@ _fx_flip_blocs :
   fi
 
 fx_flip_blocs_preview :
-  gui_split_preview "fx_flip_blocs $*",$-1
+  gui_split_preview "fx_flip_blocs $*",${-3--1}
 
 #@gui JPEG artefacts : fx_jpeg_artefacts, fx_jpeg_artefacts_preview(0)
 #@gui : note = note("<small>This filter simulates the JPEG compression artifacts, using DCT quantization on 8x8 blocs.</small>")
 #@gui : Quality (%) = int(50,1,100)
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right","Duplicate horizontal","Duplicate vertical","Checkered","Checkered inverse")
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right","Duplicate horizontal","Duplicate vertical","Checkered","Checkered inverse"), Preview split = point(50,50,0,0,200,200,200,0,10,0)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2017/05/07</i>.</small>")
 fx_jpeg_artefacts :
 
@@ -30174,11 +30166,11 @@ fx_jpeg_artefacts :
   rm[dct,idct,Q]
 
 fx_jpeg_artefacts_preview :
-  gui_split_preview "fx_jpeg_artefacts $*",$-1
+  gui_split_preview "fx_jpeg_artefacts $*",${-3--1}
 
 #@gui Lomo : fx_lomo, fx_lomo_preview(1)
 #@gui : Vignette size = float(20,0,100)
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right","Duplicate horizontal","Duplicate vertical","Checkered","Checkered inverse")
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right","Duplicate horizontal","Duplicate vertical","Checkered","Checkered inverse"), Preview split = point(50,50,0,0,200,200,200,0,10,0)
 #@gui : sep = separator(), note = note("<small>Authors: <i>J&#233;rome Boulanger</i> and <i>David Tschumperl&#233;</i>.      Latest update: <i>2012/06/06</i>.</small>")
 fx_lomo :
   remove_opacity repeat $! l[$>] to_rgb
@@ -30193,14 +30185,14 @@ fx_lomo :
   endl done
 
 fx_lomo_preview :
-  gui_split_preview "fx_lomo $*",$-1
+  gui_split_preview "fx_lomo $*",${-3--1}
 
 #@gui Noise [additive] : fx_noise, fx_noise_preview(0)
 #@gui : Amplitude = float(10,0,200)
 #@gui : Noise type = choice("Gaussian","Uniform","Salt and pepper","Poisson")
 #@gui : sep = separator(), Channel(s) = choice("All","RGBA [all]","RGB [all]","RGB [red]","RGB [green]","RGB [blue]","RGBA [alpha]","Linear RGB [all]","Linear RGB [red]","Linear RGB [green]","Linear RGB [blue]","YCbCr [luminance]","YCbCr [blue-red chrominances]","YCbCr [blue chrominance]","YCbCr [red chrominance]","YCbCr [green chrominance]","Lab [lightness]","Lab [ab-chrominances]","Lab [a-chrominance]","Lab [b-chrominance]","Lch [ch-chrominances]","Lch [c-chrominance]","Lch [h-chrominance]","HSV [hue]","HSV [saturation]","HSV [value]","HSI [intensity]","HSL [lightness]","CMYK [cyan]","CMYK [magenta]","CMYK [yellow]","CMYK [key]","YIQ [luma]","YIQ [chromas]")
 #@gui : Value action = choice(1,"None","Cut","Normalize")
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right","Duplicate horizontal","Duplicate vertical","Checkered","Checkered inverse")
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right","Duplicate horizontal","Duplicate vertical","Checkered","Checkered inverse"), Preview split = point(50,50,0,0,200,200,200,0,10,0)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2010/29/12</i>.</small>")
 fx_noise :
   ac "_fx_noise $1,$2",$3,$4
@@ -30209,38 +30201,38 @@ _fx_noise :
   repeat $! l[$>] split_opacity l[0] noise $1,$2 endl a c endl done
 
 fx_noise_preview :
-  gui_split_preview "fx_noise $*",$-1
+  gui_split_preview "fx_noise $*",${-3--1}
 
 #@gui Noise [spread] : fx_spread, fx_spread_preview(0)
 #@gui : X-variations = float(4,0,20)
 #@gui : Y-variations = float(4,0,20)
 #@gui : sep = separator(), Channel(s) = choice("All","RGBA [all]","RGB [all]","RGB [red]","RGB [green]","RGB [blue]","RGBA [alpha]","Linear RGB [all]","Linear RGB [red]","Linear RGB [green]","Linear RGB [blue]","YCbCr [luminance]","YCbCr [blue-red chrominances]","YCbCr [blue chrominance]","YCbCr [red chrominance]","YCbCr [green chrominance]","Lab [lightness]","Lab [ab-chrominances]","Lab [a-chrominance]","Lab [b-chrominance]","Lch [ch-chrominances]","Lch [c-chrominance]","Lch [h-chrominance]","HSV [hue]","HSV [saturation]","HSV [value]","HSI [intensity]","HSL [lightness]","CMYK [cyan]","CMYK [magenta]","CMYK [yellow]","CMYK [key]","YIQ [luma]","YIQ [chromas]")
 #@gui : Value action = choice("None","Cut","Normalize")
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right","Duplicate horizontal","Duplicate vertical","Checkered","Checkered inverse")
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right","Duplicate horizontal","Duplicate vertical","Checkered","Checkered inverse"), Preview split = point(50,50,0,0,200,200,200,0,10,0)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2010/29/12</i>.</small>")
 fx_spread :
   ac "spread $1,$2",$3,$4
 
 fx_spread_preview :
-  gui_split_preview "fx_spread $*",$-1
+  gui_split_preview "fx_spread $*",${-3--1}
 
 #@gui Old-movie stripes : fx_stripes_y, fx_stripes_y_preview(1)
 #@gui : Frequency = float(10,0,100)
 #@gui : sep = separator(), Channel(s) = choice("All","RGBA [all]","RGB [all]","RGB [red]","RGB [green]","RGB [blue]","RGBA [alpha]","Linear RGB [all]","Linear RGB [red]","Linear RGB [green]","Linear RGB [blue]","YCbCr [luminance]","YCbCr [blue-red chrominances]","YCbCr [blue chrominance]","YCbCr [red chrominance]","YCbCr [green chrominance]","Lab [lightness]","Lab [ab-chrominances]","Lab [a-chrominance]","Lab [b-chrominance]","Lch [ch-chrominances]","Lch [c-chrominance]","Lch [h-chrominance]","HSV [hue]","HSV [saturation]","HSV [value]","HSI [intensity]","HSL [lightness]","CMYK [cyan]","CMYK [magenta]","CMYK [yellow]","CMYK [key]","YIQ [luma]","YIQ [chromas]")
 #@gui : Value action = choice("None","Cut","Normalize")
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right","Duplicate horizontal","Duplicate vertical","Checkered","Checkered inverse")
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right","Duplicate horizontal","Duplicate vertical","Checkered","Checkered inverse"), Preview split = point(50,50,0,0,200,200,200,0,10,0)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2010/29/12</i>.</small>")
 fx_stripes_y :
   ac "stripes_y $1",$2,$3
 
 fx_stripes_y_preview :
-  gui_split_preview "fx_stripes_y $*",$-1
+  gui_split_preview "fx_stripes_y $*",${-3--1}
 
 #@gui Oldschool 8bits : fx_8bits, fx_8bits_preview(0)
 #@gui : Scale = float(25,1,100)
 #@gui : Dithering = float(800,0,10000)
 #@gui : Levels = int(16,2,256)
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right","Duplicate horizontal","Duplicate vertical","Checkered","Checkered inverse")
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right","Duplicate horizontal","Duplicate vertical","Checkered","Checkered inverse"), Preview split = point(50,50,0,0,200,200,200,0,10,0)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2011/02/11</i>.</small>")
 fx_8bits :
   remove_opacity repeat $! l[$>]
@@ -30252,7 +30244,7 @@ fx_8bits :
   endl done
 
 fx_8bits_preview :
-  gui_split_preview "fx_8bits $*",$-1
+  gui_split_preview "fx_8bits $*",${-3--1}
 
 #@gui Pixel sort : fx_pixelsort, fx_pixelsort_preview(1)+
 #@gui : note = note{"<small><b>Sorting parameters:</b></small>"}
@@ -30312,7 +30304,7 @@ fx_pixelsort_preview :
 #@gui : Radius = float(0.1,0,3)
 #@gui : Gamma = float(1,0,2)
 #@gui : Opacity = float(1,0,1)
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right","Duplicate horizontal","Duplicate vertical","Checkered","Checkered inverse")
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right","Duplicate horizontal","Duplicate vertical","Checkered","Checkered inverse"), Preview split = point(50,50,0,0,200,200,200,0,10,0)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2015/29/06</i>.</small>")
 fx_rain :
   repeat $! l[$<] nm=${-gui_layer_name}
@@ -30328,7 +30320,7 @@ fx_rain :
   endl done
 
 fx_rain_preview :
-  gui_split_preview "repeat $! l[$>] fx_rain $* rv blend screen,$6 endl done",$-1
+  gui_split_preview "repeat $! l[$>] fx_rain $* rv blend screen,$6 endl done",${-3--1}
 
 #@gui Random shade stripes : fx_shade_stripes, fx_shade_stripes_preview(1)
 #@gui : Frequency = float(30,1,100)
@@ -30337,13 +30329,13 @@ fx_rain_preview :
 #@gui : Lightness = float(1.3,0,3)
 #@gui : sep = separator(), Channel(s) = choice("All","RGBA [all]","RGB [all]","RGB [red]","RGB [green]","RGB [blue]","RGBA [alpha]","Linear RGB [all]","Linear RGB [red]","Linear RGB [green]","Linear RGB [blue]","YCbCr [luminance]","YCbCr [blue-red chrominances]","YCbCr [blue chrominance]","YCbCr [red chrominance]","YCbCr [green chrominance]","Lab [lightness]","Lab [ab-chrominances]","Lab [a-chrominance]","Lab [b-chrominance]","Lch [ch-chrominances]","Lch [c-chrominance]","Lch [h-chrominance]","HSV [hue]","HSV [saturation]","HSV [value]","HSI [intensity]","HSL [lightness]","CMYK [cyan]","CMYK [magenta]","CMYK [yellow]","CMYK [key]","YIQ [luma]","YIQ [chromas]")
 #@gui : Value action = choice("None","Cut","Normalize")
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right","Duplicate horizontal","Duplicate vertical","Checkered","Checkered inverse")
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right","Duplicate horizontal","Duplicate vertical","Checkered","Checkered inverse"), Preview split = point(50,50,0,0,200,200,200,0,10,0)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2010/29/12</i>.</small>")
 fx_shade_stripes :
   ac "shade_stripes $1,$2,$3,$4",$5,$6
 
 fx_shade_stripes_preview :
-  gui_split_preview "fx_shade_stripes $*",$-1
+  gui_split_preview "fx_shade_stripes $*",${-3--1}
 
 #@gui Scanlines : fx_scanlines, fx_scanlines_preview(0)
 #@gui : Amplitude = float(60,0,255)
@@ -30353,13 +30345,13 @@ fx_shade_stripes_preview :
 #@gui : Offset = float(0,0,500)
 #@gui : sep = separator(), Channel(s) = choice("All","RGBA [all]","RGB [all]","RGB [red]","RGB [green]","RGB [blue]","RGBA [alpha]","Linear RGB [all]","Linear RGB [red]","Linear RGB [green]","Linear RGB [blue]","YCbCr [luminance]","YCbCr [blue-red chrominances]","YCbCr [blue chrominance]","YCbCr [red chrominance]","YCbCr [green chrominance]","Lab [lightness]","Lab [ab-chrominances]","Lab [a-chrominance]","Lab [b-chrominance]","Lch [ch-chrominances]","Lch [c-chrominance]","Lch [h-chrominance]","HSV [hue]","HSV [saturation]","HSV [value]","HSI [intensity]","HSL [lightness]","CMYK [cyan]","CMYK [magenta]","CMYK [yellow]","CMYK [key]","YIQ [luma]","YIQ [chromas]")
 #@gui : Value action = choice("None","Cut","Normalize")
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right","Duplicate horizontal","Duplicate vertical","Checkered","Checkered inverse")
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right","Duplicate horizontal","Duplicate vertical","Checkered","Checkered inverse"), Preview split = point(50,50,0,0,200,200,200,0,10,0)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2014/19/11</i>.</small>")
 fx_scanlines :
   ac "scanlines ${1-5}",$6,$7
 
 fx_scanlines_preview :
-  gui_split_preview "fx_scanlines $*",$-1
+  gui_split_preview "fx_scanlines $*",${-3--1}
 
 #@gui Streak : fx_streak,fx_streak(1)
 #@gui : Mask color = color(255,0,0,255)
@@ -30411,7 +30403,7 @@ fx_watermark_visible : skip "${1= }"
 #@gui : Interpolation = choice(1,"Nearest neighbor","Linear")
 #@gui : Boundary = choice(3,"Transparent","Nearest","Periodic","Mirror")
 #@gui : sep = separator(), Channel(s) = choice("All","RGBA [all]","RGB [all]","RGB [red]","RGB [green]","RGB [blue]","RGBA [alpha]","Linear RGB [all]","Linear RGB [red]","Linear RGB [green]","Linear RGB [blue]","YCbCr [luminance]","YCbCr [blue-red chrominances]","YCbCr [blue chrominance]","YCbCr [red chrominance]","YCbCr [green chrominance]","Lab [lightness]","Lab [ab-chrominances]","Lab [a-chrominance]","Lab [b-chrominance]","Lch [ch-chrominances]","Lch [c-chrominance]","Lch [h-chrominance]","HSV [hue]","HSV [saturation]","HSV [value]","HSI [intensity]","HSL [lightness]","CMYK [cyan]","CMYK [magenta]","CMYK [yellow]","CMYK [key]","YIQ [luma]","YIQ [chromas]")
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right","Duplicate horizontal","Duplicate vertical","Checkered","Checkered inverse")
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right","Duplicate horizontal","Duplicate vertical","Checkered","Checkered inverse"), Preview split = point(50,50,0,0,200,200,200,0,10,0)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2016/02/09</i>.</small>")
 fx_warp_by_intensity :
   if {!$7} to_a fi
@@ -30423,7 +30415,7 @@ _fx_warp_by_intensity :
   fi
 
 fx_warp_by_intensity_preview :
-  gui_split_preview "fx_warp_by_intensity $*",$-1
+  gui_split_preview "fx_warp_by_intensity $*",${-3--1}
 
 #@gui _<b>Details</b>
 #----------------------
@@ -30454,7 +30446,7 @@ fx_warp_by_intensity_preview :
 #@gui : sep = separator(), Channel(s) = choice(11,"All","RGBA [all]","RGB [all]","RGB [red]","RGB [green]","RGB [blue]","RGBA [alpha]","Linear RGB [all]","Linear RGB [red]","Linear RGB [green]","Linear RGB [blue]","YCbCr [luminance]","YCbCr [blue-red chrominances]","YCbCr [blue chrominance]","YCbCr [red chrominance]","YCbCr [green chrominance]","Lab [lightness]","Lab [ab-chrominances]","Lab [a-chrominance]","Lab [b-chrominance]","Lch [ch-chrominances]","Lch [c-chrominance]","Lch [h-chrominance]","HSV [hue]","HSV [saturation]","HSV [value]","HSI [intensity]","HSL [lightness]","CMYK [cyan]","CMYK [magenta]","CMYK [yellow]","CMYK [key]","YIQ [luma]","YIQ [chromas]")
 #@gui : Value action = choice("None","Cut","Normalize")
 #@gui : sep = separator(), Parallel processing = choice("Auto","One thread","Two threads","Four threads","Eight threads","Sixteen threads"), Spatial overlap = int(32,0,256)
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right","Duplicate horizontal","Duplicate vertical","Checkered","Checkered inverse")
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right","Duplicate horizontal","Duplicate vertical","Checkered","Checkered inverse"), Preview split = point(50,50,0,0,200,200,200,0,10,0)
 #@gui : sep = separator(), note = note("<small>Author: <i>J&#233;rome Boulanger</i> and <i>David Tschumperl&#233;</i>.      Latest update: <i>2015/11/11</i>.</small>")
 _fx_equalize_details :
   repeat $! l[$>]
@@ -30483,7 +30475,7 @@ fx_equalize_details :
   ac "gui_parallel_overlap \"_fx_equalize_details ${1-18}\",$21,$22",$19,$20
 
 fx_equalize_details_preview :
-  gui_split_preview "fx_equalize_details $*",$-1
+  gui_split_preview "fx_equalize_details $*",${-3--1}
 
 #@gui Equalize local histograms : fx_equalize_local_histograms, fx_equalize_local_histograms_preview(0)
 #@gui : Strength (%) = float(75,0,100)
@@ -30493,7 +30485,7 @@ fx_equalize_details_preview :
 #@gui : Regularization = float(8,0,32)
 #@gui : Reduce halos = bool(1)
 #@gui : sep = separator(), Channel(s) = choice(16,"All","RGBA [all]","RGB [all]","RGB [red]","RGB [green]","RGB [blue]","RGBA [alpha]","Linear RGB [all]","Linear RGB [red]","Linear RGB [green]","Linear RGB [blue]","YCbCr [luminance]","YCbCr [blue-red chrominances]","YCbCr [blue chrominance]","YCbCr [red chrominance]","YCbCr [green chrominance]","Lab [lightness]","Lab [ab-chrominances]","Lab [a-chrominance]","Lab [b-chrominance]","Lch [ch-chrominances]","Lch [c-chrominance]","Lch [h-chrominance]","HSV [hue]","HSV [saturation]","HSV [value]","HSI [intensity]","HSL [lightness]","CMYK [cyan]","CMYK [magenta]","CMYK [yellow]","CMYK [key]","YIQ [luma]","YIQ [chromas]")
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right","Duplicate horizontal","Duplicate vertical","Checkered","Checkered inverse")
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right","Duplicate horizontal","Duplicate vertical","Checkered","Checkered inverse"), Preview split = point(50,50,0,0,200,200,200,0,10,0)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2018/01/31</i>.</small>")
 fx_equalize_local_histograms :
   b0="normal" b1="overlay" b2="softlight"
@@ -30544,7 +30536,7 @@ _fx_equalize_local_histograms :
   k.
 
 fx_equalize_local_histograms_preview :
-  gui_split_preview "fx_equalize_local_histograms $*",$-1
+  gui_split_preview "fx_equalize_local_histograms $*",${-3--1}
 
 #@gui Freaky details : fx_freaky_details, fx_freaky_details_preview(0)
 #@gui : Amplitude = int(2,1,5)
@@ -30552,7 +30544,7 @@ fx_equalize_local_histograms_preview :
 #@gui : Iterations = int(1,1,4)
 #@gui : sep = separator(), Channel(s) = choice(11,"All","RGBA [all]","RGB [all]","RGB [red]","RGB [green]","RGB [blue]","RGBA [alpha]","Linear RGB [all]","Linear RGB [red]","Linear RGB [green]","Linear RGB [blue]","YCbCr [luminance]","YCbCr [blue-red chrominances]","YCbCr [blue chrominance]","YCbCr [red chrominance]","YCbCr [green chrominance]","Lab [lightness]","Lab [ab-chrominances]","Lab [a-chrominance]","Lab [b-chrominance]","Lch [ch-chrominances]","Lch [c-chrominance]","Lch [h-chrominance]","HSV [hue]","HSV [saturation]","HSV [value]","HSI [intensity]","HSL [lightness]","CMYK [cyan]","CMYK [magenta]","CMYK [yellow]","CMYK [key]","YIQ [luma]","YIQ [chromas]")
 #@gui : sep = separator(), Parallel processing = choice("Auto","One thread","Two threads","Four threads","Eight threads","Sixteen threads"), Spatial overlap = int(32,0,256)
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right","Duplicate horizontal","Duplicate vertical","Checkered","Checkered inverse")
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right","Duplicate horizontal","Duplicate vertical","Checkered","Checkered inverse"), Preview split = point(50,50,0,0,200,200,200,0,10,0)
 #@gui : sep = separator(), note = note("<small>Authors: <i>David Tschumperl&#233;</i> and <i>Patrick David</i>.      Latest update: <i>2013/27/02</i>.</small>")
 #@gui : sep = separator(), note = note("This effect has been done following:")
 #@gui : url = link("This tutorial from Patrick David","http://blog.patdavid.net/2013/02/calvin-hollywood-freaky-details-in-gimp.html")
@@ -30570,7 +30562,7 @@ fx_freaky_details :
   n 0,255
 
 fx_freaky_details_preview :
-  gui_split_preview "fx_freaky_details $*",$-1
+  gui_split_preview "fx_freaky_details $*",${-3--1}
 
 #@gui Local normalization : fx_normalize_local, fx_normalize_local_preview(0)
 #@gui : Amplitude = float(2,0,60)
@@ -30579,7 +30571,7 @@ fx_freaky_details_preview :
 #@gui : Average smoothness = float(20,0,40)
 #@gui : Constrain values = bool(1)
 #@gui : sep = separator(), Channel(s) = choice(11,"All","RGBA [all]","RGB [all]","RGB [red]","RGB [green]","RGB [blue]","RGBA [alpha]","Linear RGB [all]","Linear RGB [red]","Linear RGB [green]","Linear RGB [blue]","YCbCr [luminance]","YCbCr [blue-red chrominances]","YCbCr [blue chrominance]","YCbCr [red chrominance]","YCbCr [green chrominance]","Lab [lightness]","Lab [ab-chrominances]","Lab [a-chrominance]","Lab [b-chrominance]","Lch [ch-chrominances]","Lch [c-chrominance]","Lch [h-chrominance]","HSV [hue]","HSV [saturation]","HSV [value]","HSI [intensity]","HSL [lightness]","CMYK [cyan]","CMYK [magenta]","CMYK [yellow]","CMYK [key]","YIQ [luma]","YIQ [chromas]")
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right","Duplicate horizontal","Duplicate vertical","Checkered","Checkered inverse")
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right","Duplicate horizontal","Duplicate vertical","Checkered","Checkered inverse"), Preview split = point(50,50,0,0,200,200,200,0,10,0)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2010/29/12</i>.</small>")
 fx_normalize_local :
   repeat $! l[$>]
@@ -30587,7 +30579,7 @@ fx_normalize_local :
   endl done
 
 fx_normalize_local_preview :
-  gui_split_preview "fx_normalize_local $*",$-1
+  gui_split_preview "fx_normalize_local $*",${-3--1}
 
 #@gui Local processing : fx_local_processing, fx_local_processing_preview(1)
 #@gui : Action = choice("Normalize","Equalize")
