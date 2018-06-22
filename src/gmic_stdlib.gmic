@@ -15177,7 +15177,7 @@ apply_timeout :
     __done$id=0 __is_timeout$id=0
     l
     parallel "$1 __done"$id"=1",\
-             "do if {$|>$2} __is_timeout"$id"=1 error \"\" fi wait 500 while {!$__done"$id"}"
+             "do if {$|>$2} __is_timeout"$id"=1 error \"\" elif $__done"$id" break fi wait 100 while 1"
     onfail
       v +
       if ${__is_timeout$id} v + error[0--5] "Command '$0': Time out ($2 seconds) for command '$1'."
@@ -24175,135 +24175,57 @@ _gui_merge_layers :
   endl
   if {narg({'$res'})} u $res else u "${2--1}" fi
 
-# Generate a split preview, with arguments "command",_split_type,_timeout,_compute_entire_image
+# gui_split_preview : "command",_split_type,_split_posx,_split_posy
 # 'split_type' can be { 0=no split | 1=forw. horiz. | 2=forw. vert. | 3=back. horiz. | 4=back. vert. | 5=dupl. horiz. (left). | 6=dupl. vert. (top). | 7=dupl. vert. (bottom) | 8=dupl. horiz. (right) |  }
-# 'timeout' can be { 0=no timeout | >0=with specified timeout (in seconds) }.
+# if 'posx' or 'posy' are equal to 'nan', splitting is done at the middle, and moving is not possible.
 # 'compute_entire_image' can be { 0=no | 1=yes }.
-_before :
-  0 t. "Before",1,-1,20,1,1 r. {w+4},{h+4},1,1,0,0,0.5,0.5
-_after :
-  0 t. "After",1,-1,20,1,1 r. {w+4},{h+4},1,1,0,0,0.5,0.5
-
-gui_split_preview : skip ${3=0},${4=0}
-  m "_gsp : repeat $! l[$>] m={max(w,h,256)} if {$m==256} rr2d $m,$m,0,1 fi endl done"
-  if $3
-    m "gsp : w={w} h={h} s={s} l apply_timeout \"$1\",$3 onfail gui_timeout_preview endl if {!$!} $w,$h,1,4 drgba to_colormode $s fi k[0] if {s>4} channels 0,3 fi"
-  else
-    m "gsp : w={w} h={h} s={s} $1 if {!$!} $w,$h,1,4 drgba to_colormode $s fi k[0] if {s>4} channels 0,3 fi"
-  fi
-  repeat $! l[$>]
-    if {$2==0} gsp. mv. 0 continue fi  # No split
-    if {!($2%2)} # Vertical split
-      if $4 r. 200%,100%,100%,100%,0,2 fi
-      s. x,2
-      if {$2==2} # Forward vertical
-        gsp. to_colormode[-2,-1] 0
-        _gsp _before _after
-      elif {$2==4} # Backward vertical
-        gsp.. to_colormode[-2,-1] 0
-        _gsp _after _before
-      elif {$2==6} # Duplicate left
-        if {!$4} rm. . fi
-        gsp. to_colormode[-2,-1] 0
-        _gsp _before _after
-      else # Duplicate right
-        if {!$4} rm.. . fi
-        gsp.. to_colormode[-2,-1] 0
-        _gsp _after _before
-      fi
-      if $4
-        hw={-4,int(w/2)}
-        if {$2==8} z[-4,-3] $hw,100%
-        elif {$2==6} z[-4,-3] 0,{$hw-1}
-        else z[-4] 0,{$hw-1} z... $hw,100%
-        fi
-      fi
-      line... 0,0,0,{-3,h},1,0,0,0,255 a[-4,-3] x
-    else # Horizontal split
-      if $4 r. 100%,200%,100%,100%,0,2 fi
-      s. y,2
-      if {$2==1} # Forward horizontal
-        gsp. to_colormode[-2,-1] {max({-2,s},s)}
-        _gsp _before _after
-      elif {$2==3} # Backward horizontal
-        gsp.. to_colormode[-2,-1] {max({-2,s},s)}
-        _gsp _after _before
-      elif {$2==5} # Duplicate top
-        if {!$4} rm. . fi
-        gsp. to_colormode[-2,-1] 0
-        _gsp _before _after
-      else # Duplicate bottom
-        if {!$4} rm.. . fi
-        gsp.. to_colormode[-2,-1] 0
-        _gsp _after _before
-      fi
-      if $4
-        hh={-4,int(h/2)}
-        if {$2==7} rows[-4,-3] $hh,100%
-        elif {$2==5} rows[-4,-3] 0,{$hh-1}
-        else rows[-4] 0,{$hh-1} rows... $hh,100%
-        fi
-      fi
-      line... 0,0,{-3,w},0,1,0,0,0,255 a[-4,-3] y
-    fi
-    +dilate[-2,-1] 5 *[-4,-3] 255 to_colormode[-4,-3] {-5,s} # If splited, display "before/after" text.
-    j[-5] [-4],1,1,0,0,0.8,.. j[-5] ...,{{-5,w}-w-1},{{-5,h}-h-1},0,0,0.8,.
-    rm[-4--1]
-  endl done
-  uncommand gsp uncommand _gsp
-
-# gui_split_preview2 : "command",_split_type,_split_posx,_split_posy,_timeout,_compute_entire_image
-# 'split_type' can be { 0=no split | 1=forw. horiz. | 2=forw. vert. | 3=back. horiz. | 4=back. vert. | 5=dupl. horiz. (left). | 6=dupl. vert. (top). | 7=dupl. vert. (bottom) | 8=dupl. horiz. (right) |  }
-# 'timeout' can be { 0=no timeout | >0=with specified timeout (in seconds) }.
-# 'compute_entire_image' can be { 0=no | 1=yes }.
-gui_split_preview2 : check "isint(${2=0}) && $2>=0 && $2<=8 && ${5=0}>=0" skip "${3=50},${4=50}"
+gui_split_preview : check "isint(${2=0}) && $2>=0 && $2<=8 && ${5=0}>=0" skip "${3=nan},${4=nan}"
   m "_split_preview : $1 k[0]"
-  posx,posy={cut([$3,$4],0,100)}
+  is_movable={!isnan($3)" && "!isnan($4)}
+  posx,posy={$is_movable?cut([$3,$4],0,100):[50,50]}
   repeat $! l[$>]
-    if {$2==0} _split_preview
+    is_timeout=0
+    +l apply_timeout _split_preview,0$_preview_timeout onfail gui_timeout_preview is_timeout=1 endl
+    if {$is_timeout" || "!$2} k.
     else
-      is_timeout=0
-      +l apply_timeout _split_preview,$5 onfail gui_timeout_preview is_timeout=1 endl
-      if $is_timeout k.
-      else
-        drgba rr2d $_preview_width,$_preview_height,0,2
-        r {[max(w#0,w#1),max(h#0,h#1)]},1,100%,0,0,0.5,0.5
-        posx,posy={round([$posx,$posy]*([w,h]-1)%)}
+      drgba rr2d $_preview_width,$_preview_height,0,2
+      r {[max(w#0,w#1),max(h#0,h#1)]},1,100%,0,0,0.5,0.5
+      posx,posy={round([$posx,$posy]*([w,h]-1)%)}
 
-        if {$2==1" || "$2==3} # Forward/backward horizontal
-          1,[0],1,1,'y>=$posy?($2==1):($2==3)' r. [0],[0],1,1 j[0] [1],0,0,0,0,1,.
-        elif {$2==2" || "$2==4} # Forward/backward vertical
-          [0],1,1,1,'x>=$posx?($2==2):($2==4)' r. [0],[0],1,1 j[0] [1],0,0,0,0,1,.
-        elif {$2==5} # Duplicate top
-          j[0] [1],0,$posy
-        elif {$2==6} # Duplicate left
-          j[0] [1],$posx
-        elif {$2==7} # Duplicate bottom
-          j[0] [1],0,{$posy-h}
-        elif {$2==8} # Duplicate right
-          j[0] [1],{$posx-w}
-        fi
-        k[0]
+      if {$2==1" || "$2==3} # Forward/backward horizontal
+        1,[0],1,1,'y>=$posy?($2==1):($2==3)' r. [0],[0],1,1 j[0] [1],0,0,0,0,1,.
+      elif {$2==2" || "$2==4} # Forward/backward vertical
+        [0],1,1,1,'x>=$posx?($2==2):($2==4)' r. [0],[0],1,1 j[0] [1],0,0,0,0,1,.
+      elif {$2==5} # Duplicate top
+        j[0] [1],0,$posy
+      elif {$2==6} # Duplicate left
+        j[0] [1],$posx
+      elif {$2==7} # Duplicate bottom
+        j[0] [1],0,{$posy-h}
+      elif {$2==8} # Duplicate right
+        j[0] [1],{$posx-w}
+      fi
+      k[0]
 
-        if {$2%2}
-          line 0,$posy,100%,$posy,0.75,0xF0F0F0F0,255 line 0,$posy,100%,$posy,0.75,0x0F0F0F0F,0
+      if {$2%2}
+        line 0,$posy,100%,$posy,0.75,0xF0F0F0F0,255 line 0,$posy,100%,$posy,0.75,0x0F0F0F0F,0
+        if $is_movable
           coords={p=[$posx,$posy];[p+[-10,-1],p+[10,-1],p+[0,-11]]} polygon 3,$coords,0.7,255 polygon 3,$coords,0.7,0xFFFFFFFF,0
           coords={p=[$posx,$posy];[p+[-10,1],p+[10,1],p+[0,11]]} polygon 3,$coords,0.7,255 polygon 3,$coords,0.7,0xFFFFFFFF,0
-        else
-          line $posx,0,$posx,100%,0.75,0xF0F0F0F0,255 line $posx,0,$posx,100%,0.75,0x0F0F0F0F,0
+        fi
+      else
+        line $posx,0,$posx,100%,0.75,0xF0F0F0F0,255 line $posx,0,$posx,100%,0.75,0x0F0F0F0F,0
+        if $is_movable
           coords={p=[$posx,$posy];[p+[-1,-10],p+[-1,10],p+[-11,0]]} polygon 3,$coords,0.7,255 polygon 3,$coords,0.7,0xFFFFFFFF,0
           coords={p=[$posx,$posy];[p+[1,-10],p+[1,10],p+[11,0]]} polygon 3,$coords,0.7,255 polygon 3,$coords,0.7,0xFFFFFFFF,0
         fi
-
-        str2uchar "1_474_1_1_Am1pPbBdNqtZN5xXO65m86ldR7FgNJxZPaFdMKs:B3UUAHIUAG0l82AmCHY:S9lXM207F2Mvk9XKmQby1BIzzPwIdjnQzzxbU5Gf0VvZBJzzrky2A8jyBoOsUGVvDCfrTsbzLkxHPsx4MERg1pwMT6xV1f:ILbnuzyv5;UNL4DJW6UA32zT65mxSJ0;ZAZssLU:90A7Azt8AYTwXUGntGwzyrvqoUg4CF5re0BY3d1zx;yI0gjtT1saUe4RrXzWQ2xcA3;MrzVg3FMs8EdlXS7Ep7sDFwMJWaCdxzez80s9hMDIk7lLxLnpVkcHXE34gue40GPr95OXM0EsgueTsUU4zEfrDzkMR4BXmbkR3DKzL4lAErO45JwwQzHIKn9XqGkuVACDPhwyTts92wSBb87WX1pQjSnkLucztas54t753A:TwyD7XXG36J23Xi2h2UYE004MRgYUoC20lBG0l834U8nUk2bWQhR;V3U0E20HUSzyLDVY;YNfBzKfua0IUMEqUNOzR3AAdRxvuDzk0XDDT9t3bRP;SIKMW3;mRMA;HxuT;DrfxEnajnslZSRgdXE9;b0AOAG0mAG0l834U8n8n2bWQQzSBMcVCnGoceMm5obKl301BKEQv"
-        str2uchar "1_482_1_1_Am1pPbBdNqtZN5xXO65m86ldR7FgNJxZPaFdMKs:BX0UAHIUAG0l82AnA3U:S9lXM:00u2G3U26aV7JmgXw1jILzES2U7cPKQzzzbm6chn4WMh;zcsdMlBo8ufJbM12SxRwManUlSdZPk7dNi3SySD6WYda1ESb5dzzjLim22grW1UdZj72wx68OgW:UrUERbR;zXvH0v;iL;XruLwf187zd6N2x0WsI2EuMutQuY1J1kkcYmG0yts8q0sDh3P0P86u62LLn0kKC2:8d:jezSg:42QQLWX4kyDlTYEQ4qt3oyjlD0rag7WU43E1YFF0VwnD;q832I81T;o8FJ6XdTluUw1FTAC37elSV22:IwFucZvTfWEZ8iYA;fVQWtDY2639EjQW:WjtzyzntwwwDtW0HLbk4gXyzoID4;pXczMh0F8EX:Mcw3UOiYBWS2aR77XS42nKW220d8Vw0073nvn4qA20lBG0l834U8nQt2bWQnN8l2U0U30Dnzoz7FP2MFWeWaA7Vm;KUYXqMYhCYcXInoPXAy1CLSnZlTkj2ePniVUh5NNfNavXfjPRRTKidkgXlZk4H2a2I6aBQcrYl838l834UAG0XAXA:S9lnxspWW4vB;GWdX8LGRP4A04pN1ng"
-        if {isin($2,3,4,7,8)} else rv[-2,-1] fi
-        unserialize[-2,-1]
-        r[-4,-2] 100%,100%,1,3
-        j[0] [-4],2,2,0,0,1,[-3],255
-        j[0] [-2],{[w#0-3-w,h#0-3-h]},0,0,1,[-1],255
-        k[0]
       fi
+      l[]
+        0 +t. "After",0,0,20,1,255 t.. "Before",0,0,20,1,255 autocrop 0
+        z[0] {0,[-1,-1,w,h]} z[1] {1,[-1,-1,w,h]}
+        +!= 0 dilate[-2,-1] 3 r[-4,-3] 100%,100%,1,3
+      endl
+      j[0] [-4],2,2,0,0,1,.. j[0] [-3],{[w#0-3-w,h#0-3-h]},0,0,1,. k[0]
     fi
   endl done
   uncommand _split_preview
@@ -25400,7 +25322,7 @@ fx_chessboard :
   to_rgba chessboard ${1-14}
 
 fx_chessboard_preview :
-  gui_split_preview2 "fx_chessboard $*",${-3--1}
+  gui_split_preview "fx_chessboard $*",${-3--1}
 
 #@gui Dices : fx_dices, fx_dices(0)
 #@gui : Resolution = float(2,1,10)
@@ -25688,7 +25610,7 @@ fx_make_seamless :
 
 fx_make_seamless_preview :
   u={arg($3,2,1,2,3,4)} v={arg($3,1,2,2,3,4)}
-  gui_split_preview2 "if {!$2} fx_make_seamless $* fi if $3 array "$u","$v" fi",${-3--1}
+  gui_split_preview "if {!$2} fx_make_seamless $* fi if $3 array "$u","$v" fi",${-3--1}
 
 #@gui Make seamless [patch-based] : fx_frame_seamless, fx_frame_seamless_preview(0)
 #@gui : Frame size = int(32,0,256)
@@ -25710,7 +25632,7 @@ fx_frame_seamless :
 
 fx_frame_seamless_preview :
   u={arg($7,2,1,2,3,4)} v={arg($7,1,2,2,3,4)}
-  gui_split_preview2 "if {!$6} fx_frame_seamless $* fi if $7 array "$u","$v" fi",${-3--1}
+  gui_split_preview "if {!$6} fx_frame_seamless $* fi if $7 array "$u","$v" fi",${-3--1}
 
 #@gui Ministeck : fx_ministeck, fx_ministeck_preview(1)
 #@gui : Number of colors = int(8,2,24)
@@ -26041,7 +25963,7 @@ _fx_bokeh7 : shape_star $1,5        # Star.
 _fx_bokeh8 : shape_circle $1        # Circle.
 
 fx_bokeh_preview :
-  gui_split_preview2 "_output_mode=0 fx_bokeh $*",${-3--1}
+  gui_split_preview "_output_mode=0 fx_bokeh $*",${-3--1}
 
 # [internal] Draw one step of bokeh with specified geometry on last image.
 # $1=density, $2=size(in %), $3=outline(in %), $4=shade (in [0,1]), $5=smoothness (in %),
@@ -26141,7 +26063,7 @@ fx_brushify_preview :
 #@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2010/29/12</i>.</small>")
 fx_cartoon_preview :
-  gui_split_preview2 "cartoon $*",${-3--1}
+  gui_split_preview "cartoon $*",${-3--1}
 
 #@gui Circle abstraction : fx_circle_abstraction, fx_circle_abstraction_preview(1)
 #@gui : Number of colors = int(8,2,16)
@@ -26184,7 +26106,7 @@ fx_circle_abstraction :
   endl done
 
 fx_circle_abstraction_preview :
-  gui_split_preview2 "fx_circle_abstraction $*",${-3--1}
+  gui_split_preview "fx_circle_abstraction $*",${-3--1}
 
 #@gui Cubism : fx_cubism, fx_cubism_preview(1)
 #@gui : Iterations = int(2,0,10)
@@ -26199,7 +26121,7 @@ fx_cubism :
   repeat $1 cubism ${2--1} done
 
 fx_cubism_preview :
-  gui_split_preview2 "fx_cubism $*",${-3--1}
+  gui_split_preview "fx_cubism $*",${-3--1}
 
 #@gui Cutout : fx_cutout, fx_cutout_preview(1)
 #@gui : Number of levels = int(4,2,32)
@@ -26218,7 +26140,7 @@ fx_cutout :
   endl a c endl done
 
 fx_cutout_preview :
-  gui_split_preview2 "fx_cutout $*",${-3--1}
+  gui_split_preview "fx_cutout $*",${-3--1}
 
 #@gui Diffusion tensors : fx_diffusiontensors, fx_diffusiontensors_preview(0)
 #@gui : Resolution (%) = float(10,0,20)
@@ -26245,7 +26167,7 @@ fx_diffusiontensors :
   endl done
 
 fx_diffusiontensors_preview :
-  gui_split_preview2 "fx_diffusiontensors $*",${-3--1}
+  gui_split_preview "fx_diffusiontensors $*",${-3--1}
 
 #@gui Ellipsionism : fx_ellipsionism, fx_ellipsionism_preview(0)
 #@gui : Primary radius = float(20,1,100)
@@ -26260,7 +26182,7 @@ fx_ellipsionism :
   ellipsionism ${^0}
 
 fx_ellipsionism_preview :
-  gui_split_preview2 "fx_ellipsionism $*",${-3--1}
+  gui_split_preview "fx_ellipsionism $*",${-3--1}
 
 #@gui Felt pen : fx_feltpen, fx_feltpen_preview(0)
 #@gui : Amplitude = float(300,0,4000)
@@ -26275,7 +26197,7 @@ fx_feltpen :
   repeat $! l[$>] +fx_hardsketchbw ${1-5},0,0 blend hardlight erode_oct $6 endl done
 
 fx_feltpen_preview :
-  gui_split_preview2 "fx_feltpen $*",${-3--1}
+  gui_split_preview "fx_feltpen $*",${-3--1}
 
 #@gui Fractalize : fractalize, fractalize(1)
 #@gui : Detail level = float(0.8,0,1)
@@ -26304,7 +26226,7 @@ fx_hardsketchbw :
   fi
 
 fx_hardsketchbw_preview :
-  gui_split_preview2 "fx_hardsketchbw $*",${-3--1}
+  gui_split_preview "fx_hardsketchbw $*",${-3--1}
 
 #@gui Highlight bloom : fx_highlight_bloom, fx_highlight_bloom_preview(0)
 #@gui : Details strength (%) = float(90,0,400)
@@ -26328,7 +26250,7 @@ fx_highlight_bloom :
   endl a c endl done
 
 fx_highlight_bloom_preview :
-  gui_split_preview2 "fx_highlight_bloom $*",${-3--1}
+  gui_split_preview "fx_highlight_bloom $*",${-3--1}
 
 #@gui Hope poster : fx_poster_hope, fx_poster_hope_preview(0)+
 #@gui : Gamma = float(0,-3,3)
@@ -26341,7 +26263,7 @@ fx_poster_hope :
   endl a c endl done
 
 fx_poster_hope_preview :
-  gui_split_preview2 "fx_poster_hope $*",${-3--1}
+  gui_split_preview "fx_poster_hope $*",${-3--1}
 
 #@gui Hough sketch : fx_houghsketchbw, fx_houghsketchbw_preview(0)
 #@gui : Smoothness = float(1.25,0,10)
@@ -26362,7 +26284,7 @@ fx_houghsketchbw :
   fi
 
 fx_houghsketchbw_preview :
-  gui_split_preview2 "fx_houghsketchbw $*",${-3--1}
+  gui_split_preview "fx_houghsketchbw $*",${-3--1}
 
 #@gui Kuwahara : fx_kuwahara, fx_kuwahara_preview(0)
 #@gui : Iterations = int(2,1,20)
@@ -26375,7 +26297,7 @@ fx_kuwahara :
   ac "repeat $1 kuwahara $2 done",$3,$4
 
 fx_kuwahara_preview :
-  gui_split_preview2 "fx_kuwahara $*",${-3--1}
+  gui_split_preview "fx_kuwahara $*",${-3--1}
 
 #@gui Linify : fx_linify, fx_linify_preview(0)
 #@gui : Density = float(40,0,100)
@@ -26400,7 +26322,7 @@ fx_linify :
 
 fx_linify_preview :
   if {!${"-gui_check_version 216"}} return fi
-  gui_split_preview2 "fx_linify ${1-6},0",${-3--1},{if(isval($_preview_timeout),0$_preview_timeout,16)}
+  gui_split_preview "fx_linify ${1-6},0",${-3--1}
 
 #@gui Lylejk's painting : fx_lylejk_painting, fx_lylejk_painting_preview(0)
 #@gui : Iterations = int(10,1,20)
@@ -26574,7 +26496,7 @@ fx_posterize :
   endl a c endl done
 
 fx_posterize_preview :
-  gui_split_preview "fx_posterize $*",$-1,0,1
+  gui_split_preview "fx_posterize $*",$-1
 
 #@gui Quadtree variations : fx_quadtree, fx_quadtree_preview(1)
 #@gui : Mode = choice("Squares","Sierpinksi design","Ellipse painting")
@@ -26816,7 +26738,7 @@ fx_sharp_abstract :
   ac "rolling_guidance ${1-3}",$4
 
 fx_sharp_abstract_preview :
-  gui_split_preview "fx_sharp_abstract $*",$-1,{if(isval($_preview_timeout),0$_preview_timeout,8)}
+  gui_split_preview "fx_sharp_abstract $*",$-1
 
 #@gui Sketch : fx_sketchbw, fx_sketchbw_preview(0)
 #@gui : Number of orientations = int(3,1,16)
@@ -27685,7 +27607,7 @@ fx_pencil_portraitbw :
   endl a c endl done
 
 fx_pencil_portraitbw_preview :
-  gui_split_preview "fx_pencil_portraitbw $*",$-1,{if(isval($_preview_timeout),0$_preview_timeout,8)}
+  gui_split_preview "fx_pencil_portraitbw $*",$-1
 
 #@gui Stamp : fx_stamp, fx_stamp_preview(0)
 #@gui : Auto-threshold = bool(1)
@@ -27780,7 +27702,7 @@ fx_boost_chroma :
   endl a c endl done
 
 fx_boost_chroma_preview :
-  gui_split_preview "fx_boost_chroma $*",$-1,0,1
+  gui_split_preview "fx_boost_chroma $*",$-1
 
 #@gui Channel processing : fx_channel_processing, fx_channel_processing_preview(1)
 #@gui : Brightness (%) = float(0,-100,100)
@@ -28634,7 +28556,7 @@ fx_retrofade :
   endl a c endl done
 
 fx_retrofade_preview :
-  gui_split_preview "fx_retrofade $*",$-1,0,1
+  gui_split_preview "fx_retrofade $*",$-1
 
 #@gui Select-replace color : fx_select_color, fx_select_color_preview(0)
 #@gui : Similarity space = choice(0,"RGB[A]","RGB","YCbCr","Red","Green","Blue","Opacity","Luminance","Blue &amp; Red chrominances","Hue","Saturation")
@@ -29352,7 +29274,7 @@ fx_distort_lens :
   undistort ${1-3},$4%,$5%,$6
 
 fx_distort_lens_preview :
-  gui_split_preview "fx_distort_lens $*",$-1,0,1
+  gui_split_preview "fx_distort_lens $*",$-1
 
 #@gui Drop water : fx_drop_water, fx_drop_water_preview(1)
 #@gui : note = note("<small><b>Shape geometry:</b></small>")
@@ -29800,7 +29722,7 @@ fx_square_circle :
   fi
 
 fx_square_circle_preview :
-  gui_split_preview "fx_square_circle $*",$-1,0,1
+  gui_split_preview "fx_square_circle $*",$-1
 
 #@gui Symmetrize : fx_symmetrize, fx_symmetrize_preview(1)
 #@gui : Point 1 = point(50,50,0,1,0,255,0,170,10)
@@ -30480,7 +30402,7 @@ _fx_warp_by_intensity :
   fi
 
 fx_warp_by_intensity_preview :
-  gui_split_preview "fx_warp_by_intensity $*",$-1,0,1
+  gui_split_preview "fx_warp_by_intensity $*",$-1
 
 #@gui _<b>Details</b>
 #----------------------
@@ -30669,7 +30591,7 @@ fx_local_processing :
   endl done
 
 fx_local_processing_preview :
-  gui_split_preview "fx_local_processing $*",$-1,{if(isval($_preview_timeout),0$_preview_timeout,8)}
+  gui_split_preview "fx_local_processing $*",$-1
 
 #@gui Magic details : fx_magic_details,fx_magic_details_preview(0)
 #@gui : Amplitude = float(6,0,30)
@@ -31038,7 +30960,7 @@ __fx_emulate_grain :
 #@gui : Normalize colors = choice("None","Pre-process","Post-process","Both")
 #@gui : sep = separator()
 #@gui : Pseudo-gray dithering = int(0,0,5)
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10)
 #@gui : sep = separator(), note = note("<small><b>Note:</b> The color LUTs used in this section have been designed by <b>Patrick David</b>. More info at:</small>")
 #@gui : url = link{"Film Emulation Presets in G'MIC","https://gmic.eu/film_emulation/index.shtml"}
 #@gui : sep = separator(), note = note("<small>Authors: <i>Patrick David</i> and <i>David Tschumperl&#233;</i>.      Latest update: <i>2016/02/08</i>.</small>")
@@ -31052,7 +30974,7 @@ _fx_emulate_film_bw :
     kodak_t-max_400,kodak_tri-x_400,polaroid_664,polaroid_667,polaroid_672,rollei_ir_400,rollei_ortho_25,rollei_retro_100_tonal,rollei_retro_80s
 
 fx_emulate_film_bw_preview :
-  gui_split_preview "fx_emulate_film_bw $*",$-1
+  gui_split_preview "fx_emulate_film_bw $*",${-3--1}
 
 #@gui Fuji xtrans : fx_emulate_film_fujixtransii, fx_emulate_film_fujixtransii_preview(1)+
 #@gui : Preset = choice{"None",
@@ -31065,7 +30987,7 @@ fx_emulate_film_bw_preview :
 #@gui : Hue (%) = float(0,-100,100)
 #@gui : Saturation (%) = float(0,-100,100)
 #@gui : Normalize colors = choice("None","Pre-process","Post-process","Both")
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10)
 #@gui : sep = separator(), note = note("<small><b>Note:</b> The color LUTs used in this section have been designed by <b>Stuart Sowerby</b>. More info at:</small>")
 #@gui : url = link{"Fuji Film Simulation Profiles","http://blog.sowerby.me/fuji-film-simulation-profiles"}
 #@gui : sep = separator(), note = note("<small>Authors: <i>Stuart Sowerby</i> and <i>David Tschumperl&#233;</i>.      Latest update: <i>2017/13/01</i>.</small>")
@@ -31077,7 +30999,7 @@ _fx_emulate_film_fujixtransii :
     fuji_xtrans_ii_provia_v2,fuji_xtrans_ii_velvia_v2
 
 fx_emulate_film_fujixtransii_preview :
-  gui_split_preview "fx_emulate_film_fujixtransii $*",$-1
+  gui_split_preview "fx_emulate_film_fujixtransii $*",${-3--1}
 
 #@gui Instant [consumer] : fx_emulate_film_instant_consumer, fx_emulate_film_instant_consumer_preview(1)+
 #@gui : Preset = choice{"None",
@@ -31099,7 +31021,7 @@ fx_emulate_film_fujixtransii_preview :
 #@gui : Hue (%) = float(0,-100,100)
 #@gui : Saturation (%) = float(0,-100,100)
 #@gui : Normalize colors = choice("None","Pre-process","Post-process","Both")
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10)
 #@gui : sep = separator(), note = note("<small><b>Note:</b> The color LUTs used in this section have been designed by <b>Patrick David</b>. More info at:</small>")
 #@gui : url = link{"Film Emulation Presets in G'MIC","https://gmic.eu/film_emulation/index.shtml"}
 #@gui : sep = separator(), note = note("<small>Authors: <i>Patrick David</i> and <i>David Tschumperl&#233;</i>.      Latest update: <i>2016/02/08</i>.</small>")
@@ -31119,7 +31041,7 @@ _fx_emulate_film_instant_consumer :
     polaroid_time_zero_(expired)_cold_---,polaroid_time_zero_(expired)_cold_--,polaroid_time_zero_(expired)_cold_-,polaroid_time_zero_(expired)_cold
 
 fx_emulate_film_instant_consumer_preview :
-  gui_split_preview "fx_emulate_film_instant_consumer $*",$-1
+  gui_split_preview "fx_emulate_film_instant_consumer $*",${-3--1}
 
 #@gui Instant [pro] : fx_emulate_film_instant_pro, fx_emulate_film_instant_pro_preview(1)+
 #@gui : Preset = choice{"None",
@@ -31146,7 +31068,7 @@ fx_emulate_film_instant_consumer_preview :
 #@gui : Hue (%) = float(0,-100,100)
 #@gui : Saturation (%) = float(0,-100,100)
 #@gui : Normalize colors = choice("None","Pre-process","Post-process","Both")
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10)
 #@gui : sep = separator(), note = note("<small><b>Note:</b> The color LUTs used in this section have been designed by <b>Patrick David</b>. More info at:</small>")
 #@gui : url = link{"Film Emulation Presets in G'MIC","https://gmic.eu/film_emulation/index.shtml"}
 #@gui : sep = separator(), note = note("<small>Authors: <i>Patrick David</i> and <i>David Tschumperl&#233;</i>.      Latest update: <i>2016/02/08</i>.</small>")
@@ -31168,7 +31090,7 @@ _fx_emulate_film_instant_pro :
     polaroid_690_warm_--,polaroid_690_warm_-,polaroid_690_warm,polaroid_690_warm_+,polaroid_690_warm_++
 
 fx_emulate_film_instant_pro_preview :
-  gui_split_preview "fx_emulate_film_instant_pro $*",$-1
+  gui_split_preview "fx_emulate_film_instant_pro $*",${-3--1}
 
 #@gui Negative [color] : fx_emulate_film_negative_color, fx_emulate_film_negative_color_preview(1)+
 #@gui : Preset = choice{"None",
@@ -31182,7 +31104,7 @@ fx_emulate_film_instant_pro_preview :
 #@gui : Hue (%) = float(0,-100,100)
 #@gui : Saturation (%) = float(0,-100,100)
 #@gui : Normalize colors = choice("None","Pre-process","Post-process","Both")
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10)
 #@gui : sep = separator(), note = note("<small><b>Note:</b> The color LUTs used in this section have been designed by <b>Patrick David</b>. More info at:</small>")
 #@gui : url = link{"Film Emulation Presets in G'MIC","https://gmic.eu/film_emulation/index.shtml"}
 #@gui : sep = separator(), note = note("<small>Authors: <i>Patrick David</i> and <i>David Tschumperl&#233;</i>.      Latest update: <i>2016/02/08</i>.</small>")
@@ -31194,7 +31116,7 @@ _fx_emulate_film_negative_color :
     kodak_elite_100_xpro,kodak_elite_color_200,kodak_elite_color_400,kodak_portra_160_nc,kodak_portra_160_vc,lomography_redscale_100
 
 fx_emulate_film_negative_color_preview :
-  gui_split_preview "fx_emulate_film_negative_color $*",$-1
+  gui_split_preview "fx_emulate_film_negative_color $*",${-3--1}
 
 #@gui Negative [new] : fx_emulate_film_negative_new, fx_emulate_film_negative_new_preview(1)+
 #@gui : Preset = choice{"None","Fuji 160C","Fuji 400H","Fuji 800Z","Fuji Ilford HP5","Kodak Portra 160","Kodak Portra 400","Kodak Portra 800","Kodak TMAX 3200","Kodak TRI-X 400"}
@@ -31207,7 +31129,7 @@ fx_emulate_film_negative_color_preview :
 #@gui : Hue (%) = float(0,-100,100)
 #@gui : Saturation (%) = float(0,-100,100)
 #@gui : Normalize colors = choice("None","Pre-process","Post-process","Both")
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10)
 #@gui : sep = separator(), note = note("<small><b>Note:</b> The color LUTs used in this section have been designed by <b>Patrick David</b>. More info at:</small>")
 #@gui : url = link{"Film Emulation Presets in G'MIC","https://gmic.eu/film_emulation/index.shtml"}
 #@gui : sep = separator(), note = note("<small>Authors: <i>Patrick David</i> and <i>David Tschumperl&#233;</i>.      Latest update: <i>2016/02/08</i>.</small>")
@@ -31226,7 +31148,7 @@ _fx_emulate_film_negative_new :
     kodak_tri-x_400_-,kodak_tri-x_400,kodak_tri-x_400_+,kodak_tri-x_400_++
 
 fx_emulate_film_negative_new_preview :
-  gui_split_preview "fx_emulate_film_negative_new $*",$-1
+  gui_split_preview "fx_emulate_film_negative_new $*",${-3--1}
 
 #@gui Negative [old] : fx_emulate_film_negative_old, fx_emulate_film_negative_old_preview(1)+
 #@gui : Preset = choice{0,"None","Fuji Ilford Delta 3200","Fuji Neopan 1600","Fuji Superia 100","Fuji Superia 400","Fuji Superia 800","Fuji Superia 1600",
@@ -31240,7 +31162,7 @@ fx_emulate_film_negative_new_preview :
 #@gui : Hue (%) = float(0,-100,100)
 #@gui : Saturation (%) = float(0,-100,100)
 #@gui : Normalize colors = choice("None","Pre-process","Post-process","Both")
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10)
 #@gui : sep = separator(), note = note("<small><b>Note:</b> The color LUTs used in this section have been designed by <b>Patrick David</b>. More info at:</small>")
 #@gui : url = link{"Film Emulation Presets in G'MIC","https://gmic.eu/film_emulation/index.shtml"}
 #@gui : sep = separator(), note = note("<small>Authors: <i>Patrick David</i> and <i>David Tschumperl&#233;</i>.      Latest update: <i>2016/02/08</i>.</small>")
@@ -31261,7 +31183,7 @@ _fx_emulate_film_negative_old :
     kodak_portra_400_vc_-,kodak_portra_400_vc,kodak_portra_400_vc_+,kodak_portra_400_vc_++
 
 fx_emulate_film_negative_old_preview :
-  gui_split_preview "fx_emulate_film_negative_old $*",$-1
+  gui_split_preview "fx_emulate_film_negative_old $*",${-3--1}
 
 #@gui PictureFX : fx_emulate_film_picturefx, fx_emulate_film_picturefx_preview(1)+
 #@gui : Preset = choice{"None",
@@ -31281,7 +31203,7 @@ fx_emulate_film_negative_old_preview :
 #@gui : Hue (%) = float(0,-100,100)
 #@gui : Saturation (%) = float(0,-100,100)
 #@gui : Normalize colors = choice("None","Pre-process","Post-process","Both")
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10)
 #@gui : sep = separator(), note = note("<small><b>Note:</b> The color LUTs used in this section have been provided by <b>Marc Roovers</b>, and are freely available at:</small>")
 #@gui : url = link("PictureFX - a free HaldCLUT set","http://www.digicrea.be/haldclut-set-style-a-la-nik-software")
 #@gui : sep = separator(), note = note("<small>Authors: <i>Marc Roovers</i> and <i>David Tschumperl&#233;</i>.      Latest update: <i>2016/21/10</i>.</small>")
@@ -31298,7 +31220,7 @@ _fx_emulate_film_picturefx :
     zilverfx_b_w_solarization,zilverfx_infrared,zilverfx_vintage_b_w
 
 fx_emulate_film_picturefx_preview :
-  gui_split_preview "fx_emulate_film_picturefx $*",$-1
+  gui_split_preview "fx_emulate_film_picturefx $*",${-3--1}
 
 #@gui Print films : fx_emulate_film_print, fx_emulate_film_print_preview(1)+
 #@gui : Preset = choice{"None","Fuji 3510 (Constlclip)","Fuji 3510 (Constlmap)","Fuji 3510 (Cuspclip)",
@@ -31313,7 +31235,7 @@ fx_emulate_film_picturefx_preview :
 #@gui : Hue (%) = float(0,-100,100)
 #@gui : Saturation (%) = float(0,-100,100)
 #@gui : Normalize colors = choice("None","Pre-process","Post-process","Both")
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10)
 #@gui : sep = separator(), note = note("<small><b>Note:</b> The color LUTs used in this section have been provided by <b>Juan Melara</b>, and are freely available at:</small>")
 #@gui : url = link("Print Film Emulation LUTs For Download","http://juanmelara.com.au/print-film-emulation-luts-for-download/")
 #@gui : sep = separator(), note = note("<small>Authors: <i>Juan Melara</i> and <i>David Tschumperl&#233;</i>.      Latest update: <i>2016/02/08</i>.</small>")
@@ -31327,7 +31249,7 @@ _fx_emulate_film_print :
     kodak2393_constlclip,kodak2393_constlmap,kodak2393_cuspclip
 
 fx_emulate_film_print_preview :
-  gui_split_preview "fx_emulate_film_print $*",$-1
+  gui_split_preview "fx_emulate_film_print $*",${-3--1}
 
 #@gui Slide [color] : fx_emulate_film_colorslide, fx_emulate_film_colorslide_preview(1)+
 #@gui : Preset = choice{"None",
@@ -31344,7 +31266,7 @@ fx_emulate_film_print_preview :
 #@gui : Hue (%) = float(0,-100,100)
 #@gui : Saturation (%) = float(0,-100,100)
 #@gui : Normalize colors = choice("None","Pre-process","Post-process","Both")
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10)
 #@gui : sep = separator(), note = note("<small><b>Note:</b> The color LUTs used in this section have been designed by <b>Patrick David</b>. More info at:</small>")
 #@gui : url = link{"Film Emulation Presets in G'MIC","https://gmic.eu/film_emulation/index.shtml"}
 #@gui : sep = separator(), note = note("<small>Authors: <i>Patrick David</i> and <i>David Tschumperl&#233;</i>.      Latest update: <i>2016/02/08</i>.</small>")
@@ -31359,7 +31281,7 @@ _fx_emulate_film_colorslide :
     polaroid_669,polaroid_690,polaroid_polachrome
 
 fx_emulate_film_colorslide_preview :
-  gui_split_preview "fx_emulate_film_colorslide $*",$-1
+  gui_split_preview "fx_emulate_film_colorslide $*",${-3--1}
 
 #@gui User-defined : fx_emulate_film_userdefined, fx_emulate_film_userdefined_preview(1)+
 #@gui : Specify HaldCLUT as = choice(2,"Top layer","Bottom layer","Filename")
@@ -31373,7 +31295,7 @@ fx_emulate_film_colorslide_preview :
 #@gui : Hue (%) = float(0,-100,100)
 #@gui : Saturation (%) = float(0,-100,100)
 #@gui : Normalize colors = choice("None","Pre-process","Post-process","Both")
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10)
 #@gui : sep = separator(), note = note("<small>More info at:</small>")
 #@gui : url = link{"Film Emulation Presets in G'MIC","https://gmic.eu/film_emulation/index.shtml"}
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2016/02/08</i>.</small>")
@@ -31395,7 +31317,7 @@ fx_emulate_film_userdefined : skip "${2=}"
   _fx_emulate_film 0,1,${3--1}
 
 fx_emulate_film_userdefined_preview : skip "${2=}"
-  gui_split_preview "fx_emulate_film_userdefined $1,\"$2\",${3--2}",$-1
+  gui_split_preview "fx_emulate_film_userdefined $1,\"$2\",${3--2}",${-3--1}
 
 #@gui Various : fx_emulate_film_various, fx_emulate_film_various_preview(1)+
 #@gui : Preset = choice{"None","60's","60's (faded)","60's (faded alt)","Alien green","Black &amp; White","Bleach bypass","Blue mono",
@@ -31413,7 +31335,7 @@ fx_emulate_film_userdefined_preview : skip "${2=}"
 #@gui : Hue (%) = float(0,-100,100)
 #@gui : Saturation (%) = float(0,-100,100)
 #@gui : Normalize colors = choice("None","Pre-process","Post-process","Both")
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right")
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10)
 #@gui : sep = separator(), note = note("<small>More info at:</small>")
 #@gui : url = link{"Film Emulation Presets in G'MIC","https://gmic.eu/film_emulation/index.shtml"}
 #@gui : sep = separator(), note = note("<small>Authors: <i>David Tschumperl&#233;</i> and <i>Patrick David</i>.      Latest update: <i>2016/02/08</i>.</small>")
@@ -31430,7 +31352,7 @@ _fx_emulate_film_various :
     vintage,vintage_alt,vintage_brighter,warm,warm_highlight,warm_yellow
 
 fx_emulate_film_various_preview :
-  gui_split_preview "fx_emulate_film_various $*",$-1
+  gui_split_preview "fx_emulate_film_various $*",${-3--1}
 
 _fx_emulate_film :
   if $1
@@ -32574,10 +32496,10 @@ fx_illuminate_shape2d_preview :
     repeat {$!-1} l[$>,-1]
       fx_illuminate_shape2d $*
       rv to_colormode  0 a z
-      gui_split_preview "slices 50%,100%",$-1,0,1
+      gui_split_preview "slices 50%,100%",$-1
     endl done
   else
-    gui_split_preview "fx_illuminate_shape2d $*",$-1,0,1
+    gui_split_preview "fx_illuminate_shape2d $*",$-1
   fi
 
 fx_illuminate_shape2d_preview_interactive :
@@ -32826,7 +32748,7 @@ fx_light_leaks :
   rm[0]
 
 fx_light_leaks_preview :
-  gui_split_preview "fx_light_leaks ${1--3},0",$-1,0,1
+  gui_split_preview "fx_light_leaks ${1--3},0",$-1
 
 _fx_light_leaks :
   u="" repeat 71 if {narg($u)} u=$u, fi u=${u}lightleak_${"padint "$>,6} done
@@ -33850,7 +33772,7 @@ fx_smooth_anisotropic :
   endl done c 0,255
 
 fx_smooth_anisotropic_preview :
-  gui_split_preview "fx_smooth_anisotropic $*",$-1,{if(isval($_preview_timeout),0$_preview_timeout,8)}
+  gui_split_preview "fx_smooth_anisotropic $*",$-1
 
 #@gui Smooth [antialias] : fx_smooth_antialias, fx_smooth_antialias_preview(0)
 #@gui : Amplitude = float(5,0,100)
@@ -33879,7 +33801,7 @@ fx_smooth_bilateral : skip ${5=0},${6=0}
   ac "repeat $3 bilateral $1,$2 done",$4
 
 fx_smooth_bilateral_preview :
-  gui_split_preview "fx_smooth_bilateral $*",$-1,{if(isval($_preview_timeout),0$_preview_timeout,8)}
+  gui_split_preview "fx_smooth_bilateral $*",$-1
 
 #@gui Smooth [guided] : fx_smooth_guided, fx_smooth_guided_preview(0)
 #@gui : Radius = int(5,1,100)
@@ -33892,7 +33814,7 @@ fx_smooth_guided : skip ${5=0},${6=0}
   ac "repeat $3 guided $1,$2 done",$4
 
 fx_smooth_guided_preview :
-  gui_split_preview "fx_smooth_guided $*",$-1,{if(isval($_preview_timeout),0$_preview_timeout,8)}
+  gui_split_preview "fx_smooth_guided $*",$-1
 
 #@gui Smooth [diffusion] : fx_smooth_diffusion, fx_smooth_diffusion_preview(0)
 #@gui : Sharpness = float(0.7,0,2)
@@ -33909,7 +33831,7 @@ fx_smooth_diffusion :
   ac "gui_parallel_overlap \"smooth $6,$1,$2,$3,$4,$5,0 c 0,255\",$8,$9",$7
 
 fx_smooth_diffusion_preview :
-  gui_split_preview "fx_smooth_diffusion $*",$-1,{if(isval($_preview_timeout),0$_preview_timeout,8)}
+  gui_split_preview "fx_smooth_diffusion $*",$-1
 
 #@gui Smooth [mean-curvature] : fx_smooth_meancurvature, fx_smooth_meancurvature_preview(0)
 #@gui : Time step = float(30,5,50)
@@ -33923,7 +33845,7 @@ fx_smooth_meancurvature :
   ac "gui_parallel_overlap \"meancurvature_flow $2,$1,$3 c 0,255\",$5,$6",$4
 
 fx_smooth_meancurvature_preview :
-  gui_split_preview "fx_smooth_meancurvature $*",$-1,{if(isval($_preview_timeout),0$_preview_timeout,8)}
+  gui_split_preview "fx_smooth_meancurvature $*",$-1
 
 #@gui Smooth [median] : fx_smooth_median, fx_smooth_median_preview(0)
 #@gui : Radius = int(3,1,20)
@@ -33935,7 +33857,7 @@ fx_smooth_median :
   ac "median $1,$2",$3
 
 fx_smooth_median_preview :
-  gui_split_preview "fx_smooth_median $*",$-1,{if(isval($_preview_timeout),0$_preview_timeout,8)}
+  gui_split_preview "fx_smooth_median $*",$-1
 
 #@gui Smooth [nlmeans] : fx_smooth_nlmeans, fx_smooth_nlmeans_preview(0)
 #@gui : Patch size = float(4,0.5,10)
@@ -33961,7 +33883,7 @@ _fx_smooth_nlmeans4 : if {s>=3} channels 0,2 srgb2rgb rgb2lab channels 0 else no
 _fx_smooth_nlmeans5 :
 
 fx_smooth_nlmeans_preview:
-  gui_split_preview "fx_smooth_nlmeans $*",$-1,{if(isval($_preview_timeout),0$_preview_timeout,8)}
+  gui_split_preview "fx_smooth_nlmeans $*",$-1
 
 #@gui Smooth [patch-based] : fx_smooth_patch, fx_smooth_patch_preview(0)
 #@gui : Spatial variance = float(10,0.1,200)
@@ -33979,7 +33901,7 @@ fx_smooth_patch :
   ac "gui_parallel_overlap \"repeat $7 denoise $1,$2,$3,$4,$5,$6 done c 0,255\",$9,$10",$8
 
 fx_smooth_patch_preview :
-  gui_split_preview "fx_smooth_patch $*",$-1,{if(isval($_preview_timeout),0$_preview_timeout,8)}
+  gui_split_preview "fx_smooth_patch $*",$-1
 
 #@gui Smooth [patch-pca] : fx_smooth_patchpca, fx_smooth_patchpca_preview(0)
 #@gui : Strength = float(4,0,16)
@@ -33996,7 +33918,7 @@ fx_smooth_patchpca :
   ac "denoise_patchpca ${1-4} c 0,255",$5
 
 fx_smooth_patchpca_preview :
-  gui_split_preview "fx_smooth_patchpca $*",$-1,{if(isval($_preview_timeout),0$_preview_timeout,8)}
+  gui_split_preview "fx_smooth_patchpca $*",$-1
 
 #@gui Smooth [perona-malik] : fx_smooth_peronamalik, fx_smooth_peronamalik_preview(0)
 #@gui : K-factor = float(20,0,255)
@@ -34011,7 +33933,7 @@ fx_smooth_peronamalik :
   ac "gui_parallel_overlap \"peronamalik_flow $1,$3,$2,$4 c 0,255\",$6,$7",$5
 
 fx_smooth_peronamalik_preview :
-  gui_split_preview "fx_smooth_peronamalik $*",$-1,{if(isval($_preview_timeout),0$_preview_timeout,8)}
+  gui_split_preview "fx_smooth_peronamalik $*",$-1
 
 #@gui Smooth [selective gaussian] : fx_smooth_selective, fx_smooth_selective_preview(0)
 #@gui : Amplitude = float(5,0,20)
@@ -34026,7 +33948,7 @@ fx_smooth_selective :
   ac "gui_parallel_overlap \"repeat $4 blur_selective $1,$2,$3 done c 0,255\",$6,$7",$5
 
 fx_smooth_selective_preview :
-  gui_split_preview "fx_smooth_selective $*",$-1,{if(isval($_preview_timeout),0$_preview_timeout,8)}
+  gui_split_preview "fx_smooth_selective $*",$-1
 
 #@gui Smooth [skin] : fx_smooth_skin, fx_smooth_skin_preview(1)
 #@gui : note = note("<small><b>Step 1:</b> Skin detection</small>")
@@ -34131,7 +34053,7 @@ fx_smooth_tv :
   ac "gui_parallel_overlap \"tv_flow $2,$1,$3 c 0,255\",$5,$6",$4
 
 fx_smooth_tv_preview :
-  gui_split_preview "fx_smooth_tv $*",$-1,{if(isval($_preview_timeout),0$_preview_timeout,8)}
+  gui_split_preview "fx_smooth_tv $*",$-1
 
 #@gui Smooth [wavelets] : fx_smooth_haar, fx_smooth_haar_preview(0)
 #@gui : Threshold = float(1,0,10)
@@ -34146,7 +34068,7 @@ fx_smooth_haar :
   ac "gui_parallel_overlap \"denoise_haar $1,$3,$2 c 0,255\",$5,$6",$4
 
 fx_smooth_haar_preview :
-  gui_split_preview "fx_smooth_haar $*",$-1,{if(isval($_preview_timeout),0$_preview_timeout,8)}
+  gui_split_preview "fx_smooth_haar $*",$-1
 
 #@gui Upscale [diffusion] : fx_upscale_smart, fx_upscale_smart_preview(0)
 #@gui : Width = text("200%")
