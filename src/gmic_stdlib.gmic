@@ -24218,7 +24218,9 @@ gui_split_preview : check "isint(${2=0}) && $2>=0 && $2<=12 && ${5=0}>=0" skip "
       fi
       k[0]
 
+      dir=0
       if {isin($2,1,3,5,7,9,11,12)}
+        dir+=1
         line 0,$posy,100%,$posy,0.75,0xF0F0F0F0,255 line 0,$posy,100%,$posy,0.75,0x0F0F0F0F,0
         if $is_movable
           coords={p=[$posx,$posy];[p+[-10,-1],p+[10,-1],p+[0,-11]]} polygon 3,$coords,0.7,255 polygon 3,$coords,0.7,0xFFFFFFFF,0
@@ -24226,6 +24228,7 @@ gui_split_preview : check "isint(${2=0}) && $2>=0 && $2<=12 && ${5=0}>=0" skip "
         fi
       fi
       if {isin($2,2,4,6,8,10,11,12)}
+        dir+=2
         line $posx,0,$posx,100%,0.75,0xF0F0F0F0,255 line $posx,0,$posx,100%,0.75,0x0F0F0F0F,0
         if {$2!=9" && "$is_movable}
           coords={p=[$posx,$posy];[p+[-1,-10],p+[-1,10],p+[-11,0]]} polygon 3,$coords,0.7,255 polygon 3,$coords,0.7,0xFFFFFFFF,0
@@ -24237,7 +24240,14 @@ gui_split_preview : check "isint(${2=0}) && $2>=0 && $2<=12 && ${5=0}>=0" skip "
         if {isin($2,3,4,7,8,12)} rv fi
         +!= 0 dilate[-2,-1] 3 r[-4,-3] 100%,100%,1,3
       endl
-      j[0] [-4],2,2,0,0,1,.. j[0] [-3],{[w#0-3-w,isin($2,11,12)?2:h#0-3-h]},0,0,1,. k[0]
+
+      if {-4,"const c1 = "$posx">w+2; const c2 = "$posy">h+2; arg("$dir",c2,c1,c1&&c2)"}
+        j[0] [-4],2,2,0,0,1,..
+      fi
+      if {-3,"const c1 = "$posx"<w#0-w-3; const c2 = $2<11?("$posy"<h#0-h-3):("$posy">h+2); arg("$dir",c2,c1,c1&&c2)"}
+        j[0] [-3],{[w#0-3-w,isin($2,11,12)?2:h#0-3-h]},0,0,1,.
+      fi
+      k[0]
     fi
   endl done
   uncommand _split_preview
