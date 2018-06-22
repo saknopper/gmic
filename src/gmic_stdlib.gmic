@@ -24176,10 +24176,10 @@ _gui_merge_layers :
   if {narg({'$res'})} u $res else u "${2--1}" fi
 
 # gui_split_preview : "command",_split_type,_split_posx,_split_posy
-# 'split_type' can be { 0=no split | 1=forw. horiz. | 2=forw. vert. | 3=back. horiz. | 4=back. vert. | 5=dupl. horiz. (left). | 6=dupl. vert. (top). | 7=dupl. vert. (bottom) | 8=dupl. horiz. (right) |  }
+# 'split_type' can be { 0=no split | 1=forw. horiz. | 2=forw. vert. | 3=back. horiz. | 4=back. vert. | 5=dupl. left | 6=dupl. top | 7=dupl. bottom | 8=dupl. right | 9=dupl. center }
 # if 'posx' or 'posy' are equal to 'nan', splitting is done at the middle, and moving is not possible.
 # 'compute_entire_image' can be { 0=no | 1=yes }.
-gui_split_preview : check "isint(${2=0}) && $2>=0 && $2<=8 && ${5=0}>=0" skip "${3=nan},${4=nan}"
+gui_split_preview : check "isint(${2=0}) && $2>=0 && $2<=10 && ${5=0}>=0" skip "${3=nan},${4=nan}"
   m "_split_preview : $1 k[0]"
   is_movable={!isnan($3)" && "!isnan($4)}
   posx,posy={$is_movable?cut([$3,$4],0,100):[50,50]}
@@ -24205,18 +24205,25 @@ gui_split_preview : check "isint(${2=0}) && $2>=0 && $2<=8 && ${5=0}>=0" skip "$
         j[0] [1],0,{$posy-h}
       elif {$2==8} # Duplicate right
         j[0] [1],{$posx-w}
+      elif {$2==9} # Checkered
+        1,[0],1,1,'y>=$posy' [0],1,1,1,'x>=$posx' r[-2,-1] [0],[0],1,1 xor[-2,-1]
+        j[0] [1],0,0,0,0,1,.
+      elif {$2==10} # Checkered reverse
+        1,[0],1,1,'y<=$posy' [0],1,1,1,'x>=$posx' r[-2,-1] [0],[0],1,1 xor[-2,-1]
+        j[0] [1],0,0,0,0,1,.
       fi
       k[0]
 
-      if {$2%2}
+      if {isin($2,1,3,5,7,9)}
         line 0,$posy,100%,$posy,0.75,0xF0F0F0F0,255 line 0,$posy,100%,$posy,0.75,0x0F0F0F0F,0
         if $is_movable
           coords={p=[$posx,$posy];[p+[-10,-1],p+[10,-1],p+[0,-11]]} polygon 3,$coords,0.7,255 polygon 3,$coords,0.7,0xFFFFFFFF,0
           coords={p=[$posx,$posy];[p+[-10,1],p+[10,1],p+[0,11]]} polygon 3,$coords,0.7,255 polygon 3,$coords,0.7,0xFFFFFFFF,0
         fi
-      else
+      fi
+      if {isin($2,2,4,6,8,9)}
         line $posx,0,$posx,100%,0.75,0xF0F0F0F0,255 line $posx,0,$posx,100%,0.75,0x0F0F0F0F,0
-        if $is_movable
+        if {$2!=9" && "$is_movable}
           coords={p=[$posx,$posy];[p+[-1,-10],p+[-1,10],p+[-11,0]]} polygon 3,$coords,0.7,255 polygon 3,$coords,0.7,0xFFFFFFFF,0
           coords={p=[$posx,$posy];[p+[1,-10],p+[1,10],p+[11,0]]} polygon 3,$coords,0.7,255 polygon 3,$coords,0.7,0xFFFFFFFF,0
         fi
@@ -24226,7 +24233,7 @@ gui_split_preview : check "isint(${2=0}) && $2>=0 && $2<=8 && ${5=0}>=0" skip "$
         z[0] {0,[-1,-1,w,h]} z[1] {1,[-1,-1,w,h]}
         +!= 0 dilate[-2,-1] 3 r[-4,-3] 100%,100%,1,3
       endl
-      j[0] [-4],2,2,0,0,1,.. j[0] [-3],{[w#0-3-w,h#0-3-h]},0,0,1,. k[0]
+      j[0] [-4],2,2,0,0,1,.. j[0] [-3],{[w#0-3-w,$2==9?2:h#0-3-h]},0,0,1,. k[0]
     fi
   endl done
   uncommand _split_preview
@@ -25317,7 +25324,7 @@ fx_asciiart_preview :
 #@gui : Opacity = float(0.5,0,1)
 #@gui : First color = color(0,0,0,255)
 #@gui : Second color = color(255,255,255,255)
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10)
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10,0)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2010/29/12</i>.</small>")
 fx_chessboard :
   to_rgba chessboard ${1-14}
@@ -25600,7 +25607,7 @@ fx_imagegrid_triangular :
 #@gui : sep = separator(),
 #@gui : Preview original = bool(0)
 #@gui : Tiled preview = choice(3,"None","2x1","1x2","2x2","3x3","4x4")
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10)
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10,0)
 #@gui : sep = separator(), note = note{"<small><b>Note:</b> This filter helps in converting your input pattern as a <b>seamless</b> (a.k.a periodic) texture.</small>"}
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2015/24/02</i>.</small>")
 fx_make_seamless :
@@ -25622,7 +25629,7 @@ fx_make_seamless_preview :
 #@gui : sep = separator(),
 #@gui : Preview original = bool(0)
 #@gui : Tiled preview = choice(3,"None","2x1","1x2","2x2","3x3","4x4")
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10)
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10,0)
 #@gui : sep = separator(), note = note{"<small><b>Note:</b> This filter helps in converting your input pattern as a <b>seamless</b> (a.k.a periodic) texture.</small>"}
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2015/15/12</i>.</small>")
 fx_frame_seamless :
@@ -25935,7 +25942,7 @@ fx_isolate_tiles :
 #@gui : Smoothness = float(2,0,8)
 #@gui : Color = color(170,130,20,110)
 #@gui : Color dispersion = float(0.15,0,1)
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10)
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right","Forward squared"), Preview split = point(50,50,0,0,200,200,200,0,10,0)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2015/02/07</i>.</small>")
 fx_bokeh :
   _shape=$2
@@ -26061,7 +26068,7 @@ fx_brushify_preview :
 #@gui : Edge thickness = float(0.25,0,1)
 #@gui : Color strength = float(1.5,0,3)
 #@gui : Color quantization = int(8,2,256)
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10)
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10,0)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2010/29/12</i>.</small>")
 fx_cartoon_preview :
   gui_split_preview "cartoon $*",${-3--1}
@@ -26074,7 +26081,7 @@ fx_cartoon_preview :
 #@gui : Filled circles = bool(1)
 #@gui : Fill transparent holes = bool(1)
 #@gui : Normalize colors = bool(1)
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10)
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10,0)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2014/16/06</i>.</small>")
 fx_circle_abstraction :
   repeat $! l[$>]
@@ -26116,7 +26123,7 @@ fx_circle_abstraction_preview :
 #@gui : Angle = float(90,0,360)
 #@gui : Opacity = float(0.7,0.01,1)
 #@gui : Smoothness = float(0,0,5)
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10)
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10,0)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2013/05/06</i>.</small>")
 fx_cubism :
   repeat $1 cubism ${2--1} done
@@ -26129,7 +26136,7 @@ fx_cubism_preview :
 #@gui : Edge simplicity = float(0.5,0,3)
 #@gui : Edge fidelity = int(4,0,10)
 #@gui : Normalize = bool(1)
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10)
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10,0)
 #@gui : sep = separator(), note = note("<small>Authors: <i>David Tschumperl&#233;</i> and <i>Garagecoder</i>.      Latest update: <i>2014/03/06</i>.</small>")
 fx_cutout :
   repeat $! l[$>] split_opacity l[0]
@@ -26153,7 +26160,7 @@ fx_cutout_preview :
 #@gui : Anisotropy = float(1,0,1)
 #@gui : Gradient smoothness = float(0,0,10)
 #@gui : Tensor smoothness = float(3,0,10)
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10)
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10,0)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2016/19/10</i>.</small>")
 fx_diffusiontensors :
   repeat $! l[$>]
@@ -26177,7 +26184,7 @@ fx_diffusiontensors_preview :
 #@gui : Opacity = float(0.7,0,1)
 #@gui : Outline = float(3,1,3)
 #@gui : Density = float(0.5,0.1,2)
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10)
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10,0)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2010/29/12</i>.</small>")
 fx_ellipsionism :
   ellipsionism ${^0}
@@ -26192,7 +26199,7 @@ fx_ellipsionism_preview :
 #@gui : Opacity = float(0.1,0,1)
 #@gui : Edge = float(20,0,100)
 #@gui : Thickness = int(5,2,32)
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10)
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10,0)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2012/25/10</i>.</small>")
 fx_feltpen :
   repeat $! l[$>] +fx_hardsketchbw ${1-5},0,0 blend hardlight erode_oct $6 endl done
@@ -26215,7 +26222,7 @@ fx_feltpen_preview :
 #@gui : Edge = float(20,0,100)
 #@gui : Fast approximation = bool(0)
 #@gui : Color model = choice(4,"Black on white","White on black","Black on transparent white","White on transparent black","Color on white")
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10)
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10,0)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2010/29/12</i>.</small>")
 fx_hardsketchbw :
   b $3
@@ -26235,7 +26242,7 @@ fx_hardsketchbw_preview :
 #@gui : Smoothness = float(60,0,255)
 #@gui : Highlight (%) = int(30,0,100)
 #@gui : Contrast (%) = float(20,0,100)
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10)
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10,0)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2016/24/10</i>.</small>")
 #@gui : sep = separator(), note = note("This effect has been inspired by:")
 #@gui : url = link("This tutorial by Sebastien Guyader and Patrick David","https://pixls.us/articles/highlight-bloom-and-photoillustration-look/")
@@ -26256,7 +26263,7 @@ fx_highlight_bloom_preview :
 #@gui Hope poster : fx_poster_hope, fx_poster_hope_preview(0)+
 #@gui : Gamma = float(0,-3,3)
 #@gui : Smoothness = float(3,0,20)
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10)
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10,0)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2013/07/11</i>.</small>")
 fx_poster_hope :
   repeat $! l[$>] split_opacity l[0]
@@ -26273,7 +26280,7 @@ fx_poster_hope_preview :
 #@gui : Threshold = float(80,0,100)
 #@gui : Opacity = float(0.1,0,1)
 #@gui : Color model = choice(4,"Black on white","White on black","Black on transparent white","White on transparent black","Color on white")
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10)
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10,0)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2011/18/05</i>.</small>")
 fx_houghsketchbw :
   b $1 n 0,255
@@ -26292,7 +26299,7 @@ fx_houghsketchbw_preview :
 #@gui : Radius = int(5,1,30)
 #@gui : sep = separator(), Channel(s) = choice("All","RGBA [all]","RGB [all]","RGB [red]","RGB [green]","RGB [blue]","RGBA [alpha]","Linear RGB [all]","Linear RGB [red]","Linear RGB [green]","Linear RGB [blue]","YCbCr [luminance]","YCbCr [blue-red chrominances]","YCbCr [blue chrominance]","YCbCr [red chrominance]","YCbCr [green chrominance]","Lab [lightness]","Lab [ab-chrominances]","Lab [a-chrominance]","Lab [b-chrominance]","Lch [ch-chrominances]","Lch [c-chrominance]","Lch [h-chrominance]","HSV [hue]","HSV [saturation]","HSV [value]","HSI [intensity]","HSL [lightness]","CMYK [cyan]","CMYK [magenta]","CMYK [yellow]","CMYK [key]","YIQ [luma]","YIQ [chromas]")
 #@gui : Value action = choice("None","Cut","Normalize")
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10)
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10,0)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2011/31/05</i>.</small>")
 fx_kuwahara :
   ac "repeat $1 kuwahara $2 done",$3,$4
@@ -26308,7 +26315,7 @@ fx_kuwahara_preview :
 #@gui : Line precision = int(24,1,128)
 #@gui : Color mode = choice(0,"Subtractive","Additive")
 #@gui : sep = separator(), Preview progression while running = _bool(1)
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10)
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10,0)
 #@gui : sep = separator(), note = note{"<b>Note:</b>\n\n
 #@gui : - This filter is our own implementation of the nice algorithm proposed on this webpage: <a href="http://linify.me">http://linify.me</a>.\n
 #@gui : - This is a quite resource-demanding filter, so please be patient when running it.\n
@@ -26330,7 +26337,7 @@ fx_linify_preview :
 #@gui : Abstraction = int(2,1,20)
 #@gui : Radius = int(4,1,30)
 #@gui : Canvas = float(10,0,100)
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10)
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10,0)
 #@gui : sep = separator(), note = note("<small>Authors: <i>Lyle Kroll</i> and <i>David Tschumperl&#233;</i>.      Latest update: <i>2015/23/02</i>.</small>")
 #@gui : url = link("Filter Explained here","http://www.gimpchat.com/viewtopic.php?f=10&t=2624")
 fx_lylejk_painting :
@@ -26355,7 +26362,7 @@ fx_lylejk_painting_preview :
 #@gui : Color = float(1.5,0,4)
 #@gui : Smoothness = float(50,0,1000)
 #@gui : Sharpen shades = bool(1)
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10)
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10,0)
 #@gui : sep = separator(), note = note("<small>Authors: <i>Lyle Kroll</i>, <i>Angelo Lama</i> and <i>David Tschumperl&#233;</i>.\nLatest update: <i>2011/28/02</i>.</small>")
 fx_painting : skip ${4=0},${5=0}
   repeat $! l[$>]
@@ -26373,7 +26380,7 @@ fx_painting_preview :
 
 #@gui Pen drawing : fx_pen_drawing, fx_pen_drawing_preview(0)+
 #@gui : Amplitude = float(10,0,30)
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10)
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10,0)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2010/29/12</i>.</small>")
 fx_pen_drawing :
   -drawing $1
@@ -26390,7 +26397,7 @@ fx_pen_drawing_preview :
 #@gui : Outline (%) = float(50,0,100)
 #@gui : Outline color = color(0,0,0,255)
 #@gui : Anti-aliasing = bool(1)
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10)
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10,0)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2018/06/05</i>.</small>")
 fx_polygonize_delaunay :
   repeat $! l[$>] to_rgba
@@ -26442,7 +26449,7 @@ fx_polygonize_delaunay_preview :
 #@gui : X-resolution = float(10,1,256)
 #@gui : Y-resolution = float(10,1,256)
 #@gui : Outline color = color(0,0,0,255)
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10)
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10,0)
 #@gui : sep = separator(), url = link("Click here for a detailed description of this filter.","http://www.gimpchat.com/viewtopic.php?f=28&t=9174")
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2013/02/12</i>.</small>")
 fx_polygonize :
@@ -26464,7 +26471,7 @@ fx_polygonize_preview :
 #@gui : Edge antialiasing = float(10,0,100)
 #@gui : Posterization level = int(0,0,15)
 #@gui : Posterization antialiasing = float(0,0,100)
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10)
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10,0)
 #@gui : sep = separator(), url = link("Click here for a detailed description of this filter.","http://www.davidrevoy.com/article147/gmic-new-filter-poster-edges")
 #@gui : sep = separator(), note = note("<small>Authors: <i>David Tschumperl&#233;</i> and <i>David Revoy</i>.      Latest update: <i>2012/30/11</i>.</small>")
 fx_poster_edges :
@@ -26482,7 +26489,7 @@ fx_poster_edges_preview :
 #@gui : Minimal area = int(0,0,64)
 #@gui : Outline (%) = float(0,0,100)
 #@gui : Normalize colors = bool(0)
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10)
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10,0)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2016/25/10</i>.</small>")
 fx_posterize :
   repeat $! l[$>] split_opacity l[0]
@@ -26510,7 +26517,7 @@ fx_posterize_preview :
 #@gui : Secondary radius = float(1.5,0,5)
 #@gui : Anisotropy = float(1,0,4)
 #@gui : Only leafs = bool(1)
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10)
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10,0)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2017/15/06</i>.</small>")
 fx_quadtree :
   mode,precision,homogeneity,outline,radius1,radius2,anisotropy,only_leafs=${1-8}
@@ -26637,7 +26644,7 @@ fx_quadtree_preview :
 #@gui : Color mode = choice(1,"Darker","Lighter")
 #@gui : sep = separator(), Channel(s) = choice("All","RGBA [all]","RGB [all]","RGB [red]","RGB [green]","RGB [blue]","RGBA [alpha]","Linear RGB [all]","Linear RGB [red]","Linear RGB [green]","Linear RGB [blue]","YCbCr [luminance]","YCbCr [blue-red chrominances]","YCbCr [blue chrominance]","YCbCr [red chrominance]","YCbCr [green chrominance]","Lab [lightness]","Lab [ab-chrominances]","Lab [a-chrominance]","Lab [b-chrominance]","Lch [ch-chrominances]","Lch [c-chrominance]","Lch [h-chrominance]","HSV [hue]","HSV [saturation]","HSV [value]","HSI [intensity]","HSL [lightness]","CMYK [cyan]","CMYK [magenta]","CMYK [yellow]","CMYK [key]","YIQ [luma]","YIQ [chromas]")
 #@gui : Value action = choice("None","Cut","Normalize")
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10)
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10,0)
 #@gui : url = link("Click here for a video tutorial","http://www.youtube.com/watch?v=RC07VUpzwGc")
 #@gui : sep = separator(), note = note("<small>Authors: <i>David Tschumperl&#233;</i> and <i>Rod/GimpChat</i>.      Latest update: <i>2013/05/03</i>.</small>")
 fx_rodilius :
@@ -26733,7 +26740,7 @@ _fx_shapeism7 : # Custom
 #@gui : Value scale = float(10,0,16)
 #@gui : Precision = float(0.5,0,2)
 #@gui : sep = separator(), Channel(s) = choice("All","RGBA [all]","RGB [all]","RGB [red]","RGB [green]","RGB [blue]","RGBA [alpha]","Linear RGB [all]","Linear RGB [red]","Linear RGB [green]","Linear RGB [blue]","YCbCr [luminance]","YCbCr [blue-red chrominances]","YCbCr [blue chrominance]","YCbCr [red chrominance]","YCbCr [green chrominance]","Lab [lightness]","Lab [ab-chrominances]","Lab [a-chrominance]","Lab [b-chrominance]","Lch [ch-chrominances]","Lch [c-chrominance]","Lch [h-chrominance]","HSV [hue]","HSV [saturation]","HSV [value]","HSI [intensity]","HSL [lightness]","CMYK [cyan]","CMYK [magenta]","CMYK [yellow]","CMYK [key]","YIQ [luma]","YIQ [chromas]")
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10)
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10,0)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2016/20/09</i>.</small>")
 fx_sharp_abstract :
   ac "rolling_guidance ${1-3}",$4
@@ -26757,7 +26764,7 @@ fx_sharp_abstract_preview :
 #@gui : Boost stroke = bool(0)
 #@gui : Curved stroke = bool(1)
 #@gui : Color model = choice(4,"Black on white","White on black","Black on transparent white","White on transparent black","Color on white")
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10)
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10,0)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2018/05/11</i>.</small>")
 fx_sketchbw :
   if {$15==4} repeat $! l[$>] +sketchbw ${1-14} blend hardlight endl done return fi
@@ -26776,7 +26783,7 @@ fx_sketchbw_preview :
 #@gui : Regularization iterations = int(20,0,100)
 #@gui : Geometry = float(1,0,5)
 #@gui : Details = float(30,0,50)
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10)
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10,0)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2016/06/04</i>.</small>")
 fx_smooth_abstract :
   repeat $! l[$>] split_opacity l[0]
@@ -26791,7 +26798,7 @@ fx_smooth_abstract_preview :
 
 #@gui Vector painting : fx_vector_painting, fx_vector_painting_preview(1)
 #@gui : Details = float(9,0,10)
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10)
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10,0)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.\nLatest update: <i>2015/25/08</i>.</small>")
 fx_vector_painting :
   repeat $! l[$>]
@@ -26818,7 +26825,7 @@ fx_vector_painting_preview :
 
 #@gui Whirl drawing : fx_draw_whirl, fx_draw_whirl_preview(0)
 #@gui : Amplitude = float(20,0,100)
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10)
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10,0)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2010/29/12</i>.</small>")
 fx_draw_whirl :
   repeat $! l[$>] split_opacity -draw_whirl[0] $* a c endl done
@@ -30960,7 +30967,7 @@ __fx_emulate_grain :
 #@gui : Normalize colors = choice("None","Pre-process","Post-process","Both")
 #@gui : sep = separator()
 #@gui : Pseudo-gray dithering = int(0,0,5)
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10)
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10,0)
 #@gui : sep = separator(), note = note("<small><b>Note:</b> The color LUTs used in this section have been designed by <b>Patrick David</b>. More info at:</small>")
 #@gui : url = link{"Film Emulation Presets in G'MIC","https://gmic.eu/film_emulation/index.shtml"}
 #@gui : sep = separator(), note = note("<small>Authors: <i>Patrick David</i> and <i>David Tschumperl&#233;</i>.      Latest update: <i>2016/02/08</i>.</small>")
@@ -30987,7 +30994,7 @@ fx_emulate_film_bw_preview :
 #@gui : Hue (%) = float(0,-100,100)
 #@gui : Saturation (%) = float(0,-100,100)
 #@gui : Normalize colors = choice("None","Pre-process","Post-process","Both")
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10)
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10,0)
 #@gui : sep = separator(), note = note("<small><b>Note:</b> The color LUTs used in this section have been designed by <b>Stuart Sowerby</b>. More info at:</small>")
 #@gui : url = link{"Fuji Film Simulation Profiles","http://blog.sowerby.me/fuji-film-simulation-profiles"}
 #@gui : sep = separator(), note = note("<small>Authors: <i>Stuart Sowerby</i> and <i>David Tschumperl&#233;</i>.      Latest update: <i>2017/13/01</i>.</small>")
@@ -31021,7 +31028,7 @@ fx_emulate_film_fujixtransii_preview :
 #@gui : Hue (%) = float(0,-100,100)
 #@gui : Saturation (%) = float(0,-100,100)
 #@gui : Normalize colors = choice("None","Pre-process","Post-process","Both")
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10)
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10,0)
 #@gui : sep = separator(), note = note("<small><b>Note:</b> The color LUTs used in this section have been designed by <b>Patrick David</b>. More info at:</small>")
 #@gui : url = link{"Film Emulation Presets in G'MIC","https://gmic.eu/film_emulation/index.shtml"}
 #@gui : sep = separator(), note = note("<small>Authors: <i>Patrick David</i> and <i>David Tschumperl&#233;</i>.      Latest update: <i>2016/02/08</i>.</small>")
@@ -31068,7 +31075,7 @@ fx_emulate_film_instant_consumer_preview :
 #@gui : Hue (%) = float(0,-100,100)
 #@gui : Saturation (%) = float(0,-100,100)
 #@gui : Normalize colors = choice("None","Pre-process","Post-process","Both")
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10)
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10,0)
 #@gui : sep = separator(), note = note("<small><b>Note:</b> The color LUTs used in this section have been designed by <b>Patrick David</b>. More info at:</small>")
 #@gui : url = link{"Film Emulation Presets in G'MIC","https://gmic.eu/film_emulation/index.shtml"}
 #@gui : sep = separator(), note = note("<small>Authors: <i>Patrick David</i> and <i>David Tschumperl&#233;</i>.      Latest update: <i>2016/02/08</i>.</small>")
@@ -31104,7 +31111,7 @@ fx_emulate_film_instant_pro_preview :
 #@gui : Hue (%) = float(0,-100,100)
 #@gui : Saturation (%) = float(0,-100,100)
 #@gui : Normalize colors = choice("None","Pre-process","Post-process","Both")
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10)
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10,0)
 #@gui : sep = separator(), note = note("<small><b>Note:</b> The color LUTs used in this section have been designed by <b>Patrick David</b>. More info at:</small>")
 #@gui : url = link{"Film Emulation Presets in G'MIC","https://gmic.eu/film_emulation/index.shtml"}
 #@gui : sep = separator(), note = note("<small>Authors: <i>Patrick David</i> and <i>David Tschumperl&#233;</i>.      Latest update: <i>2016/02/08</i>.</small>")
@@ -31129,7 +31136,7 @@ fx_emulate_film_negative_color_preview :
 #@gui : Hue (%) = float(0,-100,100)
 #@gui : Saturation (%) = float(0,-100,100)
 #@gui : Normalize colors = choice("None","Pre-process","Post-process","Both")
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10)
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10,0)
 #@gui : sep = separator(), note = note("<small><b>Note:</b> The color LUTs used in this section have been designed by <b>Patrick David</b>. More info at:</small>")
 #@gui : url = link{"Film Emulation Presets in G'MIC","https://gmic.eu/film_emulation/index.shtml"}
 #@gui : sep = separator(), note = note("<small>Authors: <i>Patrick David</i> and <i>David Tschumperl&#233;</i>.      Latest update: <i>2016/02/08</i>.</small>")
@@ -31162,7 +31169,7 @@ fx_emulate_film_negative_new_preview :
 #@gui : Hue (%) = float(0,-100,100)
 #@gui : Saturation (%) = float(0,-100,100)
 #@gui : Normalize colors = choice("None","Pre-process","Post-process","Both")
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10)
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10,0)
 #@gui : sep = separator(), note = note("<small><b>Note:</b> The color LUTs used in this section have been designed by <b>Patrick David</b>. More info at:</small>")
 #@gui : url = link{"Film Emulation Presets in G'MIC","https://gmic.eu/film_emulation/index.shtml"}
 #@gui : sep = separator(), note = note("<small>Authors: <i>Patrick David</i> and <i>David Tschumperl&#233;</i>.      Latest update: <i>2016/02/08</i>.</small>")
@@ -31203,7 +31210,7 @@ fx_emulate_film_negative_old_preview :
 #@gui : Hue (%) = float(0,-100,100)
 #@gui : Saturation (%) = float(0,-100,100)
 #@gui : Normalize colors = choice("None","Pre-process","Post-process","Both")
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10)
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10,0)
 #@gui : sep = separator(), note = note("<small><b>Note:</b> The color LUTs used in this section have been provided by <b>Marc Roovers</b>, and are freely available at:</small>")
 #@gui : url = link("PictureFX - a free HaldCLUT set","http://www.digicrea.be/haldclut-set-style-a-la-nik-software")
 #@gui : sep = separator(), note = note("<small>Authors: <i>Marc Roovers</i> and <i>David Tschumperl&#233;</i>.      Latest update: <i>2016/21/10</i>.</small>")
@@ -31235,7 +31242,7 @@ fx_emulate_film_picturefx_preview :
 #@gui : Hue (%) = float(0,-100,100)
 #@gui : Saturation (%) = float(0,-100,100)
 #@gui : Normalize colors = choice("None","Pre-process","Post-process","Both")
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10)
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10,0)
 #@gui : sep = separator(), note = note("<small><b>Note:</b> The color LUTs used in this section have been provided by <b>Juan Melara</b>, and are freely available at:</small>")
 #@gui : url = link("Print Film Emulation LUTs For Download","http://juanmelara.com.au/print-film-emulation-luts-for-download/")
 #@gui : sep = separator(), note = note("<small>Authors: <i>Juan Melara</i> and <i>David Tschumperl&#233;</i>.      Latest update: <i>2016/02/08</i>.</small>")
@@ -31266,7 +31273,7 @@ fx_emulate_film_print_preview :
 #@gui : Hue (%) = float(0,-100,100)
 #@gui : Saturation (%) = float(0,-100,100)
 #@gui : Normalize colors = choice("None","Pre-process","Post-process","Both")
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10)
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10,0)
 #@gui : sep = separator(), note = note("<small><b>Note:</b> The color LUTs used in this section have been designed by <b>Patrick David</b>. More info at:</small>")
 #@gui : url = link{"Film Emulation Presets in G'MIC","https://gmic.eu/film_emulation/index.shtml"}
 #@gui : sep = separator(), note = note("<small>Authors: <i>Patrick David</i> and <i>David Tschumperl&#233;</i>.      Latest update: <i>2016/02/08</i>.</small>")
@@ -31295,7 +31302,7 @@ fx_emulate_film_colorslide_preview :
 #@gui : Hue (%) = float(0,-100,100)
 #@gui : Saturation (%) = float(0,-100,100)
 #@gui : Normalize colors = choice("None","Pre-process","Post-process","Both")
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10)
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10,0)
 #@gui : sep = separator(), note = note("<small>More info at:</small>")
 #@gui : url = link{"Film Emulation Presets in G'MIC","https://gmic.eu/film_emulation/index.shtml"}
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2016/02/08</i>.</small>")
@@ -31335,7 +31342,7 @@ fx_emulate_film_userdefined_preview : skip "${2=}"
 #@gui : Hue (%) = float(0,-100,100)
 #@gui : Saturation (%) = float(0,-100,100)
 #@gui : Normalize colors = choice("None","Pre-process","Post-process","Both")
-#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10)
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right"), Preview split = point(50,50,0,0,200,200,200,0,10,0)
 #@gui : sep = separator(), note = note("<small>More info at:</small>")
 #@gui : url = link{"Film Emulation Presets in G'MIC","https://gmic.eu/film_emulation/index.shtml"}
 #@gui : sep = separator(), note = note("<small>Authors: <i>David Tschumperl&#233;</i> and <i>Patrick David</i>.      Latest update: <i>2016/02/08</i>.</small>")
