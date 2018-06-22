@@ -24183,12 +24183,13 @@ gui_split_preview : check "isint(${2=0}) && $2>=0 && $2<=8 && ${5=0}>=0" skip "$
   m "_split_preview : $1 k[0]"
   is_movable={!isnan($3)" && "!isnan($4)}
   posx,posy={$is_movable?cut([$3,$4],0,100):[50,50]}
+  pw,ph={0$_preview_width?[$_preview_width,$_preview_height]:[400,350]}
   repeat $! l[$>]
     is_timeout=0
     +l apply_timeout _split_preview,0$_preview_timeout onfail gui_timeout_preview is_timeout=1 endl
     if {$is_timeout" || "!$2} k.
     else
-      drgba rr2d $_preview_width,$_preview_height,0,2
+      drgba rr2d $pw,$ph,0,2
       r {[max(w#0,w#1),max(h#0,h#1)]},1,100%,0,0,0.5,0.5
       posx,posy={round([$posx,$posy]*([w,h]-1)%)}
 
@@ -26824,7 +26825,6 @@ fx_draw_whirl :
 
 fx_draw_whirl_preview :
   gui_split_preview "fx_draw_whirl $*",${-3--1}
-
 
 #@gui _<b>Black &amp; white</b>
 #-------------------------------
