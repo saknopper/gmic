@@ -24294,6 +24294,15 @@ gui_split_preview2 : check "isint(${2=0}) && $2>=0 && $2<=8 && ${5=0}>=0" skip "
           coords={p=[$posx,$posy];[p+[-1,-10],p+[-1,10],p+[-11,0]]} polygon 3,$coords,0.7,255 polygon 3,$coords,0.7,0xFFFFFFFF,0
           coords={p=[$posx,$posy];[p+[1,-10],p+[1,10],p+[11,0]]} polygon 3,$coords,0.7,255 polygon 3,$coords,0.7,0xFFFFFFFF,0
         fi
+
+        str2uchar "1_474_1_1_Am1pPbBdNqtZN5xXO65m86ldR7FgNJxZPaFdMKs:B3UUAHIUAG0l82AmCHY:S9lXM207F2Mvk9XKmQby1BIzzPwIdjnQzzxbU5Gf0VvZBJzzrky2A8jyBoOsUGVvDCfrTsbzLkxHPsx4MERg1pwMT6xV1f:ILbnuzyv5;UNL4DJW6UA32zT65mxSJ0;ZAZssLU:90A7Azt8AYTwXUGntGwzyrvqoUg4CF5re0BY3d1zx;yI0gjtT1saUe4RrXzWQ2xcA3;MrzVg3FMs8EdlXS7Ep7sDFwMJWaCdxzez80s9hMDIk7lLxLnpVkcHXE34gue40GPr95OXM0EsgueTsUU4zEfrDzkMR4BXmbkR3DKzL4lAErO45JwwQzHIKn9XqGkuVACDPhwyTts92wSBb87WX1pQjSnkLucztas54t753A:TwyD7XXG36J23Xi2h2UYE004MRgYUoC20lBG0l834U8nUk2bWQhR;V3U0E20HUSzyLDVY;YNfBzKfua0IUMEqUNOzR3AAdRxvuDzk0XDDT9t3bRP;SIKMW3;mRMA;HxuT;DrfxEnajnslZSRgdXE9;b0AOAG0mAG0l834U8n8n2bWQQzSBMcVCnGoceMm5obKl301BKEQv"
+        str2uchar "1_482_1_1_Am1pPbBdNqtZN5xXO65m86ldR7FgNJxZPaFdMKs:BX0UAHIUAG0l82AnA3U:S9lXM:00u2G3U26aV7JmgXw1jILzES2U7cPKQzzzbm6chn4WMh;zcsdMlBo8ufJbM12SxRwManUlSdZPk7dNi3SySD6WYda1ESb5dzzjLim22grW1UdZj72wx68OgW:UrUERbR;zXvH0v;iL;XruLwf187zd6N2x0WsI2EuMutQuY1J1kkcYmG0yts8q0sDh3P0P86u62LLn0kKC2:8d:jezSg:42QQLWX4kyDlTYEQ4qt3oyjlD0rag7WU43E1YFF0VwnD;q832I81T;o8FJ6XdTluUw1FTAC37elSV22:IwFucZvTfWEZ8iYA;fVQWtDY2639EjQW:WjtzyzntwwwDtW0HLbk4gXyzoID4;pXczMh0F8EX:Mcw3UOiYBWS2aR77XS42nKW220d8Vw0073nvn4qA20lBG0l834U8nQt2bWQnN8l2U0U30Dnzoz7FP2MFWeWaA7Vm;KUYXqMYhCYcXInoPXAy1CLSnZlTkj2ePniVUh5NNfNavXfjPRRTKidkgXlZk4H2a2I6aBQcrYl838l834UAG0XAXA:S9lnxspWW4vB;GWdX8LGRP4A04pN1ng"
+        if {isin($2,3,4,7,8)} else rv[-2,-1] fi
+        unserialize[-2,-1]
+        r[-4,-2] 100%,100%,1,3
+        j[0] [-4],2,2,0,0,1,[-3],255
+        j[0] [-2],{[w#0-3-w,h#0-3-h]},0,0,1,[-1],255
+        k[0]
       fi
     fi
   endl done
