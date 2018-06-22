@@ -9501,7 +9501,7 @@ gradient_orientation : check "${1=3}==1 || $1==2 || $1==3"
 #@cli : This command implements the filtering algorithm described in:
 #@cli : He, Kaiming; Sun, Jian; Tang, Xiaoou, "Guided Image Filtering," Pattern Analysis and Machine Intelligence,
 #@cli : IEEE Transactions on , vol.35, no.6, pp.1397,1409, June 2013
-#@cli : $ image.jpg [0] +guided 5,400
+#@cli : $ image.jpg +guided 5,400
 
 #@cli haar : scale>0
 #@cli : Compute the direct haar multiscale wavelet transform of selected images.
