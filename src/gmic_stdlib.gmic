@@ -29705,7 +29705,7 @@ fx_spherize_preview :
 #@gui : url = link("http://squircular.blogspot.com/2015/09/mapping-circle-to-square.html")
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2017/10/30</i>.</small>")
 fx_square_circle :
-  mode,interp,boundary,factx,facty,offx,offy=$*
+  mode,interp,boundary,factx,facty,offx,offy=${1-7}
   if {!$boundary} to_a fi
   base="const interpolation = "$interp";
         const boundary = "$boundary";
@@ -32603,7 +32603,7 @@ _fx_illuminate_shape2d : # Input selection must contains a single image. Output 
   lightz,\
   normalize_illumination,\
   preview_interactive,\
-  preview_mode=$*
+  preview_mode=${1-31}
 
   # Generate 2d binary shape and corresponding bumpmap
   nm={n}
@@ -36131,68 +36131,68 @@ fx_solve_maze_preview :
 
 #@cli gallery_artistic
 #@cli : This entry defines some examples of artistic filters for the G'MIC gallery page.
-#@cli : $ image.jpg fx_engrave_preview 0.5,4,0,7.68,15.2,0,0,1,10,1,0,0,0,1,0 _label="Engrave"
-#@cli : $ image.jpg fx_bokeh_preview 3,8,0,30,8,4,0.3,0.2,210,210,80,160,0.7,30,20,20,1,2,170,130,20,110,0.15,0 _label="Bokeh"
-#@cli : $ image.jpg fx_8bits_preview 25,800,16,0 _label="Oldschool~8bits"
+#@cli : $ image.jpg fx_engrave 0.5,4,0,7.68,15.2,0,0,1,10,1,0,0,0,1,0 _label="Engrave"
+#@cli : $ image.jpg fx_bokeh 3,8,0,30,8,4,0.3,0.2,210,210,80,160,0.7,30,20,20,1,2,170,130,20,110,0.15,0 _label="Bokeh"
+#@cli : $ image.jpg fx_8bits 25,800,16,0 _label="Oldschool~8bits"
 #@cli : $ image.jpg fire_edges 0.7,0.25,0.5,25,20 _fps=6 _label="Edges~on~fire"
-#@cli : $ image.jpg fx_diffusiontensors_preview 10,5,3,1,0.15,1,0,3,0 _label="Diffusion~tensors"
-#@cli : $ image.jpg fx_dreamsmooth_preview 3,1,1,0.8,0,0.8,1,24,0 _label="Dream~smoothing"
-#@cli : $ image.jpg fx_feltpen_preview 300,50,1,0.1,20,5,0 _label="Felt~pen"
-#@cli : $ image.jpg gtutor_fpaint_preview 0.5,0.5,0,0,45,0.5,0.5,0.5,0 _label="Finger~paint"
+#@cli : $ image.jpg fx_diffusiontensors 10,5,3,1,0.15,1,0,3,0 _label="Diffusion~tensors"
+#@cli : $ image.jpg fx_dreamsmooth 3,1,1,0.8,0,0.8,1,24,0 _label="Dream~smoothing"
+#@cli : $ image.jpg fx_feltpen 300,50,1,0.1,20,5,0 _label="Felt~pen"
+#@cli : $ image.jpg gtutor_fpaint 0.5,0.5,0,0,45,0.5,0.5,0.5,0 _label="Finger~paint"
 #@cli : $ image.jpg fx_graphic_novelfxl 0,2,6,5,20,0,0.62,14,0,1,0.5,0.78,1.92,0,0,0,1,1,1,0.5,0.8,1.28 _label="Novel~FX"
-#@cli : $ image.jpg fx_illustration_look_preview 100,0,0,0,0 _label="Illustration~look"
-#@cli : $ image.jpg fx_lylejk_painting_preview 10,2,4,10,0 _label="Lylejk~painting"
-#@cli : $ image.jpg fx_painting_preview 5,2.5,1.5,50,1,0 _label="Painting"
-##@cli : $ image.jpg fx_delaunay_preview 5,75,1,3,0,0,0,128,1,1,0 _label="Polygonize~[delaunay]"
-#@cli : $ image.jpg fx_posterize_preview 150,30,1,6,0,0,1,0 _label="Posterize"
-#@cli : $ image.jpg fx_quadtree_preview 2,1024,1.05,0,2.33,0.68,0.39,1,0 _label="Quadtree~variations"
-#@cli : $ image.jpg fx_vector_painting_preview 9.37,0 _label="Vector~painting"
+#@cli : $ image.jpg fx_illustration_look 100,0,0,0,0 _label="Illustration~look"
+#@cli : $ image.jpg fx_lylejk_painting 10,2,4,10,0 _label="Lylejk~painting"
+#@cli : $ image.jpg fx_painting 5,2.5,1.5,50,1,0 _label="Painting"
+##@cli : $ image.jpg fx_delaunay 5,75,1,3,0,0,0,128,1,1,0 _label="Polygonize~[delaunay]"
+#@cli : $ image.jpg fx_posterize 150,30,1,6,0,0,1,0 _label="Posterize"
+#@cli : $ image.jpg fx_quadtree 2,1024,1.05,0,2.33,0.68,0.39,1,0 _label="Quadtree~variations"
+#@cli : $ image.jpg fx_vector_painting 9.37,0 _label="Vector~painting"
 
 #@cli gallery_colors
 #@cli : This entry defines some examples of color filters for the G'MIC gallery page.
-#@cli : $ image.jpg fx_color_abstraction_preview 1,10,0.2,0 _label="Color~abstraction"
-#@cli : $ image.jpg fx_boost_chroma_preview 90,0,0 _label="Boost~chromaticity"
-#@cli : $ image.jpg fx_retrofade_preview 20,6,40,0 _label="Retro~fade"
-#@cli : $ image.jpg fx_tk_vintage_preview 2,0.85,0.7,80,200,5,147,26,161,0.3,235,220,176,0.4,190,181,108,0.2,0,0,100,0,0.3,25,0,0 _label="Vintage~style"
+#@cli : $ image.jpg fx_color_abstraction 1,10,0.2,0 _label="Color~abstraction"
+#@cli : $ image.jpg fx_boost_chroma 90,0,0 _label="Boost~chromaticity"
+#@cli : $ image.jpg fx_retrofade 20,6,40,0 _label="Retro~fade"
+#@cli : $ image.jpg fx_tk_vintage 2,0.85,0.7,80,200,5,147,26,161,0.3,235,220,176,0.4,190,181,108,0.2,0,0,100,0,0.3,25,0,0 _label="Vintage~style"
 
 #@cli gallery_deformations
 #@cli : This entry defines some examples of deformation filters for the G'MIC gallery page.
 #@cli : $ image.jpg animate "flower","30,10,0,0","30,10,0,360",10 rm. _fps=6 _label="flower"
-#@cli : $ image.jpg fx_conformal_maps_preview 8,1,0,"((1.1 + i*z/6)/(1.04 - i*z/6))^6.2",0,0,0,0,0,3,0,0,"1024","1024" _label="Conformal~maps"
-#@cli : $ image.jpg souphead_droste10_preview 40,100,1,1,1,0,0,0,0,0,1,10,1,0,90,0,0,0,0,1,0,1,1,0,0,0,0,0,1,0,0 _label="Continuous~droste"
+#@cli : $ image.jpg fx_conformal_maps 8,1,0,"((1.1 + i*z/6)/(1.04 - i*z/6))^6.2",0,0,0,0,0,3,0,0,"1024","1024" _label="Conformal~maps"
+#@cli : $ image.jpg souphead_droste10 40,100,1,1,1,0,0,0,0,0,1,10,1,0,90,0,0,0,0,1,0,1,1,0,0,0,0,0,1,0,0 _label="Continuous~droste"
 #@cli : $ image.jpg fx_crease 30,10,3 _label="Crease"
-#@cli : $ image.jpg fx_distort_lens_preview 0.29,0,0.23,50,50,0,0 _label="Distort~lens"
-#@cli : $ image.jpg fx_drop_water_preview 0,20,2,80,0,3,35,10,1,0.5,0.25,0.5,0.75,0.05,0.15,1 _label="Drop~water"
+#@cli : $ image.jpg fx_distort_lens 0.29,0,0.23,50,50,0,0 _label="Distort~lens"
+#@cli : $ image.jpg fx_drop_water 0,20,2,80,0,3,35,10,1,0.5,0.25,0.5,0.75,0.05,0.15,1 _label="Drop~water"
 #@cli : $ image.jpg fx_reflect 50,1,110,160,190,64,0,1.5,0,-3.3,7,1.5 _label="Reflection"
-#@cli : $ image.jpg fx_square_circle_preview 0,1,0,0,0,0,0,0 _label="Square~to~circle"
-#@cli : $ image.jpg fx_textured_glass_preview 40,40,1,1,0,2,0,0 _label="Textured~glass"
+#@cli : $ image.jpg fx_square_circle 0,1,0,0,0,0,0,0 _label="Square~to~circle"
+#@cli : $ image.jpg fx_textured_glass 40,40,1,1,0,2,0,0 _label="Textured~glass"
 #@cli : $ sample lena,leno,320 morph 40 _fps=5 _label="morph"
 
 #@cli gallery_filtering
 #@cli : This entry defines some examples of filters for the G'MIC gallery page.
 #@cli : $ image.jpg fx_gcd_crt 1.8,1.8,0,0 equalize 256 _label="CRT~sub-pixels"
-#@cli : $ image.jpg fx_dirty_preview 30,1,0,0,0 _label="Dirty"
-#@cli : $ image.jpg fx_freaky_details_preview 2,10,1,11,0,32,0 _label="Freaky~details"
-#@cli : $ image.jpg jeje_normalize_local_variance_preview 50,5,5,1,0,0 _label="Local~variance~normalization"
-#@cli : $ image.jpg fx_mighty_details_preview 25,1,25,1,11,0 _label="Mighty~details"
+#@cli : $ image.jpg fx_dirty 30,1,0,0,0 _label="Dirty"
+#@cli : $ image.jpg fx_freaky_details 2,10,1,11,0,32,0 _label="Freaky~details"
+#@cli : $ image.jpg jeje_normalize_local_variance 50,5,5,1,0,0 _label="Local~variance~normalization"
+#@cli : $ image.jpg fx_mighty_details 25,1,25,1,11,0 _label="Mighty~details"
 
 #@cli gallery_patterns
 #@cli : This entry defines some examples of pattern filters for the G'MIC gallery page.
-#@cli : $ image.jpg fx_rain_preview 65,10,50,0.1,1,1,0 _label="Rain~&amp;~snow"
+#@cli : $ image.jpg fx_rain 65,10,50,0.1,1,1,0 _label="Rain~&amp;~snow"
 #@cli : $ 400,400,1,3 fx_camouflage 9,12,100,30,46,33,75,90,65,179,189,117,255,246,158 _label="Camouflage"
-#@cli : $ image.jpg jeje_clouds_preview 50,0.5 _label="Clouds"
-#@cli : $ image.jpg fx_crystal_preview 50,0.2,20,0 _label="Crystal"
+#@cli : $ image.jpg jeje_clouds 50,0.5 _label="Clouds"
+#@cli : $ image.jpg fx_crystal 50,0.2,20,0 _label="Crystal"
 #@cli : $ 400,400,1,3 fx_crystal_background 10,25,0,100,1 _label="Crystal~background"
 #@cli : $ image.jpg fx_marble 0.5,1,0,0,0.4,0.6,0.6,1.1,0,100 _label="Marble"
 #@cli : $ image.jpg fx_mineral_mosaic 1,2,1,100,0 _label="Mineral~mosaic"
-#@cli : $ image.jpg fx_shapes_preview 1,16,10,2,5,106.8,2,0,0,1,0 _label="Op~art"
+#@cli : $ image.jpg fx_shapes 1,16,10,2,5,106.8,2,0,0,1,0 _label="Op~art"
 #@cli : $ 400,400,1,3 fx_satin 20,1,0,0,0,0,255,255,255,255,255,0,0,0,-50,0,0 _label="Satin"
 #@cli : $ 400,400,1,3 fx_seamless_turbulence 15,20,0,1,3,1 _label="Seamless~turbulence"
-#@cli : $ image.jpg fx_shockwaves_preview 10,10,20,0,0 _label="Shock~waves"
+#@cli : $ image.jpg fx_shockwaves 10,10,20,0,0 _label="Shock~waves"
 #@cli : $ 400,400,1,3 fx_equation_parametric "sin(t)*(exp(cos(t))-2*cos(4*t)-sin(t/12)^5)","cos(t)*(exp(cos(t))-2*cos(4*t)-sin(t/12)^5)",0,100,4096,1,0,64,0,0,128,0,0,1,1,1 _label="Equation~plot~[parametric]"
-#@cli : $ 400,400,1,3 KittyRings_preview 30,8,0,1,113,0,113,0,255,0 _label="Kitaoka~spin~illusion"
+#@cli : $ 400,400,1,3 KittyRings 30,8,0,1,113,0,113,0,255,0 _label="Kitaoka~spin~illusion"
 #@cli : $ 400,400,1,3 fx_neon_lightning 50,50,0,50,50,100,50,0.7,3,130,80,50,0.25,0 _label="Neon~lighting"
-#@cli : $ image.jpg fx_lava_preview 8,5,3,0,0 _label="Lava"
+#@cli : $ image.jpg fx_lava 8,5,3,0,0 _label="Lava"
 #@cli : $ sample monkey,lion,monkey 100%,100% plasma. equalize. 256 transition[0,1,2] [3],10 rm. _fps=10 _label="transition"
 #@cli : $ image.jpg fx_shapeism 2,7,0.38,0,1,5,32,8,3,1,5,0.5,1,0,0,0,255 _label="Shapeism"
 
@@ -36203,11 +36203,11 @@ fx_solve_maze_preview :
 
 #@cli gallery_blackandwhite
 #@cli : This entry defines some examples of black-and-white filters for the G'MIC gallery page.
-#@cli : $ image.jpg fx_freaky_bw_preview 90,20,0,0,0,0 _label="Freaky~B&amp;W"
-#@cli : $ image.jpg fx_engrave_preview 0.5,50,0,8,40,0,0,0,10,1,0,0,0,1,0 _label="Engrave"
+#@cli : $ image.jpg fx_freaky_bw 90,20,0,0,0,0 _label="Freaky~B&amp;W"
+#@cli : $ image.jpg fx_engrave 0.5,50,0,8,40,0,0,0,10,1,0,0,0,1,0 _label="Engrave"
 #@cli : $ image.jpg fx_gcd_layeretch 11,4,12,0.12,100,8.5,5,0,0,3,1,1,0 _label="Multi-layer~etch"
 #@cli : $ image.jpg fx_pencil_portraitbw 30,120,1,0.5,144,79,21,0 _label="Pencil~portrait"
-#@cli : $ image.jpg fx_gcd_etch_preview 125,153,171,185,0.1,50,80,50,10,15,12,20,0,1,0.3,1,0,0 _label="Threshold~etch"
+#@cli : $ image.jpg fx_gcd_etch 125,153,171,185,0.1,50,80,50,10,15,12,20,0,1,0.3,1,0,0 _label="Threshold~etch"
 
 #@cli gallery_codesamples
 #@cli : This entry defines some examples of coding-fun filters for the G'MIC gallery page.
