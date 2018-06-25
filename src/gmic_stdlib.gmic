@@ -24962,10 +24962,11 @@ fx_gmicky_preview :
 #@gui : - <b>2017/05/29</b> : version <i>2.0.0</i>.\n
 #@gui : - <b>2017/10/09</b> : version <i>2.1.0</i>.\n
 #@gui : - <b>2018/02/15</b> : version <i>2.2.0</i>.\n
-#@gui : - <span foreground="purple"><b>2018/06/21</b> : version <i>2.3.0</i> (Current stable).</span>\n
+#@gui : - <b>2018/06/21</b> : version <i>2.3.0</i>.\n
+#@gui : - <span foreground="purple"><b>2018/06/25</b> : version <i>2.3.1</i> (Current stable).</span>\n
 #@gui : "}
 #@gui : sep = separator()
-##@gui : url = link{"View changelog to upcoming major version (2.3.0)","https://discuss.pixls.us/t/on-the-road-to-2-3-0"}
+#@gui : url = link{"View changelog to upcoming major version (2.4.0)","https://discuss.pixls.us/t/on-the-road-to-2-4-0"}
 #@gui : url = link{"View latest minor changelog (2.3.0)","https://discuss.pixls.us/t/release-of-gmic-2-3-0"}
 #@gui : url = link{"View latest major changelog (2.0.0)","https://discuss.pixls.us/t/release-of-gmic-2-0-0"}
 
@@ -29691,7 +29692,7 @@ fx_spherize_preview :
   if $9 grid 5%,5%,50%,50%,0.6,255 fi
   fx_spherize ${1-3},$cx,$cy,${6--1}
 
-#@gui Square to circle : fx_square_circle, fx_square_circle_preview
+#@gui Square to circle : fx_square_circle, fx_square_circle
 #@gui : Mode = choice(0,"Square to circle","Circle to square")
 #@gui : Interpolation = choice(1,"Nearest neighbor","Linear")
 #@gui : Boundary = choice(0,"Transparent","Nearest","Periodic","Mirror")
