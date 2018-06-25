@@ -3959,7 +3959,7 @@ update_gallery_html : check "isbool(${1=0})"
   categories=arrays,artistic,blackandwhite,colors,deformations,filtering,patterns,3drendering,codesamples
   nb_categories={narg($categories)}
   commands_arrays=gallery_arrays,array,array_fade,array_mirror,frame_blur,frame_cube,frame_painting,img2ascii,imagegrid,rotate_tiles,vignette,tunnel
-  commands_artistic=gallery_artistic,boxfitting,cartoon,cubism,draw_whirl,fractalize,halftone,light_relief,sketchbw,linify,mosaic,polaroid,polygonize,poster_hope,rodilius,stained_glass,stencil
+  commands_artistic=gallery_artistic,boxfitting,cartoon,cubism,draw_whirl,fractalize,halftone,sketchbw,light_relief,mosaic,linify,polaroid,polygonize,poster_hope,rodilius,stencil,stained_glass
   commands_blackandwhite=gallery_blackandwhite,pencilbw,old_photo,sepia
   commands_colors=gallery_colors,solarize,hsv2rgb,transfer_rgb
   commands_deformations=gallery_deformations,deform,map_sphere,seamcarve,spherize,twirl,warp_perspective,water,wave
@@ -6086,7 +6086,7 @@ negate : skip "${1=,}"
 normp : check "isval(${1==2}) && $1>=0"
   e[^-1] "Compute pointwise L"$1"-norm of vectors, in image$?."
   v -
-  if {$1==0} neq 0 compose_channels +
+  if {$1==0} != 0 compose_channels +
   elif {$1==1} abs compose_channels +
   elif {$1==2} norm
   elif {$1==inf} abs compose_channels max
@@ -10717,7 +10717,7 @@ delaunay :
   v - repeat $! l[$>]
 
     # Retrieve point coordinates.
-    +slices 0 norm. neq. 0 {is+1},1,1,2 +f.. ">init(p = 0); i?(I[#-1,++p] = [x,y]; p):0"
+    +slices 0 norm. !=. 0 {is+1},1,1,2 +f.. ">init(p = 0); i?(I[#-1,++p] = [x,y]; p):0"
 
     # Compute voronoi diagram of point cloud.
     distance... 1 *... -1 watershed. ... rm...
@@ -11905,7 +11905,7 @@ close_binary :
       fi
 
       # Find and connect segments.
-      eq[new_strokes] 0 # Negate values to consider boundary pixels (0) as strokes.
+      ==[new_strokes] 0 # Negate values to consider boundary pixels (0) as strokes.
 
       f[keycoords] ">"$_edgel_lib"
         for_segment(code) = for (t = 0, t<=tmax, ++t,
@@ -11985,7 +11985,7 @@ close_binary :
             );
           );
         ); I"
-      eq[new_strokes] 0
+      ==[new_strokes] 0
       if {!0$_keep_keycoords} rm[keycoords] fi # Small hack used by the plug-in preview.
     fi
     rm[strokes]
@@ -13390,7 +13390,7 @@ cylinder3d : check ${3=24}>0 skip ${1=1},${2=1}
 delaunay3d :
   e[^-1] "Generate 3d delaunay triangulation from image$?."
   v - repeat $! l[$>]
-    channels 0 neq 0
+    channels 0 != 0
 
     # Label each point separately
     whd={w},{h},{d} +r 1,{w*h*d},1,1,-1 cumulate. *. .. r. $whd,1,-1
@@ -17337,7 +17337,7 @@ cracks : check "${1=25}>=0" skip ${2=0},${3=1},${4=0}
     +dilate. 3 -[-2,-1] !=. 0 thinning.
     if $2
       f. "i?i:j(1)?2:j(-1)?0.5:i" n. 0,1
-      +fc.. ${4--1} *. .. neq.. 0 j... .,0,0,0,0,$3,..
+      +fc.. ${4--1} *. .. !=.. 0 j... .,0,0,0,0,$3,..
     else
       +fc.. ${4--1} j... .,0,0,0,0,$3,..
     fi
@@ -26439,7 +26439,7 @@ fx_polygonize_delaunay :
     elif {$5==2} # Random
       +norm[1] label_fg. 0 {iM+1},1,1,3 rand. 0,255 to_rgba. point. 0 map.. . rm.
     else # Black or white
-      +norm[1] neq. 0 *. 255 channels. -3,0
+      +norm[1] !=. 0 *. 255 channels. -3,0
       if $5 sh. 0,2 f. 255 rm. fi
     fi
     rm[0,2]
@@ -28031,7 +28031,7 @@ fx_customize_clut :
     if $1 ^. {1/(0.05+4*$1%)} else f. 0 fi
     n. 0,1 nm. influence mv. -3
   fi
-  eq. 0 inpaint_diffusion.. .,100%,1,20 rm. c. 0,255
+  ==. 0 inpaint_diffusion.. .,100%,1,20 rm. c. 0,255
 
   if $influence
     100%,100%,100%,3,[x,y,z] n. 0,255
@@ -32530,7 +32530,7 @@ fx_illuminate_shape2d_preview_interactive :
     wsiz0=${fitscreen\ $siz,1,30%,100%}
     wsiz=$wsiz0
     r $siz,1,100%,3
-    s. c,-3 neq. 0 l.. - 128 / 127 s c,-2 / endl a[-2,-1] c # Gradient map
+    s. c,-3 !=. 0 l.. - 128 / 127 s c,-2 / endl a[-2,-1] c # Gradient map
     rv s. c,-3
     (160,128;128,160) r. 16,16 r. ..,..,1,3,0,2
     30,30,1,1 circle. 50%,50%,15%,1,1 b. 4 n. 0,1
@@ -32991,7 +32991,7 @@ fx_crystal :
   repeat $! l[$>] split_opacity l[0]
     s={s}
     +gradient_norm >=. {(100-$3)/5} remove_pixels. {100-max(0.1,$1*$3%)}%,{is} *
-    +norm neq. 0 a c
+    +norm !=. 0 a c
     sigma=0.2
     do
       +b. $sigma sigma*={(1+$2)}
@@ -34909,7 +34909,7 @@ fx_random_gradient :
             i(#0,x,y,0,3) = $7*255 + (1-$7)*round(u(255));
           )"
     if {$7!=1} sh.. 100% n. 0,255 rm. fi
-    eq. 0
+    ==. 0
     sh.. 0,2 srgb2rgb. rm.
     inpaint_diffusion.. [1],100%,1 rm.
     b $3% n 0,255
@@ -36131,7 +36131,7 @@ fx_solve_maze_preview :
 
 #@cli gallery_artistic
 #@cli : This entry defines some examples of artistic filters for the G'MIC gallery page.
-#@cli : $ image.jpg fx_engrave 0.5,4,0,7.68,15.2,0,0,1,10,1,0,0,0,1,0 _label="Engrave"
+#@cli : $ image.jpg fx_engrave 0.5,4,0,7.68,15.2,0,0,1,10,1,0,0,0,1,0 gui_merge_layers _label="Engrave"
 #@cli : $ image.jpg fx_bokeh 3,8,0,30,8,4,0.3,0.2,210,210,80,160,0.7,30,20,20,1,2,170,130,20,110,0.15,0 _label="Bokeh"
 #@cli : $ image.jpg fx_8bits 25,800,16,0 _label="Oldschool~8bits"
 #@cli : $ image.jpg fire_edges 0.7,0.25,0.5,25,20 _fps=6 _label="Edges~on~fire"
@@ -36162,7 +36162,7 @@ fx_solve_maze_preview :
 #@cli : $ image.jpg souphead_droste10 40,100,1,1,1,0,0,0,0,0,1,10,1,0,90,0,0,0,0,1,0,1,1,0,0,0,0,0,1,0,0 _label="Continuous~droste"
 #@cli : $ image.jpg fx_crease 30,10,3 _label="Crease"
 #@cli : $ image.jpg fx_distort_lens 0.29,0,0.23,50,50,0,0 _label="Distort~lens"
-#@cli : $ image.jpg fx_drop_water 0,20,2,80,0,3,35,10,1,0.5,0.25,0.5,0.75,0.05,0.15,1 _label="Drop~water"
+#@cli : $ image.jpg fx_drop_water 0,20,2,80,0,3,35,10,1,0.5,0.25,0.5,0.75,0.05,0.15,1 gui_merge_layers _label="Drop~water"
 #@cli : $ image.jpg fx_reflect 50,1,110,160,190,64,0,1.5,0,-3.3,7,1.5 _label="Reflection"
 #@cli : $ image.jpg fx_square_circle 0,1,0,0,0,0,0,0 _label="Square~to~circle"
 #@cli : $ image.jpg fx_textured_glass 40,40,1,1,0,2,0,0 _label="Textured~glass"
@@ -36178,7 +36178,7 @@ fx_solve_maze_preview :
 
 #@cli gallery_patterns
 #@cli : This entry defines some examples of pattern filters for the G'MIC gallery page.
-#@cli : $ image.jpg fx_rain 65,10,50,0.1,1,1,0 _label="Rain~&amp;~snow"
+#@cli : $ image.jpg fx_rain 65,10,50,0.1,1,1,0 gui_merge_layers _label="Rain~&amp;~snow"
 #@cli : $ 400,400,1,3 fx_camouflage 9,12,100,30,46,33,75,90,65,179,189,117,255,246,158 _label="Camouflage"
 #@cli : $ image.jpg jeje_clouds 50,0.5 _label="Clouds"
 #@cli : $ image.jpg fx_crystal 50,0.2,20,0 _label="Crystal"
