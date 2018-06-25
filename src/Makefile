@@ -344,7 +344,7 @@ cli:
 debug:
 	$(MAKE) "CFLAGS+=$(GMIC_CLI_CFLAGS) $(DEBUG_CFLAGS)" "LIBS+=$(GMIC_CLI_LIBS)" _cli
 
-_cli: check_versions gmic.cpp gmic.h gmic_stdlib$(VERSION).h CImg.h
+_cli: check_versions gmic.cpp gmic.h gmic_stdlib.h CImg.h
 	$(CXX) -o gmic_cli.o -c gmic.cpp $(CFLAGS)
 	$(CXX) -o gmic gmic_cli.cpp gmic_cli.o $(CFLAGS) $(LIBS)
 
@@ -393,7 +393,7 @@ else
 	$(CXX) -o use_libgmic use_libgmic.cpp -L. -lgmic $(LIBS)
 endif
 
-libgmic.o: check_versions gmic.cpp gmic.h gmic_stdlib$(VERSION).h CImg.h
+libgmic.o: check_versions gmic.cpp gmic.h gmic_stdlib.h CImg.h
 	$(CXX) -o libgmic.o -c gmic.cpp $(PIC) $(CFLAGS)
 
 # LibCgmic (standard)
@@ -429,7 +429,7 @@ endif
 endif
 	$(CC) -std=c99 -o use_libcgmic use_libcgmic.c -L. -lcgmic
 
-libcgmic.o: check_versions gmic.cpp gmic.h gmic_stdlib$(VERSION).h CImg.h
+libcgmic.o: check_versions gmic.cpp gmic.h gmic_stdlib.h CImg.h
 	$(CXX) -o libcgmic.o -c gmic_libc.cpp $(PIC) $(CFLAGS)
 
 libcgmic_files:
@@ -485,7 +485,7 @@ endif
 endif
 	$(CC) -std=c99 -o use_libcgmic_static use_libcgmic.c -L. -lcgmicstatic
 
-libcgmicstatic.o: check_versions gmic.cpp gmic.h gmic_stdlib$(VERSION).h CImg.h
+libcgmicstatic.o: check_versions gmic.cpp gmic.h gmic_stdlib.h CImg.h
 	$(CXX) -o libcgmicstatic.o -c gmic_libc.cpp $(PIC) $(CFLAGS)
 
 # All interfaces, sharing the same dynamic library
@@ -501,7 +501,7 @@ _allshared: libgmic_shared.o
 	$(CXX) -o gmic gmic_cli.cpp $(CFLAGS) -lgmic_shared $(LIBS)
 	$(STRIP) gmic$(EXE)
 
-libgmic_shared.o: check_versions CImg.h gmic_stdlib$(VERSION).h
+libgmic_shared.o: check_versions CImg.h gmic_stdlib.h
 	$(CXX) -o libgmic_shared.o -c gmic.cpp $(PIC) $(CFLAGS)
 
 # G'MIC Online
@@ -516,15 +516,15 @@ gmicol:
 
 # G'MIC-Qt
 #---------
-gimp: check_versions gmic_qt_files CImg.h gmic_stdlib$(VERSION).h
+gimp: check_versions gmic_qt_files CImg.h gmic_stdlib.h
 	cd ../gmic-qt && $(QMAKE) CONFIG+=release GMIC_PATH=$(SRC_PATH) PRERELEASE=$(PRERELEASE) HOST=gimp gmic_qt.pro && $(MAKE)
 	@echo "Executable 'gmic_gimp_qt' has been successfully compiled in '../gmic-qt/'."
 
-krita: check_versions gmic_qt_files CImg.h gmic_stdlib$(VERSION).h
+krita: check_versions gmic_qt_files CImg.h gmic_stdlib.h
 	cd ../gmic-qt && $(QMAKE) CONFIG+=release GMIC_PATH=$(SRC_PATH) PRERELEASE=$(PRERELEASE) HOST=krita gmic_qt.pro && $(MAKE)
 	@echo "Executable 'gmic_krita_qt' has been successfully compiled in '../gmic-qt/'."
 
-gmic_qt: check_versions gmic_qt_files CImg.h gmic_stdlib$(VERSION).h
+gmic_qt: check_versions gmic_qt_files CImg.h gmic_stdlib.h
 	cd ../gmic-qt && $(QMAKE) CONFIG+=release GMIC_PATH=$(SRC_PATH) PRERELEASE=$(PRERELEASE) HOST=none gmic_qt.pro && $(MAKE)
 	@echo "Executable 'gmic_qt' has been successfully compiled in '../gmic-qt/'."
 
@@ -552,7 +552,7 @@ gmic_qt_files:
 
 # ZArt
 #-----
-zart: check_versions zart_files CImg.h gmic_stdlib$(VERSION).h
+zart: check_versions zart_files CImg.h gmic_stdlib.h
 ifeq ($(OS),Darwin)
 	cd ../zart && $(QMAKE) CONFIG+=release GMIC_PATH=$(SRC_PATH) zart.pro && $(MAKE) && $(STRIP) zart.app/Contents/MacOS/zart
 else
@@ -583,11 +583,11 @@ zart_files:
 
 # Get header files
 #------------------
-gmic_stdlib$(VERSION).h: gmic_stdlib.gmic
+gmic_stdlib.h: gmic_stdlib.gmic
 	@echo "> Retrieve G'MIC Standard Library..."
-	@if [ ! -f ./gmic_stdlib$(VERSION).h ]; then \
-	  $(WGET) gmic_stdlib$(VERSION).h http://gmic.eu/gmic_stdlib$(VERSION).h; \
-	  touch gmic_stdlib$(VERSION).h; \
+	@if [ ! -f ./gmic_stdlib.h ]; then \
+	  $(WGET) gmic_stdlib.h http://gmic.eu/gmic_stdlib.h; \
+	  touch gmic_stdlib.h; \
 	fi
 	@echo " done!"
 
@@ -611,7 +611,7 @@ check_versions:
 do_gmic_stdlib.h:
 	@echo "/*\n\
  #\n\
- #  File        : gmic_stdlib$(VERSION).h\n\
+ #  File        : gmic_stdlib.h\n\
  #                ( C++ header file )\n\
  #\n\
  #  Description : Raw data arrays encoding the G'MIC standard library\n\
@@ -660,10 +660,10 @@ do_gmic_stdlib.h:
  #  The fact that you are presently reading this means that you have had\n\
  #  knowledge of the CeCILL and CeCILL-C licenses and that you accept its terms.\n\
  #\n\
-*/\n" > gmic_stdlib$(VERSION).h
-	@\gmic gmic_stdlib.gmic raw:gmic_stdlib.gmic,char compress_gmic 1 a y serialize char,1,0 o -.h,uchar | sed 's/unsigned char/const unsigned char/' | sed 's/unnamed/gmic_stdlib/' >> gmic_stdlib$(VERSION).h
-	@echo "\nconst unsigned long size_data_gmic_stdlib = (unsigned long)sizeof(data_gmic_stdlib);" >> gmic_stdlib$(VERSION).h
-	@\gmic v - _update_server_upload gmic_stdlib$(VERSION).h
+*/\n" > gmic_stdlib.h
+	@\gmic gmic_stdlib.gmic raw:gmic_stdlib.gmic,char compress_gmic 1 a y serialize char,1,0 o -.h,uchar | sed 's/unsigned char/const unsigned char/' | sed 's/unnamed/gmic_stdlib/' >> gmic_stdlib.h
+	@echo "\nconst unsigned long size_data_gmic_stdlib = (unsigned long)sizeof(data_gmic_stdlib);" >> gmic_stdlib.h
+	@\gmic v - _update_server_upload gmic_stdlib.h
 
 # Bash completion script
 #-----------------------
@@ -746,7 +746,7 @@ uninstall:
 distclean: clean
 
 clean:
-	rm -rf CImg.h gmic_stdlib$(VERSION).h gmic$(EXE) use_libgmic$(EXE) use_libcgmic$(EXE) use_libcgmic_static$(EXE) gmic*.o libgmic* libcgmic* *~
+	rm -rf CImg.h gmic_stdlib.h gmic$(EXE) use_libgmic$(EXE) use_libcgmic$(EXE) use_libcgmic_static$(EXE) gmic*.o libgmic* libcgmic* *~
 	@if [ -f ../zart/Makefile ]; then cd ../zart && $(MAKE) clean; fi
 	@if [ -h ../zart ]; then rm -f ../zart; fi
 	@if [ -f ../gmic-qt/Makefile ]; then cd ../gmic-qt && $(MAKE) clean; fi

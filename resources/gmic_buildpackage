@@ -86,7 +86,7 @@ if [ "$OSTYPE" == "msys" ]; then
 
     echo " - Release number : $SVERSION$SUFFIX (GIMP $GIMPVER)."
 
-    sed "s/rm -rf CImg.h gmic_stdlib\$(SVERSION).h /rm -rf /" Makefile > /tmp/Makefile
+    sed "s/rm -rf CImg.h gmic_stdlib.h /rm -rf /" Makefile > /tmp/Makefile
     mv /tmp/Makefile Makefile
 
     cd $HOME
@@ -292,7 +292,7 @@ echo " - Release number : $SVERSION$SUFFIX"
 
 # Create default command file.
 #-----------------------------
-echo " - Create 'gmic_stdlib$(VERSION).h' file"
+echo " - Create 'gmic_stdlib.h' file"
 cd gmic/src/
 cp -f gmic_stdlib.gmic ../html/
 cp -f gmic_stdlib.gmic ../html/gmic_stdlib.$VERSION
@@ -388,8 +388,8 @@ mkdir $DIR
 cp -Lrf COPYING README CMakeLists.txt $DIR
 mkdir $DIR/src
 cd src
-cp -Lrf Makefile CImg.h gmic.cpp gmic.h gmic_stdlib$(VERSION).h gmic_stdlib.gmic gmic_cli.cpp gmic_in_script.scm use_libgmic.cpp gmic_libc.cpp gmic_libc.h use_libcgmic.c $DIR/src
-touch $DIR/src/gmic_stdlib$(VERSION).h
+cp -Lrf Makefile CImg.h gmic.cpp gmic.h gmic_stdlib.h gmic_stdlib.gmic gmic_cli.cpp gmic_in_script.scm use_libgmic.cpp gmic_libc.cpp gmic_libc.h use_libcgmic.c $DIR/src
+touch $DIR/src/gmic_stdlib.h
 cd ..
 mkdir $DIR/man
 cd man
@@ -429,7 +429,7 @@ if [ "$1" == "final" ]; then
     sed "s/PRERELEASE = /NO_PRERELEASE = /" Makefile > /tmp/Makefile
     mv /tmp/Makefile Makefile
 fi
-sed "s/rm -rf CImg.h gmic_stdlib\$(SVERSION).h /rm -rf /" Makefile > /tmp/Makefile
+sed "s/rm -rf CImg.h gmic_stdlib.h /rm -rf /" Makefile > /tmp/Makefile
 mv /tmp/Makefile Makefile
 make clean
 rm -f gmic_buildpackage
