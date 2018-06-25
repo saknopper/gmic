@@ -1797,7 +1797,11 @@ static const CImgList<T>& save_gmz(const char *filename, const CImgList<T>& imag
 
 #include "gmic.h"
 using namespace cimg_library;
-#include "gmic_stdlib.h"
+
+#define _gmic_str(x) #x
+#define _gmic_stdlib_h(ver) _gmic_str(gmic_stdlib##ver.h)
+#define gmic_stdlib_h(ver) _gmic_stdlib_h(ver)
+#include gmic_stdlib_h(gmic_version)
 
 // Define convenience macros, variables and functions.
 //----------------------------------------------------
