@@ -583,7 +583,7 @@ zart_files:
 
 # Get header files
 #------------------
-gmic_stdlib.h: gmic_stdlib.gmic
+gmic_stdlib$(VERSION).h: gmic_stdlib.gmic
 	@echo "> Retrieve G'MIC Standard Library..."
 	@if [ ! -f ./gmic_stdlib$(VERSION).h ]; then \
 	  $(WGET) gmic_stdlib$(VERSION).h http://gmic.eu/gmic_stdlib$(VERSION).h; \
