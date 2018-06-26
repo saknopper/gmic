@@ -6595,7 +6595,7 @@ cmyk2rgb :
 #@cli : Simulate color blindness vision.
 #@cli : $ image.jpg +colorblind 0
 colorblind : check "isint($1) && $1>=0 && $1<=7"
-  v - s0="protanopia" s1="protanomaly" s2="deuteranopia" s3="deuteranomaly" s4="tritanopia" s5="tritanomaly" s6="achromatopsia" s7="achromatomaly" v +
+  v - s0="protanopia" s1="protanomaly" s2="deuteranopia" s3="deuteranomaly" s4="tritanopia" s5="tritanomaly" s6="achromatopsia" s7="achromatomaly"
   v + e[^-1] "Simulate color blindness of type '"${s$1}"' on image$?." v -
   type0=(0.567,0.433,0;0.558,0.442,0;0,0.242,0.758)
   type1=(0.817,0.183,0;0.333,0.667,0;0,0.125,0.875)
