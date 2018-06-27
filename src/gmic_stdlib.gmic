@@ -35063,31 +35063,49 @@ fx_lissajous :
   endl done
 
 #@gui Mandelbrot - Julia sets : fx_mandelbrot, fx_mandelbrot_preview
-#@gui : X-center = float(0,-2,2)
-#@gui : Y-center = float(0,-2,2)
-#@gui : Zoom = float(0,0,100)
-#@gui : Iterations = int(128,1,512)
+#@gui : x0 = value(-2)
+#@gui : y0 = value(-2)
+#@gui : x1 = value(2)
+#@gui : y1 = value(2)
+#@gui : note = note{"<small><b>Fractal type:</b></small>"}
 #@gui : Fractal set = choice("Mandelbrot","Julia")
-#@gui : X-seed (Julia) = text("0.317")
-#@gui : Y-seed (Julia) = text("0.03")
-#@gui : Color 1 = color(0,0,255)
-#@gui : Color 2 = color(0,255,0)
-#@gui : Color 3 = color(255,0,0)
-#@gui : Color 4 = color(255,0,255)
-#@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2010/29/12</i>.</small>")
+#@gui : Iterations = int(1024,16,65535)
+#@gui : X-seed (julia) = text("0.317")
+#@gui : Y-seed (julia) = text("0.03")
+#@gui : sep = separator(), note = note{"<small><b>Colormap:</b></small>"}
+#@gui : Number of colors = int(16,2,2048)
+#@gui : Smoothness = int(8,1,256)
+#@gui : Seed = int(255,0,65536)
+#@gui : sep = separator(), note = note{"<small><b>Navigation:</b></small>"}
+#@gui : Zoom center = point(50,50,0,0,255,255,255,200)
+#@gui : Zoom factor = float(0.25,0,1)
+#@gui : Zoom in = button()
+#@gui : Zoom out = button()
+#@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2018/06/27</i>.</small>")
 fx_mandelbrot :
-  (0^0^0) ($8^$9^$10) ($11^$12^$13) ($14^$15^$16) ($17^$18^$19)
-  a[-4--1] x r. $4,1,1,3,3 a[-2,-1] x mv. 0
-  repeat {$!-1}
-    wh={w},{h} rm. $wh
-    mandelbrot. {$1-2/(1+$3)},{$2-2/(1+$3)},{$1+2/(1+$3)},{$2+2/(1+$3)},$4,$5,{if($5,$6,0)},{if($5,$7,0)}
-    map. [0]
-  mv. 1 done rm[0]
+  if {!narg($_size)} _size={max(w,h)} fi
+  rm $_size,$_size
+  mandelbrot ${1-4},$6,{$5?[1,$7,$8]:[0,0,0]}
+  srand $11 $9,1,1,3 rand. 0,255 r. {$9*$10},1,1,3,3 point. 0 map.. .,3 rm.
 
 fx_mandelbrot_preview :
-  fx_mandelbrot ${^0}
-  line 0,50%,100%,50%,0.5,255
-  line 50%,0,50%,100%,0.5,255
+  _size={min($_preview_width,$_preview_height)}
+  if {"$15 || $16"}
+    x0,y0,x1,y1={"P0 = [${1,2}]; dP = [${3,4}] - P0; C = P0 + [${12,13}]%*dP; zfact = $14*($15?1:-2); dC = 0.5*dP*(1 - 0.98*zfact); [C - dC,C + dC]"}
+    status=\{$x0\}\{$y0\}\{$x1\}\{$y1\}\{$5\}\{$6\}\{$7\}\{$8\}\{$9\}\{$10\}\{$11\}\{50,50\}\{$14\}\{0\}\{0\}
+    px,py=50
+  else
+    x0,y0,x1,y1=${1-4}
+    status=
+    px,py=${12,13}
+  fi
+  fx_mandelbrot $x0,$y0,$x1,$y1,${5--1}
+
+  x0r,y0r,x1r,y1r={"C = ["$px,$py"]%*w; dC = 0.5*w*(1 - 0.98*$14); round([C - dC, C + dC - 1])"}
+  rectangle $x0r,$y0r,$x1r,$y1r,0.7,0xF0F0F0F0,255,255,255,255
+  rectangle $x0r,$y0r,$x1r,$y1r,0.7,0x0F0F0F0F,0,0,0,255
+
+  u $status
 
 #@gui Neon lightning : fx_neon_lightning, fx_neon_lightning(1)
 #@gui : Source (%) = point(50,50)
