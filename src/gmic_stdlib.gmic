@@ -29755,7 +29755,7 @@ fx_symmetrize :
 
 fx_symmetrize_preview :
   fx_symmetrize $*
-#  rr2d $_preview_width,$_preview_height,0,1
+  rr2d $_preview_width,$_preview_height,0,1
   u,v={angle=isnan($3)?$5*pi/180:atan2($4-$2,$3-$1);[cos(angle),sin(angle)]}
   repeat $! l[$>]
     x0,y0,x1,y1={V=[$u,$v];([${1,2},${1,2}]+10000*[V,-V])*([w,h,w,h]-1)%}
