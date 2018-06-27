@@ -8399,7 +8399,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             cimg_forY(selection,l) gmic_apply(map(palette,boundary));
           } else if ((cimg_sscanf(argument,"%u%c",&lut_type,&end)==1 ||
                       cimg_sscanf(argument,"%u,%u%c",&lut_type,&boundary,&end)==2) &&
-                     lut_type<=7 && boundary<=2) {
+                     lut_type<=7 && boundary<=3) {
             print(images,0,"Map %s color LUT on image%s, with %s boundary conditions.",
                   lut_type==0?"default":lut_type==1?"HSV":lut_type==2?"lines":lut_type==3?"hot":
                   lut_type==4?"cool":lut_type==5?"jet":lut_type==6?"flag":"cube",
