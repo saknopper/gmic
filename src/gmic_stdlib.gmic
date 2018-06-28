@@ -35070,8 +35070,10 @@ fx_lissajous :
 #@gui : note = note{"<small><b>Fractal type:</b></small>"}
 #@gui : Fractal set = choice("Mandelbrot","Julia")
 #@gui : Iterations = int(1024,16,65535)
-#@gui : X-seed (julia) = text("0.317")
-#@gui : Y-seed (julia) = text("0.03")
+##@gui : X-seed (julia) = text("0.317")
+##@gui : Y-seed (julia) = text("0.03")
+#@gui : X-seed (julia) = float(0.317,-2,2)
+#@gui : Y-seed (julia) = float(0.03,-2,2)
 #@gui : sep = separator(), note = note{"<small><b>Colormap:</b></small>"}
 #@gui : Number of colors = int(16,2,2048)
 #@gui : Smoothness = int(8,1,256)
@@ -35082,6 +35084,7 @@ fx_lissajous :
 #@gui : Zoom in = button()
 #@gui : Re-center = button()
 #@gui : Zoom out = button()
+#@gui : Display coordinates = bool(0)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2018/06/27</i>.</small>")
 fx_mandelbrot :
   if {!narg($_size)} _size={max(w,h)} fi
@@ -35093,7 +35096,7 @@ fx_mandelbrot_preview :
   _size={min($_preview_width,$_preview_height)}
   if {"$15 || $16 || $17"}
     x0,y0,x1,y1={"P0 = [${1,2}]; dP = [${3,4}] - P0; C = P0 + [${12,13}]%*dP; zfact = $14*($15?1:$16?0:-2); dC = 0.5*dP*(1 - 0.98*zfact); [C - dC,C + dC]"}
-    status=\{$x0\}\{$y0\}\{$x1\}\{$y1\}\{$5\}\{$6\}\{$7\}\{$8\}\{$9\}\{$10\}\{$11\}\{50,50\}\{$14\}\{0\}\{0\}\{0\}
+    status=\{$x0\}\{$y0\}\{$x1\}\{$y1\}\{$5\}\{$6\}\{$7\}\{$8\}\{$9\}\{$10\}\{$11\}\{50,50\}\{$14\}\{0\}\{0\}\{0\}\{$18\}
     px,py=50
   else
     x0,y0,x1,y1=${1-4}
@@ -35105,7 +35108,7 @@ fx_mandelbrot_preview :
   x0r,y0r,x1r,y1r={"C = ["$px,$py"]%*w; dC = 0.5*w*(1 - 0.98*$14); round([C - dC, C + dC - 1])"}
   rectangle $x0r,$y0r,$x1r,$y1r,0.7,0xF0F0F0F0,255,255,255,255
   rectangle $x0r,$y0r,$x1r,$y1r,0.7,0x0F0F0F0F,0,0,0,255
-
+  if $18 to "C0 = ( "$x0" , "$y0" )\nC1 = ( "$x1" , "$y1" )",2,2,16 fi
   u $status
 
 #@gui Neon lightning : fx_neon_lightning, fx_neon_lightning(1)
