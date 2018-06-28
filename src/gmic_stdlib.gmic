@@ -35080,6 +35080,7 @@ fx_lissajous :
 #@gui : Zoom center = point(50,50,0,0,255,255,255,200)
 #@gui : Zoom factor = float(0.25,0,1)
 #@gui : Zoom in = button()
+#@gui : Re-center = button()
 #@gui : Zoom out = button()
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2018/06/27</i>.</small>")
 fx_mandelbrot :
@@ -35090,9 +35091,9 @@ fx_mandelbrot :
 
 fx_mandelbrot_preview :
   _size={min($_preview_width,$_preview_height)}
-  if {"$15 || $16"}
-    x0,y0,x1,y1={"P0 = [${1,2}]; dP = [${3,4}] - P0; C = P0 + [${12,13}]%*dP; zfact = $14*($15?1:-2); dC = 0.5*dP*(1 - 0.98*zfact); [C - dC,C + dC]"}
-    status=\{$x0\}\{$y0\}\{$x1\}\{$y1\}\{$5\}\{$6\}\{$7\}\{$8\}\{$9\}\{$10\}\{$11\}\{50,50\}\{$14\}\{0\}\{0\}
+  if {"$15 || $16 || $17"}
+    x0,y0,x1,y1={"P0 = [${1,2}]; dP = [${3,4}] - P0; C = P0 + [${12,13}]%*dP; zfact = $14*($15?1:$16?0:-2); dC = 0.5*dP*(1 - 0.98*zfact); [C - dC,C + dC]"}
+    status=\{$x0\}\{$y0\}\{$x1\}\{$y1\}\{$5\}\{$6\}\{$7\}\{$8\}\{$9\}\{$10\}\{$11\}\{50,50\}\{$14\}\{0\}\{0\}\{0\}
     px,py=50
   else
     x0,y0,x1,y1=${1-4}
