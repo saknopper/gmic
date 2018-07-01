@@ -2104,7 +2104,7 @@ static DWORD WINAPI gmic_parallel(void *arg)
 // Array of G'MIC builtin commands (must be sorted in lexicographic order!).
 const char *gmic::builtin_commands_names[] = {
   "!=","%","&","*","*3d","+","+3d","-","-3d","/","/3d","<","<<","<=","=","==",">",">=",">>",
-  "a","abs","acos","add","add3d","and","append","asin","atan","atan2","autocrop","axes",
+  "a","abs","acos","acosh","add","add3d","and","append","asin","asinh","atan","atan2","atanh","autocrop","axes",
   "b","bilateral","blur","boxfilter","break","bsl","bsr",
   "c","camera","channels","check","check3d","col3d","color3d","columns","command","continue","convolve","correlate",
     "cos","cosh","crop","cumulate","cursor","cut",
@@ -5050,14 +5050,23 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
           is_released = false; ++position; continue;
         }
 
-        // Arc-cosine.
-        gmic_simple_command("acos",acos,"Compute pointwise arc-cosine of image%s.");
+        // Arccosine.
+        gmic_simple_command("acos",acos,"Compute pointwise arccosine of image%s.");
 
-        // Arc-sine.
-        gmic_simple_command("asin",asin,"Compute pointwise arc-sine of image%s.");
+        // Arcsine.
+        gmic_simple_command("asin",asin,"Compute pointwise arcsine of image%s.");
 
-        // Arc-tangent.
-        gmic_simple_command("atan",atan,"Compute pointwise arc-tangent of image%s.");
+        // Arctangent.
+        gmic_simple_command("atan",atan,"Compute pointwise arctangent of image%s.");
+
+        // Hyperbolic arccosine.
+        gmic_simple_command("acosh",acosh,"Compute pointwise hyperbolic arccosine of image%s.");
+
+        // Hyperbolic arcsine.
+        gmic_simple_command("asinh",asinh,"Compute pointwise hyperbolic arcsine of image%s.");
+
+        // Hyperbolic arctangent.
+        gmic_simple_command("atanh",atanh,"Compute pointwise hyperbolic arctangent of image%s.");
 
         goto gmic_commands_others;
 
