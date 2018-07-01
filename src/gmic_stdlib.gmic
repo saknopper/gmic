@@ -5337,10 +5337,13 @@ sort_str :
 #@cli : $ 300,1,1,1,'cos(20*x/w)' +abs display_graph 400,300
 
 #@cli acos : (+)
-#@cli : Compute the pointwise arc-cosine of selected images.
+#@cli : Compute the pointwise arccosine of selected images.
 #@cli : $ image.jpg +normalize -1,1 acos[-1]
 #@cli : $ 300,1,1,1,'cut(x/w+0.1*u,0,1)' +acos display_graph 400,300
 #@cli : $$ trigometric-and-inverse-trigometric-commands
+
+#@cli acosh : (+)
+#@cli : Compute the pointwise hyperbolic arccosine of selected images.
 
 #@cli + : eq. to 'add'. : (+)
 
@@ -5382,23 +5385,29 @@ argmin :
   ${-max_whds},"argmin("$str")" k. nm [argmin] v +
 
 #@cli asin : (+)
-#@cli : Compute the pointwise arc-sine of selected images.
+#@cli : Compute the pointwise arcsine of selected images.
 #@cli : $ image.jpg +normalize -1,1 asin[-1]
 #@cli : $ 300,1,1,1,'cut(x/w+0.1*u,0,1)' +asin display_graph 400,300
 #@cli : $$ trigometric-and-inverse-trigometric-commands
 
+#@cli asinh : (+)
+#@cli : Compute the pointwise hyperbolic arcsine of selected images.
+
 #@cli atan : (+)
-#@cli : Compute the pointwise arc-tangent of selected images.
+#@cli : Compute the pointwise arctangent of selected images.
 #@cli : $ image.jpg +normalize 0,8 atan[-1]
 #@cli : $ 300,1,1,1,'4*x/w+u' +atan display_graph 400,300
 #@cli : $$ trigometric-and-inverse-trigometric-commands
 
 #@cli atan2 : [x_argument] : (+)
-#@cli : Compute the pointwise oriented arc-tangent of selected images.
-#@cli : Each selected image is regarded as the y-argument of the arc-tangent function, while the
+#@cli : Compute the pointwise oriented arctangent of selected images.
+#@cli : Each selected image is regarded as the y-argument of the arctangent function, while the
 #@cli : specified image gives the corresponding x-argument.
 #@cli : $ (-1,1) (-1;1) resize 400,400,1,1,3 atan2[1] [0] keep[1] mod {pi/8}
 #@cli : $$ trigometric-and-inverse-trigometric-commands
+
+#@cli atanh : (+)
+#@cli : Compute the pointwise hyperbolic arctangent of selected images.
 
 #@cli << : eq. to 'bsl'. : (+)
 

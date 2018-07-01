@@ -5033,14 +5033,14 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                                 gmic_selection.data(),gmic_argument_text_printed(),
                                 "Compute sequential bitwise AND of image%s");
 
-        // Arc-tangent (two arguments).
+        // Arctangent (two arguments).
         if (!std::strcmp("atan2",command)) {
           gmic_substitute_args(true);
           sep = 0;
           if (cimg_sscanf(argument,"[%255[a-zA-Z0-9_.%+-]%c%c",
                           indices,&sep,&end)==2 && sep==']' &&
               (ind=selection2cimg(indices,images.size(),images_names,"atan2")).height()==1) {
-            print(images,0,"Compute pointwise oriented arc-tangent of image%s, "
+            print(images,0,"Compute pointwise oriented arctangent of image%s, "
                   "with x-argument [%u].",
                   gmic_selection.data(),
                   *ind);
