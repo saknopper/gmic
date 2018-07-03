@@ -668,7 +668,6 @@ gmicol_light_leaks_preview :
 #@web clone("Heart")
 #@web clone("Lightning")
 #@web clone("Lissajous")
-#@web clone("Mandelbrot - Julia sets")
 #@web clone("Neon lightning")
 #@web clone("Plasma")
 #@web clone("Polka dots")
