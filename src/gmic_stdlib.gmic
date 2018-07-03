@@ -29753,6 +29753,45 @@ fx_square_circle :
        I(U,V)"
   fi
 
+#@gui Stereographic projection : fx_project_stereographic, fx_project_stereographic_preview(1)
+#@gui : Center (%) = point(50,50,0,1,255,255,255,170)
+#@gui : Radius / Angle = point(75,50,0,1,255,0,255,170)
+#@gui : Mirror = choice("None","X-axis","Y-axis","XY-axis")
+#@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2018/07/03</i>.</small>")
+fx_project_stereographic :
+  centerx,centery,radangx,radangy,mirror=${1-5}
+  if {!$mirror} mirror y elif {$mirror==1} mirror xy elif {$mirror==3} mirror x fi
+  repeat $! l[$>]
+    {u=max(w,h);[u,u,1,s]},"
+      init(
+        const boundary = 2;
+        const interpolation = "0$_is_preview"?0:1;
+        const centerx = "$centerx"%*(w-1);
+        const centery = "$centery"%*(h-1);
+        const radangx = "$radangx"%*(w-1) - centerx;
+        const radangy = "$radangy"%*(h-1) - centery;
+        const R = sqrt(radangx^2 + radangy^2);
+        const theta0 = atan2(radangy,radangx);
+      );
+      X = x - centerx;
+      Y = y - centery;
+      theta = atan2(Y,X);
+      beta = (X^2 + Y^2)/R^2;
+      z = R*(beta - 1)/(beta + 1);
+      phi = asin(z/R);
+      ((theta-=theta0)*=w#0/(2*pi))%=w#0;
+      ((phi*=h#0/pi)+=h#0/2)%=h#0;
+      I(#0,theta,phi)"
+  k. endl done
+
+fx_project_stereographic_preview :
+  _is_preview=1
+  repeat $! l[$>]
+    fx_project_stereographic ${1-5}
+    line $1%,$2%,$3%,$4%,1,0xF0F0F0F0,255,255,255,255
+    line $1%,$2%,$3%,$4%,1,0x0F0F0F0F,0,0,0,255
+  endl done
+
 #@gui Symmetrize : fx_symmetrize, fx_symmetrize_preview(1)
 #@gui : Point 1 = point(50,50,0,1,0,255,0,170,10)
 #@gui : Point 2 = point(50,75,-1,1,255,255,0,170,10)
