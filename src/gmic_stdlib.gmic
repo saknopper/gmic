@@ -24197,7 +24197,7 @@ gui_split_preview : check "isint(${2=0}) && $2>=0 && $2<=12 && ${5=0}>=0" skip "
   m "_split_preview : $1 k[0]"
   is_movable={!isnan($3)" && "!isnan($4)}
   posx,posy={$is_movable?cut([$3,$4],0,100):[50,50]}
-  pw,ph={-gui_preview_wh}
+  pw,ph=${-gui_preview_wh}
   repeat $! l[$>]
     is_timeout=0
     +l apply_timeout _split_preview,0$_preview_timeout onfail gui_timeout_preview is_timeout=1 endl
