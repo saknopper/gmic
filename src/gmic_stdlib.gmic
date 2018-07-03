@@ -24097,6 +24097,10 @@ gui_filter_sources : skip ${1=0},${2=1}
   l[] _gui_filter_sources $1 onfail rm endl # Invoke custom command to include other filter sources.
   l[] i cimgz:${_path_rc}gui_filter_sources onfail endl # Include other user-defined filters sources.
 
+# Function that alway returns a valid preview size.
+gui_preview_wh :
+  u {0$_preview_width?[0$_preview_width,0$_preview_height]:[400,400]}
+
 # Function used for filters based on parallelization with spatial splitting.
 gui_parallel_overlap :
   apo "$1",$3,{if($2,2^($2-1),0)}
@@ -24193,7 +24197,7 @@ gui_split_preview : check "isint(${2=0}) && $2>=0 && $2<=12 && ${5=0}>=0" skip "
   m "_split_preview : $1 k[0]"
   is_movable={!isnan($3)" && "!isnan($4)}
   posx,posy={$is_movable?cut([$3,$4],0,100):[50,50]}
-  pw,ph={0$_preview_width?[$_preview_width,$_preview_height]:[400,350]}
+  pw,ph={-gui_preview_wh}
   repeat $! l[$>]
     is_timeout=0
     +l apply_timeout _split_preview,0$_preview_timeout onfail gui_timeout_preview is_timeout=1 endl
@@ -24273,7 +24277,7 @@ gui_print_preview : skip "${1=},${3=}" check "${2=32}>=0 && ${4=20}>=0"
   # Resize image to output resolution.
   if $! k[0] fi
   drgba
-  siz={narg($_preview_width)?[0$_preview_width,0$_preview_height]:[${fitscreen\ {[max(w,1),max(h,1)]},1,400}]}
+  siz={0$_preview_width?[0$_preview_width,0$_preview_height]:[${fitscreen\ {[max(w,1),max(h,1)]},1,400}]}
   sizw={arg(1,$siz)-8}
   if $! rr2d $siz,2,3 drgba else $siz,1,3,128 fi
   (1;0.5^1;0.5^0;1)
@@ -24434,8 +24438,7 @@ fx_logo : skip "${1=Universal plug-in\n    [ "${-strver}" ]}","${2=$1}"
   else l[] i https://gmic.eu/img/gmicky_logo.png o $file onfail is_file=0 endl
   fi
   if $is_file
-    if {!narg($_preview_width)} _preview_width=256 fi
-    k. r2dx $_preview_width
+    k. r2dx {0$_preview_width?0$_preview_width:400}
     if {narg($_prerelease)} strprerelease="pre" else strprerelease="" fi
     0 t. "version "${-strver}$strprerelease,0,0,{round(h#0/12)},1,1 r2dx. 50% 100%,100%,1,3,0 j[0] .,{w#0-w-5},0,0,0,1,.. rm[-2,-1]
   else
@@ -25465,7 +25468,8 @@ _fx_drawn_montage :
     # Render thumbnail of current layer, for preview.
     l={1+$1}
     if {$l<=$nb_layers}
-      if {$l,w>h} +r2dx[$l] {$_preview_width/6} else +r2dy[$l] {$_preview_height/6} fi
+      if {$l,w>h} +r2dx[$l] {(0$_preview_width?0$_preview_width:400)/6}
+      else +r2dy[$l] {(0$_preview_height?0$_preview_height:400)/6} fi
       frame. 1,1,0,0,0,255 drgba. to. "#"$l,0,-2,13 to_rgba.
       mv. -3
       thumbnail=1
@@ -25521,7 +25525,7 @@ _fx_drawn_montage :
   # Manage preview.
   if $boundaries blend[0,-1] alpha fi # Add shape boundaries.
   if $thumbnail # Add current layer thumbnail over preview
-    drgba[0] rr2d[0] $_preview_width,$_preview_height
+    drgba[0] rr2d[0] ${-gui_preview_wh}
     j[0] .,3,3,0,0,0.75
     rm.
   fi
@@ -28358,7 +28362,7 @@ fx_equalize_hsv :
 fx_equalize_hsv_preview :
   if $5
     cs=${"arg 1+$1,hsi,hsl,hsv"}
-    rm {0.8*[$_preview_width,$_preview_height]},1,3,\
+    rm {0.8*[${-gui_preview_wh}]},1,3,\
     "$5==1?
        (H = S = 0; V = y/(h-1)):
        (H = x*360/(w-1); S = y/(h-1); V = y/(h-1));
@@ -28366,7 +28370,7 @@ fx_equalize_hsv_preview :
     ${cs}2rgb.
   fi
   gui_split_preview "fx_equalize_hsv $*",${-3--1}
-  if $5 r. $_preview_width,$_preview_height,1,3,0,0,0.5,0.5 fi
+  if $5 r. ${-gui_preview_wh},1,3,0,0,0.5,0.5 fi
 
 #@gui Mixer [CMYK] : fx_mix_cmyk, fx_mix_cmyk_preview(1)+
 #@gui : Cyan factor = float(1,0,4)
@@ -29199,7 +29203,7 @@ fx_circle_transform :
 fx_circle_transform_preview :
   fx_circle_transform $*
   if $10
-    rr2d $_preview_width,$_preview_height,0,1
+    rr2d ${-gui_preview_wh},0,1
     repeat $! l[$>]
       x0,y0={[$1,$2]*([w,h]-1)%}
       r={dx=($3-$1)*(w-1)%;dy=($4-$2)*(h-1)%;norm(dx,dy)}
@@ -29546,7 +29550,7 @@ fx_quadrangle_preview :
     fi
     if {$!==2}
       drgba to[0] Quadrangle to[1] Result frame 1,1,0
-      +a x a[0,1] y rr2d $_preview_width,$_preview_height,0,3
+      +a x a[0,1] y rr2d ${-gui_preview_wh},0,3
       -k[{max(w#0,h#0)>max(w#1,h#1)?0:1}]
     fi
   endl done
@@ -29764,7 +29768,7 @@ fx_symmetrize :
 
 fx_symmetrize_preview :
   fx_symmetrize $*
-  rr2d $_preview_width,$_preview_height,0,1
+  rr2d ${-gui_preview_wh},0,1
   u,v={angle=isnan($3)?$5*pi/180:atan2($4-$2,$3-$1);[cos(angle),sin(angle)]}
   repeat $! l[$>]
     x0,y0,x1,y1={V=[$u,$v];([${1,2},${1,2}]+10000*[V,-V])*([w,h,w,h]-1)%}
@@ -35101,7 +35105,7 @@ fx_mandelbrot :
   srand $11 $9,1,1,3 rand. 0,255 r. {$9*$10},1,1,3,3 point. 0 map.. .,3 rm.
 
 fx_mandelbrot_preview :
-  _size={min($_preview_width,$_preview_height)}
+  _size={min(${-gui_preview_wh})}
   if {"$15 || $16 || $17"}
     x0,y0,x1,y1={"P0 = [${1,2}]; dP = [${3,4}] - P0; C = P0 + [${12,13}]%*dP; zfact = $14*($15?1:$16?0:-2); dC = 0.5*dP*(1 - 0.98*zfact); [C - dC,C + dC]"}
     status=\{$x0\}\{$y0\}\{$x1\}\{$y1\}\{$5\}\{$6\}\{$7\}\{$8\}\{$9\}\{$10\}\{$11\}\{50,50\}\{$14\}\{0\}\{0\}\{0\}\{$18\}
