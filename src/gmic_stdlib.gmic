@@ -29798,7 +29798,7 @@ fx_project_stereographic :
       _fx_project_stereographic_mirror $mirror
     else
       _fx_project_stereographic_mirror $mirror
-      {u=max(w,h);[u,u,1,s]},"*
+      {u=0$_is_preview?min(w,h):max(w,h);[u,u,1,s]},"*
         const W = w;
         const H = h;
         "$init"
@@ -29818,8 +29818,8 @@ fx_project_stereographic_preview :
   _is_preview=1
   repeat $! l[$>]
     fx_project_stereographic $*
-    line $2%,$3%,$4%,$5%,1,0xF0F0F0F0,255,255,255,255
-    line $2%,$3%,$4%,$5%,1,0x0F0F0F0F,0,0,0,255
+    line $2%,$3%,$4%,$5%,0.7,0xF0F0F0F0,255,255,255,255
+    line $2%,$3%,$4%,$5%,0.7,0x0F0F0F0F,0,0,0,255
   endl done
 
 #@gui Symmetrize : fx_symmetrize, fx_symmetrize_preview(1)
