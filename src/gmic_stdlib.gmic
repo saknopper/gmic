@@ -29757,14 +29757,15 @@ fx_square_circle :
 #@gui : Transform = choice("Direct","Inverse")
 #@gui : Center (%) = point(50,50,0,1,255,255,255,170)
 #@gui : Radius / Angle = point(75,50,0,1,255,0,255,170)
+#@gui : Horizon rectification (deg.) = float(0,-5,5)
 #@gui : Left/right blur (%) = float(0,0,20)
 #@gui : Dilation = float(0,-2,2)
 #@gui : Mirror = choice("None","X-axis","Y-axis","XY-axis")
 #@gui : Boundary = choice(2,"Transparent","Nearest","Periodic","Mirror")
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2018/07/03</i>.</small>")
 fx_project_stereographic :
-  is_inverse,centerx,centery,radangx,radangy,lrblur,dilation,mirror,boundary=${1-9}
-  init="const boundary = "$boundary";
+  is_inverse,centerx,centery,radangx,radangy,rechor,lrblur,dilation,mirror,boundary=${1-10}
+  init="const boundary = "$is_inverse?$boundary:2";
         const interpolation = 1;
         const dilation = 2^"$dilation";
         const centerx = "$centerx"%*(W-1);
@@ -29777,6 +29778,7 @@ fx_project_stereographic :
   m "_fx_project_stereographic_mirror : if {!$""1} mirror y elif {$""1==1} mirror xy elif {$""1==3} mirror x fi"
   repeat $! l[$>]
     if {!$boundary} to_a fi
+    if $rechor rotate $rechor,1,3 fi
     if $lrblur
       100%,1,1,1,!x||x==w-1 shift {round(w/2)},0,0,0,2 b. x,$lrblur% n. 0,1 +b.. x,$lrblur%
       r.. .,.,1,1 j... .,0,0,0,0,1,.. k[0] shift {-round(w/2)},0,0,0,2
