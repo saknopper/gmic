@@ -29765,7 +29765,7 @@ fx_square_circle :
 fx_project_stereographic :
   is_inverse,centerx,centery,radangx,radangy,lrblur,dilation,mirror,boundary=${1-9}
   init="const boundary = "$boundary";
-        const interpolation = "0$_is_preview"?0:1;
+        const interpolation = 1;
         const dilation = 2^"$dilation";
         const centerx = "$centerx"%*(W-1);
         const centery = "$centery"%*(H-1);
