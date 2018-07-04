@@ -29754,63 +29754,63 @@ fx_square_circle :
   fi
 
 #@gui Stereographic projection : fx_project_stereographic, fx_project_stereographic_preview(1)
+#@gui : Transform = choice("Direct","Inverse")
 #@gui : Center (%) = point(50,50,0,0,255,255,255,170)
 #@gui : Radius / Angle = point(75,50,0,0,255,0,255,170)
 #@gui : Mirror = choice("None","X-axis","Y-axis","XY-axis")
+#@gui : Boundary = choice(2,"Transparent","Nearest","Periodic","Mirror")
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2018/07/03</i>.</small>")
 fx_project_stereographic :
-  centerx,centery,radangx,radangy,mirror=${1-5}
-  if {!$mirror} mirror y elif {$mirror==1} mirror xy elif {$mirror==3} mirror x fi
+  is_inverse,centerx,centery,radangx,radangy,mirror,boundary=${1-7}
+  init="
+        const boundary = "$boundary";
+        const interpolation = "0$_is_preview"?0:1;
+        const centerx = "$centerx"%*(W-1);
+        const centery = "$centery"%*(H-1);
+        const radangx = "$radangx"%*(W-1) - centerx;
+        const radangy = "$radangy"%*(H-1) - centery;
+        const R = sqrt(radangx^2 + radangy^2);
+        const theta0 = atan2(radangy,radangx);"
+  m "_fx_project_stereographic : if {!$""1} mirror y elif {$""1==1} mirror xy elif {$""1==3} mirror x fi"
   repeat $! l[$>]
-    {u=max(w,h);[u,u,1,s]},"
-      const boundary = 2;
-      const interpolation = "0$_is_preview"?0:1;
-      const centerx = "$centerx"%*(w-1);
-      const centery = "$centery"%*(h-1);
-      const radangx = "$radangx"%*(w-1) - centerx;
-      const radangy = "$radangy"%*(h-1) - centery;
-      const R = sqrt(radangx^2 + radangy^2);
-      const theta0 = atan2(radangy,radangx);
-      X = x - centerx;
-      Y = y - centery;
-      theta = atan2(Y,X);
-      beta = (X^2 + Y^2)/R^2;
-      z = R*(beta - 1)/(beta + 1);
-      phi = asin(z/R);
-      ((theta-=theta0)*=w#0/(2*pi))%=w#0;
-      ((phi*=h#0/pi)+=h#0/2)%=h#0;
-      I(#0,theta,phi)"
-
-  #   200%,100%,1,100%,"
-  #     const boundary = 2;
-  #     const interpolation = "0$_is_preview"?0:1;
-  #     const centerx = "$centerx"%*(w-1);
-  #     const centery = "$centery"%*(h-1);
-  #     const radangx = "$radangx"%*(w-1) - centerx;
-  #     const radangy = "$radangy"%*(h-1) - centery;
-  #     const R = sqrt(radangx^2 + radangy^2);
-  #     const theta0 = atan2(radangy,radangx);
-
-  #     theta = x/w*2*pi;
-  #     phi = (y/h - 0.5)*pi;
-  #     z = R*sin(phi);
-  #     rho = sqrt((R+z)/(R-z))*R;
-
-  #     X = rho*cos(theta) + centerx;
-  #     Y = rho*sin(theta) + centery;
-  #     I(#-1,X,Y);
-  #   "
-
-  # d
-
+    if {!$boundary} to_a fi
+    if $is_inverse
+      200%,100%,1,100%,"
+        const W = w#0;
+        const H = h#0;
+        "$init"
+        theta = theta0 + x/w*2*pi;
+        phi = (y/h - 0.5)*pi;
+        z = R*sin(phi);
+        rho = sqrt((R+z)/(R-z))*R;
+        X = rho*cos(theta) + centerx;
+        Y = rho*sin(theta) + centery;
+        I(#0,X,Y)"
+      _fx_project_stereographic $mirror
+    else
+      _fx_project_stereographic $mirror
+      {u=max(w,h);[u,u,1,s]},"
+        const W = w;
+        const H = h;
+        "$init"
+        X = x - centerx;
+        Y = y - centery;
+        theta = atan2(Y,X);
+        beta = (X^2 + Y^2)/R^2;
+        z = R*(beta - 1)/(beta + 1);
+        phi = asin(z/R);
+        ((theta-=theta0)*=w#0/(2*pi))%=w#0;
+        ((phi*=h#0/pi)+=h#0/2)%=h#0;
+        I(#0,theta,phi)"
+    fi
   k. endl done
 
 fx_project_stereographic_preview :
   _is_preview=1
   repeat $! l[$>]
-    fx_project_stereographic ${1-5}
-    line $1%,$2%,$3%,$4%,1,0xF0F0F0F0,255,255,255,255
-    line $1%,$2%,$3%,$4%,1,0x0F0F0F0F,0,0,0,255
+    fx_project_stereographic ${1-7}
+    line $2%,$3%,$4%,$5%,1,0xF0F0F0F0,255,255,255,255
+    line $2%,$3%,$4%,$5%,1,0x0F0F0F0F,0,0,0,255
   endl done
 
 #@gui Symmetrize : fx_symmetrize, fx_symmetrize_preview(1)
