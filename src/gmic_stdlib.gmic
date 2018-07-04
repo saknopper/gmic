@@ -29758,13 +29758,15 @@ fx_square_circle :
 #@gui : Center (%) = point(50,50,0,1,255,255,255,170)
 #@gui : Radius / Angle = point(75,50,0,1,255,0,255,170)
 #@gui : Left/right blur (%) = float(0,0,20)
+#@gui : Dilation = float(0,-2,2)
 #@gui : Mirror = choice("None","X-axis","Y-axis","XY-axis")
 #@gui : Boundary = choice(2,"Transparent","Nearest","Periodic","Mirror")
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2018/07/03</i>.</small>")
 fx_project_stereographic :
-  is_inverse,centerx,centery,radangx,radangy,lrblur,mirror,boundary=${1-8}
+  is_inverse,centerx,centery,radangx,radangy,lrblur,dilation,mirror,boundary=${1-9}
   init="const boundary = "$boundary";
         const interpolation = "0$_is_preview"?0:1;
+        const dilation = 2^"$dilation";
         const centerx = "$centerx"%*(W-1);
         const centery = "$centery"%*(H-1);
         const radangx = "$radangx"%*(W-1) - centerx;
@@ -29772,15 +29774,13 @@ fx_project_stereographic :
         const R = sqrt(radangx^2 + radangy^2);
         const theta0 = atan2(radangy,radangx);
         const pi2 = 2*pi;"
-  m "_fx_project_stereographic : if {!$""1} mirror y elif {$""1==1} mirror xy elif {$""1==3} mirror x fi"
+  m "_fx_project_stereographic_mirror : if {!$""1} mirror y elif {$""1==1} mirror xy elif {$""1==3} mirror x fi"
   repeat $! l[$>]
     if {!$boundary} to_a fi
-
     if $lrblur
       100%,1,1,1,!x||x==w-1 shift {round(w/2)},0,0,0,2 b. x,$lrblur% n. 0,1 +b.. x,$lrblur%
       r.. .,.,1,1 j... .,0,0,0,0,1,.. k[0] shift {-round(w/2)},0,0,0,2
     fi
-
     if $is_inverse
       100%,50%,1,100%,"*
         const W = w#0;
@@ -29789,13 +29789,13 @@ fx_project_stereographic :
         theta = theta0 + x*pi2/w;
         phi = (y/h - 0.5)*pi;
         z = R*sin(phi);
-        rho = sqrt((R + z)/(R - z))*R;
+        rho = ((R + z)/(R - z))^(0.5/dilation)*R;
         X = centerx + rho*cos(theta);
         Y = centery + rho*sin(theta);
         I(#0,X,Y)"
-      _fx_project_stereographic $mirror
+      _fx_project_stereographic_mirror $mirror
     else
-      _fx_project_stereographic $mirror
+      _fx_project_stereographic_mirror $mirror
       {u=max(w,h);[u,u,1,s]},"*
         const W = w;
         const H = h;
@@ -29803,7 +29803,7 @@ fx_project_stereographic :
         X = x - centerx;
         Y = y - centery;
         theta = atan2(Y,X);
-        beta = (X^2 + Y^2)/R^2;
+        beta = ((X^2 + Y^2)/R^2)^dilation;
         z = R*(beta - 1)/(beta + 1);
         phi = asin(z/R);
         theta = ((theta - theta0)*w#0/pi2)%w#0;
@@ -29815,7 +29815,7 @@ fx_project_stereographic :
 fx_project_stereographic_preview :
   _is_preview=1
   repeat $! l[$>]
-    fx_project_stereographic ${1-8}
+    fx_project_stereographic $*
     line $2%,$3%,$4%,$5%,1,0xF0F0F0F0,255,255,255,255
     line $2%,$3%,$4%,$5%,1,0x0F0F0F0F,0,0,0,255
   endl done
