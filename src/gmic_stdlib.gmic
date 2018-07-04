@@ -29755,8 +29755,8 @@ fx_square_circle :
 
 #@gui Stereographic projection : fx_project_stereographic, fx_project_stereographic_preview(1)
 #@gui : Transform = choice("Direct","Inverse")
-#@gui : Center (%) = point(50,50,0,0,255,255,255,170)
-#@gui : Radius / Angle = point(75,50,0,0,255,0,255,170)
+#@gui : Center (%) = point(50,50,0,1,255,255,255,170)
+#@gui : Radius / Angle = point(75,50,0,1,255,0,255,170)
 #@gui : Mirror = choice("None","X-axis","Y-axis","XY-axis")
 #@gui : Boundary = choice(2,"Transparent","Nearest","Periodic","Mirror")
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2018/07/03</i>.</small>")
@@ -29770,26 +29770,27 @@ fx_project_stereographic :
         const radangx = "$radangx"%*(W-1) - centerx;
         const radangy = "$radangy"%*(H-1) - centery;
         const R = sqrt(radangx^2 + radangy^2);
-        const theta0 = atan2(radangy,radangx);"
+        const theta0 = atan2(radangy,radangx);
+        const pi2 = 2*pi;"
   m "_fx_project_stereographic : if {!$""1} mirror y elif {$""1==1} mirror xy elif {$""1==3} mirror x fi"
   repeat $! l[$>]
     if {!$boundary} to_a fi
     if $is_inverse
-      200%,100%,1,100%,"
+      100%,50%,1,100%,"*
         const W = w#0;
         const H = h#0;
         "$init"
-        theta = theta0 + x/w*2*pi;
+        theta = theta0 + x*pi2/w;
         phi = (y/h - 0.5)*pi;
         z = R*sin(phi);
-        rho = sqrt((R+z)/(R-z))*R;
-        X = rho*cos(theta) + centerx;
-        Y = rho*sin(theta) + centery;
+        rho = sqrt((R + z)/(R - z))*R;
+        X = centerx + rho*cos(theta);
+        Y = centery + rho*sin(theta);
         I(#0,X,Y)"
       _fx_project_stereographic $mirror
     else
       _fx_project_stereographic $mirror
-      {u=max(w,h);[u,u,1,s]},"
+      {u=max(w,h);[u,u,1,s]},"*
         const W = w;
         const H = h;
         "$init"
@@ -29799,8 +29800,8 @@ fx_project_stereographic :
         beta = (X^2 + Y^2)/R^2;
         z = R*(beta - 1)/(beta + 1);
         phi = asin(z/R);
-        ((theta-=theta0)*=w#0/(2*pi))%=w#0;
-        ((phi*=h#0/pi)+=h#0/2)%=h#0;
+        theta = ((theta - theta0)*w#0/pi2)%w#0;
+        phi = (h#0*(phi/pi + 0.5))%h#0;
         I(#0,theta,phi)"
     fi
   k. endl done
