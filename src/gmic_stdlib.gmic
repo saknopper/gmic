@@ -29754,8 +29754,8 @@ fx_square_circle :
   fi
 
 #@gui Stereographic projection : fx_project_stereographic, fx_project_stereographic_preview(1)
-#@gui : Center (%) = point(50,50,0,1,255,255,255,170)
-#@gui : Radius / Angle = point(75,50,0,1,255,0,255,170)
+#@gui : Center (%) = point(50,50,0,0,255,255,255,170)
+#@gui : Radius / Angle = point(75,50,0,0,255,0,255,170)
 #@gui : Mirror = choice("None","X-axis","Y-axis","XY-axis")
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2018/07/03</i>.</small>")
 fx_project_stereographic :
@@ -29763,16 +29763,14 @@ fx_project_stereographic :
   if {!$mirror} mirror y elif {$mirror==1} mirror xy elif {$mirror==3} mirror x fi
   repeat $! l[$>]
     {u=max(w,h);[u,u,1,s]},"
-      init(
-        const boundary = 2;
-        const interpolation = "0$_is_preview"?0:1;
-        const centerx = "$centerx"%*(w-1);
-        const centery = "$centery"%*(h-1);
-        const radangx = "$radangx"%*(w-1) - centerx;
-        const radangy = "$radangy"%*(h-1) - centery;
-        const R = sqrt(radangx^2 + radangy^2);
-        const theta0 = atan2(radangy,radangx);
-      );
+      const boundary = 2;
+      const interpolation = "0$_is_preview"?0:1;
+      const centerx = "$centerx"%*(w-1);
+      const centery = "$centery"%*(h-1);
+      const radangx = "$radangx"%*(w-1) - centerx;
+      const radangy = "$radangy"%*(h-1) - centery;
+      const R = sqrt(radangx^2 + radangy^2);
+      const theta0 = atan2(radangy,radangx);
       X = x - centerx;
       Y = y - centery;
       theta = atan2(Y,X);
@@ -29782,6 +29780,29 @@ fx_project_stereographic :
       ((theta-=theta0)*=w#0/(2*pi))%=w#0;
       ((phi*=h#0/pi)+=h#0/2)%=h#0;
       I(#0,theta,phi)"
+
+  #   200%,100%,1,100%,"
+  #     const boundary = 2;
+  #     const interpolation = "0$_is_preview"?0:1;
+  #     const centerx = "$centerx"%*(w-1);
+  #     const centery = "$centery"%*(h-1);
+  #     const radangx = "$radangx"%*(w-1) - centerx;
+  #     const radangy = "$radangy"%*(h-1) - centery;
+  #     const R = sqrt(radangx^2 + radangy^2);
+  #     const theta0 = atan2(radangy,radangx);
+
+  #     theta = x/w*2*pi;
+  #     phi = (y/h - 0.5)*pi;
+  #     z = R*sin(phi);
+  #     rho = sqrt((R+z)/(R-z))*R;
+
+  #     X = rho*cos(theta) + centerx;
+  #     Y = rho*sin(theta) + centery;
+  #     I(#-1,X,Y);
+  #   "
+
+  # d
+
   k. endl done
 
 fx_project_stereographic_preview :
