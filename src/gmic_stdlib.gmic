@@ -29756,14 +29756,14 @@ fx_square_circle :
 #@gui Stereographic projection : fx_project_stereographic, fx_project_stereographic_preview(1)
 #@gui : Transform = choice("Direct","Inverse")
 #@gui : Center (%) = point(50,50,0,1,255,255,255,170)
-#@gui : Radius / Angle = point(75,50,0,1,255,0,255,170)
-#@gui : Horizon rectification (deg.) = float(0,-5,5)
+#@gui : Radius / Angle = point(50,75,0,1,255,0,255,170)
+#@gui : Horizon leveling (deg.) = float(0,-10,10)
 #@gui : Left/right blur (%) = float(0,0,20)
 #@gui : Dilation = float(0,-2,2)
 #@gui : Mirror = choice("None","X-axis","Y-axis","XY-axis")
 #@gui : Boundary = choice(2,"Transparent","Nearest","Periodic","Mirror")
 #@gui : Last center = value(50,50)
-#@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2018/07/03</i>.</small>")
+#@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2018/07/04</i>.</small>")
 fx_project_stereographic :
   is_inverse,centerx,centery,radangx,radangy,rechor,lrblur,dilation,mirror,boundary,ocenterx,ocentery=${1-12}
 
@@ -29772,14 +29772,14 @@ fx_project_stereographic :
     radangx,radangy={[$centerx,$centery]+[$deltax,$deltay]}
   fi
   status=\{$is_inverse\}\{$centerx,$centery\}\{$radangx,$radangy\}\{$rechor\}\{$lrblur\}\{$dilation\}\{$mirror\}\{$boundary\}\{$centerx,$centery\}
-
+  nradangx,nradangy={[$centerx,$centery]+rot(-90)*([$radangx,$radangy]-[$centerx,$centery])} # So that preview line does not hide left/right frontier
   init="const boundary = "$is_inverse?$boundary:2";
         const interpolation = 1;
         const dilation = 2^"$dilation";
         const centerx = "$centerx"%*(W-1);
         const centery = "$centery"%*(H-1);
-        const radangx = "$radangx"%*(W-1) - centerx;
-        const radangy = "$radangy"%*(H-1) - centery;
+        const radangx = "$nradangx"%*(W-1) - centerx;
+        const radangy = "$nradangy"%*(H-1) - centery;
         const R = sqrt(radangx^2 + radangy^2);
         const theta0 = atan2(radangy,radangx);
         const pi2 = 2*pi;"
@@ -29823,8 +29823,8 @@ fx_project_stereographic :
   k. endl done uncommand _fx_project_stereographic
 
   if $_is_preview
-    line $centerx%,$centery%,$radangx%,$radangy%,0.7,0xF0F0F0F0,255,255,255,255
-    line $centerx%,$centery%,$radangx%,$radangy%,0.7,0x0F0F0F0F,0,0,0,255
+    line $centerx%,$centery%,$radangx%,$radangy%,0.75,0xF0F0F0F0,255,255,255,255
+    line $centerx%,$centery%,$radangx%,$radangy%,0.75,0x0F0F0F0F,0,0,0,255
   fi
   u $status
 
