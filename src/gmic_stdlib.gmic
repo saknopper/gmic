@@ -29762,9 +29762,17 @@ fx_square_circle :
 #@gui : Dilation = float(0,-2,2)
 #@gui : Mirror = choice("None","X-axis","Y-axis","XY-axis")
 #@gui : Boundary = choice(2,"Transparent","Nearest","Periodic","Mirror")
+#@gui : Last center = value(50,50)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2018/07/03</i>.</small>")
 fx_project_stereographic :
-  is_inverse,centerx,centery,radangx,radangy,rechor,lrblur,dilation,mirror,boundary=${1-10}
+  is_inverse,centerx,centery,radangx,radangy,rechor,lrblur,dilation,mirror,boundary,ocenterx,ocentery=${1-12}
+
+  if {$centerx!=$ocenterx" || "$centery!=$ocentery}
+    deltax,deltay={[$radangx,$radangy]-[$ocenterx,$ocentery]}
+    radangx,radangy={[$centerx,$centery]+[$deltax,$deltay]}
+  fi
+  status=\{$is_inverse\}\{$centerx,$centery\}\{$radangx,$radangy\}\{$rechor\}\{$lrblur\}\{$dilation\}\{$mirror\}\{$boundary\}\{$centerx,$centery\}
+
   init="const boundary = "$is_inverse?$boundary:2";
         const interpolation = 1;
         const dilation = 2^"$dilation";
@@ -29814,13 +29822,16 @@ fx_project_stereographic :
     fi
   k. endl done uncommand _fx_project_stereographic
 
+  if $_is_preview
+    line $centerx%,$centery%,$radangx%,$radangy%,0.7,0xF0F0F0F0,255,255,255,255
+    line $centerx%,$centery%,$radangx%,$radangy%,0.7,0x0F0F0F0F,0,0,0,255
+  fi
+  u $status
+
 fx_project_stereographic_preview :
   _is_preview=1
-  repeat $! l[$>]
-    fx_project_stereographic $*
-    line $2%,$3%,$4%,$5%,0.7,0xF0F0F0F0,255,255,255,255
-    line $2%,$3%,$4%,$5%,0.7,0x0F0F0F0F,0,0,0,255
-  endl done
+  fx_project_stereographic $*
+
 
 #@gui Symmetrize : fx_symmetrize, fx_symmetrize_preview(1)
 #@gui : Point 1 = point(50,50,0,1,0,255,0,170,10)
