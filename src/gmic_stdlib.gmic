@@ -2132,9 +2132,10 @@ document_gmic : skip ${1="ascii"},${2=""},${3=1}
   _is_example=0                              # Boolean telling if current line is an example.
   _path="$2"                                 # Path of example images.
   ks0="0" ks1="k[0]"
+  go_on=1
 
   # Parse lines of the commands file.
-  repeat $! l[$>] if {h>7" && "same([{^}],'#@cli',5)" && (i[5]==_' ' || i[5]==_':')"} # Process only lines starting with '#@cli'.
+  repeat $! l[$>] if {$go_on" && "h>7" && "same([{^}],'#@cli',5)" && (i[5]==_' ' || i[5]==_':')"} # Process only lines starting with '#@cli'.
     rows 6,100% autocrop {'" "'}  # Discard '#@cli'.
     _is_example=0
     if {i!=_':'}
@@ -2151,7 +2152,9 @@ document_gmic : skip ${1="ascii"},${2=""},${3=1}
         # Reached line as '#@cli :: Subsection name'.
         _subsection+=1
         rows 1,100% autocrop {'" "'} # Discard ':' character.
-        _document_gmic_subsection_$1
+        if {"['"{t}"']=='Additional gallery images'"} go_on=0
+        else _document_gmic_subsection_$1
+        fi
 
       else
         autocrop {'" "'}
@@ -36234,9 +36237,12 @@ fx_solve_maze_preview :
   ellipse $3%,$4%,3,3,0,1,${7-9}
   ellipse $3%,$4%,3,3,0,1,0x1,0
 
-# Add some examples for the 'gallery pages' on the G'MIC web site.
-# These examples used filters specifically defined in the G'MIC plug-in.
 
+#---------------------------------
+#
+#@cli :: Additional gallery images
+#
+#---------------------------------
 #@cli gallery_arrays
 #@cli : This entry defines some examples of array filters for the G'MIC gallery page.
 #@cli : $ image.jpg fx_frame_blur 30,30,0,5,0,0,128,128,128,0,5,255,255,255,2,2,1,0,0.5,0.5,0 _label="Frame~[blur]"
