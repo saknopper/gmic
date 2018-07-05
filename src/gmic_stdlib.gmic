@@ -29761,7 +29761,7 @@ fx_square_circle :
 #@gui : Left/right blur (%) = float(0,0,20)
 #@gui : Dilation = float(0,-2,2)
 #@gui : Mirror = choice("None","X-axis","Y-axis","XY-axis")
-#@gui : Boundary = choice(2,"Transparent","Nearest","Periodic","Mirror")
+#@gui : Boundary = choice(0,"Transparent","Nearest","Periodic","Mirror")
 #@gui : Last center = value(50,50)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2018/07/04</i>.</small>")
 fx_project_stereographic :
@@ -29831,7 +29831,6 @@ fx_project_stereographic :
 fx_project_stereographic_preview :
   _is_preview=1
   fx_project_stereographic $*
-
 
 #@gui Symmetrize : fx_symmetrize, fx_symmetrize_preview(1)
 #@gui : Point 1 = point(50,50,0,1,0,255,0,170,10)
