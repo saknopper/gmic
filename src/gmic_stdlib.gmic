@@ -6337,10 +6337,10 @@ roundify : check $1>=0
 #@cli : $ 2,2 set 1,0,0 set 2,1,0 set 3,0,1 set 4,1,1
 #@cli : $ image.jpg repeat 10000 set 255,{u(100)}%,{u(100)}%,0,{u(100)}% done
 
-#@cli set_covariance : coef1,coef2,...,coefN
+#@cli set_vector_covariance : coef1,coef2,...,coefN
 #@cli : Apply linear transformation on selected images so that the covariance matrix of their vector-valued pixels
-#@cli : is prescribed to given value.
-set_covariance :
+#@cli : is prescribed to given matrix. Matrix size 'N' must be equal to 'spectrum^2'.
+set_vector_covariance :
   e[^-1] "Set covariance matrix of image$? to [ $* ]."
   v - repeat $! l[$>]
     if {narg($*)!=s^2} error[0--4] "Command '$0': Invalid arguments '$*' for image '"{n}"' with size ("{[w,h,d,s]}") ("{s^2}" argument"${"if {s==1} u \"\" else u s fi"}" expected)." fi
