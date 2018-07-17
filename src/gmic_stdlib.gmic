@@ -6355,6 +6355,10 @@ set_vector_covariance :
          C2 = [ $* ];
          eig1 = eig(C1);
          eig2 = eig(C2);
+         for (k = 0, k<s, ++k, # Align eigenvector orientations.
+           k1s = (k + 1)*s;
+           if (dot(eig2[k1s,s],eig1[k1s,s])<0, copy(eig2[k1s],eig2[k1s,s]*=-1,s));
+         );
          invD1 = diag(eig1[0,s]^-0.5);
          invR1 = eig1[s,size(eig1)-s];
          D2 = diag(eig2[0,s]^0.5);
