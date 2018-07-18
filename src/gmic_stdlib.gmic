@@ -28517,6 +28517,69 @@ _fx_mix_lab :
 fx_mix_lab_preview :
   gui_split_preview "fx_mix_lab $*",${-3--1}
 
+#@gui Mixer [PCA] : fx_mix_pca, fx_mix_pca_preview(1)+
+#@gui : Primary factor = float(0,-1.5,1.5)
+#@gui : Primary shift = float(0,-255,255)
+#@gui : Primary twist = float(0,-180,180)
+#@gui : sep = separator()
+#@gui : Secondary factor = float(0,-1.5,1.5)
+#@gui : Secondary shift = float(0,-255,255)
+#@gui : Secondary twist = float(0,-180,180)
+#@gui : sep = separator()
+#@gui : Tertiary factor = float(0,-1.5,1.5)
+#@gui : Tertiary shift = float(0,-255,255)
+#@gui : Tertiary twist = float(0,-180,180)
+#@gui : sep = separator()
+#@gui : Display color axes = bool(1)
+#@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right","Duplicate horizontal","Duplicate vertical","Checkered","Checkered inverse"), Preview split = point(50,50,0,0,200,200,200,0,10,0)
+#@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2016/20/06</i>.</small>")
+fx_mix_pca :
+  repeat $! l[$>] split_opacity l[0] to_rgb
+    C=${"covariance_colors _avg"}
+    f "init(
+         avg = ["$_avg"];
+         eig = eig(["$C"]);
+         for (k = 3, k<12, k+=3, eig[k]<0?copy(eig[k],eig[k,3]*=-1,3));
+         Pt = eig[3,9];
+         P = transp(Pt,3);
+         T = mul(P,mul(diag(10^[$1,$4,$7]),Pt,3),3);
+
+         R1 = rot(eig[3,3],$3);
+         R2 = rot(eig[6,3],$6);
+         R3 = rot(eig[9,3],$9);
+         T = mul(R1,mul(R2,mul(R3,T,3),3),3);
+         avg_shift = avg + $2*eig[3,3] + $5*eig[6,3] + $8*eig[9,3];
+
+         if ("0$_is_preview",
+           ext('__cols=',vtos(round([
+             avg - 75*eig[3,3],
+             avg + 75*eig[3,3],
+             avg - 75*eig[6,3],
+             avg + 75*eig[6,3],
+             avg - 75*eig[9,3],
+             avg + 75*eig[9,3] ])));
+         );
+       );
+       avg_shift + T*(I - avg)"
+    c 0,255
+  endl a c endl done
+
+fx_mix_pca_preview :
+  _is_preview=1
+  repeat $! l[$>]
+    gui_split_preview "fx_mix_pca $*",${-3--1}
+    if $10
+      rr2d ${-gui_preview_wh},0,1
+      ($__cols) r. 3,6,1,1,-1 permute. yzcx s. x,3
+      r[-3--1] {w#0/2},13,1,3,3 c[-3--1] 0,255
+      frame[-3--1] 1,1,0
+      to[0] Primary,4,2,13,1 j[0] ...,64,4
+      to[0] Secondary,4,17,13,1 j[0] ..,64,19
+      to[0] Tertiary,4,32,13,1 j[0] .,64,34
+      k[0]
+    fi
+  endl done
+
 #@gui Mixer [RGB] : fx_mix_rgb, fx_mix_rgb_preview(1)+
 #@gui : Red factor = float(1,0,4)
 #@gui : Red shift = float(0,-255,255)
