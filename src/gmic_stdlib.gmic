@@ -28536,7 +28536,7 @@ fx_mix_lab_preview :
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2018/07/18</i>.</small>")
 fx_mix_pca :
   repeat $! l[$>] split_opacity l[0] to_rgb
-    C=${"covariance_colors _avg"}
+    +rr2d 128,128,0,2 C=${"covariance_colors. _avg"} rm.
     f "init(
          avg = ["$_avg"];
          eig = eig(["$C"]);
