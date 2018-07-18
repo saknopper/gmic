@@ -28532,11 +28532,20 @@ fx_mix_lab_preview :
 #@gui : Tertiary twist = float(0,-180,180)
 #@gui : sep = separator()
 #@gui : Display color axes = bool(1)
+#@gui : stats = value(-1,-1,-1,-1)
+#@gui : avg_covariance = value(0,0,0,0,0,0,0,0,0,0,0,0)
 #@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right","Duplicate horizontal","Duplicate vertical","Checkered","Checkered inverse"), Preview split = point(50,50,0,0,200,200,200,0,10,0)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2018/07/18</i>.</small>")
 fx_mix_pca :
   repeat $! l[$>] split_opacity l[0] to_rgb
-    +rr2d 128,128,0,2 C=${"covariance_colors. _avg"} rm.
+
+    # Get image covariance (and remember it to speed up multiple calls of the filter).
+    if {[${11-14}]==round(stats()[0,4],0.1)} _avg=${15-17} C=${18-26} status=
+    else
+      +rr2d 256,256,0,2 C=${"covariance_colors. _avg"} rm.
+      __status="{$1}{$2}{$3}{$4}{$5}{$6}{$7}{$8}{$9}{$10}{"{round(stats()[0,4],0.1)}"}{"$_avg,$C"}{$24}{${25,26}}"
+    fi
+
     f "init(
          avg = ["$_avg"];
          eig = eig(["$C"]);
@@ -28564,10 +28573,11 @@ fx_mix_pca :
        );
        avg_shift + T*(I - avg)"
     c 0,255
-  endl a c endl done
+  endl a c endl done u $__status
 
 fx_mix_pca_preview :
   _is_preview=1
+  __status=
   repeat $! l[$>]
     gui_split_preview "fx_mix_pca $*",${-3--1}
     if $10
@@ -28581,6 +28591,7 @@ fx_mix_pca_preview :
       k[0]
     fi
   endl done
+  u $__status
 
 #@gui Mixer [RGB] : fx_mix_rgb, fx_mix_rgb_preview(1)+
 #@gui : Red factor = float(1,0,4)
