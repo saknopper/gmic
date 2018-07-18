@@ -28552,13 +28552,14 @@ fx_mix_pca :
          avg_shift = avg + $2*eig[3,3] + $5*eig[6,3] + $8*eig[9,3];
 
          if ("0$_is_preview",
+           L = [ 2,5,10]*sqrt(1e-5 + eig[0,3]);
            ext('__cols=',vtos(round([
-             avg - 75*eig[3,3],
-             avg + 75*eig[3,3],
-             avg - 75*eig[6,3],
-             avg + 75*eig[6,3],
-             avg - 75*eig[9,3],
-             avg + 75*eig[9,3] ])));
+             avg - L[0]*eig[3,3],
+             avg + L[0]*eig[3,3],
+             avg - L[1]*eig[6,3],
+             avg + L[1]*eig[6,3],
+             avg - L[2]*eig[9,3],
+             avg + L[2]*eig[9,3] ])));
          );
        );
        avg_shift + T*(I - avg)"
