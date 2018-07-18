@@ -4372,6 +4372,7 @@ update_server :
     "replace_str lab,Lab "\
     "replace_str r/b,R/B "\
     "replace_str rgb,RGB "\
+    "replace_str pca,PCA "\
     "replace_str richardson-lucy,Richardson-Lucy "\
     "replace_str roddy,Roddy "\
     "replace_str ycbcr,YCbCr "\
