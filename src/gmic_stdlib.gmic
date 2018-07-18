@@ -28533,7 +28533,7 @@ fx_mix_lab_preview :
 #@gui : sep = separator()
 #@gui : Display color axes = bool(1)
 #@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right","Duplicate horizontal","Duplicate vertical","Checkered","Checkered inverse"), Preview split = point(50,50,0,0,200,200,200,0,10,0)
-#@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2016/20/06</i>.</small>")
+#@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2018/07/18</i>.</small>")
 fx_mix_pca :
   repeat $! l[$>] split_opacity l[0] to_rgb
     C=${"covariance_colors _avg"}
