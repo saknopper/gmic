@@ -4299,6 +4299,7 @@ update_server :
   _update_server_move[] "/Testing/Garagecoder/Sharpen~[tones]","/Details"
   _update_server_move[] "/Testing/Garagecoder/Temperature~balance","/Colors"
   _update_server_move[] "/Testing/Garagecoder/Wiremap","/Rendering"
+  _update_server_move[] "/Testing/Garagecoder/Smooth~[geometric-median]","/Repair"
   _update_server_move[] "/Testing/Gmic~tutorials/Hedcut~(experimental)","/Patterns"
   _update_server_move[] "/Testing/Iain~fergusson/Halftone~shapes","/Patterns"
   _update_server_move[] "/Testing/Iain~fergusson/Simple~local~contrast","/Details"
