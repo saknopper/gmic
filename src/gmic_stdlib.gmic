@@ -19130,6 +19130,38 @@ math_lib :
     min(dist(A,C,D),dist(B,C,D),dist(C,A,B),dist(D,A,B));
   );
 
+  search_dichotomic(fn_x,target,epsilon) = ( # Dichotomic search : Find x s.a f(x) = target, with a epsilon-precision
+    # fn_x must be a strictly monotonic function !
+    _dicho_fn(x) = _dicho_sgn*(fn_x);
+    _dicho_sgn = 1;
+    _dicho_sgn = _dicho_fn(-1)>_dicho_fn(1)?-1:1;
+    _dicho_epsilon = epsilon;
+    _dicho_res = nan;
+    _dicho_target = _dicho_sgn*target;
+    _dicho_nb_attempts = 30;
+    _dicho_m = -1;
+    do (_dicho_fm = _dicho_fn(_dicho_m); _dicho_fm<_dicho_target?break(); _dicho_m*=2; _(while), --_dicho_nb_attempts);
+    _dicho_nb_attempts?(
+      _dicho_M = 1;
+      _dicho_nb_attempts = 30;
+      do (_dicho_fM = _dicho_fn(_dicho_M); _dicho_fM>_dicho_target?break(); _dicho_M*=2; _(while), --_dicho_nb_attempts);
+      _dicho_nb_attempts?(
+        _dicho_nb_attempts = 100;
+        do (
+          _dicho_c = (_dicho_m + _dicho_M)/2;
+          _dicho_fc = _dicho_fn(_dicho_c);
+          abs(_dicho_fc - _dicho_target)<_dicho_epsilon?(_dicho_res = _dicho_c; break()):
+          _dicho_fc<_dicho_target?(_dicho_m = _dicho_c):
+          (_dicho_M = _dicho_c);
+          _(while), --_dicho_nb_attempts
+        );
+      );
+    );
+    _dicho_res;
+  );
+  search_dichotomic(fn_x,target) = search_dichotomic(fn_x,target,1e-3);
+  search_dichotomic(fn_x) = search_dichotomic(fn_x,0);
+
   arrow(ind,P0,P1,angle,length,opacity,color) = ( # Draw an arrow from P0 to P1 on image #ind
     unref(_da_color);
     _opacity = opacity;
