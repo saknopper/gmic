@@ -6057,9 +6057,9 @@ map_clut :
   l={round((w*h*d)^(1/3))}
   if {w*h*d!=$l^3} v + error "Command '$0': Specified CLUT $1 has invalid dimensions "({w},{h},{d},{s}). fi
   r. $l,$l,$l,3,-1
-  repeat {$!-1} l[$>,-1] split_opacity[0] /[0] {256/$l}
+  repeat {$!-1} l[$>,-1] nm={0,n} split_opacity[0] /[0] {256/$l}
     +warp. [0],0,1,1
-    rm[0] mv. 0 a[^-1] c
+    rm[0] mv. 0 a[^-1] c nm[0] $nm
   endl done rm. v +
 
 #@cli mix_channels : (a00,...,aMN)
@@ -28706,11 +28706,11 @@ fx_mix_ycbcr :
 fx_mix_ycbcr_preview :
   gui_split_preview "fx_mix_ycbcr $*",${-3--1}
 
-#@gui CLUT from before/after images : fx_clut_from_ba, fx_clut_from_ba_preview
+#@gui CLUT from after/before layers : fx_clut_from_ab, fx_clut_from_ab_preview
 #@gui : Output CLUT resolution = _choice("512 x 512","4096 x 4096")
 #@gui : Influence of color samples (%) = float(50,0,100)
 #@gui : sep = separator()
-#@gui : note = note{"<b>What this filter is for?</b>\n\n
+#@gui : note = note{"<b>What is this filter for?</b>\n\n
 #@gui : This filter requires at least two input layers to work properly.\n
 #@gui : It assumes you have an input top layer <b>A</b> and a base layer <b>B</b> such that <b>A</b> and <b>B</b> both represent the same image but with only color variations
 #@gui : (typically <b>A</b> has been obtained from <b>B</b> using the color curves tool).\n\n
@@ -28718,9 +28718,9 @@ fx_mix_ycbcr_preview :
 #@gui : This is useful when you have a color transformation between two images, that you want to recover and re-apply on a bunch of other images.
 #@gui : "}
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2018/07/25</i>.</small>")
-fx_clut_from_ba :
+fx_clut_from_ab :
   if {$!<2} error "At least two input layers are needed to run this filter." fi
-  repeat {$!-1} l[$>,-1] nm=${gui_layer_name..}
+  repeat {$!-1} l[$<,-1] nm=${gui_layer_name..}
     64,64,64,4 f[0] ">I(#2,round(I(#1)*(w#2-1)/255))+=[R,G,B,1]; I" rm[0]
     s. c,-3 +max. 1 /[-3,-1] ==. 0
     inpaint_diffusion.. .,75%,1
@@ -28730,13 +28730,13 @@ fx_clut_from_ba :
     if $1 r. 256,256,256,3,3 fi
     r. {s=whd^0.5;[s,s]},1,3,-1
     rv nm[0] "name(CLUT to '"$nm"')"
-
-    if $_output_mode rm. fi
   endl done
+  if $_output_mode rm. fi
 
-fx_clut_from_ba_preview :
+
+fx_clut_from_ab_preview :
   if {$!<2} gui_warning_preview "At least two input layers are needed to run this filter." return fi
-  fx_clut_from_ba 0,$2
+  fx_clut_from_ab 0,$2
 
 #@gui Retinex : fx_retinex, fx_retinex_preview(0)+
 #@gui : Strength (%) = float(75,0,100)
