@@ -15197,7 +15197,7 @@ _apply_tiles :
       for (z = 0, z<d#0, z+="$sd",
         for (y = 0, y<h#0, y+="$sh",
           for (x = 0, x<w#0, x+="$sw",
-            draw(crop(#0,x,y,z,w,h,d),0,0,0,0,w,h,d);
+            draw(crop(#0,x,y,z,w,h,d,$8),0,0,0,0,w,h,d);
             ext('__at.');
             breakpoint();
             draw(#1,crop(#-1),x,y,z,0,w,h,d,s#0,-1,mask);
@@ -33969,10 +33969,11 @@ fx_inpaint_patchmatch_preview :
 #@gui : Allow outer blending = _bool(1)
 #@gui : Mask color = _color(255,0,0,255)
 #@gui : Mask dilation = _int(0,0,32)
+#@gui : Process by blocs of size = _choice("100%","75%","50%","25%","10%")
 #@gui : sep = separator(), note = note("<small>A quick tutorial on how to use this filter can be found here:</small>")
 #@gui : url = link("G'MIC Inpainting tutorial on Patrick David's blog.","http://blog.patdavid.net/2014/02/getting-around-in-gimp-gmic-inpainting.html")
 #@gui : sep = separator(), note = note("<small>Authors: <i>David Tschumperl&#233;</i> and <i>Maxime Daisy</i>.      Latest update: <i>2015/25/11</i>.</small>")
-fx_inpaint_patch :
+_fx_inpaint_patch :
   repeat $! l[$>]
     R=$9 G=$10 B=$11 A=$12
     if {!$A" && "(s==2" || "s==4)} split_opacity +!=. 0 *[0,-1] a c R=0 G=0 B=0 fi # Purely transparent color.
@@ -33982,8 +33983,17 @@ fx_inpaint_patch :
     rm.
   endl done
 
+fx_inpaint_patch :
+  repeat $! l[$>]
+    if $14
+      bs={max(16,min(w,h)*arg(1+$14,100,75,50,25,10)%)}
+      at "_fx_inpaint_patch $*",$bs,$bs,1,25%,25%,0,2
+    else _fx_inpaint_patch $*
+    fi
+  endl done
+
 fx_inpaint_patch_preview :
-  fx_inpaint_patch ${1-12},{1+$13}
+  fx_inpaint_patch ${1-12},{1+$13},100
 
 #@gui Inpaint [transport-diffusion] : fx_inpaint_diffusion, fx_inpaint_diffusion_preview(1)
 #@gui : Smoothness (%) = float(75,0,100)
