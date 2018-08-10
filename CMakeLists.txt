@@ -122,7 +122,7 @@ set(CLI_COMPILE_FLAGS)
 if(ENABLE_OPENMP)
   if(NOT APPLE)
     set(COMPILE_FLAGS "${COMPILE_FLAGS} -fopenmp -Dcimg_use_openmp")
-    set(EXTRA_LIBRARIES "${EXTRA_LIBRARIES} -lgomp")
+    list(APPEND EXTRA_LIBRARIES "-lgomp")
   endif()
 endif()
 
@@ -164,10 +164,12 @@ if(FFTW3_FOUND)
   set(COMPILE_FLAGS "${COMPILE_FLAGS} -Dcimg_use_fftw3")
   include_directories(${FFTW3_INCLUDE_DIRS})
   link_directories(${FFTW3_LIBRARY_DIRS})
-  if(APPLE)
+
+  find_library(FFTW3_THREADS_LIB fftw3_threads PATHS ${FFTW3_LIBRARY_DIRS})
+  if(FFTW3_THREADS_LIB STREQUAL "FFTW3_THREADS_LIB-NOTFOUND")
     set(COMPILE_FLAGS "${COMPILE_FLAGS} -Dcimg_use_fftw3_singlethread")
   else()
-    set(EXTRA_LIBRARIES "${EXTRA_LIBRARIES} -lfftw3_threads")
+    list(APPEND EXTRA_LIBRARIES "-lfftw3_threads")
   endif()
 endif()
 
@@ -236,13 +238,13 @@ endif()
 # CImg.h header
 if(NOT EXISTS ${CMAKE_SOURCE_DIR}/src/CImg.h)
   file(DOWNLOAD https://framagit.org/dtschump/CImg/raw/master/CImg.h ${CMAKE_SOURCE_DIR}/src/CImg.h)
-  execute_process(COMMAND touch ${CMAKE_SOURCE_DIR}/src/CImg.h)
+  file(TOUCH ${CMAKE_SOURCE_DIR}/src/CImg.h)
 endif()
 
 # gmic_stdlib.h header
 if(NOT EXISTS ${CMAKE_SOURCE_DIR}/src/gmic_stdlib.h)
   file(DOWNLOAD http://gmic.eu/gmic_stdlib.h ${CMAKE_SOURCE_DIR}/src/gmic_stdlib.h)
-  execute_process(COMMAND touch ${CMAKE_SOURCE_DIR}/src/gmic_stdlib.h)
+  file(TOUCH ${CMAKE_SOURCE_DIR}/src/gmic_stdlib.h)
 endif()
 
 add_custom_target(gmic_extra_headers DEPENDS src/CImg.h src/gmic_stdlib.h)
@@ -262,23 +264,9 @@ set(CLI_Includes src/gmic.h)
 set(CLI_Sources src/gmic.cpp)
 
 if(MINGW)
-  if("${EXTRA_LIBRARIES}" STREQUAL "")
-    set(EXTRA_LIBRARIES "-Wl,--stack,16777216")
-  else()
-    set(EXTRA_LIBRARIES "-Wl,--stack,16777216 ${EXTRA_LIBRARIES}")
-  endif()
-elseif(APPLE)
-  if("${EXTRA_LIBRARIES}" STREQUAL "")
-    set(EXTRA_LIBRARIES "-lpthread")
-  else()
-    set(EXTRA_LIBRARIES "-lpthread ${EXTRA_LIBRARIES}")
-  endif()
+  list(APPEND EXTRA_LIBRARIES "-Wl,--stack,16777216")
 else()
-  if("${EXTRA_LIBRARIES}" STREQUAL "")
-    set(EXTRA_LIBRARIES "-lpthread")
-  else()
-    set(EXTRA_LIBRARIES "-lpthread ${EXTRA_LIBRARIES}")
-  endif()
+  list(APPEND EXTRA_LIBRARIES "-lpthread")
 endif()
 
 
@@ -288,7 +276,8 @@ if(BUILD_LIB)
   set_target_properties(libgmic PROPERTIES COMPILE_FLAGS "${CLI_COMPILE_FLAGS}")
   set_target_properties(libgmic PROPERTIES SOVERSION "1" OUTPUT_NAME "gmic")
   if(NOT APPLE)
-    set_target_properties(libgmic PROPERTIES LINK_FLAGS "-Wl,-soname,libgmic.so.1")
+    #the following is automatic unless NO_SONAME is set
+    #set_target_properties(libgmic PROPERTIES LINK_FLAGS "-Wl,-soname,libgmic.so.1")
   endif()
   target_link_libraries(libgmic
     ${X11_LIBRARIES}
@@ -303,7 +292,12 @@ if(BUILD_LIB)
     ${EXTRA_LIBRARIES}
   )
 
-  install(TARGETS libgmic LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}")
+  install(TARGETS libgmic EXPORT GmicTargets
+    PUBLIC_HEADER DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+    LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+    RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
+    ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+  )
   install(FILES src/gmic.h DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}")
 endif()
 
@@ -326,7 +320,7 @@ if(BUILD_LIB_STATIC)
     ${EXTRA_LIBRARIES}
   )
 
-  install(TARGETS libgmicstatic ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}")
+  install(TARGETS libgmicstatic EXPORT GmicTargets ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}")
   install(FILES src/gmic.h DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}")
 endif()
 
@@ -357,7 +351,7 @@ if(BUILD_CLI)
   endif()
 
   set_target_properties(gmic PROPERTIES COMPILE_FLAGS "${CLI_COMPILE_FLAGS}")
-  install(TARGETS gmic RUNTIME DESTINATION bin)
+  install(TARGETS gmic RUNTIME DESTINATION bin LIBRARY DESTINATION lib)
 endif()
 
 if(BUILD_MAN)
@@ -381,4 +375,13 @@ if(BUILD_BASH_COMPLETION)
   add_custom_target(bashcompletion ALL DEPENDS ${CMAKE_BINARY_DIR}/resources/gmic_bashcompletion.sh)
 endif()
 
+include(CMakePackageConfigHelpers)
+file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/GmicConfig.cmake.in" "@PACKAGE_INIT@\ninclude(\${CMAKE_CURRENT_LIST_DIR}/GmicTargets.cmake)\n")
+configure_package_config_file(
+  ${CMAKE_CURRENT_BINARY_DIR}/GmicConfig.cmake.in
+  ${CMAKE_CURRENT_BINARY_DIR}/GmicConfig.cmake
+  INSTALL_DESTINATION lib/cmake/gmic
+)
+install(EXPORT GmicTargets DESTINATION lib/cmake/gmic)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/GmicConfig.cmake DESTINATION lib/cmake/gmic)
 feature_summary(WHAT ALL)
