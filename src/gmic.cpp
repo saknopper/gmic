@@ -1984,7 +1984,7 @@ double gmic::mp_ext(char *const str, void *const p_list) {
         res = cimg::type<double>::nan();
       }
       gi.callstack.remove();
-      if (!gi.status || !*gi.status || std::sscanf(gi.status,"%lf%c",&res,&sep)!=1) res = cimg::type<double>::nan();
+      if (!gi.status || !*gi.status || cimg_sscanf(gi.status,"%lf%c",&res,&sep)!=1) res = cimg::type<double>::nan();
     }
   }
   return res;
@@ -2735,10 +2735,10 @@ const char *gmic::set_variable(const char *const name, const char *const value,
       if (!is_name_found)
         error("Operation '%s=' requested on undefined variable '%s'.",
               s_operation,name);
-      if (std::sscanf(__variables[ind],"%lf%c",&lvalue,&end)!=1)
+      if (cimg_sscanf(__variables[ind],"%lf%c",&lvalue,&end)!=1)
         error("Operation '%s=' requested on non-numerical variable '%s=%s'.",
               s_operation,name,__variables[ind].data());
-      if (std::sscanf(value,"%lf%c",&rvalue,&end)!=1)
+      if (cimg_sscanf(value,"%lf%c",&rvalue,&end)!=1)
         error("Operation '%s=' requested on variable '%s', with non-numerical argument '%s'.",
               s_operation,name,value);
       s_value.assign(24); *s_value = 0;
@@ -3762,15 +3762,15 @@ CImg<char> gmic::substitute_item(const char *const source,
         if (nsource==source || *(nsource - 1)==',') {
           if (!nsource[1] || nsource[1]==',' ||
               (nsource==source && nsource[1]=='x' && nsource[2]>='0' && nsource[2]<='9' &&
-               std::sscanf(nsource + 2,"%u%c",&p,&(sep=0))==1)) { str = "[-1]"; N = 1; }
+               cimg_sscanf(nsource + 2,"%u%c",&p,&(sep=0))==1)) { str = "[-1]"; N = 1; }
           else if (nsource[1]=='.') {
             if (!nsource[2] || nsource[2]==',' ||
                 (nsource==source && nsource[2]=='x' && nsource[3]>='0' && nsource[3]<='9' &&
-                 std::sscanf(nsource + 3,"%u%c",&p,&(sep=0))==1)) { str = "[-2]"; N = 2; }
+                 cimg_sscanf(nsource + 3,"%u%c",&p,&(sep=0))==1)) { str = "[-2]"; N = 2; }
             else if (nsource[2]=='.') {
               if (!nsource[3] || nsource[3]==',' ||
                   (nsource==source && nsource[3]=='x' && nsource[4]>='0' && nsource[4]<='9' &&
-                   std::sscanf(nsource + 4,"%u%c",&p,&(sep=0))==1)) { str = "[-3]"; N = 3; }
+                   cimg_sscanf(nsource + 4,"%u%c",&p,&(sep=0))==1)) { str = "[-3]"; N = 3; }
             }
           }
         }
