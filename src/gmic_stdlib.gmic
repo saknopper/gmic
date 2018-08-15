@@ -5159,6 +5159,25 @@ _update_tutorial_html :
   wait {5000+u(2000)}
   v +
 
+# Update version number in HTML header file.
+_update_header_html : check ${1=$_version}>0
+  v -
+  strver=${strver\ $1}
+  filename=./header.html
+  l[]
+    i raw:$filename,uchar
+    s +,{'\n'}
+    repeat $! if {$>,h>=64} l[$>]
+      +autocrop {'" "'} autocrop. {'\t'}
+      if {"s = ['Latest stable version: ']; crop(0,0,1,size(s))==s"}
+        rm[0] i[0] ({'"                Latest stable version: <b><a href=\"https://gmic.eu/download.shtml\">"$strver"</a></b>"'}) y[0]
+      fi
+      rm.
+    endl fi done
+    a y
+    o raw:$filename,uchar
+  endl v +
+
 #@cli v : eq. to 'verbose'. : (+)
 
 #@cli verbose : level : { + | - } : (+)
@@ -19530,14 +19549,6 @@ stresc :
 strcat :
   v - $=s res="$1" repeat {$#-1} res=$res${s{$>+2}} done
   u $res v +
-
-#@cli strcmp : "string1","string2",_nb_characters>=0
-#@cli : Return '1' if the two specified strings are equals, '0' otherwise.
-#@cli : If 'nb_characters' is specified, the comparison is done only for the 'nb_characters' first characters.
-strcmp : skip "${1=}","${2=}","${3=}"
-  v - if {isval($3)} u {$3>0?!norm2(vector$3(0.{'"$1"'},0)-=vector$3(0.{'"$2"'},0)):1}
-  else u {A=vector(0.{'"$1"'});B=vector(0.{'"$2"'});size(A)==size(B)?!norm2(A-=B):0}
-  fi v +
 
 #@cli strcontains : string1,string2
 #@cli : Return 1 if the first string contains the second one.
