@@ -5160,9 +5160,11 @@ _update_tutorial_html :
   v +
 
 # Update version number in HTML header file.
-_update_header_html : check ${1=$_version}>0
+# $1 = version number.
+# $2 = is_prerelease = { 0 | 1 }
+_update_header_html : check "${1=0}>=0 && isbool(${2=0})"
+  if {!$1} return fi
   v -
-  strver=${strver\ $1}
   filename=./header.html
   l[]
     i raw:$filename,uchar
@@ -5170,7 +5172,19 @@ _update_header_html : check ${1=$_version}>0
     repeat $! if {$>,h>=64} l[$>]
       +autocrop {'" "'} autocrop. {'\t'}
       if {"s = ['Latest stable version: ']; crop(0,0,1,size(s))==s"}
-        rm[0] i[0] ({'"                Latest stable version: <b><a href=\"https://gmic.eu/download.shtml\">"$strver"</a></b>"'}) y[0]
+
+        # Retrieve latest stable version specified in the header file.
+        +l. s -,{'>'}
+          if {2,"i[0]>=_'0' && i[0]<=_'9' && i[1]==_'.' && i[2]>=_'0' && i[2]<=_'9' && i[3]==_'.' && i[4]>=_'0' && i[4]<=_'9'"}
+            sta={2,`crop(0,0,1,5)`}
+          fi
+          if $2 pre=${strver\ $1} else sta=${strver\ $1} fi
+        rm endl
+
+        rm[0]
+        i[0] ({'"                Latest stable version: <b><a href=\"https://gmic.eu/download.shtml\">"$sta"</a></b>"'})
+        if $2 i[1] ({'" &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Current pre-release: <b><a href=\"https://gmic.eu/files/prerelease\">"$pre"</a></b>"'}) fi
+        y
       fi
       rm.
     endl fi done
