@@ -19537,19 +19537,6 @@ str : skip $1
 str2hex :
   v - ({'"$*"'}) y. r. 2,100% f. 'v=if(x,i%16,int(i/16));if(v<=9,48+v,87+v)' u {t} rm. v +
 
-#@cli stresc : val1,...,valN
-#@cli : Return escaped string from specified ascii codes.
-stresc :
-  v - ($*) c. 32,255 y. .
-  f.. 'if(i==32||i==34||i==36||i==44||i==64||i==92||i==123||i==125,92,-1)' a[-2,-1] x
-  discard. -1 u {t} rm. v +
-
-#@cli strcat : "string1","string2",...
-#@cli : Return the concatenation of all strings passed as arguments.
-strcat :
-  v - $=s res="$1" repeat {$#-1} res=$res${s{$>+2}} done
-  u $res v +
-
 #@cli strcontains : string1,string2
 #@cli : Return 1 if the first string contains the second one.
 strcontains :
