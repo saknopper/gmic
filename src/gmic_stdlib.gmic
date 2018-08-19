@@ -30650,7 +30650,7 @@ fx_scanlines :
 fx_scanlines_preview :
   gui_split_preview "fx_scanlines $*",${-3--1}
 
-#@gui Self glitching : fx_self_glitching, fx_self_glitching_preview(0)
+#@gui Self glitching : fx_self_glitching, fx_self_glitching_preview(1)
 #@gui : Multiplier = float(0,-5,5)
 #@gui : Bias = float(0,-255,255)
 #@gui : Negate = bool(0)
