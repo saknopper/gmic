@@ -30667,7 +30667,7 @@ fx_self_glitching :
       const boundary = $7;
     );
     val = sign*(2^$1)*j(shift) + $2;
-    ($4==0?(i + val):$4==1?(i * val):$4==2?(i & val):$4==3?(i | val):$4==4?xor(i,val))%256;
+    ($4==0?(i + val):$4==1?(i * val):$4==2?(i & val):$4==3?(i | val):xor(i,val))%256;
   "
 
 fx_self_glitching_preview :
