@@ -30654,7 +30654,7 @@ fx_scanlines_preview :
 #@gui : Multiplier = float(0,-5,5)
 #@gui : Bias = float(0,-255,255)
 #@gui : Negate = bool(0)
-#@gui : Operator = choice("Add","Mul","And","Or","Xor")
+#@gui : Operator = choice("Add","Mul","And","Or","Xor","Pow","Reverse pow","Mod","Reverse mod")
 #@gui : Shift point = point(50,50,0,1)
 #@gui : Boundary = choice(3,"Zero","Nearest","Periodic","Mirror")
 #@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right","Duplicate horizontal","Duplicate vertical","Checkered","Checkered inverse"), Preview split = point(50,50,0,0,200,200,200,0,10,0)
@@ -30667,7 +30667,16 @@ fx_self_glitching :
          const boundary = $7;
        );
        val = sign*((2^$1)*j(shift) + $2);
-       ($4==0?(i + val):$4==1?(i * val):$4==2?(i & val):$4==3?(i | val):xor(i,val))%256;
+       ($4==0?(val + i):
+        $4==1?(val * i):
+        $4==2?(val & i):
+        $4==3?(val | i):
+        $4==4?xor(val,i):
+        $4==5?(val^i):
+        $4==6?(i^val):
+        $4==7?(val%i):
+        (i%val)
+       )%256;
     "
   endl a c endl done
 
