@@ -30660,15 +30660,16 @@ fx_scanlines_preview :
 #@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right","Duplicate horizontal","Duplicate vertical","Checkered","Checkered inverse"), Preview split = point(50,50,0,0,200,200,200,0,10,0)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2018/08/19</i>.</small>")
 fx_self_glitching :
-  f "
-    init(
-      shift = ([w,h]-1)*(50-[$5,$6])%;
-      const sign = $3?-1:1;
-      const boundary = $7;
-    );
-    val = sign*((2^$1)*j(shift) + $2);
-    ($4==0?(i + val):$4==1?(i * val):$4==2?(i & val):$4==3?(i | val):xor(i,val))%256;
-  "
+  repeat $! l[$>] split_opacity l[0]
+    f "init(
+         shift = ([w,h]-1)*(50-[$5,$6])%;
+         const sign = $3?-1:1;
+         const boundary = $7;
+       );
+       val = sign*((2^$1)*j(shift) + $2);
+       ($4==0?(i + val):$4==1?(i * val):$4==2?(i & val):$4==3?(i | val):xor(i,val))%256;
+    "
+  endl a c endl done
 
 fx_self_glitching_preview :
   gui_split_preview "fx_self_glitching $*",${-3--1}
