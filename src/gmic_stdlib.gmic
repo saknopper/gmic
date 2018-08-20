@@ -32015,11 +32015,32 @@ fx_frame_fuzzy :
 #@gui : sep = separator(), note = note("<b>Image alignment:</b>")
 #@gui : Horizontal (%) = float(50,0,100)
 #@gui : Vertical (%) = float(50,0,100)
+#@gui : sep = separator(), note = note("<b>Frame dilation/shrinking:</b>")
+#@gui : Left = float(0,-5,5)
+#@gui : Right = float(0,-5,5)
+#@gui : Up = float(0,-5,5)
+#@gui : Bottom = float(0,-5,5)
 #@gui : sep = separator()
 #@gui : Preview opacity (%) = float(0.75,0,1)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2018/08/20</i>.</small>")
 fx_frame_mirror :
-  r {100+2*$1}%,{100+2*$2}%,1,100%,0,3,{$3%},{$4%}
+  repeat $! l[$>]
+    {100+2*$1}%,{100+2*$2}%,1,100%,"
+      const boundary = 3;
+      const offx = (w - w#-1)*$3%;
+      const offy = (h - h#-1)*$4%;
+      const f_left = 2^$5;
+      const f_right = 2^$6;
+      const f_up = 2^$7;
+      const f_bottom = 2^$8;
+      x = x - offx;
+      y = y - offy;
+      x<0?(x*=-f_left):
+      x>=w#-1?(x = w#-1 - 1 - f_right*(x - w#-1));
+      y<0?(y*=-f_up):
+      y>=h#-1?(y = h#-1 - 1 - f_bottom*(y - h#-1));
+      I(#-1,x,y)"
+  k. endl done
 
 fx_frame_mirror_preview :
   repeat $! l[$>]
@@ -32028,7 +32049,7 @@ fx_frame_mirror_preview :
     ws,hs={[$ws,$hs]*[$wp,$hp]/[$wd,$hd]}
 
     coords={off=([$wp,$hp]-[$ws,$hs])*[$3,$4]%;[off,off+[$ws,$hs]-1]}
-    split_opacity 100%,100%,1,1,$5 rectangle. $coords,1,1 *[0,-1] a c
+    split_opacity 100%,100%,1,1,$9 rectangle. $coords,1,1 *[0,-1] a c
     rectangle $coords,0.75,0xF0F0F0F0,255
     rectangle $coords,0.75,0x0F0F0F0F,0,0,0,255
   endl done
