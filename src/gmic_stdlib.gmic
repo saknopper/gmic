@@ -32008,6 +32008,31 @@ fx_frame_fuzzy :
     frame_fuzzy $sx,$sy,${3-8}
   endl done
 
+#@gui Frame [mirror] : fx_frame_mirror, fx_frame_mirror_preview(1)
+#@gui : note = note("<b>Frame size:</b>")
+#@gui : Horizontal (%) = float(10,0,100)
+#@gui : Vertical (%) = float(10,0,100)
+#@gui : sep = separator(), note = note("<b>Image alignment:</b>")
+#@gui : Horizontal (%) = float(50,0,100)
+#@gui : Vertical (%) = float(50,0,100)
+#@gui : sep = separator()
+#@gui : Preview opacity (%) = float(0.75,0,1)
+#@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2018/08/20</i>.</small>")
+fx_frame_mirror :
+  r {100+2*$1}%,{100+2*$2}%,1,100%,0,3,{$3%},{$4%}
+
+fx_frame_mirror_preview :
+  repeat $! l[$>]
+    ws,hs={[w,h]} fx_frame_mirror $* wd,hd={[w,h]}
+    rr2d $_preview_width,$_preview_height wp,hp={[w,h]}
+    ws,hs={[$ws,$hs]*[$wp,$hp]/[$wd,$hd]}
+
+    coords={off=([$wp,$hp]-[$ws,$hs])*[$3,$4]%;[off,off+[$ws,$hs]-1]}
+    split_opacity 100%,100%,1,1,$5 rectangle. $coords,1,1 *[0,-1] a c
+    rectangle $coords,0.75,0xF0F0F0F0,255
+    rectangle $coords,0.75,0x0F0F0F0F,0,0,0,255
+  endl done
+
 #@gui Frame [painting] : fx_frame_painting, fx_frame_painting_preview(1)
 #@gui : Size (%) = float(10,0,100)
 #@gui : Contrast = float(0.4,0,1)
