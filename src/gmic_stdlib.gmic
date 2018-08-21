@@ -30141,7 +30141,7 @@ fx_zoom :
 #---------------------------
 
 #@gui Blur [angular] : fx_blur_angular, fx_blur_angular_preview(1)
-#@gui : Amplitude = float(2,0,10)
+#@gui : Amplitude (%) = float(2,0,20)
 #@gui : Center (%) = point(50,50,0,1)
 #@gui : Sharpness = float(0,0,500)
 #@gui : Preview guides = bool(1)
