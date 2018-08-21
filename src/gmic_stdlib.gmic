@@ -30659,28 +30659,30 @@ fx_scanlines_preview :
 #@gui : Operator = choice("Add","Mul","And","Or","Xor","Pow","Reverse pow","Mod","Reverse mod")
 #@gui : Shift point = point(50,50,0,1)
 #@gui : Boundary = choice(3,"Zero","Nearest","Periodic","Mirror")
+#@gui : sep = separator(), Channel(s) = choice("All","RGBA [all]","RGB [all]","RGB [red]","RGB [green]","RGB [blue]","RGBA [alpha]","Linear RGB [all]","Linear RGB [red]","Linear RGB [green]","Linear RGB [blue]","YCbCr [luminance]","YCbCr [blue-red chrominances]","YCbCr [blue chrominance]","YCbCr [red chrominance]","YCbCr [green chrominance]","Lab [lightness]","Lab [ab-chrominances]","Lab [a-chrominance]","Lab [b-chrominance]","Lch [ch-chrominances]","Lch [c-chrominance]","Lch [h-chrominance]","HSV [hue]","HSV [saturation]","HSV [value]","HSI [intensity]","HSL [lightness]","CMYK [cyan]","CMYK [magenta]","CMYK [yellow]","CMYK [key]","YIQ [luma]","YIQ [chromas]")
 #@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right","Duplicate horizontal","Duplicate vertical","Checkered","Checkered inverse"), Preview split = point(50,50,0,0,200,200,200,0,10,0)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2018/08/19</i>.</small>")
 fx_self_glitching :
-  repeat $! l[$>] split_opacity l[0]
-    f "init(
-         shift = ([w,h]-1)*(50-[$5,$6])%;
-         const sign = $3?-1:1;
-         const boundary = $7;
-       );
-       val = sign*((2^$1)*j(shift) + $2);
-       ($4==0?(val + i):
-        $4==1?(val * i):
-        $4==2?(val & i):
-        $4==3?(val | i):
-        $4==4?xor(val,i):
-        $4==5?(val^i):
-        $4==6?(i^val):
-        $4==7?(val%i):
-        (i%val)
-       )%256;
-    "
-  endl a c endl done
+  ac "_fx_self_glitching ${1-7}",$8
+
+_fx_self_glitching :
+  f "init(
+       shift = ([w,h]-1)*(50-[$5,$6])%;
+       const sign = $3?-1:1;
+       const boundary = $7;
+     );
+     val = sign*((2^$1)*j(shift) + $2);
+     ($4==0?(val + i):
+      $4==1?(val * i):
+      $4==2?(val & i):
+      $4==3?(val | i):
+      $4==4?xor(val,i):
+      $4==5?(val^i):
+      $4==6?(i^val):
+      $4==7?(val%i):
+      (i%val)
+     )%256;
+  "
 
 fx_self_glitching_preview :
   gui_split_preview "fx_self_glitching $*",${-3--1}
