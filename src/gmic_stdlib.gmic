@@ -1242,7 +1242,7 @@ _help_header_html :
 \n<li><a href=\"#subsection10\">Image drawing</a></li>
 \n<li><a href=\"#subsection11\">Matrix computation</a></li>
 \n<li><a href=\"#subsection12\">3d rendering</a></li>
-\n<li><a href=\"#subsection13\">Program control</a></li>
+\n<li><a href=\"#subsection13\">Control flow</a></li>
 \n<li><a href=\"#subsection14\">Arrays,tiles and frames</a></li>
 \n<li><a href=\"#subsection15\">Artistic</a></li>
 \n<li><a href=\"#subsection16\">Warpings</a></li>
@@ -15076,7 +15076,7 @@ weird3d : skip ${1=32}
 
 #-------------------------------
 #
-#@cli :: Program control
+#@cli :: Control flow
 #
 #-------------------------------
 
