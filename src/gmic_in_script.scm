@@ -61,7 +61,7 @@
                    ))
 
     ;; Merge two layers together, using the G'MIC 'edges' mode (this layer mode does not exist by default in GIMP).
-    (plug-in-gmic-qt 1 img drawable 2 0 "v - compose_edges 1")
+    (plug-in-gmic-qt 1 img drawable 2 0 "v - blend_edges 1")
 
     )
 
