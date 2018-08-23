@@ -19151,6 +19151,34 @@ is_windows :
 math_lib :
   v -
   u "
+
+  dar_size(ind) = i[#ind,whd(#ind)-1];  # Return number of elements in dynamic array #ind.
+
+  dar_insert(ind,elt,pos) = ( # Inserts new element 'elt' into dynamic array #ind, at index [pos] ('pos' must be in [0,dar_size(#ind) - 1]).
+    _dar_pos = pos;
+    _dar_siz = dar_size(#ind);
+    if (_dar_pos<=_dar_siz,
+      _dar_siz>=h(#ind) - 1?resize(#ind,1,_dar_siz*2 + 2,1,s#ind,0);
+      for (_dar_c = 0, _dar_c<s#ind, ++_dar_c, copy(i(#ind,_dar_pos + 1,0,0,_dar_c),i(#ind,_dar_pos,0,0,_dar_c),_dar_siz - _dar_pos));
+      I[#ind,_dar_pos] = elt;
+      (dar_size(ind#)) = ++_dar_siz;
+    );
+  );
+
+  dar_insert(ind,elt) = dar_insert(#ind,elt,dar_size(#ind));
+
+  dar_remove(ind,pos) = ( # Remove element from dynamic array #ind, at index [pos] ('pos' must be in [0,dar_size(#ind) - 1]).
+    _dar_pos = pos;
+    _dar_siz = dar_size(#ind);
+    if (_dar_pos<=_dar_siz,
+      _dar_siz = --dar_size(#ind);
+      for (_dar_c = 0, _dar_c<s#ind, ++_dar_c, copy(i(#ind,_dar_pos,0,0,_dar_c),i(#ind,_dar_pos + 1,0,0,_dar_c),_dar_siz - _dar_pos));
+      _dar_siz<=h(#ind)/3 - 1?(resize(#ind,1,max(2,h(#ind)/2),1,s#ind,0); (dar_size(#ind)) = _dar_siz);
+    )
+  );
+
+  dar_remove(ind) = dar_remove(#ind,dar_size(#ind) - 1);
+
   dist(A,B) = ( # Distance from point A to point B
     norm(B - A);
   );
