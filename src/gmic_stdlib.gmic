@@ -19362,6 +19362,11 @@ math_lib :
     V#;
   );
 
+  pexp(x) = ( # Good polynomial approximation of 'exp(-x^2)' for |x|<2
+    _pexp_x = abs(x);
+    _pexp_x<2?-0.110353*_pexp_x^4 + 0.683221*_pexp_x^3 -1.17282*_pexp_x^2 + 1:0
+  );
+
   proj(X,A,B) = ( # Projection of point X onto line (A,B)
     _AB = B - A;
     P = A + dot(X - A,_AB)/max(1e-8,dot(_AB,_AB))*_AB;
