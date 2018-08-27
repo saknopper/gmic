@@ -28182,7 +28182,7 @@ fx_colorful_blobs :
       r={max(1,round(norm($x-$rx,$y-$ry)))}
       if $1 ($R^$G^$B) $srgb2cs. R,G,B={^} rm. fi
       f. "*
-        pexp(x) = x<2?-0.110353*x^4 + 0.683221*x^3 - 1.17282*x^2 + 1:0;
+        pexp(x) = x<2?(res = 1; px = x^2; res+=-1.17282*px; px*=x; res+=0.683221*px; px*=x; res+=-0.110353*px):0;
         const r = 1.5*"($r)";
         dist = norm(x-"$x",y-"$y")/r;
         w = pexp(dist);
