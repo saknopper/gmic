@@ -5203,8 +5203,8 @@ _update_header_html : check "${2=0}>=0 && isbool(${3=0})"
           i[0] ({'"                Latest stable version: <b><a href=\"https://gmic.eu/download.shtml\">"$sta"</a></b>"'})
           if $3 i[1] ({'" &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Current pre-release: <b><a href=\"https://gmic.eu/files/prerelease\">"$pre"</a></b>"'}) fi
         else
-          i[0] ({'"                Latest stable version: <b><a href=\"https://cimg.eu/download.shtml\">"$sta"</a></b>"'})
-          if $3 i[1] ({'" &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Current pre-release: <b><a href=\"https://cimg.eu/files\">"$pre"</a></b>"'}) fi
+          i[0] ({'"                Latest stable version: <b><a href=\"http://cimg.eu/files/CImg_"$sta".zip\">"$sta"</a></b>"'})
+          if $3 i[1] ({'" &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Current pre-release: <b><a href=\"http://cimg.eu/files/CImg_latest.zip\">"$pre"</a></b>"'}) fi
         fi
         y
       fi
