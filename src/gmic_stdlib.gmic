@@ -11189,9 +11189,11 @@ plot2value :
   endl done v +
 
 #@cli pointcloud : _type = { -X=-X-opacity | 0=binary | 1=cumulative | 2=label | 3=retrieve coordinates },_width,_height>0,_depth>0
-#@cli : Render a Nx1, Nx2, Nx3 or NxM image of point coordinates, as a point cloud in a 1d/2d or 3d binary image
+#@cli : Render a set of point coordinates, as a point cloud in a 1d/2d or 3d binary image
 #@cli : (or do the reverse, i.e. retrieve coordinates of non-zero points from a rendered point cloud).
-#@cli : If 'M'>3, the 3-to-M lines sets the (M-3)-dimensional color at each point.
+#@cli : Input point coordinates can be a NxMx1x1, Nx1x1xM or 1xNx1xM image, where 'N' is the number of points,
+#@cli : and M the point coordinates.
+#@cli : If 'M'>3, the 3-to-M components sets the (M-3)-dimensional color at each point.
 #@cli : Parameters 'width','height' and 'depth' are related to the size of the final image :
 #@cli :   - If set to 0, the size is automatically set along the specified axis.
 #@cli :   - If set to N>0, the size along the specified axis is N.
