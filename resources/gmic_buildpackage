@@ -341,9 +341,9 @@ cd html
 rm -f img/gmic_stdlib*.jpg image.jpg gimp.shtml
 ln -s download.shtml gimp.shtml
 if [ "$1" == "final" ]; then
-    gmic _update_header_html ${VERSION},0
+    gmic _update_header_html header.html,${VERSION},0
 else
-    gmic _update_header_html ${VERSION},1
+    gmic _update_header_html header.html,${VERSION},1
 fi
 gmic sp tiger r2dy 480 o image.jpg
 gmic v - ../src/gmic_stdlib.gmic raw:../src/gmic_stdlib.gmic,uchar document_gmic images,img/

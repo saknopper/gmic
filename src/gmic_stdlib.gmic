@@ -5171,12 +5171,14 @@ _update_tutorial_html :
   v +
 
 # Update version number in HTML header file.
-# $1 = version number.
-# $2 = is_prerelease = { 0 | 1 }
-_update_header_html : check "${1=0}>=0 && isbool(${2=0})"
-  if {!$1} return fi
+# (works both for CImg and G'MIC !)
+# $1 = filename
+# $2 = version number
+# $3 = is_prerelease = { 0 | 1 }
+_update_header_html : check "${2=0}>=0 && isbool(${3=0})"
+  if {!$2} return fi
   v -
-  filename=./header.html
+  filename=$1
   l[]
     i raw:$filename,uchar
     s +,{'\n'}
@@ -5184,17 +5186,26 @@ _update_header_html : check "${1=0}>=0 && isbool(${2=0})"
       +autocrop {'" "'} autocrop. {'\t'}
       if {"s = ['Latest stable version: ']; crop(0,0,1,size(s))==s"}
 
+        is_gmic={find(crop(),'gmic.eu')>=0}
+        is_cimg={find(crop(),'cimg.eu')>=0}
+        if (!$is_gmic" && "!$is_cimg} v + return fi
+
         # Retrieve latest stable version specified in the header file.
         +l. s -,{'>'}
           if {2,"i[0]>=_'0' && i[0]<=_'9' && i[1]==_'.' && i[2]>=_'0' && i[2]<=_'9' && i[3]==_'.' && i[4]>=_'0' && i[4]<=_'9'"}
             sta={2,`crop(0,0,1,5)`}
           fi
-          if $2 pre=${strver\ $1} else sta=${strver\ $1} fi
+          if $3 pre=${strver\ $2} else sta=${strver\ $2} fi
         rm endl
 
         rm[0]
-        i[0] ({'"                Latest stable version: <b><a href=\"https://gmic.eu/download.shtml\">"$sta"</a></b>"'})
-        if $2 i[1] ({'" &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Current pre-release: <b><a href=\"https://gmic.eu/files/prerelease\">"$pre"</a></b>"'}) fi
+        if $is_gmic
+          i[0] ({'"                Latest stable version: <b><a href=\"https://gmic.eu/download.shtml\">"$sta"</a></b>"'})
+          if $3 i[1] ({'" &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Current pre-release: <b><a href=\"https://gmic.eu/files/prerelease\">"$pre"</a></b>"'}) fi
+        else
+          i[0] ({'"                Latest stable version: <b><a href=\"https://cimg.eu/download.shtml\">"$sta"</a></b>"'})
+          if $3 i[1] ({'" &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Current pre-release: <b><a href=\"https://cimg.eu/files\">"$pre"</a></b>"'}) fi
+        fi
         y
       fi
       rm.
