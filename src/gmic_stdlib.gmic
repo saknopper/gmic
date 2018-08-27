@@ -28175,25 +28175,22 @@ fx_colorful_blobs :
 
   repeat $N
     # If center point has been moved -> Update radius point.
-    rx$>,ry$>={"P = ["${x$>},${y$>}"]; R = ["${rx$>},${ry$>}"]; oP = ["${p_x$>},${p_y$>}"]; oP==[-1,-1]?P + [12,0]:P!=oP?R + P - oP:R"}
+    rx$>,ry$>={"P = ["${x$>},${y$>}"]; R = ["${rx$>},${ry$>}"]; oP = ["${p_x$>},${p_y$>}"]; oP==[-1,-1]?P + [10,0]:P!=oP?R + P - oP:R"}
 
     if {!isnan(${x$>})}
       x,y,rx,ry,R,G,B={"const w1 = (w - 1)%; const h1 = (h -1)%; "round([${x$>}*w1,${y$>}*h1,${rx$>}*w1,${ry$>}*h1,${R$>},${G$>},${B$>}])}
       r={max(1,round(norm($x-$rx,$y-$ry)))}
       if $1 ($R^$G^$B) $srgb2cs. R,G,B={^} rm. fi
-
-      100%,100% =. 1,$x,$y distance. 1
       f. "*
-        init(
-          pexp(x) = x<2?-0.110353*x^4 + 0.683221*x^3 - 1.17282*x^2 + 1:0;
-          const r = 1.5*"($r)";
-        );
-        x = i/r; w = pexp(x);
-        j(#0,0,0,0,0) += w*"$R";
+        pexp(x) = x<2?-0.110353*x^4 + 0.683221*x^3 - 1.17282*x^2 + 1:0;
+        const r = 1.5*"($r)";
+        dist = norm(x-"$x",y-"$y")/r;
+        w = pexp(dist);
+        j(#0,0,0,0) += w*"$R";
         j(#0,0,0,0,1) += w*"$G";
         j(#0,0,0,0,2) += w*"$B";
-        i(#1) += w;
-      " rm.
+        i + w;
+      "
     fi
   done
   sh[0] 0,2 /. [1] if $1 $cs2srgb. fi
