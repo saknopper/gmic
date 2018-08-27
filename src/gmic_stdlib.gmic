@@ -6160,7 +6160,7 @@ noise_poissondisk : check "${1=8}>0 && ${2=30}>0"
       const radius = "$R";
       const grid_cw = "$cw";
       const max_sample_attempts = $2;
-      const value = im#0==iM#0?1:iM#0;
+      const value = iM#0 + (im#0==iM#0);
       mag2(vec) = (sum(sqr(vec)));
       prox = I#5;
       lim = I#1;
