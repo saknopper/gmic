@@ -28183,7 +28183,7 @@ fx_colorful_blobs :
       if $1 ($R^$G^$B) $srgb2cs. R,G,B={^} rm. fi
       f. "*
         pexp(x) = x<2?(res = 1; px = x^2; res+=-1.17282*px; px*=x; res+=0.683221*px; px*=x; res+=-0.110353*px):0;
-        const r = "($r)";
+        const r = 1.2*"($r)";
         dist = norm(x-"$x",y-"$y")/r;
         w = pexp(dist);
         j(#0,0,0,0) += w*"$R";
@@ -28194,7 +28194,7 @@ fx_colorful_blobs :
     fi
   done
   sh[0] 0,2 /. [1] if $1 $cs2srgb. fi
-  f[0] "*init(bg = [ "$bgR,$bgG,$bgB,$bgA" ]); i(#1)<0.4?bg:[R,G,B,255]" k[0]
+  f[0] "*init(bg = [ "$bgR,$bgG,$bgB,$bgA" ]); i(#1)<0.5?bg:[R,G,B,255]" k[0]
 
   repeat $N
     if {!isnan(${x$>})" && "$display_controls}
