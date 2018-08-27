@@ -6152,7 +6152,7 @@ negate : skip "${1=,}"
 #@cli : Add poisson disk sampling noise to selected images.
 #@cli : Implements the algorithm from the article "Fast Poisson Disk Sampling in Arbitrary Dimensions", by Robert Bridson (SIGGRAPH'2007).
 #@cli : Default values: 'radius=8' and 'max_sample_attempts=30'.
-#@cli : $ 800,800 poisson_disk 8
+#@cli : $ 800,800 noise_poissondisk 8
 ##### : Original G'MIC code by Garagecoder (Andy Kelday)
 noise_poissondisk : check "${1=8}>0 && ${2=30}>0"
   e[^-1] "Add poisson disk sampling points to image$?, with radius $1 and max sample attempts $2."
