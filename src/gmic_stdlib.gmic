@@ -6837,7 +6837,7 @@ compose_channels : skip ${1="+"}
   e[^-1] "Compose all channels of image$?, with operator '$1'."
   v - repeat $! l[$>]
     sh 0
-    repeat {{-2,s}-1} sh.. {$>+1} l[-2,-1] -$1 endl done
+    repeat {-2,s-1} sh.. {$>+1} l[-2,-1] $1 endl done
     rm. r 100%,100%,100%,1,-1
   endl done v +
 
@@ -12663,9 +12663,9 @@ _render_maze :
 #@cli : $ 0 text "G'MIC",0,0,53,1,1 dilate 3 autocrop 0 frame 1,1,0 maze_mask 8 dilate 3 negate mul 255
 maze_mask : check "isint(${1=24}) && $1>0"
   e[^-1] "Input masked maze from image$? with cell size $1."
-  v - norm >= 50% repeat $! l[$>]
+  v - compose_channels + >= 50% repeat $! l[$>]
     do
-      +rand[0] 0,1 *. [0] ({xM},{yM}) rm..  # Select one starting point in the mask.
+      +rand[0] 0,1 *. [0] ({[xM,yM]}) rm..  # Select one starting point in the mask.
       +flood[0] {^},0,0,0,1,2 >=. 2 +negate. *.. 15 a[-2,-1] c
       flood[0] {-2,^},0,0,0,1,0
       _generate_maze {w},{h}
@@ -33767,7 +33767,7 @@ fx_marble :
 #@gui : Maze type = choice("Dark walls","White walls")
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2011/02/09</i>.</small>")
 fx_maze :
-  repeat $!
+  repeat $! l[$>]
     w={w} h={h}
     r. {100/$1}%,{100/$1}%,1,100%,2
     if {$3==0} f. 1
@@ -33776,7 +33776,7 @@ fx_maze :
     maze_mask. $1 dilate. $2 *. 255
     if {!$5} negate. fi
     if $4 r. $w,$h,100%,100% fi
-  mv. 0 done
+  endl done
 
 #@gui Mineral mosaic : fx_mineral_mosaic,fx_mineral_mosaic(0)
 #@gui : Density = float(1,0,3)
