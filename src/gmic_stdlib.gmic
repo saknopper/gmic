@@ -934,9 +934,9 @@ _help_usage :
 \n       . '"${c}"display(_X,_w,_h,_d,_s)"$n" or '"${c}"display(#ind)"$n" display the contents of the vector '"${c}"X"$n"'
 \n          (or specified image) and wait for user events. if no arguments are provided, a memory
 \n          snapshot of the math parser environment is displayed instead.
-\n       . '"${c}"init(expression)"$n" and '"${c}"end(expression)"$n" evaluates the specified expressions only once,
+\n       . '"${c}"begin(expression)"$n" and '"${c}"end(expression)"$n" evaluates the specified expressions only once,
 \n          respectively at the beginning and end of the evaluation procedure, and this,
-\n          even when multiple evaluations are required (e.g. in '"${c}"fill init(foo=0);++foo"$n"').
+\n          even when multiple evaluations are required (e.g. in '"${c}"fill begin(foo=0);++foo"$n"').
 \n       . '"${c}"copy(dest,src,_nb_elts,_inc_d,_inc_s,_opacity)"$n" copies an entire memory block of '"${c}"nb_elts"$n"'
 \n          elements starting from a source value '"${c}"src"$n"' to a specified destination '"${c}"dest"$n"', with
 \n          increments defined by '"${c}"inc_d"$n"' and '"${c}"inc_s"$n"' respectively for the destination and source
@@ -1991,7 +1991,7 @@ _display_quiver : check "${1=16}>0 && ${2=1.5}>=0 && isint(${3=2}) && $3>=0 && $
     +norm. /.. {max(1e-6,iM)} rm. # Normalize vector values.
     {$1*w},{$1*h},1,{"1<<cut($3,0,2)"}
     f.. "
-      init(C = resize([255],s#1,1));
+      begin(C = resize([255],s#1,1));
       "${-math_lib}"
       len = norm2(I(x,y));
       ang = atan2(i(x,y,0,1),i(x,y,0,0))*180/pi;
@@ -2066,7 +2066,7 @@ _display_tensors : check "${1=16}>0 && ${2=1.5}>=0 && isint(${3=2}) && $3>=0 && 
     * {($2*$1/2)/max(abs(im),abs(iM))} # Normalize tensor values.
     {$1*w},{$1*h},1,{"1<<cut($3,0,2)"}
     f.. "
-      init(C = resize([255],s#1,1); Co = resize([0],s#1,1); Co[s#1 - 1] = $3?255:0);
+      begin(C = resize([255],s#1,1); Co = resize([0],s#1,1); Co[s#1 - 1] = $3?255:0);
       "${-math_lib}"
       X = ([ x,y ]+=0.5)*$1;
       T = [ R, G, G, B ];
@@ -3050,7 +3050,7 @@ input_cube : skip ${2=1}
     rm.
     permute yzcx
     if {[$range]!=[0,0,0,1,1,1]}
-      f "init(
+      f "begin(
            range = ["$range"];
            dmin = range[0,3];
            dmax = range[3,3];
@@ -4643,7 +4643,7 @@ update_server :
     replace_str "<i>David Tschumperl&#233;</i>","<i><a href=\""$url"\">David Tschumperl&#233;</a></i>"
     o cimgz:/tmp/update$_version.gmic,uchar
 
-    (230,231,232,233,234,235,236)
+    (240)
     repeat {w}
       v={i[$>]}
       _update_server_upload[] ${_path_rc}update$_version.gmic,plain_update$v.gmic
@@ -6342,12 +6342,12 @@ quantize_area : check "${1=10}>0"
   v -
   if {$1==1} v + return fi
   repeat $! l[$>]
-    if {s>1} +f. "init(A = resize([ 0,(s-1)/s ],s,3));I+A" norm. round. 0.01 else [0] fi
+    if {s>1} +f. "begin(A = resize([ 0,(s-1)/s ],s,3));I+A" norm. round. 0.01 else [0] fi
     area. 0,0 <. $1
     do
       [0]
       f.. "*
-        init(
+        begin(
           const boundary = 1;
           offx = [ -1,1,0,0,0,0 ];
           offy = [ 0,0,-1,1,0,0 ];
@@ -6476,7 +6476,7 @@ set_vector_covariance :
     C=${"vector_covariance _avg"}
 
     # Transform data to fit new covariance matrix.
-    f "init(
+    f "begin(
          avg = [ "$_avg" ];
          C1 = [ "$C" ];
          C2 = [ $* ];
@@ -7034,7 +7034,7 @@ lab2xyz : skip "${1=,}"
   e[^-1] "Convert color representation of image$? from Lab to XYZ, using the D"{arg(1+$illu,50,65)}" illuminant."
   v - to_color
   f "
-    init(
+    begin(
       D65 = [ 0.4124564, 0.3575761, 0.1804375,
               0.2126729, 0.7151522, 0.0721750,
               0.0193339, 0.1191920, 0.9503041 ];
@@ -7839,7 +7839,7 @@ xyz2lab : skip "${1=,}"
   e[^-1] "Convert color representation of image$? from XYZ to Lab, using the D"{arg(1+$illu,50,65)}" illuminant."
   v - to_color
   f "
-    init(
+    begin(
       lab(x) = (24389*x>216?cbrt(x):(24389*x/27 + 16)/116);
       D65 = [ 0.4124564, 0.3575761, 0.1804375,
               0.2126729, 0.7151522, 0.0721750,
@@ -8188,7 +8188,7 @@ extract_region : check ${"is_image_arg $1"}" && isval(${2=0})"
   v - $=arg pass$1 mv. 0 repeat {$!-1} l[0,{1+$<}]
     repeat {$#-2}
       {1,[1,whd,1,s+($2?3:0)]}
-      f[0] ">init(k = 0);
+      f[0] ">begin(k = 0);
              if (i=="${arg{3+$>}}",
                if ($2,
                  I[#-1,k++] = [ I(#1),x,y,z ],
@@ -8653,7 +8653,7 @@ scale_dcci2x : check "${1=1.15}>=0 && ${2=5}>=0" skip ${3=0}
     r {2*w-(!$3)},{2*h-(!$3)},1,100%,4
 
     # Estimate diagonal values.
-    f "init(
+    f "begin(
          const threshold = $1;
          const exponent = $2;
          interpolation = 0;
@@ -8678,7 +8678,7 @@ scale_dcci2x : check "${1=1.15}>=0 && ${2=5}>=0" skip ${3=0}
        value/=16)"
 
     # Estimate remaining values.
-    f "init(
+    f "begin(
          const threshold = $1;
          const exponent = $2;
          interpolation = 0;
@@ -9400,7 +9400,7 @@ denoise_patchpca : check "${1=1.8} && $1>=0 && isint(${2=7}) && $2>0 && isint(${
     100%,100%,1,100% nm. aggreg
     100%,100% nm. weights
     f[0] "*
-    init(
+    begin(
       n1 = int($2/2); n2 = $2 - n1 - 1;
       m1 = int($3/2); m2 = $3 - m1 - 1;
       patch(x,y) = crop(x-n1,y-n1,0,c,$2,$2,1,1,1);
@@ -9995,7 +9995,7 @@ _inpaint_patchmatch :
     warp[0] [1],0,0,1
   else
     if $4 erode. $3 fi
-    f[0] "*init(
+    f[0] "*begin(
       boundary = 1;
       const patch_size = $3;
       const p2 = int(patch_size/2);
@@ -10503,16 +10503,16 @@ split_details : check "isint(${1=4}) && $1>0 && ${2=0}>=0 && ${3=0}>=0"
     e[^-1] "Split image$? using $1 spatial scales and 'a trous' wavelets."
     v - repeat $! l[$<]
       repeat {$1-1}
-        +f. "init(interpolation=0; boundary=1; d=2^"$>"; d2=d*2);
+        +f. "begin(interpolation=0; boundary=1; d=2^"$>"; d2=d*2);
               i(x - d2) + i(x + d2) + 4*i(x - d) + 4*i(x + d) + 6*i;"
         /. 16
         if {h>1}
-          f. "init(interpolation=0; boundary=1; d=2^"$>"; d2=d*2);
+          f. "begin(interpolation=0; boundary=1; d=2^"$>"; d2=d*2);
                i(x,y - d2) + i(x,y + d2) + 4*i(x,y - d) + 4*i(x,y + d) + 6*i;"
           /. 16
         fi
         if {d>1}
-          f. "init(interpolation=0; boundary=1; d=2^"$>"; d2=d*2);
+          f. "begin(interpolation=0; boundary=1; d=2^"$>"; d2=d*2);
                i(x,y,z - d2) + i(x,y,z + d2) + 4*i(x,y,z - d) + 4*i(x,y,z + d) + 6*i;"
           /. 16
         fi
@@ -10659,7 +10659,7 @@ _syntexturize_patchmatch : check ${is_image_arg\ $1}" && isint(${2=3}) && $2>=0"
   if {$2<=1} pass$1 warp[^-1] .,0 rm.
   else repeat $! pass$1 l[$>,-1]
     [1],[1],1,[0]
-    f. "*init(
+    f. "*begin(
           boundary = 1;
           const patch_size = $2;
           const p2 = int(patch_size/2);
@@ -10889,7 +10889,7 @@ delaunay :
   v - repeat $! l[$>]
 
     # Retrieve point coordinates.
-    +slices 0 norm. !=. 0 {is+1},1,1,2 +f.. ">init(p = 0); i?(I[#-1,++p] = [x,y]; p):0"
+    +slices 0 norm. !=. 0 {is+1},1,1,2 +f.. ">begin(p = 0); i?(I[#-1,++p] = [x,y]; p):0"
 
     # Compute voronoi diagram of point cloud.
     distance... 1 *... -1 watershed. ... rm...
@@ -11232,13 +11232,13 @@ pointcloud : check "${1=0}<=3 && ${2=0}>=0 && ${3=0}>=0 && ${4=0}>=0"
       elif {$1==1} # Cumulative
         f.. ">V = I; P = V[0,3]; C = V[3,size(V) - 3]; I(#-1,P) += C; V"
       else # Label
-        f.. ">init(l = 0); V = I; P = V[0,3]; C = V[3,size(V) - 3]; I(#-1,P) = ++l; V"
+        f.. ">begin(l = 0); V = I; P = V[0,3]; C = V[3,size(V) - 3]; I(#-1,P) = ++l; V"
       fi
 
     else # Retrieve set of point coordinates from rendered point cloud image
       16,1,1,{s+3}
       f.. ">
-        init(N = 0; zero = vectors(0));
+        begin(N = 0; zero = vectors(0));
         I!=zero?I[#-1,N++] = [ x,y,z,I ];
         N>=w(#-1)?resize(#-1,1.5*w(#-1),1,1,s#-1,0);
         end(resize(#-1,N,1,1,s#-1,0));
@@ -11452,7 +11452,7 @@ thinning :
   v -
   # Build hit&miss lookup table.
   512,8,1,1,"*
-    init(
+    begin(
       rot3x3(M) = [ M[6],M[3],M[0],M[7],M[4],M[1],M[8],M[5],M[2] ];
       rotated_masks(mat) = [ m0 = mat, m1 = rot3x3(m0), m2 = rot3x3(m1), m3 = rot3x3(m2) ];
       T1 = rotated_masks([ -1,-1,-1,0,1,0,1,1,1 ]); # Thinning 1
@@ -11530,7 +11530,7 @@ tsp : check "${1=256}>=0"
       );
       resize(#-1,w,1,1,s+1,0);
       copy(i(0,0,0,s),next,w)"
-    100%,1,1,{s-1},">init(ind = 0); val = I[#0,ind]; ind = val[s]; val" rm..
+    100%,1,1,{s-1},">begin(ind = 0); val = I[#0,ind]; ind = val[s]; val" rm..
 
     # Improving initial estimate iteratively by 2-opt algorithm.
     eval "
@@ -11831,7 +11831,7 @@ close_binary :
 
   # Define useful functions to navigate through edgels.
   _edgel_lib="
-    init(
+    begin(
       pn = [ 0,1,1,1,-1,0,-1,1,0,-1,-1,-1,1,0,1,-1 ];
       pp = [ 0,-1,1,-1,1,0,1,1,0,1,-1,1,-1,0,-1,-1 ];
     );
@@ -11941,7 +11941,7 @@ close_binary :
     # Remove hatch keypoints if requested.
     if {narg($keycoords)" && "$hd_detection_rate>0}
       _close_binary[strokes] $endpoint_threshold,$hd_detection_rate,$hd_angle,$hd_grouping_dist,$hd_grouping_angle,$hd_grouping_ratio
-      f[keycoords] "init(dis = vectors(-1)); P = (I)[0,2]; i(#"$keydiscard",P)?dis:I";
+      f[keycoords] "begin(dis = vectors(-1)); P = (I)[0,2]; i(#"$keydiscard",P)?dis:I";
       rm[keydiscard] discard[keycoords] -1 r[keycoords] {keycoords,[h/4,1,1,4]},-1
     fi
 
@@ -11966,7 +11966,7 @@ close_binary :
       # Detect pairs of keypoints preserving the spline constraints.
       i[keypairs] 256,1,1,3
       f[keycoords] ">
-        init(ind = 0);
+        begin(ind = 0);
         for (nx = x + 1, nx<w, ++nx,
           const cosmin = cos("$spline_anglemax"*pi/180);
           Ic = I[x];
@@ -12260,7 +12260,7 @@ _close_binary :
     f "N = crop(x-1,y-1,3,3,0); i && sum(N)==2"
     f "N = crop(x-1,y-1,3,3,0); (i && sum(N)==1) || (i && (N[5] || N[7] || N[8]))"
     label_fg 0 {iM},1,1,3
-    f.. "init(off = 0); if(i, I[#-1,off++] = [ x,y,-1]); i"
+    f.. "begin(off = 0); if(i, I[#-1,off++] = [ x,y,-1]); i"
     k.
   endl
   a[-2,-1] x nm. keycoords
@@ -12338,7 +12338,7 @@ _close_binary :
   is={is} if {!$is} k[strokes] i[keydiscard] [strokes],[strokes] return fi
 
   i[keylines] $is,1,1,2
-  f[vote] "init(off = 0); if (i,I[#-1,off++] = [x,y]); i"
+  f[vote] "begin(off = 0); if (i,I[#-1,off++] = [x,y]); i"
   rm[vote]
 
   # Manage visualization (2).
@@ -13004,7 +13004,7 @@ tetraedron_shade :
 
   # Draw tetraedron on selected images.
   f[^-1] "*
-  init(
+  begin(
     x0 = $1; y0 = $2; z0 = $3;
     x1 = $4; y1 = $5; z1 = $6;
     x2 = $7; y2 = $8; z2 = $9;
@@ -16311,7 +16311,7 @@ brushify : check ${"is_image_arg $1"}" &&"\         # $1: [brush]
 
     # Render filter.
     f[pts] "*
-      init(
+      begin(
         S2 = round(0.5*["$wb","$hb"]);
         brush_r = brush_g = brush_b = brush_a = vector"$whb"(255);
         ang = $13*pi/180;
@@ -17356,7 +17356,7 @@ spherize : check "${1=50%}>=0 && ${3=0}>=0 && ${6=1}>0 && isint(${8=1}) && $8>=0
     centery={${"is_percent $5"}?(h-1)*$5:$5}
     strength={$2>0?$2:1-exp($2/5)}
     100%,100%,1,2,"
-      init(
+      begin(
         center = [ "$centerx","$centery" ];
         wh1 = [ w,h ] - 1;
         m2wh1 = 0.5*max(wh1);
@@ -17814,42 +17814,42 @@ _blend_saturation :
 _blend_screen :
   +-[0] 255 -[1] 255 *[1,2] /[1] 255 *[1] -1 +[1] 255
 _blend_shapeareamax :
-  f[1] "init(A = resize([ 0,(s-1)/s ],s,3));I+A" norm[1] round[1] 0.01 label[1] 0
-  +f[0] "init(A = resize([ 0,(s-1)/s ],s,3));I+A" norm[2] round[2] 0.01 area[2] 0,0
+  f[1] "begin(A = resize([ 0,(s-1)/s ],s,3));I+A" norm[1] round[1] 0.01 label[1] 0
+  +f[0] "begin(A = resize([ 0,(s-1)/s ],s,3));I+A" norm[2] round[2] 0.01 area[2] 0,0
   {1,iM+1},1,1,{0,s+1}
   f[1] ">area = i(#2); best = I[#3,i]; if (area>best[size(best) - 1], I[#3,i] = [ I(#0),area ]);i"
   rm[2] channels[2] 0,{s-2} map[1] [2] rm[2]
 _blend_shapeareamax0 :
-  f[1] "init(A = resize([ 0,(s-1)/s ],s,3));I!=0?I+A:I" norm[1] round[1] 0.01 label_fg[1] 0
-  +f[0] "init(A = resize([ 0,(s-1)/s ],s,3));I+A" norm[2] round[2] 0.01 area[2] 0,0
+  f[1] "begin(A = resize([ 0,(s-1)/s ],s,3));I!=0?I+A:I" norm[1] round[1] 0.01 label_fg[1] 0
+  +f[0] "begin(A = resize([ 0,(s-1)/s ],s,3));I+A" norm[2] round[2] 0.01 area[2] 0,0
   {1,iM+1},1,1,{0,s+1}
   f[1] ">area = i(#2); best = I[#3,i]; if (area>best[size(best) - 1], I[#3,i] = [ I(#0),area ]);i"
   rm[2] channels[2] 0,{s-2} point[2] 0,0,0,1,0 map[1] [2] rm[2]
 _blend_shapeareamin :
-  f[1] "init(A = resize([ 0,(s-1)/s ],s,3));I+A" norm[1] round[1] 0.01 label[1] 0
-  +f[0] "init(A = resize([ 0,(s-1)/s ],s,3));I+A" norm[2] round[2] 0.01 area[2] 0,0
+  f[1] "begin(A = resize([ 0,(s-1)/s ],s,3));I+A" norm[1] round[1] 0.01 label[1] 0
+  +f[0] "begin(A = resize([ 0,(s-1)/s ],s,3));I+A" norm[2] round[2] 0.01 area[2] 0,0
   {1,iM+1},1,1,{0,s+1},inf
   f[1] ">area = i(#2); best = I[#3,i]; if (area<best[size(best) - 1], I[#3,i] = [ I(#0),area ]);i"
   rm[2] channels[2] 0,{s-2} map[1] [2] rm[2]
 _blend_shapeareamin0 :
-  f[1] "init(A = resize([ 0,(s-1)/s ],s,3));I!=0?I+A:I" norm[1] round[1] 0.01 label_fg[1] 0
-  +f[0] "init(A = resize([ 0,(s-1)/s ],s,3));I+A" norm[2] round[2] 0.01 area[2] 0,0
+  f[1] "begin(A = resize([ 0,(s-1)/s ],s,3));I!=0?I+A:I" norm[1] round[1] 0.01 label_fg[1] 0
+  +f[0] "begin(A = resize([ 0,(s-1)/s ],s,3));I+A" norm[2] round[2] 0.01 area[2] 0,0
   {1,iM+1},1,1,{0,s+1},inf
   f[1] ">area = i(#2); best = I[#3,i]; if (area<best[size(best) - 1], I[#3,i] = [ I(#0),area ]);i"
   rm[2] channels[2] 0,{s-2} point[2] 0,0,0,1,0 map[1] [2] rm[2]
 _blend_shapeaverage :
-  f[1] "init(A = resize([ 0,(s-1)/s ],s,3));I+A" norm[1] round[1] 0.01 label[1] 0 {iM+1},1,1,{0,s}
+  f[1] "begin(A = resize([ 0,(s-1)/s ],s,3));I+A" norm[1] round[1] 0.01 label[1] 0 {iM+1},1,1,{0,s}
   f[0] ">i(#2,i(#1,x,y,z,0),0,0,c)+=i;i"
   +histogram[1] {w},0,{w-1} /[-2,-1] map[1] . rm.
 _blend_shapeaverage0 :
-  f[1] "init(A = resize([ 0,(s-1)/s ],s,3));I!=0?I+A:I" norm[1] round[1] 0.01 label_fg[1] 0 {iM+1},1,1,{0,s}
+  f[1] "begin(A = resize([ 0,(s-1)/s ],s,3));I!=0?I+A:I" norm[1] round[1] 0.01 label_fg[1] 0 {iM+1},1,1,{0,s}
   f[0] ">i(#2,i(#1,x,y,z,0),0,0,c)+=i;i"
   +histogram[1] {w},0,{w-1} /[-2,-1] point. 0,0,0,1,0 map[1] . rm.
 _blend_shapemedian :
-  f[1] "init(A = resize([ 0,(s-1)/s ],s,3));I+A" norm[1] round[1] 0.01 label[1] 0
+  f[1] "begin(A = resize([ 0,(s-1)/s ],s,3));I+A" norm[1] round[1] 0.01 label[1] 0
   N={iM+1} $N,1,1,{s#0} $N,8,1,{s#0} s. x
   f[1] ">
-    init(siz = vector"$N"());
+    begin(siz = vector"$N"());
     k = i;
     k3 = k + 3;
     hk3 = h(#k3);
@@ -17860,10 +17860,10 @@ _blend_shapemedian :
   repeat {s#0} sh[3--1] $> $N,1,1,1,"ic(#"$N"+3+x)" j[2] .,0,0,0,$> rm[-{$N+1}--1] done
   map[1] [2] k[0,1]
 _blend_shapemedian0 :
-  f[1] "init(A = resize([ 0,(s-1)/s ],s,3));I!=0?I+A:I" norm[1] round[1] 0.01 label_fg[1] 0
+  f[1] "begin(A = resize([ 0,(s-1)/s ],s,3));I!=0?I+A:I" norm[1] round[1] 0.01 label_fg[1] 0
   N={iM} {$N+1},1,1,{s#0} $N,8,1,{s#0} s. x
   f[1] ">
-    init(siz = vector"$N"());
+    begin(siz = vector"$N"());
     k = i;
     if (k,
       k1 = k - 1;
@@ -17877,19 +17877,19 @@ _blend_shapemedian0 :
   repeat {s#0} sh[3--1] $> $N,1,1,1,"ic(#"$N"+3+x)" j[2] .,1,0,0,$> rm[-{$N+1}--1] done
   map[1] [2] k[0,1]
 _blend_shapemin :
-  f[1] "init(A = resize([ 0,(s-1)/s ],s,3));I+A" norm[1] round[1] 0.01 label[1] 0 {iM+1},1,1,{0,s},inf
+  f[1] "begin(A = resize([ 0,(s-1)/s ],s,3));I+A" norm[1] round[1] 0.01 label[1] 0 {iM+1},1,1,{0,s},inf
   f[0] ">i(#2,i(#1,x,y,z,0),0,0,c) = min(i(#2,i(#1,x,y,z,0),0,0,c),i);i"
   map[1] [2] rm.
 _blend_shapemin0 :
-  f[1] "init(A = resize([ 0,(s-1)/s ],s,3));I!=0?I+A:I" norm[1] round[1] 0.01 label_fg[1] 0 {iM+1},1,1,{0,s},inf
+  f[1] "begin(A = resize([ 0,(s-1)/s ],s,3));I!=0?I+A:I" norm[1] round[1] 0.01 label_fg[1] 0 {iM+1},1,1,{0,s},inf
   f[0] ">i(#2,i(#1,x,y,z,0),0,0,c) = min(i(#2,i(#1,x,y,z,0),0,0,c),i);i"
   point. 0,0,0,1,0 map[1] [2] rm.
 _blend_shapemax :
-  f[1] "init(A = resize([ 0,(s-1)/s ],s,3));I+A" norm[1] round[1] 0.01 label[1] 0 {iM+1},1,1,{0,s},-inf
+  f[1] "begin(A = resize([ 0,(s-1)/s ],s,3));I+A" norm[1] round[1] 0.01 label[1] 0 {iM+1},1,1,{0,s},-inf
   f[0] ">i(#2,i(#1,x,y,z,0),0,0,c) = max(i(#2,i(#1,x,y,z,0),0,0,c),i);i"
   map[1] [2] rm.
 _blend_shapemax0 :
-  f[1] "init(A = resize([ 0,(s-1)/s ],s,3));I!=0?I+A:I" norm[1] round[1] 0.01 label_fg[1] 0 {iM+1},1,1,{0,s},-inf
+  f[1] "begin(A = resize([ 0,(s-1)/s ],s,3));I!=0?I+A:I" norm[1] round[1] 0.01 label_fg[1] 0 {iM+1},1,1,{0,s},-inf
   f[0] ">i(#2,i(#1,x,y,z,0),0,0,c) = max(i(#2,i(#1,x,y,z,0),0,0,c),i);i"
   point. 0,0,0,1,0 map[1] [2] rm.
 _blend_softburn :
@@ -18420,7 +18420,7 @@ _median_stream :
       if {$N%2} # Odd number of frames.
         f. ":go_on = 1; for (z = 0, i(#"$hist",x,y,z,c)<"$N2" && z<256, ++z); z"
       else # Even number of frames.
-        f. ":init(N2p="$N2";N2n=N2p + 1);
+        f. ":begin(N2p="$N2";N2n=N2p + 1);
              go_on = 1;
              for (zp = 0, i(#"$hist",x,y,zp,c)<N2p && zp<256, ++zp);
              for (zn = zp, i(#"$hist",x,y,zn,c)<N2n && zn<256, ++zn);
@@ -19824,7 +19824,7 @@ average_colors :
 covariance_colors : skip "${1=avg}"
   v -
   $1=${-average_colors}
-  f ">init(avg = [ "$""$1" ]; const S2 = s^2; C = vectorS2(0); ); mI = I - avg; C+=mul(mI,mI,s); end(C/=whd - 1; ext('u ',vtos(C))); I"
+  f ">begin(avg = [ "$""$1" ]; const S2 = s^2; C = vectorS2(0); ); mI = I - avg; C+=mul(mI,mI,s); end(C/=whd - 1; ext('u ',vtos(C))); I"
   v +
 
 #-------------------------------------
@@ -22158,7 +22158,7 @@ _x_mask_color : # Estimate color mask image.
   if {$is_add" || "$is_sub}
     if $is_add ($3) r. {2+s#0},{w/(2+s#0)},1,1,-1 N_add={h} M_add={"M = vectorw(); for (k = 0, k<w, ++k, M[k] = med(crop(k,1)));M"} rm. fi
     if $is_sub ($4) r. {2+s#0},{w/(2+s#0)},1,1,-1 N_sub={h} M_sub={"M = vectorw(); for (k = 0, k<w, ++k, M[k] = med(crop(k,1)));M"} rm. fi
-    f. "init(
+    f. "begin(
           const is_add = "$is_add";
           const is_sub = "$is_sub";
           const ss = sqrt(2)*$1;
@@ -24294,7 +24294,7 @@ x_whirl : check "${1=0.2}>=0"
   tangle=0 tzoom=0 xc={(w-{-3,w})/2} yc={(h-{-3,h})/2}
   do
     rand... 0,255 j.. [-3],$xc,$yc,0,0
-    f.. "*init(R = rot(8*sin(-"$tangle"))/(1.03+0.02*sin("$tzoom")); C=[w,h]/2); I((R*([x,y]-=C))+=C,0,0)"
+    f.. "*begin(R = rot(8*sin(-"$tangle"))/(1.03+0.02*sin("$tzoom")); C=[w,h]/2); I((R*([x,y]-=C))+=C,0,0)"
     tangle+=0.001
     tzoom+=0.02
     j. [-2],0,0,0,0,$1 w.
@@ -25694,7 +25694,7 @@ _fx_drawn_montage :
   # Get bounding boxes for each associated color in layout layer, as well as labeled layout layer.
   to_rgb[0] to_rgba[^0] $nb_layers,1,1,4,[inf,inf,-inf,-inf] [0],[0]
   f[0] "
-    init(colors = [ "$cols" ]);
+    begin(colors = [ "$cols" ]);
     for (l = 0, l<"$nb_layers", ++l,
       I==colors[3*l,3]?(
         if (x<i(#-2,l,0,0,0), i(#-2,l,0,0,0) = x);
@@ -26678,7 +26678,7 @@ fx_polygonize_delaunay :
 
     # Compute Delaunay triangulation.
     mM={[im,iM]} b $4 n $mM
-    +to_rgb. gradient_norm. ge. $2 f. "!x || !y || x==w-1 || y==h-1?(u^0.25<$3%):(u^0.25<$1%?i:0)" {is+1},1,1,2 f.. ">init(p = 0); i?(I[#-1,++p] = [x,y];p):0"
+    +to_rgb. gradient_norm. ge. $2 f. "!x || !y || x==w-1 || y==h-1?(u^0.25<$3%):(u^0.25<$1%?i:0)" {is+1},1,1,2 f.. ">begin(p = 0); i?(I[#-1,++p] = [x,y];p):0"
     delaunay..
 
     # Render filling.
@@ -26845,7 +26845,7 @@ fx_quadtree :
           _P3 = [ _P0[0], _P2[1] ];
           polygon(#ind,4,_P0,_P1,_P2,_P3,opacity,color);
         );
-        init( colo = [ 0,0,0,255 ] );
+        begin( colo = [ 0,0,0,255 ] );
         P = I;
         Xpp = P[0,2];
         Xnn = P[2,2];
@@ -26881,7 +26881,7 @@ fx_quadtree :
 
     else # Ellipse painting
       f. ">
-        init( colo = [ 0,0,0,255 ] );
+        begin( colo = [ 0,0,0,255 ] );
         P = I;
         Xpp = P[0,2];
         Xnn = P[2,2];
@@ -28194,7 +28194,7 @@ fx_colorful_blobs :
     fi
   done
   sh[0] 0,2 /. [1] if $1 $cs2srgb. fi
-  f[0] "*init(bg = [ "$bgR,$bgG,$bgB,$bgA" ]); i(#1)<0.5?bg:[R,G,B,255]" k[0]
+  f[0] "*begin(bg = [ "$bgR,$bgG,$bgB,$bgA" ]); i(#1)<0.5?bg:[R,G,B,255]" k[0]
 
   repeat $N
     if {!isnan(${x$>})" && "$display_controls}
@@ -28888,7 +28888,7 @@ fx_mix_pca :
       __status="{$1}{$2}{$3}{$4}{$5}{$6}{$7}{$8}{$9}{$10}{"{round(stats()[0,4],0.1)}"}{"$_avg,$C"}{$27}{${28,29}}"
     fi
 
-    f "init(
+    f "begin(
          avg = ["$_avg"];
          eig = eig(["$C"]);
          for (k = 3, k<12, k+=3, eig[k]<0?copy(eig[k],eig[k,3]*=-1,3));
@@ -29752,7 +29752,7 @@ fx_conformal_maps :
   repeat $! l[$>]
     wh={$12?[$13,$14]:[w,h]}
     {(1+$11)*[$wh]},1,100%
-    f. "init(
+    f. "begin(
           ccos(z) = (iz = [ -z[1],z[0] ]; (cexp(iz) + cexp(-iz)/2));
           csin(z) = (iz = [ -z[1],z[0] ]; (cexp(iz) - cexp(-iz)/2));
           ctan(z) = csin(z)//ccos(z);
@@ -30727,7 +30727,7 @@ fx_jpeg_artefacts :
     repeat 3
       # Compute DCT of image with 8x8 blocs.
       [$>]
-      f[$>] "init(boundary = 2; res = vector64());
+      f[$>] "begin(boundary = 2; res = vector64());
         if (!(x%8) && !(y%8),
           src = crop(x,y,8,8);
           for (l = 0, l<8, ++l, for (k = 0, k<8, ++k, off = k + 8*l; res[off] = sum(src*crop(#"$dct",0,0,off,8,8,1))));
@@ -30739,7 +30739,7 @@ fx_jpeg_artefacts :
       +r[Q] {$>,w},100%,1,1,0,2 /.. . round.. *[-2,-1]
 
       # Compute iDCT of 8x8 blocs.
-      f. "init(boundary = 2; res = vector64());
+      f. "begin(boundary = 2; res = vector64());
         if (!(x%8) && !(y%8),
           src = crop(x,y,8,8);
           for (l = 0, l<8, ++l, for (k = 0, k<8, ++k, off = k + 8*l; res[off] = sum(src*crop(#"$idct",0,0,off,8,8,1))));
@@ -30955,7 +30955,7 @@ fx_self_glitching :
   ac "_fx_self_glitching ${1-7}",$8
 
 _fx_self_glitching :
-  f "init(
+  f "begin(
        shift = ([w,h]-1)*(50-[$5,$6])%;
        const sign = $3?-1:1;
        const boundary = $7;
@@ -31120,7 +31120,7 @@ fx_equalize_local_histograms :
 _fx_equalize_local_histograms :
   +n 0,511 round.
   f. "
-    init(
+    begin(
       const boundary = 1;
       const N = $3;
       const sigma = ($6?1:-1)*(0.1+$4);
@@ -33286,7 +33286,7 @@ _fx_illuminate_shape2d : # Input selection must contains a single image. Output 
     +channels. 100% >. 0 *[-2,-1]
     if {$min_shape_area>1} +quantize_area. {$min_shape_area^2} fi
     s. c,-{s-1} >. 0 rv[-2,-1]
-    if {s>1} f. "init(A = resize([ 0,(s-1)/s ],s,3));I+A" norm. round. 0.01 fi
+    if {s>1} f. "begin(A = resize([ 0,(s-1)/s ],s,3));I+A" norm. round. 0.01 fi
     label. 0,0 f. "j(1)!=i || j(0,1)!=i" thinning. ==. 0 *. ..
     select_color... 0,$gR,$gG,$gB,$gA
     mv... $! -[-2,-1]
@@ -33339,7 +33339,7 @@ _fx_illuminate_shape2d : # Input selection must contains a single image. Output 
     elif {$input_type==3} -. 128 /. 127 s. c,-2 /[-2,-1]
     fi
     f. "*
-      init(
+      begin(
         const flatness = "$flatness";                 # Surface flatness
         const ka = "$ambient"%;                       # Ambient
         const kd = "$diffuse"%;                       # Diffuse
@@ -34088,7 +34088,7 @@ fx_satin :
   repeat {$!-1} l[$>]
     srand $3 channels 0 f 0
     repeat $1
-      100%,100%,1,1,"init(
+      100%,100%,1,1,"begin(
            A = u([0,0],[w,h]-1);
            B = u([0,0],[w,h]-1);
            N = [0,-1,1,0]*(B - A);
