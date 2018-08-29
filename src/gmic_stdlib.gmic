@@ -27227,7 +27227,7 @@ fx_charcoal_preview :
 #@gui : Click on the <i>Apply</i> or <i>OK</i> buttons below to open the G'MIC interactive window and start adding color control points.
 #@gui : When you're done, exit the interactive window: your colored result will be transferred back to the host software.\n\n
 #@gui : If you are not satisfied with the result, <i>Undo it (CTRL+Z)</i>, and click on <i>Apply</i> once again to modify your control points defined previously.
-#@gui : To clear all control points, click on the <i>Reset</i> button below.
+#@gui : To clear all control points, click on the <i>Reset</i> button above.
 #@gui : </small>"}
 #@gui : Clear control points = button(0.5)
 #@gui : Last image size = value(0,0)
@@ -28301,7 +28301,7 @@ fx_mask_color :
 #@gui : Click on the <i>Apply</i> or <i>OK</i> buttons below to open the G'MIC interactive windows and start building your color curves.
 #@gui : When you're done, exit the main image window: your modified result will be transferred back to the host software.\n\n
 #@gui : Once you've set curves, you can save them by pressing the <b>Add to faves</b> button below the filter tree.
-#@gui : To clear control points for your curves, click on the <i>Reset</i> button at the bottom.
+#@gui : To clear control points for your curves, click on the <i>Reset</i> button above.
 #@gui : </small>"}
 #@gui : sep = separator()
 #@gui : note = note{"<small><b>Interactions:</b>\n
@@ -29385,7 +29385,7 @@ fx_edge_offsets_preview :
 #@gui : Click on the <i>Apply</i> or <i>OK</i> buttons below to open the interactive window and start adding foreground and background control points.
 #@gui : When you're done, exit the interactive window: your extracted foreground will be transferred back to the host software.\n\n
 #@gui : If you are not satisfied with the result, click on <i>Apply</i> once again to modify your control points defined previously.
-#@gui : To remove all control points, click on the <i>Reset</i> button below.
+#@gui : To remove all control points, click on the <i>Reset</i> button above.
 #@gui : </small>"}
 #@gui : Last image size = value(0,0)
 #@gui : Control points = value(-1)
