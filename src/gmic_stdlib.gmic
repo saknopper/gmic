@@ -19326,8 +19326,8 @@ math_lib :
   );
 
   dar_remove(ind) = ( # Remove last element from dynamic array #ind.
-#    dar_remove(#ind,dar_size(#ind) - 1);
-    dar_size(#ind)>0?--dar_size(#ind);
+    _dar_siz = dar_size(#ind);
+    _dar_size>0?dar_size(#ind) = --_dar_size;
   );
 
   dist(A,B) = ( # Distance from point A to point B
