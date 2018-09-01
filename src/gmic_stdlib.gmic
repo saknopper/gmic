@@ -6206,8 +6206,8 @@ noise_poissondisk : check "${1=8}>0 && ${2=30}>0"
 
           if (!rejected,
             Q = dar_size(#3);               # sample found, get new index
-            dar_insert(#3,X,Q);             # insert into samples list
-            dar_insert(#4,Q,dar_size(#4));  # insert its index into active
+            dar_insert(#3,X);               # insert into samples list
+            dar_insert(#4,Q);               # insert its index into active
             I(#2,G) = Q;                    # insert its index into grid
             I(#0,X) = value;                # draw the point
             break();
