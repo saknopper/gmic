@@ -19308,7 +19308,12 @@ math_lib :
     );
   );
 
-  dar_insert(ind,elt) = dar_insert(#ind,elt,dar_size(#ind));
+  dar_insert(ind,elt) = ( # Inserts new element 'elt' at the end of dynamic array #ind.
+    _dar_siz = dar_size(#ind);
+    _dar_siz>=h(#ind) - 1?resize(#ind,1,_dar_siz*2 + 2,1,s#ind,0);
+    I[#ind,_dar_siz] = elt;
+    (dar_size(ind#)) = ++_dar_siz;
+  );
 
   dar_remove(ind,pos) = ( # Remove element from dynamic array #ind, at index [pos] ('pos' must be in [0,dar_size(#ind) - 1]).
     _dar_pos = pos;
