@@ -11324,9 +11324,9 @@ shape2bump : check "isint(${1=256}) && $1>=0 && ${2=0.75}>=0 && $2<=1 && isval($
     if $is_resized *. {max([$siz]/[w,h])} r $siz,1,1,5 c 0,100% fi
   endl done v +
 
-#@cli skeleton : _smoothness[%]>=0
-#@cli : Compute skeleton of binary shapes using distance transform.
-#@cli : Default value: 'smoothness=0'.
+#@cli skeleton : _boundary_conditions={ 0=dirichlet | 1=neumann }
+#@cli : Compute skeleton of binary shapes using distance transform and constrained thinning.
+#@cli : Default value: 'boundary_conditions=1'.
 #@cli : $ image.jpg threshold 50% +skeleton 0
 skeleton : check "!isval(${1=1}) || ($1>=0 && $1<=1)"
   v -
@@ -11341,7 +11341,6 @@ skeleton : check "!isval(${1=1}) || ($1>=0 && $1<=1)"
     # [4] = Pixels constrained to be on median axis.
     +distance[0] 0
     f. "const boundary = 1; (i>j(-1)&&i>j(1)) || (i>j(0,-1)&&i>j(0,1)) || (i>j(-1,-1)&&i>j(1,1)) || (i>j(-1,1)&&i>j(1,-1))"
-
     # Extract boundary pixels.
     f[0] ">"${-math_lib}"const boundary = "$bc"; i && (!j(-1) || !j(1) || !j(0,-1) || !j(0,1))?dar_insert(#1,[x,y]); i;"
 
