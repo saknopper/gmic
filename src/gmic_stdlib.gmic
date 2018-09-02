@@ -11448,7 +11448,7 @@ ssd_patch : check ${is_image_arg\ $1} skip ${2=0},${3=0}
 #@cli : (beware, this is a quite slow iterative process)
 #@cli : Default value: 'boundary_conditions=1'.
 #@cli : $ image.jpg threshold 50% +thinning
-thinning : check "!isval($1) || (${1=1}>=0 && $1<=1)"
+thinning : check "!isval(${1=1}) || ($1>=0 && $1<=1)"
   v -
   if {isval($1)} bc=$1 else bc=1 noarg fi
   v + e[^-1] "Apply morphological thinning to binary image$? with "${"arg 1+"$bc",dirichlet,neumann"}" boundary conditions." v -
