@@ -11328,7 +11328,80 @@ shape2bump : check "isint(${1=256}) && $1>=0 && ${2=0.75}>=0 && $2<=1 && isval($
 #@cli : Compute skeleton of binary shapes using distance transform.
 #@cli : Default value: 'smoothness=0'.
 #@cli : $ image.jpg threshold 50% +skeleton 0
-skeleton : check ${1=0}>=0
+skeleton : check "!isval(${1=1}) || ($1>=0 && $1<=1)"
+  v -
+  if {isval($1)} bc=$1 else bc=1 noarg fi
+  v + e[^-1] "Compute skeleton of binary image$? with "${"arg 1+"$bc",dirichlet,neumann"}" boundary conditions." v -
+  repeat $! l[$>]
+                    # [0] = 2d binary shape
+    1,16,1,2        # [1] = List of boundary pixels
+    [0]             # [2] = 2d binary shape (next iteration)
+    1,16,1,2        # [3] = List of boundary pixels (next iteration)
+
+    # [4] = Pixels constrained to be on median axis.
+    +distance[0] 0
+    f. "const boundary = 1; (i>j(-1)&&i>j(1)) || (i>j(0,-1)&&i>j(0,1)) || (i>j(-1,-1)&&i>j(1,1)) || (i>j(-1,1)&&i>j(1,-1))"
+
+    # Extract boundary pixels.
+    f[0] ">"${-math_lib}"const boundary = "$bc"; i && (!j(-1) || !j(1) || !j(0,-1) || !j(0,1))?dar_insert(#1,[x,y]); i;"
+
+    # Run thinning algorithm.
+    eval ${-math_lib}"
+      const boundary = "$bc";
+
+      # Create lookup table for the 8 3x3 hit&miss kernels
+      is_removable = vector2048();
+      for (n = 0, n<256, ++n,
+        is_removable[n] = (n&231)==7;
+        is_removable[n+256] = (n&189)==148;
+        is_removable[n+512] = (n&231)==224;
+        is_removable[n+768] = (n&189)==41;
+        is_removable[n+1024] = (n&122)==18;
+        is_removable[n+1280] = (n&91)==80;
+        is_removable[n+1536] = (n&94)==72;
+        is_removable[n+1792] = (n&218)==10;
+      );
+
+      # Start thinning iterations.
+      dotm = [ 128,64,32,16,0,8,4,2,1 ];
+      is_removed = vector8(0);
+      it = 0;
+      do (
+        N = dar_size(#1);
+        it8 = it%8;
+        is_removed[it8] = 0;
+
+        for (n = 0, n<N, ++n,
+          xc = i(#1,0,n,0,0);
+          yc = i(#1,0,n,0,1);
+          icc = i(#0,xc,yc);
+          (icc && !i(#4,xc,yc))?(
+            xp = xc - 1; yp = yc - 1;
+            xn = xc + 1; yn = yc + 1;
+            V = crop(#0,xp,yp,3,3);
+            val = dot(dotm,V>0);
+            is_removable[256*it8 + val]?(
+              i(#2,xc,yc) = 0;
+              is_removed[it8] = 1;
+              V[3]==1?(dar_insert(#3,[xp,yc]); i(#0,xp,yc) = 2);
+              V[5]==1?(dar_insert(#3,[xn,yc]); i(#0,xn,yc) = 2);
+              V[1]==1?(dar_insert(#3,[xc,yp]); i(#0,xc,yp) = 2);
+              V[7]==1?(dar_insert(#3,[xc,yn]); i(#0,xc,yn) = 2);
+            ):(dar_insert(#3,[xc,yc]); i(#0,xc,yc) = 2);
+          );
+        );
+        copy(i[#0,0],i[#2,0],whd#0);
+        resize(#1,1,h(#3),1,2,0);
+        copy(i[#1,0],i[#3,0],2*h(#3));
+        i[#3,h(#3)-1] = 0;
+        ++it;
+        _(while), max(is_removed)
+      );"
+    k[0]
+    thinning
+  endl done v +
+
+skeleton_v236 : check ${1=0}>=0
   e[^-1] "Compute skeleton of binary image$?."
   v - distance 0 b $1 sharpen 1e10 >= 100%
   repeat $! +erode[$>] 2 -[$>,-1] done v +
