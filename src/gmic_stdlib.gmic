@@ -11295,7 +11295,7 @@ shape2bump : check "isint(${1=256}) && $1>=0 && ${2=0.75}>=0 && $2<=1 && isval($
 
     # Downsize for faster computation.
     is_resized=0
-    if {$1" && "max(w,h)>$1} rr2d $1,$1,0,2 gt. 0 thinning. *.. {$1/max($siz)} is_resized=1 fi
+    if {$1" && "max(w,h)>$1} rr2d $1,$1,0,2 gt. 0 thinning. 1 *.. {$1/max($siz)} is_resized=1 fi
 
     # Generate z-map.
     +f. 0 .x2
@@ -11443,23 +11443,27 @@ ssd_patch : check ${is_image_arg\ $1} skip ${2=0},${3=0}
     endl done +
   endl done v +
 
-#@cli thinning
+#@cli thinning : _boundary_conditions={ 0=dirichlet | 1=neumann }
 #@cli : Compute skeleton of binary shapes using morphological thinning
-#@cli : (This is a quite slow iterative process)
+#@cli : (beware, this is a quite slow iterative process)
+#@cli : Default value: 'boundary_conditions=1'.
 #@cli : $ image.jpg threshold 50% +thinning
-thinning :
-  e[^-1] "Apply morphological thinning to binary image$?."
-  v - repeat $! l[$>]
+thinning : check "!isval($1) || (${1=1}>=0 && $1<=1)"
+  v -
+  if {isval($1)} bc=$1 else bc=1 noarg fi
+  v + e[^-1] "Apply morphological thinning to binary image$? with "${"arg 1+"$bc",dirichlet,neumann"}" boundary conditions." v -
+  repeat $! l[$>]
                     # [0] = 2d binary shape
     1,16,1,2        # [1] = List of boundary pixels
     [0]             # [2] = 2d binary shape (next iteration)
     1,16,1,2        # [3] = List of boundary pixels (next iteration)
 
     # Extract boundary pixels.
-    f[0] ">"${-math_lib}"i && (!j(-1) || !j(1) || !j(0,-1) || !j(0,1))?dar_insert(#1,[x,y]); i;"
+    f[0] ">"${-math_lib}"const boundary = "$bc"; i && (!j(-1) || !j(1) || !j(0,-1) || !j(0,1))?dar_insert(#1,[x,y]); i;"
 
     # Run thinning algorithm.
     eval ${-math_lib}"
+      const boundary = "$bc";
 
       # Create lookup table for the 8 3x3 hit&miss kernels
       is_removable = vector2048();
@@ -17557,7 +17561,7 @@ cracks : check "${1=25}>=0" skip ${2=0},${3=1},${4=0}
   v - repeat $! l[$>] cut={[im,iM]}
     100%,100%,1,2,'u<0.25*($1%)^4?[u,1]:[0,0]'
     s. c distance. 1 *. -1 watershed.. . rm.
-    +dilate. 3 -[-2,-1] !=. 0 thinning.
+    +dilate. 3 -[-2,-1] !=. 0 thinning. 1
     if $2
       f. "i?i:j(1)?2:j(-1)?0.5:i" n. 0,1
       +fc.. ${4--1} *. .. !=.. 0 j... .,0,0,0,0,$3,..
@@ -26745,7 +26749,7 @@ fx_polygonize_delaunay :
 
     # Render outlines.
     if $6
-      norm[0] f[0] "i!=j(1) || i!=j(0,1)" thinning[0]
+      norm[0] f[0] "i!=j(1) || i!=j(0,1)" thinning[0] 1
       +fc. ${7-10} j.. .,0,0,0,0,{$6%},... rm.
     fi
 
@@ -29650,7 +29654,7 @@ fx_skeleton :
   remove_opacity
   if {!$4} norm fi
   b $2% >= 50%
-  if $1 thinning else skeleton $3% fi
+  if $1 thinning 1 else skeleton $3% fi
   * 255
 
 fx_skeleton_preview :
@@ -29684,7 +29688,7 @@ fx_superpixels_preview :
 #@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right","Duplicate horizontal","Duplicate vertical","Checkered","Checkered inverse"), Preview split = point(50,50,0,0,200,200,200,0,10,0)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2010/29/12</i>.</small>")
 fx_thin_edges :
-  b $1% gradient_norm >= $2% thinning
+  b $1% gradient_norm >= $2% thinning 1
   if {!$3} negate fi
   n 0,255
 
@@ -33329,7 +33333,7 @@ _fx_illuminate_shape2d : # Input selection must contains a single image. Output 
     if {$min_shape_area>1} +quantize_area. {$min_shape_area^2} fi
     s. c,-{s-1} >. 0 rv[-2,-1]
     if {s>1} f. "begin(A = resize([ 0,(s-1)/s ],s,3));I+A" norm. round. 0.01 fi
-    label. 0,0 f. "j(1)!=i || j(0,1)!=i" thinning. ==. 0 *. ..
+    label. 0,0 f. "j(1)!=i || j(0,1)!=i" thinning. 1 ==. 0 *. ..
     select_color... 0,$gR,$gG,$gB,$gA
     mv... $! -[-2,-1]
 
