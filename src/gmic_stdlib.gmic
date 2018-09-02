@@ -11349,18 +11349,9 @@ skeleton : check "!isval(${1=1}) || ($1>=0 && $1<=1)"
     eval ${-math_lib}"
       const boundary = "$bc";
 
-      # Create lookup table for the 8 3x3 hit&miss kernels
-      is_removable = vector2048();
-      for (n = 0, n<256, ++n,
-        is_removable[n] = (n&231)==7;
-        is_removable[n+256] = (n&189)==148;
-        is_removable[n+512] = (n&231)==224;
-        is_removable[n+768] = (n&189)==41;
-        is_removable[n+1024] = (n&122)==18;
-        is_removable[n+1280] = (n&91)==80;
-        is_removable[n+1536] = (n&94)==72;
-        is_removable[n+1792] = (n&218)==10;
-      );
+      # Lookup tables for detecting the 8 3x3 hit&miss.
+      hm_and = [ 231,189,231,189,122,91,94,218 ];
+      hm_eq = [ 7,148,224,41,18,80,72,10 ];
 
       # Start thinning iterations.
       dotm = [ 128,64,32,16,0,8,4,2,1 ];
@@ -11380,7 +11371,7 @@ skeleton : check "!isval(${1=1}) || ($1>=0 && $1<=1)"
             xn = xc + 1; yn = yc + 1;
             V = crop(#0,xp,yp,3,3);
             val = dot(dotm,V>0);
-            is_removable[256*it8 + val]?(
+            (val & hm_and[it8])==hm_eq[it8]?(
               i(#2,xc,yc) = 0;
               is_removed[it8] = 1;
               V[3]==1?(dar_insert(#3,[xp,yc]); i(#0,xp,yc) = 2);
@@ -11400,6 +11391,8 @@ skeleton : check "!isval(${1=1}) || ($1>=0 && $1<=1)"
     k[0]
     thinning
   endl done v +
+
+# 0,0,1,1,0,0,1,1,1,1,0,1,1,1,0,1,1,1,0,0,1,1,1,1,0,0,0,0,0,0,0,1,0,0,1,1,0,0,1,1,1,1,0,1,1,1,0,1,1,1,0,0,1,1,1,1,0,0,0,0,0,0,0,1,1,1,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,1,1,0,0,1,1,0,1,1,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,1,1,0,0,1,1,1,1,0,1,1,1,0,1,1,1,0,0,1,1,1,1,0,0,0,0,0,0,0,1,0,0,1,1,0,0,1,1,1,1,0,1,1,1,0,1,1,1,0,0,1,1,1,1,0,0,0,0,0,0,0,1,1,1,0,0,1,1,0,0,0,0,0,0,0,0,0,0,1,1,0,0,1,1,1,1,0,0,0,0,0,0,0,1,1,1,0,0,1,1,0,0,1,1,0,1,1,1,0,1,1,1,0,0,1,1,1,1,1,1,0,1,1,1,1,0
 
 skeleton_v236 : check ${1=0}>=0
   e[^-1] "Compute skeleton of binary image$?."
@@ -11538,18 +11531,9 @@ thinning : check "!isval(${1=1}) || ($1>=0 && $1<=1)"
     eval ${-math_lib}"
       const boundary = "$bc";
 
-      # Create lookup table for the 8 3x3 hit&miss kernels
-      is_removable = vector2048();
-      for (n = 0, n<256, ++n,
-        is_removable[n] = (n&231)==7;
-        is_removable[n+256] = (n&189)==148;
-        is_removable[n+512] = (n&231)==224;
-        is_removable[n+768] = (n&189)==41;
-        is_removable[n+1024] = (n&122)==18;
-        is_removable[n+1280] = (n&91)==80;
-        is_removable[n+1536] = (n&94)==72;
-        is_removable[n+1792] = (n&218)==10;
-      );
+      # Lookup tables for detecting the 8 3x3 hit&miss.
+      hm_and = [ 231,189,231,189,122,91,94,218 ];
+      hm_eq = [ 7,148,224,41,18,80,72,10 ];
 
       # Start thinning iterations.
       dotm = [ 128,64,32,16,0,8,4,2,1 ];
@@ -11569,7 +11553,7 @@ thinning : check "!isval(${1=1}) || ($1>=0 && $1<=1)"
             xn = xc + 1; yn = yc + 1;
             V = crop(#0,xp,yp,3,3);
             val = dot(dotm,V>0);
-            is_removable[256*it8 + val]?(
+            (val & hm_and[it8])==hm_eq[it8]?(
               i(#2,xc,yc) = 0;
               is_removed[it8] = 1;
               V[3]==1?(dar_insert(#3,[xp,yc]); i(#0,xp,yc) = 2);
@@ -11588,8 +11572,6 @@ thinning : check "!isval(${1=1}) || ($1>=0 && $1<=1)"
       );"
     k[0]
   endl done v +
-
-# 0,0,1,1,0,0,1,1,1,1,0,1,1,1,0,1,1,1,0,0,1,1,1,1,0,0,0,0,0,0,0,1,0,0,1,1,0,0,1,1,1,1,0,1,1,1,0,1,1,1,0,0,1,1,1,1,0,0,0,0,0,0,0,1,1,1,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,1,1,0,0,1,1,0,1,1,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,1,1,0,0,1,1,1,1,0,1,1,1,0,1,1,1,0,0,1,1,1,1,0,0,0,0,0,0,0,1,0,0,1,1,0,0,1,1,1,1,0,1,1,1,0,1,1,1,0,0,1,1,1,1,0,0,0,0,0,0,0,1,1,1,0,0,1,1,0,0,0,0,0,0,0,0,0,0,1,1,0,0,1,1,1,1,0,0,0,0,0,0,0,1,1,1,0,0,1,1,0,0,1,1,0,1,1,1,0,1,1,1,0,0,1,1,1,1,1,1,0,1,1,1,1,0
 
 #@cli tones : N>0
 #@cli : Get N tones masks from selected images.
