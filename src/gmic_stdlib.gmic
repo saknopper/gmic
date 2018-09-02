@@ -29702,15 +29702,16 @@ fx_segment_watershed_preview :
 #@gui Skeleton : fx_skeleton, fx_skeleton_preview(1)
 #@gui : Method = choice{"Distance (fast)","Thinning (slow)"}
 #@gui : Smoothness = float(0,0,10)
-#@gui : Curviness = float(0,0,10)
-#@gui : Multiple channels = bool(1)
 #@gui : sep = separator(), Preview type = choice("Full","Forward horizontal","Forward vertical","Backward horizontal","Backward vertical","Duplicate top","Duplicate left","Duplicate bottom","Duplicate right","Duplicate horizontal","Duplicate vertical","Checkered","Checkered inverse"), Preview split = point(50,50,0,0,200,200,200,0,10,0)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2011/07/04</i>.</small>")
 fx_skeleton :
   remove_opacity
-  if {!$4} norm fi
   b $2% >= 50%
-  if $1 thinning 1 else skeleton $3% fi
+  if $1 thinning 1
+  else
+    distance 0 sharpen 1e10 >= 100%
+    repeat $! +erode[$>] 2 -[$>,-1] done
+  fi
   * 255
 
 fx_skeleton_preview :
