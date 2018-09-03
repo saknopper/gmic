@@ -11332,7 +11332,7 @@ skeleton : check "!isval(${1=1}) || ($1>=0 && $1<=1)"
   v -
   if {isval($1)} bc=$1 else bc=1 noarg fi
   v + e[^-1] "Compute skeleton of binary image$? with "${"arg 1+"$bc",dirichlet,neumann"}" boundary conditions." v -
-  repeat $! l[$>]
+  repeat $! l[$>] s c repeat $! l[$>]
                     # [0] = 2d binary shape
     1,16,1,2        # [1] = List of boundary pixels
     1,16,1,2        # [2] = List of boundary pixels (next iteration)
@@ -11381,7 +11381,7 @@ skeleton : check "!isval(${1=1}) || ($1>=0 && $1<=1)"
         i[#2,h(#2)-1] = 0;
       );"
     k[0] > 0 thinning
-  endl done v +
+  endl done a c endl done v +
 
 skeleton_v236 : check ${1=0}>=0
   e[^-1] "Compute skeleton of binary image$?."
@@ -11507,7 +11507,7 @@ thinning : check "!isval(${1=1}) || ($1>=0 && $1<=1)"
   v -
   if {isval($1)} bc=$1 else bc=1 noarg fi
   v + e[^-1] "Apply morphological thinning to binary image$? with "${"arg 1+"$bc",dirichlet,neumann"}" boundary conditions." v -
-  repeat $! l[$>]
+  repeat $! l[$>] s c repeat $! l[$>]
                     # [0] = 2d binary shape
     1,16,1,2        # [1] = List of boundary pixels
     [0]             # [2] = 2d binary shape (next iteration)
@@ -11560,7 +11560,7 @@ thinning : check "!isval(${1=1}) || ($1>=0 && $1<=1)"
         _(while), max(is_removed)
       );"
     k[0]
-  endl done v +
+  endl done a c endl done v +
 
 #@cli tones : N>0
 #@cli : Get N tones masks from selected images.
