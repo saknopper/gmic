@@ -4420,6 +4420,7 @@ update_server :
   load_gmic ${HOME}/work/src/gmic-community/include/jerome_ferrari.gmic
   load_gmic ${HOME}/work/src/gmic-community/include/karsten_rodenacker.gmic
   load_gmic ${HOME}/work/src/gmic-community/include/martin_souphead.gmic
+  load_gmic ${HOME}/work/src/gmic-community/include/matthew_callaghan.gmic
   load_gmic ${HOME}/work/src/gmic-community/include/photocomix.gmic
   load_gmic ${HOME}/work/src/gmic-community/include/joan_rake.gmic
   load_gmic ${HOME}/work/src/gmic-community/include/afre.gmic
@@ -24688,8 +24689,8 @@ gui_autocrop_layers :
   endl done
 
 
-#@gui _<i>About</i>
-#-------------------
+#@gui ____<i>About</i>
+#---------------------
 
 
 #----------------------
@@ -25541,8 +25542,8 @@ _survey_choice :
 #@gui : "}
 #@gui : sep = separator(), note = note("<small>Author: <i>S&#233;bastien Fourey</i>.      Latest update: <i>2018/03/01</i>.</small>")
 
-#@gui _<b>Arrays &amp; tiles</b>
-#--------------------------------
+#@gui ____<b>Arrays &amp; tiles</b>
+#----------------------------------
 
 #@gui Array [faded] : fx_array_fade, fx_array_fade_preview(1)
 #@gui : X-tiles = int(2,1,10)
@@ -26284,8 +26285,8 @@ fx_isolate_tiles :
   endl done
 
 
-#@gui _<b>Artistic</b>
-#----------------------
+#@gui ____<b>Artistic</b>
+#-------------------------
 
 #@gui Bokeh : fx_bokeh, fx_bokeh_preview(1)
 #@gui : Number of scales = int(3,1,10)
@@ -27198,8 +27199,8 @@ fx_draw_whirl :
 fx_draw_whirl_preview :
   gui_split_preview "fx_draw_whirl $*",${-3--1}
 
-#@gui _<b>Black &amp; white</b>
-#-------------------------------
+#@gui ____<b>Black &amp; white</b>
+#---------------------------------
 
 #@gui Black &amp; white : fx_blackandwhite, fx_blackandwhite_preview(1)+
 #@gui : Red level = float(0.299,0,1)
@@ -28008,8 +28009,8 @@ fx_stamp_preview :
   gui_split_preview "fx_stamp $*",${-3--1}
 
 
-#@gui _<b>Colors</b>
-#--------------------
+#@gui ____<b>Colors</b>
+#----------------------
 
 #@gui Abstraction : fx_color_abstraction, fx_color_abstraction_preview(0)
 #@gui : Smoothness = float(1,0,10)
@@ -29332,8 +29333,8 @@ fx_custom_transform :
   mv. 0 done
 
 
-#@gui _<b>Contours</b>
-#----------------------
+#@gui ____<b>Contours</b>
+#------------------------
 
 #@gui Convolve : fx_convolve, fx_convolve_preview(0)
 #@gui : Kernel = choice("Custom","Average 3x3","Average 5x5","Average 7x7","Average 9x9","Prewitt-X","Prewitt-Y","Sobel-X","Sobel-Y","Rotinv-X","Rotinv-Y","Laplacian","Robert Cross 1","Robert Cross 2","Impulses 5x5","Impulses 7x7","Impulses 9x9")
@@ -29743,8 +29744,8 @@ fx_thin_edges_preview :
   gui_split_preview "fx_thin_edges ${^0}",${-3--1}
 
 
-#@gui _<b>Deformations</b>
-#--------------------------
+#@gui ____<b>Deformations</b>
+#----------------------------
 
 #@gui Cartesian transform : fx_custom_deformation, fx_custom_deformation(1)
 #@gui : X-warping = text{"(w+h)/20 * cos(y*20/h)"}
@@ -30519,8 +30520,8 @@ fx_zoom :
   zoom $1,{$2%},{$3%},0,$4
 
 
-#@gui _<b>Degradations</b>
-#---------------------------
+#@gui ____<b>Degradations</b>
+#-----------------------------
 
 #@gui Blur [angular] : fx_blur_angular, fx_blur_angular_preview(1)
 #@gui : Amplitude (%) = float(2,0,20)
@@ -31133,8 +31134,8 @@ _fx_warp_by_intensity :
 fx_warp_by_intensity_preview :
   gui_split_preview "fx_warp_by_intensity $*",${-3--1}
 
-#@gui _<b>Details</b>
-#----------------------
+#@gui ____<b>Details</b>
+#------------------------
 
 #@gui Details equalizer : fx_equalize_details, fx_equalize_details_preview(0)
 #@gui : Base scale = float(5,0,15)
@@ -31628,8 +31629,8 @@ fx_map_tones_fast :
 fx_map_tones_fast_preview :
   gui_split_preview "fx_map_tones_fast ${^0}",${-3--1}
 
-#@gui _<b>Film emulation</b>
-#----------------------------
+#@gui ____<b>Film emulation</b>
+#------------------------------
 
 #@gui Add grain : fx_emulate_grain, fx_emulate_grain_preview(0)
 #@gui : Preset = choice{"Orwo NP20-GDR","Kodak TMAX 400","Kodak TMAX 3200","Kodak TRI-X 1600","Unknown"}
@@ -32256,10 +32257,8 @@ fx_emulate_film_collage_various :
   k[0] to_rgb if {max(w,h)>$1} if {w>h} r2dx $1 else r2dy $1 fi fi
   _nbc=$2 _label_size=$3 _output_type=$4 _fx_emulate_film_collage ${-_fx_emulate_film_various}
 
-#@gui _
-
-#@gui _<b>Frames</b>
-#--------------------
+#@gui ____<b>Frames</b>
+#----------------------
 
 #@gui Droste : fx_droste, fx_droste_preview(1)
 #@gui : note = note("<span color=\"red\">Upper-left coordinates :</span>")
@@ -32577,8 +32576,8 @@ fx_vignette :
     =. 0 -vignette. ${1-3} a c +fc ${4-7} rv blend alpha
   endl done
 
-#@gui _<b>Frequencies</b>
-#--------------------------
+#@gui ____<b>Frequencies</b>
+#----------------------------
 
 #@gui Bandpass : fx_bandpass, fx_bandpass_preview(0)
 #@gui : Low frequency = float(0,0,100)
@@ -32655,8 +32654,8 @@ fx_fourier_preview :
 fx_watermark_fourier :
   watermark_fourier "$1",$2 c 0,255
 
-#@gui _<b>Layers</b>
-#---------------------
+#@gui ____<b>Layers</b>
+#-----------------------
 
 #@gui Align layers : fx_align_layers, fx_align_layers_preview
 #@gui : Alignment type = choice(0,"Rigid","Non-rigid")
@@ -33086,8 +33085,8 @@ fx_tones2layers_preview :
   r {100/$!}%,{100/$!}%,1,100%,2
   to_rgba frame 1,1,0,0,0,255 frame 3,3,0,0,0,0 append_tiles ,
 
-#@gui _<b>Lights &amp; shadows</b>
-#----------------------------------
+#@gui ____<b>Lights &amp; shadows</b>
+#------------------------------------
 
 #@gui Burn : fx_burn, fx_burn_preview(1)
 #@gui : Amplitude = float(0.5,0,1)
@@ -33652,8 +33651,8 @@ _fx_slice_luminosity :
   if $19 +apply_curve[1] 0,{$20-$22-0.1},0,$20,255,$21,255,{$21+$23+0.1},0,512,0 fi
   rm[1] max[^0]
 
-#@gui _<b>Patterns</b>
-#----------------------
+#@gui ____<b>Patterns</b>
+#------------------------
 
 #@gui Bayer filter : rgb2bayer, rgb2bayer(0)
 #@gui : Starting pattern = choice(0,"Red-Green","Blue-Green","Green-Red","Green-Blue")
@@ -34361,8 +34360,8 @@ fx_whirls_preview :
   gui_split_preview "fx_whirls ${1-5}",${-3--1}
 
 
-#@gui _<b>Repair</b>
-#---------------------
+#@gui ____<b>Repair</b>
+#-----------------------
 
 #@gui Bayer reconstruction : bayer2rgb, gui_no_preview
 #@gui : G/M smoothness = _float(6,0,20)
@@ -34939,8 +34938,8 @@ fx_scale_dcci2x : skip ${1=1.15},${2=5},${3=0}
 fx_scale_dcci2x_preview :
   z 25%,25%,75%,75% fx_scale_dcci2x $*
 
-#@gui _<b>Rendering</b>
-#-----------------------
+#@gui ____<b>Rendering</b>
+#-------------------------
 
 # Generic function to render a 3d image, with usual rendering parameters :
 # $1 = Width
@@ -35359,28 +35358,6 @@ fx_circle_art :
   n 0,255
   if $5 r 50%,50%,1,100%,2 fi
 
-#@gui Cupid : fx_cupid, fx_cupid_preview
-#@gui : Size (%) = float(75,0,100)
-#@gui : Smoothness = float(0,0,10)
-#@gui : Color = color(255,0,0,255)
-#@gui : Antialiasing = bool(1)
-#@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2018/01/08</i>.</small>")
-fx_cupid :
-  max_wh={$!>0?[${-max_wh}]:[512,512]}
-  w,h={S=[$max_wh]*$1%;[max(S[0],1),max(S[1],1)]}
-  l[]
-    shape_cupid {($7?2:1)*min($w,$h)}
-    if $7 r2dx 50% fi
-    frame {2.5*$2}%,{2.5*$2}%,0 b $2% * $6 round c 0,255 autocrop
-    100%,100%,1,3 fc. ${3-5} rv[-2,-1] a c
-    gui_set_layer_name "Heart"
-    gui_set_layer_pos {0.5*([$max_wh]-[w,h])}
-  endl
-  mv. 0
-
-fx_cupid_preview :
-  fx_cupid $* blend[^0] [0],alpha rm[0]
-
 #@gui Equation plot [parametric] : fx_equation_parametric, fx_equation_parametric
 #@gui : X(t) = text{"sin(t)*(exp(cos(t))-2*cos(4*t)-sin(t/12)^5)"}
 #@gui : Y(t) = text{"cos(t)*(exp(cos(t))-2*cos(4*t)-sin(t/12)^5)"}
@@ -35685,28 +35662,6 @@ fx_random_gradient :
     b $3% n 0,255
     sh 0,2 rgb2srgb. balance_gamma. ${4-6} rm.
   endl done
-
-#@gui Heart : fx_heart, fx_heart_preview
-#@gui : Size (%) = float(75,0,100)
-#@gui : Smoothness = float(0,0,10)
-#@gui : Color = color(255,0,0,255)
-#@gui : Antialiasing = bool(1)
-#@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2018/01/08</i>.</small>")
-fx_heart :
-  max_wh={$!>0?[${-max_wh}]:[512,512]}
-  w,h={S=[$max_wh]*$1%;[max(S[0],1),max(S[1],1)]}
-  l[]
-    shape_heart {($7?2:1)*min($w,$h)}
-    if $7 r2dx 50% fi
-    frame {2.5*$2}%,{2.5*$2}%,0 b $2% * $6 round c 0,255 autocrop
-    100%,100%,1,3 fc. ${3-5} rv[-2,-1] a c
-    gui_set_layer_name "Heart"
-    gui_set_layer_pos {0.5*([$max_wh]-[w,h])}
-  endl
-  mv. 0
-
-fx_heart_preview :
-  fx_heart $* blend[^0] [0],alpha rm[0]
 
 #@gui Lightning : fx_lightning, fx_lightning_preview
 #@gui : note = note{"<small><b>Global parameters:</b></small>"}
@@ -36079,9 +36034,8 @@ fx_turbulence :
   remove_opacity turbulence ${^0}
 
 
-#@gui _<b>Sequences</b>
-#-----------------------
-
+#@gui ____<b>Sequences</b>
+#-------------------------
 
 # fx_animate_preview : _command,_parameters1,_parameters2,_compute_half={ 0 | 1 },_width>=0,_height>=0
 # Generate a preview with start/end rendering of an animation.
@@ -36582,8 +36536,57 @@ fx_spatial_transition_preview :
   fx_spatial_transition ${1-3},"$4",${5-7},1
 
 
-#@gui _<b>Various</b>
-#----------------------
+#@gui ____<b>Silhouettes</b>
+#---------------------------
+
+#@gui <i>Misc</i>
+
+#@gui Cupid : fx_cupid, fx_cupid_preview
+#@gui : Size (%) = float(75,0,100)
+#@gui : Smoothness = float(0,0,10)
+#@gui : Color = color(255,0,0,255)
+#@gui : Antialiasing = bool(1)
+#@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2018/01/08</i>.</small>")
+fx_cupid :
+  max_wh={$!>0?[${-max_wh}]:[512,512]}
+  w,h={S=[$max_wh]*$1%;[max(S[0],1),max(S[1],1)]}
+  l[]
+    shape_cupid {($7?2:1)*min($w,$h)}
+    if $7 r2dx 50% fi
+    frame {2.5*$2}%,{2.5*$2}%,0 b $2% * $6 round c 0,255 autocrop
+    100%,100%,1,3 fc. ${3-5} rv[-2,-1] a c
+    gui_set_layer_name "Heart"
+    gui_set_layer_pos {0.5*([$max_wh]-[w,h])}
+  endl
+  mv. 0
+
+fx_cupid_preview :
+  fx_cupid $* blend[^0] [0],alpha rm[0]
+
+#@gui Heart : fx_heart, fx_heart_preview
+#@gui : Size (%) = float(75,0,100)
+#@gui : Smoothness = float(0,0,10)
+#@gui : Color = color(255,0,0,255)
+#@gui : Antialiasing = bool(1)
+#@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2018/01/08</i>.</small>")
+fx_heart :
+  max_wh={$!>0?[${-max_wh}]:[512,512]}
+  w,h={S=[$max_wh]*$1%;[max(S[0],1),max(S[1],1)]}
+  l[]
+    shape_heart {($7?2:1)*min($w,$h)}
+    if $7 r2dx 50% fi
+    frame {2.5*$2}%,{2.5*$2}%,0 b $2% * $6 round c 0,255 autocrop
+    100%,100%,1,3 fc. ${3-5} rv[-2,-1] a c
+    gui_set_layer_name "Heart"
+    gui_set_layer_pos {0.5*([$max_wh]-[w,h])}
+  endl
+  mv. 0
+
+fx_heart_preview :
+  fx_heart $* blend[^0] [0],alpha rm[0]
+
+#@gui ____<b>Various</b>
+#------------------------
 
 #@gui Custom code (local) : fx_custom_code, fx_custom_code_preview(0)
 #@gui : Code = text(1,"repeat $! l[$>]\n\n  to_rgb\n  +deform 20\n  blend_edges 3\n\n-endl done\n\n\n")
