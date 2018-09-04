@@ -35280,30 +35280,6 @@ fx_ball_preview :
   fx_ball $*
   if {$!>1} rv[-2,-1] blend[-2,-1] alpha fi
 
-#@gui Barnsley fern : fx_barnsley_fern, fx_barnsley_fern_preview(1)
-#@gui : Type = choice("Asplenium adiantum-nigrum","Thelypteridaceae")
-#@gui : Density (%) = float(100,0,300)
-#@gui : Angle = float(30,-180,180)
-#@gui : Opacity (%) = float(40,0,100)
-#@gui : Color = color(10,178,0,255)
-#@gui : Add as a new layer = _bool(1)
-#@gui : sep = separator()
-#@gui : note = note("This filter renders the Barnsley fern fractal, described here:")
-#@gui : url = link("https://en.wikipedia.org/wiki/Barnsley_fern")
-#@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2016/18/10</i>.</small>")
-fx_barnsley_fern :
-  repeat $! l[$<]
-    shape_fern {min(w,h)},$2%,$3,{$4%},$1 *. 255
-    100%,100%,1,3,[${5-7}]
-    rv[-2,-1] a[-2,-1] c
-    if {!$9} blend alpha,{$8/255}
-    else nm. "name(Barnsley Fern),opacity("{round($8*100/255)})")" rv[-2,-1]
-    fi
-  endl done
-
-fx_barnsley_fern_preview :
-  fx_barnsley_fern ${1-8},0
-
 #@gui Circle art : fx_circle_art, fx_circle_art
 #@gui : Type = choice(1,"Random","Lissajous spiral")
 #@gui : Density = float(15,0,100)
@@ -35403,32 +35379,6 @@ fx_equation_plot :
     $4,1,1,$5,"X=$2+($3-$2)*x/($4-1);$1"
     -dg $w,$h,$6,$7,$2,$3
   endl done
-
-#@gui Gear : fx_gear, fx_gear_preview
-#@gui : Size (%) = float(75,0,100)
-#@gui : Number of teeth = int(12,1,96)
-#@gui : Elevation (%) = float(15,0,100)
-#@gui : Angle (%) = float(0,0,100)
-#@gui : Inner radius (%) = float(40,0,100)
-#@gui : Smoothness = float(0,0,10)
-#@gui : Color = color(255,0,0,255)
-#@gui : Antialiasing = bool(1)
-#@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2018/01/08</i>.</small>")
-fx_gear :
-  max_wh={$!>0?[${-max_wh}]:[512,512]}
-  w,h={S=[$max_wh]*$1%;[max(S[0],1),max(S[1],1)]}
-  l[]
-    shape_gear {($11?2:1)*min($w,$h)},${2-5}
-    if $11 r2dx 50% fi
-    frame {2.5*$6}%,{2.5*$6}%,0 b $6% * $10 round c 0,255 autocrop
-    100%,100%,1,3 fc. ${7-9} rv[-2,-1] a c
-    gui_set_layer_name "Gear"
-    gui_set_layer_pos {0.5*([$max_wh]-[w,h])}
-  endl
-  mv. 0
-
-fx_gear_preview :
-  fx_gear $* blend[^0] [0],alpha rm[0]
 
 #@gui Gradient [corners] : fx_corner_gradient, fx_corner_gradient
 #@gui : Color 1 (up/left corner) = color(255,255,255,128)
@@ -35959,34 +35909,6 @@ fx_shadebobs :
     done
   endl done
   & 255 if $10 map {$10-1} fi
-
-#@gui Sierpinski triangle : fx_sierpinski, fx_sierpinski(1)
-#@gui : Recursions = int(6,0,10)
-#@gui : 1st X-coord = float(50,0,100)
-#@gui : 1st Y-coord = float(0,0,100)
-#@gui : 2nd X-coord = float(0,0,100)
-#@gui : 2nd Y-coord = float(100,0,100)
-#@gui : 3rd X-coord = float(100,0,100)
-#@gui : 3rd Y-coord = float(100,0,100)
-#@gui : Color = color(128,128,128)
-#@gui : Opacity = float(1,0,1)
-#@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2010/29/12</i>.</small>")
-fx_sierpinski :
-  repeat $! l[$>] split_opacity l[0]
-    100%,100% sierpinski. ${1-7}
-    +fc.. $8,$9,$10 j[0] .,0,0,0,0,$11,..,255 rm[-2,-1]
-  endl a c endl done
-
-#@gui Snowflake : fx_snowflake, fx_snowflake(1)
-#@gui : Recursions = int(5,0,6)
-#@gui : Opacity = float(1,0,1)
-#@gui : Color = color(255,255,255)
-#@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2010/29/12</i>.</small>")
-fx_snowflake :
-  repeat $! l[$>] to_color split_opacity l[0]
-    shape_snowflake {min(w,h)},$1 100%,100%,1,3,[${3-5}]
-    j[0] .,{([w#0,h#0]-[w#1,h#1])/2},0,0,$2,.. k[0]
-  endl a c endl done
 
 #@gui Superformula : fx_superformula, fx_superformula(1)
 #@gui : Resolution = int(4096,2,8192)
@@ -36563,6 +36485,32 @@ fx_cupid :
 fx_cupid_preview :
   fx_cupid $* blend[^0] [0],alpha rm[0]
 
+#@gui Gear : fx_gear, fx_gear_preview
+#@gui : Size (%) = float(75,0,100)
+#@gui : Number of teeth = int(12,1,96)
+#@gui : Elevation (%) = float(15,0,100)
+#@gui : Angle (%) = float(0,0,100)
+#@gui : Inner radius (%) = float(40,0,100)
+#@gui : Smoothness = float(0,0,10)
+#@gui : Color = color(255,0,0,255)
+#@gui : Antialiasing = bool(1)
+#@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2018/01/08</i>.</small>")
+fx_gear :
+  max_wh={$!>0?[${-max_wh}]:[512,512]}
+  w,h={S=[$max_wh]*$1%;[max(S[0],1),max(S[1],1)]}
+  l[]
+    shape_gear {($11?2:1)*min($w,$h)},${2-5}
+    if $11 r2dx 50% fi
+    frame {2.5*$6}%,{2.5*$6}%,0 b $6% * $10 round c 0,255 autocrop
+    100%,100%,1,3 fc. ${7-9} rv[-2,-1] a c
+    gui_set_layer_name "Gear"
+    gui_set_layer_pos {0.5*([$max_wh]-[w,h])}
+  endl
+  mv. 0
+
+fx_gear_preview :
+  fx_gear $* blend[^0] [0],alpha rm[0]
+
 #@gui Heart : fx_heart, fx_heart_preview
 #@gui : Size (%) = float(75,0,100)
 #@gui : Smoothness = float(0,0,10)
@@ -36584,6 +36532,60 @@ fx_heart :
 
 fx_heart_preview :
   fx_heart $* blend[^0] [0],alpha rm[0]
+
+#@gui Sierpinski triangle : fx_sierpinski, fx_sierpinski(1)
+#@gui : Recursions = int(6,0,10)
+#@gui : 1st X-coord = float(50,0,100)
+#@gui : 1st Y-coord = float(0,0,100)
+#@gui : 2nd X-coord = float(0,0,100)
+#@gui : 2nd Y-coord = float(100,0,100)
+#@gui : 3rd X-coord = float(100,0,100)
+#@gui : 3rd Y-coord = float(100,0,100)
+#@gui : Color = color(128,128,128)
+#@gui : Opacity = float(1,0,1)
+#@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2010/29/12</i>.</small>")
+fx_sierpinski :
+  repeat $! l[$>] split_opacity l[0]
+    100%,100% sierpinski. ${1-7}
+    +fc.. $8,$9,$10 j[0] .,0,0,0,0,$11,..,255 rm[-2,-1]
+  endl a c endl done
+
+#@gui _<i>Nature</i>
+
+#@gui Barnsley fern : fx_barnsley_fern, fx_barnsley_fern_preview(1)
+#@gui : Type = choice("Asplenium adiantum-nigrum","Thelypteridaceae")
+#@gui : Density (%) = float(100,0,300)
+#@gui : Angle = float(30,-180,180)
+#@gui : Opacity (%) = float(40,0,100)
+#@gui : Color = color(10,178,0,255)
+#@gui : Add as a new layer = _bool(1)
+#@gui : sep = separator()
+#@gui : note = note("This filter renders the Barnsley fern fractal, described here:")
+#@gui : url = link("https://en.wikipedia.org/wiki/Barnsley_fern")
+#@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2016/18/10</i>.</small>")
+fx_barnsley_fern :
+  repeat $! l[$<]
+    shape_fern {min(w,h)},$2%,$3,{$4%},$1 *. 255
+    100%,100%,1,3,[${5-7}]
+    rv[-2,-1] a[-2,-1] c
+    if {!$9} blend alpha,{$8/255}
+    else nm. "name(Barnsley Fern),opacity("{round($8*100/255)})")" rv[-2,-1]
+    fi
+  endl done
+
+fx_barnsley_fern_preview :
+  fx_barnsley_fern ${1-8},0
+
+#@gui Snowflake : fx_snowflake, fx_snowflake(1)
+#@gui : Recursions = int(5,0,6)
+#@gui : Opacity = float(1,0,1)
+#@gui : Color = color(255,255,255)
+#@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2010/29/12</i>.</small>")
+fx_snowflake :
+  repeat $! l[$>] to_color split_opacity l[0]
+    shape_snowflake {min(w,h)},$1 100%,100%,1,3,[${3-5}]
+    j[0] .,{([w#0,h#0]-[w#1,h#1])/2},0,0,$2,.. k[0]
+  endl a c endl done
 
 #@gui ____<b>Various</b>
 #------------------------
