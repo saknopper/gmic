@@ -26,9 +26,9 @@
                 })
               </script>
               <hr noshade="noshade" size="1" width="90%"></hr>
-              <a id="img_10th_id" href="https://pixls.us/blog/2018/08/g-mic-2-3-6/"><img alt="" border="0" src="img/10thyears.png" /></a>
+              <a id="tenyears_id" href="https://pixls.us/blog/2018/08/g-mic-2-3-6/"><img alt="" border="0" src="img/10thyears.png" /></a>
               <script>
-                $("#img_10th_id").mousedown(function(){
+                $("#tenyears_id").mousedown(function(){
                 $(this).removeClass("over").addClass("down");
                 }).mouseup(function(){
                 $(this).removeClass("down");

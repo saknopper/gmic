@@ -183,22 +183,22 @@ code {
     width: 100%;
 }
 
-#gift_id {
-    width: 48px;
-    height: 48px;
+#tenyears_id {
+    width: 104px;
+    height: 100px;
     text-align: center;
 }
 
-#gift_id img {
-    width: 95%;
+#tenyears_id img {
+    width: 50%;
 }
 
-#gift_id.down img {
-    width: 90%;
+#tenyears_id.down img {
+    width: 45%;
 }
 
-#gift_id.over img {
-    width: 110%;
+#tenyears_id.over img {
+    width: 55%;
 }
 
 /* Popup container */
