@@ -4420,7 +4420,7 @@ update_server :
   load_gmic ${HOME}/work/src/gmic-community/include/jerome_ferrari.gmic
   load_gmic ${HOME}/work/src/gmic-community/include/karsten_rodenacker.gmic
   load_gmic ${HOME}/work/src/gmic-community/include/martin_souphead.gmic
-  load_gmic ${HOME}/work/src/gmic-community/include/matthew_callaghan.gmic
+  load_gmic ${HOME}/work/src/gmic-community/include/mathew_callaghan.gmic
   load_gmic ${HOME}/work/src/gmic-community/include/photocomix.gmic
   load_gmic ${HOME}/work/src/gmic-community/include/joan_rake.gmic
   load_gmic ${HOME}/work/src/gmic-community/include/afre.gmic
