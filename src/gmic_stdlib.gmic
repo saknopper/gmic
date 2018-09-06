@@ -86,7 +86,7 @@
 #      'preview_command' is the G'MIC command name called to process the preview.
 #
 #           Note that you can optionally specify a float-valued factor>=0 between parentheses at the end of
-#           the 'preview_command' to force the default zoom factor used by the GIMP preview for this filter.
+#           the 'preview_command' to force the default zoom factor used by the preview for this filter.
 #           Use (0) for a 1:1 preview, (1) for previewing the whole image, (2) for 1/2 image and so on...
 #           You can also put an additional '+' sign after the parenthesis to specify the rendered preview
 #           is still accurate for different zoom factors.
