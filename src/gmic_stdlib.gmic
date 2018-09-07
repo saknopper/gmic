@@ -19153,23 +19153,24 @@ fitratio_wh :
 #@cli fitscreen : width,height,_depth,_minimal_size[%],_maximal_size[%]
 #@cli : Return the 'ideal' size WxH for a window intended to display an image of specified size on screen.
 #@cli : Default values: 'depth=1', 'minimal_size=128' and 'maximal_size=85%'.
-fitscreen : check "$1>0 && $2>0 && ${3=1}>0 && ${4=128}>0 && ${5=85%}>0"
+fitscreen : check "$1>=1 && $2>=1 && ${3=1}>=1 && ${4=128}>0 && ${5=85%}>0"
   v -
-  mp=${is_percent\ $4}
-  mw={if($mp,int({*,u}*$4),$4)}
-  mh={if($mp,int({*,v}*$4),$4)}
-  Mp=${is_percent\ $5}
-  Mw={if($Mp,int({*,u}*$5),$5)}
-  Mh={if($Mp,int({*,v}*$5),$5)}
-  w={if($3>1,$1+$3,$1)}
-  h={if($3>1,$2+$3,$2)}
-  if {$w<$mw} h={max(1,int($h*$mw/$w))} w=$mw fi
-  if {$h<$mh} w={max(1,int($w*$mh/$h))} h=$mh fi
-  if {$w>$Mw} h={max(1,int($h*$Mw/$w))} w=$Mw fi
-  if {$h>$Mh} w={max(1,int($w*$Mh/$h))} h=$Mh fi
-  w={max($w,$mw)}
-  h={max($h,$mh)}
-  u $w,$h
+  eval "
+    const u = "{*,u}";
+    const v = "{*,v}";
+    is_percent(str) = (unref(_is_pct); _is_pct=['#str']; _is_pct[size(_is_pct) - 1]==_'%');
+    ms = int(is_percent($4)?[ u,v ]*$4:[ $4,$4 ]);
+    Ms = int(is_percent($5)?[ u,v ]*$5:[ $5,$5 ]);
+    s = [ $1,$2 ];
+    $3>1?(s+=$3);
+
+    s[0]<ms[0]?(s = [ ms[0],s[1]*ms[0]/s[0] ]);
+    s[1]<ms[1]?(s = [ s[0]*ms[1]/s[1],ms[1] ]);
+    s[0]>Ms[0]?(s = [ Ms[0],s[1]*Ms[0]/s[0] ]);
+    s[1]>Ms[1]?(s = [ s[0]*Ms[1]/s[1],Ms[1] ]);
+    s[0] = int(max(1,s[0],ms[0]));
+    s[1] = int(max(1,s[1],ms[1]));
+    s"
   v +
 
 #@cli fps
