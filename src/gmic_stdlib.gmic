@@ -36259,7 +36259,7 @@ fx_spatial_transition_preview :
 #@gui Cupid : fx_cupid, fx_cupid_preview
 #@gui : Size (%) = float(75,0,100)
 #@gui : Smoothness = float(0,0,10)
-#@gui : Color = color(255,0,0,255)
+#@gui : Color = color(255,255,255,255)
 #@gui : Antialiasing = bool(1)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2018/01/08</i>.</small>")
 fx_cupid :
@@ -36285,7 +36285,7 @@ fx_cupid_preview :
 #@gui : Angle (%) = float(0,0,100)
 #@gui : Inner radius (%) = float(40,0,100)
 #@gui : Smoothness = float(0,0,10)
-#@gui : Color = color(255,0,0,255)
+#@gui : Color = color(255,255,255,255)
 #@gui : Antialiasing = bool(1)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2018/01/08</i>.</small>")
 fx_gear :
@@ -36307,7 +36307,7 @@ fx_gear_preview :
 #@gui Heart : fx_heart, fx_heart_preview
 #@gui : Size (%) = float(75,0,100)
 #@gui : Smoothness = float(0,0,10)
-#@gui : Color = color(255,0,0,255)
+#@gui : Color = color(255,255,255,255)
 #@gui : Antialiasing = bool(1)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2018/01/08</i>.</small>")
 fx_heart :
@@ -36334,7 +36334,7 @@ fx_heart_preview :
 #@gui : 2nd Y-coord = float(100,0,100)
 #@gui : 3rd X-coord = float(100,0,100)
 #@gui : 3rd Y-coord = float(100,0,100)
-#@gui : Color = color(128,128,128)
+#@gui : Color = color(255,255,255)
 #@gui : Opacity = float(1,0,1)
 #@gui : sep = separator(), note = note("<small>Author: <i>David Tschumperl&#233;</i>.      Latest update: <i>2010/29/12</i>.</small>")
 fx_sierpinski :
