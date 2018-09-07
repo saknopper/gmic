@@ -18182,25 +18182,26 @@ sub_alpha : check "${2=1}>=1 && "${"is_image_arg $1"}
 #
 #---------------------------------------------
 
-#@cli animate : filter_name,"param1_start,...,paramN_start","param1_end,...,paramN_end",nb_frames>=0,_output_frames={ 0 | 1 },_output_filename : delay>0
+#@cli animate : filter_name,"param1_start,...,paramN_start","param1_end,...,paramN_end",nb_frames>=0,_output_frames={ 0 | 1 },_output_filename : delay>0,_back and forth={ 0 | 1 }
 #@cli : Animate filter from starting parameters to ending parameters or animate selected images
 #@cli : in a display window.
 #@cli : Default value: 'delay=30'.
 #@cli : $ image.jpg animate flower,"0,3","20,8",9
 animate : skip ${1=30},${2=0},${3=""},${4=10},${5=1},"${6=}"
-  if {isval($1)}
-    if $2 e[0--4] "Animate image$?, with a delay of $1 ms, and ping-pong mode."
-    else e[0--4] "Animate image$?, with a delay of $1 ms."
-    fi
+  if {"isval($1)"}
+    e[0--3] "Animate image$?, with a delay of $1 ms"${"v - if $2 u \", in back-and-forth mode\" else u \"\" fi v +"}.
     if {!$!} return fi
     v -
-    speed=$1    # Animation speed
-    pause=-1    # Pause mode.
-    direction=1 # Animation direction.
-    frame=0     # Current frame.
-    w[$frame] ${fitscreen[]\ {$frame,w},{$frame,h}},1,0,-1,-1,{$frame,b}.{$frame,x}
+    speed,pause,direction,scale,frame=$1,-1,1,1,0
+    is_same_size={"res = 1; s = [ w#0,h#0 ]; for (k = 1, k<l && res, ++k, res = (s==[ w#k,h#k ]))"}
+
+    w[0] ${fitscreen[]\ {0,[w,h]}},1,0,-1,-1,{0,b}.{0,x}
     do
-      w[$frame] -1,-1,1,0,-1,-1,{$frame,b}.{$frame,x}
+      if $is_same_size
+        w[$frame] -1,-1,1,0,-1,-1,{$frame,b}.{$frame,x}
+      else
+        w[$frame] {$scale*[${fitscreen[]\ {$frame,[w,h]}}]},1,0,-1,-1,{$frame,b}.{$frame,x}
+      endif
       frame+=$direction
       if $2
         if {$frame==-1} frame=0 direction=1
@@ -18209,9 +18210,9 @@ animate : skip ${1=30},${2=0},${3=""},${4=10},${5=1},"${6=}"
       else frame%=$!
       fi
       wait $speed
-      if {({*,CTRLLEFT}" || "{*,CTRLRIGHT})" && "{*,D}} w[] {{*,w}*1.5},{{*,h}*1.5} wait -1 fi # Increase window size.
-      if {({*,CTRLLEFT}" || "{*,CTRLRIGHT})" && "{*,C}} w[] {{*,w}/1.5},{{*,h}/1.5} wait -1 fi # Decrease window size.
-      if {({*,CTRLLEFT}" || "{*,CTRLRIGHT})" && "{*,R}} w[] {0,w},{0,h} wait -1 fi             # Reset window size.
+      if {({*,CTRLLEFT}" || "{*,CTRLRIGHT})" && "{*,D}} w[] {{*,w}*1.5},{{*,h}*1.5} scale*=1.5 wait -1 fi # Increase window size.
+      if {({*,CTRLLEFT}" || "{*,CTRLRIGHT})" && "{*,C}} w[] {{*,w}/1.5},{{*,h}/1.5} scale/=1.5 wait -1 fi # Decrease window size.
+      if {({*,CTRLLEFT}" || "{*,CTRLRIGHT})" && "{*,R}} w[] {0,w},{0,h} scale=1 wait -1 fi             # Reset window size.
       if {*,o} speed={min(500,max(10,$speed-10*{*,o}))} wait -1 fi
       if {*,SPACE}
         if {$pause>=0} direction=$pause pause=-1
@@ -19156,21 +19157,20 @@ fitratio_wh :
 fitscreen : check "$1>=1 && $2>=1 && ${3=1}>=1 && ${4=128}>0 && ${5=85%}>0"
   v -
   eval "
+    is_percent(str) = (unref(_is_pct); _is_pct=['#str']; _is_pct[size(_is_pct) - 1]==_'%');
     const u = "{*,u}";
     const v = "{*,v}";
-    is_percent(str) = (unref(_is_pct); _is_pct=['#str']; _is_pct[size(_is_pct) - 1]==_'%');
-    ms = int(is_percent($4)?[ u,v ]*$4:[ $4,$4 ]);
-    Ms = int(is_percent($5)?[ u,v ]*$5:[ $5,$5 ]);
+    ms = round(is_percent($4)?[ u,v ]*$4:[ $4,$4 ]);
+    Ms = round(is_percent($5)?[ u,v ]*$5:[ $5,$5 ]);
     s = [ $1,$2 ];
     $3>1?(s+=$3);
-
     s[0]<ms[0]?(s = [ ms[0],s[1]*ms[0]/s[0] ]);
     s[1]<ms[1]?(s = [ s[0]*ms[1]/s[1],ms[1] ]);
     s[0]>Ms[0]?(s = [ Ms[0],s[1]*Ms[0]/s[0] ]);
     s[1]>Ms[1]?(s = [ s[0]*Ms[1]/s[1],Ms[1] ]);
-    s[0] = int(max(1,s[0],ms[0]));
-    s[1] = int(max(1,s[1],ms[1]));
-    s"
+    s[0] = max(1,s[0],ms[0]);
+    s[1] = max(1,s[1],ms[1]);
+    round(s)"
   v +
 
 #@cli fps
