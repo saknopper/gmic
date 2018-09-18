@@ -79,6 +79,8 @@
 # - A comment line starting with '#@gui' will be parsed by the plug-in to define the filters tree.
 # - A comment line starting with '#@gui_xx' will define a filter only for a specific language 'xx'
 #    (e.g. 'en','fr'...).
+# - A comment line starting with '#@gui_xx hide(/Filter or folder name)' will hide the existing
+#    filter of folder for the locale 'xx'.
 # - More precisely, the syntax of a '#@gui' comment line is :
 #
 #    '#@gui Folder name'
