@@ -24786,58 +24786,6 @@ fx_logo : skip "${1=Universal plug-in\n    [ "${-strver}" ]}","${2=$1}"
 fx_logo_en :
   fx_logo "Universal plug-in\n     [ "${-strver}" ]","       Universal plug-in\n[ "${-strver}" pre-release ""#"$_prerelease"]"
 
-#----------------------
-# Catalan translations
-#----------------------
-
-#@gui_ca G'MIC per al GIMP : _none_, fx_logo_ca
-#@gui_ca : note = note{"
-#@gui_ca : <span foreground="purple">( <b>G</b>REYC's <b>M</b>agic for <b>I</b>mage <b>C</b>omputing )</span>\n\n &#233;s una gentilesa de"}
-#@gui_ca : url = link("David Tschumperl&#233;","https://tschumperle.users.greyc.fr/")
-#@gui_ca : url = link("S&#233;bastien Fourey","https://foureys.users.greyc.fr/")
-#@gui_ca : url = link{"( IMAGE Team / GREYC Laboratory - CNRS UMR 6072 )","https://www.greyc.fr/node/36"}
-#@gui_ca : note = note{"
-#@gui_ca : Aquest connector est&#224; basat en les biblioteques de codi obert <b>G'MIC</b> i <b>CImg</b> (C++ Template Image Processing Library),
-#@gui_ca : disponibles a :"}
-#@gui_ca : url = link("https://gmic.eu/")
-#@gui_ca : note = note{"i"}
-#@gui_ca : url = link("https://cimg.eu/")
-#@gui_ca : note = note{"\n
-#@gui_ca : Si t'agrada el <b>G'MIC</b>, pots enviar-nos una postal del lloc on vius, a :\n\n
-#@gui_ca : <small><tt>David Tschumperl&#233;,\n Laboratoire GREYC (CNRS UMR 6072), Equipe Image,\n
-#@gui_ca :  6 Bd du Mar&#233;chal Juin,\n 14050 Caen Cedex / France.</tt></small>\n\n
-#@gui_ca : Tot aquell que envi&#239; una postal apareixer&#224; al <i>Friends Hall of Fame</i> :) !
-#@gui_ca : "}
-fx_logo_ca :
-  fx_logo "per al GIMP\n  [ "${-strver}" ]","         per al GIMP\n[ "${-strver}" pre-release ""#"$_prerelease"]"
-
-#----------------------
-# Japanese translations
-#----------------------
-
-#@gui_ja About G'MIC : _none_, fx_logo_en
-#@gui_ja : note = note{"
-#@gui_ja : <span foreground="purple">( <b>G</b>REYC's <b>M</b>agic for <b>I</b>mage <b>C</b>omputing )</span>\n\nis proposed to you by"}
-#@gui_ja : url = link("David Tschumperl&#233;","https://tschumperle.users.greyc.fr/")
-#@gui_ja : url = link("S&#233;bastien Fourey","https://foureys.users.greyc.fr/")
-#@gui_ja : url = link{"( IMAGE Team / GREYC Laboratory - CNRS UMR 6072 )","https://www.greyc.fr/node/36"}
-#@gui_ja : note = note{"
-#@gui_ja : This plug-in is based on our open-source libraries <b>G'MIC</b> and <b>CImg</b> (C++ Template Image Processing Library),
-#@gui_ja : available at:"}
-#@gui_ja : url = link("https://gmic.eu/")
-#@gui_ja : note = note{"and"}
-#@gui_ja : url = link("https://cimg.eu/")
-#@gui_ja : note = note{"\n
-#@gui_ja : If you appreciate <b>G'MIC</b>, you are welcome to send us a nice postcard from your place, at:\n\n
-#@gui_ja : <small><tt>David Tschumperl&#233;,\n Laboratoire GREYC (CNRS UMR 6072), Equipe Image,\n
-#@gui_ja :  6 Bd du Mar&#233;chal Juin,\n 14050 Caen Cedex / France.</tt></small>\n\n
-#@gui_ja : Postcards senders automatically enter the <i>Friends Hall of Fame</i> :) !
-#@gui_ja : "}
-
-#----------------------
-# Untranslated filters
-#----------------------
-
 #@gui Contributors : _none_, _none_
 #@gui : note = note{"
 #@gui : We would like to thank all these people who contributed to <b>G'MIC</b> in one way or another.
