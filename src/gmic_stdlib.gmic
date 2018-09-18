@@ -4433,6 +4433,7 @@ update_server :
   endl
   load_gmic ${HOME}/work/src/gmic-community/include/tom_keil.gmic
 
+  load_gmic ${HOME}/work/src/gmic-community/include/translation_ca.gmic
   load_gmic ${HOME}/work/src/gmic-community/include/translation_fr.gmic
   load_gmic ${HOME}/work/src/gmic-community/include/translation_ja.gmic
 
@@ -4461,12 +4462,16 @@ update_server :
 
       is_folder=0
       s +,10
-      if {{0,@5}==_'_'} +rows[0] 8,100% rows[0] 0,7  # Treat a localized filter as a regular filter.
+      if {{0,@5}==_'_'} +rows[0] 8,100% rows[0] 0,7 # Treat a localized filter as a regular filter.
       else +rows[0] 5,100% rows[0] 0,4
       fi
       autocrop. 32 mv. 1
 
-      if {{1,@0}!=_':'} # Found a new filter or folder definition.
+      if {narg($locale)" && "find(#1,'hide(')>=0} # Found a hide() pragma.
+
+        # Do nothing
+
+      elif {{1,@0}!=_':'} # Found a new filter or folder definition.
         l[1]
 
           # Format string by removing special character sequences.
