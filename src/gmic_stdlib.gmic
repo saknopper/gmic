@@ -4430,7 +4430,9 @@ update_server :
     s +,{'"#@gui <b>"'} i[1--2:2] ({'"#@gui ________<b>Testing<b>\n#@gui <i>Samj</i>\n"'}) y a y
   endl
   load_gmic ${HOME}/work/src/gmic-community/include/tom_keil.gmic
-  load_gmic ${HOME}/work/src/gmic-community/include/tou_omiya.gmic
+
+  load_gmic ${HOME}/work/src/gmic-community/include/translation_fr.gmic
+  load_gmic ${HOME}/work/src/gmic-community/include/translation_ja.gmic
 
   # Merge them together.
   i[0] (10) i[2--1] ({"'\n#@gui ________________\n'"}) y a y discard 13 replace 9,32
@@ -24693,29 +24695,24 @@ gui_autocrop_layers :
 #@gui ____<i>About</i>
 #---------------------
 
-
-#----------------------
-# English translations
-#----------------------
-
-#@gui_en About G'MIC : _none_, fx_logo_en
-#@gui_en : note = note{"
-#@gui_en : <span foreground="purple">( <b>G</b>REYC's <b>M</b>agic for <b>I</b>mage <b>C</b>omputing )</span>\n\nis proposed to you by"}
-#@gui_en : url = link("David Tschumperl&#233;","https://tschumperle.users.greyc.fr/")
-#@gui_en : url = link("S&#233;bastien Fourey","https://foureys.users.greyc.fr/")
-#@gui_en : url = link{"( IMAGE Team / GREYC Laboratory - CNRS UMR 6072 )","https://www.greyc.fr/node/36"}
-#@gui_en : note = note{"
-#@gui_en : This plug-in is based on our open-source libraries <b>G'MIC</b> and <b>CImg</b> (C++ Template Image Processing Library),
-#@gui_en : available at:"}
-#@gui_en : url = link("https://gmic.eu/")
-#@gui_en : note = note{"and"}
-#@gui_en : url = link("https://cimg.eu/")
-#@gui_en : note = note{"\n
-#@gui_en : If you appreciate <b>G'MIC</b>, you are welcome to send us a nice postcard from your place, at:\n\n
-#@gui_en : <small><tt>David Tschumperl&#233;,\n Laboratoire GREYC (CNRS UMR 6072), Equipe Image,\n
-#@gui_en :  6 Bd du Mar&#233;chal Juin,\n 14050 Caen Cedex / France.</tt></small>\n\n
-#@gui_en : Postcards senders automatically enter the <i>Friends Hall of Fame</i> :) !
-#@gui_en : "}
+#@gui About G'MIC : _none_, fx_logo_en
+#@gui : note = note{"
+#@gui : <span foreground="purple">( <b>G</b>REYC's <b>M</b>agic for <b>I</b>mage <b>C</b>omputing )</span>\n\nis proposed to you by"}
+#@gui : url = link("David Tschumperl&#233;","https://tschumperle.users.greyc.fr/")
+#@gui : url = link("S&#233;bastien Fourey","https://foureys.users.greyc.fr/")
+#@gui : url = link{"( IMAGE Team / GREYC Laboratory - CNRS UMR 6072 )","https://www.greyc.fr/node/36"}
+#@gui : note = note{"
+#@gui : This plug-in is based on our open-source libraries <b>G'MIC</b> and <b>CImg</b> (C++ Template Image Processing Library),
+#@gui : available at:"}
+#@gui : url = link("https://gmic.eu/")
+#@gui : note = note{"and"}
+#@gui : url = link("https://cimg.eu/")
+#@gui : note = note{"\n
+#@gui : If you appreciate <b>G'MIC</b>, you are welcome to send us a nice postcard from your place, at:\n\n
+#@gui : <small><tt>David Tschumperl&#233;,\n Laboratoire GREYC (CNRS UMR 6072), Equipe Image,\n
+#@gui :  6 Bd du Mar&#233;chal Juin,\n 14050 Caen Cedex / France.</tt></small>\n\n
+#@gui : Postcards senders automatically enter the <i>Friends Hall of Fame</i> :) !
+#@gui : "}
 fx_logo_version3 : skip "${1=Universal plug-in}"
   rm s="G\47MIC"
   repeat {narg({'$s'})}
@@ -24788,32 +24785,6 @@ fx_logo : skip "${1=Universal plug-in\n    [ "${-strver}" ]}","${2=$1}"
 
 fx_logo_en :
   fx_logo "Universal plug-in\n     [ "${-strver}" ]","       Universal plug-in\n[ "${-strver}" pre-release ""#"$_prerelease"]"
-
-#---------------------
-# French translations
-#---------------------
-
-#@gui_fr A propos de G'MIC : _none_, fx_logo_fr
-#@gui_fr : note = note{"
-#@gui_fr : <span foreground="purple">( <b>G</b>REYC's <b>M</b>agic for <b>I</b>mage <b>C</b>omputing )</span>\n\nvous est propos&#233; par"}
-#@gui_fr : url = link("David Tschumperl&#233;","https://tschumperle.users.greyc.fr/")
-#@gui_fr : url = link("S&#233;bastien Fourey","https://foureys.users.greyc.fr/")
-#@gui_fr : url = link{"( Equipe IMAGE / Laboratoire GREYC - CNRS UMR 6072 )","https://www.greyc.fr/image"}
-#@gui_fr : note = note{"
-#@gui_fr : Ce greffon est bas&#233; sur nos biblioth&#232;ques libres <b>G'MIC</b> et <b>CImg</b> (C++ Template Image Processing Library),
-#@gui_fr : disponibles aux adresses :"}
-#@gui_fr : url = link("https://gmic.eu/")
-#@gui_fr : note = note{"et"}
-#@gui_fr : url = link("https://cimg.eu/")
-#@gui_fr : note = note{"\n
-#@gui_fr : Si vous appr&#233;ciez <b>G'MIC</b>, vous pouvez nous le faire savoir en nous envoyant une jolie carte
-#@gui_fr : postale de votre ville ou r&#233;gion, &#224; l'adresse :\n\n
-#@gui_fr : <small><tt>David Tschumperl&#233;,\n Laboratoire GREYC (CNRS UMR 6072), Equipe Image,\n
-#@gui_fr :  6 Bd du Mar&#233;chal Juin,\n 14050 Caen Cedex / France.</tt></small>\n\n
-#@gui_fr : Envoyer une carte postale vous fera rentrer <i>de facto</i> dans le <i>Friends Hall of Fame</i> :) !
-#@gui_fr : "}
-fx_logo_fr :
-  fx_logo "Greffon GUI\n    [ "${-strver}" ]","     Greffon GUI\n[ "${-strver}" pre-release ""#"$_prerelease"]"
 
 #----------------------
 # Catalan translations
