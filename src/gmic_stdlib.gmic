@@ -18946,6 +18946,32 @@ autocrop_coords : skip ${1=auto}
 _autocrop0 : autocrop $*
 _autocrop1 : skip $* autocrop
 
+#@cli base642uchar : "base64_string"
+#@cli : Decode given base64-encoded string as a newly inserted 1-column image at the end of the list.
+#@cli : The argument string must have been generated using command 'uchar2base64'.
+base642uchar :
+  v - 0
+  eval "
+    hash = vector256();
+    for (k = _'A', k<=_'Z', ++k, hash[k] = k - _'A');
+    for (k = _'a', k<=_'z', ++k, hash[k] = k - _'a' + 26);
+    for (k = _'0', k<=_'9', ++k, hash[k] = k - _'0' + 52);
+    hash[_'+'] = 62;
+    hash[_'/'] = 63;
+    s = ['$1'];
+    resize(#-1,1,size(s)*3/4,1,1);
+    od = 0;
+    for (os = 0, os<size(s),
+      c1 = hash[s[os++]];
+      c2 = hash[s[os++]];
+      c3 = hash[s[os++]];
+      c4 = hash[s[os++]];
+      i[#-1,od++] = (c1<<2) | (c2>>4);
+      i[#-1,od++] = ((c2&15)<<4) | (c3>>2);
+      i[#-1,od++] = ((c3&3)<<6) | c4;
+    )"
+  v +
+
 #@cli basename : file_path,_variable_name_for_folder
 #@cli : Return the basename of a file path, and opt. its folder location.
 #@cli : When specified 'variable_name_for_folder' must starts by an underscore
@@ -19863,7 +19889,7 @@ toc :
   e[^-1] "Elapsed time: "${}" s".
 
 #@cli uchar2base64
-#@cli : Encode the latest of the selected image as a base64 string.
+#@cli : Encode the latest of the selected image as a base64-encoded string.
 #@cli : The string can be decoded using command 'base642uchar'.
 #@cli : Input image should have values that are integers in [0,255].
 uchar2base64 :
@@ -19928,8 +19954,7 @@ str2uchar :
       i[#-1,od++] = (s1<<2) | (s2>>4);
       i[#-1,od++] = ((s2&15)<<4) | (s3>>2);
       i[#-1,od++] = ((s3&3)<<6) | s4;
-    );
-  "
+    )"
   v +
 
 #@cli average_colors
