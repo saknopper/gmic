@@ -19862,6 +19862,27 @@ toc :
   v - _ticpos={$_ticpos-1} u {_$|-${_tic$_ticpos}} v +
   e[^-1] "Elapsed time: "${}" s".
 
+#@cli uchar2base64
+#@cli : Encode the latest of the selected image as a base64 string.
+#@cli : The string can be decoded using command 'base642uchar'.
+#@cli : Input image should have values that are integers in [0,255].
+uchar2base64 :
+  v - {ceil(whds*4/3)}
+  r={`"
+    hash = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+    od = ov = n = 0;
+    for (os = 0, os<whds#-2,
+      v = int(i[#-2,os++])&255;
+      n==0?(i[#-1,od++] = hash[v>>2]; ov = v; n = 1):
+      n==1?(i[#-1,od++] = hash[((ov&3)<<4) | (v>>4)]; ov = v; n = 2):
+      (i[#-1,od++] = hash[((ov&15)<<2) | (v>>6)]; i[#-1,od++] = hash[v&63]; n = 0);
+    );
+    n==1?(i[#-1,od++] = hash[((ov&3)<<4)]; '=='):
+    n==2?(i[#-1,od++] = hash[((ov&15)<<2)]; [_'=',0] ):
+    [ 0,0 ];
+  "`}
+  u {t}$r rm. v +
+
 #@cli uchar2str
 #@cli : Encode the latest of the selected image as a string.
 #@cli : The string can be decoded using command 'str2uchar'.
