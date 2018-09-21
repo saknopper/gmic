@@ -19931,23 +19931,21 @@ img2base64 : skip "${1=0}"
   if {isval("$1")} encoding=$1 else encoding=0 noarg fi
   f "begin(cond = 1); cond&=(!isnan(i) && i==int(i)); end(ext('is_int=',cond)); i"
   +serialize. {`" # Find best data type to encode image values
-    set(type) = (unref(t); t = type; copy(res,t,size(t)));
     res = vector16();
     "$is_int"?(
       im>=0?(
-        iM<2^8?set('unsigned char'):
-        iM<2^16?set('unsigned short'):
-        iM<2^32?set('unsigned int'):
-        set('float');
+        iM<2^8?copy(res,'unsigned char'):
+        iM<2^16?copy(res,'unsigned short'):
+        iM<2^32?copy(res,'unsigned int'):
+        copy(res,'float');
       ):(
-        im>=-2^7 && iM<2^7?set('char'):
-        im>=-2^15 && iM<2^15?set('short'):
-        im>=-2^31 && iM<2^31?set('int'):
-        set('float');
+        im>=-2^7 && iM<2^7?copy(res,'char'):
+        im>=-2^15 && iM<2^15?copy(res,'short'):
+        im>=-2^31 && iM<2^31?copy(res,'int'):
+        copy(res,'float');
       );
-    ):set('float');
-    res;
-  "`}
+    ):copy(res,'float');
+    res"`}
   u ${uchar2base64\ $encoding} rm.
   v +
 
