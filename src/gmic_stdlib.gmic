@@ -19899,8 +19899,8 @@ toc :
 uchar2base64 : skip "${1=0}"
   v -
   if {isval("$1")} encoding=$1 else encoding=0 noarg fi
-  {ceil(whds*4/3)}
-  residual={`"
+  {ceil(whds*4/3)+([0,2,1])[whds%3]}
+  eval "
     hash = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
     "$encoding"?(hash[62] = _'-'; hash[63] = _'_');
     od = ov = n = 0;
@@ -19910,10 +19910,10 @@ uchar2base64 : skip "${1=0}"
       n==1?(i[#-1,od++] = hash[((ov&3)<<4) | (v>>4)]; ov = v; n = 2):
       (i[#-1,od++] = hash[((ov&15)<<2) | (v>>6)]; i[#-1,od++] = hash[v&63]; n = 0);
     );
-    n==1?(i[#-1,od++] = hash[((ov&3)<<4)]; '=='):
-    n==2?(i[#-1,od++] = hash[((ov&15)<<2)]; [_'=',0] ):[ 0,0 ];
-  "`}
-  u {t}$residual rm. v +
+    n==1?(i[#-1,od++] = hash[((ov&3)<<4)]; i[#-1,od++] = _'='; i[#-1,od++] = _'='):
+    n==2?(i[#-1,od++] = hash[((ov&15)<<2)]; i[#-1,od++] = _'=');
+  "
+  u {t} rm. v +
 
 #@cli average_colors
 #@cli : Return the average vector-value of the latest of the selected images.
