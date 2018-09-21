@@ -21995,22 +21995,22 @@ x_life :
     fi
 
     -. [0] *. -1                                              # Compute difference between consecutive states.
-    stock-={2*(min(0,int(is/16*$score/150)))}                   # Increment available cells if the evolution is fast.
-    +[1] [0]                                                   # Increment generation counter for still existing cells.
-    min. 0 +. 1 *[1,-1]                                      # Reset generation counter for died cells.
+    stock-={2*(min(0,int(is/16*$score/150)))}                 # Increment available cells if the evolution is fast.
+    +[1] [0]                                                  # Increment generation counter for still existing cells.
+    min. 0 +. 1 *[1,-1]                                       # Reset generation counter for died cells.
 
-    if {{*,b}==2}                                              # Reset game if right mouse button has been pressed.
+    if {{*,b}==2}                                             # Reset game if right mouse button has been pressed.
       f[0-2] 0 iteration=0 score=0 bestscore=0 stock=500 rm[3] i[3] 1
     fi
 
-    if {{3,w}==1}                                              # Create color palette if necessary.
+    if {{3,w}==1}                                             # Create color palette if necessary.
       rm[3] i[3] {u(3,12)},1,1,3,u(100,255)
       r[3] {u(100,300)}%,1,1,3,4
       point[3] 0,0,0,1,0
       r[3] {u(100,600)}%,1,1,3,5 c[3] 0,255
     fi
 
-    +r[1] {2,w},{2,h} &. 7 b. {1+$score*0.05}                # Render colored image of the game and display it.
+    +r[1] {2,w},{2,h} &. 7 b. {1+$score*0.05}                  # Render colored image of the game and display it.
     n. 0,{3,w} map. [3] *. 0.1 +[2,-1] /[2] 1.1
     [2] if {{*,x}>0}                                           # Add a small target icon at the mouse position.
       opac={0.7*min(1,$stock/500)} r={min(500,$stock)*cos($iteration)/100}
@@ -22022,7 +22022,7 @@ x_life :
        "Stock : "$stock"\n"\
        "Score : "$bestscore,5,3,22,0.7,255
     w. {*,w},{*,h}
-    if {*,S} o. gmic_life.png fi                          # Save snapshot if requested.
+    if {*,S} o. gmic_life.png fi                               # Save snapshot if requested.
     rm.
 
     if {!($iteration%10)} score={0,is} bestscore={max($score,$bestscore)} fi  # Re-compute current and best scores, every 10th iterations.
@@ -22114,21 +22114,21 @@ x_mandelbrot : skip ${1=0},${2=0.317},${3=0.03}
 
   # Start event loop.
   do
-    siz={min({*,w},{*,h})}                                                                       # Desired window dimension.
+    siz={min({*,w},{*,h})}                                                                     # Desired window dimension.
     $siz,$siz mandelbrot. {0,^},256,$1,{if($1,$2,0)},{if($1,$3,0)} map. [1]                    # Render fractal.
     if $1 w. $siz,$siz,0,"[G"{`39`}"MIC] Julia set c=("{0,@0-1}")-("{0,@2-3}"), c0=($2,$3)"    # Display on window.
     else w. $siz,$siz,0,"[G"{`39`}"MIC] Mandelbrot set c=("{0,@0-1}")-("{0,@2-3}")" fi
     w={w} h={h} round. select. 2                                                               # Get the user selection.
 
-    if {i[0]>0}                                                                                 # If valid selection found.
-      M={max(i[3]-i[0],i[4]-i[1])}                                                               # Compute max dimension of selected rectangle.
-      if {$M<5} _x_mandelbrot_coords $1 rm[1] _x_mandelbrot_palette mv. 1                   # If selection too small, reset the view,
-      else ({{0,@0}+{@0}*({0,@2}-{0,@0})/$w};\                                                  # Else compute new fractal coordinates.
+    if {i[0]>0}                                                                                # If valid selection found.
+      M={max(i[3]-i[0],i[4]-i[1])}                                                             # Compute max dimension of selected rectangle.
+      if {$M<5} _x_mandelbrot_coords $1 rm[1] _x_mandelbrot_palette mv. 1                      # If selection too small, reset the view,
+      else ({{0,@0}+{@0}*({0,@2}-{0,@0})/$w};\                                                 # Else compute new fractal coordinates.
              {{0,@1}+{@1}*({0,@3}-{0,@1})/$h};\
              {{0,@0}+({@0}+$M)*({0,@2}-{0,@0})/$w};\
              {{0,@1}+({@1}+$M)*({0,@3}-{0,@1})/$h})
       fi
-      rm[0] mv. 0                                                          # Validate new coordinates.
+      rm[0] mv. 0                                                           # Validate new coordinates.
     fi
     rm.                                                                     # Delete latest rendering.
     if {{*,C}}                                                              # If 'C' key has been pressed.
