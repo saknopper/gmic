@@ -8951,10 +8951,10 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                      !cimg::strcasecmp(ext,"pan")) {
 
             // .cpp, .c, .hpp, .h or .pan file.
-            const char *const
+            const char *
               stype = (cimg_sscanf(options,"%255[a-z64]%c",&(*argx=0),&(end=0))==1 ||
                        (cimg_sscanf(options,"%255[a-z64]%c",&(*argx=0),&end)==2 && end==','))?
-              argx:cimg::type<T>::string();
+              argx:"auto";
             g_list.assign(selection.height());
             cimg_forY(selection,l) if (!gmic_check(images[selection(l)]))
               CImg<unsigned int>::vector(selection(l)).move_to(empty_indices);
@@ -8998,6 +8998,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                   } \
                 } \
               }
+            if (!std::strcmp(stype,"auto")) stype = CImg<T>::storage_type(g_list);
             gmic_save_multitype(unsigned char,"uchar")
             else gmic_save_multitype(unsigned char,"unsigned char")
               else gmic_save_multitype(char,"char")
@@ -9019,10 +9020,10 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
           } else if (!cimg::strcasecmp(ext,"tiff") || !cimg::strcasecmp(ext,"tif")) {
 
             // TIFF file.
-            const char *const
+            const char *
               stype = (cimg_sscanf(options,"%255[a-z64]%c",&(*argx=0),&(end=0))==1 ||
                        (cimg_sscanf(options,"%255[a-z64]%c",&(*argx=0),&end)==2 && end==','))?
-              argx:cimg::type<T>::string();
+              argx:"auto";
             const unsigned int l_stype = (unsigned int)std::strlen(stype);
             const char *const _options = options.data() + (stype!=argx?0:l_stype + (end==','?1:0));
             float _is_multipage = 0;
@@ -9083,6 +9084,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                   } \
                 } \
               }
+            if (!std::strcmp(stype,"auto")) stype = CImg<T>::storage_type(g_list);
             gmic_save_tiff(unsigned char,"uchar")
             else gmic_save_tiff(unsigned char,"unsigned char")
               else gmic_save_tiff(char,"char")
@@ -9221,8 +9223,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
           } else if (!cimg::strcasecmp(ext,"raw")) {
 
             // RAW data file.
-            const char *const stype = cimg_sscanf(options,"%255[a-z64]%c",argx,&end)==1?argx:
-              cimg::type<T>::string();
+            const char *stype = cimg_sscanf(options,"%255[a-z64]%c",argx,&end)==1?argx:"auto";
             g_list.assign(selection.height());
             cimg_forY(selection,l) if (!gmic_check(images[selection(l)]))
               CImg<unsigned int>::vector(selection(l)).move_to(empty_indices);
@@ -9266,6 +9267,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                   } \
                 } \
               }
+            if (!std::strcmp(stype,"auto")) stype = CImg<T>::storage_type(g_list);
             gmic_save_raw(unsigned char,"uchar")
             else gmic_save_raw(unsigned char,"unsigned char")
               else gmic_save_raw(char,"char")
@@ -9306,8 +9308,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
           } else if (!cimg::strcasecmp(ext,"cimg") || !cimg::strcasecmp(ext,"cimgz")) {
 
             // CImg[z] file.
-            const char *const stype = cimg_sscanf(options,"%255[a-z64]%c",argx,&end)==1?argx:
-              cimg::type<T>::string();
+            const char *stype = cimg_sscanf(options,"%255[a-z64]%c",argx,&end)==1?argx:"auto";
             g_list.assign(selection.height());
             cimg_forY(selection,l)
               g_list[l].assign(images[selection[l]],images[selection[l]]?true:false);
@@ -9321,6 +9322,8 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                 CImgList<value_type>(g_list, \
                                      cimg::type<T>::string()==cimg::type<value_type>::string()). \
                                      save(filename);
+
+            if (!std::strcmp(stype,"auto")) stype = CImg<T>::storage_type(g_list);
             gmic_save_cimg(unsigned char,"uchar")
             else gmic_save_cimg(unsigned char,"unsigned char")
               else gmic_save_cimg(char,"char")
@@ -9342,8 +9345,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
           } else if (!cimg::strcasecmp(ext,"gmz") || !*ext) {
 
             // GMZ file.
-            const char *const stype = cimg_sscanf(options,"%255[a-z64]%c",argx,&end)==1?argx:
-              cimg::type<T>::string();
+            const char *stype = cimg_sscanf(options,"%255[a-z64]%c",argx,&end)==1?argx:"auto";
             g_list.assign(selection.height());
             g_list_c.assign(selection.height());
             cimg_forY(selection,l) {
@@ -9360,6 +9362,8 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                 CImg<value_type>::save_gmz(filename, \
                          CImgList<value_type>(g_list,cimg::type<T>::string()==cimg::type<value_type>::string()), \
                          g_list_c);
+
+            if (!std::strcmp(stype,"auto")) stype = CImg<T>::storage_type(g_list);
             gmic_save_gmz(unsigned char,"uchar")
             else gmic_save_gmz(unsigned char,"unsigned char")
               else gmic_save_gmz(char,"char")

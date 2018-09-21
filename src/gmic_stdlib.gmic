@@ -521,7 +521,7 @@ _help_usage :
 \n      '"${c}"filename.cimg,N0,N1,x0,y0,z0,c0,x1,y1,z1,c1"$n"'.
 \n      Specifying '"${g}"-1"$n"' for one coordinates stands for the maximum possible value. Output expression
 \n      '"${c}"filename.cimg[z][,datatype]"$n"' can be used to force the output pixel type. '"${g}"datatype"$n"' can be
-\n      "${g}"{ uchar | char | ushort | short | uint | int | uint64 | int64 | float | double }"$n".
+\n      "${g}"{ auto | uchar | char | ushort | short | uint | int | uint64 | int64 | float | double }"$n".
 \n
 \n    . "${g}".raw binary files:"$n" Image dimensions and input pixel type may be specified when loading "${g}".raw"$n"
 \n       files with input expression
