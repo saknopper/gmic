@@ -11710,12 +11710,15 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                   if (liM>iM) iM = liM;
                 }
                 if (im>=0) {
-
+                  if (iM<(1U<<8)) std::strcpy(argx,"uchar");
+                  else if (iM<(1U<<16)) std::strcpy(argx,"ushort");
+                  else if (iM<(1LU<<32)) std::strcpy(argx,"uint");
                 } else {
-
+                  if (im>=-(1<<7) && iM<(1<<7)) std::strcpy(argx,"char");
+                  else if (im>=-(1<<15) && iM<(1<<15)) std::strcpy(argx,"short");
+                  else if (im>=-(1L<<31) && iM<(1L<<31)) std::strcpy(argx,"int");
                 }
               }
-              std::fprintf(stderr,"\nDEBUG : TYPE -> = '%s'\n",argx);
             }
 
             CImg<T> serialized;
