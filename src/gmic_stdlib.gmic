@@ -19929,7 +19929,7 @@ uchar2base64 : skip "${1=0}"
 img2base64 : skip "${1=0}"
   v -
   if {isval("$1")} encoding=$1 else encoding=0 noarg fi
-  f "begin(cond = 1); cond&=(!isnan(i) && !isinf(i) && i==int(i)); end(ext('is_int=',cond)); i"
+  f "begin(cond = 1); cond&=(!isnan(i) && i==int(i)); end(ext('is_int=',cond)); i"
   +serialize. {`" # Find best data type to encode image values
     set(type) = (unref(t); t = type; copy(res,t,size(t)));
     res = vector16();
