@@ -18959,7 +18959,7 @@ base642uchar :
     hash[_'+'] = 62;
     hash[_'/'] = 63;
     s = ['$1'];
-    resize(#-1,1,size(s)*3/4,1,1);
+    resize(#-1,1,size(s)*3/4 - (s[size(s)-1]==_'=') - (s[size(s)-2]==_'='),1,1);
     od = 0;
     for (os = 0, os<size(s),
       c1 = hash[s[os++]];
