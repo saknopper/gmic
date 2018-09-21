@@ -21389,27 +21389,11 @@ x_grab_color : skip ${1=xgc_variable}
 
 # Define color grabber icon.
 _x_grab_color :
-  (49,32,117,110,115,105,103,110,101,100,95,99,104,97,114,32,\
-   108,105,116,116,108,101,95,101,110,100,105,97,110,10,49,32,\
-   51,51,55,32,49,32,49,32,35,50,55,55,10,120,156,141,\
-   136,217,78,194,80,24,6,47,72,12,55,26,99,226,198,166,\
-   34,91,143,187,65,40,70,224,149,52,4,237,215,27,145,148,\
-   181,129,243,87,20,44,101,43,165,132,243,124,62,128,54,154,\
-   120,109,38,153,100,230,235,179,82,121,174,108,212,252,250,58,\
-   223,52,182,122,219,253,221,193,158,25,24,6,173,208,40,60,\
-   142,76,14,103,153,250,131,157,109,150,230,114,187,236,200,250,\
-   211,34,215,129,155,235,170,110,142,171,142,204,97,103,56,102,\
-   25,194,36,77,176,174,8,230,5,97,112,70,106,255,132,212,\
-   55,102,168,175,41,2,37,8,221,24,65,151,94,64,104,49,\
-   205,115,131,213,61,215,88,67,33,85,99,45,207,85,166,195,\
-   136,117,64,113,14,74,26,32,169,7,58,237,131,206,7,10,\
-   93,154,10,93,91,48,210,99,208,205,20,148,181,193,101,7,\
-   252,214,69,247,110,133,78,94,40,122,94,60,182,11,162,220,\
-   46,138,82,179,40,238,181,130,96,43,201,131,137,63,126,250,\
-   127,231,247,73,171,212,50,185,76,184,241,69,204,57,158,71,\
-   237,168,125,52,61,152,68,198,225,81,120,20,178,130,195,128,\
-   233,241,177,255,190,211,244,215,215,52,95,213,247,13,107,72,\
-   143,131)
+  base642uchar \
+"MSB1bnNpZ25lZF9jaGFyIGxpdHRsZV9lbmRpYW4KMSAzMzcgMSAxICMyNzcKeJyNiNlOwlAYBi9IDDcaY+LGpiJbj7tBKEbglTQE7dcbkZS1gfNXFCxlK6"\
+"WE83w+gDaaeG0mmWTm67NSea5s1Pz6Ot80tnrb/d3BnhkYBq3QKDyOTA5nmfqDnW2W5nK77Mj60yLXgZvrqm6Oq47MYWc4ZhnCJE2wrgjmBWFwRmr/hNQ3"\
+"ZqivKQIlCN0YQZdeQGgxzXOD1T3XWEMhVWMtz1Wmw4h1QHEOShogqQc67YPOBwpdmgpdWzDSY9DNFJS1wWUH/NZF926FTl4oel48tgui3C6KUrMo7rWCYC"\
+"vJg4k/fvp/5/dJq9QyuUy48UXMOZ5H7ah9ND2YRMbhUXgUsoLDgOnxsf++0/TX1zRf1fcNa0iPgw=="
   unserialize. -. 127 decompress_rle.
   frame. 10,10,0
   r2dx. 24
@@ -22756,64 +22740,68 @@ _pacman_pacgum_gfx :
   16,16,1,3 circle. 7,7,7,1,255,128,64
 
 _pacman_cherry_gfx :
-  base642uchar "MiBjaGFyIGxpdHRsZV9lbmRpYW4KNzYgMSAxIDEgIzU5CnicFYpBCgAxDALVXvv/p5ZtmsgmIMoM7k0Cx/ySYYIXrE5qOgTmE1KGlo"\
-               "UW1pp1qVUqmkt3Hj9Whx3SMSAyMCAxIDEgIzI2Cnicc/eNYkjPzUyONwACveTM3PQqBgA+VQX2"
+  base642uchar \
+"MiBjaGFyIGxpdHRsZV9lbmRpYW4KNzYgMSAxIDEgIzU5CnicFYpBCgAxDALVXvv/p5ZtmsgmIMoM7k0Cx/ySYYIXrE5qOgTmE1KGloUW1pp1qVUqmkt3H"\
+"j9Whx3SMSAyMCAxIDEgIzI2Cnicc/eNYkjPzUyONwACveTM3PQqBgA+VQX2"
   unserialize. decompress_rle. (0,0,255,255^0,173,0,255^0,0,0,255) map.. . rm. r2dy. 14 r. 16,16,1,3,0,0,0.5,0.5
 
 _pacman_strawberry_gfx :
-  base642uchar "MiBjaGFyIGxpdHRsZV9lbmRpYW4KNzIgMSAxIDEgIzYwCnicJYlJDoAwEMOyHOH/H+UANJ0RBaRIlp1tJ4HAd9HFaoUtTNWC1yIPWT"\
-               "5ew5em+lT994guKHgAoIoa8zEgMjAgMSAxICMyNgp4nHP3jWJIz81MjjcAAr3kzNz0KgYAPlUF9g=="
+  base642uchar \
+"MiBjaGFyIGxpdHRsZV9lbmRpYW4KNzIgMSAxIDEgIzYwCnicJYlJDoAwEMOyHOH/H+UANJ0RBaRIlp1tJ4HAd9HFaoUtTNWC1yIPWT5ew5em+lT994guK"\
+"HgAoIoa8zEgMjAgMSAxICMyNgp4nHP3jWJIz81MjjcAAr3kzNz0KgYAPlUF9g=="
   unserialize. decompress_rle. (0,0,255,255^0,173,0,255^0,0,0,255) map.. . rm. r2dy. 14 r. 16,16,1,3,0,0,0.5,0.5
 
 _pacman_orange_gfx :
-  base642uchar "MiBjaGFyIGxpdHRsZV9lbmRpYW4KNDQgMSAxIDEgIzQ2CnicBcHBDQAgDAOxXPjC/gsxU4VKi7DnAukKPU6SYjTVptxhbSv8wpVufU"\
-               "wDEZ4xIDIwIDEgMSAjMjYKeJxz941iSM/NTI43AAK95Mzc9CoGAD5VBfY="
+  base642uchar \
+"MiBjaGFyIGxpdHRsZV9lbmRpYW4KNDQgMSAxIDEgIzQ2CnicBcHBDQAgDAOxXPjC/gsxU4VKi7DnAukKPU6SYjTVptxhbSv8wpVufUwDEZ4xIDIwIDEgM"\
+"SAjMjYKeJxz941iSM/NTI43AAK95Mzc9CoGAD5VBfY="
   unserialize. decompress_rle. (0,0,255,255^0,173,173,255^0,0,0,255) map.. . rm. r2dy. 14 r. 16,16,1,3,0,0,0.5,0.5
 
 _pacman_banana_gfx :
-  base642uchar "MiBjaGFyIGxpdHRsZV9lbmRpYW4KNzAgMSAxIDEgIzQ4CnicNcqxDQAgDMTANx0S++8aIC9ShObceC6QQoSJ5Ai5vWW2WTI6xr+bvL"\
-               "U/BnUW3jEgMjAgMSAxICMyNgp4nHP3jWJIz81MjjcAAr3kzNz0KgYAPlUF9g=="
+  base642uchar \
+"MiBjaGFyIGxpdHRsZV9lbmRpYW4KNzAgMSAxIDEgIzQ4CnicNcqxDQAgDMTANx0S++8aIC9ShObceC6QQoSJ5Ai5vWW2WTI6xr+bvLU/BnUW3jEgMjAgM"\
+"SAxICMyNgp4nHP3jWJIz81MjjcAAr3kzNz0KgYAPlUF9g=="
   unserialize. decompress_rle. (0,255,255^0,173,255^0,0,255) map.. . rm. r2dy. 14 r. 16,16,1,3,0,0,0.5,0.5
 
 _pacman_map_level1 :
-  base642uchar "MiBjaGFyIGxpdHRsZV9lbmRpYW4KMjAxIDEgMSAxICM5Nwp4nGWOUQ6AMAhDKX56Be9/QnWJArEM9MdsGa9QYOsGiOy4FaZYHAo1aM"\
-               "ezIJ+QJnszLsq2aRaf9Q9GiaBnGmEZhSe8wLOdVqO+My+cFdJj9OpVQ0vzRm8l/L954AHE9jnsMSAyMCAxIDEgIzI2Cnicc/eNYkjP"\
-               "zUyONwACveTM3PQqBgA+VQX2"
+  base642uchar \
+"MiBjaGFyIGxpdHRsZV9lbmRpYW4KMjAxIDEgMSAxICM5Nwp4nGWOUQ6AMAhDKX56Be9/QnWJArEM9MdsGa9QYOsGiOy4FaZYHAo1aMezIJ+QJnszLsq2a"\
+"Raf9Q9GiaBnGmEZhSe8wLOdVqO+My+cFdJj9OpVQ0vzRm8l/L954AHE9jnsMSAyMCAxIDEgIzI2Cnicc/eNYkjPzUyONwACveTM3PQqBgA+VQX2"
   unserialize.  decompress_rle. +mirror. x z. 1,100% a[-2,-1] x
   _rlevel=33 _glevel=33 _blevel=255
 
 _pacman_map_level2 :
-  base642uchar "MiBjaGFyIGxpdHRsZV9lbmRpYW4KMjA4IDEgMSAxICMxMDAKeJxljkEOAzEIAxn32C/0/y+MdlUloAKJemgvjAOG+PkCs8ElHsjRQk"\
-               "0iycwS+/2jcuJlnhhhf3SxPKWw9DaJmYsbmLOqmyaXn92UsVV9Y+sweOvb7YB1vQPPDnV4a/ABHS45BDEgMjAgMSAxICMyNgp4nHP3"\
-               "jWJIz81MjjcAAr3kzNz0KgYAPlUF9g=="
+  base642uchar \
+"MiBjaGFyIGxpdHRsZV9lbmRpYW4KMjA4IDEgMSAxICMxMDAKeJxljkEOAzEIAxn32C/0/y+MdlUloAKJemgvjAOG+PkCs8ElHsjRQk0iycwS+/2jcuJln"\
+"hhhf3SxPKWw9DaJmYsbmLOqmyaXn92UsVV9Y+sweOvb7YB1vQPPDnV4a/ABHS45BDEgMjAgMSAxICMyNgp4nHP3jWJIz81MjjcAAr3kzNz0KgYAPlUF9g=="
   unserialize. decompress_rle. +mirror. x z. 1,100% a[-2,-1] x
   _rlevel=200 _glevel=33 _blevel=33
 
 _pacman_map_level3 :
-  base642uchar "MiBjaGFyIGxpdHRsZV9lbmRpYW4KMjA5IDEgMSAxICMxMDEKeJxVTlsOwDAIAve5K+z+N+zStGomeyTdjwIKYT9IoHGAbpOgdQ3n1i"\
-               "1ZinHdnO+20FuKg3nf4WIO3YolP8QEQ75CEkoKaUIDT3K95w8OZbp4lDcMj1PNUjXyDg+u4LTGC5LiOwAxIDIwIDEgMSAjMjYKeJxz"\
-               "941iSM/NTI43AAK95Mzc9CoGAD5VBfY="
+  base642uchar \
+"MiBjaGFyIGxpdHRsZV9lbmRpYW4KMjA5IDEgMSAxICMxMDEKeJxVTlsOwDAIAve5K+z+N+zStGomeyTdjwIKYT9IoHGAbpOgdQ3n1i1ZinHdnO+20FuKg"\
+"3nf4WIO3YolP8QEQ75CEkoKaUIDT3K95w8OZbp4lDcMj1PNUjXyDg+u4LTGC5LiOwAxIDIwIDEgMSAjMjYKeJxz941iSM/NTI43AAK95Mzc9CoGAD5VBfY="
   unserialize. decompress_rle. +mirror. x z. 1,100% a[-2,-1] x
   _rlevel=33 _glevel=200 _blevel=255
 
 _pacman_map_level4 :
-  base642uchar "MiBjaGFyIGxpdHRsZV9lbmRpYW4KMjEwIDEgMSAxICM5MAp4nHVPQQ6AMAhr8egX/P8TN+cGGSy6TBMTQgqlUPaDBDINLBJZbMQHqm"\
-               "wq7e40eahgy8i/jDKB1QhlRWBzcPH09Rnr9ALTrHSOuN5N+IFF9LIY9uOPDitcQvExIDIwIDEgMSAjMjYKeJxz941iSM/NTI43AAK9"\
-               "5Mzc9CoGAD5VBfY="
+  base642uchar \
+"MiBjaGFyIGxpdHRsZV9lbmRpYW4KMjEwIDEgMSAxICM5MAp4nHVPQQ6AMAhr8egX/P8TN+cGGSy6TBMTQgqlUPaDBDINLBJZbMQHqmwq7e40eahgy8i/j"\
+"DKB1QhlRWBzcPH09Rnr9ALTrHSOuN5N+IFF9LIY9uOPDitcQvExIDIwIDEgMSAjMjYKeJxz941iSM/NTI43AAK95Mzc9CoGAD5VBfY="
   unserialize. decompress_rle. +mirror. x z. 1,100% a[-2,-1] x
   _rlevel=200 _glevel=200 _blevel=33
 
 _pacman_map_level5 :
-  base642uchar "MiBjaGFyIGxpdHRsZV9lbmRpYW4KMjA3IDEgMSAxICMxMDAKeJxdjlEKxCAMRPOmn3uF3v+ELXRrDE2qwrIgzPB8Mn52MDv4ihBbQy"\
-               "jQyuRBz96RF8NmSYAb98s65j95Wd0bFqxG1MNV/s1ealMujRHdI5wtf9X0WnWmFWO/7JmJXScPVxI1CjEgMjAgMSAxICMyNgp4nHP3"\
-               "jWJIz81MjjcAAr3kzNz0KgYAPlUF9g=="
+  base642uchar \
+"MiBjaGFyIGxpdHRsZV9lbmRpYW4KMjA3IDEgMSAxICMxMDAKeJxdjlEKxCAMRPOmn3uF3v+ELXRrDE2qwrIgzPB8Mn52MDv4ihBbQyjQyuRBz96RF8NmS"\
+"YAb98s65j95Wd0bFqxG1MNV/s1ealMujRHdI5wtf9X0WnWmFWO/7JmJXScPVxI1CjEgMjAgMSAxICMyNgp4nHP3jWJIz81MjjcAAr3kzNz0KgYAPlUF9g=="
   unserialize. decompress_rle. +mirror. x z. 1,100% a[-2,-1] x
   _rlevel=200 _glevel=255 _blevel=33
 
 _pacman_map_level6 :
-  base642uchar "MiBjaGFyIGxpdHRsZV9lbmRpYW4KMTgzIDEgMSAxICM5Mgp4nGVO0QqAQAhz67Ff6P+/sK66TNqJUBCozDHn5gUwW9EIBnhi2nmBPQ"\
-               "mHCeMwDbuzBNCH1oZeDBEiPSWiAoXU8Yfhn4PyiNc1X3i99NwUJPMoVyVs3PAASqEr4jEgMjAgMSAxICMyNgp4nHP3jWJIz81MjjcA"\
-               "Ar3kzNz0KgYAPlUF9g=="
+  base642uchar \
+"MiBjaGFyIGxpdHRsZV9lbmRpYW4KMTgzIDEgMSAxICM5Mgp4nGVO0QqAQAhz67Ff6P+/sK66TNqJUBCozDHn5gUwW9EIBnhi2nmBPQmHCeMwDbuzBNCH1"\
+"oZeDBEiPSWiAoXU8Yfhn4PyiNc1X3i99NwUJPMoVyVs3PAASqEr4jEgMjAgMSAxICMyNgp4nHP3jWJIz81MjjcAAr3kzNz0KgYAPlUF9g=="
   unserialize. decompress_rle. +mirror. x z. 1,100% a[-2,-1] x
   _rlevel=255 _glevel=130 _blevel=233
 
