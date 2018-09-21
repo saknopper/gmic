@@ -11659,7 +11659,8 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                            argx,&is_compressed,&end)==2 ||
                cimg_sscanf(argument,"%255[a-z ],%u,%u%c",
                            argx,&is_compressed,&is_gmz,&end)==3) &&
-              (!std::strcmp(argx,"uchar") || !std::strcmp(argx,"unsigned char") ||
+              (!std::strcmp(argx,"auto") ||
+               !std::strcmp(argx,"uchar") || !std::strcmp(argx,"unsigned char") ||
                !std::strcmp(argx,"char") || !std::strcmp(argx,"ushort") ||
                !std::strcmp(argx,"unsigned short") || !std::strcmp(argx,"short") ||
                !std::strcmp(argx,"uint") || !std::strcmp(argx,"unsigned int") ||
@@ -11667,10 +11668,10 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                !std::strcmp(argx,"unsigned int64") || !std::strcmp(argx,"int64") ||
                !std::strcmp(argx,"float") || !std::strcmp(argx,"double")) &&
               is_compressed<=1 && is_gmz<=1) ++position;
-          else { std::strcpy(argx,cimg::type<T>::string()); is_compressed = is_compressed0?1U:0U; is_gmz = 1; }
+          else { std::strcpy(argx,"auto"); is_compressed = is_compressed0?1U:0U; is_gmz = 1; }
 
           print(images,0,
-                "Serialize %simage%s viewed as %sbuffer%s of %s values into a single %scompressed image.",
+                "Serialize %simage%s viewed as %sbuffer%s of '%s' values into a single %scompressed image.",
                 is_gmz?"names ":"",
                 gmic_selection.data(),
                 selection.height()>1?"":"a ",
@@ -11690,6 +11691,32 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
               if (is_gmz) CImg<char>::string(images_names[uind]).move_to(gmz_info[1 + l]);
             }
             if (is_gmz) (gmz_info>'x').unroll('y').move_to(g_list);
+
+            if (!std::strcmp(argx,"auto")) { // Guess best datatype
+              bool is_int = true;
+              cimglist_for(g_list,l) {
+                cimg_for(g_list[l],p,T)
+                  if (cimg::type<T>::is_inf(*p) ||
+                      cimg::type<T>::is_nan(*p) ||
+                      *p!=(T)(int)*p) { is_int = false; break; }
+                if (!is_int) break;
+              }
+              std::strcpy(argx,cimg::type<T>::string());
+              if (is_int) {
+                T im = cimg::type<T>::max(), iM = cimg::type<T>::min(), lim, liM;
+                cimglist_for(g_list,l) if (g_list[l]) {
+                  lim = g_list[l].min_max(liM);
+                  if (lim<im) im = lim;
+                  if (liM>iM) iM = liM;
+                }
+                if (im>=0) {
+
+                } else {
+
+                }
+              }
+              std::fprintf(stderr,"\nDEBUG : TYPE -> = '%s'\n",argx);
+            }
 
             CImg<T> serialized;
             gmic_serialize(unsigned char,"uchar")

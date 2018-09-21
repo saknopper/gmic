@@ -3304,12 +3304,12 @@ roddy :
 
 #@cli serialize : _datatype,_is_compressed={ 0 | 1 },_store_names={ 0 | 1 } : (+)
 #@cli : Serialize selected list of images into a single image, optionnally in a compressed form.
-#@cli : 'datatype' can be { uchar | char | ushort | short | uint | int | uint64 | int64 | float | double }.
+#@cli : 'datatype' can be { auto | uchar | char | ushort | short | uint | int | uint64 | int64 | float | double }.
 #@cli : Specify 'datatype' if all selected images have a range of values constrained to a particular datatype, in order to minimize the memory footprint.
 #@cli : The resulting image has only integers values in [0,255] and can then be saved as a raw image of
 #@cli : unsigned chars (doing so will output a valid .cimg[z] or .gmz file).
 #@cli : If 'store_names' is set to '1', serialization uses the .gmz format to store data in memory (otherwise the .cimg[z] format).
-#@cli : Default values: 'datatype=float', 'is_compressed=1' and 'store_names=1'.
+#@cli : Default values: 'datatype=auto', 'is_compressed=1' and 'store_names=1'.
 #@cli : $ image.jpg +serialize uchar +unserialize[-1]
 
 #@cli shape_circle : _size>=0
