@@ -52,6 +52,31 @@
 //------------------------------------------------
 #ifdef cimg_plugin
 
+static const char *storage_type(const CImgList<T>& images) {
+  T im = cimg::type<T>::max(), iM = cimg::type<T>::min();
+  bool is_int = true;
+  for (unsigned int l = 0; l<images.size() && is_int; ++l) {
+    cimg_for(images[l],p,T) {
+      const T val = *p;
+      if (!(val==(T)(int)val)) { is_int = false; break; }
+      if (val<im) im = val;
+      if (val>iM) iM = val;
+    }
+  }
+  if (is_int) {
+    if (im>=0) {
+      if (iM<(1U<<8)) return "uchar";
+      else if (iM<(1U<<16)) return "ushort";
+      else if (iM<(1LU<<32)) return "uint";
+    } else {
+      if (im>=-(1<<7) && iM<(1<<7)) return "char";
+      else if (im>=-(1<<15) && iM<(1<<15)) return "short";
+      else if (im>=-(1L<<31) && iM<(1L<<31)) return "int";
+    }
+  }
+  return cimg::type<T>::string();
+}
+
 static CImg<T> append_CImg3d(const CImgList<T>& images) {
   if (!images) return CImg<T>();
   if (images.size()==1) return +images[0];
@@ -11692,31 +11717,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
               if (is_gmz) CImg<char>::string(images_names[uind]).move_to(gmz_info[1 + l]);
             }
             if (is_gmz) (gmz_info>'x').unroll('y').move_to(g_list);
-
-            if (!std::strcmp(argx,"auto")) { // Guess best datatype
-              T im = cimg::type<T>::max(), iM = cimg::type<T>::min();
-              bool is_int = true;
-              for (unsigned int l = 0; l<g_list.size() && is_int; ++l) {
-                cimg_for(g_list[l],p,T) {
-                  const T val = *p;
-                  if (!(val==(T)(int)val)) { is_int = false; break; }
-                  if (val<im) im = val;
-                  if (val>iM) iM = val;
-                }
-              }
-              std::strcpy(argx,cimg::type<T>::string());
-              if (is_int) {
-                if (im>=0) {
-                  if (iM<(1U<<8)) std::strcpy(argx,"uchar");
-                  else if (iM<(1U<<16)) std::strcpy(argx,"ushort");
-                  else if (iM<(1LU<<32)) std::strcpy(argx,"uint");
-                } else {
-                  if (im>=-(1<<7) && iM<(1<<7)) std::strcpy(argx,"char");
-                  else if (im>=-(1<<15) && iM<(1<<15)) std::strcpy(argx,"short");
-                  else if (im>=-(1L<<31) && iM<(1L<<31)) std::strcpy(argx,"int");
-                }
-              }
-            }
+            if (!std::strcmp(argx,"auto")) std::strcpy(argx,CImg<T>::storage_type(g_list));
 
             CImg<T> serialized;
             gmic_serialize(unsigned char,"uchar")
