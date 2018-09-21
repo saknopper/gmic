@@ -11671,13 +11671,14 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
           else { std::strcpy(argx,"auto"); is_compressed = is_compressed0?1U:0U; is_gmz = 1; }
 
           print(images,0,
-                "Serialize %simage%s viewed as %sbuffer%s of '%s' values into a single %scompressed image.",
-                is_gmz?"names ":"",
+                "Serialize %simage%s as %s%scompressed buffer%s, with datatype '%s'.",
+                is_gmz?"named ":"",
                 gmic_selection.data(),
                 selection.height()>1?"":"a ",
+                is_compressed?"":"un",
                 selection.height()>1?"s":"",
-                argx,
-                is_compressed?"":"un");
+                argx);
+
           if (selection) {
             g_list.assign(selection.height());
             CImgList<unsigned char> gmz_info;
