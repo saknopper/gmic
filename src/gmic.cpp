@@ -11694,22 +11694,18 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             if (is_gmz) (gmz_info>'x').unroll('y').move_to(g_list);
 
             if (!std::strcmp(argx,"auto")) { // Guess best datatype
+              T im = cimg::type<T>::max(), iM = cimg::type<T>::min();
               bool is_int = true;
-              cimglist_for(g_list,l) {
-                cimg_for(g_list[l],p,T)
-                  if (cimg::type<T>::is_inf(*p) ||
-                      cimg::type<T>::is_nan(*p) ||
-                      *p!=(T)(int)*p) { is_int = false; break; }
-                if (!is_int) break;
+              for (unsigned int l = 0; l<g_list.size() && is_int; ++l) {
+                cimg_for(g_list[l],p,T) {
+                  const T val = *p;
+                  if (!(val==(T)(int)val)) { is_int = false; break; }
+                  if (val<im) im = val;
+                  if (val>iM) iM = val;
+                }
               }
               std::strcpy(argx,cimg::type<T>::string());
               if (is_int) {
-                T im = cimg::type<T>::max(), iM = cimg::type<T>::min(), lim, liM;
-                cimglist_for(g_list,l) if (g_list[l]) {
-                  lim = g_list[l].min_max(liM);
-                  if (lim<im) im = lim;
-                  if (liM>iM) iM = liM;
-                }
                 if (im>=0) {
                   if (iM<(1U<<8)) std::strcpy(argx,"uchar");
                   else if (iM<(1U<<16)) std::strcpy(argx,"ushort");
