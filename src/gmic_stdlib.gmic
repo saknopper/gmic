@@ -18959,16 +18959,19 @@ base642uchar :
     hash[_'+'] = 62;
     hash[_'/'] = 63;
     s = ['$1'];
-    resize(#-1,1,size(s)*3/4 - (s[size(s)-1]==_'=') - (s[size(s)-2]==_'='),1,1);
-    od = 0;
-    for (os = 0, os<size(s),
-      c1 = hash[s[os++]];
-      c2 = hash[s[os++]];
-      c3 = hash[s[os++]];
-      c4 = hash[s[os++]];
-      i[#-1,od++] = (c1<<2) | (c2>>4);
-      i[#-1,od++] = ((c2&15)<<4) | (c3>>2);
-      i[#-1,od++] = ((c3&3)<<6) | c4;
+    const ss = size(s);
+    ss>=2?(
+      resize(#-1,1,ss*3/4 - (s[ss-1]==_'=') - (s[ss-2]==_'='),1,1);
+      od = 0;
+      for (os = 0, os<size(s),
+        c1 = hash[s[os++]];
+        c2 = hash[s[os++]];
+        c3 = hash[s[os++]];
+        c4 = hash[s[os++]];
+        i[#-1,od++] = (c1<<2) | (c2>>4);
+        i[#-1,od++] = ((c2&15)<<4) | (c3>>2);
+        i[#-1,od++] = ((c3&3)<<6) | c4;
+      )
     )"
   v +
 
