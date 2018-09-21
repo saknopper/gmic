@@ -7642,7 +7642,7 @@ to_graya :
 
 #@cli to_pseudogray : _max_step>=0,_is_perceptual_constraint={ 0 | 1 },_bits_depth>0
 #@cli : Convert selected scalar images ([0-255]-valued) to pseudo-gray color images.
-#@cli : Default parameters : 'max_step=5', 'is_perceptual_constraint=1' and 'bits_depth=8'.
+#@cli : Default values: 'max_step=5', 'is_perceptual_constraint=1' and 'bits_depth=8'.
 #@cli : The original pseudo-gray technique has been introduced by Rich Franzen [http://r0k.us/graphics/pseudoGrey.html].
 #@cli : Extension of this technique to arbitrary increments for more tones, has been done by David Tschumperle.
 to_pseudogray : check "isint(${1=5}) && $1>=0 && isint(${3=8}) && $3>0" skip ${2=1}
@@ -18956,8 +18956,8 @@ base642uchar :
     for (k = _'A', k<=_'Z', ++k, hash[k] = k - _'A');
     for (k = _'a', k<=_'z', ++k, hash[k] = k - _'a' + 26);
     for (k = _'0', k<=_'9', ++k, hash[k] = k - _'0' + 52);
-    hash[_'+'] = 62;
-    hash[_'/'] = 63;
+    hash[_'+'] = hash[_'-'] = 62;
+    hash[_'/'] = hash[_'_'] = 63;
     s = ['$1'];
     const ss = size(s);
     ss>=2?(
@@ -19891,14 +19891,18 @@ toc :
   v - _ticpos={$_ticpos-1} u {_$|-${_tic$_ticpos}} v +
   e[^-1] "Elapsed time: "${}" s".
 
-#@cli uchar2base64
+#@cli uchar2base64 : _encoding={ 0=base64 | 1=base64url }
 #@cli : Encode the latest of the selected image as a base64-encoded string.
 #@cli : The string can be decoded using command 'base642uchar'.
 #@cli : Input image should have values that are integers in [0,255].
-uchar2base64 :
-  v - {ceil(whds*4/3)}
+#@cli : Default values: 'encoding=0'.
+uchar2base64 : skip "${1=0}"
+  v -
+  if {isval("$1")} encoding=$1 else encoding=0 noarg fi
+  {ceil(whds*4/3)}
   residual={`"
     hash = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+    "$encoding"?(hash[62] = _'-'; hash[63] = _'_');
     od = ov = n = 0;
     for (os = 0, os<whds#-2,
       v = int(i[#-2,os++])&255;
