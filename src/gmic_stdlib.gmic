@@ -19923,14 +19923,13 @@ uchar2base64 : skip "${1=0}"
   u {t} rm. v +
 
 #@cli img2base64 : _encoding={ 0=base64 | 1=base64url }
-#@cli : Encode the latest selected image as a base64-encoded string.
-#@cli : The image can be then decoded using command 'base642img'.
+#@cli : Encode selected images as a base64-encoded string.
+#@cli : The images can be then decoded using command 'base642img'.
 #@cli : Default values: 'encoding=0'.
 img2base64 : skip "${1=0}"
   v -
   if {isval("$1")} encoding=$1 else encoding=0 noarg fi
-  f "begin(cond = 1); cond&=(!isnan(i) && i==int(i)); end(ext('is_int=',cond)); i"
-  +serialize. u ${uchar2base64\ $encoding} rm.
+  +serialize u ${uchar2base64\ $encoding} rm.
   v +
 
 #@cli average_colors
