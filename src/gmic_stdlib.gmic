@@ -11518,10 +11518,10 @@ thinning : check "!isval(${1=1}) || ($1>=0 && $1<=1)"
   if {isval($1)} bc=$1 else bc=1 noarg fi
   v + e[^-1] "Apply morphological thinning to binary image$? with "${"arg 1+"$bc",dirichlet,neumann"}" boundary conditions." v -
   repeat $! l[$>] s c repeat $! l[$>]
-                    # [0] = 2d binary shape
-    1,16,1,2        # [1] = List of boundary pixels
-    [0]             # [2] = 2d binary shape (next iteration)
-    1,16,1,2        # [3] = List of boundary pixels (next iteration)
+                    # [0] = 2d binary shape (current iteration)
+    1,16,1,2        # [1] = List of boundary pixels (current iteration)
+    1,16,1,2        # [2] = List of pixels to remove (current iteration)
+    1,16,1,2        # [3] = List of boundary pixels (for next iteration)
 
     # Extract boundary pixels.
     f[0] ">"${-math_lib}"const boundary = "$bc"; i && (!j(-1) || !j(1) || !j(0,-1) || !j(0,1))?dar_insert(#1,[x,y]); i;"
@@ -11553,7 +11553,7 @@ thinning : check "!isval(${1=1}) || ($1>=0 && $1<=1)"
             V = crop(#0,xp,yp,3,3);
             val = dot(dotm,V>0);
             (val & hm_and[it8])==hm_eq[it8]?(
-              i(#2,xc,yc) = 0;
+              dar_insert(#2,[xc,yc]);
               is_removed[it8] = 1;
               V[3]==1?(dar_insert(#3,[xp,yc]); i(#0,xp,yc) = 2);
               V[5]==1?(dar_insert(#3,[xn,yc]); i(#0,xn,yc) = 2);
@@ -11562,10 +11562,17 @@ thinning : check "!isval(${1=1}) || ($1>=0 && $1<=1)"
             ):(dar_insert(#3,[xc,yc]); i(#0,xc,yc) = 2);
           );
         );
-        copy(i[#0,0],i[#2,0],whd#0);
+
+        N = dar_size(#3);
+        for (n = 0, n<N, ++n, i(#0,I[#3,n]) = 1);
         resize(#1,1,h(#3),1,2,0);
         copy(i[#1,0],i[#3,0],2*h(#3));
         i[#3,h(#3)-1] = 0;
+
+        N = dar_size(#2);
+        for (n = 0, n<N, ++n, i(#0,I[#2,n]) = 0);
+        i[#2,h(#2)-1] = 0;
+
         ++it;
         _(while), max(is_removed)
       );"
@@ -19400,6 +19407,7 @@ math_lib :
     if (_dar_pos<=_dar_siz,
       _dar_siz>=h(#ind) - 1?resize(#ind,1,_dar_siz*2 + 2,1,s#ind,0);
       for (_dar_c = 0, _dar_c<s#ind, ++_dar_c, copy(i(#ind,_dar_pos + 1,0,0,_dar_c),i(#ind,_dar_pos,0,0,_dar_c),_dar_siz - _dar_pos));
+#      copy(i[#ind,_dar_pos],elt,max(1,size(elt)),h(#ind),1);
       I[#ind,_dar_pos] = elt;
       (dar_size(ind#)) = ++_dar_siz;
     );
