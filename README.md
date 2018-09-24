@@ -23,7 +23,7 @@ software suites.
 <a href="http://gmic.eu/img/gmic_libgmic.jpg">![interface_libgmic](http://gmic.eu/img/gmic_libgmic_thumb.jpg)</a>
 
 - **3** - A plug-in **[gmic_gimp](http://gmic.eu/gimp.shtml)**, to bring **G'MIC** capabilities to the image retouching software [GIMP](http://www.gimp.org).
-More than **450 filters** are already available, sorted by category (_Artistic, Black &amp; white, Colors, Contours, Deformations, Degradations, Details, Film emulation, Frames, Layers,
+More than **500 filters** are already available, sorted by category (_Artistic, Black &amp; white, Colors, Contours, Deformations, Degradations, Details, Film emulation, Frames, Layers,
 Light &amp; shadows, Patterns, Rendering, Repair, Sequences_, etc.).
 
 <a href="http://gmic.eu/img/gmic_gimp.jpg">![gimp_interface](http://gmic.eu/img/gmic_gimp_thumb.jpg)</a>
