@@ -37,9 +37,9 @@
      much efforts (a C API is provided as well).
 
  3 - A plug-in 'gmic_gimp_qt', to bring G'MIC capabilities
-     to the image retouching software GIMP. More than 500 filters are already
-     available, sorted by category (Artistic, Black & white, Colors, Contours,
-     Deformations, Degradations, Details, Film emulation, Frames, Layers,
+     to the image retouching software GIMP and Krita. More than 500 filters are
+     already available, sorted by category (Artistic, Black & white, Colors,
+     Contours, Deformations, Degradations, Details, Film emulation, Frames, Layers,
      Light & shadows, Patterns, Rendering, Repair, Sequences, etc.).
 
  4 - A web service G'MIC Online, to allow users applying image processing

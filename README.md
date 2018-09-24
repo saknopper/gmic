@@ -22,7 +22,7 @@ software suites.
 
 <a href="http://gmic.eu/img/gmic_libgmic.jpg">![interface_libgmic](http://gmic.eu/img/gmic_libgmic_thumb.jpg)</a>
 
-- **3** - A plug-in **[gmic_gimp](http://gmic.eu/gimp.shtml)**, to bring **G'MIC** capabilities to the image retouching software [GIMP](http://www.gimp.org).
+- **3** - A plug-in **[gmic_gimp_qt]**, to bring **G'MIC** capabilities to the image retouching software [GIMP](http://www.gimp.org) and [Krita](https://www.krita.org).
 More than **500 filters** are already available, sorted by category (_Artistic, Black &amp; white, Colors, Contours, Deformations, Degradations, Details, Film emulation, Frames, Layers,
 Light &amp; shadows, Patterns, Rendering, Repair, Sequences_, etc.).
 
@@ -42,7 +42,6 @@ Other open-source projects are known to use some of the <b><font color="#000066"
 
 - **[EKD](http://ekd.tuxfamily.org)**, a free software dedicated to post-production processing for videos and images.
 - **[Flowblade](https://github.com/jliljebl/flowblade)**, a multitrack non-linear video editor for Linux released under GPL 3 license.
-- **[Krita](https://www.krita.org)**, a free digital painting and illustration application. **Krita** has its own **G'MIC** plug-in.
 - **[Photoflow](http://aferrero2707.github.io/PhotoFlow/)**, a fully non-destructive photo retouching program.
 - **[Veejay](http://veejayhq.net/)**, a visual instrument and realtime video sampler.
 
