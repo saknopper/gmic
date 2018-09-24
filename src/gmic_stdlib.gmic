@@ -11537,15 +11537,18 @@ thinning : check "!isval(${1=1}) || ($1>=0 && $1<=1)"
       # Start thinning iterations.
       dotm = [ 128,64,32,16,0,8,4,2,1 ];
       is_removed = vector8(0);
+      ind = 1;
+      nind = 3;
       it = 0;
       do (
-        N = dar_size(#1);
+        N = dar_size(#ind);
         it8 = it%8;
         is_removed[it8] = 0;
 
+        # Find removable contour points.
         for (n = 0, n<N, ++n,
-          xc = i(#1,0,n,0,0);
-          yc = i(#1,0,n,0,1);
+          xc = i(#ind,0,n,0,0);
+          yc = i(#ind,0,n,0,1);
           icc = i(#0,xc,yc);
           icc?(
             xp = xc - 1; yp = yc - 1;
@@ -11555,20 +11558,21 @@ thinning : check "!isval(${1=1}) || ($1>=0 && $1<=1)"
             (val & hm_and[it8])==hm_eq[it8]?(
               dar_insert(#2,[xc,yc]);
               is_removed[it8] = 1;
-              V[3]==1?(dar_insert(#3,[xp,yc]); i(#0,xp,yc) = 2);
-              V[5]==1?(dar_insert(#3,[xn,yc]); i(#0,xn,yc) = 2);
-              V[1]==1?(dar_insert(#3,[xc,yp]); i(#0,xc,yp) = 2);
-              V[7]==1?(dar_insert(#3,[xc,yn]); i(#0,xc,yn) = 2);
-            ):(dar_insert(#3,[xc,yc]); i(#0,xc,yc) = 2);
+              V[3]==1?(dar_insert(#nind,[xp,yc]); i(#0,xp,yc) = 2);
+              V[5]==1?(dar_insert(#nind,[xn,yc]); i(#0,xn,yc) = 2);
+              V[1]==1?(dar_insert(#nind,[xc,yp]); i(#0,xc,yp) = 2);
+              V[7]==1?(dar_insert(#nind,[xc,yn]); i(#0,xc,yn) = 2);
+            ):(dar_insert(#nind,[xc,yc]); i(#0,xc,yc) = 2);
           );
         );
 
-        N = dar_size(#3);
-        for (n = 0, n<N, ++n, i(#0,I[#3,n]) = 1);
-        resize(#1,1,h(#3),1,2,0);
-        copy(i[#1,0],i[#3,0],2*h(#3));
-        i[#3,h(#3)-1] = 0;
+        # Re-assign value '1' to contour points.
+        N = dar_size(#nind);
+        for (n = 0, n<N, ++n, i(#0,i[#nind,n],i[#nind,n + h(#nind)]) = 1);
+        tmp = nind; nind = ind; ind = tmp;
+        i[#nind,h(#nind)-1] = 0;
 
+        # Remove matching contour points.
         N = dar_size(#2);
         for (n = 0, n<N, ++n, i(#0,I[#2,n]) = 0);
         i[#2,h(#2)-1] = 0;
@@ -19407,8 +19411,7 @@ math_lib :
     if (_dar_pos<=_dar_siz,
       _dar_siz>=h(#ind) - 1?resize(#ind,1,_dar_siz*2 + 2,1,s#ind,0);
       for (_dar_c = 0, _dar_c<s#ind, ++_dar_c, copy(i(#ind,_dar_pos + 1,0,0,_dar_c),i(#ind,_dar_pos,0,0,_dar_c),_dar_siz - _dar_pos));
-#      copy(i[#ind,_dar_pos],elt,max(1,size(elt)),h(#ind),1);
-      I[#ind,_dar_pos] = elt;
+      copy(i[#ind,_dar_pos],elt,max(1,size(elt)),h(#ind),1);
       (dar_size(ind#)) = ++_dar_siz;
     );
   );
@@ -19416,7 +19419,7 @@ math_lib :
   dar_insert(ind,elt) = ( # Inserts new element 'elt' at the end of dynamic array #ind.
     _dar_siz = dar_size(#ind);
     _dar_siz>=h(#ind) - 1?resize(#ind,1,_dar_siz*2 + 2,1,s#ind,0);
-    I[#ind,_dar_siz] = elt;
+    copy(i[#ind,_dar_siz],elt,max(1,size(elt)),h(#ind),1);
     (dar_size(ind#)) = ++_dar_siz;
   );
 
