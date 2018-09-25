@@ -943,6 +943,7 @@ _help_usage :
 \n          elements starting from a source value '"${c}"src"$n"' to a specified destination '"${c}"dest"$n"', with
 \n          increments defined by '"${c}"inc_d"$n"' and '"${c}"inc_s"$n"' respectively for the destination and source
 \n          pointers.
+\n       . '"${c}"swap(dest,src,_nb_elts,_inc_d,_inc_s)"$n" does the same but swap contents of the given memory blocks.
 \n       . '"${c}"stats(_#ind)"$n" returns the statistics vector of the running image '"${c}"[ind]"$n"', i.e the vector
 \n          "${g}"[ im,iM,ia,iv,xm,ym,zm,cm,xM,yM,zM,cM,is,ip ]"$n" (14 values).
 \n       . '"${c}"unref(a,b,...)"$n" destroys references to the named variable given as arguments.
@@ -19621,10 +19622,6 @@ math_lib :
   proj(X,A,B) = ( # Projection of point X onto line (A,B)
     _AB = B - A;
     P = A + dot(X - A,_AB)/max(1e-8,dot(_AB,_AB))*_AB;
-  );
-
-  swap(x,y) = ( # Swap content of variables x and y
-    unref(_tmp); _tmp = x#; x# = y#; y# = _tmp;
   );
   "
   v +
