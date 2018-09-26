@@ -855,7 +855,6 @@ _help_usage :
 \n
 \n    _ The following "${g}"specific functions"$n" are also defined:
 \n
-\n       . '"${c}"swap(A,B)"$n" swap memory content of given arguments "${g}"A"$n" and "${g}"B"$n" (can be variables or pixel values).
 \n       . '"${c}"u(max)"$n"' or '"${c}"u(min,max)"$n"': return a random value between "${g}"[0,max]"$n" or "${g}"[min,max]"$n", following
 \n          a uniform distribution.
 \n       . '"${c}"i(_a,_b,_c,_d,_interpolation_type,_boundary_conditions)"$n"': return the value of the pixel
@@ -11570,7 +11569,7 @@ thinning : check "!isval(${1=1}) || ($1>=0 && $1<=1)"
         # Re-assign value '1' to contour points.
         N = dar_size(#nind);
         for (n = 0, n<N, ++n, i(#0,i[#nind,n],i[#nind,n + h(#nind)]) = 1);
-        swap(nind,ind);
+        _tmp = ind; ind = nind; nind = _tmp;
         i[#nind,h(#nind)-1] = 0;
 
         # Remove matching contour points.
@@ -16929,7 +16928,7 @@ _pixelsort :
         while (lo<=hi,
            while (i(#0,lo,y,z,0)$1pivot, ++lo);
            while (pivot$1i(#0,hi,y,z,0), --hi);
-           if (lo<=hi, swap(I(#0,lo,y,z),I(#0,hi,y,z)); ++lo; --hi; );
+           if (lo<=hi, _tmp = I(#0,lo,y,z); I(#0,lo,y,z) = I(#0,hi,y,z); I(#0,hi,y,z) = _tmp; ++lo; --hi; );
         );
         if (range[0]<hi,push(range[0],hi));
         if (lo<range[1],push(lo,range[1]));
@@ -18586,7 +18585,7 @@ __median_stream :
         while (lo<=hi,
            while (i(#lo)<pivot, ++lo);
            while (pivot<i(#hi), --hi);
-           if (lo<=hi, swap(i(#lo),i(#hi)); ++lo; --hi);
+           if (lo<=hi, _tmp = i(#lo); i(#lo) = i(#hi); i(#hi) = _tmp; ++lo; --hi);
         );
         if (range[0]<hi,push(range[0],hi));
         if (lo<range[1],push(lo,range[1]));
