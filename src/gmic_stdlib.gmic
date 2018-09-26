@@ -855,6 +855,7 @@ _help_usage :
 \n
 \n    _ The following "${g}"specific functions"$n" are also defined:
 \n
+\n       . '"${c}"swap(A,B)"$n" swap memory content of given arguments "${g}"A"$n" and "${g}"B"$n" (can be variables or pixel values).
 \n       . '"${c}"u(max)"$n"' or '"${c}"u(min,max)"$n"': return a random value between "${g}"[0,max]"$n" or "${g}"[min,max]"$n", following
 \n          a uniform distribution.
 \n       . '"${c}"i(_a,_b,_c,_d,_interpolation_type,_boundary_conditions)"$n"': return the value of the pixel
@@ -943,7 +944,6 @@ _help_usage :
 \n          elements starting from a source value '"${c}"src"$n"' to a specified destination '"${c}"dest"$n"', with
 \n          increments defined by '"${c}"inc_d"$n"' and '"${c}"inc_s"$n"' respectively for the destination and source
 \n          pointers.
-\n       . '"${c}"swap(dest,src,_nb_elts,_inc_d,_inc_s)"$n" does the same but swap contents of the given memory blocks.
 \n       . '"${c}"stats(_#ind)"$n" returns the statistics vector of the running image '"${c}"[ind]"$n"', i.e the vector
 \n          "${g}"[ im,iM,ia,iv,xm,ym,zm,cm,xM,yM,zM,cM,is,ip ]"$n" (14 values).
 \n       . '"${c}"unref(a,b,...)"$n" destroys references to the named variable given as arguments.
@@ -16929,7 +16929,7 @@ _pixelsort :
         while (lo<=hi,
            while (i(#0,lo,y,z,0)$1pivot, ++lo);
            while (pivot$1i(#0,hi,y,z,0), --hi);
-           if (lo<=hi, swap(i(#0,lo++,y,z),i(#0,hi--,y,z),s#0,whd#0,whd#0));
+           if (lo<=hi, swap(I(#0,lo,y,z),I(#0,hi,y,z)); ++lo; --hi; );
         );
         if (range[0]<hi,push(range[0],hi));
         if (lo<range[1],push(lo,range[1]));
@@ -18586,7 +18586,7 @@ __median_stream :
         while (lo<=hi,
            while (i(#lo)<pivot, ++lo);
            while (pivot<i(#hi), --hi);
-           if (lo<=hi, swap(i(#lo++),i(#hi--)));
+           if (lo<=hi, swap(i(#lo),i(#hi)); ++lo; --hi);
         );
         if (range[0]<hi,push(range[0],hi));
         if (lo<range[1],push(lo,range[1]));
