@@ -22730,10 +22730,10 @@ x_pacman :
 
     while {!$is_quit" && "$pacdots}
 
-    if $is_quit break         # Player asked to quit.
-    elif $pacdots              # Player lost a life.
+    if $is_quit break         # Player asked to quit
+    elif $pacdots             # Player lost a life
       lives-=1
-    else                       # Player achieved level.
+    else                      # Player achieved level
       level={-$level-1} wait[0] -1
       rm[map0,map,can_go,path]
     fi
