@@ -16928,7 +16928,7 @@ _pixelsort :
         while (lo<=hi,
            while (i(#0,lo,y,z,0)$1pivot, ++lo);
            while (pivot$1i(#0,hi,y,z,0), --hi);
-           if (lo<=hi, _tmp = I(#0,lo,y,z); I(#0,lo,y,z) = I(#0,hi,y,z); I(#0,hi,y,z) = _tmp; ++lo; --hi; );
+           if (lo<=hi, _tmp = I(#0,lo,y,z); I(#0,lo++,y,z) = I(#0,hi,y,z); I(#0,hi--,y,z) = _tmp);
         );
         if (range[0]<hi,push(range[0],hi));
         if (lo<range[1],push(lo,range[1]));
@@ -18585,7 +18585,7 @@ __median_stream :
         while (lo<=hi,
            while (i(#lo)<pivot, ++lo);
            while (pivot<i(#hi), --hi);
-           if (lo<=hi, _tmp = i(#lo); i(#lo) = i(#hi); i(#hi) = _tmp; ++lo; --hi);
+           if (lo<=hi, _tmp = i(#lo); i(#lo++) = i(#hi); i(#hi--) = _tmp);
         );
         if (range[0]<hi,push(range[0],hi));
         if (lo<range[1],push(lo,range[1]));
