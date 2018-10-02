@@ -28,6 +28,7 @@ UsePreviousAppDir=true
 DirExistsWarning=no
 WizardImageFile=gmic_instimg.bmp
 WizardSmallImageFile=gmic_instimg_small.bmp
+PrivilegesRequired=lowest
 OutputBaseFilename=gmic_gimp2.8_qt_XXX_win64
 
 [Files]
