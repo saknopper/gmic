@@ -1,6 +1,6 @@
 ;---------------------------------------------
 ;
-; File : gmic_gimp_qt32.iss
+; File : gmic_gimp2.10_qt32.iss
 ;
 ; Description : Inno Setup Script to create
 ;               a Windows installer for
@@ -11,12 +11,12 @@
 ;
 ;---------------------------------------------
 
-#define AppName "G'MIC for GIMP (Qt version)"
+#define AppName "G'MIC-Qt for GIMP"
 
 [Setup]
 AppName={#AppName}
 AppVersion=XXX
-AppPublisherURL=http://gmic.eu/
+AppPublisherURL=https://gmic.eu/
 DefaultDirName={userappdata}\GIMP\2.10\plug-ins\gmic_gimp_qt\
 DefaultGroupName={#AppName}
 UninstallDisplayIcon={app}\gmic_gimp_qt.exe
@@ -26,6 +26,8 @@ UninstallFilesDir={app}\uninst
 AppendDefaultDirName=false
 UsePreviousAppDir=true
 DirExistsWarning=no
+WizardImageFile=gmic_instimg.bmp
+WizardSmallImageFile=gmic_instimg_small.bmp
 OutputBaseFilename=gmic_gimp2.10_qt_XXX_win32
 
 [Files]
