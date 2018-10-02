@@ -2215,8 +2215,8 @@ bool gmic::check_filename(const char *const filename) {
   const unsigned int attr = (unsigned int)GetFileAttributesA(filename);
   res = (attr!=~0U);
 #else // #if cimg_OS==2
-  std::FILE *const file = std::fopen(filename,"r");
-  if (file) { res = true; std::fclose(file); }
+  std::FILE *const file = cimg::std_fopen(filename,"r");
+  if (file) { res = true; cimg::fclose(file); }
 #endif // #if cimg_OS==2
   return res;
 }
@@ -5752,20 +5752,20 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
             arg_command+=2; arg_command_text+=2; offset_argument_text = 2;
           }
 
-          std::FILE *file = std::fopen(arg_command,"rb");
+          std::FILE *file = cimg::std_fopen(arg_command,"rb");
           if (file) {
             print(images,0,"Import commands from file '%s'%s",
                   arg_command_text,
                   !add_debug_info?" without debug info":"");
             add_commands(file,add_debug_info?arg_command:0,&count_new,&count_replaced);
-            std::fclose(file);
+            cimg::fclose(file);
           } else if (!cimg::strncasecmp(arg_command,"http://",7) ||
                      !cimg::strncasecmp(arg_command,"https://",8)) { // Try to read from network.
             print(images,0,"Import commands from URL '%s'%s",
                   arg_command_text,
                   !add_debug_info?" without debug info":"");
             try {
-              file = std::fopen(cimg::load_network(arg_command,argx),"r");
+              file = cimg::std_fopen(cimg::load_network(arg_command,argx),"r");
             } catch (...) {
               file = 0;
             }
@@ -5777,9 +5777,9 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
               verbosity = -1; is_debug = false;
               try {
                 add_commands(file,add_debug_info?arg_command:0,&count_new,&count_replaced);
-                std::fclose(file);
+                cimg::fclose(file);
               } catch (...) {
-                std::fclose(file);
+                cimg::fclose(file);
                 file = 0;
               }
               verbosity = _verbosity; is_debug = _is_debug;
@@ -8900,7 +8900,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
                 cimg_snprintf(filename_tmp,filename_tmp.width(),"%s%c%s.%s",
                               cimg::temporary_path(),cimg_file_separator,
                               cimg::filenamerand(),cext);
-                if ((file=std::fopen(filename_tmp,"rb"))!=0) std::fclose(file);
+                if ((file=cimg::std_fopen(filename_tmp,"rb"))!=0) cimg::fclose(file);
               } while (file);
             }
           }
@@ -13536,7 +13536,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
               cimg_snprintf(filename_tmp,filename_tmp.width(),"%s%c%s.%s",
                             cimg::temporary_path(),cimg_file_separator,
                             cimg::filenamerand(),cext);
-              if ((file=std::fopen(filename_tmp,"rb"))!=0) std::fclose(file);
+              if ((file=cimg::std_fopen(filename_tmp,"rb"))!=0) cimg::fclose(file);
             } while (file);
 
             // Make a temporary copy (or link) of the original file.
@@ -13557,14 +13557,14 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
         const bool is_stdin = *filename=='-' && (!filename[1] || filename[1]=='.');
 
         const char *file_type = 0;
-        std::FILE *const file = is_stdin?0:std::fopen(filename,"rb");
+        std::FILE *const file = is_stdin?0:cimg::std_fopen(filename,"rb");
         longT siz = 0;
         if (file) {
           std::fseek(file,0,SEEK_END);
           siz = std::ftell(file);
           std::rewind(file);
           file_type = *ext?0:cimg::ftype(file,0);
-          std::fclose(file);
+          cimg::fclose(file);
         }
         if (!is_stdin && file && siz==0) { // Empty file -> Insert an empty image.
           input_images_names.insert(__filename0);
@@ -14046,7 +14046,7 @@ gmic& gmic::_run(const CImgList<char>& commands_line, unsigned int& position,
 
           } catch (CImgException&) {
             std::FILE *file = 0;
-            if (!(file=std::fopen(filename,"r"))) {
+            if (!(file=cimg::std_fopen(filename,"r"))) {
               if (is_input_command)
                 error(images,0,0,
                       "Unknown filename '%s'.",
