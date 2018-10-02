@@ -117,7 +117,7 @@ if [ "$OSTYPE" == "msys" ]; then
     OUTZIP_KRITA_QT=gmic_krita_qt_${SVERSION}${SUFFIX}_win${BITS}.zip
 
     # Compile sources.
-    cd $HOME/gmic/src && make clean && rm -f gmic *.o
+    cd $HOME/gmic/src && make clean && rm -f gmic *.o && cp -f /e/work/src/CImg/CImg.h .
     make OPT_CFLAGS="-Ofast -m${BITS} -mtune=generic" cli libc libcstatic
 
     cd $HOME/gmic/zart && rm -rf .obj && qmake GMIC_PATH=../src zart.pro && make clean
