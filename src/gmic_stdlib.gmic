@@ -25271,11 +25271,11 @@ fx_gmicky_preview :
 #@gui : - <b>2017/10/09</b> : version <i>2.1.0</i>.\n
 #@gui : - <b>2018/02/15</b> : version <i>2.2.0</i>.\n
 #@gui : - <b>2018/06/21</b> : version <i>2.3.0</i>.\n
-#@gui : - <span foreground="purple"><b>2018/08/28</b> : version <i>2.3.6</i> (Current stable).</span>\n
+#@gui : - <span foreground="purple"><b>2018/10/04</b> : version <i>2.4.0</i> (Current stable).</span>\n
 #@gui : "}
 #@gui : sep = separator()
-#@gui : url = link{"View changelog to upcoming major version (2.4.0)","https://discuss.pixls.us/t/on-the-road-to-2-4-0"}
-#@gui : url = link{"View latest minor changelog (2.3.0)","https://discuss.pixls.us/t/release-of-gmic-2-3-0"}
+##@gui : url = link{"View changelog to upcoming major version (2.4.0)","https://discuss.pixls.us/t/on-the-road-to-2-4-0"}
+#@gui : url = link{"View latest minor changelog (2.4.0)","https://discuss.pixls.us/t/release-of-gmic-2-4-0"}
 #@gui : url = link{"View latest major changelog (2.0.0)","https://discuss.pixls.us/t/release-of-gmic-2-0-0"}
 
 #@gui Privacy notice : _none_, _none_
