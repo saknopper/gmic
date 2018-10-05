@@ -4490,8 +4490,7 @@ update_server :
       autocrop. 32 mv. 1
 
       if {narg($locale)" && "find(#1,'hide(')>=0} # Found a hide() pragma.
-
-        # Do nothing
+        i[1] ({'" "'})
 
       elif {{1,@0}!=_':'} # Found a new filter or folder definition.
         l[1]
