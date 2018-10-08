@@ -23006,7 +23006,7 @@ x_plasma :
   M={w}
 
   # Start animation loop.
-  w[] {1.5*{0,w}},{1.5*{0,h}},0,"[G"{`39`}"MIC] Plasma effect"
+  w[] {0,f=1.5*h<0.5*{*,v}?3:1.5;[w,h]*=f},0,"[G"{`39`}"MIC] Plasma effect"
   t=0 tt={-1.5*{0,w}}
 
   do
