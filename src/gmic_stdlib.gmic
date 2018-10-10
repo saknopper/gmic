@@ -3,7 +3,7 @@
 #  File        : gmic_stdlib.gmic
 #                ( G'MIC command file )
 #
-#  Description : Define the commands and filters of the standard G'MIC library.
+#  Description : GREYC's Magic for Image Computing - Standard library
 #                ( https://gmic.eu )
 #
 #  Copyright   : David Tschumperle
@@ -4674,7 +4674,7 @@ update_server :
     replace_str "<i>David Tschumperl&#233;</i>","<i><a href=\""$url"\">David Tschumperl&#233;</a></i>"
     o cimgz:/tmp/update$_version.gmic,uchar
 
-    (240)
+    (240,241)
     repeat {w}
       v={i[$>]}
       _update_server_upload[] ${_path_rc}update$_version.gmic,plain_update$v.gmic

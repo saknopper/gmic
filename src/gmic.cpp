@@ -3,7 +3,7 @@
  #  File        : gmic.cpp
  #                ( C++ source file )
  #
- #  Description : GREYC's Magic for Image Computing - G'MIC Language interpreter
+ #  Description : GREYC's Magic for Image Computing - G'MIC core
  #                ( http://gmic.eu )
  #
  #  Copyright   : David Tschumperle

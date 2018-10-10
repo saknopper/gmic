@@ -3,7 +3,7 @@
  #  File        : gmic.h
  #                ( C++ header file )
  #
- #  Description : GREYC's Magic for Image Computing
+ #  Description : GREYC's Magic for Image Computing - G'MIC API file
  #                ( http://gmic.eu )
  #
  #  Note        : Include this file in your C++ source code, if you
