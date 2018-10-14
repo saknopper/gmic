@@ -19251,6 +19251,41 @@ fitscreen : check "$1>=1 && $2>=1 && ${3=1}>=1 && ${4=128}>0 && ${5=85%}>0"
     round(s)"
   v +
 
+# font2cimgh
+# Encode a font image as a C-style string for CImg.h.
+font2cimgh :
+  e[^-1] "Encode font image$? as a C-style string for CImg.h."
+  v - repeat $! l[$>] bnm={0,b}
+    v + e[] "  > Encode font '"$bnm"'." v -
+
+    # Find best parameters for RLE compression.
+    Mm=0 MM=100
+    do
+      M={floor(($Mm+$MM)/2)}
+      +compress_rle 1,$M rows. 6,100% +. {32-im} iM={iM}
+      if {iM<126} Mm=$M rm. elif {iM>126} MM=$M rm. fi
+    while {$iM!=126}
+
+    v + e[] "\r  > Encode font '"$bnm"' -> M = "$M"." v -
+
+    # Generate C-style string for storing font data.
+    k.
+    replace_str "\\","\\\\"
+    replace_str "\"","\\\""
+    s y,-111
+    repeat $!
+      if {$>,i[h-1]==_'\\'&&i[h-2]!=_'\\'} rows[$>] 0,{$>,h-2} rows[{$>+1}] -1,100% =[{$>+1}] {'\\'} fi
+      l[$>]
+        i[0] ({'"      \""'}) ({'\"'})
+        if {!$<} ({';'}) fi
+        ({'\n'})
+        y a y
+      endl
+    done
+    a y o raw:$bnm.h,uchar
+
+  endl done v +
+
 #@cli fps
 #@cli : Return the number of time this function is called per second, or -1 if this info is not yet available.
 #@cli : Useful to display the framerate when displaying animations.
