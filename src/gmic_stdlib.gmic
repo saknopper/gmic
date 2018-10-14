@@ -19257,6 +19257,8 @@ font2cimgh :
   e[^-1] "Encode font image$? as a C-style string for CImg.h."
   v - repeat $! l[$>] bnm={0,b}
     v + e[] "  > Encode font '"$bnm"'." v -
+    W,H={[w/256,h]}
+    if {!isint($W)} error[0--4] "Font image '"$bnm"' has wrong dimensions ("{[w,h,d,s]}")." fi
 
     # Find best parameters for RLE compression.
     Mm=0 MM=100
@@ -19266,7 +19268,7 @@ font2cimgh :
       if {iM<126} Mm=$M rm. elif {iM>126} MM=$M rm. fi
     while {$iM!=126}
 
-    v + e[] "\r  > Encode font '"$bnm"' -> M = "$M"." v -
+    v + e[] "\r  > Encode font '"$bnm"' -> W = "$W", H = "$H", M = "$M"." v -
 
     # Generate C-style string for storing font data.
     k.
