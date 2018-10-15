@@ -19277,16 +19277,17 @@ font2cimgh :
     v + e[] "  > Encode font '"$bnm"'." v -
     W,H={[w/256,h]}
     if {!isint($W)} error[0--4] "Font image '"$bnm"' has wrong dimensions ("{[w,h,d,s]}")." fi
+    +f "i==im || i==iM" is_binary={im==1} rm.
 
     # Find best parameters for RLE compression.
     Mm=0 MM=100
     do
       M={floor(($Mm+$MM)/2)}
-      +compress_rle 0,$M rows. 6,100% +. {32-im} iM={iM}
+      +compress_rle $is_binary,$M rows. 6,100% +. {32-im} iM={iM}
       if {iM<126} Mm=$M rm. elif {iM>126} MM=$M rm. fi
     while {$iM!=126}
 
-    v + e[] "\r  > Encode font '"$bnm"' -> W = "$W", H = "$H", M = "$M"." v -
+    v + e[] "\r  > Encode font '"$bnm"' -> W = "$W", H = "$H", M = "$M", is_binary = "$is_binary"." v -
 
     # Generate C-style string for storing font data.
     k.
@@ -19297,12 +19298,13 @@ font2cimgh :
       if {$>,i[h-1]==_'\\'&&i[h-2]!=_'\\'} rows[$>] 0,{$>,h-2} rows[{$>+1}] -1,100% =[{$>+1}] {'\\'} fi
       l[$>]
         i[0] ({'"      \""'}) ({'\"'})
-        if {!$<} ({';'}) fi
+        if {!$<} ({'" };"'}) fi
         ({'\n'})
         y a y
       endl
     done
-    a y o raw:$bnm.h,uchar
+    i[0] ({'"    static const char *const data_font"${W}x${H}"[] = {"\n'})
+    y a y o raw:$bnm.h,uchar
 
   endl done v +
 
