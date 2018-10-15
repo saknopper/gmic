@@ -20286,10 +20286,10 @@ x_2048 :
     # Check for the end of the game.
     ++[0] 1 f. 'j(-1)==i||j(1)==i||j(0,-1)==i||j(1,0)==i||i==1'
     if {0,iM==11} # Game won.
-      -alert "Game Over","\nCongratulations! You got the 2048 title!\n\n   Your score: "$score,"OK"
+      alert "Game Over","\nCongratulations! You got the 2048 title!\n\n   Your score: "$score,"OK"
       break
     elif {!iM} # Game lost.
-      -alert "Game Over","\nBad luck! You lost the game!\n\n   Your score: "$score,"OK"
+      alert "Game Over","\nBad luck! You lost the game!\n\n   Your score: "$score,"OK"
       break
     fi
     rm.
@@ -21747,7 +21747,7 @@ x_hough :
     r. ${fitscreen\ {w},{h}},1,100%,3  # Resize to fit screen if necessary.
     if {!narg($first_time)}
       parallel 0,"+l[0] r2dy 128 frame 1,1,0 \
-        -alert \"[G"{`39`}"MIC Hough Transform]\",\
+        alert \"[G"{`39`}"MIC Hough Transform]\",\
            \"The G\47MIC Hough transform demo illustrates the application\n\
            of the Hough transform to detect lines in an image. Use your\n\
            mouse buttons to explore the transform image and see how\n\
@@ -22556,7 +22556,7 @@ x_minimal_path :
 
     if {!narg($first_time)}
       parallel 0,"+l[0] r2dy 128 frame 1,1,0 \
-        -alert \"[G"{`39`}"MIC Minimal path]\",\
+        alert \"[G"{`39`}"MIC Minimal path]\",\
            \"The G\47MIC minimal path demo illustrates how minimal paths\n\
            can be computed in images to detect and track edge points.\n\
            Use your mouse to select desired starting and ending points,\n\
