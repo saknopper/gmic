@@ -20060,7 +20060,7 @@ demo : check "isint(${1=2}) && $1>=0 && $1<=2"
 -------------------------------------"
   v - l[]
   entries="2048 game","Blobs editor","Bouncing balls","Connect Four","Fire effect","Fireworks","Fish-eye effect",\
-          "Fourier filtering","Tower of Hanoi","Histogram demo","Hough transform","Jawbreaker","Virtual Landscape","The game of life",\
+          "Fourier filtering","Tower of Hano\357","Histogram demo","Hough transform","Jawbreaker","Virtual Landscape","The game of life",\
           "Light effect","Mandelbrot explorer","3d metaballs","Minesweeper","Minimal path","Pacman","Paint",\
           "Plasma effect","RGB quantization","3d reflection","3d rubber object","Shade bobs","Spline editor","3d starfield",\
           "Tetris","Tic-tac-toe","Image waves","Fractal whirls","Color curves"
@@ -21505,7 +21505,7 @@ x_hanoi :
   if {!{*,u}} error[0--3] "Command '$0': No display available." return fi
   v - use_vt100 g=$_gmic_g c=$_gmic_c n=$_gmic_n r=$_gmic_r v +
   e[] "\n
------- "${g}"Tower of Hanoi"$n" ---------------------\n
+------ "${g}"Tower of Hanoï"$n" ---------------------\n
 ----\n
 ---- "${c}"Left button"$n" and "${c}"mouse"$n" to move a disk.\n
 ---- "${c}"Right button"$n" to rotate 3d view.\n
@@ -21542,7 +21542,7 @@ x_hanoi :
     rm[0]
   endl
 
-  w[] 640,400,0,"[G"{`39`}"MIC] Tower of Hanoi"
+  w[] 640,400,0,"[G"{`39`}"MIC] Tower of Hano\357"
   1,3,1,3,'y==0?[32,128,100]:y==1?[64,16,0]:[0,0,0]' r. {*,w},{*,h},1,3,3 nm. background
   nb_moves,buttons,motion3d_x,motion3d_y=0
   x,rod,rod_source,rod_target,selected=-1
