@@ -19286,11 +19286,11 @@ font2cimgh :
       +compress_rle $is_binary,$M rows. 6,100% +. {32-im} iM={iM}
       if {iM<126} Mm=$M rm. elif {iM>126} MM=$M rm. fi
     while {$iM!=126}
+    k. nb_chunks={1+int(h/65536)}
 
-    v + e[] "\r  > Encode font '"$bnm"' -> W = "$W", H = "$H", M = "$M", is_binary = "$is_binary"." v -
+    v + e[] "\r  > Encode font '"$bnm"' -> W = "$W", H = "$H", M = "$M", is_binary = "$is_binary", nb_chunks = "$nb_chunks"." v -
 
     # Generate C-style string for storing font data.
-    k.
     replace_str "\\","\\\\"
     replace_str "\"","\\\""
     s y,-111
@@ -19303,6 +19303,7 @@ font2cimgh :
         y a y
       endl
     done
+    repeat {$nb_chunks-1} ind={int($!*($>+1)/$nb_chunks)} l[$ind] = {','},0,100% ({'\n'}) y a y endl done
     i[0] ({'"    static const char *const data_font"${W}x${H}"[] = {"\n'})
     y a y o raw:$bnm.h,uchar
 
