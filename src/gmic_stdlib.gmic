@@ -6002,7 +6002,7 @@ decompress_clut : check "isint(${1=64}) && $1>0 && isint(${2=$1}) && $2>0 && isi
   endl done v +
 
 #@cli decompress_rle
-#@cli : Decompress selected 2xN data matrices, using RLE algorithm.
+#@cli : Decompress selected data vectors, using RLE algorithm.
 decompress_rle :
   e[^-1] "Decompress data vector$?, using RLE algorithm."
   v - repeat $! l[$>]
@@ -19282,7 +19282,7 @@ font2cimgh :
     Mm=0 MM=100
     do
       M={floor(($Mm+$MM)/2)}
-      +compress_rle 1,$M rows. 6,100% +. {32-im} iM={iM}
+      +compress_rle 0,$M rows. 6,100% +. {32-im} iM={iM}
       if {iM<126} Mm=$M rm. elif {iM>126} MM=$M rm. fi
     while {$iM!=126}
 
