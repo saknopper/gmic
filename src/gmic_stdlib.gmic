@@ -19257,7 +19257,7 @@ fitscreen : check "$1>=1 && $2>=1 && ${3=1}>=1 && ${4=128}>0 && ${5=85%}>0"
 fontchart :
   e[^-1] "Generate G'MIC font chart."
   v - l[]
-    repeat 256 char={`max(1,$>)`} 0 t. {``$char},0,0,50,1,255 done
+    repeat 256 char={`max(1,(c=$>;c>=23&&c<=28?32:c))`} 0 t. {``$char},0,0,50,1,255 done
     a z,0.5
     s z
     repeat $!
